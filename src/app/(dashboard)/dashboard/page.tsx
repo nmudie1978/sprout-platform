@@ -1,6 +1,7 @@
 "use client";
 
-import { toast } from "sonner";
+import { toast } from "@/hooks/use-toast";
+import { ToastAction } from "@/components/ui/toast";
 
 /**
  * DASHBOARD PAGE — Information-Rich Overview
@@ -625,7 +626,7 @@ export default function DashboardPage() {
       // Intentional silent fallback: some responses are empty 204s;
        // returning null lets downstream code treat "no data" uniformly.
       const data = await res.json().catch(() => null);
-      toast.error(data?.error || 'Could not remove journey');
+      toast({ title: data?.error || 'Could not remove journey', variant: "destructive" });
     }
   }, [queryClient]);
 
@@ -654,17 +655,23 @@ export default function DashboardPage() {
       queryClient.invalidateQueries({ queryKey: ["goal-data"] });
       queryClient.invalidateQueries({ queryKey: ["discover-reflections"] });
       queryClient.invalidateQueries({ queryKey: ["career-insights"] });
-      toast.success(`${goalTitle} set as your Primary Goal`, {
+      toast({
+        title: `${goalTitle} set as your Primary Goal`,
         description: t('switchGoal.toastDescription'),
         duration: 8000,
-        action: {
-          label: t('switchGoal.goToJourney'),
-          onClick: () => window.location.assign("/my-journey#discover"),
-        },
+        variant: "success",
+        action: (
+          <ToastAction
+            altText={t('switchGoal.goToJourney')}
+            onClick={() => window.location.assign("/my-journey#discover")}
+          >
+            {t('switchGoal.goToJourney')}
+          </ToastAction>
+        ),
       });
     },
     onError: () => {
-      toast.error('Failed to switch goal. Please try again.');
+      toast({ title: 'Failed to switch goal. Please try again.', variant: "destructive" });
     },
     onSettled: () => {
       setSwitchConfirm(null);

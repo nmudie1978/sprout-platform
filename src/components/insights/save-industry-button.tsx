@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { Bookmark, BookmarkCheck, Loader2 } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@/hooks/use-toast";
 
 interface SaveIndustryButtonProps {
   industryId: string;
@@ -55,12 +55,12 @@ export function SaveIndustryButton({
         const filtered = industries.filter((id: string) => id !== industryId);
         localStorage.setItem("savedIndustries", JSON.stringify(filtered));
         setIsSaved(false);
-        toast.success(`${industryName} fjernet fra lagrede`);
+        toast({ title: `${industryName} fjernet fra lagrede`, variant: "success" });
       } else {
         industries.push(industryId);
         localStorage.setItem("savedIndustries", JSON.stringify(industries));
         setIsSaved(true);
-        toast.success(`${industryName} lagret!`);
+        toast({ title: `${industryName} lagret!`, variant: "success" });
       }
       return;
     }
@@ -75,14 +75,15 @@ export function SaveIndustryButton({
 
       if (response.ok) {
         setIsSaved(!isSaved);
-        toast.success(
-          isSaved
+        toast({
+          title: isSaved
             ? `${industryName} fjernet fra lagrede`
-            : `${industryName} lagret!`
-        );
+            : `${industryName} lagret!`,
+          variant: "success",
+        });
       }
     } catch (error) {
-      toast.error("Kunne ikke lagre. Prøv igjen.");
+      toast({ title: "Kunne ikke lagre. Prøv igjen.", variant: "destructive" });
     } finally {
       setIsLoading(false);
     }

@@ -5,7 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Target, AlertCircle, RefreshCw, Play, FileText, X, Shuffle } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { toast } from 'sonner';
+import { toast } from '@/hooks/use-toast';
 import type { JourneyItem, Journey } from '@/lib/journey/career-journey-types';
 import { generateFallbackTimeline, type EducationStage } from '@/lib/journey/generate-fallback-timeline';
 import { sanitizeJourney } from '@/lib/journey/roadmap-rules';
@@ -309,7 +309,8 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney, read
 
   const guardedPlay = useCallback(() => {
     if (!hasFoundation) {
-      toast.info('Fill in your starting point first', {
+      toast({
+        title: 'Fill in your starting point first',
         description: 'Tap "Your Foundation" on the roadmap to add your school, subjects, and finish year — then you can play your journey.',
       });
       return;
@@ -385,7 +386,7 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney, read
     if (readOnly) return; // reference routes never save user state
     const orderedIds = (journey?.items ?? []).map(it => it.id);
     if (!isStepUnlocked(itemId, orderedIds)) {
-      toast.error('Complete the previous step first');
+      toast({ title: 'Complete the previous step first', variant: "destructive" });
       return;
     }
     cycleProgress(itemId);
@@ -422,7 +423,7 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney, read
       a.download = `roadmap-${careerName.toLowerCase().replace(/\s+/g, '-')}.png`;
       a.click();
     } catch {
-      toast.error('Failed to export roadmap');
+      toast({ title: 'Failed to export roadmap', variant: "destructive" });
     }
   }, [careerName]);
 

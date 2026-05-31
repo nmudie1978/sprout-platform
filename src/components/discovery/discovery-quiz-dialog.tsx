@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
+import { toast } from "@/hooks/use-toast";
 import { Sparkles, Loader2, ChevronDown, Check, X } from "lucide-react";
 import {
   Dialog,
@@ -182,9 +182,7 @@ export function DiscoveryQuizDialog({
       return prefs;
     },
     onSuccess: (prefs) => {
-      toast.success("Preferences saved", {
-        description: "Your Career Radar is updated.",
-      });
+      toast({ title: "Preferences saved", description: "Your Career Radar is updated.", variant: "success" });
       // Invalidate every cached surface that reads from
       // discoveryPreferences so the dashboard "Who Am I" portrait,
       // recommended-careers strip, and the profile section all
@@ -197,7 +195,7 @@ export function DiscoveryQuizDialog({
       onClose();
     },
     onError: () => {
-      toast.error("Couldn't save preferences", { description: "Please try again." });
+      toast({ title: "Couldn't save preferences", description: "Please try again.", variant: "destructive" });
     },
   });
 

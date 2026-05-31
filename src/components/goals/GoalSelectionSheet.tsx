@@ -11,7 +11,7 @@ import { MobileSheet, MobileSheetFooter } from "@/components/mobile/MobileSheet"
 import { logAndSwallow } from "@/lib/observability";
 import { ConfirmDialog, ConfirmDialogChoice } from "@/components/mobile/ConfirmDialog";
 import { cn } from "@/lib/utils";
-import { toast } from "sonner";
+import { toast } from "@/hooks/use-toast";
 import { searchCareers, getAllCareers, type Career } from "@/lib/career-pathways";
 import { ArrowUp } from "lucide-react";
 import { createGoalWithMilestones, type GoalSlot, type CareerGoal } from "@/lib/goals/types";
@@ -103,10 +103,7 @@ export function GoalSelectionSheet({
       return { slot };
     },
     onSuccess: ({ slot }, variables) => {
-      toast.success(
-        slot === "primary" ? "Primary Goal Set!" : "Secondary Goal Set!",
-        { description: "View and customise your goals on the Goals page." }
-      );
+      toast({ title: slot === "primary" ? "Primary Goal Set!" : "Secondary Goal Set!", description: "View and customise your goals on the Goals page.", variant: "success" });
       if (slot === "primary") {
         syncGuidanceGoal(variables.title);
         // Pre-generate the career roadmap so it's cached before the user reaches Clarity
@@ -128,9 +125,7 @@ export function GoalSelectionSheet({
       onClose();
     },
     onError: () => {
-      toast.error("Failed to set goal", {
-        description: "Please try again.",
-      });
+      toast({ title: "Failed to set goal", description: "Please try again.", variant: "destructive" });
     },
   });
 
@@ -238,7 +233,7 @@ export function GoalSelectionSheet({
                     { currentPrimary: primaryGoal, currentSecondary: secondaryGoal },
                     {
                       onSuccess: () => {
-                        toast.success(`${secondaryGoal.title} is now your Primary Goal`);
+                        toast({ title: `${secondaryGoal.title} is now your Primary Goal`, variant: "success" });
                         syncGuidanceGoal(secondaryGoal.title);
                         onClose();
                       },

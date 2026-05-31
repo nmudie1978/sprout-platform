@@ -15,7 +15,7 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { toast } from "sonner";
+import { toast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { CheckCircle2, XCircle, AlertTriangle, Shield, Loader2, MessageSquare, Pause } from "lucide-react";
 import type { CommunityReportStatus, CommunityReportTargetType } from "@prisma/client";
@@ -46,14 +46,14 @@ export function ReportActions({ reportId, currentStatus, targetType, targetAlrea
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
-        toast.error(data.error || "Action failed");
+        toast({ title: data.error || "Action failed", variant: "destructive" });
         return;
       }
-      toast.success(successMsg);
+      toast({ title: successMsg, variant: "success" });
       // Refresh the server component so the new status + audit trail render
       startTransition(() => router.refresh());
     } catch (err) {
-      toast.error("Network error — please try again");
+      toast({ title: "Network error — please try again", variant: "destructive" });
     } finally {
       setBusyAction(null);
     }

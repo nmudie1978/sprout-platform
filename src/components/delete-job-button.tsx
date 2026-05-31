@@ -16,7 +16,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Trash2, Loader2, AlertTriangle } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@/hooks/use-toast";
 
 interface DeleteJobButtonProps {
   jobId: string;
@@ -47,14 +47,14 @@ export function DeleteJobButton({
       return response.json();
     },
     onSuccess: () => {
-      toast.success("Job deleted permanently");
+      toast({ title: "Job deleted permanently", variant: "success" });
       queryClient.invalidateQueries({ queryKey: ["employer-jobs"] });
       queryClient.invalidateQueries({ queryKey: ["jobs"] });
       setOpen(false);
       router.push(redirectAfterDelete);
     },
     onError: (error: Error) => {
-      toast.error(error.message);
+      toast({ title: error.message, variant: "destructive" });
     },
   });
 

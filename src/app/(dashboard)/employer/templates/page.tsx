@@ -35,7 +35,7 @@ import {
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { toast } from "sonner";
+import { toast } from "@/hooks/use-toast";
 import { formatCurrency } from "@/lib/utils";
 
 interface JobTemplate {
@@ -115,10 +115,10 @@ export default function TemplatesPage() {
       queryClient.invalidateQueries({ queryKey: ["job-templates"] });
       setIsCreateOpen(false);
       resetForm();
-      toast.success("Template created");
+      toast({ title: "Template created", variant: "success" });
     },
     onError: () => {
-      toast.error("Failed to create template");
+      toast({ title: "Failed to create template", variant: "destructive" });
     },
   });
 
@@ -142,10 +142,10 @@ export default function TemplatesPage() {
       queryClient.invalidateQueries({ queryKey: ["job-templates"] });
       setEditingTemplate(null);
       resetForm();
-      toast.success("Template updated");
+      toast({ title: "Template updated", variant: "success" });
     },
     onError: () => {
-      toast.error("Failed to update template");
+      toast({ title: "Failed to update template", variant: "destructive" });
     },
   });
 
@@ -159,10 +159,10 @@ export default function TemplatesPage() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["job-templates"] });
-      toast.success("Template deleted");
+      toast({ title: "Template deleted", variant: "success" });
     },
     onError: () => {
-      toast.error("Failed to delete template");
+      toast({ title: "Failed to delete template", variant: "destructive" });
     },
   });
 
@@ -181,7 +181,7 @@ export default function TemplatesPage() {
 
   const handleCreate = () => {
     if (!formData.name || !formData.title || !formData.category) {
-      toast.error("Please fill in name, title, and category");
+      toast({ title: "Please fill in name, title, and category", variant: "destructive" });
       return;
     }
     createMutation.mutate(formData);

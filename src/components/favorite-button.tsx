@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Heart, Loader2 } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 
 interface FavoriteButtonProps {
@@ -48,10 +48,10 @@ export function FavoriteButton({
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["favorite-workers"] });
-      toast.success("Added to favorites");
+      toast({ title: "Added to favorites", variant: "success" });
     },
     onError: () => {
-      toast.error("Failed to add to favorites");
+      toast({ title: "Failed to add to favorites", variant: "destructive" });
     },
   });
 
@@ -65,10 +65,10 @@ export function FavoriteButton({
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["favorite-workers"] });
-      toast.success("Removed from favorites");
+      toast({ title: "Removed from favorites", variant: "success" });
     },
     onError: () => {
-      toast.error("Failed to remove from favorites");
+      toast({ title: "Failed to remove from favorites", variant: "destructive" });
     },
   });
 

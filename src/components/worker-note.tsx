@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { StickyNote, Pencil, Save, X, Trash2, Loader2 } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@/hooks/use-toast";
 import { formatDistanceToNow } from "date-fns";
 
 interface WorkerNoteProps {
@@ -55,10 +55,10 @@ export function WorkerNote({ youthId }: WorkerNoteProps) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["worker-notes", youthId] });
       setIsEditing(false);
-      toast.success("Note saved");
+      toast({ title: "Note saved", variant: "success" });
     },
     onError: () => {
-      toast.error("Failed to save note");
+      toast({ title: "Failed to save note", variant: "destructive" });
     },
   });
 
@@ -74,16 +74,16 @@ export function WorkerNote({ youthId }: WorkerNoteProps) {
       queryClient.invalidateQueries({ queryKey: ["worker-notes", youthId] });
       setNoteContent("");
       setIsEditing(false);
-      toast.success("Note deleted");
+      toast({ title: "Note deleted", variant: "success" });
     },
     onError: () => {
-      toast.error("Failed to delete note");
+      toast({ title: "Failed to delete note", variant: "destructive" });
     },
   });
 
   const handleSave = () => {
     if (!noteContent.trim()) {
-      toast.error("Note cannot be empty");
+      toast({ title: "Note cannot be empty", variant: "destructive" });
       return;
     }
     saveMutation.mutate(noteContent.trim());

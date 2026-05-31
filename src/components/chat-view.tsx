@@ -52,7 +52,7 @@ import Link from "next/link";
 import { format, isToday, isYesterday } from "date-fns";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { toast } from "sonner";
+import { toast } from "@/hooks/use-toast";
 import { Avatar } from "@/components/avatar";
 import { useIsMobile } from "@/hooks/use-media-query";
 import { PaymentDisclosure } from "@/components/payment-disclosure";
@@ -202,10 +202,10 @@ export function ChatView({ conversationId }: { conversationId: string }) {
       setSelectedIntent(null);
       setVariables({});
       queryClient.invalidateQueries({ queryKey: ["conversations"] });
-      toast.success("Message sent");
+      toast({ title: "Message sent", variant: "success" });
     },
     onError: (error: Error) => {
-      toast.error(error.message || "Failed to send message");
+      toast({ title: error.message || "Failed to send message", variant: "destructive" });
     },
   });
 
@@ -223,11 +223,11 @@ export function ChatView({ conversationId }: { conversationId: string }) {
     },
     onSuccess: () => {
       setShowBlockDialog(false);
-      toast.success("User blocked. You will no longer receive messages from them.");
+      toast({ title: "User blocked. You will no longer receive messages from them.", variant: "success" });
       queryClient.invalidateQueries({ queryKey: ["conversations"] });
     },
     onError: (error: Error) => {
-      toast.error(error.message || "Failed to block user");
+      toast({ title: error.message || "Failed to block user", variant: "destructive" });
     },
   });
 
@@ -249,12 +249,12 @@ export function ChatView({ conversationId }: { conversationId: string }) {
       setShowReportDialog(false);
       setReportCategory("");
       setReportDetails("");
-      toast.success("Report submitted. The conversation has been frozen pending review.");
+      toast({ title: "Report submitted. The conversation has been frozen pending review.", variant: "success" });
       queryClient.invalidateQueries({ queryKey: ["conversation", conversationId] });
       queryClient.invalidateQueries({ queryKey: ["conversations"] });
     },
     onError: (error: Error) => {
-      toast.error(error.message || "Failed to submit report");
+      toast({ title: error.message || "Failed to submit report", variant: "destructive" });
     },
   });
 
