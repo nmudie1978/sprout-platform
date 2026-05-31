@@ -382,6 +382,16 @@
     "meetFutureYou": "Meet Future You",
     "meetFutureYouBody": "Ask your Career Twin what this path could feel like.",
     "askFutureMe": "Ask Future Me",
-    "talkToFutureSelfAs": "Talk to your future self as a {career}"
+    "talkToFutureSelfAs": "Talk to your future self as a {career}",
+    "setPrimaryGoal": "Set as Primary Goal",
+    "primaryGoalActive": "Your Primary Goal",
+    "setGoalTitle": "Set this as your Primary Goal?",
+    "setGoalBody": "We'll make {career} your Primary Goal on My Journey. You can change or customise it any time.",
+    "setGoalReplace": "This replaces your current Primary Goal: {current}.",
+    "confirmSetGoal": "Set as Primary Goal",
+    "goalSetToast": "Set as Primary Goal!",
+    "goalSetToastBody": "View and customise it on My Journey.",
+    "goalSetError": "Couldn't set your goal",
+    "goalSetErrorBody": "Please try again in a moment."
   }
 }
