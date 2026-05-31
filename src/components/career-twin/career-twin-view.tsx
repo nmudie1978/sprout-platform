@@ -16,7 +16,8 @@ import { useTranslations } from "next-intl";
 import { track } from "@vercel/analytics";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "@/hooks/use-toast";
-import { createEmptyGoal } from "@/lib/goals/types";
+import { createEmptyGoal, type CareerGoal } from "@/lib/goals/types";
+import { GoalSelectionSheet } from "@/components/goals/GoalSelectionSheet";
 import { motion, AnimatePresence } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -84,7 +85,10 @@ export function CareerTwinView({
   const [pendingStep, setPendingStep] = useState<TwinMessage | null>(null);
   const [noGoalNotice, setNoGoalNotice] = useState(false);
   const [currentPrimaryTitle, setCurrentPrimaryTitle] = useState<string | null>(null);
+  const [primaryGoal, setPrimaryGoalState] = useState<CareerGoal | null>(null);
+  const [secondaryGoal, setSecondaryGoalState] = useState<CareerGoal | null>(null);
   const [showGoalModal, setShowGoalModal] = useState(false);
+  const [showGoalPicker, setShowGoalPicker] = useState(false);
   const [settingGoal, setSettingGoal] = useState(false);
 
   const queryClient = useQueryClient();
@@ -131,7 +135,10 @@ export function CareerTwinView({
     fetch("/api/goals")
       .then((r) => (r.ok ? r.json() : null))
       .then((data) => {
-        if (!cancelled && data) setCurrentPrimaryTitle(data.primaryGoal?.title ?? null);
+        if (cancelled || !data) return;
+        setCurrentPrimaryTitle(data.primaryGoal?.title ?? null);
+        setPrimaryGoalState(data.primaryGoal ?? null);
+        setSecondaryGoalState(data.secondaryGoal ?? null);
       })
       .catch(() => {
         /* non-blocking: just hide the "replaces X" hint */
@@ -370,7 +377,7 @@ export function CareerTwinView({
 
           {/* Primary Goal action — set/change this career as the user's goal
               without leaving Career Twin (no redirect to Career Radar). */}
-          <div className="mt-4">
+          <div className="mt-4 flex items-center gap-2 flex-wrap">
             {isPrimaryGoal ? (
               <div className="inline-flex items-center gap-1.5 rounded-full bg-primary/15 text-primary px-3 py-1.5 text-xs font-semibold">
                 <Target className="h-3.5 w-3.5" />
@@ -387,6 +394,16 @@ export function CareerTwinView({
                 {t("setPrimaryGoal")}
               </Button>
             )}
+            {/* Change to a DIFFERENT career as the Primary Goal, without
+                leaving Career Twin — reuses the shared goal picker. */}
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={() => setShowGoalPicker(true)}
+              className="text-muted-foreground hover:text-foreground"
+            >
+              {t("changeGoal")}
+            </Button>
           </div>
         </div>
 
@@ -641,6 +658,31 @@ export function CareerTwinView({
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Change Primary Goal to a different career — reuses the shared
+          search/select sheet (handles its own confirm/swap + toast). */}
+      <GoalSelectionSheet
+        open={showGoalPicker}
+        onClose={() => setShowGoalPicker(false)}
+        targetSlot="primary"
+        primaryGoal={primaryGoal}
+        secondaryGoal={secondaryGoal}
+        onSuccess={() => {
+          setShowGoalPicker(false);
+          track("career_twin_primary_goal_changed");
+          // Refresh the locally-cached goals so the badge/CTA update.
+          fetch("/api/goals")
+            .then((r) => (r.ok ? r.json() : null))
+            .then((data) => {
+              if (!data) return;
+              setCurrentPrimaryTitle(data.primaryGoal?.title ?? null);
+              setPrimaryGoalState(data.primaryGoal ?? null);
+              setSecondaryGoalState(data.secondaryGoal ?? null);
+            })
+            .catch(() => {});
+          queryClient.invalidateQueries({ queryKey: ["goals"] });
+        }}
+      />
     </div>
   );
 }
