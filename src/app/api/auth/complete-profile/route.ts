@@ -142,11 +142,13 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Determine account status based on role and age
+    // Determine account status based on role.
+    // All youth (15–23) are ACTIVE on creation — age is a roadmap signal,
+    // not a gate, and there is no guardian-consent barrier. See CLAUDE.md
+    // <age_policy>.
     let accountStatus: AccountStatus;
     if (role === "YOUTH") {
-      // Youth under 18 needs guardian consent
-      accountStatus = age !== null && age < 18 ? "PENDING_VERIFICATION" : "ACTIVE";
+      accountStatus = "ACTIVE";
     } else {
       // Employers need to complete company setup
       accountStatus = "ONBOARDING";
@@ -176,7 +178,9 @@ export async function POST(request: NextRequest) {
             userId: user.id,
             displayName: user.fullName || user.email.split("@")[0],
             phoneNumber: user.phoneNumber,
-            guardianConsent: age !== null && age >= 18, // Auto-consent for adults
+            // No guardian-consent barrier — every youth account is good to
+            // go on creation. See CLAUDE.md <age_policy>.
+            guardianConsent: true,
           },
         });
       } else {
@@ -219,28 +223,13 @@ export async function POST(request: NextRequest) {
         },
       });
 
-      // If youth needs guardian consent, log that too
-      if (role === "YOUTH" && age !== null && age < 18) {
-        await tx.auditLog.create({
-          data: {
-            userId: user.id,
-            action: "GUARDIAN_CONSENT_REQUESTED",
-            targetType: "user",
-            targetId: user.id,
-            metadata: { age, requiresConsent: true },
-          },
-        });
-      }
-
       return updatedUser;
     });
 
-    // Determine redirect URL based on role and status
+    // Determine redirect URL based on role.
     let redirectUrl = "/dashboard";
     if (role === "EMPLOYER") {
       redirectUrl = "/employer/dashboard";
-    } else if (accountStatus === "PENDING_VERIFICATION") {
-      redirectUrl = "/auth/pending-verification";
     }
 
     return NextResponse.json({
@@ -251,9 +240,7 @@ export async function POST(request: NextRequest) {
         accountStatus: result.accountStatus,
       },
       redirectUrl,
-      message: role === "YOUTH" && accountStatus === "PENDING_VERIFICATION"
-        ? "Account created! Guardian consent is required before you can apply for jobs."
-        : "Profile completed successfully!",
+      message: "Profile completed successfully!",
     });
   } catch (error) {
     console.error("Complete profile error:", error);

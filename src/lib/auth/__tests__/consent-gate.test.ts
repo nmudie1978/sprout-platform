@@ -1,29 +1,32 @@
 import { describe, it, expect } from "vitest";
 import {
   isConsentWriteGatedApi,
+  CONSENT_WRITE_GATED_API_PREFIXES,
   MUTATING_METHODS,
 } from "../consent-gate";
 
 describe("isConsentWriteGatedApi", () => {
-  it("does NOT gate /api/goals — everyone may set a primary/secondary goal at any age", () => {
-    expect(isConsentWriteGatedApi("/api/goals")).toBe(false);
-    expect(isConsentWriteGatedApi("/api/goals/anything")).toBe(false);
+  it("gates nothing — every action is allowed at any age / consent state", () => {
+    expect(CONSENT_WRITE_GATED_API_PREFIXES).toEqual([]);
+    for (const path of [
+      "/api/goals",
+      "/api/goals/anything",
+      "/api/journey",
+      "/api/journey/reflections",
+      "/api/discover",
+      "/api/profile/skills",
+      "/api/profile/career-goals",
+      "/api/life-skills",
+      "/api/interview-prep",
+      "/api/insights/saved",
+      "/api/careers",
+      "/dashboard",
+    ]) {
+      expect(isConsentWriteGatedApi(path)).toBe(false);
+    }
   });
 
-  it("still gates genuinely sensitive personal-data writes", () => {
-    expect(isConsentWriteGatedApi("/api/journey")).toBe(true);
-    expect(isConsentWriteGatedApi("/api/journey/reflections")).toBe(true);
-    expect(isConsentWriteGatedApi("/api/discover")).toBe(true);
-    expect(isConsentWriteGatedApi("/api/profile/skills")).toBe(true);
-    expect(isConsentWriteGatedApi("/api/life-skills")).toBe(true);
-  });
-
-  it("does not gate unrelated routes", () => {
-    expect(isConsentWriteGatedApi("/api/careers")).toBe(false);
-    expect(isConsentWriteGatedApi("/dashboard")).toBe(false);
-  });
-
-  it("treats only mutating methods as gated verbs", () => {
+  it("still exposes MUTATING_METHODS for the middleware", () => {
     expect(MUTATING_METHODS.has("PUT")).toBe(true);
     expect(MUTATING_METHODS.has("POST")).toBe(true);
     expect(MUTATING_METHODS.has("PATCH")).toBe(true);

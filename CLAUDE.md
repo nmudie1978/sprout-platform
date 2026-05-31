@@ -103,8 +103,7 @@ Mandatory:
 - UUID primary keys
 - created_at / updated_at timestamps
 - Soft delete where appropriate
-- Age validation on signup
-- Guardian flag for under-18 users if required
+- Age validation on signup (15–23 eligibility floor only — see <age_policy>)
 
 Never store:
 - Excessive personal data
@@ -112,6 +111,38 @@ Never store:
 - Unnecessary behavioral tracking
 
 </data_model_rules>
+
+
+<age_policy>
+
+Age is a PERSONALISATION SIGNAL, not an in-app gate.
+
+What age IS used for:
+1. Personalising the Clarity-tab roadmap — e.g. no university step
+   before 18, professional certifications spaced to post-experience.
+   (Roadmap logic reads date of birth / age + educationStage.)
+2. A one-time signup ELIGIBILITY FLOOR: the platform is for ages 15–23,
+   enforced in /api/auth/signup. Under-15 and over-23 cannot register.
+
+What age is NOT used for:
+- NO in-app action is blocked by age or guardian consent. Every
+  signed-in user, at any age, can read AND write everywhere: set goals,
+  save reflections, store quiz results, persist skills/profile, etc.
+  The consent write-gate (src/lib/auth/consent-gate.ts) is intentionally
+  EMPTY — do not re-populate it without an explicit product decision.
+- NO guardian-consent flow. Signup does not collect a guardian email,
+  does not send a consent email, and does not put under-18s into
+  PENDING_VERIFICATION. All youth accounts are ACTIVE on creation.
+
+Rationale: choosing and exploring careers is the core product action and
+must be available to every young person immediately. This is a
+deliberate, owner-approved reversal of the earlier guardian-consent gate
+— do NOT "fix" it back.
+
+Deprecated/inert (scheduled for follow-up cleanup, do not rely on):
+the `ageBracket` enum, and legacy jobs/shadowing/messaging age gates.
+
+</age_policy>
 
 
 <safeguarding_rules>
