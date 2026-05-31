@@ -43,8 +43,7 @@ import {
   NotebookPen,
 } from "lucide-react";
 import { useCuriositySaves } from "@/hooks/use-curiosity-saves";
-import { filterAnsweredReflections } from "@/lib/library/tabs";
-import type { ReflectionData } from "@/lib/journey/reflections-service";
+import { readLocalJourneyReflections, type LocalReflectionEntry } from "@/lib/library/tabs";
 import { captureClientMutationError } from "@/lib/observability";
 import type { GoalsResponse } from "@/lib/goals/types";
 import { computeLensProgress, isJourneySnapshotWorthy, journeyStageLabel } from "@/lib/journey/lens-progress";
@@ -588,19 +587,19 @@ export default function DashboardPage() {
     refetchOnWindowFocus: true,
   });
 
-  // Reflections preview — latest answered reflections for the dashboard
-  // card; "See all →" opens /library?tab=reflections.
-  const { data: reflectionsData } = useQuery<{ reflections: ReflectionData[] }>({
-    queryKey: ["dashboard-reflections"],
-    queryFn: async () => {
-      const res = await fetch("/api/journey/reflections?includeSkipped=false&limit=20");
-      if (!res.ok) return { reflections: [] };
-      return res.json();
-    },
-    enabled: session?.user.role === "YOUTH",
-    staleTime: 60 * 1000,
-  });
-  const recentReflections = filterAnsweredReflections(reflectionsData?.reflections ?? []);
+  // Reflections preview — read straight from device storage (where the
+  // JourneyReflectionsTray writes them); "See all →" opens
+  // /library?tab=reflections. Populated after mount to avoid a hydration
+  // mismatch on the localStorage read.
+  const reflectionsUserId = session?.user?.id;
+  const [recentReflections, setRecentReflections] = useState<LocalReflectionEntry[]>([]);
+  useEffect(() => {
+    if (!reflectionsUserId || typeof window === "undefined") {
+      setRecentReflections([]);
+      return;
+    }
+    setRecentReflections(readLocalJourneyReflections(reflectionsUserId, window.localStorage));
+  }, [reflectionsUserId]);
 
   // Explored journeys — all goals the user has saved progress for
   const { data: exploredGoalsData } = useQuery<{
@@ -1550,12 +1549,17 @@ export default function DashboardPage() {
           >
             {recentReflections.length > 0 ? (
               <ul className="space-y-2">
-                {recentReflections.slice(0, 2).map((r) => (
-                  <li key={r.id} className="rounded-lg border border-border/60 bg-muted/10 px-2.5 py-2">
-                    <p className="text-[10px] text-muted-foreground/60 mb-0.5 line-clamp-1">{r.prompt}</p>
-                    <p className="text-[11px] text-muted-foreground/80 line-clamp-2">{r.response}</p>
-                  </li>
-                ))}
+                {recentReflections.slice(0, 2).map((r) => {
+                  const career = getAllCareers().find((c) => c.id === r.careerSlug);
+                  return (
+                    <li key={r.id} className="rounded-lg border border-border/60 bg-muted/10 px-2.5 py-2">
+                      <p className="text-[10px] text-muted-foreground/60 mb-0.5 line-clamp-1">
+                        {career ? `${career.emoji} ${career.title}` : r.careerSlug} · {r.lensLabel}
+                      </p>
+                      <p className="text-[11px] text-muted-foreground/80 line-clamp-2">{r.text}</p>
+                    </li>
+                  );
+                })}
               </ul>
             ) : (
               <p className="text-xs text-muted-foreground/50">Your reflections will appear here as you move through My Journey.</p>
