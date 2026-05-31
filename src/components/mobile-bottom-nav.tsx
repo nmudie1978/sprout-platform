@@ -43,6 +43,7 @@ import {
   Calendar,
   BarChart3,
   Bot,
+  Library,
   Info,
   HelpCircle,
   Quote,
@@ -101,13 +102,15 @@ const employerBarItems: NavItem[] = [
 
 // ── More drawer — full section tree, mirrored from sidebar-nav ──────
 
-const youthDrawerSections: NavSection[] = [
+export const youthDrawerSections: NavSection[] = [
   {
     title: "Yours",
     items: [
       { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
       { href: "/my-journey", label: "My Journey", icon: Route },
       { href: "/careers/radar", label: "My Career Radar", icon: Radar },
+      { href: "/career-advisor", label: "AI Advisor", icon: Bot },
+      { href: "/library", label: "My Library", icon: Library },
       ...(SMALL_JOBS_ENABLED
         ? [{ href: "/applications", label: "My Small Jobs", icon: FileText }]
         : []),
@@ -119,7 +122,6 @@ const youthDrawerSections: NavSection[] = [
       { href: "/careers", label: "Explore Careers", icon: Compass },
       { href: "/career-events", label: "Youth Events", icon: Calendar },
       { href: "/insights", label: "Industry Insights", icon: BarChart3 },
-      { href: "/career-advisor", label: "AI Advisor", icon: Bot },
     ],
   },
   ...(SMALL_JOBS_ENABLED
