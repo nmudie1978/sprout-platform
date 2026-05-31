@@ -719,7 +719,7 @@ export default function DashboardPage() {
   });
 
   // Language toggle — always visible
-  const { currentLocale, toggleLocale, isPending: isLocalePending } = useLocaleSwitch();
+  const { currentLocale, setLocale, isPending: isLocalePending } = useLocaleSwitch();
 
   // Discover profile — "Who Am I" summary (generic across all goals)
   const { data: discoverData } = useDiscoverRecommendations(session?.user.role === "YOUTH");
@@ -926,7 +926,7 @@ export default function DashboardPage() {
             {!isLocalePending && (
               <div className="flex items-center gap-1 rounded-lg border border-border/30 bg-card px-1.5 py-1">
                 <button
-                  onClick={() => { if (currentLocale !== "en-GB") toggleLocale(); }}
+                  onClick={() => setLocale("en-GB")}
                   className={cn("px-1.5 py-0.5 rounded text-sm transition-all", currentLocale === "en-GB" ? "bg-foreground/10 scale-110" : "opacity-50 hover:opacity-80 grayscale hover:grayscale-0")}
                   title="Switch to English"
                 >
@@ -934,11 +934,19 @@ export default function DashboardPage() {
                 </button>
                 <span className="text-muted-foreground/20 text-[10px]">|</span>
                 <button
-                  onClick={() => { if (currentLocale !== "nb-NO") toggleLocale(); }}
+                  onClick={() => setLocale("nb-NO")}
                   className={cn("px-1.5 py-0.5 rounded text-sm transition-all", currentLocale === "nb-NO" ? "bg-foreground/10 scale-110" : "opacity-50 hover:opacity-80 grayscale hover:grayscale-0")}
                   title="Bytt til norsk"
                 >
                   🇳🇴
+                </button>
+                <span className="text-muted-foreground/20 text-[10px]">|</span>
+                <button
+                  onClick={() => setLocale("es")}
+                  className={cn("px-1.5 py-0.5 rounded text-sm transition-all", currentLocale === "es" ? "bg-foreground/10 scale-110" : "opacity-50 hover:opacity-80 grayscale hover:grayscale-0")}
+                  title="Cambiar a español"
+                >
+                  🇪🇸
                 </button>
               </div>
             )}
