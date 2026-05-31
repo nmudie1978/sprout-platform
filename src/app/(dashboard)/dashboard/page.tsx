@@ -1064,23 +1064,30 @@ export default function DashboardPage() {
                       {t('journey.cardTitle')} &mdash; {goalTitle}
                     </>
                   ) : (
-                    t('journey.cardTitle')
+                    <>
+                      {t('journey.cardTitle')}
+                      <span className="text-muted-foreground/40 font-normal">&mdash;</span>
+                      <Link
+                        href="/careers/radar"
+                        data-spotlight="choose-goal"
+                        onClick={(e) => e.stopPropagation()}
+                        className="text-teal-500 hover:text-teal-400 transition-colors animate-pulse motion-reduce:animate-none"
+                      >
+                        {t('journey.chooseGoalPrompt')} &rarr;
+                      </Link>
+                    </>
                   )}
                 </h2>
-                <p className="text-xs text-muted-foreground/60 flex items-center gap-1.5">
-                  {goalTitle ? (
+                {goalTitle && (
+                  <p className="text-xs text-muted-foreground/60 flex items-center gap-1.5">
                     <button
                       onClick={(e) => { e.preventDefault(); e.stopPropagation(); setShowGoalSheet(true); }}
                       className="text-[9px] text-muted-foreground/40 hover:text-muted-foreground transition-colors font-medium"
                     >
                       {t('common.change')}
                     </button>
-                  ) : (
-                    <Link href="/careers/radar" data-spotlight="choose-goal" className="text-teal-500/70 hover:text-teal-500 transition-colors" onClick={(e) => e.stopPropagation()}>
-                      {t('journey.chooseGoalPrompt')} &rarr;
-                    </Link>
-                  )}
-                </p>
+                  </p>
+                )}
               </div>
             </div>
 

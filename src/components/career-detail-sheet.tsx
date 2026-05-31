@@ -143,7 +143,7 @@ export function CareerDetailSheet({
   career,
   onClose,
 }: CareerDetailSheetProps) {
-  const { data: session } = useSession();
+  const { data: session, update: refreshSession } = useSession();
   const queryClient = useQueryClient();
   const [addedAs, setAddedAs] = useState<GoalSlot | null>(null);
   const [showSwapModal, setShowSwapModal] = useState(false);
@@ -192,12 +192,39 @@ export function CareerDetailSheet({
   const setGoalMutation = useMutation({
     mutationFn: async ({ slot, title }: { slot: GoalSlot; title: string }) => {
       const goal = createEmptyGoal(title);
-      const response = await fetch("/api/goals", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ slot, goal }),
-      });
-      if (!response.ok) throw new Error("Failed to set goal");
+      const putGoal = () =>
+        fetch("/api/goals", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ slot, goal }),
+        });
+
+      let response = await putGoal();
+
+      // The middleware guardian-consent gate reads ageBracket /
+      // guardianConsent from the NextAuth JWT, which is frozen at sign-in
+      // and only refreshed on an explicit update(). If an account's age or
+      // consent changed AFTER its last login, the stale token can wrongly
+      // trip the gate (403 GUARDIAN_CONSENT_REQUIRED) even though the DB
+      // would allow the write. On that specific 403, refresh the token from
+      // the DB and retry once. A genuinely unconsented 16–17 user still gets
+      // blocked on the retry — the gate is preserved, false positives aren't.
+      if (response.status === 403) {
+        const body = await response.clone().json().catch(() => null);
+        if (body?.code === "GUARDIAN_CONSENT_REQUIRED") {
+          await refreshSession();
+          response = await putGoal();
+        }
+      }
+
+      if (!response.ok) {
+        const body = await response.json().catch(() => null);
+        const err = new Error(body?.error || "Failed to set goal") as Error & {
+          code?: string;
+        };
+        err.code = body?.code;
+        throw err;
+      }
       return { slot };
     },
     onSuccess: ({ slot }) => {
@@ -223,10 +250,21 @@ export function CareerDetailSheet({
       queryClient.invalidateQueries({ queryKey: ["discover-reflections"] });
       queryClient.invalidateQueries({ queryKey: ["education-context"] });
     },
-    onError: () => {
+    onError: (error: unknown) => {
+      const consentRequired =
+        (error as { code?: string })?.code === "GUARDIAN_CONSENT_REQUIRED";
+      if (consentRequired) {
+        toast({
+          title: "Guardian confirmation needed",
+          description:
+            (error as Error)?.message ||
+            "A parent or guardian needs to confirm your account before you can save this. You can keep exploring in the meantime.",
+        });
+        return;
+      }
       toast({
         title: "Failed to set goal",
-        description: "Please try again later.",
+        description: "Please try again in a moment.",
         variant: "destructive",
       });
     },
@@ -291,9 +329,9 @@ export function CareerDetailSheet({
                         </Badge>
                       )}
                     </div>
-                    <p className="text-sm text-muted-foreground mt-1 break-words">
+                    <DialogDescription className="text-sm text-muted-foreground mt-1 break-words">
                       {career.description}
-                    </p>
+                    </DialogDescription>
                   </div>
                   <button
                     onClick={() => {
