@@ -37,7 +37,8 @@ const REQUIRED_YOUTH_ROUTES = [
   '/applications',      // My Small Jobs — previously missing from mobile
   '/career-events',     // Youth Events — previously missing from mobile
   '/insights',          // Industry Insights — previously missing from mobile
-  '/career-advisor',    // AI Advisor — previously missing from mobile
+  '/career-advisor',    // AI Advisor — now under "Yours"
+  '/library',           // My Library — saved careers, comparisons, reflections
   '/jobs',              // Browse Jobs / bottom bar
   '/profile',           // Profile — present but previously hidden behind wrong slot
   '/info',              // About — previously missing from mobile
@@ -95,6 +96,25 @@ describe('MobileBottomNav route coverage (Issue 5 — positive tests)', () => {
     expect(NAV_SOURCE).toMatch(/title:\s*['"]Yours['"]/);
     expect(NAV_SOURCE).toMatch(/title:\s*['"]Explore['"]/);
     expect(NAV_SOURCE).toMatch(/title:\s*['"]Account['"]/);
+  });
+
+  it('groups AI Advisor and My Library under "Yours", not "Explore"', () => {
+    // Extract each section block by slicing from its title to the next title.
+    const sectionBody = (title: string) => {
+      const start = NAV_SOURCE.indexOf(`title: "${title}"`);
+      expect(start, `"${title}" section must exist`).toBeGreaterThanOrEqual(0);
+      const rest = NAV_SOURCE.slice(start + 1);
+      const nextTitle = rest.indexOf('title: "');
+      return nextTitle === -1 ? rest : rest.slice(0, nextTitle);
+    };
+    const yours = sectionBody('Yours');
+    const explore = sectionBody('Explore');
+
+    // AI Advisor moved out of Explore into Yours; My Library is new in Yours.
+    expect(yours).toMatch(/["']\/career-advisor["']/);
+    expect(yours).toMatch(/["']\/library["']/);
+    expect(explore).not.toMatch(/["']\/career-advisor["']/);
+    expect(explore).not.toMatch(/["']\/library["']/);
   });
 
   it('touch targets are at least 44x44 (WCAG minimum)', () => {

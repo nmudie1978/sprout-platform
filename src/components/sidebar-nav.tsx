@@ -52,6 +52,7 @@ import {
   ChevronDown,
   Radar,
   Zap,
+  Library,
 } from "lucide-react";
 
 // ── Types ────────────────────────────────────────────────────────────
@@ -405,13 +406,14 @@ export function SidebarNav({ userRole, userName, userEmail, userProfilePic }: Si
               <NavItem href="/dashboard" icon={LayoutDashboard} label="Dashboard" active={isActive("/dashboard")} collapsed={collapsed} personal tooltip="Your home base — recent activity, suggested next moves, and a quick view of your journey." />
               <NavItem href="/my-journey" icon={Route} label="My Journey" active={isActive("/my-journey")} statusDot={hasActiveJourney} collapsed={collapsed} personal tooltip="Your guided path: Discover. Understand. Clarity." />
               <NavItem href="/careers/radar" icon={Radar} label="My Career Radar" active={isActive("/careers/radar")} collapsed={collapsed} personal tooltip="Personalised career match based on what you like, your strengths, and how you want to work." />
+              <NavItem href="/career-advisor" icon={Bot} label="AI Advisor" active={isActive("/career-advisor")} collapsed={collapsed} personal tooltip="Ask about careers, education and next steps — and meet a possible future self with Career Twin. Honest, calm, tailored to you." />
+              <NavItem href="/library" icon={Library} label="My Library" active={isActive("/library")} collapsed={collapsed} personal tooltip="Everything you've saved and written — saved careers, comparisons, and your reflections, in one place." />
             </NavSection>
 
             <NavSection title="Explore" collapsed={collapsed}>
               <NavItem href="/careers" icon={Compass} label="Explore Careers" active={pathname === "/careers"} collapsed={collapsed} tooltip="Browse hundreds of careers with salary, growth and skills. Filter by what fits you." />
               <NavItem href="/career-events" icon={Calendar} label="Youth Events" active={isActive("/career-events")} collapsed={collapsed} tooltip="Workshops, open days and meet-ups for young people exploring careers." />
               <NavItem href="/insights" icon={BarChart3} label="Industry Insights" active={isActive("/insights")} collapsed={collapsed} tooltip="What's actually happening in different industries — hiring, pay, and outlook." />
-              <NavItem href="/career-advisor" icon={Bot} label="AI Advisor" active={isActive("/career-advisor")} collapsed={collapsed} tooltip="Ask questions about careers, education and next steps. Honest, calm, and tailored to you." />
             </NavSection>
 
             {SMALL_JOBS_ENABLED && (
