@@ -16,6 +16,7 @@
 
 import { useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
+import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -162,8 +163,20 @@ function ComparedTab() {
           {cmp.title && (
             <p className="text-xs text-muted-foreground/70 mb-1">{cmp.title}</p>
           )}
-          <p className="text-sm">
-            {cmp.careers.map((c) => `${c.emoji} ${c.title}`).join("  vs  ")}
+          {/* A comparison spans several careers (not one journey), so each
+              career is individually clickable → opens that career on Explore. */}
+          <p className="text-sm flex flex-wrap items-center gap-x-1 gap-y-1">
+            {cmp.careers.map((c, i) => (
+              <span key={c.id} className="inline-flex items-center">
+                {i > 0 && <span className="text-muted-foreground/40 mx-1.5">vs</span>}
+                <Link
+                  href={`/careers?open=${encodeURIComponent(c.id)}`}
+                  className="rounded px-1 -mx-1 hover:bg-muted/40 hover:underline underline-offset-2 transition-colors"
+                >
+                  {c.emoji} {c.title}
+                </Link>
+              </span>
+            ))}
           </p>
         </li>
       ))}
@@ -206,15 +219,20 @@ function ReflectionsTab() {
       {entries.map((e) => {
         const career = careerFor(e.careerSlug);
         return (
-          <li
-            key={e.id}
-            className="rounded-lg border border-border/60 bg-muted/10 px-4 py-3"
-          >
-            <p className="text-xs text-muted-foreground/70 mb-1">
-              <span className="mr-1">{career.emoji}</span>
-              {career.label} · {e.lensLabel}
-            </p>
-            <p className="text-sm whitespace-pre-wrap">{e.text}</p>
+          <li key={e.id}>
+            {/* Click → My Journey, opening the lens (Discover/Understand/
+                Clarity) this reflection was written on. The journey reads
+                the tab from the URL hash. */}
+            <Link
+              href={`/my-journey#${e.lens}`}
+              className="block rounded-lg border border-border/60 bg-muted/10 px-4 py-3 hover:bg-muted/30 hover:border-border transition-colors"
+            >
+              <p className="text-xs text-muted-foreground/70 mb-1">
+                <span className="mr-1">{career.emoji}</span>
+                {career.label} · {e.lensLabel}
+              </p>
+              <p className="text-sm whitespace-pre-wrap">{e.text}</p>
+            </Link>
           </li>
         );
       })}
