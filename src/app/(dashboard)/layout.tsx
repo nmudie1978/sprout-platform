@@ -26,24 +26,6 @@ export default async function DashboardLayout({
   const headersList = await headers();
   const pathname = headersList.get("x-pathname") || "";
 
-  // Only redirect employers if they're NOT already on an employer page.
-  // Skip the redirect when small-jobs is disabled — /employer/* is
-  // itself bounced to /dashboard by middleware in that mode, so the
-  // two would otherwise loop. Employers land on /employer-paused
-  // instead (handled below).
-  const smallJobsEnabled =
-    process.env.NEXT_PUBLIC_SMALL_JOBS_ENABLED === "true";
-  if (
-    smallJobsEnabled &&
-    session.user.role === "EMPLOYER" &&
-    !pathname.startsWith("/employer")
-  ) {
-    redirect("/employer/dashboard");
-  }
-  if (!smallJobsEnabled && session.user.role === "EMPLOYER") {
-    redirect("/employer-paused");
-  }
-
   // Teacher role keeps to its own surface: /teacher/*, /profile, and
   // /feedback. Landing anywhere else (dashboard, my-journey, careers)
   // bounces them to the teacher home. They don't have a Journey or
@@ -76,12 +58,7 @@ export default async function DashboardLayout({
           where: { userId: session.user.id },
           select: { displayName: true },
         })
-      : session.user.role === "EMPLOYER"
-        ? prisma.employerProfile.findUnique({
-            where: { userId: session.user.id },
-            select: { companyName: true, companyLogo: true },
-          })
-        : Promise.resolve(null),
+      : Promise.resolve(null),
   ]);
 
   if (!legalAcceptance) {
@@ -93,9 +70,6 @@ export default async function DashboardLayout({
 
   if (session.user.role === "YOUTH" && profileData && "displayName" in profileData) {
     displayName = profileData.displayName || null;
-  } else if (session.user.role === "EMPLOYER" && profileData && "companyName" in profileData) {
-    displayName = profileData.companyName || null;
-    userProfilePic = profileData.companyLogo || null;
   }
 
   return (
