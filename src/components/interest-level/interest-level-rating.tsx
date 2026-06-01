@@ -71,11 +71,15 @@ export function InterestLevelPicker({
   value,
   onChange,
   size = "md",
+  showLabel = true,
   className,
 }: {
   value: InterestLevel | null | undefined;
   onChange: (level: InterestLevel) => void;
   size?: Size;
+  /** Show the selected level's label beneath the stars. When false, the label
+   *  is conveyed via each star's tooltip (title) instead of persistent text. */
+  showLabel?: boolean;
   className?: string;
 }) {
   return (
@@ -91,7 +95,7 @@ export function InterestLevelPicker({
               role="radio"
               aria-checked={selected}
               aria-label={`${m.label} (${m.level} of 5)`}
-              title={m.hint}
+              title={`${m.label} — ${m.hint}`}
               onClick={() => onChange(m.level)}
               className="rounded-md p-1 transition-colors hover:bg-amber-400/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/50"
             >
@@ -107,9 +111,11 @@ export function InterestLevelPicker({
           );
         })}
       </div>
-      <p className="text-[11px] font-medium text-amber-600 dark:text-amber-400 min-h-[1rem]">
-        {value ? interestLevelLabel(value) : ""}
-      </p>
+      {showLabel ? (
+        <p className="text-[11px] font-medium text-amber-600 dark:text-amber-400 min-h-[1rem]">
+          {value ? interestLevelLabel(value) : ""}
+        </p>
+      ) : null}
     </div>
   );
 }

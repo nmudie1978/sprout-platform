@@ -612,15 +612,6 @@ async function getSmartJobPicksInternal(
       status: "POSTED",
       isPaused: false,
     },
-    include: {
-      postedBy: {
-        include: {
-          employerProfile: {
-            select: { companyName: true, verified: true },
-          },
-        },
-      },
-    },
     orderBy: { createdAt: "desc" },
     take: 50,
   });
@@ -652,12 +643,6 @@ async function getSmartJobPicksInternal(
       reasons.push("Good pay");
     } else if (job.payAmount >= 150) {
       score += 10;
-    }
-
-    // Safety score (verified employer)
-    if (job.postedBy?.employerProfile?.verified) {
-      score += 15;
-      reasons.push("Verified employer");
     }
 
     // Category match (if user has done similar before, slight boost)

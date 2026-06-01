@@ -21,7 +21,7 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ users: [] });
     }
 
-    // Search for users by displayName (youth) or companyName (employer)
+    // Search for users by displayName (youth)
     // Exclude users with doNotDisturb: true and the current user
     const users = await prisma.user.findMany({
       where: {
@@ -29,24 +29,12 @@ export async function GET(req: NextRequest) {
           { id: { not: session.user.id } },
           { doNotDisturb: false },
           {
-            OR: [
-              {
-                youthProfile: {
-                  displayName: {
-                    contains: query,
-                    mode: "insensitive",
-                  },
-                },
+            youthProfile: {
+              displayName: {
+                contains: query,
+                mode: "insensitive",
               },
-              {
-                employerProfile: {
-                  companyName: {
-                    contains: query,
-                    mode: "insensitive",
-                  },
-                },
-              },
-            ],
+            },
           },
         ],
       },
@@ -60,28 +48,13 @@ export async function GET(req: NextRequest) {
             availabilityStatus: true,
           },
         },
-        employerProfile: {
-          select: {
-            companyName: true,
-            companyLogo: true,
-            verified: true,
-          },
-        },
       },
       take: limit,
     });
 
     // Format results
     const formattedUsers = users.map((user) => {
-      if (user.role === "EMPLOYER" && user.employerProfile) {
-        return {
-          id: user.id,
-          role: "EMPLOYER" as const,
-          name: user.employerProfile.companyName,
-          logo: user.employerProfile.companyLogo,
-          verified: user.employerProfile.verified,
-        };
-      } else if (user.youthProfile) {
+      if (user.youthProfile) {
         return {
           id: user.id,
           role: "YOUTH" as const,

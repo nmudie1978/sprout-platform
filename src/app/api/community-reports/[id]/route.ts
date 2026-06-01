@@ -35,7 +35,6 @@ export async function GET(req: NextRequest, props: { params: Promise<{ id: strin
           select: {
             id: true,
             youthProfile: { select: { displayName: true, avatarId: true } },
-            employerProfile: { select: { companyName: true } },
           },
         },
       },
@@ -64,7 +63,6 @@ export async function GET(req: NextRequest, props: { params: Promise<{ id: strin
           role: true,
           isPaused: true,
           youthProfile: { select: { displayName: true, avatarId: true } },
-          employerProfile: { select: { companyName: true } },
         },
       });
     }

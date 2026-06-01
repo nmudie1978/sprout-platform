@@ -282,13 +282,6 @@ export const authOptions: NextAuthOptions = {
                 guardianEmail: true,
               },
             },
-            employerProfile: {
-              select: {
-                companyName: true,
-                eidVerified: true,
-                ageVerified: true,
-              },
-            },
           },
         });
 
@@ -298,7 +291,6 @@ export const authOptions: NextAuthOptions = {
           session.user.accountStatus = dbUser.accountStatus;
           session.user.isVerifiedAdult = dbUser.isVerifiedAdult;
           session.user.youthProfile = dbUser.youthProfile || null;
-          session.user.employerProfile = dbUser.employerProfile || null;
         }
       }
       return session;

@@ -17,7 +17,6 @@ datasource db {
 
 enum UserRole {
   YOUTH
-  EMPLOYER
   ADMIN
   // Teacher / careers counsellor. Creates a Cohort, shares a join code
   // with a class. Sees aggregated cohort progress only — never any
@@ -229,7 +228,6 @@ model User {
 
   // Relations
   youthProfile               YouthProfile?
-  employerProfile            EmployerProfile?
   careerSnapshot             WorkerCareerSnapshot?
   postedJobs                 MicroJob[]
   applications               Application[]
@@ -505,36 +503,6 @@ model WorkerCareerSnapshot {
   worker User @relation(fields: [workerId], references: [id], onDelete: Cascade)
 
   @@index([workerId])
-}
-
-model EmployerProfile {
-  id          String  @id @default(cuid())
-  userId      String  @unique
-  companyName String
-  companyLogo String? // URL to uploaded logo/profile picture
-  phoneNumber String? // Contact number for youth workers
-  bio         String? @db.Text // About the company
-  website     String?
-  verified    Boolean @default(false)
-
-  // Age verification (must be 18+ to hire minors)
-  ageVerified Boolean   @default(false)
-  dateOfBirth DateTime? // Deprecated: use User.dateOfBirth instead
-
-  // EID (Norwegian BankID/Vipps) verification
-  eidVerified   Boolean   @default(false)
-  eidVerifiedAt DateTime?
-  eidProvider   String? // e.g., "bankid", "vipps" (for future use)
-
-  averageRating Float?
-  totalReviews  Int      @default(0)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([userId])
-  @@index([eidVerified])
 }
 
 model MicroJob {

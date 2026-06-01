@@ -37,66 +37,6 @@ export function isMinor(dateOfBirth: Date): boolean {
 }
 
 /**
- * Check if an employer is verified to hire minors
- * Requirements: EID verified + age 18+
- */
-export async function isEmployerVerified(userId: string): Promise<{
-  verified: boolean;
-  eidVerified: boolean;
-  ageVerified: boolean;
-  age: number | null;
-  reason?: string;
-}> {
-  const user = await prisma.user.findUnique({
-    where: { id: userId },
-    select: {
-      dateOfBirth: true,
-      employerProfile: {
-        select: {
-          eidVerified: true,
-          ageVerified: true,
-        },
-      },
-    },
-  });
-
-  if (!user) {
-    return {
-      verified: false,
-      eidVerified: false,
-      ageVerified: false,
-      age: null,
-      reason: "User not found",
-    };
-  }
-
-  const age = user.dateOfBirth ? calculateAge(user.dateOfBirth) : null;
-  const eidVerified = user.employerProfile?.eidVerified ?? false;
-  const ageVerified = user.employerProfile?.ageVerified ?? false;
-
-  // For MVP: require age verification but EID is optional
-  // In production: require both EID + age verification
-  const verified = ageVerified && age !== null && age >= MIN_EMPLOYER_AGE;
-
-  let reason: string | undefined;
-  if (!verified) {
-    if (!ageVerified) {
-      reason = "Age verification required";
-    } else if (age !== null && age < MIN_EMPLOYER_AGE) {
-      reason = "Must be 18 or older to hire workers";
-    }
-  }
-
-  return {
-    verified,
-    eidVerified,
-    ageVerified,
-    age,
-    reason,
-  };
-}
-
-/**
  * Check if account can perform actions (is ACTIVE)
  */
 export async function isAccountActive(userId: string): Promise<{
@@ -154,44 +94,6 @@ export interface SafetyGateResult {
   allowed: boolean;
   reason?: string;
   code?: "ACCOUNT_INACTIVE" | "GUARDIAN_CONSENT_REQUIRED" | "EMPLOYER_NOT_VERIFIED" | "AGE_NOT_VERIFIED" | "BANKID_REQUIRED" | "CONVERSATION_FROZEN" | "USER_BLOCKED";
-}
-
-/**
- * Check if an employer can post jobs
- * Requirements:
- * - Account is ACTIVE
- * - Age verified (18+)
- */
-export async function canEmployerPostJobs(userId: string): Promise<SafetyGateResult> {
-  // Check account status
-  const accountCheck = await isAccountActive(userId);
-  if (!accountCheck.active) {
-    return {
-      allowed: false,
-      reason: accountCheck.reason,
-      code: "ACCOUNT_INACTIVE",
-    };
-  }
-
-  // Check employer verification
-  const verificationCheck = await isEmployerVerified(userId);
-  if (!verificationCheck.ageVerified) {
-    return {
-      allowed: false,
-      reason: "Age verification is required to post jobs",
-      code: "AGE_NOT_VERIFIED",
-    };
-  }
-
-  if (verificationCheck.age !== null && verificationCheck.age < MIN_EMPLOYER_AGE) {
-    return {
-      allowed: false,
-      reason: "You must be 18 or older to post jobs",
-      code: "EMPLOYER_NOT_VERIFIED",
-    };
-  }
-
-  return { allowed: true };
 }
 
 /**

@@ -151,18 +151,10 @@ async function main() {
       data: {
         email: 'journey-employer@test.local',
         password: hashedPassword,
-        role: 'EMPLOYER',
+        role: 'YOUTH',
         dateOfBirth: new Date('1985-06-20'),
         accountStatus: 'ACTIVE',
         isVerifiedAdult: true,
-        employerProfile: {
-          create: {
-            companyName: 'Local Services Oslo',
-            bio: 'Community services provider',
-            verified: true,
-            eidVerified: true,
-          },
-        },
       },
     });
   }
@@ -495,18 +487,10 @@ async function main() {
       data: {
         email: 'shadow-host@test.local',
         password: hashedPassword,
-        role: 'EMPLOYER',
+        role: 'YOUTH',
         dateOfBirth: new Date('1980-01-15'),
         accountStatus: 'ACTIVE',
         isVerifiedAdult: true,
-        employerProfile: {
-          create: {
-            companyName: 'Design Studio Oslo',
-            bio: 'Creative design agency',
-            verified: true,
-            eidVerified: true,
-          },
-        },
       },
     });
   }

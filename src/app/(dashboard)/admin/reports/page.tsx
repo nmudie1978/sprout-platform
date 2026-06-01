@@ -56,7 +56,6 @@ export default async function AdminReportsPage(props: PageProps) {
             id: true,
             email: true,
             youthProfile: { select: { displayName: true } },
-            employerProfile: { select: { companyName: true } },
           },
         },
         assignedGuardian: {
@@ -144,7 +143,6 @@ export default async function AdminReportsPage(props: PageProps) {
                 const TargetIcon = r.targetType === "JOB_POST" ? Briefcase : UserX;
                 const reporterName =
                   r.reporter.youthProfile?.displayName ??
-                  r.reporter.employerProfile?.companyName ??
                   r.reporter.email?.split("@")[0] ??
                   "—";
                 const reasonLabel = REPORT_REASONS[r.reason as keyof typeof REPORT_REASONS] ?? r.reason;

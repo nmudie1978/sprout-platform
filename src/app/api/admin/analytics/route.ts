@@ -94,9 +94,6 @@ export async function GET(req: NextRequest) {
       // Top Rated Youth
       topRatedYouth,
 
-      // Most Active Employers
-      mostActiveEmployers,
-
     ] = await Promise.all([
       // Total Users
       prisma.user.count(),
@@ -255,7 +252,6 @@ export async function GET(req: NextRequest) {
           createdAt: true,
           accountStatus: true,
           youthProfile: { select: { displayName: true } },
-          employerProfile: { select: { companyName: true } },
         },
         orderBy: { createdAt: "desc" },
         take: 10,
@@ -309,41 +305,15 @@ export async function GET(req: NextRequest) {
         orderBy: { averageRating: "desc" },
         take: 10,
       }),
-
-      // Most Active Employers
-      prisma.user.findMany({
-        where: { role: "EMPLOYER" },
-        select: {
-          id: true,
-          email: true,
-          employerProfile: { select: { companyName: true } },
-          _count: {
-            select: {
-              postedJobs: true,
-            },
-          },
-        },
-        orderBy: {
-          postedJobs: { _count: "desc" },
-        },
-        take: 10,
-      }),
     ]);
 
     // Batch-fetch profiles instead of N+1 individual queries
-    const [youthProfiles, employerProfiles] = await Promise.all([
-      prisma.youthProfile.findMany({
-        where: { userId: { in: topYouthEarners.map((e) => e.youthId) } },
-        select: { userId: true, displayName: true, averageRating: true },
-      }),
-      prisma.employerProfile.findMany({
-        where: { userId: { in: topEmployerSpenders.map((s) => s.postedById) } },
-        select: { userId: true, companyName: true },
-      }),
-    ]);
+    const youthProfiles = await prisma.youthProfile.findMany({
+      where: { userId: { in: topYouthEarners.map((e) => e.youthId) } },
+      select: { userId: true, displayName: true, averageRating: true },
+    });
 
     const youthProfileMap = new Map(youthProfiles.map((p) => [p.userId, p]));
-    const employerProfileMap = new Map(employerProfiles.map((p) => [p.userId, p]));
 
     const enrichedTopYouthEarners = topYouthEarners.map((earner) => {
       const profile = youthProfileMap.get(earner.youthId);
@@ -354,13 +324,12 @@ export async function GET(req: NextRequest) {
       };
     });
 
-    const enrichedTopEmployerSpenders = topEmployerSpenders.map((spender) => {
-      const profile = employerProfileMap.get(spender.postedById);
-      return {
-        ...spender,
-        companyName: profile?.companyName || "Individual",
-      };
-    });
+    // Job posters have been removed — spending leaderboards no longer carry a
+    // company identity.
+    const enrichedTopEmployerSpenders = topEmployerSpenders.map((spender) => ({
+      ...spender,
+      companyName: "Individual",
+    }));
 
     // Calculate completion rate
     const totalFinishedJobs = completedJobs + cancelledJobs;
@@ -478,12 +447,6 @@ export async function GET(req: NextRequest) {
       // Top Performers
       topPerformers: {
         topRatedYouth,
-        mostActiveEmployers: mostActiveEmployers.map(e => ({
-          id: e.id,
-          email: e.email,
-          companyName: e.employerProfile?.companyName || "Individual",
-          jobsPosted: e._count.postedJobs,
-        })),
       },
     });
     // Admin analytics are expensive; cache for 5 min

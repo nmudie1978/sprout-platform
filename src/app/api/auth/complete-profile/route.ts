@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { UserRole, AccountStatus, AgeBracket, YouthAgeBand } from "@prisma/client";
+import { AccountStatus, AgeBracket, YouthAgeBand } from "@prisma/client";
 
 // Helper to calculate age from birthdate
 function calculateAge(birthDate: Date): number {
@@ -32,10 +32,9 @@ function getYouthAgeBand(age: number): YouthAgeBand | null {
 }
 
 interface CompleteProfileRequest {
-  role: "YOUTH" | "EMPLOYER";
+  role: "YOUTH";
   acceptedTerms: boolean;
   acceptedPrivacy: boolean;
-  companyName?: string; // Required for employers
 }
 
 export async function POST(request: NextRequest) {
@@ -50,12 +49,12 @@ export async function POST(request: NextRequest) {
     }
 
     const body: CompleteProfileRequest = await request.json();
-    const { role, acceptedTerms, acceptedPrivacy, companyName } = body;
+    const { role, acceptedTerms, acceptedPrivacy } = body;
 
-    // Validate required fields
-    if (!role || !["YOUTH", "EMPLOYER"].includes(role)) {
+    // Endeavrly is a youth-only platform — the only role created here is YOUTH.
+    if (role !== "YOUTH") {
       return NextResponse.json(
-        { error: "Invalid role. Must be YOUTH or EMPLOYER" },
+        { error: "Invalid role." },
         { status: 400 }
       );
     }
@@ -63,13 +62,6 @@ export async function POST(request: NextRequest) {
     if (!acceptedTerms || !acceptedPrivacy) {
       return NextResponse.json(
         { error: "You must accept the Terms of Service and Privacy Policy" },
-        { status: 400 }
-      );
-    }
-
-    if (role === "EMPLOYER" && !companyName?.trim()) {
-      return NextResponse.json(
-        { error: "Company name is required for employers" },
         { status: 400 }
       );
     }
@@ -85,7 +77,6 @@ export async function POST(request: NextRequest) {
         phoneNumber: true,
         accountStatus: true,
         youthProfile: true,
-        employerProfile: true,
       },
     });
 
@@ -115,44 +106,18 @@ export async function POST(request: NextRequest) {
       youthAgeBand = getYouthAgeBand(age);
     }
 
-    // Validate age requirements based on role
-    if (role === "YOUTH") {
-      if (age !== null) {
-        if (age < 15) {
-          return NextResponse.json(
-            { error: "You must be at least 15 years old to register as a youth worker" },
-            { status: 400 }
-          );
-        }
-        if (age > 20) {
-          return NextResponse.json(
-            { error: "Youth workers must be 20 or younger. Please register as an employer instead." },
-            { status: 400 }
-          );
-        }
-      }
+    // Enforce the 15+ signup floor.
+    if (age !== null && age < 15) {
+      return NextResponse.json(
+        { error: "You must be at least 15 years old to register" },
+        { status: 400 }
+      );
     }
 
-    if (role === "EMPLOYER") {
-      if (age !== null && age < 18) {
-        return NextResponse.json(
-          { error: "You must be at least 18 years old to register as an employer" },
-          { status: 400 }
-        );
-      }
-    }
-
-    // Determine account status based on role.
     // All youth (15–23) are ACTIVE on creation — age is a roadmap signal,
     // not a gate, and there is no guardian-consent barrier. See CLAUDE.md
     // <age_policy>.
-    let accountStatus: AccountStatus;
-    if (role === "YOUTH") {
-      accountStatus = "ACTIVE";
-    } else {
-      // Employers need to complete company setup
-      accountStatus = "ONBOARDING";
-    }
+    const accountStatus: AccountStatus = "ACTIVE";
 
     // Start transaction to update user and create profile
     const result = await prisma.$transaction(async (tx) => {
@@ -160,7 +125,7 @@ export async function POST(request: NextRequest) {
       const updatedUser = await tx.user.update({
         where: { id: user.id },
         data: {
-          role: role as UserRole,
+          role: "YOUTH",
           accountStatus,
           ageBracket,
           youthAgeBand,
@@ -170,31 +135,17 @@ export async function POST(request: NextRequest) {
         },
       });
 
-      // Create role-specific profile
-      if (role === "YOUTH") {
-        // Create YouthProfile
-        await tx.youthProfile.create({
-          data: {
-            userId: user.id,
-            displayName: user.fullName || user.email.split("@")[0],
-            phoneNumber: user.phoneNumber,
-            // No guardian-consent barrier — every youth account is good to
-            // go on creation. See CLAUDE.md <age_policy>.
-            guardianConsent: true,
-          },
-        });
-      } else {
-        // Create EmployerProfile
-        await tx.employerProfile.create({
-          data: {
-            userId: user.id,
-            companyName: companyName!.trim(),
-            phoneNumber: user.phoneNumber,
-            ageVerified: age !== null && age >= 18,
-            dateOfBirth: user.dateOfBirth,
-          },
-        });
-      }
+      // Create YouthProfile
+      await tx.youthProfile.create({
+        data: {
+          userId: user.id,
+          displayName: user.fullName || user.email.split("@")[0],
+          phoneNumber: user.phoneNumber,
+          // No guardian-consent barrier — every youth account is good to
+          // go on creation. See CLAUDE.md <age_policy>.
+          guardianConsent: true,
+        },
+      });
 
       // Create LegalAcceptance record
       await tx.legalAcceptance.create({
@@ -226,12 +177,6 @@ export async function POST(request: NextRequest) {
       return updatedUser;
     });
 
-    // Determine redirect URL based on role.
-    let redirectUrl = "/dashboard";
-    if (role === "EMPLOYER") {
-      redirectUrl = "/employer/dashboard";
-    }
-
     return NextResponse.json({
       success: true,
       user: {
@@ -239,7 +184,7 @@ export async function POST(request: NextRequest) {
         role: result.role,
         accountStatus: result.accountStatus,
       },
-      redirectUrl,
+      redirectUrl: "/dashboard",
       message: "Profile completed successfully!",
     });
   } catch (error) {
