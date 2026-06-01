@@ -52,11 +52,26 @@ const config: Config = {
         },
         brand: "hsl(var(--brand))",
         "brand-foreground": "hsl(var(--brand-foreground))",
+        // Restrained semantic palette (Pathora warm system)
+        success: "hsl(var(--success))",
+        warning: "hsl(var(--warning))",
+        info: "hsl(var(--info))",
       },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+        // ── Pathora radius system ──────────────────────────────
+        // Three semantic radii. Use these instead of rounded-xl/2xl/etc.
+        card: "1.5rem",     // 24px — cards & panels
+        control: "0.75rem", // 12px — buttons, inputs, chips, table shells
+        pill: "9999px",     // fully round — pills, dots, avatars
+      },
+      fontFamily: {
+        // Body: Inter (loaded in layout.tsx via next/font → --font-sans).
+        sans: ["var(--font-sans)", "ui-sans-serif", "system-ui", "sans-serif"],
+        // Headings: Source Serif 4 (--font-serif). Applied to h1–h4.
+        serif: ["var(--font-serif)", "ui-serif", "Georgia", "serif"],
       },
       keyframes: {
         "accordion-down": {

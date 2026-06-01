@@ -288,12 +288,12 @@ function CareersPageContent() {
       <div className="flex items-center justify-center gap-2 sm:gap-3 mb-4 sm:mb-5 overflow-x-auto pb-1" style={{ scrollbarWidth: "none" }}>
         {[
           { icon: Briefcase, label: t('careers.stats.careers'), value: getAllCareers().length, color: "text-primary" },
-          { icon: Search, label: t('careers.stats.showing'), value: totalItems, color: "text-teal-500" },
-          { icon: Layers, label: t('careers.stats.categories'), value: Object.keys(CAREER_PATHWAYS).length, color: "text-blue-500" },
+          { icon: Search, label: t('careers.stats.showing'), value: totalItems, color: "text-primary" },
+          { icon: Layers, label: t('careers.stats.categories'), value: Object.keys(CAREER_PATHWAYS).length, color: "text-info" },
         ].map((stat) => (
-          <div key={stat.label} className="flex items-center gap-1.5 sm:gap-2 bg-white/10 dark:bg-card/80 border border-white/20 dark:border-border/40 rounded-xl px-2 sm:px-3 py-1.5 shrink-0 backdrop-blur-sm">
+          <div key={stat.label} className="flex items-center gap-1.5 sm:gap-2 bg-foreground/10 dark:bg-card/80 border border-foreground/20 dark:border-border/40 rounded-control px-2 sm:px-3 py-1.5 shrink-0 backdrop-blur-sm">
             <stat.icon className={`h-3.5 w-3.5 ${stat.color}`} />
-            <span className="text-[11px] sm:text-xs text-white/85 dark:text-muted-foreground">{stat.label}</span>
+            <span className="text-xs sm:text-xs text-foreground/85 dark:text-muted-foreground">{stat.label}</span>
             <span className={`text-xs sm:text-sm font-semibold tabular-nums ${stat.color}`}>{stat.value}</span>
           </div>
         ))}
@@ -341,7 +341,7 @@ function CareersPageContent() {
       )}
 
       <div className="flex items-center justify-center gap-3 mb-3 mt-4">
-        <p className="text-xs text-white/80 dark:text-muted-foreground">
+        <p className="text-xs text-foreground/80 dark:text-muted-foreground">
           {totalItems > PAGE_SIZE ? (
             <>
               Showing {((validCurrentPage - 1) * PAGE_SIZE) + 1}–{Math.min(validCurrentPage * PAGE_SIZE, totalItems)} of {totalItems} career{totalItems !== 1 ? "s" : ""}
@@ -357,7 +357,7 @@ function CareersPageContent() {
           {isYouth && recommendationMap.size > 0 && (
             <Badge
               variant="secondary"
-              className="text-[9px] bg-teal-500/10 text-teal-600"
+              className="text-xs bg-primary/10 text-primary"
             >
               <Sparkles className="h-2.5 w-2.5 mr-0.5" />
               Personalised
@@ -376,7 +376,7 @@ function CareersPageContent() {
               right. Needs `grid` (not `inline-grid`) for mx-auto to take
               effect — inline-level elements ignore auto horizontal margin. */}
           {viewMode === "list" && (
-            <div className={`grid ${LIST_GRID} items-center gap-x-4 px-3 py-1 border border-white/15 dark:border-border border-b-0 rounded-t-md bg-white/10 dark:bg-muted/30 backdrop-blur-sm text-[10px] font-semibold uppercase tracking-wider text-white/85 dark:text-muted-foreground/70 w-fit mx-auto`}>
+            <div className={`grid ${LIST_GRID} items-center gap-x-4 px-3 py-1 border border-border dark:border-border border-b-0 rounded-t-control bg-foreground/10 dark:bg-muted/30 backdrop-blur-sm text-xs font-semibold uppercase tracking-wider text-foreground/85 dark:text-muted-foreground/70 w-fit mx-auto`}>
               <span>Career</span>
               <span className="text-right">Salary</span>
               <span className="text-center">Growth</span>
@@ -390,7 +390,7 @@ function CareersPageContent() {
           <div
             className={
               viewMode === "list"
-                ? "border border-white/15 dark:border-border rounded-b-md overflow-hidden bg-background w-fit mx-auto"
+                ? "border border-border dark:border-border rounded-b-control overflow-hidden bg-background w-fit mx-auto"
                 : viewMode === "small"
                 ? "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3"
                 : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4"
@@ -434,7 +434,7 @@ function CareersPageContent() {
       ) : (
         <Card className="border-2">
           <CardContent className="py-12 text-center">
-            <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-muted mb-3">
+            <div className="inline-flex items-center justify-center w-12 h-12 rounded-pill bg-muted mb-3">
               <Search className="h-6 w-6 text-muted-foreground" />
             </div>
             <h3 className="text-sm font-semibold mb-1">No careers found</h3>
@@ -456,7 +456,7 @@ function CareersPageContent() {
           transition={{ delay: 0.2 }}
           className="mt-6"
         >
-          <Card className="border bg-gradient-to-r from-teal-500/10 to-pink-500/10">
+          <Card className="border bg-accent/10">
             <CardContent className="py-4 text-center">
               <p className="text-sm font-medium mb-1">
                 Get Personalised Recommendations
@@ -467,7 +467,7 @@ function CareersPageContent() {
               <Button
                 asChild
                 size="sm"
-                className="bg-gradient-to-r from-teal-600 to-pink-600"
+                className="bg-primary hover:bg-primary/90"
               >
                 <Link href="/sign-up">Get Started</Link>
               </Button>
@@ -493,7 +493,7 @@ function CareersPageContent() {
         return (
           <div id="recommended-careers" className="mt-8 pt-6 border-t border-border scroll-mt-20">
             <div className="flex items-center gap-2 mb-4">
-              <Heart className="h-5 w-5 text-pink-500" />
+              <Heart className="h-5 w-5 text-accent" />
               <h2 className="text-lg font-semibold">Recommended for You</h2>
               <span
                 className="text-xs text-muted-foreground cursor-help"

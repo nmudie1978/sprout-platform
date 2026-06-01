@@ -34,35 +34,35 @@ const STRENGTHS: StrengthConfig[] = [
     key: "reliability",
     label: "Reliability",
     icon: User,
-    color: "from-blue-500 to-cyan-500",
+    color: "primary",
     description: "Shows up, follows through",
   },
   {
     key: "communication",
     label: "Communication",
     icon: MessageCircle,
-    color: "from-teal-500 to-pink-500",
+    color: "primary",
     description: "Clear, responsive, professional",
   },
   {
     key: "confidence",
     label: "Confidence",
     icon: Zap,
-    color: "from-amber-500 to-orange-500",
+    color: "primary",
     description: "Takes on challenges",
   },
   {
     key: "teamwork",
     label: "Teamwork",
     icon: Users,
-    color: "from-emerald-500 to-teal-500",
+    color: "primary",
     description: "Works well with others",
   },
   {
     key: "initiative",
     label: "Initiative",
     icon: Lightbulb,
-    color: "from-rose-500 to-red-500",
+    color: "primary",
     description: "Acts without being asked",
   },
 ];
@@ -89,18 +89,18 @@ function StrengthBar({
     >
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <div className={`p-1.5 rounded-lg bg-gradient-to-br ${strength.color} bg-opacity-10`}>
-            <Icon className="h-3.5 w-3.5 text-white" />
+          <div className="p-1.5 rounded-control bg-primary/10">
+            <Icon className="h-3.5 w-3.5 text-primary" />
           </div>
           <div>
             <span className="text-sm font-medium">{strength.label}</span>
-            <p className="text-[10px] text-muted-foreground">{strength.description}</p>
+            <p className="text-xs text-muted-foreground">{strength.description}</p>
           </div>
         </div>
       </div>
-      <div className="h-2 bg-muted rounded-full overflow-hidden">
+      <div className="h-2 bg-muted rounded-pill overflow-hidden">
         <motion.div
-          className={`h-full rounded-full bg-gradient-to-r ${strength.color}`}
+          className="h-full rounded-pill bg-primary"
           initial={{ width: 0 }}
           animate={{ width: `${normalizedValue}%` }}
           transition={{ duration: 0.8, delay: index * 0.1 + 0.2, ease: "easeOut" }}
@@ -220,7 +220,7 @@ function StrengthRadar({ data }: { data: StrengthData }) {
         return (
           <div
             key={strength.key}
-            className="absolute text-[9px] font-medium text-muted-foreground whitespace-nowrap"
+            className="absolute text-xs font-medium text-muted-foreground whitespace-nowrap"
             style={{
               left: x,
               top: y,
@@ -293,7 +293,7 @@ export function StrengthSnapshot({
         </div>
 
         {/* Note */}
-        <p className="text-[10px] text-muted-foreground mt-4 pt-3 border-t">
+        <p className="text-xs text-muted-foreground mt-4 pt-3 border-t">
           Strengths grow gradually through completed jobs, positive feedback, and consistent activity.
           This is not a score — it's a reflection of your journey.
         </p>

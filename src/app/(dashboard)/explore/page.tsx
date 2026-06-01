@@ -146,7 +146,7 @@ export default function ExplorePage() {
     return (
       <div className="container mx-auto px-3 py-4 sm:px-4 sm:py-8">
         <div className="flex items-center justify-center min-h-[300px]">
-          <div className="animate-spin h-6 w-6 border-2 border-primary border-t-transparent rounded-full" />
+          <div className="animate-spin h-6 w-6 border-2 border-primary border-t-transparent rounded-pill" />
         </div>
       </div>
     );
@@ -201,7 +201,7 @@ export default function ExplorePage() {
           <Button
             variant="outline"
             size="icon"
-            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-12 h-12 w-12 rounded-full border-2 shadow-md z-10 hidden md:flex"
+            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-12 h-12 w-12 rounded-pill border-2 shadow-sm z-10 hidden md:flex"
             onClick={handleSkip}
             disabled={swipeMutation.isPending}
           >
@@ -219,7 +219,7 @@ export default function ExplorePage() {
           <Button
             variant="outline"
             size="icon"
-            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-12 h-12 w-12 rounded-full border-2 shadow-md z-10 hidden md:flex"
+            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-12 h-12 w-12 rounded-pill border-2 shadow-sm z-10 hidden md:flex"
             onClick={() => handleSwipe("RIGHT")}
             disabled={swipeMutation.isPending}
           >
@@ -231,7 +231,7 @@ export default function ExplorePage() {
             <Button
               variant="outline"
               size="lg"
-              className="flex-1 max-w-[140px] border-red-200 text-red-600 hover:bg-red-50 dark:border-red-800 dark:hover:bg-red-950"
+              className="flex-1 max-w-[140px] border-destructive/30 text-destructive hover:bg-destructive/10"
               onClick={handleSkip}
               disabled={swipeMutation.isPending}
             >
@@ -242,7 +242,7 @@ export default function ExplorePage() {
             <Button
               variant="outline"
               size="lg"
-              className="flex-1 max-w-[140px] border-blue-200 text-blue-600 hover:bg-blue-50 dark:border-blue-800 dark:hover:bg-blue-950"
+              className="flex-1 max-w-[140px] border-info/30 text-info hover:bg-info/10"
               onClick={() => handleSwipe("UP")}
               disabled={swipeMutation.isPending}
             >
@@ -252,7 +252,7 @@ export default function ExplorePage() {
 
             <Button
               size="lg"
-              className="flex-1 max-w-[140px] bg-emerald-600 hover:bg-emerald-700"
+              className="flex-1 max-w-[140px] bg-success text-primary-foreground hover:bg-success/90"
               onClick={() => handleSwipe("RIGHT")}
               disabled={swipeMutation.isPending}
             >
@@ -274,8 +274,8 @@ export default function ExplorePage() {
       ) : (
         <Card className="border-2 border-dashed">
           <CardContent className="py-12 text-center">
-            <div className="mx-auto mb-4 h-16 w-16 rounded-full bg-emerald-100 dark:bg-emerald-950 flex items-center justify-center">
-              <CheckCircle className="h-8 w-8 text-emerald-600" />
+            <div className="mx-auto mb-4 h-16 w-16 rounded-pill bg-success/10 flex items-center justify-center">
+              <CheckCircle className="h-8 w-8 text-success" />
             </div>
             <h2 className="mb-2 text-xl font-bold">All Done!</h2>
             <p className="mb-6 text-muted-foreground">

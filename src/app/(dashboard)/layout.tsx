@@ -3,7 +3,6 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { SidebarNav } from "@/components/sidebar-nav";
 import { MobileBottomNav } from "@/components/mobile-bottom-nav";
-import { AiChatWidget } from "@/components/ai-chat-widget";
 import { AmbientLightBackground } from "@/components/ui/ambient-light-background";
 import { prisma } from "@/lib/prisma";
 import { headers } from "next/headers";
@@ -26,6 +25,24 @@ export default async function DashboardLayout({
   // Get current pathname to avoid redirect loops
   const headersList = await headers();
   const pathname = headersList.get("x-pathname") || "";
+
+  // Only redirect employers if they're NOT already on an employer page.
+  // Skip the redirect when small-jobs is disabled — /employer/* is
+  // itself bounced to /dashboard by middleware in that mode, so the
+  // two would otherwise loop. Employers land on /employer-paused
+  // instead (handled below).
+  const smallJobsEnabled =
+    process.env.NEXT_PUBLIC_SMALL_JOBS_ENABLED === "true";
+  if (
+    smallJobsEnabled &&
+    session.user.role === "EMPLOYER" &&
+    !pathname.startsWith("/employer")
+  ) {
+    redirect("/employer/dashboard");
+  }
+  if (!smallJobsEnabled && session.user.role === "EMPLOYER") {
+    redirect("/employer-paused");
+  }
 
   // Teacher role keeps to its own surface: /teacher/*, /profile, and
   // /feedback. Landing anywhere else (dashboard, my-journey, careers)
@@ -59,7 +76,12 @@ export default async function DashboardLayout({
           where: { userId: session.user.id },
           select: { displayName: true },
         })
-      : Promise.resolve(null),
+      : session.user.role === "EMPLOYER"
+        ? prisma.employerProfile.findUnique({
+            where: { userId: session.user.id },
+            select: { companyName: true, companyLogo: true },
+          })
+        : Promise.resolve(null),
   ]);
 
   if (!legalAcceptance) {
@@ -71,6 +93,9 @@ export default async function DashboardLayout({
 
   if (session.user.role === "YOUTH" && profileData && "displayName" in profileData) {
     displayName = profileData.displayName || null;
+  } else if (session.user.role === "EMPLOYER" && profileData && "companyName" in profileData) {
+    displayName = profileData.companyName || null;
+    userProfilePic = profileData.companyLogo || null;
   }
 
   return (
@@ -103,31 +128,30 @@ export default async function DashboardLayout({
       <div className="flex-1 flex flex-col min-w-0 relative z-10">
         {/* Main content with bottom padding for mobile nav */}
         <main className="flex-1 pb-16 lg:pb-0">{children}</main>
-        <AiChatWidget />
 
         {/* Footer with legal links — hidden on mobile.
             Transparent in light mode so the canvas gradient shows
             through continuously; dark mode keeps a subtle lift. */}
-        <footer className="hidden lg:block py-4 mt-8 border-t border-white/10">
+        <footer className="hidden lg:block py-4 mt-8 border-t border-border dark:border-white/10">
           <div className="px-6">
-            <div className="flex flex-wrap justify-center gap-4 text-xs text-white/85">
-              <Link href="/legal/terms" className="hover:text-white transition-colors">
+            <div className="flex flex-wrap justify-center gap-4 text-xs text-muted-foreground dark:text-white/85">
+              <Link href="/legal/terms" className="hover:text-foreground dark:hover:text-white transition-colors">
                 Terms
               </Link>
-              <Link href="/legal/privacy" className="hover:text-white transition-colors">
+              <Link href="/legal/privacy" className="hover:text-foreground dark:hover:text-white transition-colors">
                 Privacy
               </Link>
-              <Link href="/legal/safety" className="hover:text-white transition-colors">
+              <Link href="/legal/safety" className="hover:text-foreground dark:hover:text-white transition-colors">
                 Safety
               </Link>
-              <Link href="/legal/eligibility" className="hover:text-white transition-colors">
+              <Link href="/legal/eligibility" className="hover:text-foreground dark:hover:text-white transition-colors">
                 Eligibility
               </Link>
-              <Link href="/legal/disclaimer" className="hover:text-white transition-colors">
+              <Link href="/legal/disclaimer" className="hover:text-foreground dark:hover:text-white transition-colors">
                 Disclaimer
               </Link>
             </div>
-            <p className="text-center text-[10px] text-white/70 mt-2">
+            <p className="text-center text-[10px] text-muted-foreground/70 dark:text-white/70 mt-2">
               © {new Date().getFullYear()} Endeavrly. All rights reserved.
             </p>
           </div>

@@ -105,8 +105,8 @@ export default function CareerEventsPage() {
       />
 
       <div className="flex items-center gap-3 mb-6">
-        <div className="p-2 rounded-xl bg-teal-500/10">
-          <Calendar className="h-5 w-5 text-teal-500" />
+        <div className="p-2 rounded-control bg-primary/10">
+          <Calendar className="h-5 w-5 text-primary" />
         </div>
         <div>
           <h1 className="text-xl md:text-2xl font-semibold">Career Events</h1>
@@ -119,10 +119,10 @@ export default function CareerEventsPage() {
       {/* Single personalised recommendation — only when there's a strong match */}
       {recommendation && (
         <div className="flex items-center gap-2 mb-4 px-1">
-          <Sparkles className="h-3 w-3 text-teal-500/50 shrink-0" />
-          <p className="text-[11px] text-teal-500/60">
+          <Sparkles className="h-3 w-3 text-primary/50 shrink-0" />
+          <p className="text-xs text-primary/60">
             <span className="font-medium">{recommendation.eventTitle}</span>
-            <span className="text-teal-500/40"> — {recommendation.label.charAt(0).toLowerCase() + recommendation.label.slice(1)}</span>
+            <span className="text-primary/40"> — {recommendation.label.charAt(0).toLowerCase() + recommendation.label.slice(1)}</span>
           </p>
         </div>
       )}
@@ -130,7 +130,7 @@ export default function CareerEventsPage() {
       <YouthEventsTable />
 
       {/* MVP reminder — remove once Eventbrite API is integrated */}
-      <p className="text-[9px] text-muted-foreground/20 text-center mt-10">
+      <p className="text-xs text-muted-foreground/20 text-center mt-10">
         MVP — static seed data. Requires Eventbrite API integration for live events, auto-refresh, and proactive personalised notifications.
       </p>
     </div>

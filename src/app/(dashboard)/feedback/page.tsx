@@ -157,8 +157,8 @@ export default function FeedbackPage() {
       {/* Header */}
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-2">
-          <div className="p-2 rounded-xl bg-gradient-to-br from-blue-500 to-teal-500">
-            <MessageSquare className="h-6 w-6 text-white" />
+          <div className="p-2 rounded-control bg-primary">
+            <MessageSquare className="h-6 w-6 text-primary-foreground" />
           </div>
           <h1 className="text-2xl font-bold">Give Feedback</h1>
           <span className="text-xs bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 px-2 py-0.5 rounded-full font-medium">
