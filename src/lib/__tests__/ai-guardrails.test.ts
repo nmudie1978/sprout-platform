@@ -4,9 +4,27 @@ import {
   getSystemPrompt,
   isResponseSafe,
   getFallbackResponse,
+  localeToLanguage,
 } from '../ai-guardrails'
 
 describe('AI Guardrails', () => {
+  describe('localeToLanguage + reply language in prompt', () => {
+    it('maps locales to reply languages, defaulting to English', () => {
+      expect(localeToLanguage('en-GB')).toBe('English')
+      expect(localeToLanguage('nb-NO')).toBe('Norwegian')
+      expect(localeToLanguage('es')).toBe('Spanish')
+      expect(localeToLanguage(undefined)).toBe('English')
+      expect(localeToLanguage('zz')).toBe('English')
+    })
+
+    it('instructs the model to reply in the requested language', () => {
+      expect(getSystemPrompt('career_explain', null, 'Spain', 'Spanish')).toContain('Respond in Spanish')
+      expect(getSystemPrompt('career_explain', null, 'Norway', 'Norwegian')).toContain('Respond in Norwegian')
+      // default stays English
+      expect(getSystemPrompt('career_explain')).toContain('Respond in English')
+    })
+  })
+
   describe('classifyIntent', () => {
     it('should classify unsafe content', () => {
       expect(classifyIntent('I want to hurt myself')).toBe('unsafe')

@@ -98,4 +98,6 @@ export interface BuildPromptInput {
   mode: CareerTwinMode;
   career: CareerTwinCareerContext;
   profile?: CareerTwinProfileContext | null;
+  /** Language the Twin should reply in (from the user's UI locale). Defaults to English. */
+  language?: string;
 }

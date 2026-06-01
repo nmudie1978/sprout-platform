@@ -20,6 +20,7 @@ import {
   getSmartFallbackResponse,
   detectNonEnglishResponse,
   getEnglishOnlyRegenerationPrompt,
+  localeToLanguage,
   type IntentType,
 } from "@/lib/ai-guardrails";
 import { checkRateLimit, getRateLimitHeaders, RateLimits } from "@/lib/rate-limit";
@@ -250,7 +251,11 @@ export async function POST(req: NextRequest) {
     }
 
     // Build messages for OpenAI with personalization based on career aspiration
-    const systemPrompt = getSystemPrompt(intent, userProfile?.careerAspiration, userProfile?.country);
+    // Reply in the user's chosen UI language (en-GB → English, nb-NO →
+    // Norwegian, es → Spanish). The English-only enforcement below now only
+    // applies when the target language IS English.
+    const replyLanguage = localeToLanguage(req.cookies.get("NEXT_LOCALE")?.value);
+    const systemPrompt = getSystemPrompt(intent, userProfile?.careerAspiration, userProfile?.country, replyLanguage);
 
     // Exploration state context — gives the Socratic coach awareness of
     // what the user has been doing on the platform, not just what they
@@ -405,9 +410,12 @@ Keep it natural — don't list their profile back to them.`;
       });
     }
 
-    // Language check - ensure response is in English (silent regeneration if needed)
+    // Language check — only enforce English when English IS the target
+    // language. Norwegian/Spanish users are SUPPOSED to get non-English
+    // replies, so skip the enforcement for them (the prompt already asks
+    // for the right language).
     const languageCheck = detectNonEnglishResponse(assistantMessage);
-    if (languageCheck.isNonEnglish) {
+    if (replyLanguage === "English" && languageCheck.isNonEnglish) {
       console.warn("[Chat API] Non-English response detected, regenerating:", languageCheck.detectedPatterns);
 
       // Attempt to regenerate with stronger English-only instruction
