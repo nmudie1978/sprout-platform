@@ -17,7 +17,8 @@ import {
 } from "@/lib/safety/age";
 import { checkRateLimitAsync, getRateLimitHeaders, RateLimits } from "@/lib/rate-limit";
 import { isSchoolEmail } from "@/lib/education/school-domains";
-import { normaliseCountry } from "@/lib/countries";
+import { normaliseCountry, defaultLocaleForCountry } from "@/lib/countries";
+import { LOCALE_COOKIE } from "@/i18n/config";
 
 // Transient DB/connection errors worth a quick retry on serverless cold
 // starts (can't-reach-db, connection closed, pool timeout, too many
@@ -334,12 +335,26 @@ export async function POST(req: NextRequest) {
     });
 
     // Return success with account status info
-    return NextResponse.json({
+    const res = NextResponse.json({
       success: true,
       accountStatus: initialAccountStatus,
       requiresGuardianConsent: false,
       requiresAgeVerification: role === "EMPLOYER",
     });
+    // New youth from a country whose UI language isn't the default get that
+    // language automatically (e.g. Spain → Spanish). They can still switch via
+    // the language toggle. Same cookie options as /api/locale.
+    if (role === "YOUTH") {
+      const locale = defaultLocaleForCountry(normaliseCountry(rawCountry));
+      if (locale) {
+        res.cookies.set(LOCALE_COOKIE, locale, {
+          maxAge: 60 * 60 * 24 * 365,
+          sameSite: "lax",
+          path: "/",
+        });
+      }
+    }
+    return res;
   } catch (error) {
     console.error("Signup error:", error);
     // Surface the Prisma error code (safe — codes like P1001/P2024 carry no
