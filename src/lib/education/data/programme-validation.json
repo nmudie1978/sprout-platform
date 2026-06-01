@@ -1,11 +1,12 @@
 {
   "meta": {
-    "lastCheckedAt": "2026-04-16T12:33:00.809Z",
-    "totalProgrammes": 130,
+    "lastCheckedAt": "2026-06-01T09:28:23.701Z",
+    "totalProgrammes": 133,
     "validationStats": {
-      "LIVE": 81,
-      "CLIENT_ERROR": 48,
-      "TIMEOUT": 1
+      "LIVE": 78,
+      "CLIENT_ERROR": 44,
+      "UNKNOWN": 10,
+      "DNS": 1
     }
   },
   "results": {
@@ -13,781 +14,799 @@
       "url": "https://www.uio.no/studier/program/medisin/",
       "status": "LIVE",
       "httpCode": 200,
-      "checkedAt": "2026-04-16T12:32:29.064Z"
+      "checkedAt": "2026-06-01T09:27:35.894Z"
     },
     "no-ntnu-medisin": {
       "url": "https://www.ntnu.no/studier/medisin",
       "status": "LIVE",
       "httpCode": 200,
-      "checkedAt": "2026-04-16T12:32:29.105Z"
+      "checkedAt": "2026-06-01T09:27:35.945Z"
     },
     "se-ki-l-karprogrammet": {
       "url": "https://ki.se/utbildning/lakarprogrammet",
       "status": "CLIENT_ERROR",
       "httpCode": 404,
-      "checkedAt": "2026-04-16T12:32:29.105Z"
+      "checkedAt": "2026-06-01T09:27:35.947Z"
     },
     "se-uu-l-karprogrammet": {
       "url": "https://www.uu.se/utbildning/program/lakarprogrammet",
       "status": "LIVE",
       "httpCode": 200,
-      "checkedAt": "2026-04-16T12:32:29.106Z"
+      "checkedAt": "2026-06-01T09:27:35.948Z"
     },
     "dk-ku-medicin": {
       "url": "https://studier.ku.dk/kandidat/medicin/",
       "status": "LIVE",
       "httpCode": 200,
-      "checkedAt": "2026-04-16T12:32:29.106Z"
+      "checkedAt": "2026-06-01T09:27:35.949Z"
     },
     "fi-helsinki-l-ketieteen-koulutusohjelma": {
       "url": "https://www.helsinki.fi/fi/koulutusohjelmat/laaketiede",
       "status": "LIVE",
       "httpCode": 200,
-      "checkedAt": "2026-04-16T12:32:29.938Z"
+      "checkedAt": "2026-06-01T09:27:37.966Z"
     },
     "no-oslomet-sykepleie": {
       "url": "https://www.oslomet.no/studier/hv/sykepleie",
       "status": "LIVE",
       "httpCode": 200,
-      "checkedAt": "2026-04-16T12:32:29.939Z"
+      "checkedAt": "2026-06-01T09:27:37.967Z"
     },
     "no-ntnu-sykepleie": {
       "url": "https://www.ntnu.no/studier/sykepleie",
       "status": "CLIENT_ERROR",
       "httpCode": 404,
-      "checkedAt": "2026-04-16T12:32:29.941Z"
+      "checkedAt": "2026-06-01T09:27:37.968Z"
     },
     "se-ki-sjuksk-terskeprogrammet": {
       "url": "https://ki.se/utbildning/sjukskoterskeprogrammet",
       "status": "CLIENT_ERROR",
       "httpCode": 404,
-      "checkedAt": "2026-04-16T12:32:29.942Z"
+      "checkedAt": "2026-06-01T09:27:37.969Z"
     },
     "dk-kp-sygeplejerskeuddannelsen": {
       "url": "https://www.kp.dk/uddannelser/sygeplejerske/",
-      "status": "LIVE",
-      "httpCode": 200,
-      "checkedAt": "2026-04-16T12:32:29.944Z"
+      "status": "UNKNOWN",
+      "httpCode": null,
+      "checkedAt": "2026-06-01T09:27:37.970Z"
     },
     "fi-metropolia-sairaanhoitaja": {
       "url": "https://www.metropolia.fi/fi/koulutus/amk-tutkinnot/sairaanhoitaja",
       "status": "CLIENT_ERROR",
       "httpCode": 404,
-      "checkedAt": "2026-04-16T12:32:31.085Z"
+      "checkedAt": "2026-06-01T09:27:39.684Z"
     },
     "no-uio-odontologi": {
       "url": "https://www.uio.no/studier/program/odontologi/",
       "status": "LIVE",
       "httpCode": 200,
-      "checkedAt": "2026-04-16T12:32:31.088Z"
+      "checkedAt": "2026-06-01T09:27:39.686Z"
     },
     "no-uib-odontologi": {
       "url": "https://www4.uib.no/studier/program/odontologi-integrert-master",
       "status": "LIVE",
       "httpCode": 200,
-      "checkedAt": "2026-04-16T12:32:31.089Z"
+      "checkedAt": "2026-06-01T09:27:39.687Z"
     },
     "no-uit-odontologi": {
       "url": "https://uit.no/utdanning/program?p_document_id=284209",
       "status": "LIVE",
       "httpCode": 200,
-      "checkedAt": "2026-04-16T12:32:31.089Z"
+      "checkedAt": "2026-06-01T09:27:39.688Z"
     },
     "se-gu-tandl-karprogrammet": {
       "url": "https://www.gu.se/studera/hitta-utbildning/tandlakarprogrammet-o2tlp",
       "status": "LIVE",
       "httpCode": 200,
-      "checkedAt": "2026-04-16T12:32:31.089Z"
+      "checkedAt": "2026-06-01T09:27:39.689Z"
     },
     "se-ki-tandl-karprogrammet": {
       "url": "https://utbildning.ki.se/program/2tl19-tandlakarprogrammet",
       "status": "LIVE",
       "httpCode": 200,
-      "checkedAt": "2026-04-16T12:32:32.205Z"
+      "checkedAt": "2026-06-01T09:27:42.365Z"
     },
     "se-mau-tandl-karutbildning": {
       "url": "https://mau.se/sok-utbildning/program/ogtly/",
       "status": "LIVE",
       "httpCode": 200,
-      "checkedAt": "2026-04-16T12:32:32.207Z"
+      "checkedAt": "2026-06-01T09:27:42.366Z"
     },
     "dk-au-odontologi": {
       "url": "https://kandidat.au.dk/odontologi",
       "status": "LIVE",
       "httpCode": 200,
-      "checkedAt": "2026-04-16T12:32:32.208Z"
+      "checkedAt": "2026-06-01T09:27:42.367Z"
     },
     "dk-ku-odontologi": {
       "url": "https://www.ku.dk/studier/bachelor/odontologi",
       "status": "LIVE",
       "httpCode": 200,
-      "checkedAt": "2026-04-16T12:32:32.209Z"
+      "checkedAt": "2026-06-01T09:27:42.368Z"
     },
     "fi-helsinki-hammaslaaketiede": {
       "url": "https://www.helsinki.fi/en/degree-programmes/hammaslaaketiede",
       "status": "LIVE",
       "httpCode": 200,
-      "checkedAt": "2026-04-16T12:32:32.209Z"
+      "checkedAt": "2026-06-01T09:27:42.369Z"
     },
     "fi-utu-hammaslaaketiede": {
       "url": "https://www.utu.fi/fi/opiskelijaksi/hammaslaaketieteen-tutkinto-ohjelma-hammaslaaketieteen-kandidaatti-ja-lisensiaatti-3",
       "status": "LIVE",
       "httpCode": 200,
-      "checkedAt": "2026-04-16T12:32:33.010Z"
+      "checkedAt": "2026-06-01T09:27:44.801Z"
     },
     "fi-oulu-hammaslaaketiede": {
       "url": "https://www.oulu.fi/fi/hae/kandidaattiohjelmat/hammaslaaketiede",
       "status": "LIVE",
       "httpCode": 200,
-      "checkedAt": "2026-04-16T12:32:33.012Z"
+      "checkedAt": "2026-06-01T09:27:44.802Z"
     },
     "no-oslomet-fysioterapi": {
       "url": "https://www.oslomet.no/studier/hv/fysioterapi",
       "status": "LIVE",
       "httpCode": 200,
-      "checkedAt": "2026-04-16T12:32:33.013Z"
+      "checkedAt": "2026-06-01T09:27:44.803Z"
     },
     "se-lu-fysioterapeutprogrammet": {
       "url": "https://www.lu.se/utbildning/program/fysioterapeutprogrammet",
       "status": "CLIENT_ERROR",
       "httpCode": 404,
-      "checkedAt": "2026-04-16T12:32:33.014Z"
+      "checkedAt": "2026-06-01T09:27:44.804Z"
     },
     "dk-kp-fysioterapeutuddannelsen": {
       "url": "https://www.kp.dk/uddannelser/fysioterapeut/",
-      "status": "LIVE",
-      "httpCode": 200,
-      "checkedAt": "2026-04-16T12:32:33.015Z"
+      "status": "UNKNOWN",
+      "httpCode": null,
+      "checkedAt": "2026-06-01T09:27:44.804Z"
     },
     "fi-metropolia-fysioterapeutti": {
       "url": "https://www.metropolia.fi/fi/koulutus/amk-tutkinnot/fysioterapeutti",
       "status": "CLIENT_ERROR",
       "httpCode": 404,
-      "checkedAt": "2026-04-16T12:32:35.101Z"
+      "checkedAt": "2026-06-01T09:27:47.679Z"
     },
     "no-nmbu-veterin-rmedisin": {
       "url": "https://www.nmbu.no/studier/veterinærmedisin",
       "status": "CLIENT_ERROR",
       "httpCode": 404,
-      "checkedAt": "2026-04-16T12:32:35.103Z"
+      "checkedAt": "2026-06-01T09:27:47.680Z"
     },
     "se-slu-veterin-rprogrammet": {
       "url": "https://www.slu.se/utbildning/program-kurser/program/veterinarprogrammet/",
       "status": "CLIENT_ERROR",
       "httpCode": 404,
-      "checkedAt": "2026-04-16T12:32:35.104Z"
+      "checkedAt": "2026-06-01T09:27:47.681Z"
     },
     "dk-ku-veterin-rmedicin": {
       "url": "https://studier.ku.dk/bachelor/veterinaermedicin/",
       "status": "LIVE",
       "httpCode": 200,
-      "checkedAt": "2026-04-16T12:32:35.104Z"
+      "checkedAt": "2026-06-01T09:27:47.681Z"
     },
     "fi-helsinki-el-inl-ketieteen-koulutusohjel": {
       "url": "https://www.helsinki.fi/fi/koulutusohjelmat/elainlaaketiede",
-      "status": "CLIENT_ERROR",
-      "httpCode": 404,
-      "checkedAt": "2026-04-16T12:32:35.105Z"
+      "status": "UNKNOWN",
+      "httpCode": null,
+      "checkedAt": "2026-06-01T09:27:47.682Z"
     },
     "no-uio-informatikk": {
       "url": "https://www.uio.no/studier/program/informatikk/",
       "status": "CLIENT_ERROR",
       "httpCode": 404,
-      "checkedAt": "2026-04-16T12:32:35.764Z"
+      "checkedAt": "2026-06-01T09:27:50.276Z"
     },
     "no-ntnu-datateknologi": {
       "url": "https://www.ntnu.no/studier/mtdt",
       "status": "LIVE",
       "httpCode": 200,
-      "checkedAt": "2026-04-16T12:32:35.765Z"
+      "checkedAt": "2026-06-01T09:27:50.276Z"
     },
     "se-kth-civilingenj-r-datateknik": {
       "url": "https://www.kth.se/utbildning/civilingenjor/datateknik",
       "status": "LIVE",
       "httpCode": 200,
-      "checkedAt": "2026-04-16T12:32:35.766Z"
+      "checkedAt": "2026-06-01T09:27:50.277Z"
     },
     "dk-itu-softwareudvikling": {
       "url": "https://www.itu.dk/uddannelser/bacheloruddannelser/softwareudvikling",
       "status": "LIVE",
       "httpCode": 200,
-      "checkedAt": "2026-04-16T12:32:35.766Z"
+      "checkedAt": "2026-06-01T09:27:50.278Z"
     },
     "fi-aalto-tietotekniikka": {
       "url": "https://www.aalto.fi/fi/koulutusohjelmat/tietotekniikka",
       "status": "CLIENT_ERROR",
       "httpCode": 404,
-      "checkedAt": "2026-04-16T12:32:35.767Z"
+      "checkedAt": "2026-06-01T09:27:50.279Z"
     },
     "is-hi-t-lvunarfr-i": {
       "url": "https://www.hi.is/nam/tolvunarfraedi_bs",
       "status": "CLIENT_ERROR",
       "httpCode": 404,
-      "checkedAt": "2026-04-16T12:32:36.934Z"
+      "checkedAt": "2026-06-01T09:27:51.747Z"
     },
     "no-oslomet-informasjonsteknologi": {
       "url": "https://www.oslomet.no/studier/tkd/informasjonsteknologi",
       "status": "LIVE",
       "httpCode": 200,
-      "checkedAt": "2026-04-16T12:32:36.935Z"
+      "checkedAt": "2026-06-01T09:27:51.748Z"
     },
     "se-liu-civilingenj-r-informationstekn": {
       "url": "https://liu.se/utbildning/program/civilingenjor-informationsteknologi",
       "status": "CLIENT_ERROR",
       "httpCode": 404,
-      "checkedAt": "2026-04-16T12:32:36.936Z"
+      "checkedAt": "2026-06-01T09:27:51.749Z"
     },
     "no-ntnu-produktutvikling-og-produksjon": {
       "url": "https://www.ntnu.no/studier/mtprod",
       "status": "LIVE",
       "httpCode": 200,
-      "checkedAt": "2026-04-16T12:32:36.936Z"
+      "checkedAt": "2026-06-01T09:27:51.749Z"
     },
     "se-chalmers-civilingenj-r-maskinteknik": {
       "url": "https://www.chalmers.se/utbildning/program/civilingenjor-maskinteknik/",
       "status": "CLIENT_ERROR",
       "httpCode": 404,
-      "checkedAt": "2026-04-16T12:32:36.937Z"
+      "checkedAt": "2026-06-01T09:27:51.751Z"
     },
     "dk-dtu-maskinteknik": {
       "url": "https://www.dtu.dk/uddannelse/diplomingenior/maskinteknik",
       "status": "CLIENT_ERROR",
       "httpCode": 404,
-      "checkedAt": "2026-04-16T12:32:37.791Z"
+      "checkedAt": "2026-06-01T09:27:53.799Z"
     },
     "no-ntnu-bygg-og-milj-teknikk": {
       "url": "https://www.ntnu.no/studier/mtbygg",
       "status": "LIVE",
       "httpCode": 200,
-      "checkedAt": "2026-04-16T12:32:37.792Z"
+      "checkedAt": "2026-06-01T09:27:53.799Z"
     },
     "se-kth-civilingenj-r-samh-llsbyggnad": {
       "url": "https://www.kth.se/utbildning/civilingenjor/samhallsbyggnad",
       "status": "LIVE",
       "httpCode": 200,
-      "checkedAt": "2026-04-16T12:32:37.793Z"
+      "checkedAt": "2026-06-01T09:27:53.801Z"
     },
     "dk-dtu-bygningsdesign": {
       "url": "https://www.dtu.dk/uddannelse/diplomingenior/bygningsdesign",
       "status": "CLIENT_ERROR",
       "httpCode": 404,
-      "checkedAt": "2026-04-16T12:32:37.794Z"
+      "checkedAt": "2026-06-01T09:27:53.802Z"
     },
     "no-oslomet-regnskap-og-revisjon": {
       "url": "https://www.oslomet.no/studier/sam/regnskap-revisjon",
       "status": "CLIENT_ERROR",
       "httpCode": 404,
-      "checkedAt": "2026-04-16T12:32:37.794Z"
+      "checkedAt": "2026-06-01T09:27:53.802Z"
     },
     "se-sse-ekonomie-kandidat": {
       "url": "https://www.hhs.se/utbildning/bsc/",
       "status": "CLIENT_ERROR",
       "httpCode": 404,
-      "checkedAt": "2026-04-16T12:32:38.642Z"
+      "checkedAt": "2026-06-01T09:27:56.020Z"
     },
     "dk-cbs-ha": {
       "url": "https://www.cbs.dk/uddannelser/bachelor/ha-almen-erhvervsokonomi",
       "status": "CLIENT_ERROR",
       "httpCode": 404,
-      "checkedAt": "2026-04-16T12:32:38.643Z"
+      "checkedAt": "2026-06-01T09:27:56.021Z"
     },
     "no-nhh-konomi-og-administrasjon": {
       "url": "https://www.nhh.no/studier/bachelor/",
       "status": "CLIENT_ERROR",
       "httpCode": 404,
-      "checkedAt": "2026-04-16T12:32:38.644Z"
+      "checkedAt": "2026-06-01T09:27:56.022Z"
     },
     "se-su-kandidatprogram-i-nationalekon": {
       "url": "https://www.su.se/utbildning/program/nationalekonomi-kandidatprogram",
       "status": "CLIENT_ERROR",
       "httpCode": 404,
-      "checkedAt": "2026-04-16T12:32:38.645Z"
+      "checkedAt": "2026-06-01T09:27:56.023Z"
     },
     "fi-aalto-kauppatieteet": {
       "url": "https://www.aalto.fi/fi/koulutusohjelmat/kauppatieteet",
       "status": "CLIENT_ERROR",
       "httpCode": 404,
-      "checkedAt": "2026-04-16T12:32:38.646Z"
+      "checkedAt": "2026-06-01T09:27:56.023Z"
     },
     "no-uio-rettsvitenskap": {
       "url": "https://www.uio.no/studier/program/rettsvitenskap/",
       "status": "CLIENT_ERROR",
       "httpCode": 404,
-      "checkedAt": "2026-04-16T12:32:39.409Z"
+      "checkedAt": "2026-06-01T09:27:57.306Z"
     },
     "se-uu-juristprogrammet": {
       "url": "https://www.uu.se/utbildning/program/juristprogrammet",
       "status": "LIVE",
       "httpCode": 200,
-      "checkedAt": "2026-04-16T12:32:39.409Z"
+      "checkedAt": "2026-06-01T09:27:57.307Z"
     },
     "dk-ku-jura": {
       "url": "https://studier.ku.dk/bachelor/jura/",
       "status": "LIVE",
       "httpCode": 200,
-      "checkedAt": "2026-04-16T12:32:39.410Z"
+      "checkedAt": "2026-06-01T09:27:57.308Z"
     },
     "fi-helsinki-oikeustieteen-maisterin-koulut": {
       "url": "https://www.helsinki.fi/fi/koulutusohjelmat/oikeustiede",
-      "status": "CLIENT_ERROR",
-      "httpCode": 404,
-      "checkedAt": "2026-04-16T12:32:39.410Z"
+      "status": "UNKNOWN",
+      "httpCode": null,
+      "checkedAt": "2026-06-01T09:27:57.309Z"
     },
     "no-aho-arkitektur": {
       "url": "https://aho.no/no/studier/arkitektur",
       "status": "CLIENT_ERROR",
       "httpCode": 404,
-      "checkedAt": "2026-04-16T12:32:39.410Z"
+      "checkedAt": "2026-06-01T09:27:57.310Z"
     },
     "se-kth-arkitektutbildning": {
       "url": "https://www.kth.se/utbildning/arkitekt",
       "status": "LIVE",
       "httpCode": 200,
-      "checkedAt": "2026-04-16T12:32:40.015Z"
+      "checkedAt": "2026-06-01T09:27:58.714Z"
     },
     "dk-kadk-arkitektuddannelsen": {
       "url": "https://kadk.dk/uddannelser/arkitektur",
       "status": "CLIENT_ERROR",
       "httpCode": 404,
-      "checkedAt": "2026-04-16T12:32:40.016Z"
+      "checkedAt": "2026-06-01T09:27:58.716Z"
     },
     "no-aho-design": {
       "url": "https://aho.no/no/studier/design",
       "status": "CLIENT_ERROR",
       "httpCode": 404,
-      "checkedAt": "2026-04-16T12:32:40.017Z"
+      "checkedAt": "2026-06-01T09:27:58.717Z"
     },
     "se-konstfack-industridesign": {
       "url": "https://www.konstfack.se/utbildning/program/industridesign/",
       "status": "CLIENT_ERROR",
       "httpCode": 404,
-      "checkedAt": "2026-04-16T12:32:40.018Z"
+      "checkedAt": "2026-06-01T09:27:58.718Z"
     },
     "dk-kadk-design": {
       "url": "https://kadk.dk/uddannelser/design",
       "status": "CLIENT_ERROR",
       "httpCode": 404,
-      "checkedAt": "2026-04-16T12:32:40.019Z"
+      "checkedAt": "2026-06-01T09:27:58.718Z"
     },
     "fi-aalto-muotoilu": {
       "url": "https://www.aalto.fi/fi/koulutusohjelmat/muotoilu",
       "status": "CLIENT_ERROR",
       "httpCode": 404,
-      "checkedAt": "2026-04-16T12:32:40.517Z"
+      "checkedAt": "2026-06-01T09:28:00.719Z"
     },
     "no-oslomet-grunnskolel-rerutdanning-1-7": {
       "url": "https://www.oslomet.no/studier/lui/grunnskolelaerer-1-7",
       "status": "LIVE",
       "httpCode": 200,
-      "checkedAt": "2026-04-16T12:32:40.518Z"
+      "checkedAt": "2026-06-01T09:28:00.720Z"
     },
     "no-ntnu-lektorutdanning-8-13": {
       "url": "https://www.ntnu.no/studier/lektorutdanning",
       "status": "CLIENT_ERROR",
       "httpCode": 404,
-      "checkedAt": "2026-04-16T12:32:40.520Z"
+      "checkedAt": "2026-06-01T09:28:00.721Z"
     },
     "se-su-mnesl-rarprogrammet": {
       "url": "https://www.su.se/utbildning/program/amneslararprogrammet",
       "status": "CLIENT_ERROR",
       "httpCode": 404,
-      "checkedAt": "2026-04-16T12:32:40.520Z"
+      "checkedAt": "2026-06-01T09:28:00.722Z"
     },
     "dk-kp-l-reruddannelsen": {
       "url": "https://www.kp.dk/uddannelser/laerer/",
-      "status": "LIVE",
-      "httpCode": 200,
-      "checkedAt": "2026-04-16T12:32:40.521Z"
+      "status": "UNKNOWN",
+      "httpCode": null,
+      "checkedAt": "2026-06-01T09:28:00.723Z"
     },
     "fi-helsinki-luokanopettajan-koulutus": {
       "url": "https://www.helsinki.fi/fi/koulutusohjelmat/luokanopettaja",
       "status": "CLIENT_ERROR",
       "httpCode": 404,
-      "checkedAt": "2026-04-16T12:32:41.964Z"
+      "checkedAt": "2026-06-01T09:28:02.311Z"
     },
     "no-oslomet-sosialt-arbeid": {
       "url": "https://www.oslomet.no/studier/sam/sosialt-arbeid",
       "status": "LIVE",
       "httpCode": 200,
-      "checkedAt": "2026-04-16T12:32:41.965Z"
+      "checkedAt": "2026-06-01T09:28:02.312Z"
     },
     "se-gu-socionomprogrammet": {
       "url": "https://www.gu.se/studera/socionomprogrammet",
       "status": "CLIENT_ERROR",
       "httpCode": 404,
-      "checkedAt": "2026-04-16T12:32:41.967Z"
+      "checkedAt": "2026-06-01T09:28:02.313Z"
     },
     "dk-kp-socialr-dgiveruddannelsen": {
       "url": "https://www.kp.dk/uddannelser/socialraadgiver/",
-      "status": "LIVE",
-      "httpCode": 200,
-      "checkedAt": "2026-04-16T12:32:41.969Z"
+      "status": "UNKNOWN",
+      "httpCode": null,
+      "checkedAt": "2026-06-01T09:28:02.314Z"
     },
     "no-uio-biovitenskap": {
       "url": "https://www.uio.no/studier/program/biovitenskap/",
       "status": "LIVE",
       "httpCode": 200,
-      "checkedAt": "2026-04-16T12:32:41.970Z"
+      "checkedAt": "2026-06-01T09:28:02.314Z"
     },
     "se-uu-kandidatprogram-i-biologi": {
       "url": "https://www.uu.se/utbildning/program/biologi-kandidatprogram",
       "status": "CLIENT_ERROR",
       "httpCode": 404,
-      "checkedAt": "2026-04-16T12:32:42.815Z"
+      "checkedAt": "2026-06-01T09:28:03.521Z"
     },
     "dk-ku-biologi": {
       "url": "https://studier.ku.dk/bachelor/biologi/",
       "status": "LIVE",
       "httpCode": 200,
-      "checkedAt": "2026-04-16T12:32:42.816Z"
+      "checkedAt": "2026-06-01T09:28:03.522Z"
     },
     "fi-helsinki-biologian-koulutusohjelma": {
       "url": "https://www.helsinki.fi/fi/koulutusohjelmat/biologia",
-      "status": "CLIENT_ERROR",
-      "httpCode": 404,
-      "checkedAt": "2026-04-16T12:32:42.816Z"
+      "status": "UNKNOWN",
+      "httpCode": null,
+      "checkedAt": "2026-06-01T09:28:03.524Z"
     },
     "no-uio-kjemi": {
       "url": "https://www.uio.no/studier/program/kjemi/",
       "status": "CLIENT_ERROR",
       "httpCode": 404,
-      "checkedAt": "2026-04-16T12:32:42.816Z"
+      "checkedAt": "2026-06-01T09:28:03.525Z"
     },
     "se-su-kandidatprogram-i-kemi": {
       "url": "https://www.su.se/utbildning/program/kemi-kandidatprogram",
       "status": "CLIENT_ERROR",
       "httpCode": 404,
-      "checkedAt": "2026-04-16T12:32:42.816Z"
+      "checkedAt": "2026-06-01T09:28:03.526Z"
     },
     "dk-ku-kemi": {
       "url": "https://studier.ku.dk/bachelor/kemi/",
       "status": "LIVE",
       "httpCode": 200,
-      "checkedAt": "2026-04-16T12:32:43.607Z"
+      "checkedAt": "2026-06-01T09:28:04.584Z"
     },
     "fi-helsinki-kemian-koulutusohjelma": {
       "url": "https://www.helsinki.fi/fi/koulutusohjelmat/kemia",
       "status": "CLIENT_ERROR",
       "httpCode": 404,
-      "checkedAt": "2026-04-16T12:32:43.608Z"
+      "checkedAt": "2026-06-01T09:28:04.586Z"
     },
     "no-uio-psykologi": {
       "url": "https://www.uio.no/studier/program/psykologi-profesjon/",
       "status": "LIVE",
       "httpCode": 200,
-      "checkedAt": "2026-04-16T12:32:43.609Z"
+      "checkedAt": "2026-06-01T09:28:04.587Z"
     },
     "no-uib-psykologi": {
       "url": "https://www.uib.no/studier/psykologi-profesjon",
       "status": "CLIENT_ERROR",
       "httpCode": 404,
-      "checkedAt": "2026-04-16T12:32:43.610Z"
+      "checkedAt": "2026-06-01T09:28:04.588Z"
     },
     "no-ntnu-psykologi": {
       "url": "https://www.ntnu.no/studier/psykologi-profesjon",
       "status": "CLIENT_ERROR",
       "httpCode": 404,
-      "checkedAt": "2026-04-16T12:32:43.612Z"
+      "checkedAt": "2026-06-01T09:28:04.589Z"
     },
     "no-uit-psykologi": {
       "url": "https://uit.no/utdanning/program/272193/psykologi_profesjon",
       "status": "LIVE",
       "httpCode": 200,
-      "checkedAt": "2026-04-16T12:32:44.509Z"
+      "checkedAt": "2026-06-01T09:28:06.510Z"
     },
     "no-ntnu-sivilingeni-r": {
       "url": "https://www.ntnu.no/studier/sivilingenior",
       "status": "LIVE",
       "httpCode": 200,
-      "checkedAt": "2026-04-16T12:32:44.510Z"
+      "checkedAt": "2026-06-01T09:28:06.511Z"
     },
     "no-oslomet-ingeni-rfag": {
       "url": "https://www.oslomet.no/studier/tkd/ingenior",
       "status": "CLIENT_ERROR",
       "httpCode": 404,
-      "checkedAt": "2026-04-16T12:32:44.511Z"
+      "checkedAt": "2026-06-01T09:28:06.512Z"
     },
     "no-universitetet-i-s-r-st-norge-ingeni-rfag": {
       "url": "https://www.usn.no/studier/studie-og-emneoversikt/teknologi/",
       "status": "CLIENT_ERROR",
       "httpCode": 404,
-      "checkedAt": "2026-04-16T12:32:44.512Z"
+      "checkedAt": "2026-06-01T09:28:06.513Z"
     },
     "no-vgs-no-helse-og-oppvekstfag-helsearbe": {
       "url": "https://utdanning.no/yrker/beskrivelse/helsefagarbeider",
       "status": "LIVE",
       "httpCode": 200,
-      "checkedAt": "2026-04-16T12:32:44.512Z"
+      "checkedAt": "2026-06-01T09:28:06.514Z"
     },
     "no-uio-statistikk-og-datavitenskap": {
       "url": "https://www.uio.no/studier/program/statistikk/",
       "status": "CLIENT_ERROR",
       "httpCode": 404,
-      "checkedAt": "2026-04-16T12:32:45.535Z"
+      "checkedAt": "2026-06-01T09:28:07.884Z"
     },
     "no-ntnu-datavitenskap": {
       "url": "https://www.ntnu.no/studier/bdat",
       "status": "CLIENT_ERROR",
       "httpCode": 404,
-      "checkedAt": "2026-04-16T12:32:45.536Z"
+      "checkedAt": "2026-06-01T09:28:07.885Z"
     },
     "no-phs-bachelorstudium-i-politiarbeid": {
       "url": "https://www.politihogskolen.no/studietilbud/bachelor/",
       "status": "CLIENT_ERROR",
       "httpCode": 404,
-      "checkedAt": "2026-04-16T12:32:45.537Z"
+      "checkedAt": "2026-06-01T09:28:07.887Z"
     },
     "no-nbsk-grunnkurs-for-brann-og-redning": {
       "url": "https://www.nbsk.no/",
       "status": "LIVE",
       "httpCode": 200,
-      "checkedAt": "2026-04-16T12:32:45.538Z"
+      "checkedAt": "2026-06-01T09:28:07.887Z"
     },
     "no-osm-integrated-atpl-programme": {
       "url": "https://www.osmaviationacademy.com/",
       "status": "LIVE",
       "httpCode": 200,
-      "checkedAt": "2026-04-16T12:32:45.538Z"
+      "checkedAt": "2026-06-01T09:28:07.888Z"
     },
     "no-saa-trafikkflygerutdanning": {
       "url": "https://www.pilot.no/",
-      "status": "CLIENT_ERROR",
-      "httpCode": 404,
-      "checkedAt": "2026-04-16T12:32:47.471Z"
+      "status": "UNKNOWN",
+      "httpCode": null,
+      "checkedAt": "2026-06-01T09:28:10.713Z"
     },
     "no-uit-luftfart-luftfartsfag": {
       "url": "https://uit.no/utdanning/program/341185/luftfartsfag",
       "status": "LIVE",
       "httpCode": 200,
-      "checkedAt": "2026-04-16T12:32:47.471Z"
+      "checkedAt": "2026-06-01T09:28:10.714Z"
     },
     "no-hft-helikopterflygerutdanning": {
       "url": "https://www.hft.no/",
-      "status": "TIMEOUT",
-      "httpCode": null,
-      "checkedAt": "2026-04-16T12:32:47.471Z"
+      "status": "LIVE",
+      "httpCode": 200,
+      "checkedAt": "2026-06-01T09:28:10.715Z"
     },
     "no-etterstad-rm-kos": {
       "url": "https://etterstad.vgs.no",
       "status": "LIVE",
       "httpCode": 200,
-      "checkedAt": "2026-04-16T12:32:47.472Z"
+      "checkedAt": "2026-06-01T09:28:12.143Z"
     },
     "se-grythyttan-kulinarisk-kock": {
       "url": "https://www.oru.se/utbildning/program/kulinarisk-kock-och-maltidskreator/",
       "status": "LIVE",
       "httpCode": 200,
-      "checkedAt": "2026-04-16T12:32:47.472Z"
+      "checkedAt": "2026-06-01T09:28:12.144Z"
     },
     "se-ryssby-restaurang-livsmedel": {
       "url": "https://ryssbygymnasiet.se",
       "status": "LIVE",
       "httpCode": 200,
-      "checkedAt": "2026-04-16T12:32:57.486Z"
+      "checkedAt": "2026-06-01T09:28:12.144Z"
     },
     "dk-hrs-gastronom": {
       "url": "https://www.hrs.dk",
       "status": "LIVE",
       "httpCode": 200,
-      "checkedAt": "2026-04-16T12:32:57.487Z"
+      "checkedAt": "2026-06-01T09:28:12.145Z"
     },
     "no-kulinarisk-akademi-kurs": {
       "url": "https://kulinariskakademi.no",
       "status": "LIVE",
       "httpCode": 200,
-      "checkedAt": "2026-04-16T12:32:57.491Z"
+      "checkedAt": "2026-06-01T09:28:14.504Z"
     },
     "fi-perho-kokki": {
       "url": "https://www.perho.fi",
       "status": "LIVE",
       "httpCode": 200,
-      "checkedAt": "2026-04-16T12:32:57.492Z"
+      "checkedAt": "2026-06-01T09:28:14.504Z"
     },
     "no-fagbrev-tomrer": {
       "url": "https://www.vilbli.no/nb/no/om/v.ba/bygg-og-anleggsteknikk",
       "status": "LIVE",
-      "httpCode": 200,
-      "checkedAt": "2026-04-16T12:32:57.492Z"
+      "httpCode": 202,
+      "checkedAt": "2026-06-01T09:28:14.505Z"
     },
     "no-fagbrev-murer": {
       "url": "https://www.vilbli.no/nb/no/om/v.ba/bygg-og-anleggsteknikk",
       "status": "LIVE",
-      "httpCode": 200,
-      "checkedAt": "2026-04-16T12:32:58.624Z"
+      "httpCode": 202,
+      "checkedAt": "2026-06-01T09:28:14.506Z"
     },
     "no-fagbrev-maler": {
       "url": "https://www.vilbli.no/nb/no/om/v.ba/bygg-og-anleggsteknikk",
       "status": "LIVE",
-      "httpCode": 200,
-      "checkedAt": "2026-04-16T12:32:58.625Z"
+      "httpCode": 202,
+      "checkedAt": "2026-06-01T09:28:14.507Z"
     },
     "no-fagbrev-anleggsmaskinforer": {
       "url": "https://www.vilbli.no/nb/no/om/v.ba/bygg-og-anleggsteknikk",
       "status": "LIVE",
-      "httpCode": 200,
-      "checkedAt": "2026-04-16T12:32:58.626Z"
+      "httpCode": 202,
+      "checkedAt": "2026-06-01T09:28:15.873Z"
     },
     "no-fagbrev-elektriker": {
       "url": "https://www.vilbli.no/nb/no/om/v.el/elektro-og-datateknologi",
       "status": "LIVE",
-      "httpCode": 200,
-      "checkedAt": "2026-04-16T12:32:58.626Z"
+      "httpCode": 202,
+      "checkedAt": "2026-06-01T09:28:15.874Z"
     },
     "no-fagbrev-automatiker": {
       "url": "https://www.vilbli.no/nb/no/om/v.el/elektro-og-datateknologi",
       "status": "LIVE",
-      "httpCode": 200,
-      "checkedAt": "2026-04-16T12:32:58.628Z"
+      "httpCode": 202,
+      "checkedAt": "2026-06-01T09:28:15.875Z"
     },
     "no-fagbrev-industrielektriker": {
       "url": "https://www.vilbli.no/nb/no/om/v.el/elektro-og-datateknologi",
       "status": "LIVE",
-      "httpCode": 200,
-      "checkedAt": "2026-04-16T12:32:58.675Z"
+      "httpCode": 202,
+      "checkedAt": "2026-06-01T09:28:15.876Z"
     },
     "no-fagbrev-helsefagarbeider": {
       "url": "https://www.vilbli.no/nb/no/om/v.hs/helse-og-oppvekstfag",
       "status": "LIVE",
-      "httpCode": 200,
-      "checkedAt": "2026-04-16T12:32:58.675Z"
+      "httpCode": 202,
+      "checkedAt": "2026-06-01T09:28:15.877Z"
     },
     "no-fagbrev-barne-og-ungdomsarbeider": {
       "url": "https://www.vilbli.no/nb/no/om/v.hs/helse-og-oppvekstfag",
       "status": "LIVE",
-      "httpCode": 200,
-      "checkedAt": "2026-04-16T12:32:58.676Z"
+      "httpCode": 202,
+      "checkedAt": "2026-06-01T09:28:16.200Z"
     },
     "no-fagbrev-tannhelsesekretar": {
       "url": "https://www.vilbli.no/nb/no/om/v.hs/helse-og-oppvekstfag",
       "status": "LIVE",
-      "httpCode": 200,
-      "checkedAt": "2026-04-16T12:32:58.676Z"
+      "httpCode": 202,
+      "checkedAt": "2026-06-01T09:28:16.202Z"
     },
     "no-fagbrev-cnc": {
       "url": "https://www.vilbli.no/nb/no/om/v.tp/teknologi-og-industrifag",
       "status": "LIVE",
-      "httpCode": 200,
-      "checkedAt": "2026-04-16T12:32:58.676Z"
+      "httpCode": 202,
+      "checkedAt": "2026-06-01T09:28:16.204Z"
     },
     "no-fagbrev-sveiser": {
       "url": "https://www.vilbli.no/nb/no/om/v.tp/teknologi-og-industrifag",
       "status": "LIVE",
-      "httpCode": 200,
-      "checkedAt": "2026-04-16T12:32:58.722Z"
+      "httpCode": 202,
+      "checkedAt": "2026-06-01T09:28:16.205Z"
     },
     "no-fagbrev-industrimekaniker": {
       "url": "https://www.vilbli.no/nb/no/om/v.tp/teknologi-og-industrifag",
       "status": "LIVE",
-      "httpCode": 200,
-      "checkedAt": "2026-04-16T12:32:58.722Z"
+      "httpCode": 202,
+      "checkedAt": "2026-06-01T09:28:16.206Z"
     },
     "no-fagbrev-bilmekaniker": {
       "url": "https://www.vilbli.no/nb/no/om/v.tp/teknologi-og-industrifag",
       "status": "LIVE",
-      "httpCode": 200,
-      "checkedAt": "2026-04-16T12:32:58.723Z"
+      "httpCode": 202,
+      "checkedAt": "2026-06-01T09:28:16.539Z"
     },
     "no-fagbrev-frisor": {
       "url": "https://www.vilbli.no/nb/no/om/v.fb/frisor-blomster-interior-og-eksponeringsdesign",
-      "status": "CLIENT_ERROR",
-      "httpCode": 404,
-      "checkedAt": "2026-04-16T12:32:58.723Z"
+      "status": "LIVE",
+      "httpCode": 202,
+      "checkedAt": "2026-06-01T09:28:16.540Z"
     },
     "no-fagbrev-platearbeider": {
       "url": "https://www.vilbli.no/nb/no/om/v.tp/teknologi-og-industrifag",
       "status": "LIVE",
-      "httpCode": 200,
-      "checkedAt": "2026-04-16T12:32:58.723Z"
+      "httpCode": 202,
+      "checkedAt": "2026-06-01T09:28:16.541Z"
     },
     "dk-ku-psykologi": {
       "url": "https://psychology.ku.dk",
       "status": "LIVE",
       "httpCode": 200,
-      "checkedAt": "2026-04-16T12:32:58.902Z"
+      "checkedAt": "2026-06-01T09:28:16.543Z"
     },
     "dk-au-psykologi": {
       "url": "https://psy.au.dk",
       "status": "LIVE",
       "httpCode": 200,
-      "checkedAt": "2026-04-16T12:32:58.904Z"
+      "checkedAt": "2026-06-01T09:28:16.544Z"
     },
     "se-lu-psykologprogrammet": {
       "url": "https://www.psy.lu.se",
       "status": "LIVE",
       "httpCode": 200,
-      "checkedAt": "2026-04-16T12:32:58.905Z"
+      "checkedAt": "2026-06-01T09:28:17.568Z"
     },
     "se-su-psykologprogrammet": {
       "url": "https://www.su.se/psychology",
       "status": "LIVE",
       "httpCode": 200,
-      "checkedAt": "2026-04-16T12:32:58.905Z"
+      "checkedAt": "2026-06-01T09:28:17.569Z"
     },
     "se-gu-psykologprogrammet": {
       "url": "https://www.gu.se/psykologi",
       "status": "LIVE",
       "httpCode": 200,
-      "checkedAt": "2026-04-16T12:32:58.906Z"
+      "checkedAt": "2026-06-01T09:28:17.570Z"
     },
     "fi-helsinki-psykologia": {
       "url": "https://www.helsinki.fi/en/studying",
-      "status": "LIVE",
-      "httpCode": 200,
-      "checkedAt": "2026-04-16T12:32:59.886Z"
+      "status": "UNKNOWN",
+      "httpCode": null,
+      "checkedAt": "2026-06-01T09:28:17.571Z"
     },
     "dk-ku-okonomi": {
       "url": "https://www.economics.ku.dk",
       "status": "LIVE",
       "httpCode": 200,
-      "checkedAt": "2026-04-16T12:32:59.887Z"
+      "checkedAt": "2026-06-01T09:28:17.572Z"
     },
     "dk-cbs-okonomi": {
       "url": "https://www.cbs.dk/en/study/bachelor",
       "status": "LIVE",
       "httpCode": 200,
-      "checkedAt": "2026-04-16T12:32:59.887Z"
+      "checkedAt": "2026-06-01T09:28:19.424Z"
     },
     "fi-helsinki-taloustiede": {
       "url": "https://www.helsinki.fi/en/admissions-and-education",
-      "status": "LIVE",
-      "httpCode": 200,
-      "checkedAt": "2026-04-16T12:32:59.888Z"
+      "status": "UNKNOWN",
+      "httpCode": null,
+      "checkedAt": "2026-06-01T09:28:19.425Z"
     },
     "dk-ku-statistik": {
       "url": "https://www.ku.dk/uddannelser",
       "status": "LIVE",
       "httpCode": 200,
-      "checkedAt": "2026-04-16T12:32:59.889Z"
+      "checkedAt": "2026-06-01T09:28:19.426Z"
     },
     "se-kth-data-science": {
       "url": "https://www.kth.se/en/studies",
       "status": "LIVE",
       "httpCode": 200,
-      "checkedAt": "2026-04-16T12:33:00.406Z"
+      "checkedAt": "2026-06-01T09:28:19.427Z"
     },
     "se-su-statistik": {
       "url": "https://www.su.se/utbildning",
       "status": "LIVE",
       "httpCode": 200,
-      "checkedAt": "2026-04-16T12:33:00.407Z"
+      "checkedAt": "2026-06-01T09:28:19.428Z"
     },
     "fi-aalto-data-science": {
       "url": "https://www.aalto.fi/en/study-options",
       "status": "LIVE",
       "httpCode": 200,
-      "checkedAt": "2026-04-16T12:33:00.408Z"
+      "checkedAt": "2026-06-01T09:28:20.703Z"
     },
     "fi-helsinki-data-science": {
       "url": "https://www.helsinki.fi/en/studying",
       "status": "LIVE",
       "httpCode": 200,
-      "checkedAt": "2026-04-16T12:33:00.409Z"
+      "checkedAt": "2026-06-01T09:28:20.704Z"
     },
     "fi-aalto-arkkitehtuuri": {
       "url": "https://www.aalto.fi/en/study-options",
       "status": "LIVE",
       "httpCode": 200,
-      "checkedAt": "2026-04-16T12:33:00.410Z"
+      "checkedAt": "2026-06-01T09:28:20.705Z"
+    },
+    "no-vgs-salg-service-reiseliv": {
+      "url": "https://www.vilbli.no/nb/nb/no/salg-service-og-reiseliv/program/v.ssr",
+      "status": "LIVE",
+      "httpCode": 202,
+      "checkedAt": "2026-06-01T09:28:10.716Z"
+    },
+    "no-naa-kabinpersonalkurs": {
+      "url": "https://nordicaviationacademy.no",
+      "status": "DNS",
+      "httpCode": null,
+      "checkedAt": "2026-06-01T09:28:10.717Z"
+    },
+    "no-kristiania-reiselivsledelse": {
+      "url": "https://www.kristiania.no/studier/bachelor/reiselivsledelse/",
+      "status": "CLIENT_ERROR",
+      "httpCode": 404,
+      "checkedAt": "2026-06-01T09:28:12.142Z"
     }
   }
 }
