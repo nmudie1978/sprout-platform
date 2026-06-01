@@ -2642,20 +2642,6 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       growthOutlook: "high",
     },
     {
-      id: "real-estate-agent",
-      title: "Real Estate Agent",
-      emoji: "🏡",
-      description: "Help clients buy, sell, and rent residential properties, guiding them through viewings, negotiations, and contracts.",
-      avgSalary: "710,000 - 1,420,000 kr/year",
-      educationPath: "Real estate licence (vocational course) + on-the-job training",
-      keySkills: ["sales", "negotiation", "communication", "local market knowledge", "customer service"],
-      dailyTasks: ["Show properties", "Negotiate offers", "List homes", "Advise clients", "Coordinate viewings"],
-      growthOutlook: "medium",
-      entryLevel: true,
-      lastVerifiedAt: "2026-04-14",
-      sourceUrl: "https://www.ssb.no/en/statbank/table/11418",
-    },
-    {
       id: "real-estate-broker",
       title: "Real Estate Broker",
       emoji: "🏘️",
@@ -8231,7 +8217,17 @@ export function getCareerById(id: string): Career | undefined {
  * Get all careers as a flat array
  */
 export function getAllCareers(): Career[] {
-  return Object.values(CAREER_PATHWAYS).flat();
+  // A handful of careers are cross-listed across categories. Dedupe by id
+  // (first occurrence wins) so the UI never renders duplicate React keys,
+  // and counts/lookups stay honest.
+  const seen = new Set<string>();
+  return Object.values(CAREER_PATHWAYS)
+    .flat()
+    .filter((career) => {
+      if (seen.has(career.id)) return false;
+      seen.add(career.id);
+      return true;
+    });
 }
 
 /**
