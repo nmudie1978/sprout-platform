@@ -19,7 +19,7 @@ import { HeroVideo } from "@/components/hero-video";
 import { RetroGrid } from "@/components/ui/retro-grid";
 import { ShineBorder } from "@/components/ui/shine-border";
 import { WordRevealLine, FadeReveal } from "@/components/landing/hero-word-reveal";
-import { LanguageToggle } from "@/components/language-toggle";
+import { LanguageDropdown } from "@/components/language-dropdown";
 
 // ============================================
 // SECTION DATA
@@ -119,7 +119,7 @@ export default async function LandingPage() {
           </Link>
 
           <div className="flex items-center gap-3 sm:gap-5">
-            <LanguageToggle className="hidden sm:flex" />
+            <LanguageDropdown className="hidden sm:inline-flex" />
             <Link
               href="/about"
               className="text-sm text-neutral-500 hover:text-white transition-colors hidden sm:inline"
