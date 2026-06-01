@@ -25,6 +25,7 @@ import {
   Briefcase,
   TrendingUp,
   BookmarkCheck,
+  Pencil,
   Search,
   CheckCircle2,
   Rocket,
@@ -1086,14 +1087,13 @@ export default function DashboardPage() {
                   )}
                 </h2>
                 {goalTitle && (
-                  <p className="text-xs text-muted-foreground/60 flex items-center gap-1.5">
-                    <button
-                      onClick={(e) => { e.preventDefault(); e.stopPropagation(); setShowGoalSheet(true); }}
-                      className="text-[9px] text-muted-foreground/40 hover:text-muted-foreground transition-colors font-medium"
-                    >
-                      {t('common.change')}
-                    </button>
-                  </p>
+                  <button
+                    onClick={(e) => { e.preventDefault(); e.stopPropagation(); setShowGoalSheet(true); }}
+                    className="mt-0.5 -ml-1 inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[11px] font-medium capitalize text-teal-500/90 hover:text-teal-400 hover:bg-teal-500/10 transition-colors"
+                  >
+                    <Pencil className="h-3 w-3" />
+                    {t('common.change')}
+                  </button>
                 )}
               </div>
             </div>

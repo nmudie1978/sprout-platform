@@ -14,10 +14,10 @@ interface DeadlineAwarenessProps {
   careerId: string | null;
 }
 
-function urgencyColor(months: number): string {
-  if (months <= 2) return 'text-red-400 border-red-500/30 bg-red-500/[0.06]';
-  if (months <= 4) return 'text-amber-400 border-amber-500/30 bg-amber-500/[0.06]';
-  return 'text-muted-foreground/70 border-border/30 bg-card/40';
+function urgencyTone(months: number): { text: string; dot: string; row: string } {
+  if (months <= 2) return { text: 'text-red-400', dot: 'bg-red-400', row: 'bg-red-500/[0.04]' };
+  if (months <= 4) return { text: 'text-amber-400', dot: 'bg-amber-400', row: '' };
+  return { text: 'text-muted-foreground/60', dot: 'bg-muted-foreground/30', row: '' };
 }
 
 function urgencyLabel(months: number): string {
@@ -51,32 +51,59 @@ export function DeadlineAwareness({ careerId }: DeadlineAwarenessProps) {
         )}
       </div>
 
-      <div className="grid grid-cols-2 gap-2">
-        {deadlines.map((d) => {
-          const colors = urgencyColor(d.monthIndex);
-          return (
-            <div
-              key={d.title}
-              className={cn('rounded-lg border px-2.5 py-2 text-center', colors)}
-            >
-              <p className="text-[10px] font-medium leading-snug line-clamp-1">
-                {d.title}
-              </p>
-              <p className="text-[9px] text-muted-foreground/60 mt-0.5">
-                {d.when}
-              </p>
-              <p className="text-[8px] font-medium mt-1">
-                {urgencyLabel(d.monthIndex)}
-              </p>
-              {d.url && (
-                <a href={d.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-0.5 text-[8px] text-muted-foreground/40 hover:text-primary transition-colors mt-1">
-                  <ExternalLink className="h-2.5 w-2.5" />
-                  <span>Details</span>
-                </a>
-              )}
-            </div>
-          );
-        })}
+      <div className="overflow-hidden rounded-lg border border-border/40">
+        <table className="w-full border-collapse text-left">
+          <thead>
+            <tr className="border-b border-border/40 bg-card/40 text-[9px] font-medium uppercase tracking-wide text-muted-foreground/50">
+              <th className="px-3 py-1.5 font-medium">Date</th>
+              <th className="px-3 py-1.5 font-medium">Event</th>
+              <th className="px-3 py-1.5 font-medium whitespace-nowrap">When</th>
+              <th className="px-3 py-1.5 font-medium text-right sr-only sm:not-sr-only">
+                Link
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {deadlines.map((d) => {
+              const tone = urgencyTone(d.monthIndex);
+              return (
+                <tr
+                  key={d.title}
+                  className={cn(
+                    'border-b border-border/20 last:border-0 transition-colors hover:bg-card/40',
+                    tone.row,
+                  )}
+                >
+                  <td className="px-3 py-2 text-[11px] font-medium text-foreground/80 whitespace-nowrap tabular-nums">
+                    {d.when}
+                  </td>
+                  <td className="px-3 py-2 text-[11px] text-foreground/70">
+                    {d.title}
+                  </td>
+                  <td className="px-3 py-2 whitespace-nowrap">
+                    <span className={cn('inline-flex items-center gap-1.5 text-[10px] font-medium', tone.text)}>
+                      <span className={cn('h-1.5 w-1.5 rounded-full shrink-0', tone.dot)} />
+                      {urgencyLabel(d.monthIndex)}
+                    </span>
+                  </td>
+                  <td className="px-3 py-2 text-right">
+                    {d.url && (
+                      <a
+                        href={d.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-0.5 text-[10px] text-muted-foreground/40 hover:text-primary transition-colors"
+                      >
+                        <ExternalLink className="h-2.5 w-2.5" />
+                        <span>Details</span>
+                      </a>
+                    )}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
       </div>
     </div>
   );
