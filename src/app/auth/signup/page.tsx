@@ -36,23 +36,20 @@ function SignUpForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { toast } = useToast();
-  const isEmployer = searchParams.get("role") === "employer";
   const isTeacher = searchParams.get("role") === "teacher";
-  const isAdultSignup = isEmployer || isTeacher;
+  const isAdultSignup = isTeacher;
 
   // ── Step state ────────────────────────────────────────────────────
-  // Adults (employers, teachers) skip the DOB-age-gate step because
-  // the 15–23 eligibility logic only applies to youth workers. They
-  // still have to prove 18+ later (employer: EID; teacher: DOB in
-  // the details step).
+  // Teachers skip the DOB-age-gate step because the 15–23 eligibility
+  // logic only applies to youth; they prove 18+ via DOB in the details step.
   type Step = "dob" | "details";
   const [step, setStep] = useState<Step>(isAdultSignup ? "details" : "dob");
 
   // If the user lands on /auth/signup as a youth, enters an over-23 DOB,
-  // and clicks the "sign up as a job poster / teacher" link, Next.js
-  // soft-navigates. The component re-renders but useState is preserved,
-  // so step would still be "dob" and the user would stay stuck. Flip
-  // to the details step as soon as we see the adult flag.
+  // and clicks the "sign up as a teacher" link, Next.js soft-navigates.
+  // The component re-renders but useState is preserved, so step would
+  // still be "dob" and the user would stay stuck. Flip to details as soon
+  // as we see the adult flag.
   useEffect(() => {
     if (isAdultSignup) {
       setStep("details");
@@ -69,8 +66,8 @@ function SignUpForm() {
   const [acceptedAll, setAcceptedAll] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  // Role picked by URL query (?role=employer|teacher); default youth.
-  const role = isEmployer ? "EMPLOYER" : isTeacher ? "TEACHER" : "YOUTH";
+  // Role picked by URL query (?role=teacher); default youth.
+  const role = isTeacher ? "TEACHER" : "YOUTH";
 
   // ── Age computation ───────────────────────────────────────────────
   const calculateAgeInfo = (dob: string) => {
@@ -121,7 +118,7 @@ function SignUpForm() {
           throw new Error("Endeavrly is for ages 15–23.");
         }
       }
-      if (role === "TEACHER" || role === "EMPLOYER") {
+      if (role === "TEACHER") {
         if (!dateOfBirth) {
           throw new Error("Please enter your date of birth.");
         }
@@ -130,11 +127,9 @@ function SignUpForm() {
         }
       }
 
-      // Adults (teacher, employer) send their DOB too so the API can
-      // enforce the 18+ floor server-side. Youth signup shape is
-      // unchanged.
-      const sendDob =
-        role === "YOUTH" || role === "EMPLOYER" || role === "TEACHER";
+      // Teachers send their DOB too so the API can enforce the 18+ floor
+      // server-side. Youth signup shape is unchanged.
+      const sendDob = role === "YOUTH" || role === "TEACHER";
 
       const response = await fetch("/api/auth/signup", {
         method: "POST",
@@ -244,14 +239,7 @@ function SignUpForm() {
                         >
                           teacher
                         </Link>
-                        {" "}or{" "}
-                        <Link
-                          href="/auth/signup?role=employer"
-                          className="text-teal-500 hover:underline"
-                        >
-                          job poster
-                        </Link>
-                        , sign up via those links instead.
+                        , sign up via that link instead.
                       </p>
                     )}
                     {isOver23 && (
@@ -294,10 +282,10 @@ function SignUpForm() {
           {/* ── Step 2: Details ───────────────────────────────────── */}
           {step === "details" && (
             <form onSubmit={handleSubmit} className="space-y-4">
-              {/* Youth flow has a DOB step to go back to. Employers don't —
-                  they land straight on details, so the Back button instead
-                  takes them to the landing page. */}
-              {isEmployer ? (
+              {/* Youth flow has a DOB step to go back to. Teachers land
+                  straight on details, so their Back button goes to the
+                  landing page instead. */}
+              {isAdultSignup ? (
                 <Link
                   href="/"
                   className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors -ml-1"
@@ -320,15 +308,11 @@ function SignUpForm() {
                 <h1 className="text-xl font-bold tracking-tight">
                   {isTeacher
                     ? "Create your teacher account"
-                    : isEmployer
-                    ? "Create your job poster account"
                     : "Let's get you set up"}
                 </h1>
                 <p className="text-sm text-muted-foreground mt-0.5">
                   {isTeacher
                     ? "Teacher accounts use a school email (e.g. *.skole.no, *.vgs.no, *.edu). You'll get a class code to share with your students."
-                    : isEmployer
-                    ? "Just a few details. You'll verify you're 18+ before posting your first job."
                     : "Just a few details and you're in."}
                 </p>
               </div>
