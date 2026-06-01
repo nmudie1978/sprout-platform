@@ -41,7 +41,6 @@ const REQUIRED_YOUTH_ROUTES = [
   '/profile',           // Profile — present but previously hidden behind wrong slot
   '/info',              // About — previously missing from mobile
   '/feedback',          // Feedback — previously missing from mobile
-  '/reviews',           // User Reviews — previously missing from mobile
 ];
 
 // NOTE: The "job poster" (EMPLOYER) role and the small-jobs marketplace

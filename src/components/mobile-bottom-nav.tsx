@@ -10,7 +10,7 @@
  * has: Yours, Explore, Account, Endeavrly, plus theme toggle and sign
  * out. This gives mobile parity with desktop so features like My
  * Career Radar, My Small Jobs, Youth Events, AI Advisor, Profile,
- * About, Feedback and User Reviews are all reachable from the phone.
+ * About and Feedback are all reachable from the phone.
  *
  * Roles:
  * - YOUTH — bar shows Home / Journey / Careers / Jobs / More. The More
@@ -39,11 +39,10 @@ import {
   Radar,
   Calendar,
   BarChart3,
-  Bot,
+  Sparkles,
   Library,
   Info,
   HelpCircle,
-  Quote,
   MoreHorizontal,
   Sun,
   Moon,
@@ -96,7 +95,7 @@ export const youthDrawerSections: NavSection[] = [
       { href: "/my-journey", label: "My Journey", icon: Route },
       { href: "/careers/radar", label: "My Career Radar", icon: Radar },
       { href: "/library", label: "My Library", icon: Library },
-      { href: "/career-advisor", label: "Career Twin", icon: Bot },
+      { href: "/career-advisor", label: "Career Twin", icon: Sparkles },
     ],
   },
   {
@@ -116,7 +115,6 @@ export const youthDrawerSections: NavSection[] = [
     items: [
       { href: "/info", label: "About", icon: Info },
       { href: "/feedback", label: "Feedback", icon: HelpCircle },
-      { href: "/reviews", label: "User Reviews", icon: Quote },
     ],
   },
 ];

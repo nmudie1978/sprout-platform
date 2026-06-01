@@ -34,7 +34,7 @@ import {
   HelpCircle,
   Info,
   Star,
-  Bot,
+  Sparkles,
   Wallet,
   Shield,
   Building2,
@@ -46,7 +46,6 @@ import {
   Route,
   FileText,
   Calendar,
-  Quote,
   ChevronDown,
   Radar,
   Zap,
@@ -405,7 +404,7 @@ export function SidebarNav({ userRole, userName, userEmail, userProfilePic }: Si
               <NavItem href="/my-journey" icon={Route} label="My Journey" active={isActive("/my-journey")} statusDot={hasActiveJourney} collapsed={collapsed} personal tooltip="Your guided path: Discover. Understand. Clarity." />
               <NavItem href="/careers/radar" icon={Radar} label="My Career Radar" active={isActive("/careers/radar")} collapsed={collapsed} personal tooltip="Personalised career match based on what you like, your strengths, and how you want to work." />
               <NavItem href="/library" icon={Library} label="My Library" active={isActive("/library")} collapsed={collapsed} personal tooltip="Everything you've saved and written — saved careers, comparisons, and your reflections, in one place." />
-              <NavItem href="/career-advisor" icon={Bot} label="Career Twin" active={isActive("/career-advisor")} collapsed={collapsed} personal tooltip="Talk to one possible future version of yourself in a career — what it could feel like, what it takes, the doubts, and the next steps. A simulation to explore, not a prediction." />
+              <NavItem href="/career-advisor" icon={Sparkles} label="Career Twin" active={isActive("/career-advisor")} collapsed={collapsed} personal tooltip="Talk to one possible future version of yourself in a career — what it could feel like, what it takes, the doubts, and the next steps. A simulation to explore, not a prediction." />
             </NavSection>
 
             <NavSection title="Explore" collapsed={collapsed}>
@@ -421,7 +420,6 @@ export function SidebarNav({ userRole, userName, userEmail, userProfilePic }: Si
             <NavSection title="Endeavrly" collapsed={collapsed}>
               <NavItem href="/info" icon={Info} label="About" active={isActive("/info")} collapsed={collapsed} tooltip="Learn what Endeavrly is, how we keep it safe, and who it's for." />
               <NavItem href="/feedback" icon={HelpCircle} label="Feedback" active={isActive("/feedback")} collapsed={collapsed} tooltip="Share feedback, report a problem, or suggest an idea." />
-              <NavItem href="/reviews" icon={Quote} label="User Reviews" active={isActive("/reviews")} collapsed={collapsed} tooltip="Hear what other youth and guardians think of Endeavrly." />
             </NavSection>
           </>
         )}
