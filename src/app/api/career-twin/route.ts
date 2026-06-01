@@ -15,6 +15,7 @@ import {
   isResponseSafe,
   getFallbackResponse,
   detectNonEnglishResponse,
+  localeToLanguage,
 } from "@/lib/ai-guardrails";
 import { checkRateLimit, RateLimits } from "@/lib/rate-limit";
 import { logAndSwallow } from "@/lib/observability";
@@ -134,7 +135,8 @@ export async function POST(req: NextRequest) {
     const profile = await loadProfileContext(session.user.id);
     const persona = buildPersona({ userId: session.user.id, career, profile });
     const mode = getMode(modeId);
-    const systemPrompt = buildCareerTwinSystemPrompt({ persona, mode, career, profile });
+    const replyLanguage = localeToLanguage(req.cookies.get("NEXT_LOCALE")?.value);
+    const systemPrompt = buildCareerTwinSystemPrompt({ persona, mode, career, profile, language: replyLanguage });
 
     const openai = getOpenAIClient();
     if (!openai) {
@@ -168,9 +170,13 @@ export async function POST(req: NextRequest) {
     if (!assistantMessage || !safety.safe) {
       return NextResponse.json({ message: twinFallback(career.title), fallback: true });
     }
-    const lang = detectNonEnglishResponse(assistantMessage);
-    if (lang.isNonEnglish) {
-      assistantMessage = twinFallback(career.title);
+    // Only enforce English when English is the target language — Norwegian
+    // and Spanish users are meant to get non-English replies.
+    if (replyLanguage === "English") {
+      const lang = detectNonEnglishResponse(assistantMessage);
+      if (lang.isNonEnglish) {
+        assistantMessage = twinFallback(career.title);
+      }
     }
 
     return NextResponse.json({ message: assistantMessage, mode: mode.id });
