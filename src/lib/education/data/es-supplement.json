@@ -1,0 +1,115 @@
+{
+  "meta": {
+    "source": "Official Spanish university sites (pilot slice — Phase 4). Figures/requirements are general; verify nota de corte per year.",
+    "country": "ES",
+    "lastUpdated": "2026-06-01"
+  },
+  "institutions": [
+    {
+      "id": "es-ucm",
+      "name": "Universidad Complutense de Madrid",
+      "shortName": "UCM",
+      "country": "ES",
+      "city": "Madrid",
+      "url": "https://www.ucm.es",
+      "applicationVia": "Distrito Único / preinscripción universitaria",
+      "careerIds": ["doctor"]
+    },
+    {
+      "id": "es-ub",
+      "name": "Universitat de Barcelona",
+      "shortName": "UB",
+      "country": "ES",
+      "city": "Barcelona",
+      "url": "https://www.ub.edu",
+      "applicationVia": "Preinscripció universitària (Generalitat de Catalunya)",
+      "careerIds": ["nurse"]
+    },
+    {
+      "id": "es-upm",
+      "name": "Universidad Politécnica de Madrid",
+      "shortName": "UPM",
+      "country": "ES",
+      "city": "Madrid",
+      "url": "https://www.upm.es",
+      "applicationVia": "Distrito Único / preinscripción universitaria",
+      "careerIds": ["software-developer"]
+    },
+    {
+      "id": "es-upc",
+      "name": "Universitat Politècnica de Catalunya",
+      "shortName": "UPC",
+      "country": "ES",
+      "city": "Barcelona",
+      "url": "https://www.upc.edu",
+      "applicationVia": "Preinscripció universitària (Generalitat de Catalunya)",
+      "careerIds": ["software-developer"]
+    }
+  ],
+  "programmes": [
+    {
+      "id": "es-ucm-medicina",
+      "careerId": "doctor",
+      "institutionId": "es-ucm",
+      "programme": "Grado en Medicina",
+      "englishName": "Bachelor's Degree in Medicine",
+      "url": "https://www.ucm.es/estudios/grado-medicina",
+      "type": "integrated",
+      "duration": "6 years",
+      "languageOfInstruction": "Spanish",
+      "tuitionFee": "Public — regional fees (approx., set per comunidad)",
+      "entryRequirements": "Bachillerato (Ciencias) + EvAU/PAU; one of the highest nota de corte of any degree",
+      "careerOutcome": "Graduates sit the MIR exam to enter medical residency (residencia / especialidad)",
+      "lastVerifiedAt": "2026-06-01",
+      "verificationSource": "official:ucm.es"
+    },
+    {
+      "id": "es-ub-enfermeria",
+      "careerId": "nurse",
+      "institutionId": "es-ub",
+      "programme": "Grado en Enfermería",
+      "englishName": "Bachelor's Degree in Nursing",
+      "url": "https://www.ub.edu/portal/web/enfermeria/grado",
+      "type": "bachelor",
+      "duration": "4 years",
+      "languageOfInstruction": "Spanish / Catalan",
+      "tuitionFee": "Public — regional fees (approx., set per comunidad)",
+      "entryRequirements": "Bachillerato + EvAU/PAU (sciences recommended); includes supervised clinical placements",
+      "careerOutcome": "Registration as a nurse (enfermero/a) with the Colegio de Enfermería",
+      "lastVerifiedAt": "2026-06-01",
+      "verificationSource": "official:ub.edu"
+    },
+    {
+      "id": "es-upm-informatica",
+      "careerId": "software-developer",
+      "institutionId": "es-upm",
+      "programme": "Grado en Ingeniería Informática",
+      "englishName": "Bachelor's Degree in Computer Engineering",
+      "url": "https://www.fi.upm.es/?id=gradoingenieriainformatica",
+      "type": "bachelor",
+      "duration": "4 years",
+      "languageOfInstruction": "Spanish",
+      "tuitionFee": "Public — regional fees (approx., set per comunidad)",
+      "entryRequirements": "Bachillerato (Ciencias/Tecnología) + EvAU/PAU; strong maths recommended",
+      "careerOutcome": "Roles in software development and engineering; basis for a Máster if desired",
+      "lastVerifiedAt": "2026-06-01",
+      "verificationSource": "official:fi.upm.es"
+    },
+    {
+      "id": "es-upc-informatica",
+      "careerId": "software-developer",
+      "institutionId": "es-upc",
+      "programme": "Grau en Enginyeria Informàtica",
+      "englishName": "Bachelor's Degree in Informatics Engineering (FIB)",
+      "url": "https://www.upc.edu/en/bachelors/informatics-engineering-barcelona-fib",
+      "type": "bachelor",
+      "duration": "4 years",
+      "languageOfInstruction": "Catalan / Spanish",
+      "tuitionFee": "Public — regional fees (approx., set per comunidad)",
+      "entryRequirements": "Batxillerat + selectivitat (PAU); strong maths recommended",
+      "careerOutcome": "Roles in software development and engineering; basis for a Màster if desired",
+      "lastVerifiedAt": "2026-06-01",
+      "verificationSource": "official:upc.edu"
+    }
+  ]
+}
