@@ -11,13 +11,12 @@
 
 export type CareerTwinModeId =
   | "ask_future_me"
-  | "day_in_life"
-  | "how_i_got_here"
-  | "what_i_wish_i_knew"
   | "study_skills"
   | "money_lifestyle"
   | "hard_truths"
-  | "next_step_coach";
+  | "doubts_risks"
+  | "opportunities"
+  | "next_steps";
 
 export interface CareerTwinMode {
   id: CareerTwinModeId;

@@ -139,7 +139,9 @@ export default function CareerAdvisorPage() {
   const careerParam = searchParams.get("career");
   const tabParam = searchParams.get("tab");
 
-  const [activeTab, setActiveTab] = useState(tabParam === "twin" ? "twin" : "advisor");
+  // Career Twin is the primary AI experience; the generic Advisor stays
+  // available as a secondary tab (open it explicitly with ?tab=advisor).
+  const [activeTab, setActiveTab] = useState(tabParam === "advisor" ? "advisor" : "twin");
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -301,9 +303,9 @@ export default function CareerAdvisorPage() {
         {/* Background gradient - matches Industry Insights */}
         <div className="absolute inset-0 -z-10 bg-gradient-to-br from-primary/5 via-transparent to-teal-500/5 pointer-events-none dark:hidden" />
         <PageHeader
-          title="AI Career"
-          gradientText="Advisor"
-          description="Get personalised career guidance, explore opportunities, and plan your path forward"
+          title="Career"
+          gradientText="Twin"
+          description="Talk to one possible future version of yourself — what this path could feel like, what it takes, and what to explore before you commit"
           icon={Bot}
         />
         <Card className="border-2 mt-8">
@@ -323,9 +325,9 @@ export default function CareerAdvisorPage() {
         {/* Background gradient - matches Industry Insights */}
         <div className="absolute inset-0 -z-10 bg-gradient-to-br from-primary/5 via-transparent to-teal-500/5 pointer-events-none dark:hidden" />
         <PageHeader
-          title="AI Career"
-          gradientText="Advisor"
-          description="Get personalised career guidance, explore opportunities, and plan your path forward"
+          title="Career"
+          gradientText="Twin"
+          description="Talk to one possible future version of yourself — what this path could feel like, what it takes, and what to explore before you commit"
           icon={Bot}
         />
         <Card className="border-2 mt-8">
@@ -333,10 +335,10 @@ export default function CareerAdvisorPage() {
             <div className="p-4 rounded-full bg-gradient-to-br from-primary/20 to-teal-500/20 w-fit mx-auto mb-6">
               <LogIn className="h-10 w-10 text-primary" />
             </div>
-            <h3 className="text-xl font-bold mb-2">Sign in to use the AI Advisor</h3>
+            <h3 className="text-xl font-bold mb-2">Sign in to meet your Career Twin</h3>
             <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-              Create a free account or sign in to get personalised career guidance,
-              explore opportunities, and chat with our AI career advisor.
+              Create a free account or sign in to talk to one possible future
+              version of yourself — and explore a path before you commit to it.
             </p>
             <div className="flex gap-3 justify-center">
               <Link href="/auth/signin">
@@ -362,7 +364,7 @@ export default function CareerAdvisorPage() {
                 <Sparkles className="h-5 w-5 text-primary" />
               </div>
               <div>
-                <h4 className="font-semibold mb-1">What can the AI Advisor help with?</h4>
+                <h4 className="font-semibold mb-1">What can Career Twin help with?</h4>
                 <ul className="text-sm text-muted-foreground space-y-1">
                   <li>• Explore career options based on your interests</li>
                   <li>• Get advice on how to start in different industries</li>
@@ -403,11 +405,11 @@ export default function CareerAdvisorPage() {
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-8">
         <TabsList className="grid w-full max-w-md grid-cols-2">
-          <TabsTrigger value="advisor">Career Advisor</TabsTrigger>
           <TabsTrigger value="twin">
             <Sparkles className="h-3.5 w-3.5 mr-1.5" />
             Career Twin
           </TabsTrigger>
+          <TabsTrigger value="advisor">Career Advisor</TabsTrigger>
         </TabsList>
 
         <TabsContent value="advisor" className="mt-6">
