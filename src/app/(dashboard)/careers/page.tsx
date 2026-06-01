@@ -179,6 +179,15 @@ function CareersPageContent() {
     }
   }, [searchParams, updateFilter]);
 
+  // Deep-link: `/careers?open=<careerId>` opens that career's detail sheet
+  // (used by e.g. the My Library "Compared" list).
+  useEffect(() => {
+    const openId = searchParams.get("open");
+    if (!openId) return;
+    const c = getAllCareers().find((x) => x.id === openId);
+    if (c) setSelectedCareer(c);
+  }, [searchParams]);
+
   // Listen for cross-component career-detail open requests (e.g. from related-niche links)
   useEffect(() => {
     const handler = (e: Event) => {

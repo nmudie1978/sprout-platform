@@ -1,5 +1,12 @@
 # Hybrid Language Policy (en-GB / nb-NO)
 
+> **⚠️ SUPERSEDED (2026-06).** AI chat (Career Advisor + Career Twin) no longer
+> replies English-only. It now replies in the user's UI language (en-GB →
+> English, nb-NO → Norwegian, es → Spanish) via `buildLanguageRule()` in
+> `src/lib/ai-guardrails.ts`; the `detectNonEnglishResponse` enforcement only
+> runs when English is the target language. Sections below describe the old
+> policy and are kept for history.
+
 **This platform uses a hybrid bilingual approach.**
 
 The platform serves Norwegian youth and operates with English as the primary language, with Norwegian (Bokmal) support for UI chrome and on-demand content translation.

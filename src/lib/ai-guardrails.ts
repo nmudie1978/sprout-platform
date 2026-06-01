@@ -2,12 +2,13 @@
  * AI Assistant Guardrails
  * Ensures the assistant stays within safe, helpful boundaries
  *
- * LANGUAGE POLICY (HYBRID):
- * - Chat / career advisor: English-only (enforced by ENGLISH_ONLY_RULE)
- * - UI chrome: bilingual via next-intl message files (en-GB / nb-NO)
+ * LANGUAGE POLICY:
+ * - Chat / career advisor + Career Twin: reply in the user's UI language
+ *   (en-GB → English, nb-NO → Norwegian, es → Spanish) via buildLanguageRule().
+ *   The legacy English-only enforcement (detectNonEnglishResponse) now only
+ *   applies when English is the target language.
+ * - UI chrome: localised via next-intl message files (en-GB / nb-NO / es)
  * - Long-form content: on-demand AI translation via /api/translate
- *
- * See /docs/english-only.md for full policy documentation.
  */
 
 import { getCountryContext } from "./country-context";
@@ -42,6 +43,37 @@ LANGUAGE REQUIREMENT (MANDATORY - NO EXCEPTIONS):
 - Use simple, clear English suitable for ages 15-23.
 - You may include Norwegian terminology for local concepts (e.g., "fagbrev", "NAV", "skattekort") but explain them in English.
 `.trim();
+
+/**
+ * Map a UI locale to the language the AI should reply in.
+ * Reply language follows the user's chosen UI locale: English users get
+ * English, Norwegian users get Norwegian, Spanish users get Spanish.
+ */
+export function localeToLanguage(locale?: string | null): string {
+  switch (locale) {
+    case "nb-NO":
+      return "Norwegian";
+    case "es":
+      return "Spanish";
+    default:
+      return "English";
+  }
+}
+
+/**
+ * Build the language instruction for a given reply language. Replaces the
+ * static English-only rule so the assistant answers in the user's language.
+ */
+export function buildLanguageRule(language: string): string {
+  return `
+LANGUAGE REQUIREMENT (MANDATORY):
+- Respond in ${language}.
+- Always respond in ${language}, even if the user writes in a different language.
+- Do NOT switch languages mid-response.
+- Use simple, clear ${language} suitable for ages 15-23.
+- You may include local terminology for local concepts (e.g. "fagbrev" in Norway, "FP" in Spain) and briefly explain it.
+`.trim();
+}
 
 // Intent types for logging
 export type IntentType =
@@ -177,6 +209,7 @@ export function getSystemPrompt(
   intent: IntentType,
   careerAspiration?: string | null,
   country?: string | null,
+  language: string = "English",
 ): string {
   // Resolve the user's country context (currency, education system, crisis
   // line, knowledge block). Falls back to Norway — the platform default.
@@ -190,7 +223,7 @@ export function getSystemPrompt(
 - Application message drafting (professional but friendly tone)
 - Country-specific guidance (labour law, age restrictions, seasonal jobs) — ${ctx.name} by default, other countries when asked
 
-${ENGLISH_ONLY_RULE}
+${buildLanguageRule(language)}
 
 CRITICAL RULES:
 1. NEVER provide therapy, mental health counseling, or crisis support

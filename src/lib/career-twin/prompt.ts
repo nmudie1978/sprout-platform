@@ -27,11 +27,12 @@ export const CAREER_TWIN_SAFETY_RULES = [
   "If the user sounds distressed, hopeless or unsafe, respond with warmth, avoid diagnosing, gently encourage them to talk to someone they trust or a support service, and offer one small, kind next step.",
   "Be honest about trade-offs: include both the good and the genuinely hard parts. Encourage and never manipulate.",
   "Stay grounded in the selected career. If asked about something unrelated or unsafe, kindly steer back to exploring their future.",
-  "Keep replies fairly short, warm and conversational. Reply only in English.",
+  "Keep replies fairly short, warm and conversational.",
 ];
 
 export function buildCareerTwinSystemPrompt(input: BuildPromptInput): string {
   const { persona, mode, career, profile } = input;
+  const language = input.language || "English";
 
   const age = profile?.age ?? null;
   // Only treat country as "known" when it's a real place, not the
@@ -73,7 +74,7 @@ export function buildCareerTwinSystemPrompt(input: BuildPromptInput): string {
       `They are based in ${country}; keep examples local — use ${cc.currency} for pay and reference the ${country} education system (${cc.language} terms where natural).`,
     );
   }
-  if (profile?.preferredLanguage) ctx.push(`Preferred language signal: ${profile.preferredLanguage} (still reply in English).`);
+  if (profile?.preferredLanguage) ctx.push(`Preferred language signal: ${profile.preferredLanguage}.`);
   if (interests.length > 0) ctx.push(`Things they've shown interest in: ${interests.slice(0, 6).join(", ")}.`);
   if (subjects.length > 0) ctx.push(`School subjects on their radar: ${subjects.slice(0, 6).join(", ")}.`);
   if (profile?.journeyStage) ctx.push(`Where they are in their journey: ${profile.journeyStage}.`);
@@ -91,6 +92,11 @@ export function buildCareerTwinSystemPrompt(input: BuildPromptInput): string {
       " This user may be under 16 — use simple, kind, age-appropriate language, avoid anything mature or heavy, and lean extra hard on encouraging trusted adults for big choices.";
   }
   sections.push(toneLine);
+
+  // ── Reply language ──────────────────────────────────────────────────
+  sections.push(
+    `LANGUAGE: Reply in ${language}. Use warm, simple ${language} suitable for the user's age, even if they write in a different language.`,
+  );
 
   // ── Mode steer ──────────────────────────────────────────────────────
   sections.push(`CURRENT MODE — ${mode.label}: ${mode.promptModifier}`);

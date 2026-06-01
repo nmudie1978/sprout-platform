@@ -35,3 +35,17 @@ export function normaliseCountry(input: unknown): string {
     ? input
     : DEFAULT_COUNTRY;
 }
+
+/** Country display name → ISO 3166-1 alpha-2 code (or null if unsupported). */
+export function countryToCode(name?: string | null): string | null {
+  return SUPPORTED_COUNTRIES.find((c) => c.name === name)?.code ?? null;
+}
+
+/**
+ * The UI locale a country should default to. Only Spain currently diverges
+ * from the platform default (en-GB). Norway intentionally stays en-GB unless
+ * the user picks Norsk — see CLAUDE.md / existing locale behaviour.
+ */
+export function defaultLocaleForCountry(name?: string | null): string | null {
+  return name === "Spain" ? "es" : null;
+}
