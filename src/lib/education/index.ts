@@ -15,6 +15,7 @@
 
 import institutionsData from './data/institutions.json';
 import programmesData from './data/programmes.json';
+import esSupplement from './data/es-supplement.json';
 import requirementsData from './data/career-requirements.json';
 import programmeValidationData from './data/programme-validation.json';
 import { shouldHideFromUi, type ValidationStatus } from './validate-programme-url';
@@ -35,7 +36,10 @@ export type { Route, Stage, RouteTag, StageKind } from './route-types';
 
 // ── Types ───────────────────────────────────────────────────────────
 
-export type NordicCountry = 'NO' | 'SE' | 'DK' | 'FI' | 'IS';
+// Supported country codes for education data. Originally Nordic-only; "ES"
+// (Spain) was added for the Spain pilot. The type name is kept for
+// compatibility with existing imports.
+export type NordicCountry = 'NO' | 'SE' | 'DK' | 'FI' | 'IS' | 'ES';
 
 export type ProgrammeType =
   | 'bachelor'
@@ -119,13 +123,18 @@ export interface ModuleEntry {
 
 // ── Internal indexes (built once at module load) ────────────────────
 
-const institutions: Institution[] =
-  (institutionsData as { institutions: Institution[] }).institutions;
+const institutions: Institution[] = [
+  ...(institutionsData as { institutions: Institution[] }).institutions,
+  // Spain pilot (Phase 4) — see data/es-supplement.json.
+  ...(esSupplement as { institutions: Institution[] }).institutions,
+];
 const institutionById = new Map<string, Institution>();
 for (const inst of institutions) institutionById.set(inst.id, inst);
 
-const programmes: Programme[] =
-  (programmesData as { programmes: Programme[] }).programmes;
+const programmes: Programme[] = [
+  ...(programmesData as { programmes: Programme[] }).programmes,
+  ...(esSupplement as { programmes: Programme[] }).programmes,
+];
 const careerKeyMap: Record<string, string> =
   (programmesData as { careerKeyMap: Record<string, string> }).careerKeyMap;
 const advancedCareerMap: Record<string, AdvancedCareerMapping> =

@@ -12,6 +12,7 @@
 
 import { useMemo, useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { useLocale } from 'next-intl';
 import {
   GraduationCap,
   Search,
@@ -87,6 +88,7 @@ const COUNTRY_FLAGS: Record<string, string> = {
   DK: '🇩🇰',
   FI: '🇫🇮',
   IS: '🇮🇸',
+  ES: '🇪🇸',
 };
 
 export function EducationBrowser({ careerTitle, careerId }: EducationBrowserProps) {
@@ -97,10 +99,17 @@ export function EducationBrowser({ careerTitle, careerId }: EducationBrowserProp
   const advanced = useMemo(() => (lookup ? getAdvancedCareerMapping(lookup) : null), [lookup]);
   const alternativePaths = useMemo(() => (resolvedId ? getAlternativePaths(resolvedId) : []), [resolvedId]);
 
+  // Spain users (es locale) see Spanish programmes only — Nordic listings
+  // are irrelevant to them. Where we don't yet have Spanish data for a
+  // career, the list is intentionally empty (an honest "nothing here yet")
+  // rather than showing Norwegian programmes.
+  const locale = useLocale();
+  const educationCountry = locale === 'es' ? 'ES' : undefined;
+
   const careerProgrammes = useMemo<ProgrammeWithInstitution[]>(() => {
     if (!resolvedId) return [];
-    return getProgrammesForCareer(resolvedId);
-  }, [resolvedId]);
+    return getProgrammesForCareer(resolvedId, educationCountry ? { country: educationCountry } : undefined);
+  }, [resolvedId, educationCountry]);
 
   // Phase 3 — route picker. Only surfaces when the career has >1
   // route. Selection persists per career in localStorage so a user
