@@ -112,12 +112,13 @@ const RESEARCH_STATS_RAW: ResearchStat[] = [
   },
   {
     id: "oecd-career-advisor",
-    headline: "Less than half of students have spoken with a career advisor",
+    headline: "Nearly half of students have never spoken with a career advisor",
     description:
-      "On average across OECD countries, only 49% of students have had a conversation with a career advisor at school—limiting their exposure to structured guidance.",
-    sourceName: "OECD PISA",
-    sourceUrl: "https://www.oecd.org/en/data/dashboards/teenage-career-readiness.html",
-    sourcePublishedAt: "2024-06-01",
+      "Across OECD countries, around 45% of 15-year-olds have never had a conversation with a career advisor—in or out of school—limiting their access to structured guidance.",
+    sourceName: "OECD",
+    sourceUrl:
+      "https://www.oecd.org/en/publications/the-state-of-global-teenage-career-preparation_d5f8e3f2-en.html",
+    sourcePublishedAt: "2025-01-14",
     sourceAccessedAt: "2025-01-22",
     tags: ["guidance", "work-exposure"],
   },
@@ -126,9 +127,10 @@ const RESEARCH_STATS_RAW: ResearchStat[] = [
     headline: "Only 45% of students have any real-world career exposure",
     description:
       "Fewer than half of students have gained practical exposure to how careers actually work — leaving most to make decisions based on guesswork, not experience.",
-    sourceName: "OECD PISA",
-    sourceUrl: "https://www.oecd.org/en/data/dashboards/teenage-career-readiness.html",
-    sourcePublishedAt: "2024-06-01",
+    sourceName: "OECD",
+    sourceUrl:
+      "https://www.oecd.org/en/publications/the-state-of-global-teenage-career-preparation_d5f8e3f2-en.html",
+    sourcePublishedAt: "2025-01-14",
     sourceAccessedAt: "2025-01-22",
     tags: ["work-exposure"],
   },
@@ -137,9 +139,10 @@ const RESEARCH_STATS_RAW: ResearchStat[] = [
     headline: "Only 35% of students have undertaken an internship",
     description:
       "Just over one-third of students have gained practical work experience through internships—leaving most without hands-on learning opportunities.",
-    sourceName: "OECD PISA",
-    sourceUrl: "https://www.oecd.org/en/data/dashboards/teenage-career-readiness.html",
-    sourcePublishedAt: "2024-06-01",
+    sourceName: "OECD",
+    sourceUrl:
+      "https://www.oecd.org/en/publications/the-state-of-global-teenage-career-preparation_d5f8e3f2-en.html",
+    sourcePublishedAt: "2025-01-14",
     sourceAccessedAt: "2025-01-22",
     tags: ["work-exposure"],
   },
@@ -183,7 +186,7 @@ const RESEARCH_STATS_RAW: ResearchStat[] = [
     id: "oecd-career-outcomes",
     headline: "Career exploration leads to better employment outcomes",
     description:
-      "Students who engage in career development activities—like job shadowing and conversations with advisors—show better results in employment rates, earnings, and career satisfaction by age 25.",
+      "Students who engage in career development activities—like spending time in real workplaces and conversations with advisors—show better results in employment rates, earnings, and career satisfaction by age 25.",
     sourceName: "OECD",
     sourceUrl: "https://www.oecd.org/en/about/projects/career-readiness.html",
     sourcePublishedAt: "2024-09-01",
