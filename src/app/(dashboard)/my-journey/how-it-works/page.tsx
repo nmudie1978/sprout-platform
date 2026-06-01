@@ -15,10 +15,10 @@ const STAGES = [
     icon: Search,
     label: 'Discover',
     subtitle: 'Know Yourself',
-    color: 'teal',
-    iconBg: 'bg-teal-500/10',
-    iconColor: 'text-teal-500',
-    borderColor: 'border-teal-500/20',
+    color: 'primary',
+    iconBg: 'bg-primary/10',
+    iconColor: 'text-primary',
+    borderColor: 'border-primary/20',
     description:
       'Before you can make good decisions, it helps to know what you\'re good at and what interests you. This stage helps you reflect, explore, and choose a direction.',
     steps: [
@@ -34,10 +34,10 @@ const STAGES = [
     icon: Globe,
     label: 'Understand',
     subtitle: 'Know the Role',
-    color: 'emerald',
-    iconBg: 'bg-emerald-500/10',
-    iconColor: 'text-emerald-500',
-    borderColor: 'border-emerald-500/20',
+    color: 'success',
+    iconBg: 'bg-success/10',
+    iconColor: 'text-success',
+    borderColor: 'border-success/20',
     description:
       'Once you have a direction, explore what that path actually looks like. What does the role involve day to day? What qualifications and skills do you need? What\'s the industry outlook?',
     steps: [
@@ -51,10 +51,10 @@ const STAGES = [
     icon: Rocket,
     label: 'Clarity',
     subtitle: 'See Your Full Journey',
-    color: 'amber',
-    iconBg: 'bg-amber-500/10',
-    iconColor: 'text-amber-500',
-    borderColor: 'border-amber-500/20',
+    color: 'warning',
+    iconBg: 'bg-warning/10',
+    iconColor: 'text-warning',
+    borderColor: 'border-warning/20',
     description:
       'Time to do something real. Complete a meaningful action — a course, a project, an application — then reflect on what you learned. Completing these two steps unlocks your personalised career roadmap and school alignment.',
     steps: [
@@ -93,7 +93,7 @@ export default function HowItWorksPage() {
       <div className="flex items-center justify-center gap-2 mb-8">
         {STAGES.map((stage, i) => (
           <div key={stage.label} className="flex items-center gap-2">
-            <div className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 ${stage.iconBg}`}>
+            <div className={`flex items-center gap-1.5 rounded-pill px-3 py-1.5 ${stage.iconBg}`}>
               <stage.icon className={`h-3.5 w-3.5 ${stage.iconColor}`} />
               <span className={`text-xs font-semibold ${stage.iconColor}`}>{stage.label}</span>
             </div>
@@ -111,17 +111,17 @@ export default function HowItWorksPage() {
           return (
             <div
               key={stage.label}
-              className={`rounded-xl border ${stage.borderColor} bg-card/60 p-5 sm:p-6`}
+              className={`rounded-card border ${stage.borderColor} bg-card/60 p-5 sm:p-6`}
             >
               <div className="flex items-center gap-3 mb-3">
-                <div className={`p-2 rounded-lg ${stage.iconBg}`}>
+                <div className={`p-2 rounded-control ${stage.iconBg}`}>
                   <Icon className={`h-5 w-5 ${stage.iconColor}`} />
                 </div>
                 <div>
                   <h2 className="text-base font-semibold">{stage.label}</h2>
                   <p className={`text-xs ${stage.iconColor}`}>{stage.subtitle}</p>
                 </div>
-                <span className={`ml-auto text-xs font-bold ${stage.iconColor} bg-${stage.color}-500/10 px-2 py-0.5 rounded-full`}>
+                <span className={`ml-auto text-xs font-bold ${stage.iconColor} bg-${stage.color}/10 px-2 py-0.5 rounded-pill`}>
                   Stage {i + 1}
                 </span>
               </div>
@@ -132,12 +132,12 @@ export default function HowItWorksPage() {
 
               {/* Steps */}
               <div className="space-y-2 mb-2">
-                <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/50">
+                <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground/50">
                   Steps
                 </p>
                 {stage.steps.map((step, si) => (
                   <div key={step.name} className="flex items-start gap-2.5">
-                    <div className={`flex h-5 w-5 items-center justify-center rounded-full shrink-0 mt-0.5 text-[9px] font-bold bg-${stage.color}-500/15 ${stage.iconColor}`}>
+                    <div className={`flex h-5 w-5 items-center justify-center rounded-pill shrink-0 mt-0.5 text-xs font-bold bg-${stage.color}/15 ${stage.iconColor}`}>
                       {si + 1}
                     </div>
                     <div>
@@ -151,13 +151,13 @@ export default function HowItWorksPage() {
               {/* Extras */}
               {stage.extras.length > 0 && (
                 <div className="mt-3 pt-3 border-t border-border/30 space-y-2">
-                  <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/50">
+                  <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground/50">
                     Also in this stage
                   </p>
                   {stage.extras.map((extra) => (
                     <div key={extra.name} className="flex items-start gap-2.5">
-                      <div className={`flex h-5 w-5 items-center justify-center rounded-md shrink-0 mt-0.5 bg-${stage.color}-500/10`}>
-                        <div className={`h-1.5 w-1.5 rounded-full bg-${stage.color}-500`} />
+                      <div className={`flex h-5 w-5 items-center justify-center rounded-control shrink-0 mt-0.5 bg-${stage.color}/10`}>
+                        <div className={`h-1.5 w-1.5 rounded-pill bg-${stage.color}`} />
                       </div>
                       <div>
                         <p className="text-sm font-medium text-foreground/80">{extra.name}</p>
@@ -173,9 +173,9 @@ export default function HowItWorksPage() {
       </div>
 
       {/* What you unlock */}
-      <div className="mt-6 rounded-xl border border-emerald-500/20 bg-emerald-500/[0.03] p-5">
+      <div className="mt-6 rounded-card border border-success/20 bg-success/[0.03] p-5">
         <div className="flex items-start gap-3">
-          <Route className="h-5 w-5 text-emerald-400 shrink-0 mt-0.5" />
+          <Route className="h-5 w-5 text-success shrink-0 mt-0.5" />
           <div>
             <h3 className="text-sm font-semibold mb-1">What you unlock</h3>
             <p className="text-sm text-muted-foreground leading-relaxed mb-3">
@@ -185,11 +185,11 @@ export default function HowItWorksPage() {
             </p>
             <div className="flex items-center gap-4 text-xs text-muted-foreground/60">
               <span className="flex items-center gap-1.5">
-                <Route className="h-3.5 w-3.5 text-amber-500" />
+                <Route className="h-3.5 w-3.5 text-warning" />
                 Career Roadmap
               </span>
               <span className="flex items-center gap-1.5">
-                <GraduationCap className="h-3.5 w-3.5 text-teal-500" />
+                <GraduationCap className="h-3.5 w-3.5 text-primary" />
                 School & Learning Alignment
               </span>
             </div>
@@ -198,9 +198,9 @@ export default function HowItWorksPage() {
       </div>
 
       {/* Key principle */}
-      <div className="mt-4 rounded-xl border border-border/40 bg-muted/30 p-5">
+      <div className="mt-4 rounded-card border border-border/40 bg-muted/30 p-5">
         <div className="flex items-start gap-3">
-          <Lightbulb className="h-5 w-5 text-teal-400 shrink-0 mt-0.5" />
+          <Lightbulb className="h-5 w-5 text-primary shrink-0 mt-0.5" />
           <div>
             <h3 className="text-sm font-semibold mb-1">Why the order matters</h3>
             <p className="text-sm text-muted-foreground leading-relaxed">

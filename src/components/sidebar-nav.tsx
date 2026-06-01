@@ -34,7 +34,7 @@ import {
   HelpCircle,
   Info,
   Star,
-  Bot,
+  Sparkles,
   Wallet,
   Shield,
   Building2,
@@ -55,7 +55,7 @@ import {
 // ── Types ────────────────────────────────────────────────────────────
 
 interface SidebarNavProps {
-  userRole: "YOUTH" | "ADMIN" | "TEACHER";
+  userRole: "YOUTH" | "EMPLOYER" | "ADMIN" | "TEACHER";
   userName?: string;
   userEmail?: string;
   userProfilePic?: string | null;
@@ -121,8 +121,8 @@ function NavItem({ href, icon: Icon, label, active, badge, statusDot, collapsed,
           active
             ? "bg-teal-500/15 text-teal-700 dark:text-teal-300 font-medium shadow-[inset_0_0_20px_rgba(20,184,166,0.08)]"
             : personal
-            ? "text-slate-700 dark:text-teal-100/80 hover:text-slate-900 dark:hover:text-teal-100 hover:bg-teal-500/[0.06]"
-            : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-stone-200/60 dark:hover:bg-white/[0.04]"
+            ? "text-foreground/80 dark:text-teal-100/80 hover:text-foreground dark:hover:text-teal-100 hover:bg-teal-500/[0.06]"
+            : "text-muted-foreground dark:text-slate-400 hover:text-foreground dark:hover:text-slate-200 hover:bg-muted dark:hover:bg-white/[0.04]"
         )}
       >
         {/* Hover glow effect */}
@@ -135,7 +135,7 @@ function NavItem({ href, icon: Icon, label, active, badge, statusDot, collapsed,
             ? "text-teal-400 drop-shadow-[0_0_6px_rgba(45,212,191,0.5)]"
             : personal
             ? "text-teal-400/70 group-hover:scale-110 group-hover:text-teal-300"
-            : "group-hover:scale-110 group-hover:text-slate-200"
+            : "group-hover:scale-110 group-hover:text-foreground dark:group-hover:text-slate-200"
         )} />
         {!collapsed && <span className="flex-1 truncate">{label}</span>}
         {!collapsed && statusDot && (
@@ -205,7 +205,7 @@ function NavGroup({ href, icon: Icon, label, active, collapsed, childActive, chi
             collapsed ? "justify-center px-2 py-2.5" : "px-3 py-2",
             (active || childActive)
               ? "bg-teal-500/15 text-teal-700 dark:text-teal-300 font-medium shadow-[inset_0_0_20px_rgba(20,184,166,0.08)]"
-              : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-stone-200/60 dark:hover:bg-white/[0.04]"
+              : "text-muted-foreground dark:text-slate-400 hover:text-foreground dark:hover:text-slate-200 hover:bg-muted dark:hover:bg-white/[0.04]"
           )}
         >
           <Link
@@ -220,7 +220,7 @@ function NavGroup({ href, icon: Icon, label, active, collapsed, childActive, chi
                 "h-[18px] w-[18px] shrink-0 transition-all duration-200 ease-out",
                 (active || childActive)
                   ? "text-teal-400 drop-shadow-[0_0_6px_rgba(45,212,191,0.5)]"
-                  : "group-hover:scale-110 group-hover:text-slate-200"
+                  : "group-hover:scale-110 group-hover:text-foreground dark:group-hover:text-slate-200"
               )}
             />
             {!collapsed && <span className="flex-1 truncate">{label}</span>}
@@ -246,7 +246,7 @@ function NavGroup({ href, icon: Icon, label, active, collapsed, childActive, chi
         </div>
       </div>
       {!collapsed && open && (
-        <div className="relative mt-0.5 ml-[18px] pl-3 border-l border-slate-800/60 space-y-0.5">
+        <div className="relative mt-0.5 ml-[18px] pl-3 border-l border-border dark:border-slate-800/60 space-y-0.5">
           {children}
         </div>
       )}
@@ -271,7 +271,7 @@ function NavSection({ title, children, collapsed, accent }: NavSectionProps) {
         {collapsed && <div className="w-6 border-t border-teal-500/40 mx-auto mb-2" />}
         <div
           className={cn(
-            "relative space-y-0.5 rounded-xl border border-stone-300/50 dark:border-white/10 bg-stone-100/40 dark:bg-white/5 overflow-hidden",
+            "relative space-y-0.5 rounded-xl border border-border dark:border-white/10 bg-secondary/60 dark:bg-white/5 overflow-hidden",
             collapsed ? "p-1" : "p-1.5"
           )}
         >
@@ -293,11 +293,11 @@ function NavSection({ title, children, collapsed, accent }: NavSectionProps) {
   return (
     <div className="mb-5">
       {!collapsed && (
-        <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-slate-500 px-3 mb-1.5">
+        <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground dark:text-slate-500 px-3 mb-1.5">
           {title}
         </p>
       )}
-      {collapsed && <div className="w-6 border-t border-slate-800/50 mx-auto mb-2" />}
+      {collapsed && <div className="w-6 border-t border-border dark:border-slate-800/50 mx-auto mb-2" />}
       <div className="space-y-0.5">{children}</div>
     </div>
   );
@@ -387,7 +387,7 @@ export function SidebarNav({ userRole, userName, userEmail, userProfilePic }: Si
           <div className="absolute inset-0 rounded-xl bg-teal-400/20 opacity-0 group-hover/logo:opacity-100 blur-md transition-opacity duration-500" />
         </div>
         {!collapsed && (
-          <span className="font-bold text-base tracking-tight text-slate-800 dark:text-slate-100">
+          <span className="font-bold text-base tracking-tight text-foreground dark:text-slate-100">
             Endeavrly
           </span>
         )}
@@ -404,7 +404,7 @@ export function SidebarNav({ userRole, userName, userEmail, userProfilePic }: Si
               <NavItem href="/my-journey" icon={Route} label="My Journey" active={isActive("/my-journey")} statusDot={hasActiveJourney} collapsed={collapsed} personal tooltip="Your guided path: Discover. Understand. Clarity." />
               <NavItem href="/careers/radar" icon={Radar} label="My Career Radar" active={isActive("/careers/radar")} collapsed={collapsed} personal tooltip="Personalised career match based on what you like, your strengths, and how you want to work." />
               <NavItem href="/library" icon={Library} label="My Library" active={isActive("/library")} collapsed={collapsed} personal tooltip="Everything you've saved and written — saved careers, comparisons, and your reflections, in one place." />
-              <NavItem href="/career-advisor" icon={Bot} label="Career Twin" active={isActive("/career-advisor")} collapsed={collapsed} personal tooltip="Talk to one possible future version of yourself in a career — what it could feel like, what it takes, the doubts, and the next steps. A simulation to explore, not a prediction." />
+              <NavItem href="/career-advisor" icon={Sparkles} label="Career Twin" active={isActive("/career-advisor")} collapsed={collapsed} personal tooltip="Talk to one possible future version of yourself in a career — what it could feel like, what it takes, the doubts, and the next steps. A simulation to explore, not a prediction." />
             </NavSection>
 
             <NavSection title="Explore" collapsed={collapsed}>
@@ -463,7 +463,7 @@ export function SidebarNav({ userRole, userName, userEmail, userProfilePic }: Si
           <button
             type="button"
             onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-            className="flex items-center gap-3 w-full rounded-xl text-sm text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-stone-200/60 dark:hover:bg-white/5 transition-all duration-200 group/theme px-3 py-2"
+            className="flex items-center gap-3 w-full rounded-xl text-sm text-muted-foreground dark:text-slate-400 hover:text-foreground dark:hover:text-slate-200 hover:bg-muted dark:hover:bg-white/5 transition-all duration-200 group/theme px-3 py-2"
           >
             {mounted && theme === "dark" ? (
               <Sun className="h-[18px] w-[18px] shrink-0 transition-transform duration-300 group-hover/theme:rotate-90 group-hover/theme:text-amber-400" />
@@ -479,7 +479,7 @@ export function SidebarNav({ userRole, userName, userEmail, userProfilePic }: Si
           <button
             type="button"
             onClick={() => signOut({ callbackUrl: "/" })}
-            className="flex items-center gap-3 w-full rounded-xl text-sm text-slate-600 dark:text-slate-500 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-500/10 transition-all duration-200 group/signout px-3 py-2"
+            className="flex items-center gap-3 w-full rounded-xl text-sm text-muted-foreground dark:text-slate-500 hover:text-destructive dark:hover:text-red-400 hover:bg-destructive/10 dark:hover:bg-red-500/10 transition-all duration-200 group/signout px-3 py-2"
           >
             <LogOut className="h-[18px] w-[18px] shrink-0 transition-transform duration-200 group-hover/signout:translate-x-0.5" />
             <span>Sign Out</span>
@@ -493,8 +493,8 @@ export function SidebarNav({ userRole, userName, userEmail, userProfilePic }: Si
           type="button"
           onClick={() => setCollapsed(!collapsed)}
           className={cn(
-            "flex items-center gap-3 w-full rounded-xl text-sm text-slate-600 dark:text-slate-400 hover:text-teal-700 dark:hover:text-teal-300 hover:bg-teal-500/10 transition-all duration-200",
-            collapsed ? "justify-center px-2 py-3 ring-1 ring-stone-300/60 dark:ring-white/10" : "px-3 py-2"
+            "flex items-center gap-3 w-full rounded-xl text-sm text-muted-foreground dark:text-slate-400 hover:text-teal-700 dark:hover:text-teal-300 hover:bg-teal-500/10 transition-all duration-200",
+            collapsed ? "justify-center px-2 py-3 ring-1 ring-border dark:ring-white/10" : "px-3 py-2"
           )}
           title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
           aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}

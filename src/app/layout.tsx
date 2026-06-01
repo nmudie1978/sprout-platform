@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Source_Serif_4 } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/providers";
 import { NextIntlClientProvider } from "next-intl";
@@ -13,6 +13,14 @@ const inter = Inter({
   subsets: ["latin"],
   display: "swap",
   preload: true,
+  variable: "--font-sans",
+});
+
+// Source Serif 4 — headings only (h1–h4). Inter remains the body face.
+const sourceSerif = Source_Serif_4({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-serif",
 });
 
 export const viewport: Viewport = {
@@ -20,14 +28,14 @@ export const viewport: Viewport = {
   initialScale: 1,
   viewportFit: "cover",
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#faf9f7" },
+    { media: "(prefers-color-scheme: light)", color: "#F8F5EF" },
     { media: "(prefers-color-scheme: dark)", color: "#0a0a0a" },
   ],
 };
 
 export const metadata: Metadata = {
-  title: "Endeavrly - Growth from Small Beginnings",
-  description: "Connecting young people with meaningful work experiences that shape their future. We bridge the gap between local community needs and young people ready to contribute.",
+  title: "Endeavrly — See your possible future",
+  description: "Endeavrly helps young people explore careers, understand realistic pathways, and build clarity about their future. See your possible future before you commit to it.",
 };
 
 export default async function RootLayout({
@@ -47,7 +55,7 @@ export default async function RootLayout({
     // before next-themes hydrates. next-themes will swap the class
     // only if the user has explicitly opted into light via the toggle.
     <html lang={locale} className="dark" suppressHydrationWarning>
-      <body className={inter.className}>
+      <body className={`${inter.variable} ${sourceSerif.variable} font-sans`}>
         <NextIntlClientProvider locale={locale} messages={messages}>
           <Providers session={session}>{children}</Providers>
         </NextIntlClientProvider>

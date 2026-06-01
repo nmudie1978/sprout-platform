@@ -146,21 +146,21 @@ function GoalCard({
       <Card
         className={`border-2 border-dashed ${
           isPrimary
-            ? "border-teal-300 dark:border-teal-700"
-            : "border-slate-300 dark:border-slate-700"
+            ? "border-primary/40 dark:border-primary/40"
+            : "border-border dark:border-border"
         }`}
       >
         <CardContent className="py-8 text-center">
           <div
-            className={`w-12 h-12 mx-auto mb-4 rounded-full flex items-center justify-center ${
+            className={`w-12 h-12 mx-auto mb-4 rounded-pill flex items-center justify-center ${
               isPrimary
-                ? "bg-teal-100 dark:bg-teal-900/50"
-                : "bg-slate-100 dark:bg-slate-800"
+                ? "bg-primary/10 dark:bg-primary/20"
+                : "bg-muted dark:bg-muted"
             }`}
           >
             <Target
               className={`h-6 w-6 ${
-                isPrimary ? "text-teal-500" : "text-slate-500"
+                isPrimary ? "text-primary" : "text-muted-foreground"
               }`}
             />
           </div>
@@ -176,7 +176,7 @@ function GoalCard({
             {isMobile && onOpenGoalSheet && (
               <Button
                 variant={isPrimary ? "default" : "outline"}
-                className={isPrimary ? "bg-teal-600 hover:bg-teal-700" : ""}
+                className={isPrimary ? "bg-primary hover:bg-primary/90" : ""}
                 onClick={onOpenGoalSheet}
               >
                 <Plus className="h-4 w-4 mr-2" />
@@ -186,7 +186,7 @@ function GoalCard({
             <Link href="/careers">
               <Button
                 variant={isMobile && onOpenGoalSheet ? "outline" : (isPrimary ? "default" : "outline")}
-                className={!isMobile && isPrimary ? "bg-teal-600 hover:bg-teal-700" : ""}
+                className={!isMobile && isPrimary ? "bg-primary hover:bg-primary/90" : ""}
               >
                 <Compass className="h-4 w-4 mr-2" />
                 Explore Careers
@@ -204,14 +204,14 @@ function GoalCard({
       <Card
         className={`border-2 ${
           isPrimary
-            ? "border-teal-500 dark:border-teal-600"
-            : "border-slate-400 dark:border-slate-600"
+            ? "border-primary dark:border-primary"
+            : "border-border dark:border-border"
         }`}
       >
         <CardHeader className="pb-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              {isPrimary && <Star className="h-5 w-5 text-teal-500" />}
+              {isPrimary && <Star className="h-5 w-5 text-primary" />}
               <span className="text-sm font-medium text-muted-foreground">
                 {isPrimary ? "Primary Goal" : "Secondary Goal"}
               </span>
@@ -223,7 +223,7 @@ function GoalCard({
               <Button
                 size="sm"
                 onClick={onSave}
-                className={isPrimary ? "bg-teal-600 hover:bg-teal-700" : ""}
+                className={isPrimary ? "bg-primary hover:bg-primary/90" : ""}
               >
                 Save
               </Button>
@@ -322,7 +322,7 @@ function GoalCard({
                     variant="ghost"
                     size="icon"
                     onClick={() => removeNextStep(step.id)}
-                    className="h-8 w-8 text-muted-foreground hover:text-red-500"
+                    className="h-8 w-8 text-muted-foreground hover:text-destructive"
                   >
                     <X className="h-4 w-4" />
                   </Button>
@@ -346,7 +346,7 @@ function GoalCard({
                 <Badge
                   key={skill}
                   variant="secondary"
-                  className="cursor-pointer hover:bg-red-100 dark:hover:bg-red-900"
+                  className="cursor-pointer hover:bg-destructive/10 dark:hover:bg-destructive/20"
                   onClick={() => removeSkill(skill)}
                 >
                   {skill}
@@ -382,14 +382,14 @@ function GoalCard({
     <Card
       className={`${
         isPrimary
-          ? "border-2 border-teal-200 dark:border-teal-800 bg-gradient-to-br from-teal-50/50 to-white dark:from-teal-950/30 dark:to-background"
-          : "border border-slate-200 dark:border-slate-800"
+          ? "border-2 border-primary/30 dark:border-primary/30 bg-primary/10"
+          : "border border-border dark:border-border"
       }`}
     >
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-2">
-            {isPrimary && <Star className="h-5 w-5 text-teal-500 fill-teal-500" />}
+            {isPrimary && <Star className="h-5 w-5 text-primary fill-primary" />}
             <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
               {isPrimary ? "Primary Goal" : "Secondary Goal"}
             </span>
@@ -402,13 +402,13 @@ function GoalCard({
               variant="ghost"
               size="icon"
               onClick={onClear}
-              className="h-8 w-8 text-muted-foreground hover:text-red-500"
+              className="h-8 w-8 text-muted-foreground hover:text-destructive"
             >
               <Trash2 className="h-4 w-4" />
             </Button>
           </div>
         </div>
-        <CardTitle className={`text-xl ${isPrimary ? "text-teal-900 dark:text-teal-100" : ""}`}>
+        <CardTitle className={`text-xl ${isPrimary ? "text-primary dark:text-primary" : ""}`}>
           {goal!.title}
         </CardTitle>
       </CardHeader>
@@ -425,7 +425,7 @@ function GoalCard({
         </div>
 
         {goal!.why && (
-          <div className="text-sm text-muted-foreground bg-muted/50 p-3 rounded-lg">
+          <div className="text-sm text-muted-foreground bg-muted/50 p-3 rounded-control">
             <span className="font-medium">Why: </span>
             {goal!.why}
           </div>
@@ -434,7 +434,7 @@ function GoalCard({
         {(goal!.nextSteps ?? []).length > 0 && (
           <div>
             <h4 className="text-sm font-medium mb-2 flex items-center gap-2">
-              <CheckCircle2 className="h-4 w-4 text-green-500" />
+              <CheckCircle2 className="h-4 w-4 text-success" />
               Next Steps
             </h4>
             <div className="space-y-1">
@@ -453,7 +453,7 @@ function GoalCard({
         {(goal!.skills ?? []).length > 0 && (
           <div>
             <h4 className="text-sm font-medium mb-2 flex items-center gap-2">
-              <Lightbulb className="h-4 w-4 text-amber-500" />
+              <Lightbulb className="h-4 w-4 text-warning" />
               Skills to Build
             </h4>
             <div className="flex flex-wrap gap-1.5">
@@ -520,7 +520,7 @@ function NotesSection({
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <CardTitle className="text-lg flex items-center gap-2">
-            <StickyNote className="h-5 w-5 text-amber-500" />
+            <StickyNote className="h-5 w-5 text-warning" />
             Notes & Journal
           </CardTitle>
           {!isAdding && (
@@ -565,8 +565,8 @@ function NotesSection({
           <div className="space-y-3">
             {[1, 2].map((i) => (
               <div key={i} className="animate-pulse">
-                <div className="h-4 bg-muted rounded w-24 mb-2" />
-                <div className="h-16 bg-muted rounded" />
+                <div className="h-4 bg-muted rounded-control w-24 mb-2" />
+                <div className="h-16 bg-muted rounded-control" />
               </div>
             ))}
           </div>
@@ -584,7 +584,7 @@ function NotesSection({
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 10 }}
-                  className="group relative p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors"
+                  className="group relative p-3 rounded-control bg-muted/50 hover:bg-muted transition-colors"
                 >
                   <div className="flex items-start justify-between gap-2">
                     <p className="text-xs text-muted-foreground mb-1">
@@ -599,7 +599,7 @@ function NotesSection({
                       variant="ghost"
                       size="icon"
                       onClick={() => onDelete(note.id)}
-                      className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground hover:text-red-500"
+                      className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground hover:text-destructive"
                     >
                       <Trash2 className="h-3 w-3" />
                     </Button>
@@ -652,7 +652,7 @@ function SuggestedActions({ primaryGoal }: { primaryGoal: CareerGoal | null }) {
     <Card>
       <CardHeader className="pb-3">
         <CardTitle className="text-lg flex items-center gap-2">
-          <Lightbulb className="h-5 w-5 text-amber-500" />
+          <Lightbulb className="h-5 w-5 text-warning" />
           {primaryGoal ? "Suggested Next Actions" : "Get Started"}
         </CardTitle>
       </CardHeader>
@@ -664,10 +664,10 @@ function SuggestedActions({ primaryGoal }: { primaryGoal: CareerGoal | null }) {
               <Link
                 key={action.id}
                 href={action.href || "/careers"}
-                className="flex items-center gap-3 p-3 rounded-lg border hover:bg-muted/50 transition-colors group"
+                className="flex items-center gap-3 p-3 rounded-control border hover:bg-muted/50 transition-colors group"
               >
-                <div className="p-2 rounded-lg bg-amber-100 dark:bg-amber-900/50">
-                  <Icon className="h-4 w-4 text-amber-600 dark:text-amber-400" />
+                <div className="p-2 rounded-control bg-warning/10 dark:bg-warning/20">
+                  <Icon className="h-4 w-4 text-warning dark:text-warning" />
                 </div>
                 <span className="flex-1 text-sm font-medium">{action.text}</span>
                 <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
@@ -855,8 +855,8 @@ export default function GoalsPageContent() {
     return (
       <div className="space-y-4">
         <div className="animate-pulse space-y-4">
-          <div className="h-48 bg-muted rounded" />
-          <div className="h-48 bg-muted rounded" />
+          <div className="h-48 bg-muted rounded-control" />
+          <div className="h-48 bg-muted rounded-control" />
         </div>
       </div>
     );
@@ -874,7 +874,7 @@ export default function GoalsPageContent() {
             variant="outline"
             size="sm"
             onClick={() => setShowReportModal(true)}
-            className="text-emerald-600 border-emerald-200 hover:bg-emerald-50 hover:border-emerald-300 dark:border-emerald-800 dark:hover:bg-emerald-950"
+            className="text-success border-success/30 hover:bg-success/10 hover:border-success/40 dark:border-success/30 dark:hover:bg-success/10"
           >
             <FileText className="h-4 w-4 mr-2" />
             Generate Report

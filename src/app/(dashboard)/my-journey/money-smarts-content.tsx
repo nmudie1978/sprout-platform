@@ -55,8 +55,8 @@ const MONEY_TOPICS: MoneyTopic[] = [
     title: "Spending",
     subtitle: "Using money now",
     icon: ShoppingBag,
-    color: "text-orange-600",
-    bgColor: "bg-orange-500/10",
+    color: "text-warning",
+    bgColor: "bg-warning/10",
     steps: [
       {
         title: "What is spending?",
@@ -85,8 +85,8 @@ const MONEY_TOPICS: MoneyTopic[] = [
     title: "Saving",
     subtitle: "Setting money aside",
     icon: PiggyBank,
-    color: "text-blue-600",
-    bgColor: "bg-blue-500/10",
+    color: "text-info",
+    bgColor: "bg-info/10",
     steps: [
       {
         title: "What is saving?",
@@ -124,8 +124,8 @@ const MONEY_TOPICS: MoneyTopic[] = [
     title: "Investing",
     subtitle: "Growing money long-term",
     icon: TrendingUp,
-    color: "text-emerald-600",
-    bgColor: "bg-emerald-500/10",
+    color: "text-success",
+    bgColor: "bg-success/10",
     steps: [
       {
         title: "What is investing?",
@@ -168,8 +168,8 @@ const MONEY_TOPICS: MoneyTopic[] = [
     title: "Long-Term Saving",
     subtitle: "Planning far ahead",
     icon: Clock,
-    color: "text-teal-600",
-    bgColor: "bg-teal-500/10",
+    color: "text-primary",
+    bgColor: "bg-primary/10",
     steps: [
       {
         title: "What is long-term saving?",
@@ -206,8 +206,8 @@ const MONEY_TOPICS: MoneyTopic[] = [
     title: "Invest in Yourself",
     subtitle: "Skills & tools",
     icon: GraduationCap,
-    color: "text-rose-600",
-    bgColor: "bg-rose-500/10",
+    color: "text-accent",
+    bgColor: "bg-accent/10",
     steps: [
       {
         title: "The best investment?",
@@ -246,9 +246,9 @@ const MONEY_TOPICS: MoneyTopic[] = [
 // Disclaimer Component
 function Disclaimer() {
   return (
-    <div className="flex items-start gap-2 p-3 rounded-lg bg-muted/50 border border-muted">
+    <div className="flex items-start gap-2 p-3 rounded-control bg-muted/50 border border-muted">
       <Info className="h-4 w-4 text-muted-foreground shrink-0 mt-0.5" />
-      <p className="text-[11px] text-muted-foreground">
+      <p className="text-xs text-muted-foreground">
         Educational content only. Not financial advice. Investing involves risk.
         Consult a qualified professional for personal financial decisions.
       </p>
@@ -279,7 +279,7 @@ function TimeGrowthVisualizer() {
   const visualValue = getGrowthVisualization(years[0]);
 
   return (
-    <div className="space-y-4 p-4 rounded-lg bg-muted/30">
+    <div className="space-y-4 p-4 rounded-control bg-muted/30">
       <div className="flex items-center justify-between text-sm">
         <span className="text-muted-foreground">Time horizon</span>
         <span className="font-medium">{years[0]} years</span>
@@ -302,20 +302,20 @@ function TimeGrowthVisualizer() {
         <div className="flex items-center gap-3">
           <div className="flex-1">
             <div className="text-xs text-muted-foreground mb-1">If you started with</div>
-            <div className="h-4 w-20 rounded bg-emerald-500/30" />
+            <div className="h-4 w-20 rounded-control bg-success/30" />
             <div className="text-xs font-medium mt-1">100 units</div>
           </div>
           <ArrowRight className="h-4 w-4 text-muted-foreground" />
           <div className="flex-1">
             <div className="text-xs text-muted-foreground mb-1">Could become ~</div>
             <div
-              className="h-4 rounded bg-emerald-500/60 transition-all duration-500"
+              className="h-4 rounded-control bg-success/60 transition-all duration-500"
               style={{ width: `${Math.min((visualValue / 500) * 100, 100)}%` }}
             />
             <div className="text-xs font-medium mt-1">{visualValue} units*</div>
           </div>
         </div>
-        <p className="text-[10px] text-muted-foreground italic">
+        <p className="text-xs text-muted-foreground italic">
           *Illustrative only. Actual returns vary and are not guaranteed. Past performance does not predict future results.
         </p>
       </div>
@@ -344,7 +344,7 @@ function TopicCard({
       >
         <CardContent className="p-4">
           <div className="flex items-start gap-3">
-            <div className={`p-2.5 rounded-xl ${topic.bgColor}`}>
+            <div className={`p-2.5 rounded-control ${topic.bgColor}`}>
               <Icon className={`h-5 w-5 ${topic.color}`} />
             </div>
             <div className="flex-1 min-w-0">
@@ -403,7 +403,7 @@ function MicroGuideDialog({
       <DialogContent className="max-w-md max-h-[85vh] flex flex-col p-0 gap-0">
         <DialogHeader className="text-left p-4 pb-3 border-b shrink-0">
           <div className="flex items-center gap-3">
-            <div className={`p-2 rounded-lg ${topic.bgColor}`}>
+            <div className={`p-2 rounded-control ${topic.bgColor}`}>
               <Icon className={`h-5 w-5 ${topic.color}`} />
             </div>
             <div>
@@ -419,7 +419,7 @@ function MicroGuideDialog({
             {topic.steps.map((_, idx) => (
               <div
                 key={idx}
-                className={`h-1.5 rounded-full transition-all ${
+                className={`h-1.5 rounded-pill transition-all ${
                   idx === currentStep
                     ? "w-6 bg-primary"
                     : idx < currentStep
@@ -446,7 +446,7 @@ function MicroGuideDialog({
                 <ul className="space-y-3">
                   {step.points.map((point, idx) => (
                     <li key={idx} className="flex items-start gap-3">
-                      <div className="h-1.5 w-1.5 rounded-full bg-primary mt-2 shrink-0" />
+                      <div className="h-1.5 w-1.5 rounded-pill bg-primary mt-2 shrink-0" />
                       <span className="text-sm text-muted-foreground leading-relaxed">
                         {point}
                       </span>
@@ -455,9 +455,9 @@ function MicroGuideDialog({
                 </ul>
 
                 {step.tip && (
-                  <div className="flex items-start gap-2 p-3 rounded-lg bg-amber-500/10 border border-amber-500/20">
-                    <Lightbulb className="h-4 w-4 text-amber-600 shrink-0 mt-0.5" />
-                    <p className="text-sm text-amber-900 dark:text-amber-100">
+                  <div className="flex items-start gap-2 p-3 rounded-control bg-warning/10 border border-warning/20">
+                    <Lightbulb className="h-4 w-4 text-warning shrink-0 mt-0.5" />
+                    <p className="text-sm text-warning dark:text-warning">
                       {step.tip}
                     </p>
                   </div>
@@ -526,11 +526,11 @@ export default function MoneySmartsContent() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
       >
-        <Card className="border-2 border-dashed border-amber-500/30 bg-gradient-to-br from-amber-500/5 to-orange-500/5">
+        <Card className="border-2 border-dashed border-warning/30 bg-warning/10">
           <CardContent className="p-5">
             <div className="flex items-start gap-3">
-              <div className="p-2 rounded-lg bg-amber-500/10">
-                <Sparkles className="h-5 w-5 text-amber-600" />
+              <div className="p-2 rounded-control bg-warning/10">
+                <Sparkles className="h-5 w-5 text-warning" />
               </div>
               <div className="space-y-2">
                 <h3 className="font-semibold">You've earned money — now what?</h3>
@@ -611,8 +611,8 @@ export default function MoneySmartsContent() {
         animate={{ opacity: 1 }}
         transition={{ delay: 0.4 }}
       >
-        <div className="flex items-start gap-2 p-3 rounded-lg bg-blue-500/5 border border-blue-500/20">
-          <Users className="h-4 w-4 text-blue-600 shrink-0 mt-0.5" />
+        <div className="flex items-start gap-2 p-3 rounded-control bg-info/10 border border-info/20">
+          <Users className="h-4 w-4 text-info shrink-0 mt-0.5" />
           <p className="text-xs text-muted-foreground">
             <span className="font-medium text-foreground">Talk to a trusted adult.</span>{" "}
             Many financial products and accounts have age requirements. A parent, guardian,

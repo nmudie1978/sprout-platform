@@ -12,7 +12,7 @@ import {
   Moon,
   LogOut,
   ChevronDown,
-  Bot,
+  Sparkles,
   Info,
   Languages,
 } from "lucide-react";
@@ -31,7 +31,7 @@ import { Avatar } from "@/components/avatar";
 import Image from "next/image";
 
 interface UserAvatarMenuProps {
-  userRole: "YOUTH" | "ADMIN" | "TEACHER";
+  userRole: "YOUTH" | "EMPLOYER" | "ADMIN" | "TEACHER";
   userName?: string;
   userProfilePic?: string | null;
 }
@@ -47,6 +47,7 @@ export function UserAvatarMenu({
 
   const roleLabels = {
     YOUTH: "Youth",
+    EMPLOYER: "Job Poster",
     ADMIN: "Admin",
     TEACHER: "Teacher",
   };
@@ -111,6 +112,12 @@ export function UserAvatarMenu({
             <User className="mr-2 h-4 w-4" />
             Profile
           </DropdownMenuItem>
+          {userRole === "EMPLOYER" && (
+            <DropdownMenuItem onClick={() => navigateTo("/employer/settings")} className="cursor-pointer">
+              <Settings className="mr-2 h-4 w-4" />
+              Settings
+            </DropdownMenuItem>
+          )}
         </DropdownMenuGroup>
 
         <DropdownMenuSeparator />
@@ -123,8 +130,8 @@ export function UserAvatarMenu({
                 Tools
               </DropdownMenuLabel>
               <DropdownMenuItem onClick={() => navigateTo("/career-advisor")} className="cursor-pointer">
-                <Bot className="mr-2 h-4 w-4" />
-                AI Career Advisor
+                <Sparkles className="mr-2 h-4 w-4" />
+                Career Twin
               </DropdownMenuItem>
             </DropdownMenuGroup>
 

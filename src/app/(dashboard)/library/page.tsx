@@ -73,7 +73,7 @@ export default function LibraryPage() {
             className={cn(
               "px-3 py-2 text-sm rounded-t-md transition-colors -mb-px border-b-2",
               active === t.key
-                ? "border-teal-400 text-teal-600 dark:text-teal-300 font-medium"
+                ? "border-primary text-primary font-medium"
                 : "border-transparent text-muted-foreground hover:text-foreground"
             )}
           >
@@ -117,7 +117,7 @@ function SavedCareersTab() {
       window.dispatchEvent(new CustomEvent("open-career-detail", { detail: career }));
   };
   return (
-    <ul className="divide-y divide-border/60 rounded-lg border border-border/60 overflow-hidden bg-muted/10">
+    <ul className="divide-y divide-border/60 rounded-control border border-border/60 overflow-hidden bg-muted/10">
       {curiosities.map((c) => (
         <li
           key={c.careerId}
@@ -137,7 +137,7 @@ function SavedCareersTab() {
           <button
             type="button"
             onClick={() => removeCuriosity(c.careerId)}
-            className="p-1 rounded text-muted-foreground/30 hover:text-red-400 hover:bg-red-500/10 transition-colors shrink-0"
+            className="p-1 rounded-control text-muted-foreground/30 hover:text-destructive hover:bg-destructive/10 transition-colors shrink-0"
             aria-label={`Remove ${c.careerTitle}`}
           >
             <X className="h-3.5 w-3.5" />
@@ -164,7 +164,7 @@ function ComparedTab() {
       {comparisons.map((cmp) => (
         <li
           key={cmp.id}
-          className="rounded-lg border border-border/60 bg-muted/10 px-3 py-2.5"
+          className="rounded-control border border-border/60 bg-muted/10 px-3 py-2.5"
         >
           {cmp.title && (
             <p className="text-xs text-muted-foreground/70 mb-1">{cmp.title}</p>
@@ -177,7 +177,7 @@ function ComparedTab() {
                 {i > 0 && <span className="text-muted-foreground/40 mx-1.5">vs</span>}
                 <Link
                   href={`/careers?open=${encodeURIComponent(c.id)}`}
-                  className="rounded px-1 -mx-1 hover:bg-muted/40 hover:underline underline-offset-2 transition-colors"
+                  className="rounded-control px-1 -mx-1 hover:bg-muted/40 hover:underline underline-offset-2 transition-colors"
                 >
                   {c.emoji} {c.title}
                 </Link>
@@ -231,7 +231,7 @@ function ReflectionsTab() {
                 the tab from the URL hash. */}
             <Link
               href={`/my-journey#${e.lens}`}
-              className="block rounded-lg border border-border/60 bg-muted/10 px-4 py-3 hover:bg-muted/30 hover:border-border transition-colors"
+              className="block rounded-control border border-border/60 bg-muted/10 px-4 py-3 hover:bg-muted/30 hover:border-border transition-colors"
             >
               <p className="text-xs text-muted-foreground/70 mb-1">
                 <span className="mr-1">{career.emoji}</span>

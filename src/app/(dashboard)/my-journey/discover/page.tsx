@@ -91,8 +91,8 @@ export default function DiscoverPage() {
 
       {/* Header */}
       <div className="text-center mb-8">
-        <div className="h-12 w-12 rounded-full bg-teal-500/20 flex items-center justify-center mx-auto mb-3">
-          <Sparkles className="h-6 w-6 text-teal-500" />
+        <div className="h-12 w-12 rounded-pill bg-primary/20 flex items-center justify-center mx-auto mb-3">
+          <Sparkles className="h-6 w-6 text-primary" />
         </div>
         <h1 className="text-2xl font-bold mb-2">Know Yourself</h1>
         <p className="text-sm text-muted-foreground leading-relaxed max-w-md mx-auto">

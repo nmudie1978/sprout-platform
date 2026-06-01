@@ -55,12 +55,12 @@ const TYPE_ICONS = {
 };
 
 const TYPE_COLORS = {
-  skill: "text-teal-600 bg-teal-500/10",
-  experience: "text-blue-600 bg-blue-500/10",
-  learning: "text-amber-600 bg-amber-500/10",
-  job: "text-emerald-600 bg-emerald-500/10",
-  explore: "text-cyan-600 bg-cyan-500/10",
-  learn: "text-rose-600 bg-rose-500/10",
+  skill: "text-primary bg-primary/10",
+  experience: "text-info bg-info/10",
+  learning: "text-warning bg-warning/10",
+  job: "text-success bg-success/10",
+  explore: "text-info bg-info/10",
+  learn: "text-accent bg-accent/10",
 };
 
 // Stepping Stone Item
@@ -70,7 +70,7 @@ function SteppingStoneItem({ stone }: { stone: SteppingStone }) {
 
   return (
     <div className="flex items-center gap-3 py-2">
-      <div className={`p-1.5 rounded-lg ${colorClass.split(" ")[1]}`}>
+      <div className={`p-1.5 rounded-control ${colorClass.split(" ")[1]}`}>
         <Icon className={`h-3.5 w-3.5 ${colorClass.split(" ")[0]}`} />
       </div>
       <span
@@ -81,7 +81,7 @@ function SteppingStoneItem({ stone }: { stone: SteppingStone }) {
         {stone.title}
       </span>
       {stone.isCompleted ? (
-        <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+        <CheckCircle2 className="h-4 w-4 text-success" />
       ) : (
         <Circle className="h-4 w-4 text-muted-foreground/30" />
       )}
@@ -97,9 +97,9 @@ function MonthlyActionItem({ action }: { action: MonthlyAction }) {
   return (
     <Link
       href={action.href}
-      className="flex items-center gap-3 p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors group"
+      className="flex items-center gap-3 p-3 rounded-control bg-muted/50 hover:bg-muted transition-colors group"
     >
-      <div className={`p-1.5 rounded-lg ${colorClass.split(" ")[1]}`}>
+      <div className={`p-1.5 rounded-control ${colorClass.split(" ")[1]}`}>
         <Icon className={`h-3.5 w-3.5 ${colorClass.split(" ")[0]}`} />
       </div>
       <span
@@ -110,7 +110,7 @@ function MonthlyActionItem({ action }: { action: MonthlyAction }) {
         {action.title}
       </span>
       {action.isCompleted ? (
-        <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+        <CheckCircle2 className="h-4 w-4 text-success" />
       ) : (
         <ArrowRight className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
       )}
@@ -127,8 +127,8 @@ function GoalCard({ goal, isExpanded, onToggle }: { goal: Goal; isExpanded: bool
         onClick={onToggle}
         className="w-full text-left p-4 flex items-start gap-3 hover:bg-muted/30 transition-colors"
       >
-        <div className="p-2 rounded-xl bg-gradient-to-br from-teal-500/20 to-teal-500/20 shrink-0">
-          <Target className="h-5 w-5 text-teal-600" />
+        <div className="p-2 rounded-control bg-primary/20 shrink-0">
+          <Target className="h-5 w-5 text-primary" />
         </div>
         <div className="flex-1 min-w-0">
           <h3 className="font-semibold text-sm">{goal.title}</h3>
@@ -139,9 +139,9 @@ function GoalCard({ goal, isExpanded, onToggle }: { goal: Goal; isExpanded: bool
           )}
           {/* Progress bar */}
           <div className="mt-2 flex items-center gap-2">
-            <div className="flex-1 h-1.5 bg-muted rounded-full overflow-hidden">
+            <div className="flex-1 h-1.5 bg-muted rounded-pill overflow-hidden">
               <motion.div
-                className="h-full bg-gradient-to-r from-teal-500 to-emerald-500 rounded-full"
+                className="h-full bg-primary rounded-pill"
                 initial={{ width: 0 }}
                 animate={{ width: `${goal.progress}%` }}
                 transition={{ duration: 0.5 }}
@@ -208,7 +208,7 @@ function EmptyGoalStack() {
   return (
     <Card className="border-dashed">
       <CardContent className="py-8 text-center">
-        <div className="w-12 h-12 rounded-full bg-muted/50 flex items-center justify-center mx-auto mb-4">
+        <div className="w-12 h-12 rounded-pill bg-muted/50 flex items-center justify-center mx-auto mb-4">
           <Target className="h-6 w-6 text-muted-foreground" />
         </div>
         <h3 className="font-medium mb-2">No goals yet</h3>

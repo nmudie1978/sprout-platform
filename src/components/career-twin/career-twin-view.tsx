@@ -513,8 +513,8 @@ export function CareerTwinView({
                     )}
                   </div>
                   {m.role === "user" && (
-                    <div className="shrink-0 p-2 rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 self-start">
-                      <UserIcon className="h-4 w-4 text-white" />
+                    <div className="shrink-0 p-2 rounded-full bg-accent self-start">
+                      <UserIcon className="h-4 w-4 text-accent-foreground" />
                     </div>
                   )}
                 </motion.div>

@@ -55,62 +55,62 @@ const ENTRY_CONFIG: Record<
 > = {
   job_applied: {
     icon: Briefcase,
-    color: "text-blue-600",
-    bgColor: "bg-blue-500/10",
+    color: "text-info",
+    bgColor: "bg-info/10",
     label: "Applied",
   },
   job_completed: {
     icon: CheckCircle2,
-    color: "text-emerald-600",
-    bgColor: "bg-emerald-500/10",
+    color: "text-success",
+    bgColor: "bg-success/10",
     label: "Completed",
   },
   feedback_received: {
     icon: MessageSquare,
-    color: "text-teal-600",
-    bgColor: "bg-teal-500/10",
+    color: "text-primary",
+    bgColor: "bg-primary/10",
     label: "Feedback",
   },
   skill_demonstrated: {
     icon: Star,
-    color: "text-amber-600",
-    bgColor: "bg-amber-500/10",
+    color: "text-warning",
+    bgColor: "bg-warning/10",
     label: "Skill",
   },
   reflection_added: {
     icon: Lightbulb,
-    color: "text-cyan-600",
-    bgColor: "bg-cyan-500/10",
+    color: "text-info",
+    bgColor: "bg-info/10",
     label: "Reflection",
   },
   volunteer_experience: {
     icon: Heart,
-    color: "text-rose-600",
-    bgColor: "bg-rose-500/10",
+    color: "text-accent",
+    bgColor: "bg-accent/10",
     label: "Volunteer",
   },
   certificate_earned: {
     icon: Award,
-    color: "text-teal-600",
-    bgColor: "bg-teal-500/10",
+    color: "text-primary",
+    bgColor: "bg-primary/10",
     label: "Certificate",
   },
   goal_set: {
     icon: Calendar,
-    color: "text-teal-600",
-    bgColor: "bg-teal-500/10",
+    color: "text-primary",
+    bgColor: "bg-primary/10",
     label: "Goal",
   },
   milestone: {
     icon: Sparkles,
-    color: "text-orange-600",
-    bgColor: "bg-orange-500/10",
+    color: "text-warning",
+    bgColor: "bg-warning/10",
     label: "Milestone",
   },
   shadow_completed: {
     icon: Eye,
-    color: "text-teal-600",
-    bgColor: "bg-teal-500/10",
+    color: "text-primary",
+    bgColor: "bg-primary/10",
     label: "Shadow",
   },
 };
@@ -134,7 +134,7 @@ function TimelineEntryItem({
       <div className="flex flex-col items-center">
         <div
           className={`
-            w-10 h-10 rounded-full flex items-center justify-center shrink-0
+            w-10 h-10 rounded-pill flex items-center justify-center shrink-0
             ${config.bgColor}
           `}
         >
@@ -166,7 +166,7 @@ function TimelineEntryItem({
                 key={i}
                 className={`h-3 w-3 ${
                   i < entry.metadata!.rating!
-                    ? "text-amber-500 fill-amber-500"
+                    ? "text-warning fill-warning"
                     : "text-muted"
                 }`}
               />
@@ -182,7 +182,7 @@ function TimelineEntryItem({
 function EmptyTimeline() {
   return (
     <div className="text-center py-8">
-      <div className="w-16 h-16 rounded-full bg-muted/50 flex items-center justify-center mx-auto mb-4">
+      <div className="w-16 h-16 rounded-pill bg-muted/50 flex items-center justify-center mx-auto mb-4">
         <Calendar className="h-8 w-8 text-muted-foreground" />
       </div>
       <h3 className="font-medium mb-2">Your journey is just beginning</h3>

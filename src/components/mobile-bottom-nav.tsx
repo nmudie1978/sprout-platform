@@ -39,7 +39,7 @@ import {
   Radar,
   Calendar,
   BarChart3,
-  Bot,
+  Sparkles,
   Library,
   Info,
   HelpCircle,
@@ -95,7 +95,7 @@ export const youthDrawerSections: NavSection[] = [
       { href: "/my-journey", label: "My Journey", icon: Route },
       { href: "/careers/radar", label: "My Career Radar", icon: Radar },
       { href: "/library", label: "My Library", icon: Library },
-      { href: "/career-advisor", label: "Career Twin", icon: Bot },
+      { href: "/career-advisor", label: "Career Twin", icon: Sparkles },
     ],
   },
   {
