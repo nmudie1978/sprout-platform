@@ -8,7 +8,6 @@ import {
   Star,
   ArrowRight,
   Sparkles,
-  Check,
   Compass,
   BookOpen,
   ShieldCheck,
@@ -24,14 +23,12 @@ import { WordRevealLine, FadeReveal } from "@/components/landing/hero-word-revea
 // SECTION DATA
 // ============================================
 
+// The real in-app journey: My Journey runs Discover → Understand → Clarity
+// for every career. Keep this in step with src/app/(dashboard)/my-journey.
 const TIMELINE_NODES = [
-  { age: 15, label: "First Curiosity", status: "completed" as const },
-  { age: 16, label: "Trying Things Out", status: "completed" as const },
-  { age: 17, label: "Understanding Strengths", status: "current" as const },
-  { age: 18, label: "Exploring Directions", status: "future" as const },
-  { age: 19, label: "Building Confidence", status: "future" as const },
-  { age: 20, label: "Gaining Experience", status: "future" as const },
-  { age: 21, label: "Finding Your Path", status: "future" as const },
+  { step: 1, label: "Discover", caption: "Explore careers, lifestyle and what sparks you" },
+  { step: 2, label: "Understand", caption: "Real routes, skills and honest expectations" },
+  { step: 3, label: "Clarity", caption: "Your roadmap, next steps and direction" },
 ];
 
 const FEATURES = [
@@ -348,74 +345,38 @@ export default async function LandingPage() {
           {/* Timeline card */}
           <div className="rounded-2xl bg-slate-900/60 border border-slate-700/25 px-4 sm:px-10 py-8 sm:py-10">
             <div className="overflow-x-auto">
-              <div className="grid grid-cols-7 relative min-w-[600px] pb-2">
-                {/* Connecting line — gray base */}
+              <div className="grid grid-cols-3 relative min-w-[480px] pb-2">
+                {/* Connecting line — the journey path (Discover → Clarity) */}
                 <div
-                  className="absolute h-0.5 bg-slate-700/50 rounded-full"
+                  className="absolute h-0.5 bg-emerald-500/70 rounded-full"
                   style={{
                     top: "22px",
-                    left: "calc(100% / 14)",
-                    right: "calc(100% / 14)",
-                  }}
-                />
-                {/* Connecting line — emerald completed portion */}
-                <div
-                  className="absolute h-0.5 bg-emerald-500 rounded-full"
-                  style={{
-                    top: "22px",
-                    left: "calc(100% / 14)",
-                    width: "calc(2 / 6 * (100% - 100% / 7))",
+                    left: "calc(100% / 6)",
+                    right: "calc(100% / 6)",
                   }}
                 />
 
-                {/* Nodes */}
+                {/* Stages */}
                 {TIMELINE_NODES.map((node) => (
                   <div
-                    key={node.age}
+                    key={node.step}
                     className="flex flex-col items-center relative z-10"
                   >
-                    {/* Circle */}
-                    {node.status === "completed" && (
-                      <div className="h-11 w-11 rounded-full bg-emerald-500 flex items-center justify-center">
-                        <Check
-                          className="h-5 w-5 text-white"
-                          strokeWidth={2.5}
-                        />
-                      </div>
-                    )}
-                    {node.status === "current" && (
-                      <div className="h-11 w-11 rounded-full border-[2.5px] border-emerald-500 bg-slate-950 flex items-center justify-center">
-                        <div className="h-3 w-3 rounded-full bg-white" />
-                      </div>
-                    )}
-                    {node.status === "future" && (
-                      <div className="h-11 w-11 rounded-full bg-slate-800 border border-slate-700/60" />
-                    )}
+                    {/* Circle with step number */}
+                    <div className="h-11 w-11 rounded-full border-[2.5px] border-emerald-500 bg-slate-950 flex items-center justify-center">
+                      <span className="text-sm font-bold text-emerald-400">
+                        {node.step}
+                      </span>
+                    </div>
 
-                    {/* Age */}
-                    <span
-                      className={`mt-3 mb-1 ${
-                        node.status === "current"
-                          ? "text-sm font-bold text-emerald-400"
-                          : node.status === "completed"
-                            ? "text-sm font-medium text-white"
-                            : "text-sm text-neutral-500"
-                      }`}
-                    >
-                      {node.age}
+                    {/* Stage name */}
+                    <span className="mt-3 mb-1 text-sm font-semibold text-white">
+                      {node.label}
                     </span>
 
-                    {/* Label */}
-                    <span
-                      className={`text-xs text-center leading-tight max-w-[100px] ${
-                        node.status === "current"
-                          ? "text-white font-medium"
-                          : node.status === "completed"
-                            ? "text-neutral-400"
-                            : "text-neutral-600"
-                      }`}
-                    >
-                      {node.label}
+                    {/* Caption */}
+                    <span className="text-xs text-center leading-tight max-w-[160px] text-neutral-400">
+                      {node.caption}
                     </span>
                   </div>
                 ))}
