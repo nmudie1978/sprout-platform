@@ -254,6 +254,15 @@ function SignUpForm() {
                         , sign up via those links instead.
                       </p>
                     )}
+                    {isOver23 && (
+                      <p className="text-xs text-muted-foreground leading-relaxed mt-2">
+                        Are you a parent or professional who&rsquo;d like to share your career path to help young people?{" "}
+                        <Link href="/for-parents" className="text-teal-500 hover:underline">
+                          You can do that here
+                        </Link>
+                        {" "}&mdash; no account needed.
+                      </p>
+                    )}
                     {isEligible && (
                       <p className="text-xs text-teal-500 leading-relaxed">
                         Perfect &mdash; you&rsquo;re {ageInfo.age}. You&rsquo;re all set to continue.
