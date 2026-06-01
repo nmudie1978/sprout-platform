@@ -154,20 +154,30 @@ export default async function LandingPage() {
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             {/* Left — text */}
             <div className="max-w-2xl">
-              {/* Context label */}
+              {/* Context label + positioning kicker */}
               <FadeReveal delay={0} className="mb-12 sm:mb-16">
                 <p className="text-[11px] font-medium uppercase tracking-[0.2em] text-neutral-600">
                   {t('landing.hero.ageRange')}
                 </p>
+                <p className="mt-2 text-[12px] font-medium uppercase tracking-[0.18em] text-emerald-400/70">
+                  {t('landing.hero.tagline')}
+                </p>
               </FadeReveal>
 
               {/* Headline */}
-              <h1 className="text-3xl sm:text-4xl md:text-[2.75rem] font-semibold tracking-tight leading-snug text-white mb-10 sm:mb-12">
+              <h1 className="text-3xl sm:text-4xl md:text-[2.75rem] font-semibold tracking-tight leading-snug text-white mb-5 sm:mb-6">
                 <WordRevealLine
                   text={t('landing.hero.title')}
                   startDelay={300}
                 />
               </h1>
+
+              {/* Subhead — the core promise */}
+              <FadeReveal delay={1100} className="mb-10 sm:mb-12">
+                <p className="text-lg sm:text-xl font-medium text-neutral-200 leading-snug max-w-lg">
+                  {t('landing.hero.subhead')}
+                </p>
+              </FadeReveal>
 
               {/* Description */}
               <div className="space-y-5 mb-12 sm:mb-14 max-w-lg">

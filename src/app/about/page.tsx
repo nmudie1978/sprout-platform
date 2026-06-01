@@ -78,9 +78,15 @@ export default function AboutPage() {
             <span className="font-semibold">Endeavrly</span>
           </Link>
 
-          <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl mb-6">
+          <p className="text-xs font-medium uppercase tracking-[0.18em] text-teal-600 dark:text-teal-400/80 mb-3">
+            The Career Operating System for young people
+          </p>
+          <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl mb-4">
             Why Endeavrly Exists
           </h1>
+          <p className="text-xl font-medium text-foreground leading-snug mb-6">
+            See your possible future before you commit to it.
+          </p>
 
           <p className="text-lg text-foreground leading-relaxed">
             Most young people are expected to make career decisions without ever experiencing real work,
@@ -88,8 +94,8 @@ export default function AboutPage() {
             they&apos;re genuinely good at.
           </p>
           <p className="text-lg text-muted-foreground leading-relaxed mt-4">
-            Endeavrly gives them a place to explore, try things, and learn about themselves — before
-            the pressure of choosing a path kicks in.
+            Endeavrly helps you explore careers, understand the reality, and build a path forward —
+            before the pressure to choose becomes overwhelming.
           </p>
 
           {/* Download / read links — the one-page summary is for the

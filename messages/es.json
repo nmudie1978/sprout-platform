@@ -44,7 +44,7 @@
     "cardTitle": "Mi recorrido",
     "cardTitleWithGoal": "Mi recorrido para ser",
     "chooseGoalPrompt": "Elige un objetivo principal para empezar",
-    "completeIndicator": "Recorrido completado",
+    "completeIndicator": "Has explorado este posible futuro",
     "progressTooltip": "Tu recorrido sigue tu progreso por Descubrir, Entender y Claridad — para ayudarte a ver el panorama completo de una carrera.",
     "hint": "Este es tu camino",
     "discover": {
@@ -260,7 +260,9 @@
       "title": "Tu futuro es tuyo para explorarlo.",
       "problem": "Pero ahora mismo, el mundo laboral es casi invisible. Nombres de trabajos que no entiendes. Cualificaciones que no logras imaginar. Consejos profesionales que suenan todos igual. Nadie te muestra cómo son de verdad estos caminos — ni si encajarían con la persona en la que te estás convirtiendo.",
       "solution": "Endeavrly te da lo que faltaba. Carreras reales. Información honesta. Un espacio para reflexionar sobre quién eres y probar cosas por ti mismo/a — para que, cuando elijas una dirección, sea la tuya. Sin tests. Sin presión. Solo claridad.",
-      "cta": "Explora Endeavrly"
+      "cta": "Explora Endeavrly",
+      "tagline": "El sistema operativo de carreras para jóvenes.",
+      "subhead": "Ve tu posible futuro antes de comprometerte con él."
     },
     "framework": {
       "title": "Tres miradas. Un recorrido.",
