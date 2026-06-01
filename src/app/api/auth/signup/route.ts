@@ -5,7 +5,6 @@ import bcrypt from "bcryptjs";
 import { AccountStatus, AuditAction } from "@prisma/client";
 import {
   logAuditAction,
-  MIN_EMPLOYER_AGE,
   validateAgeBracket,
 } from "@/lib/safety";
 import {
@@ -212,38 +211,12 @@ export async function POST(req: NextRequest) {
       // youth PII (aggregated cohort data only), so no EID step.
       initialAccountStatus = AccountStatus.ACTIVE;
     } else if (role === "EMPLOYER") {
-      // Employers MUST provide DOB and prove 18+. Previously DOB was
-      // optional, leaving `ageVerified=false` as the only gate — but
-      // that's an onboarding state, not a hard block on signup itself.
-      // Require a self-declared age here; EID verification (Vipps/BankID)
-      // is the stronger second gate before job posting.
-      if (!dateOfBirth) {
-        return NextResponse.json(
-          { error: "Date of birth is required to create an employer account." },
-          { status: 400 }
-        );
-      }
-
-      birthDate = new Date(dateOfBirth);
-      age = getAge(birthDate);
-
-      if (age === null || Number.isNaN(birthDate.getTime())) {
-        return NextResponse.json(
-          { error: "Invalid date of birth" },
-          { status: 400 }
-        );
-      }
-
-      if (age < MIN_EMPLOYER_AGE) {
-        return NextResponse.json(
-          { error: `Employers must be at least ${MIN_EMPLOYER_AGE} years old.` },
-          { status: 400 }
-        );
-      }
-
-      // Employers still need EID verification before becoming ACTIVE.
-      // Self-declared age is a floor, not a substitute.
-      initialAccountStatus = AccountStatus.ONBOARDING;
+      // Job-poster / employer accounts have been removed from Endeavrly —
+      // this is a youth career-exploration platform, not a jobs marketplace.
+      return NextResponse.json(
+        { error: "Job poster accounts are no longer supported." },
+        { status: 400 }
+      );
     }
 
     // Check if user exists
@@ -297,13 +270,6 @@ export async function POST(req: NextRequest) {
             guardianConsent: true,
           },
         });
-      } else if (role === "EMPLOYER") {
-        await tx.employerProfile.create({
-          data: {
-            userId: createdUser.id,
-            companyName: email.split("@")[0], // Default company name from email
-          },
-        });
       }
 
       await tx.legalAcceptance.create({
@@ -339,7 +305,7 @@ export async function POST(req: NextRequest) {
       success: true,
       accountStatus: initialAccountStatus,
       requiresGuardianConsent: false,
-      requiresAgeVerification: role === "EMPLOYER",
+      requiresAgeVerification: false,
     });
     // New youth from a country whose UI language isn't the default get that
     // language automatically (e.g. Spain → Spanish). They can still switch via
