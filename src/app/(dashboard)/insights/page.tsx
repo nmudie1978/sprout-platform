@@ -43,27 +43,27 @@ import { useInsightUpdates } from "@/hooks/use-insight-updates";
 // Heavy components loaded lazily - these are below the fold or data-dependent
 const JobMarketStatsCarousel = dynamic(
   () => import("@/components/insights/job-market-stats-carousel").then((m) => m.JobMarketStatsCarousel),
-  { ssr: false, loading: () => <div className="h-64 animate-pulse rounded-xl bg-muted/50" /> }
+  { ssr: false, loading: () => <div className="h-64 animate-pulse rounded-control bg-muted/50" /> }
 );
 const InsightSection = dynamic(
   () => import("@/components/insights/insight-section").then((m) => m.InsightSection),
-  { ssr: false, loading: () => <div className="h-48 animate-pulse rounded-xl bg-muted/50" /> }
+  { ssr: false, loading: () => <div className="h-48 animate-pulse rounded-control bg-muted/50" /> }
 );
 const JobsEconomySpotlight = dynamic(
   () => import("@/components/insights/jobs-economy-spotlight").then((m) => m.JobsEconomySpotlight),
-  { ssr: false, loading: () => <div className="h-48 animate-pulse rounded-xl bg-muted/50" /> }
+  { ssr: false, loading: () => <div className="h-48 animate-pulse rounded-control bg-muted/50" /> }
 );
 const WhyThisMatters = dynamic(
   () => import("@/components/insights/why-this-matters").then((m) => m.WhyThisMatters),
-  { ssr: false, loading: () => <div className="h-32 animate-pulse rounded-xl bg-muted/50" /> }
+  { ssr: false, loading: () => <div className="h-32 animate-pulse rounded-control bg-muted/50" /> }
 );
 const DidYouKnowCard = dynamic(
   () => import("@/components/insights/did-you-know-card").then((m) => m.DidYouKnowCard),
-  { ssr: false, loading: () => <div className="h-32 animate-pulse rounded-xl bg-muted/50" /> }
+  { ssr: false, loading: () => <div className="h-32 animate-pulse rounded-control bg-muted/50" /> }
 );
 const GoFurtherTabs = dynamic(
   () => import("@/components/insights/go-further-tabs").then((m) => m.GoFurtherTabs),
-  { ssr: false, loading: () => <div className="h-48 animate-pulse rounded-xl bg-muted/50" /> }
+  { ssr: false, loading: () => <div className="h-48 animate-pulse rounded-control bg-muted/50" /> }
 );
 
 const CONTEXT_HINTS_KEY = "insights_contextHints";
@@ -96,13 +96,13 @@ function SectionHeader({
 }: SectionHeaderProps) {
   return (
     <div className="mb-4 sm:mb-6">
-      <div className={`h-1 rounded-full bg-gradient-to-r ${gradient} mb-3 sm:mb-5`} />
+      <div className={`h-1 rounded-pill ${gradient} mb-3 sm:mb-5`} />
       <div className="flex flex-col items-center text-center gap-2 sm:gap-3">
-        <div className={`p-2.5 sm:p-3 rounded-2xl ${iconBg} ring-2 ring-offset-2 ring-offset-background ${labelColor.replace('text-', 'ring-').replace(/\/\d+$/, '/20')}`}>
+        <div className={`p-2.5 sm:p-3 rounded-card ${iconBg} ring-2 ring-offset-2 ring-offset-background ${labelColor.replace('text-', 'ring-').replace(/\/\d+$/, '/20')}`}>
           <Icon className={`h-6 w-6 sm:h-7 sm:w-7 ${iconColor}`} />
         </div>
         <div>
-          <span className={`text-[10px] font-bold uppercase tracking-[0.15em] ${labelColor}`}>
+          <span className={`text-xs font-bold uppercase tracking-[0.15em] ${labelColor}`}>
             {label}
           </span>
           <h2 className="text-lg sm:text-2xl font-bold text-foreground mt-0.5">{title}</h2>
@@ -157,7 +157,7 @@ export default function IndustryInsightsPage() {
   return (
     <div className="container mx-auto px-3 py-4 sm:px-4 sm:py-8 relative">
       {/* Background gradient */}
-      <div className="absolute inset-0 -z-10 bg-gradient-to-br from-primary/5 via-transparent to-teal-500/5 pointer-events-none dark:hidden" />
+      <div className="absolute inset-0 -z-10 bg-primary/5 pointer-events-none dark:hidden" />
 
       {/* Live insight update toast — top-right, non-blocking */}
       <div className="fixed top-20 right-4 z-50 pointer-events-none">
@@ -190,14 +190,14 @@ export default function IndustryInsightsPage() {
           {t("trustLine")}
         </p>
         <div className="flex flex-wrap items-center justify-center gap-2 mt-3">
-          <span className="text-[11px] text-muted-foreground/40">Jump to:</span>
-          <a href="#global-lens" className="inline-flex items-center gap-1.5 text-[11px] px-2.5 py-1 rounded-full bg-blue-500/10 text-blue-400 hover:bg-blue-500/20 transition-colors">
+          <span className="text-xs text-muted-foreground/40">Jump to:</span>
+          <a href="#global-lens" className="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-pill bg-info/10 text-info hover:bg-info/20 transition-colors">
             <Globe2 className="h-3 w-3" /> Global Lens
           </a>
-          <a href="#youth-lens" className="inline-flex items-center gap-1.5 text-[11px] px-2.5 py-1 rounded-full bg-amber-500/10 text-amber-400 hover:bg-amber-500/20 transition-colors">
+          <a href="#youth-lens" className="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-pill bg-warning/10 text-warning hover:bg-warning/20 transition-colors">
             <Sparkles className="h-3 w-3" /> Youth Lens
           </a>
-          <a href="#dig-deeper" className="inline-flex items-center gap-1.5 text-[11px] px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 transition-colors">
+          <a href="#dig-deeper" className="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-pill bg-success/10 text-success hover:bg-success/20 transition-colors">
             <Lightbulb className="h-3 w-3" /> Explore
           </a>
         </div>
@@ -216,32 +216,32 @@ export default function IndustryInsightsPage() {
         transition={{ duration: 0.5, delay: 0.15 }}
         className="mb-2 scroll-mt-20"
       >
-        <div className="rounded-2xl border-2 border-blue-200/50 dark:border-blue-800/30 bg-card dark:bg-gradient-to-br dark:from-background dark:via-background dark:to-blue-950/10 p-3 sm:p-6">
+        <div className="rounded-card border-2 border-info/20 dark:border-info/30 bg-card p-3 sm:p-6">
           <div className="relative">
             <SectionHeader
               icon={Globe2}
               label={t("globalLens")}
               title={t("globalTitle")}
               subtitle={t("globalSubtitle")}
-              gradient="from-blue-500 via-cyan-500 to-blue-500"
-              iconBg="bg-blue-100 dark:bg-blue-900/30"
-              iconColor="text-blue-600 dark:text-blue-400"
-              labelColor="text-blue-500/80"
+              gradient="bg-info"
+              iconBg="bg-info/10 dark:bg-info/20"
+              iconColor="text-info"
+              labelColor="text-info/80"
             />
             <button
               onClick={toggleContextHints}
-              className="absolute top-0 right-0 sm:top-8 flex items-center gap-2 text-[11px] text-muted-foreground/60 hover:text-muted-foreground transition-colors z-10"
+              className="absolute top-0 right-0 sm:top-8 flex items-center gap-2 text-xs text-muted-foreground/60 hover:text-muted-foreground transition-colors z-10"
               aria-pressed={showContextHints}
             >
               <span
                 className={`
-                  relative inline-flex h-4 w-7 items-center rounded-full transition-colors duration-200
+                  relative inline-flex h-4 w-7 items-center rounded-pill transition-colors duration-200
                   ${showContextHints ? "bg-primary/60" : "bg-muted-foreground/20"}
                 `}
               >
                 <span
                   className={`
-                    inline-block h-3 w-3 rounded-full bg-white shadow-sm transition-transform duration-200
+                    inline-block h-3 w-3 rounded-pill bg-background shadow-sm transition-transform duration-200
                     ${showContextHints ? "translate-x-3.5" : "translate-x-0.5"}
                   `}
                 />
@@ -291,16 +291,16 @@ export default function IndustryInsightsPage() {
         transition={{ duration: 0.5, delay: 0.35 }}
         className="mb-3 scroll-mt-20"
       >
-        <div className="rounded-2xl border-2 border-amber-200/50 dark:border-amber-800/30 bg-card dark:bg-gradient-to-br dark:from-background dark:via-background dark:to-amber-950/10 p-3 sm:p-4">
+        <div className="rounded-card border-2 border-warning/20 dark:border-warning/30 bg-card p-3 sm:p-4">
           <SectionHeader
             icon={Sparkles}
             label={t("youthLens")}
             title={t("youthTitle")}
             subtitle={t("youthSubtitle")}
-            gradient="from-amber-400 via-orange-400 to-amber-400"
-            iconBg="bg-amber-100 dark:bg-amber-900/30"
-            iconColor="text-amber-600 dark:text-amber-400"
-            labelColor="text-amber-500/80"
+            gradient="bg-warning"
+            iconBg="bg-warning/10 dark:bg-warning/20"
+            iconColor="text-warning"
+            labelColor="text-warning/80"
           />
 
           {/* Side-by-side: Why This Matters + Did You Know */}
@@ -331,16 +331,16 @@ export default function IndustryInsightsPage() {
         transition={{ duration: 0.5, delay: 0.5 }}
         className="mb-3 scroll-mt-20"
       >
-        <div className="rounded-2xl border-2 border-teal-200/50 dark:border-teal-800/30 bg-card dark:bg-gradient-to-br dark:from-background dark:via-background dark:to-teal-950/10 p-3 sm:p-4">
+        <div className="rounded-card border-2 border-primary/20 dark:border-primary/30 bg-card p-3 sm:p-4">
           <SectionHeader
             icon={Layers}
             label="Explore"
             title="Dig Deeper"
             subtitle="Curated videos, podcasts, and articles on growing careers and the skills behind them"
-            gradient="from-teal-400 via-teal-400 to-teal-400"
-            iconBg="bg-teal-100 dark:bg-teal-900/30"
-            iconColor="text-teal-600 dark:text-teal-400"
-            labelColor="text-teal-500/80"
+            gradient="bg-primary"
+            iconBg="bg-primary/10 dark:bg-primary/20"
+            iconColor="text-primary"
+            labelColor="text-primary/80"
           />
 
           <motion.div
@@ -369,7 +369,7 @@ export default function IndustryInsightsPage() {
         transition={{ duration: 0.5, delay: 0.65 }}
         className="mb-4 scroll-mt-20"
       >
-        <div className="rounded-2xl border border-border/40 bg-card p-3 sm:p-4">
+        <div className="rounded-card border border-border/40 bg-card p-3 sm:p-4">
           <GoFurtherTabs />
         </div>
       </motion.section>
@@ -381,7 +381,7 @@ export default function IndustryInsightsPage() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5, delay: 0.8 }}
-        className="mt-8 p-5 rounded-lg bg-muted/20 border"
+        className="mt-8 p-5 rounded-control bg-muted/20 border"
       >
         <div className="flex items-start gap-3">
           <Calendar className="h-4 w-4 text-muted-foreground mt-0.5 flex-shrink-0" />
@@ -390,7 +390,7 @@ export default function IndustryInsightsPage() {
             <p className="text-xs text-muted-foreground mb-2">
               {t("aboutDataDesc")}
             </p>
-            <div className="flex flex-wrap gap-2 text-[10px]">
+            <div className="flex flex-wrap gap-2 text-xs">
               {[
                 { name: "WEF", url: "https://www.weforum.org" },
                 { name: "ILO", url: "https://www.ilo.org" },
@@ -423,12 +423,12 @@ export default function IndustryInsightsPage() {
       {/* Verification Status Footer */}
       <div className="mt-4 flex items-center justify-center gap-3 text-xs text-muted-foreground">
         <div className="flex items-center gap-1.5">
-          <div className="w-1.5 h-1.5 rounded-full bg-green-500" />
+          <div className="w-1.5 h-1.5 rounded-pill bg-success" />
           <span>{t("refreshed")}</span>
         </div>
         {modulesData?.meta?.allVerifiedThisQuarter && (
           <div className="flex items-center gap-1.5">
-            <CheckCircle2 className="h-3 w-3 text-green-600" />
+            <CheckCircle2 className="h-3 w-3 text-success" />
             <span>{t("verified")}</span>
           </div>
         )}

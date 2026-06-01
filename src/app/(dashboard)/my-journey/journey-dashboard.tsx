@@ -170,11 +170,11 @@ function JourneyStageIndicator({ stages }: { stages: JourneyStage[] }) {
           <div className="flex flex-col items-center">
             <div
               className={`
-                w-10 h-10 rounded-full flex items-center justify-center transition-all
+                w-10 h-10 rounded-pill flex items-center justify-center transition-all
                 ${stage.isCompleted
-                  ? "bg-emerald-500 text-white"
+                  ? "bg-success text-primary-foreground"
                   : stage.isActive
-                  ? "bg-gradient-to-br from-teal-500 to-teal-500 text-white ring-4 ring-teal-500/20"
+                  ? "bg-primary text-primary-foreground ring-4 ring-primary/20"
                   : "bg-muted text-muted-foreground"
                 }
               `}
@@ -199,7 +199,7 @@ function JourneyStageIndicator({ stages }: { stages: JourneyStage[] }) {
             <div
               className={`
                 flex-1 h-0.5 mx-2
-                ${stage.isCompleted ? "bg-emerald-500" : "bg-muted"}
+                ${stage.isCompleted ? "bg-success" : "bg-muted"}
               `}
             />
           )}
@@ -255,16 +255,16 @@ function NextBestActionCard({
   const Icon = currentAction.icon;
 
   return (
-    <Card className="border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-teal-500/5">
+    <Card className="border-2 border-primary/20 bg-accent/10">
       <CardContent className="p-5">
         <div className="flex items-start gap-4">
-          <div className="p-3 rounded-xl bg-gradient-to-br from-teal-500/20 to-teal-500/20">
-            <Icon className="h-6 w-6 text-teal-600" />
+          <div className="p-3 rounded-control bg-primary/20">
+            <Icon className="h-6 w-6 text-primary" />
           </div>
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-1">
-              <Sparkles className="h-4 w-4 text-amber-500" />
-              <span className="text-xs font-medium text-amber-600">Next Best Action</span>
+              <Sparkles className="h-4 w-4 text-warning" />
+              <span className="text-xs font-medium text-warning">Next Best Action</span>
             </div>
             <h3 className="font-semibold text-base mb-1">{currentAction.title}</h3>
             <p className="text-sm text-muted-foreground mb-3">
@@ -289,7 +289,7 @@ function WeeklyFocusCard({ focus }: { focus: WeeklyFocus }) {
     <Card className="bg-muted/30">
       <CardContent className="p-4">
         <div className="flex items-center gap-2 mb-2">
-          <TrendingUp className="h-4 w-4 text-emerald-600" />
+          <TrendingUp className="h-4 w-4 text-success" />
           <span className="text-xs font-medium text-muted-foreground">This Week's Focus</span>
         </div>
         <h3 className="font-semibold mb-2">{focus.theme}</h3>
@@ -297,7 +297,7 @@ function WeeklyFocusCard({ focus }: { focus: WeeklyFocus }) {
         <ul className="space-y-1.5">
           {focus.tips.map((tip, idx) => (
             <li key={idx} className="flex items-start gap-2 text-xs text-muted-foreground">
-              <span className="text-emerald-500 mt-0.5">•</span>
+              <span className="text-success mt-0.5">•</span>
               <span>{tip}</span>
             </li>
           ))}

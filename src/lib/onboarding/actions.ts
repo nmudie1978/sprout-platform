@@ -72,9 +72,9 @@ const PRIORITY_SUGGESTIONS: Record<string, NextStepSuggestion[]> = {
       priority: "explore",
     },
     {
-      suggestion: "Chat with the AI Career Advisor",
-      reason: "Get personalised guidance based on your goals",
-      action: { label: "Ask Endeavrly AI", href: "/career-advisor" },
+      suggestion: "Meet your Career Twin",
+      reason: "Explore what a path could feel like before you commit",
+      action: { label: "Meet your Career Twin", href: "/career-advisor" },
       priority: "explore",
     },
   ],

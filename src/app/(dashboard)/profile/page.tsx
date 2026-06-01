@@ -12,7 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { Switch } from "@/components/ui/switch";
-import { Copy, Eye, EyeOff, Shield, Trash2, AlertTriangle, Target, AlertCircle, User, ExternalLink, MessageSquare, Info, Sparkles, Compass, Bot } from "lucide-react";
+import { Copy, Eye, EyeOff, Shield, Trash2, AlertTriangle, Target, AlertCircle, User, ExternalLink, MessageSquare, Info, Sparkles, Compass } from "lucide-react";
 import { DiscoveryQuizDialog } from "@/components/discovery/discovery-quiz-dialog";
 import type { DiscoveryPreferences } from "@/lib/career-pathways";
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
@@ -116,12 +116,6 @@ export default function ProfilePage() {
   const [deleteStep, setDeleteStep] = useState<1 | 2>(1);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [deleteConfirmText, setDeleteConfirmText] = useState("");
-  const [aiChatHidden, setAiChatHidden] = useState(false);
-
-  useEffect(() => {
-    try { setAiChatHidden(localStorage.getItem("ai-chat-hidden") === "1"); } catch { /* ignore */ }
-  }, []);
-
   const { data: profile, isLoading } = useQuery({
     queryKey: ["my-profile", session?.user?.id],
     queryFn: async () => {
@@ -371,7 +365,7 @@ export default function ProfilePage() {
       {/* Funky Modern Background - Warm muted tones */}
       <div className="fixed inset-0 -z-20">
         {/* Base gradient - warm terracotta to sage */}
-        <div className="absolute inset-0 bg-gradient-to-br from-stone-100 via-amber-50/50 to-emerald-50/60 dark:hidden" />
+        <div className="absolute inset-0 bg-muted/40 dark:hidden" />
 
         {/* Noise texture overlay */}
         <div className="absolute inset-0 opacity-[0.02] dark:opacity-[0.04]"
@@ -399,7 +393,7 @@ export default function ProfilePage() {
           transition={{ duration: 120, repeat: Infinity, ease: "linear" }}
         >
           <motion.div
-            className="w-full h-full bg-gradient-to-br from-amber-300/20 via-orange-200/15 to-rose-200/10 dark:from-amber-700/10 dark:via-orange-800/8 dark:to-rose-900/5"
+            className="w-full h-full bg-accent/10"
             style={{ borderRadius: "60% 40% 30% 70% / 60% 30% 70% 40%" }}
             animate={{
               borderRadius: [
@@ -420,7 +414,7 @@ export default function ProfilePage() {
           transition={{ duration: 100, repeat: Infinity, ease: "linear" }}
         >
           <motion.div
-            className="w-full h-full bg-gradient-to-tr from-emerald-300/15 via-teal-200/12 to-cyan-200/8 dark:from-emerald-800/10 dark:via-teal-900/8 dark:to-cyan-950/5"
+            className="w-full h-full bg-primary/10"
             style={{ borderRadius: "40% 60% 70% 30% / 40% 50% 60% 50%" }}
             animate={{
               borderRadius: [
@@ -512,19 +506,19 @@ export default function ProfilePage() {
             {i % 3 === 0 ? (
               // Hexagon
               <div
-                className="w-8 h-8 bg-gradient-to-br from-amber-400/20 to-orange-300/10 dark:from-amber-600/15 dark:to-orange-700/8"
+                className="w-8 h-8 bg-warning/15"
                 style={{ clipPath: "polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)" }}
               />
             ) : i % 3 === 1 ? (
               // Triangle
               <div
-                className="w-6 h-6 bg-gradient-to-br from-emerald-400/20 to-teal-300/10 dark:from-emerald-600/15 dark:to-teal-700/8"
+                className="w-6 h-6 bg-success/15"
                 style={{ clipPath: "polygon(50% 0%, 0% 100%, 100% 100%)" }}
               />
             ) : (
               // Diamond
               <div
-                className="w-5 h-5 bg-gradient-to-br from-rose-400/20 to-pink-300/10 dark:from-rose-600/15 dark:to-pink-700/8"
+                className="w-5 h-5 bg-accent/15"
                 style={{ clipPath: "polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)" }}
               />
             )}
@@ -544,12 +538,12 @@ export default function ProfilePage() {
       {/* Accent glow spots - hidden on mobile for performance */}
       <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none hidden sm:block">
         <motion.div
-          className="absolute top-1/4 right-1/4 w-64 h-64 rounded-full bg-amber-400/10 dark:bg-amber-600/5 blur-3xl"
+          className="absolute top-1/4 right-1/4 w-64 h-64 rounded-pill bg-warning/10 blur-3xl"
           animate={{ scale: [1, 1.3, 1], opacity: [0.3, 0.5, 0.3] }}
           transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
         />
         <motion.div
-          className="absolute bottom-1/3 left-1/4 w-48 h-48 rounded-full bg-emerald-400/10 dark:bg-emerald-600/5 blur-3xl"
+          className="absolute bottom-1/3 left-1/4 w-48 h-48 rounded-pill bg-success/10 blur-3xl"
           animate={{ scale: [1, 1.4, 1], opacity: [0.2, 0.4, 0.2] }}
           transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 2 }}
         />
@@ -562,12 +556,12 @@ export default function ProfilePage() {
           className="mb-6 sm:mb-8"
         >
           <div className="flex items-center gap-2 sm:gap-3 mb-2">
-            <div className="p-2 sm:p-2.5 rounded-xl bg-amber-500/10 flex-shrink-0">
-              <User className="h-5 w-5 sm:h-6 sm:w-6 text-amber-600" />
+            <div className="p-2 sm:p-2.5 rounded-control bg-warning/10 flex-shrink-0">
+              <User className="h-5 w-5 sm:h-6 sm:w-6 text-warning" />
             </div>
             <div className="min-w-0">
               <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold">
-                My <span className="bg-gradient-to-r from-amber-600 to-orange-500 bg-clip-text text-transparent">Profile</span>
+                My <span className="text-primary">Profile</span>
               </h1>
               <p className="text-muted-foreground text-sm sm:text-base truncate">
                 Set your career direction, showcase your skills, and build your profile
@@ -607,26 +601,26 @@ export default function ProfilePage() {
         ];
 
         return (
-          <div className="mb-6 rounded-xl border border-border/50 bg-card/60 p-4">
+          <div className="mb-6 rounded-card border border-border/50 bg-card/60 p-4">
             <div className="flex items-center gap-2 mb-3">
               <div className={cn(
-                "h-1.5 w-1.5 rounded-full shrink-0",
-                isComplete ? "bg-emerald-500" : hasRequiredMissing ? "bg-amber-500" : "bg-teal-500"
+                "h-1.5 w-1.5 rounded-pill shrink-0",
+                isComplete ? "bg-success" : hasRequiredMissing ? "bg-warning" : "bg-primary"
               )} />
               <p className="text-xs font-medium text-foreground/70 flex-1">
                 {isComplete ? 'Profile complete' : hasRequiredMissing ? 'A few fields to complete' : 'Almost there'}
               </p>
               <span className={cn(
-                "text-[11px] font-semibold tabular-nums",
-                isComplete ? "text-emerald-500" : "text-muted-foreground/50"
+                "text-xs font-semibold tabular-nums",
+                isComplete ? "text-success" : "text-muted-foreground/50"
               )}>
                 {percent}%
               </span>
             </div>
             {/* Progress bar */}
-            <div className="h-1 bg-muted/40 rounded-full overflow-hidden mb-3">
+            <div className="h-1 bg-muted/40 rounded-pill overflow-hidden mb-3">
               <div
-                className={cn("h-full rounded-full transition-all duration-500", isComplete ? "bg-emerald-500" : "bg-teal-500")}
+                className={cn("h-full rounded-pill transition-all duration-500", isComplete ? "bg-success" : "bg-primary")}
                 style={{ width: `${percent}%` }}
               />
             </div>
@@ -636,9 +630,9 @@ export default function ProfilePage() {
                 <span
                   key={field}
                   className={cn(
-                    "inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-medium",
+                    "inline-flex items-center rounded-pill px-2.5 py-0.5 text-xs font-medium",
                     required
-                      ? "bg-amber-500/10 text-amber-400/80"
+                      ? "bg-warning/10 text-warning"
                       : "bg-muted/50 text-muted-foreground/50"
                   )}
                 >
@@ -655,7 +649,7 @@ export default function ProfilePage() {
       {profile && (
         <div className="mb-6 relative z-10">
         <Card className="border border-primary/20 overflow-hidden relative z-10">
-          <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-teal-500/5 pointer-events-none" />
+          <div className="absolute inset-0 bg-primary/5 pointer-events-none" />
           <CardContent className="relative z-10 p-5 sm:p-6">
             {/* Header with tooltip */}
             <div className="flex items-center justify-between mb-4">
@@ -695,16 +689,16 @@ export default function ProfilePage() {
             {goalsData?.primaryGoal ? (
               <div className="grid gap-3 sm:grid-cols-2">
                 {/* Primary Goal */}
-                <div className="rounded-lg border border-primary/20 bg-primary/5 p-3">
+                <div className="rounded-control border border-primary/20 bg-primary/5 p-3">
                   <div className="flex items-center justify-between mb-1.5">
                     <div className="flex items-center gap-1">
-                      <span className="text-[10px] font-medium uppercase tracking-wider text-primary/60">Primary Goal</span>
+                      <span className="text-xs font-medium uppercase tracking-wider text-primary/60">Primary Goal</span>
                       <TooltipProvider delayDuration={150}>
                         <Tooltip>
                           <TooltipTrigger asChild>
                             <Info className="h-3 w-3 text-primary/40 hover:text-primary/70 cursor-help transition-colors" />
                           </TooltipTrigger>
-                          <TooltipContent side="top" className="max-w-[260px] text-[11px] leading-snug">
+                          <TooltipContent side="top" className="max-w-[260px] text-xs leading-snug">
                             <p className="font-semibold mb-1">Your main career focus</p>
                             <p className="text-muted-foreground">
                               The Primary Goal powers everything in My Journey — your roadmap, study paths, suggested actions, voice simulation, and progress. Pick the one you most want to explore in depth.
@@ -715,10 +709,10 @@ export default function ProfilePage() {
                     </div>
                     <Badge
                       variant="secondary"
-                      className={`text-[9px] h-4 ${
+                      className={`text-xs h-4 ${
                         goalsData.primaryGoal.status === "committed"
-                          ? "bg-green-500/10 text-green-400"
-                          : "bg-blue-500/10 text-blue-400"
+                          ? "bg-success/10 text-success"
+                          : "bg-info/10 text-info"
                       }`}
                     >
                       {goalsData.primaryGoal.status === "committed" ? "Committed" : "Exploring"}
@@ -731,17 +725,17 @@ export default function ProfilePage() {
                 <button
                   type="button"
                   onClick={() => setShowGoalSheet(true)}
-                  className={`rounded-lg border p-3 text-left w-full transition-colors hover:bg-muted/30 ${goalsData.secondaryGoal ? 'border-border/50 bg-card/50' : 'border-dashed border-border/30 bg-transparent'}`}
+                  className={`rounded-control border p-3 text-left w-full transition-colors hover:bg-muted/30 ${goalsData.secondaryGoal ? 'border-border/50 bg-card/50' : 'border-dashed border-border/30 bg-transparent'}`}
                 >
                   <div className="flex items-center justify-between mb-1.5">
                     <div className="flex items-center gap-1">
-                      <span className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground/50">Secondary Goal</span>
+                      <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground/50">Secondary Goal</span>
                       <TooltipProvider delayDuration={150}>
                         <Tooltip>
                           <TooltipTrigger asChild>
                             <Info className="h-3 w-3 text-muted-foreground/40 hover:text-muted-foreground/70 cursor-help transition-colors" />
                           </TooltipTrigger>
-                          <TooltipContent side="top" className="max-w-[260px] text-[11px] leading-snug">
+                          <TooltipContent side="top" className="max-w-[260px] text-xs leading-snug">
                             <p className="font-semibold mb-1">A backup to keep on your radar</p>
                             <p className="text-muted-foreground">
                               A placeholder for a second career you&#39;re curious about. It doesn&#39;t drive your journey — only your Primary Goal does.
@@ -750,7 +744,7 @@ export default function ProfilePage() {
                         </Tooltip>
                       </TooltipProvider>
                     </div>
-                    <span className="text-[10px] text-muted-foreground/40 font-medium">
+                    <span className="text-xs text-muted-foreground/40 font-medium">
                       {goalsData.secondaryGoal ? "Change" : "Set"}
                     </span>
                   </div>
@@ -762,11 +756,11 @@ export default function ProfilePage() {
                 </button>
               </div>
             ) : (
-              <div className="rounded-lg border border-dashed border-emerald-500/20 p-6 flex flex-col items-center text-center">
-                <Target className="h-8 w-8 text-emerald-500/30 mb-2" />
+              <div className="rounded-control border border-dashed border-success/20 p-6 flex flex-col items-center text-center">
+                <Target className="h-8 w-8 text-success/30 mb-2" />
                 <p className="text-sm font-medium text-muted-foreground">No career goal set yet</p>
                 <p className="text-xs text-muted-foreground/60 mt-1">
-                  Your goal powers <span className="text-emerald-500/70 font-medium">My Journey</span> — it shapes your research, roadmap, and action plan
+                  Your goal powers <span className="text-success/70 font-medium">My Journey</span> — it shapes your research, roadmap, and action plan
                 </p>
               </div>
             )}
@@ -789,7 +783,7 @@ export default function ProfilePage() {
                     <TooltipTrigger asChild>
                       <Info className="h-3.5 w-3.5 text-muted-foreground/40 cursor-help" />
                     </TooltipTrigger>
-                    <TooltipContent side="right" className="max-w-[240px] text-[11px] p-3">
+                    <TooltipContent side="right" className="max-w-[240px] text-xs p-3">
                       Your name, location, and about section make up your profile. Only what you fill in is visible.
                     </TooltipContent>
                   </Tooltip>
@@ -805,7 +799,7 @@ export default function ProfilePage() {
                   <div className="flex-1 min-w-0">
                     {session?.user?.email && (
                       <p
-                        className="text-[11px] text-muted-foreground/60 mb-1 truncate"
+                        className="text-xs text-muted-foreground/60 mb-1 truncate"
                         title={session.user.email}
                       >
                         {session.user.email}
@@ -820,8 +814,8 @@ export default function ProfilePage() {
                           onChange={(e) => setFormData({ ...formData, displayName: e.target.value })}
                           className="h-9 text-sm"
                         />
-                        <p className="mt-1 text-[10px] text-muted-foreground/40">
-                          First name <span className="text-amber-500">*</span>
+                        <p className="mt-1 text-xs text-muted-foreground/40">
+                          First name <span className="text-warning">*</span>
                         </p>
                       </div>
                       <div>
@@ -832,7 +826,7 @@ export default function ProfilePage() {
                           onChange={(e) => setFormData({ ...formData, surname: e.target.value })}
                           className="h-9 text-sm"
                         />
-                        <p className="mt-1 text-[10px] text-muted-foreground/40">
+                        <p className="mt-1 text-xs text-muted-foreground/40">
                           Surname
                         </p>
                       </div>
@@ -856,24 +850,24 @@ export default function ProfilePage() {
                       year: 'numeric',
                     });
                     return (
-                      <div className="flex items-stretch gap-3 rounded-xl border border-border bg-muted/20 overflow-hidden">
-                        <div className="flex flex-col items-center justify-center px-5 py-3 bg-amber-500/10 border-r border-border min-w-[88px]">
-                          <span className="text-[9px] font-semibold uppercase tracking-wider text-amber-700 dark:text-amber-300/80">
+                      <div className="flex items-stretch gap-3 rounded-card border border-border bg-muted/20 overflow-hidden">
+                        <div className="flex flex-col items-center justify-center px-5 py-3 bg-warning/10 border-r border-border min-w-[88px]">
+                          <span className="text-xs font-semibold uppercase tracking-wider text-warning">
                             Age
                           </span>
                           <span className="text-3xl font-bold leading-none text-foreground tabular-nums mt-0.5">
                             {age}
                           </span>
-                          <span className="text-[9px] text-muted-foreground mt-0.5">
+                          <span className="text-xs text-muted-foreground mt-0.5">
                             years old
                           </span>
                         </div>
                         <div className="flex-1 flex flex-col justify-center py-3 pr-3">
-                          <span className="text-[9px] font-semibold uppercase tracking-wider text-muted-foreground">
+                          <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                             Born
                           </span>
                           <p className="text-sm font-medium text-foreground mt-0.5">{dobStr}</p>
-                          <p className="text-[10px] text-muted-foreground/60 mt-0.5">
+                          <p className="text-xs text-muted-foreground/60 mt-0.5">
                             Date of birth · set at sign-up
                           </p>
                         </div>
@@ -881,8 +875,8 @@ export default function ProfilePage() {
                     );
                   })()
                 ) : (
-                  <div className="rounded-xl border border-dashed border-border bg-muted/10 px-4 py-3">
-                    <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                  <div className="rounded-card border border-dashed border-border bg-muted/10 px-4 py-3">
+                    <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                       Age
                     </span>
                     <p className="text-sm text-muted-foreground/60 mt-0.5">
@@ -903,14 +897,14 @@ export default function ProfilePage() {
                   rows={2}
                   className="mt-1 text-sm"
                 />
-                <p className="mt-0.5 text-[10px] text-muted-foreground/30">{formData.bio.length}/500</p>
+                <p className="mt-0.5 text-xs text-muted-foreground/30">{formData.bio.length}/500</p>
               </div>
 
               {/* Phone + City side by side */}
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <Label htmlFor="phoneNumber" className="text-xs font-medium text-muted-foreground/70">
-                    Phone <span className="text-amber-500">*</span>
+                    Phone <span className="text-warning">*</span>
                   </Label>
                   <Input
                     id="phoneNumber"
@@ -925,7 +919,7 @@ export default function ProfilePage() {
                 </div>
                 <div>
                   <Label htmlFor="city" className="text-xs font-medium text-muted-foreground/70">
-                    City <span className="text-amber-500">*</span>
+                    City <span className="text-warning">*</span>
                   </Label>
                   <Input
                     id="city"
@@ -959,7 +953,7 @@ export default function ProfilePage() {
         <div className="space-y-6 relative z-10">
           {/* Privacy Controls */}
           {profile && (
-            <Card className="border-2 shadow-lg hover-lift relative z-10">
+            <Card className="border-2 shadow-sm hover-lift relative z-10">
               <CardHeader className="relative z-10">
                 <CardTitle className="flex items-center gap-2 text-xl">
                   <Shield className="h-5 w-5 text-primary" />
@@ -988,7 +982,7 @@ export default function ProfilePage() {
                 </div>
 
                 {profile.profileVisibility ? (
-                  <div className="rounded-lg bg-muted p-3">
+                  <div className="rounded-control bg-muted p-3">
                     <div className="flex items-center gap-2 text-sm font-medium">
                       <Eye className="h-4 w-4" />
                       Profile is Public
@@ -997,7 +991,7 @@ export default function ProfilePage() {
                       Share this link:
                     </p>
                     <div className="mt-2 flex items-center gap-2">
-                      <code className="flex-1 truncate rounded bg-background px-2 py-1 text-xs">
+                      <code className="flex-1 truncate rounded-control bg-background px-2 py-1 text-xs">
                         /p/{profile.publicProfileSlug}
                       </code>
                       <Button
@@ -1010,7 +1004,7 @@ export default function ProfilePage() {
                     </div>
                   </div>
                 ) : (
-                  <div className="rounded-lg bg-muted p-3">
+                  <div className="rounded-control bg-muted p-3">
                     <div className="flex items-center gap-2 text-sm font-medium">
                       <EyeOff className="h-4 w-4" />
                       Profile is Private
@@ -1021,38 +1015,6 @@ export default function ProfilePage() {
                   </div>
                 )}
 
-                {/* AI Assistant Toggle */}
-                <div className="border-t pt-4 mt-4">
-                  <div className="flex items-center justify-between">
-                    <div className="flex-1">
-                      <Label htmlFor="aiAssistant" className="cursor-pointer flex items-center gap-2">
-                        <Bot className="h-4 w-4 text-muted-foreground" />
-                        AI Career Assistant
-                      </Label>
-                      <p className="text-xs text-muted-foreground">
-                        Show the AI assistant chat bubble on every page
-                      </p>
-                    </div>
-                    <Switch
-                      id="aiAssistant"
-                      checked={!aiChatHidden}
-                      onCheckedChange={(checked) => {
-                        setAiChatHidden(!checked);
-                        try {
-                          localStorage.setItem("ai-chat-hidden", checked ? "0" : "1");
-                          // Broadcast so AiChatWidget (mounted in the
-                          // dashboard layout, read localStorage once on
-                          // mount) re-reads the value — without this the
-                          // widget stays hidden after re-enabling.
-                          window.dispatchEvent(
-                            new CustomEvent("endeavrly:ai-chat-visibility-changed"),
-                          );
-                        } catch { /* ignore */ }
-                      }}
-                    />
-                  </div>
-                </div>
-
               </CardContent>
             </Card>
           )}
@@ -1062,24 +1024,24 @@ export default function ProfilePage() {
           {/* Goal Change Warning */}
           {showGoalChangeWarning && (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={() => setShowGoalChangeWarning(false)}>
-              <div className="bg-card border border-border rounded-2xl p-6 max-w-md w-full shadow-2xl" onClick={(e) => e.stopPropagation()}>
+              <div className="bg-card border border-border rounded-card p-6 max-w-md w-full shadow-sm" onClick={(e) => e.stopPropagation()}>
                 <h3 className="text-lg font-semibold mb-2">Change your career goal?</h3>
                 <p className="text-sm text-muted-foreground mb-3">
                   <strong>{goalsData?.primaryGoal?.title}</strong> will be replaced as your Primary Goal. Any progress is saved and you can switch back anytime.
                 </p>
-                <div className="rounded-lg bg-muted/50 border border-border/50 p-3 mb-4 space-y-1.5">
-                  <p className="text-[11px] font-medium text-muted-foreground/80">What happens when you switch:</p>
-                  <ul className="text-[11px] text-muted-foreground/60 space-y-1 ml-3">
-                    <li className="flex items-start gap-1.5"><span className="text-emerald-500 mt-0.5">&#10003;</span> Strengths and interests carry over to any goal</li>
-                    <li className="flex items-start gap-1.5"><span className="text-emerald-500 mt-0.5">&#10003;</span> Research, actions, and roadmap saved per goal</li>
-                    <li className="flex items-start gap-1.5"><span className="text-emerald-500 mt-0.5">&#10003;</span> Switch back to restore all previous progress</li>
+                <div className="rounded-control bg-muted/50 border border-border/50 p-3 mb-4 space-y-1.5">
+                  <p className="text-xs font-medium text-muted-foreground/80">What happens when you switch:</p>
+                  <ul className="text-xs text-muted-foreground/60 space-y-1 ml-3">
+                    <li className="flex items-start gap-1.5"><span className="text-success mt-0.5">&#10003;</span> Strengths and interests carry over to any goal</li>
+                    <li className="flex items-start gap-1.5"><span className="text-success mt-0.5">&#10003;</span> Research, actions, and roadmap saved per goal</li>
+                    <li className="flex items-start gap-1.5"><span className="text-success mt-0.5">&#10003;</span> Switch back to restore all previous progress</li>
                   </ul>
                 </div>
                 <div className="flex justify-end gap-3">
                   <Button variant="outline" size="sm" onClick={() => setShowGoalChangeWarning(false)}>
                     Keep current goal
                   </Button>
-                  <Button size="sm" className="bg-amber-600 hover:bg-amber-700" onClick={() => {
+                  <Button size="sm" className="bg-warning text-primary-foreground hover:bg-warning/90" onClick={() => {
                     setShowGoalChangeWarning(false);
                     setGoalSheetTargetSlot("primary");
                     setShowGoalSheet(true);
@@ -1113,13 +1075,13 @@ export default function ProfilePage() {
           />
 
           {/* Give Feedback (Beta) */}
-          <Card className="border-2 border-blue-500/20 shadow-lg hover-lift overflow-hidden relative">
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent opacity-50 pointer-events-none" />
+          <Card className="border-2 border-info/20 shadow-sm hover-lift overflow-hidden relative">
+            <div className="absolute inset-0 bg-info/5 opacity-50 pointer-events-none" />
             <CardHeader className="relative">
               <CardTitle className="text-xl flex items-center gap-2">
-                <MessageSquare className="h-5 w-5 text-blue-600" />
+                <MessageSquare className="h-5 w-5 text-info" />
                 Help Us Improve
-                <Badge variant="secondary" className="text-xs bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300">
+                <Badge variant="secondary" className="text-xs bg-info/10 text-info">
                   Beta
                 </Badge>
               </CardTitle>
@@ -1131,7 +1093,7 @@ export default function ProfilePage() {
               <Link href="/feedback?source=profile">
                 <Button
                   variant="outline"
-                  className="w-full h-11 sm:h-10 border-blue-200 dark:border-blue-800 hover:bg-blue-50 dark:hover:bg-blue-950"
+                  className="w-full h-11 sm:h-10 border-info/30 hover:bg-info/10"
                 >
                   <MessageSquare className="mr-2 h-4 w-4" />
                   Give Feedback (Beta)
@@ -1141,10 +1103,10 @@ export default function ProfilePage() {
           </Card>
 
           {/* Danger Zone - Delete Account */}
-          <Card className="border-2 border-red-500/20 shadow-lg hover-lift overflow-hidden relative">
-            <div className="absolute inset-0 bg-gradient-to-br from-red-500/5 to-transparent opacity-50 pointer-events-none" />
+          <Card className="border-2 border-destructive/20 shadow-sm hover-lift overflow-hidden relative">
+            <div className="absolute inset-0 bg-destructive/5 opacity-50 pointer-events-none" />
             <CardHeader className="relative">
-              <CardTitle className="text-xl flex items-center gap-2 text-red-600">
+              <CardTitle className="text-xl flex items-center gap-2 text-destructive">
                 <AlertTriangle className="h-5 w-5" />
                 Danger Zone
               </CardTitle>
@@ -1179,7 +1141,7 @@ export default function ProfilePage() {
                     <>
                       <AlertDialogHeader>
                         <AlertDialogTitle className="flex items-center gap-2">
-                          <AlertTriangle className="h-5 w-5 text-red-600" />
+                          <AlertTriangle className="h-5 w-5 text-destructive" />
                           Are you sure you want to delete your account?
                         </AlertDialogTitle>
                         <AlertDialogDescription>
@@ -1209,7 +1171,7 @@ export default function ProfilePage() {
                   ) : (
                     <>
                       <AlertDialogHeader>
-                        <AlertDialogTitle className="flex items-center gap-2 text-red-600">
+                        <AlertDialogTitle className="flex items-center gap-2 text-destructive">
                           <AlertTriangle className="h-5 w-5" />
                           Final Confirmation Required
                         </AlertDialogTitle>
@@ -1221,7 +1183,7 @@ export default function ProfilePage() {
                             </p>
                             <div className="space-y-2">
                               <Label htmlFor="delete-confirm" className="text-foreground font-medium">
-                                Type <span className="font-bold text-red-600">DELETE</span> to confirm:
+                                Type <span className="font-bold text-destructive">DELETE</span> to confirm:
                               </Label>
                               <Input
                                 id="delete-confirm"
@@ -1229,7 +1191,7 @@ export default function ProfilePage() {
                                 placeholder="Type DELETE here"
                                 value={deleteConfirmText}
                                 onChange={(e) => setDeleteConfirmText(e.target.value)}
-                                className="border-red-200 focus:border-red-500"
+                                className="border-destructive/30 focus:border-destructive"
                                 autoComplete="off"
                               />
                             </div>

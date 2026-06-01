@@ -60,7 +60,7 @@ function CareerRadarPageContent() {
 
   return (
     <div className="container mx-auto px-4 py-6 relative">
-      <div className="absolute inset-0 -z-10 bg-gradient-to-br from-primary/5 via-transparent to-teal-500/5 pointer-events-none dark:hidden" />
+      <div className="absolute inset-0 -z-10 bg-primary/5 pointer-events-none dark:hidden" />
 
       <div className="max-w-3xl mx-auto">
         <div className="flex items-start justify-between gap-4">
@@ -77,7 +77,7 @@ function CareerRadarPageContent() {
       {isYouth ? (
         <div className="mt-4 max-w-3xl mx-auto relative">
           {profileLoading ? (
-            <div className="rounded-2xl border border-border/30 bg-card/40 p-8 text-center text-sm text-muted-foreground/60 animate-pulse">
+            <div className="rounded-card border border-border/30 bg-card/40 p-8 text-center text-sm text-muted-foreground/60 animate-pulse">
               {t('radar.loading')}
             </div>
           ) : (
@@ -150,10 +150,10 @@ function GradeRangePill({
   if (!excludeUni) return null;
 
   return (
-    <div className="mb-3 flex items-center gap-2 flex-wrap text-[11px]">
+    <div className="mb-3 flex items-center gap-2 flex-wrap text-xs">
       <span className="text-muted-foreground/60">Adjusted for:</span>
       {excludeUni && (
-        <span className="inline-flex items-center gap-1 rounded-full border border-amber-500/30 bg-amber-500/10 px-2 py-0.5 text-amber-700 dark:text-amber-300 font-medium">
+        <span className="inline-flex items-center gap-1 rounded-pill border border-warning/30 bg-warning/10 px-2 py-0.5 text-warning font-medium">
           No university
         </span>
       )}
@@ -211,9 +211,9 @@ function RadarGuideTips() {
         <button
           type="button"
           className={cn(
-            "relative inline-flex items-center justify-center rounded-full transition-all shrink-0 mt-2",
+            "relative inline-flex items-center justify-center rounded-pill transition-all shrink-0 mt-2",
             "h-8 w-8 border border-border/40 bg-background/60 text-muted-foreground/60 hover:bg-muted/40 hover:text-foreground",
-            open && "bg-teal-500/10 border-teal-500/40 text-teal-400",
+            open && "bg-primary/10 border-primary/40 text-primary",
           )}
           aria-label="How to use Career Radar"
           title="How to use Career Radar"
@@ -222,13 +222,13 @@ function RadarGuideTips() {
         </button>
       </PopoverTrigger>
       <PopoverContent
-        className="w-[280px] p-0 shadow-lg border-border/60"
+        className="w-[280px] p-0 shadow-sm border-border/60"
         side="bottom"
         sideOffset={8}
         align="end"
       >
         <div className="p-4 space-y-2">
-          <p className="text-[13px] font-semibold leading-tight">{RADAR_TIPS[tip].title}</p>
+          <p className="text-sm font-semibold leading-tight">{RADAR_TIPS[tip].title}</p>
           <p className="text-xs text-muted-foreground leading-relaxed">{RADAR_TIPS[tip].description}</p>
         </div>
         <div className="flex items-center justify-between border-t border-border/40 px-4 py-2.5 bg-muted/10">
@@ -237,12 +237,12 @@ function RadarGuideTips() {
               <span
                 key={i}
                 className={cn(
-                  "h-1 rounded-full transition-all duration-200",
-                  i === tip ? "w-3 bg-teal-500" : i < tip ? "w-1 bg-teal-500/40" : "w-1 bg-muted-foreground/25",
+                  "h-1 rounded-pill transition-all duration-200",
+                  i === tip ? "w-3 bg-primary" : i < tip ? "w-1 bg-primary/40" : "w-1 bg-muted-foreground/25",
                 )}
               />
             ))}
-            <span className="text-[10px] text-muted-foreground/60 ml-1.5">{tip + 1}/{RADAR_TIPS.length}</span>
+            <span className="text-xs text-muted-foreground/60 ml-1.5">{tip + 1}/{RADAR_TIPS.length}</span>
           </div>
           <div className="flex items-center gap-1">
             <Button
@@ -255,7 +255,7 @@ function RadarGuideTips() {
             <Button
               size="icon"
               variant={tip === RADAR_TIPS.length - 1 ? "default" : "ghost"}
-              className={cn("h-6", tip === RADAR_TIPS.length - 1 ? "w-auto px-2 text-[11px]" : "w-6")}
+              className={cn("h-6", tip === RADAR_TIPS.length - 1 ? "w-auto px-2 text-xs" : "w-6")}
               onClick={() => {
                 if (tip < RADAR_TIPS.length - 1) setTip(tip + 1);
                 else setOpen(false);

@@ -449,12 +449,12 @@ export function getSmartFallbackResponse(message: string, intent: IntentType): s
 
   // Handle greetings
   if (/^(hi|hello|hey|hei|hallo|good morning|good afternoon|good evening)[\s!.?]*$/i.test(message.trim())) {
-    return "Hi there! I'm your career assistant. I can help you with:\n\n" +
-      "• **Exploring careers** - Learn about different job paths\n" +
-      "• **Finding jobs** - Tips for getting your first job\n" +
-      "• **Writing applications** - Help with job messages\n" +
-      "• **Building skills** - What employers look for\n\n" +
-      "What would you like to know about?";
+    return "Hi. I'm one possible future version of you — your Career Twin. I can help you:\n\n" +
+      "• **Explore careers** - See what different paths could feel like\n" +
+      "• **Understand the route** - The realistic steps to get there\n" +
+      "• **Build skills** - What's worth learning now\n" +
+      "• **Think it through** - Talk out the doubts before you commit\n\n" +
+      "What would you like to explore?";
   }
 
   // Handle thanks

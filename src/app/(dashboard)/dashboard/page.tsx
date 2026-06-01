@@ -97,9 +97,8 @@ function GlassCard({
     <div className="relative">
       <div
         className={cn(
-          "relative bg-card border border-border rounded-2xl",
-          "shadow-[0_0_15px_rgba(20,184,166,0.06),0_0_30px_rgba(20,184,166,0.03)]",
-          "hover:shadow-[0_0_20px_rgba(20,184,166,0.1),0_0_40px_rgba(20,184,166,0.05)]",
+          "relative bg-card border border-border rounded-card",
+          "shadow-sm hover:shadow-md",
           "transition-shadow duration-300",
           className,
         )}
@@ -143,15 +142,15 @@ function DashboardSection({
               <Icon className={cn("h-3.5 w-3.5", iconColor, tooltip && "cursor-help")} />
             </span>
           )}
-          <h3 className="text-xs font-bold uppercase tracking-wide text-white">
+          <h3 className="text-xs font-bold uppercase tracking-wide text-foreground">
             {title}
           </h3>
         </div>
         {action}
       </div>
       <div className={cn(
-        "rounded-2xl border border-border bg-card p-3 sm:p-4 flex-1",
-        "shadow-[0_0_15px_rgba(20,184,166,0.06),0_0_30px_rgba(20,184,166,0.03)]",
+        "rounded-card border border-border bg-card p-3 sm:p-4 flex-1",
+        "shadow-sm",
         fixedHeight,
       )}>
         {children}
@@ -167,7 +166,7 @@ function StatCard({
   value,
   sublabel,
   icon: Icon,
-  iconColor = "text-teal-500",
+  iconColor = "text-primary",
 }: {
   label: string;
   value: string;
@@ -176,16 +175,16 @@ function StatCard({
   iconColor?: string;
 }) {
   return (
-    <div className="rounded-xl border border-border bg-card p-3 text-center shadow-[0_0_10px_rgba(20,184,166,0.04)]">
+    <div className="rounded-control border border-border bg-card p-3 text-center shadow-sm">
       {Icon && (
         <div className="flex justify-center mb-1.5">
           <Icon className={cn("h-4 w-4", iconColor)} />
         </div>
       )}
-      <p className="text-[9px] text-muted-foreground/50 uppercase tracking-wider mb-0.5">{label}</p>
-      <p className="text-[13px] font-semibold text-muted-foreground leading-tight">{value}</p>
+      <p className="text-xs text-muted-foreground/60 uppercase tracking-wider mb-0.5">{label}</p>
+      <p className="text-sm font-semibold text-foreground leading-tight">{value}</p>
       {sublabel && (
-        <p className="text-[9px] text-muted-foreground/40 mt-0.5">{sublabel}</p>
+        <p className="text-xs text-muted-foreground/50 mt-0.5">{sublabel}</p>
       )}
     </div>
   );
@@ -211,15 +210,15 @@ function CompactStat({
   return (
     <div
       className={cn(
-        "rounded-md border border-border/40 bg-card px-2 py-1.5",
+        "rounded-control border border-border/40 bg-card px-2 py-1.5",
         tooltip && "cursor-help",
       )}
       title={tooltip}
     >
-      <p className="text-[8px] uppercase tracking-wider text-muted-foreground/60 leading-none font-semibold">
+      <p className="text-xs uppercase tracking-wider text-muted-foreground/60 leading-none font-semibold">
         {label}
       </p>
-      <p className="text-[11px] font-semibold text-foreground/85 leading-tight mt-0.5 truncate">
+      <p className="text-xs font-semibold text-foreground/85 leading-tight mt-0.5 truncate">
         {value}
       </p>
     </div>
@@ -295,7 +294,7 @@ function LibraryCard({
                   rel="noopener noreferrer"
                   className="flex items-center gap-2 flex-1 min-w-0 hover:text-foreground transition-colors"
                 >
-                  <span className="text-[9px] font-medium uppercase px-1.5 py-0.5 rounded shrink-0 bg-muted/20 text-muted-foreground/60">
+                  <span className="text-xs font-medium uppercase px-1.5 py-0.5 rounded-control shrink-0 bg-muted/20 text-muted-foreground/60">
                     {item.type === 'VIDEO' ? '▶' : item.type === 'ARTICLE' ? '📄' : '🎙'}
                   </span>
                   <span className="truncate">{item.title}</span>
@@ -304,7 +303,7 @@ function LibraryCard({
                   <button
                     type="button"
                     onClick={() => onRemove(item.id)}
-                    className="p-0.5 rounded text-muted-foreground/0 group-hover/row:text-muted-foreground/30 hover:!text-red-400 hover:!bg-red-500/10 transition-colors shrink-0"
+                    className="p-0.5 rounded-control hit-44 text-muted-foreground/0 group-hover/row:text-muted-foreground/30 hover:!text-destructive hover:!bg-destructive/10 transition-colors shrink-0"
                     title="Remove"
                     aria-label={`Remove ${item.title}`}
                   >
@@ -323,7 +322,7 @@ function LibraryCard({
                 href={safeHref(item.url)}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group rounded-md border border-border/20 overflow-hidden hover:border-border/50 transition-all"
+                className="group rounded-control border border-border/20 overflow-hidden hover:border-border/50 transition-all"
               >
                 {item.thumbnail ? (
                   <div className="aspect-video bg-muted/30 relative overflow-hidden">
@@ -341,8 +340,8 @@ function LibraryCard({
                     />
                     {item.type === 'VIDEO' && (
                       <div className="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/10 transition-colors">
-                        <div className="h-4 w-4 rounded-full bg-white/80 flex items-center justify-center">
-                          <span className="text-[7px] ml-px">▶</span>
+                        <div className="h-4 w-4 rounded-pill bg-white/80 flex items-center justify-center">
+                          <span className="text-xs ml-px">▶</span>
                         </div>
                       </div>
                     )}
@@ -355,7 +354,7 @@ function LibraryCard({
                   </div>
                 )}
                 <div className="px-1.5 py-1">
-                  <p className="text-[9px] font-medium text-foreground/70 line-clamp-1 leading-snug">
+                  <p className="text-xs font-medium text-foreground/70 line-clamp-1 leading-snug">
                     {item.title}
                   </p>
                 </div>
@@ -368,9 +367,9 @@ function LibraryCard({
       )}
       {totalPages > 1 && (
         <div className="flex items-center justify-center gap-1 mt-2">
-          <button onClick={() => setLibPage((p) => Math.max(0, p - 1))} disabled={page === 0} className="p-0.5 rounded text-muted-foreground/30 hover:text-muted-foreground/60 disabled:opacity-30 transition-colors"><ChevronLeft className="h-3 w-3" /></button>
-          <span className="text-[9px] text-muted-foreground/30 tabular-nums">{page + 1}/{totalPages}</span>
-          <button onClick={() => setLibPage((p) => Math.min(totalPages - 1, p + 1))} disabled={page >= totalPages - 1} className="p-0.5 rounded text-muted-foreground/30 hover:text-muted-foreground/60 disabled:opacity-30 transition-colors"><ChevronRight className="h-3 w-3" /></button>
+          <button onClick={() => setLibPage((p) => Math.max(0, p - 1))} disabled={page === 0} className="p-0.5 rounded-control hit-44 text-muted-foreground/30 hover:text-muted-foreground/60 disabled:opacity-30 transition-colors"><ChevronLeft className="h-3 w-3" /></button>
+          <span className="text-xs text-muted-foreground/30 tabular-nums">{page + 1}/{totalPages}</span>
+          <button onClick={() => setLibPage((p) => Math.min(totalPages - 1, p + 1))} disabled={page >= totalPages - 1} className="p-0.5 rounded-control hit-44 text-muted-foreground/30 hover:text-muted-foreground/60 disabled:opacity-30 transition-colors"><ChevronRight className="h-3 w-3" /></button>
         </div>
       )}
     </div>
@@ -407,7 +406,7 @@ function ProgressRing({
           fill="none"
           stroke="currentColor"
           strokeWidth={strokeWidth}
-          className={active ? "text-teal-500/20" : "text-muted/40"}
+          className={active ? "text-primary/20" : "text-muted/40"}
         />
         <circle
           cx={size / 2}
@@ -421,12 +420,12 @@ function ProgressRing({
           strokeLinecap="round"
           className={cn(
             "transition-all duration-700",
-            active ? "text-teal-500" : "text-muted-foreground/60"
+            active ? "text-primary" : "text-muted-foreground/60"
           )}
         />
       </svg>
       <div className="absolute inset-0 flex items-center justify-center">
-        <span className={cn("text-lg font-bold", active ? "text-teal-500" : "text-foreground")}>
+        <span className={cn("text-lg font-bold", active ? "text-primary" : "text-foreground")}>
           {current}/{total}
         </span>
       </div>
@@ -466,20 +465,20 @@ function DidYouKnowCard() {
 
   return (
     <div className="mt-6 max-w-4xl mx-auto px-3 sm:px-6">
-      <div className="rounded-xl border border-amber-500/30 bg-amber-900/10 px-5 py-4">
+      <div className="rounded-card border border-accent/40 bg-accent/10 px-5 py-4">
         <div className="flex items-start gap-3">
-          <span className="text-[10px] font-bold uppercase tracking-widest text-amber-300 mt-0.5 shrink-0">
+          <span className="text-xs font-bold uppercase tracking-widest text-accent-foreground mt-0.5 shrink-0">
             Did you know?
           </span>
           <a href={fact.href} className="flex-1 min-w-0 group">
-            <p className="text-xs text-amber-100/90 leading-relaxed group-hover:text-amber-50 transition-colors">
+            <p className="text-xs text-foreground/80 leading-relaxed group-hover:text-foreground transition-colors">
               {fact.text}
             </p>
           </a>
-          <span className="text-[9px] text-amber-400/80 shrink-0 mt-0.5">{fact.source}</span>
+          <span className="text-xs text-muted-foreground shrink-0 mt-0.5">{fact.source}</span>
           <button
             onClick={refresh}
-            className="p-1 rounded-md text-amber-400/70 hover:text-amber-200 transition-colors shrink-0"
+            className="p-1 rounded-control text-muted-foreground/70 hover:text-foreground transition-colors shrink-0 hit-44"
             title="Show another fact"
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 16h5v5"/></svg>
@@ -854,8 +853,8 @@ export default function DashboardPage() {
 
   if (status === "loading" || session?.user.role !== "YOUTH") {
     return (
-      <div className="min-h-screen dark:bg-background flex items-center justify-center">
-        <div className="h-6 w-6 animate-spin rounded-full border-2 border-muted-foreground/30 border-t-transparent" />
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="h-6 w-6 animate-spin rounded-pill border-2 border-muted-foreground/30 border-t-transparent" />
       </div>
     );
   }
@@ -887,11 +886,11 @@ export default function DashboardPage() {
         {/* ── Header ─────────────────────────────────────────── */}
         <div className="flex items-center justify-between mb-4 sm:mb-5">
           <div className="flex items-center gap-2.5">
-            <h1 className="text-xl sm:text-2xl font-semibold tracking-tight text-white">
+            <h1 className="text-xl sm:text-2xl font-semibold tracking-tight text-foreground">
               {isFirstLogin ? (
-                <>{t('greeting.welcome')}, <span className="text-white">{displayName}</span></>
+                <>{t('greeting.welcome')}, <span className="text-foreground">{displayName}</span></>
               ) : (
-                <><span className="text-white/90 font-normal">{timeGreeting}</span>{' '}<span className="text-white font-medium">{displayName}</span></>
+                <><span className="text-foreground/90 font-normal">{timeGreeting}</span>{' '}<span className="text-foreground font-medium">{displayName}</span></>
               )}
             </h1>
             {/* Country flag — small, subtle. Only renders if we know
@@ -918,7 +917,7 @@ export default function DashboardPage() {
               <button
                 type="button"
                 onClick={() => { isReplayRef.current = true; setShowOnboardingWizard(true); }}
-                className="h-7 w-7 rounded-full border border-border/40 bg-background/60 flex items-center justify-center text-muted-foreground/50 hover:text-foreground hover:bg-muted/40 transition-colors"
+                className="h-7 w-7 rounded-pill border border-border/40 bg-background/60 flex items-center justify-center text-muted-foreground/50 hover:text-foreground hover:bg-muted/40 transition-colors hit-44"
                 title="Replay app walkthrough"
               >
                 <Compass className="h-3.5 w-3.5" />
@@ -926,7 +925,7 @@ export default function DashboardPage() {
             )}
             {/* Language switcher — dropdown list (English / Norsk / Español) */}
             <LanguageDropdown />
-            <span className="text-sm text-white/85">
+            <span className="text-sm text-foreground/85">
               {dateStr}
             </span>
             {/* Guardian-consent signal — static dot with tooltip */}
@@ -935,7 +934,7 @@ export default function DashboardPage() {
                 title="Waiting on parental confirmation. Go to Profile to resend."
                 className="relative flex h-2.5 w-2.5 cursor-default"
               >
-                <span className="inline-flex h-2.5 w-2.5 rounded-full bg-amber-500/70" />
+                <span className="inline-flex h-2.5 w-2.5 rounded-pill bg-accent" />
               </span>
             )}
             {profileData && (() => {
@@ -958,7 +957,7 @@ export default function DashboardPage() {
                 <Link
                   href="/profile"
                   title={pct === 100 ? 'Profile complete' : `Profile ${pct}% complete`}
-                  className="relative p-1.5 rounded-lg hover:bg-muted/50 transition-colors group"
+                  className="relative p-1.5 rounded-control hover:bg-muted/50 transition-colors group hit-44"
                 >
                   <User className="h-4 w-4 text-muted-foreground/50 group-hover:text-muted-foreground transition-colors" />
                 </Link>
@@ -997,7 +996,7 @@ export default function DashboardPage() {
                 <GlassCard className="relative overflow-hidden border-border/40">
                   <div className="p-5 sm:p-6">
                     <div className="flex items-start gap-4">
-                      <div className="p-2.5 rounded-xl bg-muted/30 shrink-0">
+                      <div className="p-2.5 rounded-control bg-muted/30 shrink-0">
                         <Sparkles className="h-5 w-5 text-muted-foreground" />
                       </div>
                       <div className="flex-1 min-w-0">
@@ -1012,7 +1011,7 @@ export default function DashboardPage() {
                             dismissedRef.current = true;
                             setShowOnboardingWizard(true);
                           }}
-                          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-foreground/90 hover:bg-foreground text-background text-sm font-medium transition-colors"
+                          className="inline-flex items-center gap-2 px-4 py-2 rounded-control bg-primary hover:bg-primary/90 text-primary-foreground text-sm font-medium transition-colors"
                         >
                           {t('firstLogin.startWalkthrough')}
                           <ArrowRight className="h-4 w-4" />
@@ -1033,9 +1032,9 @@ export default function DashboardPage() {
         {/* ── 1. My Journey Card ─────────────────────────────── */}
         {(() => {
           const journeyCard = (
-          <GlassCard data-spotlight="journey-card" className={cn("p-5 sm:p-6 transition-all duration-300 border-teal-500/30 shadow-[0_0_25px_rgba(20,184,166,0.12),0_0_50px_rgba(20,184,166,0.06)] ring-1 ring-teal-500/15", goalTitle ? "hover:border-teal-500/45 hover:shadow-[0_0_35px_rgba(20,184,166,0.18),0_0_70px_rgba(20,184,166,0.08)]" : "hover:border-teal-500/35")}>
+          <GlassCard data-spotlight="journey-card" className={cn("p-5 sm:p-6 transition-all duration-300 border-primary/30 shadow-sm", goalTitle ? "hover:border-primary/50 hover:shadow-md" : "hover:border-primary/40")}>
             <div className="flex items-center gap-2 mb-4">
-              <div className="p-1.5 rounded-lg bg-muted/30">
+              <div className="p-1.5 rounded-control bg-muted/30">
                 <span title="Your journey tracks progress through Discover, Understand, and Clarity."><TrendingUp className="h-4 w-4 text-muted-foreground cursor-help" /></span>
               </div>
               <div>
@@ -1052,7 +1051,7 @@ export default function DashboardPage() {
                         href="/careers/radar"
                         data-spotlight="choose-goal"
                         onClick={(e) => e.stopPropagation()}
-                        className="text-teal-500 hover:text-teal-400 transition-colors animate-pulse motion-reduce:animate-none"
+                        className="text-primary hover:text-primary/80 transition-colors animate-pulse motion-reduce:animate-none"
                       >
                         {t('journey.chooseGoalPrompt')}
                       </Link>
@@ -1062,7 +1061,7 @@ export default function DashboardPage() {
                 {goalTitle && (
                   <button
                     onClick={(e) => { e.preventDefault(); e.stopPropagation(); setShowGoalSheet(true); }}
-                    className="mt-0.5 -ml-1 inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[11px] font-medium capitalize text-teal-500/90 hover:text-teal-400 hover:bg-teal-500/10 transition-colors"
+                    className="mt-0.5 -ml-1 inline-flex items-center gap-1 rounded-control px-1.5 py-0.5 text-xs font-medium capitalize text-primary/90 hover:text-primary/80 hover:bg-primary/10 transition-colors"
                   >
                     <Pencil className="h-3 w-3" />
                     {t('common.change')}
@@ -1094,12 +1093,12 @@ export default function DashboardPage() {
                           : clarityDone;
                     return (
                       <div key={key} className="flex-1">
-                        <div className={cn("h-1.5 rounded-full overflow-hidden", goalTitle ? "bg-teal-500/15" : "bg-muted/40")}>
+                        <div className={cn("h-1.5 rounded-pill overflow-hidden", goalTitle ? "bg-primary/15" : "bg-muted/40")}>
                           <div
                             className={cn(
-                              "h-full rounded-full transition-all duration-500",
+                              "h-full rounded-pill transition-all duration-500",
                               isLensDone
-                                ? goalTitle ? "bg-teal-500" : "bg-foreground/40"
+                                ? goalTitle ? "bg-primary" : "bg-foreground/40"
                                 : "bg-transparent"
                             )}
                             style={{ width: isLensDone ? '100%' : '0%' }}
@@ -1107,9 +1106,9 @@ export default function DashboardPage() {
                         </div>
                         <p
                           className={cn(
-                            "text-[10px] mt-1 text-center",
+                            "text-xs mt-1 text-center",
                             isActive
-                              ? goalTitle ? "text-teal-500 font-semibold" : "text-foreground font-semibold"
+                              ? goalTitle ? "text-primary font-semibold" : "text-foreground font-semibold"
                               : "text-muted-foreground/40"
                           )}
                         >
@@ -1143,13 +1142,13 @@ export default function DashboardPage() {
               return (
                 <div className="mt-5 pt-4 border-t border-border/30">
                   <div className="flex items-center gap-1.5 mb-2">
-                    <Search className="h-3 w-3 text-teal-500/70" />
-                    <p className="text-[9px] font-semibold uppercase tracking-wider text-muted-foreground/60">
+                    <Search className="h-3 w-3 text-primary/70" />
+                    <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground/60">
                       Career snapshot
                     </p>
                     {salaryStale && (
                       <span
-                        className="inline-flex items-center text-amber-500/80 cursor-help"
+                        className="inline-flex items-center text-accent cursor-help"
                         title="Salary & outlook figures may be out of date — check current SSB / NAV stats before deciding. Catalogue salaries are re-verified annually against SSB labour stats; this figure has not been refreshed in the last year, so treat as indicative."
                         aria-label="Salary figures may be out of date"
                       >
@@ -1160,7 +1159,7 @@ export default function DashboardPage() {
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                     <CompactStat
                       icon={TrendingUp}
-                      iconColor="text-teal-500/80"
+                      iconColor="text-primary/80"
                       label="Salary"
                       value={`${salary} kr`}
                       tooltip={
@@ -1171,9 +1170,9 @@ export default function DashboardPage() {
                             : undefined
                       }
                     />
-                    <CompactStat icon={Rocket} iconColor="text-emerald-500/80" label="Growth" value={goalCareer.growthOutlook.charAt(0).toUpperCase() + goalCareer.growthOutlook.slice(1)} />
-                    <CompactStat icon={Briefcase} iconColor="text-blue-500/80" label="Sector" value={sectorLabel} />
-                    <CompactStat icon={CheckCircle2} iconColor="text-violet-500/80" label="Pension" value={pensionLabel} />
+                    <CompactStat icon={Rocket} iconColor="text-muted-foreground/80" label="Growth" value={goalCareer.growthOutlook.charAt(0).toUpperCase() + goalCareer.growthOutlook.slice(1)} />
+                    <CompactStat icon={Briefcase} iconColor="text-muted-foreground/80" label="Sector" value={sectorLabel} />
+                    <CompactStat icon={CheckCircle2} iconColor="text-muted-foreground/80" label="Pension" value={pensionLabel} />
                   </div>
                 </div>
               );
@@ -1186,8 +1185,8 @@ export default function DashboardPage() {
                 Dashboard we only need a quiet marker that this journey
                 is complete, consistent across refresh and revisit. */}
             {completedLensCount === 3 && (
-              <div className="mt-3 flex items-center gap-1.5 text-[10px] font-medium text-muted-foreground/70">
-                <Star className="h-3 w-3 shrink-0 fill-amber-400 text-amber-400" />
+              <div className="mt-3 flex items-center gap-1.5 text-xs font-medium text-muted-foreground/70">
+                <Star className="h-3 w-3 shrink-0 fill-accent text-accent" />
                 <span>{t('journey.completeIndicator')}</span>
               </div>
             )}
@@ -1222,7 +1221,7 @@ export default function DashboardPage() {
           <DashboardSection
             title="My Explored Journeys"
             icon={Target}
-            iconColor="text-violet-500"
+            iconColor="text-muted-foreground"
             tooltip="Every journey you start is saved here. Switch between them anytime."
             className="mb-0"
             fixedHeight="h-[180px] overflow-y-auto"
@@ -1252,10 +1251,10 @@ export default function DashboardPage() {
 
             return (
               <>
-                <div className="rounded-lg border border-border/60 overflow-hidden">
+                <div className="rounded-control border border-border/60 overflow-hidden">
                   <table className="w-full text-left">
                     <thead>
-                      <tr className="text-[8px] font-semibold uppercase tracking-wider text-muted-foreground/50 border-b border-border/40 bg-muted/20">
+                      <tr className="text-xs font-semibold uppercase tracking-wider text-muted-foreground/50 border-b border-border/40 bg-muted/20">
                         <th className="px-2.5 py-1.5">Career</th>
                         <th className="px-2 py-1.5 w-16 text-center">Stage</th>
                         <th className="px-2 py-1.5 w-24 text-center">Interest</th>
@@ -1270,7 +1269,7 @@ export default function DashboardPage() {
                         const stageLabel = stageInfo?.label ?? 'Discover';
                         const stageLetter = stageLabel === 'Clarity' || stageLabel === 'Complete' ? 'C' : stageLabel === 'Understand' ? 'U' : 'D';
                         const stageTooltip = stageLabel === 'Clarity' || stageLabel === 'Complete' ? 'Clarity — building your roadmap' : stageLabel === 'Understand' ? 'Understand — exploring the role in depth' : 'Discover — exploring what this career is about';
-                        const stageColor = stageLetter === 'C' ? 'text-emerald-400 bg-emerald-500/15' : stageLetter === 'U' ? 'text-blue-400 bg-blue-500/15' : 'text-violet-400 bg-violet-500/15';
+                        const stageColor = stageLetter === 'C' ? 'text-primary bg-primary/15' : stageLetter === 'U' ? 'text-primary/80 bg-primary/10' : 'text-muted-foreground bg-muted';
                         const isComplete = stageLabel === 'Complete';
                         return (
                           <tr
@@ -1286,26 +1285,26 @@ export default function DashboardPage() {
                             <td className="px-2.5 py-1.5">
                               <span className="flex items-center gap-2 min-w-0">
                                 <span className="text-sm shrink-0">{career?.emoji ?? "🎯"}</span>
-                                <span className={cn("text-[11px] truncate", isCurrentGoal ? "font-medium text-foreground" : "text-foreground/75")}>
+                                <span className={cn("text-xs truncate", isCurrentGoal ? "font-medium text-foreground" : "text-foreground/75")}>
                                   {goal.goalTitle}
                                 </span>
                                 {isComplete && (
                                   <Star
-                                    className="h-3 w-3 shrink-0 fill-amber-400 text-amber-400"
+                                    className="h-3 w-3 shrink-0 fill-accent text-accent"
                                     aria-label="Journey complete"
                                   />
                                 )}
                               </span>
                             </td>
                             <td className="px-2 py-1.5 text-center">
-                              <span className={cn("inline-flex items-center justify-center h-5 w-5 rounded-md text-[9px] font-bold cursor-help", stageColor)} title={stageTooltip}>{stageLetter}</span>
+                              <span className={cn("inline-flex items-center justify-center h-5 w-5 rounded-control text-xs font-bold cursor-help", stageColor)} title={stageTooltip}>{stageLetter}</span>
                             </td>
                             <td className="px-2 py-1.5">
                               <span className="flex items-center justify-center">
                                 {career && interestLevels[career.id] ? (
                                   <InterestLevelStars value={interestLevels[career.id]} />
                                 ) : (
-                                  <span className="text-[8px] text-muted-foreground/30">—</span>
+                                  <span className="text-xs text-muted-foreground/30">—</span>
                                 )}
                               </span>
                             </td>
@@ -1317,7 +1316,7 @@ export default function DashboardPage() {
                                     e.stopPropagation();
                                     removeExploredJourney(goal.goalId);
                                   }}
-                                  className="p-0.5 rounded text-muted-foreground/20 hover:text-red-400 hover:bg-red-500/10 transition-colors"
+                                  className="p-0.5 rounded-control hit-44 text-muted-foreground/20 hover:text-destructive hover:bg-destructive/10 transition-colors"
                                   title="Remove journey"
                                   aria-label={`Remove ${goal.goalTitle}`}
                                 >
@@ -1336,15 +1335,15 @@ export default function DashboardPage() {
                     <button
                       onClick={() => setJourneyPage((p) => Math.max(0, p - 1))}
                       disabled={page === 0}
-                      className="p-0.5 rounded text-muted-foreground/30 hover:text-muted-foreground/60 disabled:opacity-30 transition-colors"
+                      className="p-0.5 rounded-control hit-44 text-muted-foreground/30 hover:text-muted-foreground/60 disabled:opacity-30 transition-colors"
                     >
                       <ChevronLeft className="h-3 w-3" />
                     </button>
-                    <span className="text-[9px] text-muted-foreground/30 tabular-nums">{page + 1}/{totalPages}</span>
+                    <span className="text-xs text-muted-foreground/30 tabular-nums">{page + 1}/{totalPages}</span>
                     <button
                       onClick={() => setJourneyPage((p) => Math.min(totalPages - 1, p + 1))}
                       disabled={page >= totalPages - 1}
-                      className="p-0.5 rounded text-muted-foreground/30 hover:text-muted-foreground/60 disabled:opacity-30 transition-colors"
+                      className="p-0.5 rounded-control hit-44 text-muted-foreground/30 hover:text-muted-foreground/60 disabled:opacity-30 transition-colors"
                     >
                       <ChevronRight className="h-3 w-3" />
                     </button>
@@ -1360,12 +1359,12 @@ export default function DashboardPage() {
           <DashboardSection
             title="Saved Resources"
             icon={BookmarkCheck}
-            iconColor="text-blue-500"
+            iconColor="text-muted-foreground"
             tooltip="Articles, videos, and resources you've saved from Industry Insights."
             className="mb-0"
             fixedHeight="h-[180px] overflow-y-auto"
             action={savedSummary.total > 0 ? (
-              <span className="text-[10px] text-muted-foreground/40">{savedSummary.total}</span>
+              <span className="text-xs text-muted-foreground/40">{savedSummary.total}</span>
             ) : undefined}
           >
             <LibraryCard items={savedItemsList} total={savedSummary.total} onRemove={removeLibraryItem} />
@@ -1378,23 +1377,23 @@ export default function DashboardPage() {
           <DashboardSection
             title={t('savedCareers.title')}
             icon={Heart}
-            iconColor="text-pink-500"
+            iconColor="text-muted-foreground"
             tooltip={t('savedCareers.tooltip')}
             className="mb-0"
             fixedHeight="h-[180px] overflow-y-auto"
             action={
-              <Link href="/library?tab=saved" className="text-[10px] text-teal-500/70 hover:text-teal-500 transition-colors">
+              <Link href="/library?tab=saved" className="text-xs text-primary/70 hover:text-primary transition-colors">
                 See all →
               </Link>
             }
           >
             {savedCareers.length > 0 ? (
               <>
-                <div className="divide-y divide-border/60 rounded-lg border border-border/60 overflow-hidden bg-muted/10">
+                <div className="divide-y divide-border/60 rounded-control border border-border/60 overflow-hidden bg-muted/10">
                   {savedCareersVisible.map((c) => (
                     <div
                       key={c.careerId}
-                      className="flex items-center gap-2 px-2.5 py-2 text-[11px] hover:bg-muted/40 transition-colors"
+                      className="flex items-center gap-2 px-2.5 py-2 text-xs hover:bg-muted/40 transition-colors"
                     >
                       <button
                         type="button"
@@ -1410,7 +1409,7 @@ export default function DashboardPage() {
                       {interestLevels[c.careerId] && (
                         <InterestLevelStars value={interestLevels[c.careerId]} className="shrink-0" />
                       )}
-                      <span className="text-[9px] text-muted-foreground/30 shrink-0">
+                      <span className="text-xs text-muted-foreground/30 shrink-0">
                         {(() => {
                           const s = Math.floor((Date.now() - new Date(c.savedAt).getTime()) / 1000);
                           if (s < 60) return 'now';
@@ -1425,7 +1424,7 @@ export default function DashboardPage() {
                           e.stopPropagation();
                           removeCuriosity(c.careerId);
                         }}
-                        className="p-0.5 rounded text-muted-foreground/20 hover:text-red-400 hover:bg-red-500/10 transition-colors shrink-0"
+                        className="p-0.5 rounded-control hit-44 text-muted-foreground/20 hover:text-destructive hover:bg-destructive/10 transition-colors shrink-0"
                         title="Remove"
                         aria-label={`Remove ${c.careerTitle}`}
                       >
@@ -1440,19 +1439,19 @@ export default function DashboardPage() {
                       type="button"
                       onClick={() => setSavedCareersPage((p) => Math.max(0, p - 1))}
                       disabled={savedCareersPage === 0}
-                      className="p-0.5 text-muted-foreground/50 hover:text-foreground disabled:opacity-30 disabled:cursor-not-allowed"
+                      className="p-0.5 hit-44 text-muted-foreground/50 hover:text-foreground disabled:opacity-30 disabled:cursor-not-allowed"
                       aria-label={t('common.previousPage')}
                     >
                       <ChevronLeft className="h-3 w-3" />
                     </button>
-                    <span className="text-[9px] text-muted-foreground/40 tabular-nums">
+                    <span className="text-xs text-muted-foreground/40 tabular-nums">
                       {savedCareersPage + 1} / {savedCareersPageCount}
                     </span>
                     <button
                       type="button"
                       onClick={() => setSavedCareersPage((p) => Math.min(savedCareersPageCount - 1, p + 1))}
                       disabled={savedCareersPage >= savedCareersPageCount - 1}
-                      className="p-0.5 text-muted-foreground/50 hover:text-foreground disabled:opacity-30 disabled:cursor-not-allowed"
+                      className="p-0.5 hit-44 text-muted-foreground/50 hover:text-foreground disabled:opacity-30 disabled:cursor-not-allowed"
                       aria-label={t('common.nextPage')}
                     >
                       <ChevronRight className="h-3 w-3" />
@@ -1471,7 +1470,7 @@ export default function DashboardPage() {
           <DashboardSection
             title={t('smallJobs.title')}
             icon={Briefcase}
-            iconColor="text-amber-500"
+            iconColor="text-muted-foreground"
             tooltip={t('smallJobs.tooltip')}
             className="mb-0"
           >
@@ -1484,24 +1483,24 @@ export default function DashboardPage() {
               ].map((stat) => (
                 <div key={stat.label} className="flex-1 text-center py-1.5">
                   <p className="text-xs font-bold text-foreground/75 tabular-nums">{stat.value}</p>
-                  <p className="text-[8px] text-muted-foreground/40 uppercase tracking-wider">{stat.label}</p>
+                  <p className="text-xs text-muted-foreground/40 uppercase tracking-wider">{stat.label}</p>
                 </div>
               ))}
             </div>
             {/* Last completed job — row with date + location */}
             <div className="mt-1.5 pt-1.5 border-t border-border/15">
-              <div className="flex items-center gap-1.5 text-[8px] uppercase tracking-wider text-muted-foreground/40 mb-1">
-                <CheckCircle2 className="h-2.5 w-2.5 text-emerald-500/50 shrink-0" />
+              <div className="flex items-center gap-1.5 text-xs uppercase tracking-wider text-muted-foreground/40 mb-1">
+                <CheckCircle2 className="h-2.5 w-2.5 text-muted-foreground/50 shrink-0" />
                 <span>Last completed</span>
               </div>
               {dashboardStats?.lastCompletedJob ? (
-                <div className="flex items-center gap-3 text-[10px]">
+                <div className="flex items-center gap-3 text-xs">
                   <span className="text-foreground/70 font-medium truncate flex-1">{dashboardStats.lastCompletedJob.title}</span>
                   <span className="text-muted-foreground/40 shrink-0">{new Date(dashboardStats.lastCompletedJob.completedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
                   <span className="text-muted-foreground/40 shrink-0 truncate max-w-[100px]">{dashboardStats.lastCompletedJob.location}</span>
                 </div>
               ) : (
-                <span className="text-[9px] text-muted-foreground/30">None yet</span>
+                <span className="text-xs text-muted-foreground/30">None yet</span>
               )}
             </div>
           </DashboardSection>
@@ -1513,12 +1512,12 @@ export default function DashboardPage() {
           <DashboardSection
             title="Reflections"
             icon={NotebookPen}
-            iconColor="text-violet-500"
+            iconColor="text-muted-foreground"
             tooltip="Short notes you've written as you move through My Journey."
             className="mb-0"
             fixedHeight="h-[180px] overflow-y-auto"
             action={
-              <Link href="/library?tab=reflections" className="text-[10px] text-teal-500/70 hover:text-teal-500 transition-colors">
+              <Link href="/library?tab=reflections" className="text-xs text-primary/70 hover:text-primary transition-colors">
                 See all →
               </Link>
             }
@@ -1528,11 +1527,11 @@ export default function DashboardPage() {
                 {recentReflections.slice(0, 2).map((r) => {
                   const career = getAllCareers().find((c) => c.id === r.careerSlug);
                   return (
-                    <li key={r.id} className="rounded-lg border border-border/60 bg-muted/10 px-2.5 py-2">
-                      <p className="text-[10px] text-muted-foreground/60 mb-0.5 line-clamp-1">
+                    <li key={r.id} className="rounded-control border border-border/60 bg-muted/10 px-2.5 py-2">
+                      <p className="text-xs text-muted-foreground/60 mb-0.5 line-clamp-1">
                         {career ? `${career.emoji} ${career.title}` : r.careerSlug} · {r.lensLabel}
                       </p>
-                      <p className="text-[11px] text-muted-foreground/80 line-clamp-2">{r.text}</p>
+                      <p className="text-xs text-muted-foreground/80 line-clamp-2">{r.text}</p>
                     </li>
                   );
                 })}
@@ -1578,24 +1577,24 @@ export default function DashboardPage() {
       {/* Switch Journey Confirmation */}
       {switchConfirm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={() => { if (!switchGoalMutation.isPending) setSwitchConfirm(null); }}>
-          <div className="bg-card border border-border rounded-2xl p-5 max-w-sm w-full shadow-2xl" onClick={(e) => e.stopPropagation()}>
+          <div className="bg-card border border-border rounded-card p-5 max-w-sm w-full shadow-2xl" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center gap-3 mb-3">
               <span className="text-2xl">{switchConfirm.emoji}</span>
               <div>
                 <h3 className="text-sm font-semibold">Switch Primary Goal to {switchConfirm.goalTitle}?</h3>
-                <p className="text-[11px] text-muted-foreground/60">
+                <p className="text-xs text-muted-foreground/60">
                   This will replace your current Primary Goal. Any progress is saved and you can switch back anytime.
                 </p>
               </div>
             </div>
-            <p className="text-[10px] text-muted-foreground/50 mb-4">
+            <p className="text-xs text-muted-foreground/50 mb-4">
               Your journey for {goalTitle || 'your current goal'} will be saved in Previously Explored Journeys. You can switch back anytime.
             </p>
             <div className="flex justify-end gap-2">
               <button
                 onClick={() => setSwitchConfirm(null)}
                 disabled={switchGoalMutation.isPending}
-                className="px-3 py-1.5 text-xs rounded-lg border border-border/50 text-muted-foreground hover:bg-muted/50 transition-colors disabled:opacity-50"
+                className="px-3 py-1.5 text-xs rounded-control border border-border/50 text-muted-foreground hover:bg-muted/50 transition-colors disabled:opacity-50"
               >
                 Cancel
               </button>
@@ -1605,7 +1604,7 @@ export default function DashboardPage() {
                   switchGoalMutation.mutate(switchConfirm.goalTitle);
                 }}
                 disabled={switchGoalMutation.isPending}
-                className="px-3 py-1.5 text-xs rounded-lg bg-foreground/90 hover:bg-foreground text-background font-medium transition-colors disabled:opacity-50"
+                className="px-3 py-1.5 text-xs rounded-control bg-primary hover:bg-primary/90 text-primary-foreground font-medium transition-colors disabled:opacity-50"
               >
                 {switchGoalMutation.isPending ? 'Switching...' : 'Switch Primary Goal'}
               </button>

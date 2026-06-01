@@ -79,7 +79,7 @@ import { setUnderstandConfirmed, isUnderstandConfirmed, setDiscoverConfirmed, is
 
 const PersonalCareerTimeline = dynamic(
   () => import('@/components/journey').then((m) => m.PersonalCareerTimeline),
-  { ssr: false, loading: () => <div className="h-48 animate-pulse rounded-xl bg-muted/50" /> }
+  { ssr: false, loading: () => <div className="h-48 animate-pulse rounded-card bg-muted/50" /> }
 );
 const GoalSelectionSheet = dynamic(
   () => import('@/components/goals/GoalSelectionSheet').then((m) => m.GoalSelectionSheet),
@@ -298,13 +298,13 @@ function FullscreenRoadmap({ goalTitle, onClose }: { goalTitle: string; onClose:
     >
       <div className="flex items-center justify-between px-6 py-4 border-b border-border/30">
         <div className="flex items-center gap-3">
-          <Rocket className="h-5 w-5 text-amber-400" />
+          <Rocket className="h-5 w-5 text-warning" />
           <div>
             <h2 className="text-base font-semibold">Career Roadmap</h2>
             <p className="text-xs text-muted-foreground/50">Your path to {goalTitle}</p>
           </div>
         </div>
-        <button onClick={onClose} className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 border border-border/30 transition-colors">
+        <button onClick={onClose} className="inline-flex items-center gap-1.5 px-3 py-1 rounded-control text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 border border-border/30 transition-colors">
           <X className="h-3.5 w-3.5" /> Close
         </button>
       </div>
@@ -318,7 +318,7 @@ function FullscreenRoadmap({ goalTitle, onClose }: { goalTitle: string; onClose:
 // ─── Shared UI components ────────────────────────────────────────────────────
 
 function SectionCard({ children, className, style, accent }: { children: React.ReactNode; className?: string; style?: React.CSSProperties; accent?: 'teal' | 'amber' | 'blue' }) {
-  const accentBorder = accent === 'teal' ? 'border-l-[3px] border-l-teal-500/60' : accent === 'amber' ? 'border-l-[3px] border-l-amber-500/60' : accent === 'blue' ? 'border-l-[3px] border-l-blue-500/60' : '';
+  const accentBorder = accent === 'teal' ? 'border-l-[3px] border-l-primary/60' : accent === 'amber' ? 'border-l-[3px] border-l-warning/60' : accent === 'blue' ? 'border-l-[3px] border-l-info/60' : '';
   // Border thickness: 1px → 1.2px (+20%). The default Tailwind `border`
   // class is 1px; `border-[1.2px]` bumps it to the exact 20% increase
   // requested — renders cleanly on hidpi displays as a touch bolder.
@@ -329,7 +329,7 @@ function SectionCard({ children, className, style, accent }: { children: React.R
   // The drop-shadow layer (rgba(0,0,0,0.2)) is unchanged — that's a
   // structural shadow, not part of the glow.
   return (
-    <div className={cn('rounded-xl border-[1.2px] border-border/60 bg-card/50 overflow-hidden', accentBorder, className)} style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.2), 0 0 20px rgba(139,92,246,0.096), 0 0 40px rgba(139,92,246,0.048)', ...style }}>
+    <div className={cn('rounded-card border-[1.2px] border-border/60 bg-card/50 overflow-hidden shadow-sm', accentBorder, className)} style={style}>
       {children}
     </div>
   );
@@ -370,7 +370,7 @@ function SectionHeader({ icon: Icon, title, badge, tooltip, collapsed, onToggle,
               <TooltipTrigger asChild>
                 <Info className="h-3.5 w-3.5 text-muted-foreground/35 hover:text-muted-foreground/60 transition-colors cursor-help" />
               </TooltipTrigger>
-              <TooltipContent side="top" className="max-w-[260px] text-[11px] leading-snug">
+              <TooltipContent side="top" className="max-w-[260px] text-xs leading-snug">
                 {tooltip}
               </TooltipContent>
             </Tooltip>
@@ -415,7 +415,7 @@ function SectionHeader({ icon: Icon, title, badge, tooltip, collapsed, onToggle,
 
 function EmptyState({ icon: Icon, message }: { icon: typeof Target; message: string }) {
   return (
-    <div className="rounded-xl border border-dashed border-border/30 p-12 text-center">
+    <div className="rounded-card border border-dashed border-border/30 p-12 text-center">
       <Icon className="h-10 w-10 mx-auto text-muted-foreground/20 mb-3" />
       <p className="text-sm text-muted-foreground/50">{message}</p>
     </div>
@@ -424,10 +424,10 @@ function EmptyState({ icon: Icon, message }: { icon: typeof Target; message: str
 
 function StatCard({ label, value, icon: Icon, accent, tooltip }: { label: string; value: string; icon: typeof TrendingUp; accent?: string; tooltip?: string }) {
   const card = (
-    <div className={cn('rounded-lg border border-border/30 bg-background/50 p-3.5 flex flex-col items-center text-center', tooltip && 'cursor-help')}>
+    <div className={cn('rounded-control border border-border/30 bg-background/50 p-3.5 flex flex-col items-center text-center', tooltip && 'cursor-help')}>
       <div className="flex items-center justify-center gap-2 mb-1.5">
         <Icon className={cn('h-3.5 w-3.5', accent || 'text-muted-foreground/50')} />
-        <span className="text-[10px] font-medium text-emerald-400/60 uppercase tracking-wider">{label}</span>
+        <span className="text-xs font-medium text-success/60 uppercase tracking-wider">{label}</span>
       </div>
       <p className="text-xs font-semibold text-foreground/90">{value}</p>
     </div>
@@ -437,7 +437,7 @@ function StatCard({ label, value, icon: Icon, accent, tooltip }: { label: string
     <TooltipProvider delayDuration={150}>
       <Tooltip>
         <TooltipTrigger asChild>{card}</TooltipTrigger>
-        <TooltipContent side="top" className="max-w-[260px] text-[11px] leading-snug">{tooltip}</TooltipContent>
+        <TooltipContent side="top" className="max-w-[260px] text-xs leading-snug">{tooltip}</TooltipContent>
       </Tooltip>
     </TooltipProvider>
   );
@@ -461,7 +461,7 @@ function LoadingSkeleton() {
   return (
     <div className="space-y-3">
       {[1, 2, 3].map((i) => (
-        <div key={i} className="h-16 rounded-lg bg-muted/20 animate-pulse" />
+        <div key={i} className="h-16 rounded-control bg-muted/20 animate-pulse" />
       ))}
     </div>
   );
@@ -574,14 +574,7 @@ function DiscoverTab({
   return (
     <div className="space-y-5">
       {/* Role overview */}
-      <div
-        className="rounded-xl border-2 p-5"
-        style={{
-          borderColor: 'rgba(20,184,166,0.3)',
-          boxShadow: '0 0 20px rgba(20,184,166,0.06)',
-          background: 'linear-gradient(135deg, rgba(20,184,166,0.04) 0%, transparent 50%)',
-        }}
-      >
+      <div className="rounded-card border-2 border-primary/30 bg-primary/[0.04] shadow-sm p-5">
         <p className="text-sm text-foreground/70 leading-[1.8]">
           {dDetails?.whoThisIsGoodFor?.length
             ? (() => {
@@ -638,17 +631,17 @@ function DiscoverTab({
             ].map((tile) => {
               const Icon = tile.icon;
               return (
-                <div key={tile.label} className="rounded-lg border border-border/40 bg-card/30 px-3 py-2.5">
+                <div key={tile.label} className="rounded-control border border-border/40 bg-card/30 px-3 py-2.5">
                   <div className="flex items-center gap-2 mb-1.5">
                     <Icon className="h-3 w-3 text-muted-foreground/55 shrink-0" />
-                    <span className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground/50">
+                    <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground/50">
                       {tile.label}
                     </span>
                   </div>
                   <p className="text-xs font-semibold text-foreground/90">
                     {tile.value}
                   </p>
-                  <p className="text-[10px] text-muted-foreground/50 mt-0.5 leading-snug">
+                  <p className="text-xs text-muted-foreground/50 mt-0.5 leading-snug">
                     {tile.hint}
                   </p>
                 </div>
@@ -666,7 +659,7 @@ function DiscoverTab({
           {!dCollapsed('d-video') && <div className="p-4">
             {videoId ? (
               <div className="space-y-2">
-                <div className="rounded-lg overflow-hidden">
+                <div className="rounded-control overflow-hidden">
                   <iframe
                     key={videoId}
                     src={`https://www.youtube.com/embed/${videoId}`}
@@ -681,7 +674,7 @@ function DiscoverTab({
                     wraps so the user can keep tapping for variety. */}
                 {hasMoreVideos && (
                   <div className="flex items-center justify-between gap-2 pt-1">
-                    <span className="text-[10px] text-muted-foreground/50 truncate flex-1">
+                    <span className="text-xs text-muted-foreground/50 truncate flex-1">
                       {currentVideo?.title ?? ''}
                     </span>
                     <button
@@ -689,7 +682,7 @@ function DiscoverTab({
                       onClick={() => setVideoIndex((i) => (i + 1) % videos.length)}
                       title="Show another Day in the Life video"
                       aria-label="Show another Day in the Life video"
-                      className="inline-flex items-center gap-1.5 rounded-md border border-border/40 px-2 py-1 text-[10px] font-medium text-muted-foreground hover:text-foreground hover:border-border/70 hover:bg-muted/30 transition-colors shrink-0"
+                      className="inline-flex items-center gap-1.5 rounded-control border border-border/40 px-2 py-1 text-xs font-medium text-muted-foreground hover:text-foreground hover:border-border/70 hover:bg-muted/30 transition-colors shrink-0"
                     >
                       <Video className="h-3 w-3" />
                       More ({videoIndex + 1}/{videos.length})
@@ -698,15 +691,15 @@ function DiscoverTab({
                 )}
               </div>
             ) : (
-              <div className="flex flex-col items-center justify-center gap-3 rounded-lg border border-dashed border-border/30 bg-muted/10 aspect-video px-4 text-center">
-                <div className="h-10 w-10 rounded-full bg-muted/40 flex items-center justify-center">
+              <div className="flex flex-col items-center justify-center gap-3 rounded-control border border-dashed border-border/30 bg-muted/10 aspect-video px-4 text-center">
+                <div className="h-10 w-10 rounded-pill bg-muted/40 flex items-center justify-center">
                   <Video className="h-4 w-4 text-muted-foreground/60" />
                 </div>
                 <div>
                   <p className="text-xs font-medium text-foreground/70">
                     No videos found for this career
                   </p>
-                  <p className="text-[10px] text-muted-foreground/60 mt-1 leading-relaxed">
+                  <p className="text-xs text-muted-foreground/60 mt-1 leading-relaxed">
                     We couldn&apos;t find a relevant &quot;Day in the Life&quot; clip for {career.title}.
                   </p>
                 </div>
@@ -714,7 +707,7 @@ function DiscoverTab({
                   href={`https://www.youtube.com/results?search_query=${encodeURIComponent(`day in the life ${career.title}`)}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-[10px] text-teal-400 hover:text-teal-300 hover:underline"
+                  className="text-xs text-primary hover:text-primary/80 hover:underline"
                 >
                   Search YouTube yourself →
                 </a>
@@ -734,17 +727,17 @@ function DiscoverTab({
                 const sector = getSectorForCareer(career.id);
                 const pensionNote = getPensionNote(sector);
                 const sectorLabel = sector === 'public' ? 'Public' : sector === 'private' ? 'Private' : 'Public & Private';
-                const sectorAccent = sector === 'public' ? 'text-blue-400' : sector === 'private' ? 'text-violet-400' : 'text-muted-foreground/50';
+                const sectorAccent = sector === 'public' ? 'text-info' : sector === 'private' ? 'text-accent' : 'text-muted-foreground/50';
                 return (
                   <div className="grid grid-cols-2 gap-3 w-full max-w-md">
                     <div>
                       <button type="button" onClick={() => setShowSalaryPopup(true)} className="w-full text-left">
-                        <StatCard label="Annual Salary" value={formatSalaryShort(career.avgSalary)} icon={DollarSign} accent="text-emerald-400" tooltip={`Typical annual gross salary in Norway: ${career.avgSalary.replace('/year', '')}. Tap to see full progression.`} />
+                        <StatCard label="Annual Salary" value={formatSalaryShort(career.avgSalary)} icon={DollarSign} accent="text-success" tooltip={`Typical annual gross salary in Norway: ${career.avgSalary.replace('/year', '')}. Tap to see full progression.`} />
                       </button>
                       <button
                         type="button"
                         onClick={() => setShowSalaryPopup(true)}
-                        className="text-[9px] text-amber-400/70 hover:text-amber-300 font-medium mt-1.5 flex items-center gap-0.5 transition-colors w-full justify-center"
+                        className="text-xs text-warning/70 hover:text-warning font-medium mt-1.5 flex items-center gap-0.5 transition-colors w-full justify-center"
                       >
                         See full progression →
                       </button>
@@ -753,10 +746,10 @@ function DiscoverTab({
                       label="Growth"
                       value={career.growthOutlook === 'high' ? 'High Demand' : career.growthOutlook === 'medium' ? 'Growing' : 'Stable'}
                       icon={TrendingUp}
-                      accent={career.growthOutlook === 'high' ? 'text-emerald-400' : career.growthOutlook === 'medium' ? 'text-amber-400' : 'text-muted-foreground/50'}
+                      accent={career.growthOutlook === 'high' ? 'text-success' : career.growthOutlook === 'medium' ? 'text-warning' : 'text-muted-foreground/50'}
                     />
                     <StatCard label="Sector" value={sectorLabel} icon={Building2} accent={sectorAccent} tooltip={`Most ${career.title} roles in Norway are in the ${sector} sector.`} />
-                    <StatCard label="Pension" value={sector === 'public' ? 'Strong' : sector === 'private' ? 'Varies' : 'Mixed'} icon={Shield} accent={sector === 'public' ? 'text-emerald-400' : 'text-muted-foreground/60'} tooltip={pensionNote} />
+                    <StatCard label="Pension" value={sector === 'public' ? 'Strong' : sector === 'private' ? 'Varies' : 'Mixed'} icon={Shield} accent={sector === 'public' ? 'text-success' : 'text-muted-foreground/60'} tooltip={pensionNote} />
                   </div>
                 );
               })()}
@@ -788,10 +781,10 @@ function DiscoverTab({
           const yearsFromNow =
             qualifiedAge != null && userAge != null ? qualifiedAge - userAge : years;
           return (
-            <div className="rounded-xl border border-border/30 bg-card/50 p-4">
+            <div className="rounded-card border border-border/30 bg-card/50 p-4">
               <div className="flex items-center gap-2 mb-2">
-                <Clock className="h-3.5 w-3.5 text-violet-400" />
-                <span className="text-[10px] font-semibold text-violet-400 uppercase tracking-wider">Timeline</span>
+                <Clock className="h-3.5 w-3.5 text-accent" />
+                <span className="text-xs font-semibold text-accent uppercase tracking-wider">Timeline</span>
               </div>
               {qualifiedAge ? (
                 <p className="text-xs text-foreground/70 leading-relaxed">
@@ -806,10 +799,10 @@ function DiscoverTab({
         })()}
 
         {/* Work environment — always visible */}
-        <div className="rounded-xl border border-border/30 bg-card/50 p-4">
+        <div className="rounded-card border border-border/30 bg-card/50 p-4">
           <div className="flex items-center gap-2 mb-2">
-            <MapPin className="h-3.5 w-3.5 text-amber-400" />
-            <span className="text-[10px] font-semibold text-amber-400 uppercase tracking-wider">Where you&apos;ll work</span>
+            <MapPin className="h-3.5 w-3.5 text-warning" />
+            <span className="text-xs font-semibold text-warning uppercase tracking-wider">Where you&apos;ll work</span>
           </div>
           {dDetails?.typicalDay.environment ? (
             <p className="text-xs text-foreground/70 leading-relaxed">{dDetails.typicalDay.environment}</p>
@@ -841,7 +834,7 @@ function DiscoverTab({
           onClick={onContinue}
           disabled={!isDiscoverConfirmed(goalTitle)}
           className={cn(
-            'inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors',
+            'inline-flex items-center gap-2 px-4 py-2 rounded-control text-sm font-medium transition-colors',
             isDiscoverConfirmed(goalTitle)
               ? 'text-muted-foreground/60 hover:text-foreground hover:bg-muted/30'
               : 'text-muted-foreground/25 cursor-not-allowed',
@@ -856,7 +849,7 @@ function DiscoverTab({
       {showSalaryPopup && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60" onClick={() => setShowSalaryPopup(false)}>
           <div
-            className="bg-card border border-border/40 rounded-xl max-w-2xl w-full p-5 shadow-xl max-h-[80vh] overflow-y-auto"
+            className="bg-card border border-border/40 rounded-card max-w-2xl w-full p-5 shadow-sm max-h-[80vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-4">
@@ -885,7 +878,7 @@ function CollapsibleSection({
       <button onClick={onToggle} className="w-full flex items-center gap-2.5 px-5 py-3.5 text-left hover:bg-muted/5 transition-colors">
         <Icon className={cn('h-4 w-4', accent || 'text-muted-foreground/60')} />
         <h3 className="text-sm font-semibold text-foreground/90 flex-1">{title}</h3>
-        {count !== undefined && <span className="text-[10px] text-muted-foreground/40">{count}</span>}
+        {count !== undefined && <span className="text-xs text-muted-foreground/40">{count}</span>}
         <ChevronDown className={cn('h-4 w-4 text-muted-foreground/30 transition-transform', isOpen && 'rotate-180')} />
       </button>
       <AnimatePresence initial={false}>
@@ -940,14 +933,7 @@ function UnderstandTab({
   return (
     <div className="space-y-4">
       {/* Intro */}
-      <div
-        className="rounded-xl border-2 p-5"
-        style={{
-          borderColor: 'rgba(59,130,246,0.3)',
-          boxShadow: '0 0 20px rgba(59,130,246,0.06)',
-          background: 'linear-gradient(135deg, rgba(59,130,246,0.04) 0%, transparent 50%)',
-        }}
-      >
+      <div className="rounded-card border-2 border-info/30 bg-info/[0.04] shadow-sm p-5">
         <p className="text-sm text-foreground/70 leading-[1.8]">
           Here&apos;s what being a <span className="font-semibold text-foreground/90">{goalTitle}</span>{' '}actually involves — the real responsibilities, a typical working day, and the education and training you&apos;ll need to get there.
         </p>
@@ -975,8 +961,8 @@ function UnderstandTab({
                 <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1">
                   {details.whatYouActuallyDo.map((task, i) => (
                     <li key={i} className="flex items-start gap-2 py-1">
-                      <span className="text-[9px] font-bold text-teal-400/70 mt-[3px] shrink-0">{i + 1}.</span>
-                      <span className="text-[11px] text-foreground/70 leading-snug">{task}</span>
+                      <span className="text-xs font-bold text-primary/70 mt-[3px] shrink-0">{i + 1}.</span>
+                      <span className="text-xs text-foreground/70 leading-snug">{task}</span>
                     </li>
                   ))}
                 </ul>
@@ -987,7 +973,7 @@ function UnderstandTab({
               )}
               {details?.typicalDay.tools?.length ? (
                 <div className="flex flex-wrap items-center gap-1.5 pt-2 border-t border-border/15">
-                  <span className="text-[9px] font-medium uppercase tracking-wider text-muted-foreground/40 mr-1">Tools:</span>
+                  <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground/40 mr-1">Tools:</span>
                   {details.typicalDay.tools.map((tool, i) => {
                     const info = getToolInfo(tool);
                     return (
@@ -997,7 +983,7 @@ function UnderstandTab({
                         target="_blank"
                         rel="noopener noreferrer"
                         title={info?.description || tool}
-                        className="inline-flex items-center gap-1 rounded-full border border-border/25 bg-background/30 px-2 py-0.5 text-[10px] text-foreground/65 hover:text-foreground hover:border-border/50 transition-colors"
+                        className="inline-flex items-center gap-1 rounded-pill border border-border/25 bg-background/30 px-2 py-0.5 text-xs text-foreground/65 hover:text-foreground hover:border-border/50 transition-colors"
                       >
                         {tool}
                         <ExternalLink className="h-2 w-2 text-muted-foreground/30" />
@@ -1023,7 +1009,7 @@ function UnderstandTab({
             ) : realityData ? (
               <>
                 {/* Summary */}
-                <p className="text-[11px] text-foreground/60 leading-relaxed">{realityData.realitySummary}</p>
+                <p className="text-xs text-foreground/60 leading-relaxed">{realityData.realitySummary}</p>
 
                 {/* Reality points — only hardships/challenges, no education references */}
                 {(() => {
@@ -1035,8 +1021,8 @@ function UnderstandTab({
                     <div className="space-y-1">
                       {hardships.map((point, i) => (
                         <div key={i} className="flex items-start gap-2">
-                          <AlertCircle className="h-3 w-3 text-amber-400/70 shrink-0 mt-0.5" />
-                          <p className="text-[10px] text-foreground/50 leading-relaxed">{point}</p>
+                          <AlertCircle className="h-3 w-3 text-warning/70 shrink-0 mt-0.5" />
+                          <p className="text-xs text-foreground/50 leading-relaxed">{point}</p>
                         </div>
                       ))}
                     </div>
@@ -1046,8 +1032,8 @@ function UnderstandTab({
                 {/* Video links — compact list, no thumbnails */}
                 {realityData.videos.length > 0 && (
                   <div className="pt-1">
-                    <p className="text-[9px] font-medium uppercase tracking-wider text-muted-foreground/40 mb-1.5">Real voices</p>
-                    <div className="rounded-lg border border-border/20 divide-y divide-border/15 overflow-hidden">
+                    <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground/40 mb-1.5">Real voices</p>
+                    <div className="rounded-control border border-border/20 divide-y divide-border/15 overflow-hidden">
                       {realityData.videos.map((video) => (
                         <a
                           key={video.videoId}
@@ -1056,9 +1042,9 @@ function UnderstandTab({
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-2.5 py-1.5 hover:bg-muted/10 transition-colors"
                         >
-                          <Play className="h-3 w-3 text-muted-foreground/40 group-hover:text-rose-400 shrink-0" />
-                          <span className="text-[10px] text-foreground/70 group-hover:text-foreground truncate flex-1">{video.title.replace(/&amp;/g, '&')}</span>
-                          <span className="text-[9px] text-muted-foreground/40 shrink-0 hidden sm:inline">{video.channel}</span>
+                          <Play className="h-3 w-3 text-muted-foreground/40 group-hover:text-accent shrink-0" />
+                          <span className="text-xs text-foreground/70 group-hover:text-foreground truncate flex-1">{video.title.replace(/&amp;/g, '&')}</span>
+                          <span className="text-xs text-muted-foreground/40 shrink-0 hidden sm:inline">{video.channel}</span>
                           <ExternalLink className="h-2.5 w-2.5 text-muted-foreground/25 group-hover:text-muted-foreground/50 shrink-0" />
                         </a>
                       ))}
@@ -1068,10 +1054,10 @@ function UnderstandTab({
               </>
             ) : details?.realityCheck ? (
               /* Fallback to static realityCheck if API fails */
-              <div className="rounded-lg border border-amber-500/15 bg-amber-500/5 p-3">
+              <div className="rounded-control border border-warning/15 bg-warning/5 p-3">
                 <div className="flex items-start gap-2">
-                  <AlertCircle className="h-3.5 w-3.5 text-amber-400 shrink-0 mt-0.5" />
-                  <p className="text-[11px] text-foreground/50 italic leading-relaxed">{details.realityCheck}</p>
+                  <AlertCircle className="h-3.5 w-3.5 text-warning shrink-0 mt-0.5" />
+                  <p className="text-xs text-foreground/50 italic leading-relaxed">{details.realityCheck}</p>
                 </div>
               </div>
             ) : (
@@ -1095,14 +1081,14 @@ function UnderstandTab({
           <div className="p-4 sm:p-5">
             <div className="relative">
               {/* Horizontal connector line */}
-              <div className="absolute top-[14px] left-0 right-0 h-px bg-gradient-to-r from-amber-400/40 via-sky-400/40 to-indigo-400/40 hidden sm:block" />
+              <div className="absolute top-[14px] left-0 right-0 h-px bg-accent/40 hidden sm:block" />
 
               {/* Three columns */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-3">
                 {([
-                  { label: 'Morning', time: '08:00 – 12:00', items: details.typicalDay.morning, icon: '🌅', dotClass: 'bg-amber-400', bgClass: 'bg-amber-500/[0.06]', borderClass: 'border-amber-500/15' },
-                  { label: 'Midday', time: '12:00 – 14:00', items: details.typicalDay.midday, icon: '☀️', dotClass: 'bg-sky-400', bgClass: 'bg-sky-500/[0.06]', borderClass: 'border-sky-500/15' },
-                  { label: 'Afternoon', time: '14:00 – 17:00', items: details.typicalDay.afternoon, icon: '🌆', dotClass: 'bg-indigo-400', bgClass: 'bg-indigo-500/[0.06]', borderClass: 'border-indigo-500/15' },
+                  { label: 'Morning', time: '08:00 – 12:00', items: details.typicalDay.morning, icon: '🌅', dotClass: 'bg-warning', bgClass: 'bg-warning/[0.06]', borderClass: 'border-warning/15' },
+                  { label: 'Midday', time: '12:00 – 14:00', items: details.typicalDay.midday, icon: '☀️', dotClass: 'bg-info', bgClass: 'bg-info/[0.06]', borderClass: 'border-info/15' },
+                  { label: 'Afternoon', time: '14:00 – 17:00', items: details.typicalDay.afternoon, icon: '🌆', dotClass: 'bg-accent', bgClass: 'bg-accent/[0.06]', borderClass: 'border-accent/15' },
                 ] as const).map(({ label, time, items, icon, dotClass, bgClass, borderClass }) => (
                   <div key={label} className="flex flex-col items-center">
                     {/* Timeline node */}
@@ -1111,19 +1097,19 @@ function UnderstandTab({
                     </div>
 
                     {/* Card */}
-                    <div className={cn('w-full rounded-xl border p-3.5', bgClass, borderClass)}>
+                    <div className={cn('w-full rounded-card border p-3.5', bgClass, borderClass)}>
                       <div className="flex items-center justify-between mb-2.5">
                         <div className="flex items-center gap-2">
                           <span className="text-base leading-none">{icon}</span>
                           <span className="text-xs font-semibold text-foreground/85">{label}</span>
                         </div>
-                        <span className="text-[10px] text-muted-foreground/45 tabular-nums font-medium">{time}</span>
+                        <span className="text-xs text-muted-foreground/45 tabular-nums font-medium">{time}</span>
                       </div>
                       <div className="space-y-1.5">
                         {items.map((item, i) => (
                           <div key={i} className="flex items-start gap-2.5">
-                            <div className={cn('h-1.5 w-1.5 rounded-full mt-[5px] shrink-0 opacity-60', dotClass)} />
-                            <span className="text-[11px] text-foreground/65 leading-relaxed">{item}</span>
+                            <div className={cn('h-1.5 w-1.5 rounded-pill mt-[5px] shrink-0 opacity-60', dotClass)} />
+                            <span className="text-xs text-foreground/65 leading-relaxed">{item}</span>
                           </div>
                         ))}
                       </div>
@@ -1135,9 +1121,9 @@ function UnderstandTab({
 
             {/* Environment footer */}
             {details.typicalDay.environment && (
-              <div className="flex items-center gap-2.5 mt-3 px-3 py-2 rounded-lg bg-muted/[0.06] border border-border/15">
+              <div className="flex items-center gap-2.5 mt-3 px-3 py-2 rounded-control bg-muted/[0.06] border border-border/15">
                 <MapPin className="h-3 w-3 text-muted-foreground/40 shrink-0" />
-                <span className="text-[10px] text-muted-foreground/55 leading-relaxed">{details.typicalDay.environment}</span>
+                <span className="text-xs text-muted-foreground/55 leading-relaxed">{details.typicalDay.environment}</span>
               </div>
             )}
           </div>
@@ -1240,7 +1226,7 @@ function UnderstandTab({
                         data-[state=active]:bg-muted/20 data-[state=active]:text-foreground
                         data-[state=active]:shadow-none
                         after:content-[''] after:absolute after:left-0 after:right-0 after:-bottom-px after:h-0.5
-                        after:bg-teal-400 after:scale-x-0 after:transition-transform after:duration-200
+                        after:bg-primary after:scale-x-0 after:transition-transform after:duration-200
                         data-[state=active]:after:scale-x-100
                       "
                     >
@@ -1258,7 +1244,7 @@ function UnderstandTab({
                         data-[state=active]:bg-muted/20 data-[state=active]:text-foreground
                         data-[state=active]:shadow-none
                         after:content-[''] after:absolute after:left-0 after:right-0 after:-bottom-px after:h-0.5
-                        after:bg-teal-400 after:scale-x-0 after:transition-transform after:duration-200
+                        after:bg-primary after:scale-x-0 after:transition-transform after:duration-200
                         data-[state=active]:after:scale-x-100
                       "
                     >
@@ -1277,7 +1263,7 @@ function UnderstandTab({
                           data-[state=active]:bg-muted/20 data-[state=active]:text-foreground
                           data-[state=active]:shadow-none
                           after:content-[''] after:absolute after:left-0 after:right-0 after:-bottom-px after:h-0.5
-                          after:bg-teal-400 after:scale-x-0 after:transition-transform after:duration-200
+                          after:bg-primary after:scale-x-0 after:transition-transform after:duration-200
                           data-[state=active]:after:scale-x-100
                         "
                       >
@@ -1306,14 +1292,14 @@ function UnderstandTab({
                         'very-strong': 'High demand — opportunities are abundant.',
                       };
                       const pathwayTone: Record<typeof ap.pathwayType, { bg: string; text: string }> = {
-                        'vocational':          { bg: 'bg-amber-500/10',   text: 'text-amber-400' },
-                        'bachelor':            { bg: 'bg-sky-500/10',     text: 'text-sky-400' },
-                        'master':              { bg: 'bg-blue-500/10',    text: 'text-blue-400' },
-                        'doctorate':           { bg: 'bg-violet-500/10',  text: 'text-violet-400' },
-                        'professional-degree': { bg: 'bg-violet-500/10',  text: 'text-violet-400' },
-                        'mixed':               { bg: 'bg-slate-500/10',   text: 'text-slate-400' },
-                        'entry-level':         { bg: 'bg-emerald-500/10', text: 'text-emerald-400' },
-                        'licence-based':       { bg: 'bg-teal-500/10',    text: 'text-teal-400' },
+                        'vocational':          { bg: 'bg-warning/10',   text: 'text-warning' },
+                        'bachelor':            { bg: 'bg-info/10',     text: 'text-info' },
+                        'master':              { bg: 'bg-info/10',    text: 'text-info' },
+                        'doctorate':           { bg: 'bg-accent/10',  text: 'text-accent' },
+                        'professional-degree': { bg: 'bg-accent/10',  text: 'text-accent' },
+                        'mixed':               { bg: 'bg-muted',   text: 'text-muted-foreground' },
+                        'entry-level':         { bg: 'bg-success/10', text: 'text-success' },
+                        'licence-based':       { bg: 'bg-primary/10',    text: 'text-primary' },
                       };
                       const pathwayHint: Record<typeof ap.pathwayType, string> = {
                         'vocational':          'Apprenticeship or trade school route.',
@@ -1326,10 +1312,10 @@ function UnderstandTab({
                         'licence-based':       'Licensing or certification needed.',
                       };
                       const compTone: Record<typeof ap.competitiveness, { bg: string; text: string }> = {
-                        'low':       { bg: 'bg-emerald-500/10', text: 'text-emerald-400' },
-                        'moderate':  { bg: 'bg-sky-500/10',     text: 'text-sky-400' },
-                        'high':      { bg: 'bg-amber-500/10',   text: 'text-amber-400' },
-                        'very-high': { bg: 'bg-rose-500/10',    text: 'text-rose-400' },
+                        'low':       { bg: 'bg-success/10', text: 'text-success' },
+                        'moderate':  { bg: 'bg-info/10',     text: 'text-info' },
+                        'high':      { bg: 'bg-warning/10',   text: 'text-warning' },
+                        'very-high': { bg: 'bg-accent/10',    text: 'text-accent' },
                       };
                       const compHint: Record<typeof ap.competitiveness, string> = {
                         'low':       'Broad admission — most qualified applicants get in.',
@@ -1344,11 +1330,11 @@ function UnderstandTab({
                         <div className="space-y-4">
                           {/* ── Key subjects as chips ──────────────── */}
                           {essentialSubjects.length > 0 && (
-                            <div className="rounded-xl border border-border/40 bg-card/40 p-4">
+                            <div className="rounded-card border border-border/40 bg-card/40 p-4">
                               <div className="flex items-center gap-2 mb-3">
-                                <BookOpen className="h-3.5 w-3.5 text-teal-400" />
-                                <span className="text-[10px] font-bold uppercase tracking-wider text-teal-300">Subjects you&rsquo;ll need</span>
-                                <span className="ml-auto text-[10px] text-muted-foreground/50 tabular-nums">
+                                <BookOpen className="h-3.5 w-3.5 text-primary" />
+                                <span className="text-xs font-bold uppercase tracking-wider text-primary">Subjects you&rsquo;ll need</span>
+                                <span className="ml-auto text-xs text-muted-foreground/50 tabular-nums">
                                   {essentialSubjects.length} essential
                                 </span>
                               </div>
@@ -1356,9 +1342,9 @@ function UnderstandTab({
                                 {essentialSubjects.map((s) => (
                                   <span
                                     key={s.name}
-                                    className="inline-flex items-center gap-1.5 rounded-full border border-teal-500/25 bg-teal-500/[0.08] px-2.5 py-1 text-[11px] font-medium text-teal-100/90"
+                                    className="inline-flex items-center gap-1.5 rounded-pill border border-primary/25 bg-primary/[0.08] px-2.5 py-1 text-xs font-medium text-primary"
                                   >
-                                    <Check className="h-3 w-3 text-teal-400" />
+                                    <Check className="h-3 w-3 text-primary" />
                                     {s.name}
                                   </span>
                                 ))}
@@ -1368,13 +1354,13 @@ function UnderstandTab({
 
                           {/* ── Grade-range meter (1–6) ────────────── */}
                           {ap.grade.hasCutoff && ap.grade.gradeMin !== null && (
-                            <div className="rounded-xl border border-border/40 bg-card/40 p-4">
+                            <div className="rounded-card border border-border/40 bg-card/40 p-4">
                               <div className="flex items-center justify-between mb-3">
                                 <div className="flex items-center gap-2">
-                                  <BarChart3 className="h-3.5 w-3.5 text-teal-400" />
-                                  <span className="text-[10px] font-bold uppercase tracking-wider text-teal-300">Typical grade range</span>
+                                  <BarChart3 className="h-3.5 w-3.5 text-primary" />
+                                  <span className="text-xs font-bold uppercase tracking-wider text-primary">Typical grade range</span>
                                 </div>
-                                <span className="text-[11px] font-semibold text-foreground/85 tabular-nums">
+                                <span className="text-xs font-semibold text-foreground/85 tabular-nums">
                                   {ap.grade.gradeMin}&ndash;{ap.grade.gradeMax}
                                   <span className="text-muted-foreground/45 font-normal"> / 6</span>
                                 </span>
@@ -1388,12 +1374,12 @@ function UnderstandTab({
                                   rather than a green-vs-grey split. */}
                               <div className="flex gap-1.5">
                                 {[
-                                  'bg-teal-500/15',
-                                  'bg-teal-500/20',
-                                  'bg-teal-500/30',
-                                  'bg-teal-500/45',
-                                  'bg-teal-500/65',
-                                  'bg-teal-500/80',
+                                  'bg-primary/15',
+                                  'bg-primary/20',
+                                  'bg-primary/30',
+                                  'bg-primary/45',
+                                  'bg-primary/65',
+                                  'bg-primary/80',
                                 ].map((dimClass, i) => {
                                   const n = i + 1;
                                   const inRange = n >= (ap.grade.gradeMin ?? 0) && n <= (ap.grade.gradeMax ?? 0);
@@ -1401,8 +1387,8 @@ function UnderstandTab({
                                     <div
                                       key={n}
                                       className={cn(
-                                        'h-2 flex-1 rounded-full transition-colors',
-                                        inRange ? 'bg-teal-400 shadow-[0_0_10px_rgba(45,212,191,0.35)]' : dimClass,
+                                        'h-2 flex-1 rounded-pill transition-colors',
+                                        inRange ? 'bg-primary shadow-sm' : dimClass,
                                       )}
                                     />
                                   );
@@ -1410,12 +1396,12 @@ function UnderstandTab({
                               </div>
                               <div className="flex justify-between mt-1.5 px-[2px]">
                                 {[
-                                  'text-teal-500/35',
-                                  'text-teal-500/45',
-                                  'text-teal-400/55',
-                                  'text-teal-400/65',
-                                  'text-teal-300/80',
-                                  'text-teal-300/90',
+                                  'text-primary/35',
+                                  'text-primary/45',
+                                  'text-primary/55',
+                                  'text-primary/65',
+                                  'text-primary/80',
+                                  'text-primary/90',
                                 ].map((dimClass, i) => {
                                   const n = i + 1;
                                   const inRange = n >= (ap.grade.gradeMin ?? 0) && n <= (ap.grade.gradeMax ?? 0);
@@ -1423,8 +1409,8 @@ function UnderstandTab({
                                     <span
                                       key={n}
                                       className={cn(
-                                        'text-[9px] tabular-nums',
-                                        inRange ? 'text-teal-300 font-semibold' : dimClass,
+                                        'text-xs tabular-nums',
+                                        inRange ? 'text-primary font-semibold' : dimClass,
                                       )}
                                     >
                                       {n}
@@ -1432,7 +1418,7 @@ function UnderstandTab({
                                   );
                                 })}
                               </div>
-                              <p className="text-[10px] text-muted-foreground/50 mt-3 leading-snug">
+                              <p className="text-xs text-muted-foreground/50 mt-3 leading-snug">
                                 Indicative only &mdash; actual cut-offs vary by institution and year.
                               </p>
                             </div>
@@ -1454,17 +1440,17 @@ function UnderstandTab({
                             ].map((tile) => {
                               const Icon = tile.icon;
                               return (
-                                <div key={tile.label} className="rounded-lg border border-border/40 bg-card/30 px-3 py-2.5">
+                                <div key={tile.label} className="rounded-control border border-border/40 bg-card/30 px-3 py-2.5">
                                   <div className="flex items-center gap-2 mb-1.5">
                                     <Icon className="h-3 w-3 text-muted-foreground/55 shrink-0" />
-                                    <span className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground/50">
+                                    <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground/50">
                                       {tile.label}
                                     </span>
                                   </div>
                                   <p className="text-xs font-semibold text-foreground/90">
                                     {tile.value}
                                   </p>
-                                  <p className="text-[10px] text-muted-foreground/50 mt-0.5 leading-snug">
+                                  <p className="text-xs text-muted-foreground/50 mt-0.5 leading-snug">
                                     {tile.hint}
                                   </p>
                                 </div>
@@ -1480,7 +1466,7 @@ function UnderstandTab({
                     {hasStudyPath ? (
                       <EducationBrowser careerTitle={goalTitle} careerId={career?.id ?? null} />
                     ) : (
-                      <div className="rounded-lg border border-dashed border-border/40 bg-muted/10 p-4 text-center">
+                      <div className="rounded-control border border-dashed border-border/40 bg-muted/10 p-4 text-center">
                         <p className="text-sm font-medium text-foreground/80">No formal study path required</p>
                         <p className="text-xs text-muted-foreground/70 mt-1 leading-relaxed">
                           This career is typically entered through practice, portfolio, or on-the-job progression rather than a specific Norwegian university programme.
@@ -1496,18 +1482,18 @@ function UnderstandTab({
                   {/* ── Certifications tab ─────────────────────────── */}
                   {certPath && (
                     <TabsContent value="certifications" className="mt-5 space-y-4">
-                      <p className="text-[11px] text-muted-foreground/75 leading-relaxed">
+                      <p className="text-xs text-muted-foreground/75 leading-relaxed">
                         {certPath.summary}
                       </p>
 
                       {certPath.recommendedDegrees && certPath.recommendedDegrees.length > 0 && (
                         <div className="space-y-1.5">
-                          <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground/60">
+                          <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground/60">
                             Recommended degree background
                           </p>
                           <div className="flex flex-wrap gap-1.5">
                             {certPath.recommendedDegrees.map((d: string) => (
-                              <span key={d} className="inline-flex items-center rounded-full border border-border/30 bg-muted/30 px-2.5 py-1 text-[10px] text-foreground/70">
+                              <span key={d} className="inline-flex items-center rounded-pill border border-border/30 bg-muted/30 px-2.5 py-1 text-xs text-foreground/70">
                                 {d}
                               </span>
                             ))}
@@ -1515,14 +1501,14 @@ function UnderstandTab({
                         </div>
                       )}
 
-                      <div className="rounded-lg border border-border/30 overflow-hidden">
+                      <div className="rounded-control border border-border/30 overflow-hidden">
                         <table className="w-full text-left">
                           <thead>
                             <tr className="border-b border-border/20 bg-muted/10">
-                              <th className="px-3 py-2 text-[9px] font-semibold text-muted-foreground/60 uppercase tracking-wider">Certification</th>
-                              <th className="px-3 py-2 text-[9px] font-semibold text-muted-foreground/60 uppercase tracking-wider hidden sm:table-cell">Provider</th>
-                              <th className="px-3 py-2 text-[9px] font-semibold text-muted-foreground/60 uppercase tracking-wider hidden sm:table-cell">Duration</th>
-                              <th className="px-3 py-2 text-[9px] font-semibold text-muted-foreground/60 uppercase tracking-wider">Cost</th>
+                              <th className="px-3 py-2 text-xs font-semibold text-muted-foreground/60 uppercase tracking-wider">Certification</th>
+                              <th className="px-3 py-2 text-xs font-semibold text-muted-foreground/60 uppercase tracking-wider hidden sm:table-cell">Provider</th>
+                              <th className="px-3 py-2 text-xs font-semibold text-muted-foreground/60 uppercase tracking-wider hidden sm:table-cell">Duration</th>
+                              <th className="px-3 py-2 text-xs font-semibold text-muted-foreground/60 uppercase tracking-wider">Cost</th>
                               <th className="px-3 py-2 w-8"><span className="sr-only">Link</span></th>
                             </tr>
                           </thead>
@@ -1542,18 +1528,18 @@ function UnderstandTab({
                                 }}
                               >
                                 <td className="px-3 py-2.5">
-                                  <p className="text-[11px] font-medium text-foreground/90 leading-snug">{cert.name}</p>
-                                  <p className="text-[9px] text-muted-foreground/50 mt-0.5 line-clamp-1 sm:hidden">{cert.provider} · {cert.duration}</p>
-                                  <p className="text-[9px] text-muted-foreground/50 mt-0.5 line-clamp-1">{cert.recognised}</p>
+                                  <p className="text-xs font-medium text-foreground/90 leading-snug">{cert.name}</p>
+                                  <p className="text-xs text-muted-foreground/50 mt-0.5 line-clamp-1 sm:hidden">{cert.provider} · {cert.duration}</p>
+                                  <p className="text-xs text-muted-foreground/50 mt-0.5 line-clamp-1">{cert.recognised}</p>
                                 </td>
                                 <td className="px-3 py-2.5 hidden sm:table-cell">
-                                  <span className="text-[10px] text-muted-foreground/60 whitespace-nowrap">{cert.provider}</span>
+                                  <span className="text-xs text-muted-foreground/60 whitespace-nowrap">{cert.provider}</span>
                                 </td>
                                 <td className="px-3 py-2.5 hidden sm:table-cell">
-                                  <span className="text-[10px] text-muted-foreground/60 whitespace-nowrap">{cert.duration}</span>
+                                  <span className="text-xs text-muted-foreground/60 whitespace-nowrap">{cert.duration}</span>
                                 </td>
                                 <td className="px-3 py-2.5">
-                                  <span className="text-[10px] text-emerald-400/80 font-medium whitespace-nowrap">{cert.cost}</span>
+                                  <span className="text-xs text-success/80 font-medium whitespace-nowrap">{cert.cost}</span>
                                 </td>
                                 <td className="px-3 py-2.5">
                                   {cert.url && (
@@ -1584,7 +1570,7 @@ function UnderstandTab({
         const showOpps = cid ? hasOpportunities(cid) : false;
         if (!showMyths && !showOpps) return null;
         const triggerClass =
-          'rounded-none border-b-2 border-transparent data-[state=active]:border-teal-500 data-[state=active]:bg-transparent data-[state=active]:shadow-none px-4 pb-2 text-[11px]';
+          'rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none px-4 pb-2 text-xs';
         return (
           <SectionCard>
             <SectionHeader icon={Shield} title="Misconceptions & Opportunities" collapsed={uCollapsed('u-myths')} onToggle={() => uToggle('u-myths')} />
@@ -1627,7 +1613,7 @@ function UnderstandTab({
           onClick={onContinue}
           disabled={!isUnderstandConfirmed(goalTitle)}
           className={cn(
-            'inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors',
+            'inline-flex items-center gap-2 px-4 py-2 rounded-control text-sm font-medium transition-colors',
             isUnderstandConfirmed(goalTitle)
               ? 'text-muted-foreground/60 hover:text-foreground hover:bg-muted/30'
               : 'text-muted-foreground/25 cursor-not-allowed',
@@ -1664,18 +1650,18 @@ function DiscoverConfirmCard({
   };
 
   return (
-    <div className="rounded-lg border border-teal-500/15 bg-teal-500/[0.03] px-4 py-2">
+    <div className="rounded-control border border-primary/15 bg-primary/[0.03] px-4 py-2">
       <div className="flex items-center justify-between gap-3">
-        <p className="text-[11px] text-muted-foreground/70 min-w-0">
+        <p className="text-xs text-muted-foreground/70 min-w-0">
           {t('journey.discover.confirmQuestion')}
         </p>
         <button
           onClick={() => choose(!confirmed)}
           className={cn(
-            'px-3 py-1 rounded-md text-[11px] font-medium transition-colors border shrink-0',
+            'px-3 py-1 rounded-control text-xs font-medium transition-colors border shrink-0',
             confirmed
-              ? 'bg-emerald-500/15 border-emerald-500/40 text-emerald-300'
-              : 'bg-background/40 border-border/40 text-foreground/60 hover:border-emerald-500/40 hover:text-emerald-300',
+              ? 'bg-success/15 border-success/40 text-success'
+              : 'bg-background/40 border-border/40 text-foreground/60 hover:border-success/40 hover:text-success',
           )}
           aria-pressed={confirmed}
         >
@@ -1709,18 +1695,18 @@ function UnderstandConfirmCard({
   };
 
   return (
-    <div className="rounded-lg border border-blue-500/15 bg-blue-500/[0.03] px-4 py-2">
+    <div className="rounded-control border border-info/15 bg-info/[0.03] px-4 py-2">
       <div className="flex items-center justify-between gap-3">
-        <p className="text-[11px] text-muted-foreground/70 min-w-0">
+        <p className="text-xs text-muted-foreground/70 min-w-0">
           {t('journey.understand.confirmQuestion')}
         </p>
         <button
           onClick={() => choose(!confirmed)}
           className={cn(
-            'px-3 py-1 rounded-md text-[11px] font-medium transition-colors border shrink-0',
+            'px-3 py-1 rounded-control text-xs font-medium transition-colors border shrink-0',
             confirmed
-              ? 'bg-emerald-500/15 border-emerald-500/40 text-emerald-300'
-              : 'bg-background/40 border-border/40 text-foreground/60 hover:border-emerald-500/40 hover:text-emerald-300',
+              ? 'bg-success/15 border-success/40 text-success'
+              : 'bg-background/40 border-border/40 text-foreground/60 hover:border-success/40 hover:text-success',
           )}
           aria-pressed={confirmed}
         >

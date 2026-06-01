@@ -45,7 +45,7 @@ export function PageHeader({
                   <Info className="h-4 w-4 text-muted-foreground/50 hover:text-muted-foreground/80 transition-colors" />
                 </button>
               </TooltipTrigger>
-              <TooltipContent side="bottom" align="end" className="max-w-[280px] text-[11px] leading-snug">
+              <TooltipContent side="bottom" align="end" className="max-w-[280px] text-xs leading-snug">
                 {infoTooltip}
               </TooltipContent>
             </Tooltip>
@@ -62,12 +62,12 @@ export function PageHeader({
             <Icon className="h-4.5 w-4.5 sm:h-6 sm:w-6 text-primary" />
           </motion.div>
         )}
-        <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-white dark:text-foreground">
+        <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">
           {title}
           {gradientText && (
             <>
               {" "}
-              <span className="bg-gradient-to-r from-primary via-teal-500 to-pink-500 bg-clip-text text-transparent">
+              <span className="text-primary">
                 {gradientText}
               </span>
             </>
@@ -75,7 +75,7 @@ export function PageHeader({
         </h1>
       </div>
       {description && (
-        <p className={cn("text-xs sm:text-sm text-white/80 dark:text-muted-foreground/70", centered && "text-center")}>
+        <p className={cn("text-xs sm:text-sm text-muted-foreground", centered && "text-center")}>
           {description}
         </p>
       )}

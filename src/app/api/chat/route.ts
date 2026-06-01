@@ -117,7 +117,7 @@ export async function POST(req: NextRequest) {
     if (!session?.user?.id) {
       // Return a helpful response instead of 401 error
       return NextResponse.json({
-        message: "Please sign in to chat with the AI assistant. You can still browse careers and jobs without an account!",
+        message: "Please sign in to talk with your Career Twin. You can still browse careers without an account!",
         intent,
         sources: {},
         requiresAuth: true,

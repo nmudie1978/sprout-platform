@@ -12,7 +12,7 @@ import {
   Moon,
   LogOut,
   ChevronDown,
-  Bot,
+  Sparkles,
   Info,
   Languages,
 } from "lucide-react";
@@ -130,8 +130,8 @@ export function UserAvatarMenu({
                 Tools
               </DropdownMenuLabel>
               <DropdownMenuItem onClick={() => navigateTo("/career-advisor")} className="cursor-pointer">
-                <Bot className="mr-2 h-4 w-4" />
-                AI Career Advisor
+                <Sparkles className="mr-2 h-4 w-4" />
+                Career Twin
               </DropdownMenuItem>
             </DropdownMenuGroup>
 
