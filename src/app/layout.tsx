@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Source_Serif_4 } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/providers";
 import { NextIntlClientProvider } from "next-intl";
@@ -14,13 +14,6 @@ const inter = Inter({
   display: "swap",
   preload: true,
   variable: "--font-sans",
-});
-
-// Source Serif 4 — headings only (h1–h4). Inter remains the body face.
-const sourceSerif = Source_Serif_4({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-serif",
 });
 
 export const viewport: Viewport = {
@@ -55,7 +48,7 @@ export default async function RootLayout({
     // before next-themes hydrates. next-themes will swap the class
     // only if the user has explicitly opted into light via the toggle.
     <html lang={locale} className="dark" suppressHydrationWarning>
-      <body className={`${inter.variable} ${sourceSerif.variable} font-sans`}>
+      <body className={`${inter.variable} font-sans`}>
         <NextIntlClientProvider locale={locale} messages={messages}>
           <Providers session={session}>{children}</Providers>
         </NextIntlClientProvider>
