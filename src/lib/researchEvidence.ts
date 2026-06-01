@@ -112,35 +112,38 @@ const RESEARCH_STATS_RAW: ResearchStat[] = [
   },
   {
     id: "oecd-career-advisor",
-    headline: "Less than half of students have spoken with a career advisor",
+    headline: "Almost half of students haven't spoken with a career advisor",
     description:
-      "On average across OECD countries, only 49% of students have had a conversation with a career advisor at school—limiting their exposure to structured guidance.",
-    sourceName: "OECD PISA",
-    sourceUrl: "https://www.oecd.org/en/data/dashboards/teenage-career-readiness.html",
-    sourcePublishedAt: "2024-06-01",
-    sourceAccessedAt: "2025-01-22",
+      "Across OECD countries, 55% of 15-year-olds had spoken with a career advisor in or out of school (PISA 2022) — still leaving nearly half without that structured guidance.",
+    sourceName: "OECD",
+    sourceUrl:
+      "https://www.oecd.org/en/publications/the-state-of-global-teenage-career-preparation_d5f8e3f2-en.html",
+    sourcePublishedAt: "2025-05-01",
+    sourceAccessedAt: "2026-06-01",
     tags: ["guidance", "work-exposure"],
   },
   {
     id: "oecd-job-shadowing",
-    headline: "Only 45% of students have any real-world career exposure",
+    headline: "Only 45% of students have visited a workplace",
     description:
-      "Fewer than half of students have gained practical exposure to how careers actually work — leaving most to make decisions based on guesswork, not experience.",
-    sourceName: "OECD PISA",
-    sourceUrl: "https://www.oecd.org/en/data/dashboards/teenage-career-readiness.html",
-    sourcePublishedAt: "2024-06-01",
-    sourceAccessedAt: "2025-01-22",
+      "Fewer than half of 15-year-olds had visited a workplace to see how careers actually work (PISA 2022) — leaving most to decide based on guesswork, not first-hand experience.",
+    sourceName: "OECD",
+    sourceUrl:
+      "https://www.oecd.org/en/publications/the-state-of-global-teenage-career-preparation_d5f8e3f2-en.html",
+    sourcePublishedAt: "2025-05-01",
+    sourceAccessedAt: "2026-06-01",
     tags: ["work-exposure"],
   },
   {
     id: "oecd-internships",
     headline: "Only 35% of students have undertaken an internship",
     description:
-      "Just over one-third of students have gained practical work experience through internships—leaving most without hands-on learning opportunities.",
-    sourceName: "OECD PISA",
-    sourceUrl: "https://www.oecd.org/en/data/dashboards/teenage-career-readiness.html",
-    sourcePublishedAt: "2024-06-01",
-    sourceAccessedAt: "2025-01-22",
+      "By age 15, just over one-third of students had completed an internship across OECD countries (PISA 2022) — leaving most without hands-on work experience.",
+    sourceName: "OECD",
+    sourceUrl:
+      "https://www.oecd.org/en/publications/the-state-of-global-teenage-career-preparation_d5f8e3f2-en.html",
+    sourcePublishedAt: "2025-05-01",
+    sourceAccessedAt: "2026-06-01",
     tags: ["work-exposure"],
   },
   {
@@ -183,7 +186,7 @@ const RESEARCH_STATS_RAW: ResearchStat[] = [
     id: "oecd-career-outcomes",
     headline: "Career exploration leads to better employment outcomes",
     description:
-      "Students who engage in career development activities—like job shadowing and conversations with advisors—show better results in employment rates, earnings, and career satisfaction by age 25.",
+      "Students who engage in career development activities—like workplace visits and conversations with advisors—show better results in employment rates, earnings, and career satisfaction by age 25.",
     sourceName: "OECD",
     sourceUrl: "https://www.oecd.org/en/about/projects/career-readiness.html",
     sourcePublishedAt: "2024-09-01",
