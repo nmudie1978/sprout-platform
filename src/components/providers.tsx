@@ -3,6 +3,7 @@
 import { SessionProvider, useSession } from "next-auth/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useState, useEffect, useRef } from "react";
+import { usePathname } from "next/navigation";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
 import { LifeSkillsProvider } from "@/components/life-skills-provider";
@@ -54,11 +55,22 @@ export function Providers({ children, session }: { children: React.ReactNode; se
       })
   );
 
+  // Pre-auth "front door" — the public landing and the whole auth flow
+  // (sign in / sign up / verify / etc.) — is ALWAYS dark, regardless of any
+  // light preference a returning user may have saved. Once signed in, the
+  // in-app light/dark toggle applies as normal (forcedTheme falls back to
+  // undefined off these routes). New users already default to dark via
+  // defaultTheme="dark" + enableSystem={false}.
+  const pathname = usePathname();
+  const forceDarkPreAuth =
+    pathname === "/" || (pathname?.startsWith("/auth") ?? false);
+
   return (
     <ThemeProvider
       attribute="class"
       defaultTheme="dark"
       enableSystem={false}
+      forcedTheme={forceDarkPreAuth ? "dark" : undefined}
       disableTransitionOnChange
     >
       <SessionProvider session={session} refetchOnWindowFocus={false} refetchInterval={0}>
