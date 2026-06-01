@@ -1,6 +1,6 @@
 {
   "meta": {
-    "source": "Official Spanish university sites (pilot slice — Phase 4). Figures/requirements are general; verify nota de corte per year.",
+    "source": "Official Spanish university sites + TodoFP (Ministerio de Educación, FP). Figures/requirements are general; verify nota de corte / tuition per year.",
     "country": "ES",
     "lastUpdated": "2026-06-01"
   },
@@ -13,7 +13,7 @@
       "city": "Madrid",
       "url": "https://www.ucm.es",
       "applicationVia": "Distrito Único / preinscripción universitaria",
-      "careerIds": ["doctor"]
+      "careerIds": ["doctor", "lawyer", "psychologist", "primary-teacher", "dentist"]
     },
     {
       "id": "es-ub",
@@ -23,7 +23,7 @@
       "city": "Barcelona",
       "url": "https://www.ub.edu",
       "applicationVia": "Preinscripció universitària (Generalitat de Catalunya)",
-      "careerIds": ["nurse"]
+      "careerIds": ["nurse", "physiotherapist"]
     },
     {
       "id": "es-upm",
@@ -33,7 +33,7 @@
       "city": "Madrid",
       "url": "https://www.upm.es",
       "applicationVia": "Distrito Único / preinscripción universitaria",
-      "careerIds": ["software-developer"]
+      "careerIds": ["software-developer", "architect"]
     },
     {
       "id": "es-upc",
@@ -44,6 +44,16 @@
       "url": "https://www.upc.edu",
       "applicationVia": "Preinscripció universitària (Generalitat de Catalunya)",
       "careerIds": ["software-developer"]
+    },
+    {
+      "id": "es-fp",
+      "name": "Formación Profesional (sistema educativo español)",
+      "shortName": "FP",
+      "country": "ES",
+      "city": "Nationwide (Spain)",
+      "url": "https://www.todofp.es",
+      "applicationVia": "Admisión a FP (consejería de educación autonómica)",
+      "careerIds": ["electrician", "plumber"]
     }
   ],
   "programmes": [
@@ -64,6 +74,70 @@
       "verificationSource": "official:ucm.es"
     },
     {
+      "id": "es-ucm-derecho",
+      "careerId": "lawyer",
+      "institutionId": "es-ucm",
+      "programme": "Grado en Derecho",
+      "englishName": "Bachelor's Degree in Law",
+      "url": "https://www.ucm.es/estudios/grado-derecho2020",
+      "type": "bachelor",
+      "duration": "4 years",
+      "languageOfInstruction": "Spanish",
+      "tuitionFee": "Public — regional fees (approx., set per comunidad)",
+      "entryRequirements": "Bachillerato + EvAU/PAU",
+      "careerOutcome": "To practise as abogado/a: Máster de Acceso a la Abogacía + the state exam, then join a Colegio de Abogados",
+      "lastVerifiedAt": "2026-06-01",
+      "verificationSource": "official:ucm.es"
+    },
+    {
+      "id": "es-ucm-psicologia",
+      "careerId": "psychologist",
+      "institutionId": "es-ucm",
+      "programme": "Grado en Psicología",
+      "englishName": "Bachelor's Degree in Psychology",
+      "url": "https://www.ucm.es/grado-psicologia",
+      "type": "bachelor",
+      "duration": "4 years",
+      "languageOfInstruction": "Spanish",
+      "tuitionFee": "Public — regional fees (approx., set per comunidad)",
+      "entryRequirements": "Bachillerato + EvAU/PAU",
+      "careerOutcome": "Basis for psychology careers; clinical practice needs the PIR route or the Máster en Psicología General Sanitaria",
+      "lastVerifiedAt": "2026-06-01",
+      "verificationSource": "official:ucm.es"
+    },
+    {
+      "id": "es-ucm-primaria",
+      "careerId": "primary-teacher",
+      "institutionId": "es-ucm",
+      "programme": "Grado en Maestro en Educación Primaria",
+      "englishName": "Bachelor's Degree in Primary Education (Teacher)",
+      "url": "https://www.ucm.es/estudios/grado-educacionprimaria",
+      "type": "bachelor",
+      "duration": "4 years",
+      "languageOfInstruction": "Spanish",
+      "tuitionFee": "Public — regional fees (approx., set per comunidad)",
+      "entryRequirements": "Bachillerato + EvAU/PAU; includes school placements (prácticas)",
+      "careerOutcome": "Qualifies to teach in primary schools; public-school posts via oposiciones",
+      "lastVerifiedAt": "2026-06-01",
+      "verificationSource": "official:ucm.es"
+    },
+    {
+      "id": "es-ucm-odontologia",
+      "careerId": "dentist",
+      "institutionId": "es-ucm",
+      "programme": "Grado en Odontología",
+      "englishName": "Bachelor's Degree in Dentistry",
+      "url": "https://www.ucm.es/estudios/grado-odontologia",
+      "type": "integrated",
+      "duration": "5 years",
+      "languageOfInstruction": "Spanish",
+      "tuitionFee": "Public — regional fees (approx., set per comunidad)",
+      "entryRequirements": "Bachillerato (Ciencias) + EvAU/PAU; high nota de corte",
+      "careerOutcome": "Registration as a dentist with a Colegio de Odontólogos; can practise on graduation",
+      "lastVerifiedAt": "2026-06-01",
+      "verificationSource": "official:ucm.es"
+    },
+    {
       "id": "es-ub-enfermeria",
       "careerId": "nurse",
       "institutionId": "es-ub",
@@ -76,6 +150,22 @@
       "tuitionFee": "Public — regional fees (approx., set per comunidad)",
       "entryRequirements": "Bachillerato + EvAU/PAU (sciences recommended); includes supervised clinical placements",
       "careerOutcome": "Registration as a nurse (enfermero/a) with the Colegio de Enfermería",
+      "lastVerifiedAt": "2026-06-01",
+      "verificationSource": "official:ub.edu"
+    },
+    {
+      "id": "es-ub-fisioterapia",
+      "careerId": "physiotherapist",
+      "institutionId": "es-ub",
+      "programme": "Grado en Fisioterapia",
+      "englishName": "Bachelor's Degree in Physiotherapy",
+      "url": "https://web.ub.edu/en/web/estudis/w/bachelordegree-g1133",
+      "type": "bachelor",
+      "duration": "4 years",
+      "languageOfInstruction": "Spanish / Catalan",
+      "tuitionFee": "Public — regional fees (approx., set per comunidad)",
+      "entryRequirements": "Bachillerato + EvAU/PAU (sciences recommended); includes clinical placements",
+      "careerOutcome": "Registration as a physiotherapist (fisioterapeuta) with the Colegio de Fisioterapeutas",
       "lastVerifiedAt": "2026-06-01",
       "verificationSource": "official:ub.edu"
     },
@@ -96,6 +186,22 @@
       "verificationSource": "official:fi.upm.es"
     },
     {
+      "id": "es-upm-arquitectura",
+      "careerId": "architect",
+      "institutionId": "es-upm",
+      "programme": "Grado en Fundamentos de la Arquitectura",
+      "englishName": "Bachelor's Degree in Fundamentals of Architecture",
+      "url": "https://etsamadrid.aq.upm.es/es/estudios/grado/grado-en-fundamentos-de-la-arquitectura/informacion-general",
+      "type": "bachelor",
+      "duration": "5 years",
+      "languageOfInstruction": "Spanish",
+      "tuitionFee": "Public — regional fees (approx., set per comunidad)",
+      "entryRequirements": "Bachillerato (Ciencias/Tecnología) + EvAU/PAU; drawing/maths aptitude helps",
+      "careerOutcome": "Followed by the Máster habilitante en Arquitectura to practise as a licensed architect",
+      "lastVerifiedAt": "2026-06-01",
+      "verificationSource": "official:upm.es"
+    },
+    {
       "id": "es-upc-informatica",
       "careerId": "software-developer",
       "institutionId": "es-upc",
@@ -110,6 +216,38 @@
       "careerOutcome": "Roles in software development and engineering; basis for a Màster if desired",
       "lastVerifiedAt": "2026-06-01",
       "verificationSource": "official:upc.edu"
+    },
+    {
+      "id": "es-fp-electricidad",
+      "careerId": "electrician",
+      "institutionId": "es-fp",
+      "programme": "Técnico en Instalaciones Eléctricas y Automáticas (FP Grado Medio)",
+      "englishName": "Vocational Diploma — Electrical & Automated Installations (FP, intermediate)",
+      "url": "https://www.todofp.es/que-estudiar/familias-profesionales/electricidad-electronica/instalaciones-electricas-automaticas.html",
+      "type": "vocational",
+      "duration": "2 years",
+      "languageOfInstruction": "Spanish",
+      "tuitionFee": "Public (low/no fees at public FP centres)",
+      "entryRequirements": "Access to FP Grado Medio (ESO or an access test); includes work placement (FCT)",
+      "careerOutcome": "Qualifies as a Técnico to work as an electrician; can progress to FP Grado Superior",
+      "lastVerifiedAt": "2026-06-01",
+      "verificationSource": "official:todofp.es"
+    },
+    {
+      "id": "es-fp-calor",
+      "careerId": "plumber",
+      "institutionId": "es-fp",
+      "programme": "Técnico en Instalaciones de Producción de Calor (FP Grado Medio)",
+      "englishName": "Vocational Diploma — Heat Production Installations (FP, intermediate)",
+      "url": "https://www.todofp.es/que-estudiar/familias-profesionales/instalacion-mantenimiento/instalaciones-produccion-calor.html",
+      "type": "vocational",
+      "duration": "2 years",
+      "languageOfInstruction": "Spanish",
+      "tuitionFee": "Public (low/no fees at public FP centres)",
+      "entryRequirements": "Access to FP Grado Medio (ESO or an access test); includes work placement (FCT)",
+      "careerOutcome": "Qualifies as a Técnico for heating & plumbing installations; can progress to FP Grado Superior",
+      "lastVerifiedAt": "2026-06-01",
+      "verificationSource": "official:todofp.es"
     }
   ]
 }
