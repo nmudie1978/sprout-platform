@@ -14,6 +14,63 @@
 import type { CareerDetails } from './career-typical-days';
 
 export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
+  "academic-advisor": {
+      "typicalDay": {
+          "morning": [
+              "Check emails from students and faculty regarding academic queries.",
+              "Review student records to identify those needing support.",
+              "Prepare for one-on-one meetings with students."
+          ],
+          "midday": [
+              "Meet with students to discuss course selections and academic goals.",
+              "Attend a team meeting to discuss student progress and strategies.",
+              "Update student records with notes from meetings."
+          ],
+          "afternoon": [
+              "Conduct workshops on study skills and time management.",
+              "Respond to follow-up emails from students.",
+              "Research academic policies to stay informed."
+          ],
+          "tools": [
+              "Student management software",
+              "Email",
+              "Microsoft Office Suite",
+              "Online course catalogues",
+              "Note-taking apps"
+          ],
+          "environment": "Mostly indoors in a university office, with a mix of student meetings and administrative tasks."
+      },
+      "whatYouActuallyDo": [
+          "Meet with students to help them choose courses.",
+          "Provide advice on academic policies and procedures.",
+          "Support students facing academic challenges.",
+          "Keep detailed records of student interactions.",
+          "Organise workshops on academic skills.",
+          "Collaborate with faculty to improve student support services."
+      ],
+      "whoThisIsGoodFor": [
+          "Good at listening and understanding others.",
+          "Enjoys helping people solve problems.",
+          "Organised and detail-oriented.",
+          "Comfortable speaking in front of groups.",
+          "Able to handle multiple tasks at once."
+      ],
+      "topSkills": [
+          "Strong communication skills for advising students.",
+          "Empathy to understand student concerns.",
+          "Record keeping for tracking student progress.",
+          "Knowledge of academic systems and policies.",
+          "Ability to organise workshops and events."
+      ],
+      "entryPaths": [
+          "Complete a Bachelor's or Master's in Education or a related field.",
+          "Gain experience in student support roles during studies.",
+          "Look for internships at universities or colleges.",
+          "Consider a fagbrev in a relevant area like counselling.",
+          "Apply for entry-level positions at educational institutions."
+      ],
+      "realityCheck": "The job can be emotionally demanding as you support students through their challenges."
+  },
   "acquisitions-manager": {
       "typicalDay": {
           "morning": [
@@ -182,6 +239,108 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "The emotional weight of the job can be challenging, as you often deal with complex family situations."
   },
+  "adventure-sports-coach": {
+      "typicalDay": {
+          "morning": [
+              "Prepare training plans for athletes based on their goals.",
+              "Set up equipment for climbing or paddling sessions.",
+              "Conduct a warm-up session with the team."
+          ],
+          "midday": [
+              "Lead a climbing session, providing tips on technique.",
+              "Review athletes' progress and adjust training plans.",
+              "Discuss safety protocols with the group."
+          ],
+          "afternoon": [
+              "Plan an expedition route for an upcoming trip.",
+              "Hold a debrief session to discuss the day's training.",
+              "Organise gear and equipment for the next session."
+          ],
+          "tools": [
+              "Climbing gear (harnesses, ropes, helmets)",
+              "Paddling equipment (kayaks, paddles, life jackets)",
+              "Training software for planning and tracking progress"
+          ],
+          "environment": "Mostly outdoors in various natural settings, with a focus on hands-on coaching and teamwork."
+      },
+      "whatYouActuallyDo": [
+          "Coach athletes in climbing, paddling, and skiing techniques.",
+          "Create training schedules tailored to individual athletes.",
+          "Ensure safety measures are followed during all activities.",
+          "Provide feedback and support to improve performance.",
+          "Plan and prepare for expeditions, including logistics."
+      ],
+      "whoThisIsGoodFor": [
+          "Passionate about outdoor sports.",
+          "Enjoys teaching and helping others grow.",
+          "Comfortable in varying weather conditions."
+      ],
+      "topSkills": [
+          "Strong knowledge of multiple adventure sports.",
+          "Ability to motivate and inspire athletes.",
+          "Good planning and organisational skills.",
+          "Understanding of sports psychology.",
+          "Experience in risk management and safety."
+      ],
+      "entryPaths": [
+          "Obtain sport-specific instructor certifications.",
+          "Complete a coaching qualification programme.",
+          "Gain experience through volunteering at adventure sports clubs."
+      ],
+      "realityCheck": "The job often requires long hours outdoors and can be physically demanding."
+  },
+  "aeronautical-engineer": {
+      "typicalDay": {
+          "morning": [
+              "Check emails and respond to team queries.",
+              "Review project updates and timelines.",
+              "Attend a team meeting to discuss design progress."
+          ],
+          "midday": [
+              "Work on computer-aided design (CAD) for aircraft components.",
+              "Conduct calculations for aerodynamics and materials.",
+              "Meet with the testing team to plan upcoming tests."
+          ],
+          "afternoon": [
+              "Analyse test data and make adjustments to designs.",
+              "Collaborate with other engineers on project challenges.",
+              "Prepare reports on design changes and testing results."
+          ],
+          "tools": [
+              "CAD software (like SolidWorks or AutoCAD)",
+              "computers for simulations and calculations",
+              "testing equipment for prototypes"
+          ],
+          "environment": "Mostly indoors in an office or lab, with a mix of desk work and hands-on testing."
+      },
+      "whatYouActuallyDo": [
+          "Design aircraft parts using CAD software.",
+          "Test prototypes to see how they perform in the air.",
+          "Analyse data from tests to improve designs.",
+          "Work with a team to solve engineering problems.",
+          "Create reports to document your work and findings."
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys solving complex problems.",
+          "Has a strong interest in physics and mathematics.",
+          "Likes working in a team but can also focus alone."
+      ],
+      "topSkills": [
+          "Strong understanding of aerodynamics.",
+          "Proficient in CAD software.",
+          "Ability to conduct and analyse tests.",
+          "Good mathematical skills for calculations.",
+          "Knowledge of materials science."
+      ],
+      "entryPaths": [
+          "Complete a Master's in Aerospace or Aeronautical Engineering.",
+          "Consider a relevant bachelor's degree followed by a master's.",
+          "Look for internships with aerospace companies during studies.",
+          "Gain experience through summer jobs in engineering firms.",
+          "Explore apprenticeships in related fields."
+      ],
+      "realityCheck": "You will spend a lot of time on computer simulations and calculations before seeing your designs come to life."
+  },
   "aerospace-engineer": {
       "typicalDay": {
           "morning": [
@@ -232,6 +391,122 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
           "Consider relevant apprenticeships in engineering."
       ],
       "realityCheck": "The workload can be intense, especially when deadlines approach."
+  },
+  "aerospace-structural-engineer": {
+      "typicalDay": {
+          "morning": [
+              "Review design specifications and project requirements.",
+              "Conduct structural analysis of components using software.",
+              "Attend team meetings to discuss project progress."
+          ],
+          "midday": [
+              "Collaborate with other engineers on design modifications.",
+              "Run simulations to test material performance under stress.",
+              "Document findings and update project reports."
+          ],
+          "afternoon": [
+              "Prepare presentations for stakeholders on design proposals.",
+              "Conduct fatigue analysis to ensure safety standards.",
+              "Check compliance with industry regulations and standards."
+          ],
+          "tools": [
+              "CAD software (like SolidWorks or CATIA)",
+              "Finite Element Analysis (FEA) tools",
+              "Project management software",
+              "Material testing equipment",
+              "Technical documentation software"
+          ],
+          "environment": "Mostly indoors in an office setting, with a focus on teamwork and problem-solving."
+      },
+      "whatYouActuallyDo": [
+          "Design load-bearing structures for aircraft and spacecraft.",
+          "Analyse how materials behave under different conditions.",
+          "Create detailed drawings and specifications.",
+          "Work with other engineers to solve design challenges.",
+          "Test and validate designs through simulations.",
+          "Ensure designs meet safety regulations.",
+          "Prepare technical reports and presentations."
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys solving complex problems.",
+          "Strong attention to detail.",
+          "Good at working in teams.",
+          "Comfortable using technology and software.",
+          "Curious about how things work."
+      ],
+      "topSkills": [
+          "Proficient in CAD software.",
+          "Strong analytical skills for structural analysis.",
+          "Knowledge of materials and their properties.",
+          "Ability to run and interpret FEA simulations.",
+          "Understanding of fatigue analysis principles.",
+          "Good communication skills for teamwork.",
+          "Project management skills to keep tasks on track."
+      ],
+      "entryPaths": [
+          "Complete a Master's in Aerospace, Structural, or Mechanical Engineering.",
+          "Apply for internships or apprenticeships with aerospace companies.",
+          "Get relevant work experience through summer jobs in engineering.",
+          "Pursue a bachelor's degree followed by a master's degree.",
+          "Look for entry-level positions in engineering firms."
+      ],
+      "realityCheck": "The work can involve long hours in front of a computer, with lots of technical details to manage."
+  },
+  "aerospace-technician": {
+      "typicalDay": {
+          "morning": [
+              "Review blueprints and work orders for the day's tasks.",
+              "Gather and prepare tools and materials needed for assembly.",
+              "Assemble small components of aircraft or spacecraft."
+          ],
+          "midday": [
+              "Perform quality checks on assembled parts.",
+              "Take a lunch break and discuss projects with colleagues.",
+              "Attend a brief meeting to update on progress."
+          ],
+          "afternoon": [
+              "Carry out maintenance on existing aerospace hardware.",
+              "Collaborate with engineers to troubleshoot issues.",
+              "Clean and organise the workspace for safety."
+          ],
+          "tools": [
+              "Wrenches and screwdrivers",
+              "Torque wrenches",
+              "Measuring instruments like calipers",
+              "Computer software for design and analysis",
+              "Safety gear such as goggles and gloves"
+          ],
+          "environment": "Mostly indoors in a workshop or hangar, working on precise tasks with a focus on safety."
+      },
+      "whatYouActuallyDo": [
+          "Assemble and install parts for aircraft and spacecraft.",
+          "Read and interpret technical blueprints and manuals.",
+          "Test and inspect components for quality assurance.",
+          "Use hand tools and machinery for assembly tasks.",
+          "Maintain equipment and tools in good condition."
+      ],
+      "whoThisIsGoodFor": [
+          "Detail-oriented and precise.",
+          "Enjoys working with hands and tools.",
+          "Likes solving mechanical problems.",
+          "Comfortable following safety procedures.",
+          "Able to work under pressure and meet deadlines."
+      ],
+      "topSkills": [
+          "Mechanical skills for working with machinery.",
+          "Precision in assembling small components.",
+          "Ability to read and understand blueprints.",
+          "Knowledge of safety procedures and regulations.",
+          "Good problem-solving skills for troubleshooting."
+      ],
+      "entryPaths": [
+          "Complete a vocational diploma (fagbrev) in aerospace mechanics.",
+          "Apply for an apprenticeship with an aerospace company.",
+          "Pursue relevant courses in technical schools.",
+          "Gain experience through internships in the aerospace sector.",
+          "Look for job openings with companies like Kongsberg or Airbus."
+      ],
+      "realityCheck": "The work can be repetitive and requires a high level of attention to detail."
   },
   "affiliate-marketer": {
       "typicalDay": {
@@ -291,6 +566,111 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
           "Explore certifications in digital marketing."
       ],
       "realityCheck": "You often work alone, and it may take time to see any real success or income."
+  },
+  "ai-consultant": {
+      "typicalDay": {
+          "morning": [
+              "Check emails and messages from clients and team members.",
+              "Review project updates and prepare for client meetings.",
+              "Conduct research on the latest AI trends and tools."
+          ],
+          "midday": [
+              "Meet with clients to discuss their AI needs and goals.",
+              "Work on developing AI strategy documents.",
+              "Collaborate with team members on pilot projects."
+          ],
+          "afternoon": [
+              "Prepare and deliver presentations to clients on AI findings.",
+              "Train client teams on how to use AI tools effectively.",
+              "Follow up on action items from meetings and update project plans."
+          ],
+          "tools": [
+              "Presentation software (e.g. PowerPoint),",
+              "AI development platforms (e.g. TensorFlow),",
+              "Project management tools (e.g. Trello),",
+              "Communication tools (e.g. Slack),",
+              "Data analysis software (e.g. Excel)"
+          ],
+          "environment": "Mostly indoors in an office setting, with a mix of client meetings and team collaboration."
+      },
+      "whatYouActuallyDo": [
+          "Advise businesses on how AI can improve their operations.",
+          "Create strategies for implementing AI solutions.",
+          "Build small pilot projects to test AI applications.",
+          "Train staff on using AI tools and technologies.",
+          "Research industry-specific AI trends and innovations."
+      ],
+      "whoThisIsGoodFor": [
+          "Curious about technology and its impact on business.",
+          "Good at explaining complex ideas simply.",
+          "Enjoys problem-solving and critical thinking."
+      ],
+      "topSkills": [
+          "Understanding of AI concepts and applications.",
+          "Strong communication and presentation skills.",
+          "Ability to analyse and interpret data.",
+          "Project management skills.",
+          "Experience in consulting or client-facing roles."
+      ],
+      "entryPaths": [
+          "Complete a bachelor's or master's degree in Computer Science or Business.",
+          "Gain experience through internships in tech or consulting firms.",
+          "Consider a fagbrev in relevant fields like IT or business.",
+          "Look for apprenticeships or entry-level roles in consulting.",
+          "Network with professionals in the AI and consulting sectors."
+      ],
+      "realityCheck": "You will spend a lot of time explaining AI concepts to people who are not tech-savvy."
+  },
+  "ai-ethics-specialist": {
+      "typicalDay": {
+          "morning": [
+              "Review AI models for ethical compliance.",
+              "Meet with the development team to discuss potential risks.",
+              "Read recent research papers on AI ethics."
+          ],
+          "midday": [
+              "Draft reports on findings from model audits.",
+              "Attend a workshop on new AI regulations.",
+              "Collaborate with legal teams on policy development."
+          ],
+          "afternoon": [
+              "Present findings to stakeholders.",
+              "Update documentation on ethical guidelines.",
+              "Conduct interviews with users to gather feedback."
+          ],
+          "tools": [
+              "Data analysis software (like Python or R)",
+              "Presentation tools (like PowerPoint or Google Slides)",
+              "Research databases (like JSTOR or Google Scholar)"
+          ],
+          "environment": "Mostly indoors in an office setting, with a focus on meetings and collaboration."
+      },
+      "whatYouActuallyDo": [
+          "Audit AI systems to check for bias and fairness.",
+          "Identify risks in AI models and suggest improvements.",
+          "Write reports to explain ethical concerns.",
+          "Collaborate with teams to ensure ethical guidelines are followed.",
+          "Stay updated on laws and regulations affecting AI.",
+          "Conduct training sessions on AI ethics for staff."
+      ],
+      "whoThisIsGoodFor": [
+          "Strong analytical thinker.",
+          "Passionate about technology and ethics.",
+          "Good at explaining complex ideas simply."
+      ],
+      "topSkills": [
+          "Understanding of machine learning concepts.",
+          "Ability to assess risks and impacts of AI.",
+          "Strong communication skills for reporting.",
+          "Critical thinking to evaluate ethical dilemmas.",
+          "Research skills to stay informed on trends."
+      ],
+      "entryPaths": [
+          "Complete a Master's in Philosophy, Law, or Computer Science.",
+          "Gain experience through internships in tech companies.",
+          "Participate in workshops or courses on AI ethics."
+      ],
+      "realityCheck": "The role involves a lot of reading and research, which can be time-consuming."
   },
   "ai-network-engineer": {
       "typicalDay": {
@@ -395,6 +775,58 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
           "Internships at tech companies to gain experience."
       ],
       "realityCheck": "You spend a lot of time coordinating between teams, which can be challenging."
+  },
+  "ai-research-scientist": {
+      "typicalDay": {
+          "morning": [
+              "Review recent research papers and developments in AI.",
+              "Attend team meetings to discuss ongoing projects.",
+              "Work on coding algorithms in Python or another programming language."
+          ],
+          "midday": [
+              "Collaborate with colleagues on experiments and data analysis.",
+              "Write up findings for publication or presentations.",
+              "Test and refine machine learning models."
+          ],
+          "afternoon": [
+              "Meet with supervisors or mentors for feedback on research.",
+              "Prepare materials for upcoming conferences or workshops.",
+              "Stay updated on AI ethics and implications."
+          ],
+          "tools": [
+              "Python, TensorFlow, Jupyter Notebook, LaTeX, Git, research databases"
+          ],
+          "environment": "Mostly indoors in a research lab or office, with a mix of collaborative and independent work."
+      },
+      "whatYouActuallyDo": [
+          "Conduct experiments to test new AI algorithms.",
+          "Analyse data to improve machine learning models.",
+          "Write research papers and submit them to journals.",
+          "Present findings at conferences and workshops.",
+          "Collaborate with other researchers on joint projects.",
+          "Stay informed about the latest trends and technologies in AI."
+      ],
+      "whoThisIsGoodFor": [
+          "Curious about technology and how things work.",
+          "Enjoys solving complex problems.",
+          "Good at working independently and in a team.",
+          "Able to think creatively and come up with new ideas."
+      ],
+      "topSkills": [
+          "Strong programming skills, especially in Python.",
+          "Solid understanding of mathematics and statistics.",
+          "Ability to conduct thorough research.",
+          "Good scientific writing skills.",
+          "Creativity in developing new algorithms."
+      ],
+      "entryPaths": [
+          "Complete a bachelor's degree in Computer Science or a related field.",
+          "Pursue a master's degree in AI or Machine Learning.",
+          "Continue to a PhD programme focused on AI research.",
+          "Look for internships or research assistant positions in universities or tech companies.",
+          "Consider applying for research positions at institutions like SINTEF or NTNU."
+      ],
+      "realityCheck": "The path to becoming an AI Research Scientist is long and requires a lot of perseverance and dedication."
   },
   "ai-researcher": {
       "typicalDay": {
@@ -508,6 +940,63 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "The work can be very theoretical and may not always lead to immediate practical applications."
   },
+  "ai-solutions-architect": {
+      "typicalDay": {
+          "morning": [
+              "Review project requirements and specifications.",
+              "Meet with stakeholders to discuss AI needs.",
+              "Sketch out initial design ideas on a whiteboard."
+          ],
+          "midday": [
+              "Collaborate with engineers on technical solutions.",
+              "Check progress on ongoing AI projects.",
+              "Update project documentation and plans."
+          ],
+          "afternoon": [
+              "Present design proposals to management.",
+              "Attend meetings to address technical challenges.",
+              "Research new AI technologies and trends."
+          ],
+          "tools": [
+              "Cloud platforms like AWS or Azure.",
+              "Design software such as Lucidchart or Draw.io.",
+              "Programming languages like Python or Java."
+          ],
+          "environment": "Mostly indoors in an office setting, with a mix of meetings and focused work time."
+      },
+      "whatYouActuallyDo": [
+          "Translate business problems into AI solutions.",
+          "Design technical blueprints for AI systems.",
+          "Guide engineering teams during the development phase.",
+          "Communicate with different departments to understand their needs.",
+          "Research and evaluate new AI technologies.",
+          "Create documentation for AI projects.",
+          "Present updates and proposals to stakeholders."
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys problem-solving and critical thinking.",
+          "Good at explaining complex ideas simply.",
+          "Has a strong interest in technology and AI.",
+          "Comfortable leading and coordinating teams."
+      ],
+      "topSkills": [
+          "Understanding of system design principles.",
+          "Experience with cloud architecture.",
+          "Knowledge of machine learning concepts.",
+          "Strong communication and presentation skills.",
+          "Ability to manage multiple projects simultaneously.",
+          "Leadership skills to guide technical teams.",
+          "Business acumen to align AI solutions with company goals."
+      ],
+      "entryPaths": [
+          "Complete a bachelor's or master's degree in Computer Science.",
+          "Gain experience through internships or entry-level tech jobs.",
+          "Pursue relevant certifications in AI or cloud computing.",
+          "Look for apprenticeships in tech companies focusing on AI.",
+          "Consider roles in software development to build relevant skills."
+      ],
+      "realityCheck": "The job often involves a lot of meetings and discussions, which can take time away from actual coding or design work."
+  },
   "air-force-technician": {
       "typicalDay": {
           "morning": [
@@ -609,6 +1098,56 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
           "Look for apprenticeships with Avinor or other aviation companies."
       ],
       "realityCheck": "The training period can be intense and requires a lot of focus and practice to handle real-life situations."
+  },
+  "aircraft-mechanic": {
+      "typicalDay": {
+          "morning": [
+              "Arrive at the hangar and check the schedule for the day.",
+              "Inspect aircraft for any visible issues or wear.",
+              "Gather tools and equipment needed for repairs."
+          ],
+          "midday": [
+              "Perform maintenance tasks such as changing oil or replacing parts.",
+              "Document any repairs or inspections in the maintenance log.",
+              "Consult with colleagues about ongoing projects."
+          ],
+          "afternoon": [
+              "Test aircraft systems to ensure everything is functioning correctly.",
+              "Complete any outstanding paperwork for the day.",
+              "Clean and organise the work area before leaving."
+          ],
+          "tools": [
+              "Wrenches and screwdrivers",
+              "Diagnostic tools for aircraft systems",
+              "Maintenance manuals and checklists"
+          ],
+          "environment": "Mostly indoors in a hangar, working with a team, surrounded by aircraft."
+      },
+      "whatYouActuallyDo": [
+          "Inspect aircraft to find any faults or issues.",
+          "Repair and replace damaged parts on planes and helicopters.",
+          "Follow strict safety regulations during all maintenance work.",
+          "Use diagnostic tools to troubleshoot system problems.",
+          "Keep accurate records of all maintenance activities."
+      ],
+      "whoThisIsGoodFor": [
+          "Detail-oriented and careful.",
+          "Enjoys working with their hands.",
+          "Good at problem-solving and troubleshooting."
+      ],
+      "topSkills": [
+          "Strong mechanical skills for repairs.",
+          "Understanding of aircraft systems and components.",
+          "Ability to read and follow technical manuals.",
+          "Precision in completing tasks to ensure safety.",
+          "Good teamwork skills to collaborate with other mechanics."
+      ],
+      "entryPaths": [
+          "Complete a vocational programme in aircraft mechanics.",
+          "Obtain a fagbrev as an aircraft mechanic.",
+          "Pursue an apprenticeship with an airline or maintenance company."
+      ],
+      "realityCheck": "The work can be physically demanding and requires attention to detail at all times."
   },
   "airline-pilot": {
       "typicalDay": {
@@ -1033,6 +1572,63 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "The role often involves balancing creative vision with client demands, which can be challenging."
   },
+  "art-teacher": {
+      "typicalDay": {
+          "morning": [
+              "Prepare lesson plans for different classes",
+              "Set up art supplies and materials",
+              "Teach drawing techniques to primary students"
+          ],
+          "midday": [
+              "Provide feedback on student artwork",
+              "Organise classroom displays of student work",
+              "Plan upcoming art exhibitions or projects"
+          ],
+          "afternoon": [
+              "Teach painting or sculpture techniques to upper-secondary students",
+              "Assist students with their individual projects",
+              "Clean up the classroom and store materials"
+          ],
+          "tools": [
+              "Paints and brushes",
+              "Digital art software",
+              "Sculpting tools and materials"
+          ],
+          "environment": "Mostly indoors in a classroom filled with art supplies, working with students on creative projects."
+      },
+      "whatYouActuallyDo": [
+          "Create engaging lesson plans for different age groups.",
+          "Teach various art techniques like drawing, painting, and sculpture.",
+          "Provide constructive feedback on students' artwork.",
+          "Encourage creativity and self-expression in students.",
+          "Organise art exhibitions to showcase student work.",
+          "Manage classroom behaviour and create a positive learning environment.",
+          "Collaborate with other teachers on interdisciplinary projects."
+      ],
+      "whoThisIsGoodFor": [
+          "Creative and imaginative individuals.",
+          "Those who enjoy working with young people.",
+          "People who are patient and supportive.",
+          "Individuals who can give constructive criticism.",
+          "Those who appreciate different forms of art."
+      ],
+      "topSkills": [
+          "Strong knowledge of various art techniques.",
+          "Ability to inspire and motivate students.",
+          "Good communication skills for explaining concepts.",
+          "Organisational skills for planning lessons and projects.",
+          "Critical thinking for evaluating student work.",
+          "Flexibility to adapt lessons to different skill levels."
+      ],
+      "entryPaths": [
+          "Complete a Bachelor's or Master's in Art / Kunstfag.",
+          "Pursue a Pedagogical Education Programme (PPU).",
+          "Gain experience through internships in schools.",
+          "Consider volunteering at art camps or community centres.",
+          "Look for job openings in primary and secondary schools."
+      ],
+      "realityCheck": "You spend a lot of time managing classroom dynamics and not just teaching art."
+  },
   "artillery-officer": {
       "typicalDay": {
           "morning": [
@@ -1137,6 +1733,175 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
           "Consider an apprenticeship in sports coaching."
       ],
       "realityCheck": "You spend a lot of time supporting others and may not get the spotlight as much as the head coach."
+  },
+  "assistant-professor": {
+      "typicalDay": {
+          "morning": [
+              "Prepare lectures and course materials",
+              "Meet with students for office hours",
+              "Review and respond to emails"
+          ],
+          "midday": [
+              "Teach a class or seminar",
+              "Attend departmental meetings",
+              "Work on research projects"
+          ],
+          "afternoon": [
+              "Supervise student research or projects",
+              "Write or edit research papers",
+              "Apply for research grants"
+          ],
+          "tools": [
+              "Laptop for writing and research",
+              "Learning management system for course materials",
+              "Statistical software for data analysis"
+          ],
+          "environment": "Mostly indoors at a university, with a mix of teaching, research, and administrative tasks."
+      },
+      "whatYouActuallyDo": [
+          "Teach undergraduate or postgraduate classes",
+          "Supervise students during their research projects",
+          "Conduct your own research and publish findings",
+          "Apply for funding to support your research",
+          "Collaborate with colleagues on research and teaching",
+          "Attend conferences to present your work",
+          "Mentor students in their academic and career paths"
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys sharing knowledge and helping others learn",
+          "Curious and eager to explore new research topics",
+          "Able to manage multiple tasks and deadlines",
+          "Comfortable speaking in front of groups",
+          "Passionate about your subject area"
+      ],
+      "topSkills": [
+          "Strong research skills to investigate new topics",
+          "Effective teaching skills to engage students",
+          "Grant writing skills to secure funding",
+          "Time management to balance teaching and research",
+          "Communication skills for presenting ideas clearly",
+          "Supervision skills to guide student projects"
+      ],
+      "entryPaths": [
+          "Complete a PhD in your chosen field",
+          "Gain postdoctoral research experience",
+          "Apply for assistant professor positions at universities",
+          "Network with professionals in academia",
+          "Consider teaching assistant roles during your studies"
+      ],
+      "realityCheck": "The competition for permanent positions can be tough, and securing funding for research is a constant challenge."
+  },
+  "associate-professor": {
+      "typicalDay": {
+          "morning": [
+              "Prepare lecture materials and review student assignments.",
+              "Meet with research students to discuss their projects.",
+              "Attend departmental meetings to discuss curriculum changes."
+          ],
+          "midday": [
+              "Deliver a lecture or seminar to undergraduate students.",
+              "Hold office hours for students to ask questions.",
+              "Work on research papers or grant applications."
+          ],
+          "afternoon": [
+              "Supervise graduate students in their research.",
+              "Collaborate with colleagues on research projects.",
+              "Review and respond to emails regarding teaching and research."
+          ],
+          "tools": [
+              "Presentation software (like PowerPoint)",
+              "Research databases (like JSTOR)",
+              "Learning management systems (like Canvas)",
+              "Statistical analysis software (like SPSS)",
+              "Document editing software (like Microsoft Word)"
+          ],
+          "environment": "Mostly indoors at a university, balancing between teaching, researching, and administrative tasks."
+      },
+      "whatYouActuallyDo": [
+          "Teach courses and lead seminars for students.",
+          "Conduct research in your area of expertise.",
+          "Publish research findings in academic journals.",
+          "Supervise and mentor students in their research projects.",
+          "Apply for research grants to fund your work."
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys explaining complex topics to others.",
+          "Passionate about a specific subject and eager to share knowledge.",
+          "Comfortable managing multiple tasks and deadlines."
+      ],
+      "topSkills": [
+          "Strong research skills to explore new ideas.",
+          "Effective teaching methods to engage students.",
+          "Ability to write clear and persuasive grant proposals.",
+          "Excellent communication for presenting ideas.",
+          "Organisational skills to manage teaching and research responsibilities."
+      ],
+      "entryPaths": [
+          "Complete a PhD in your chosen field.",
+          "Gain teaching experience as a teaching assistant.",
+          "Publish research during your studies to build a portfolio.",
+          "Apply for postdoctoral positions to further your research.",
+          "Look for positions at universities or research institutions."
+      ],
+      "realityCheck": "The path to becoming an associate professor is long and requires a lot of dedication to research and teaching."
+  },
+  "astronautical-engineer": {
+      "typicalDay": {
+          "morning": [
+              "Review design specifications for a spacecraft project",
+              "Attend a team meeting to discuss project progress",
+              "Analyse data from recent tests on spacecraft components"
+          ],
+          "midday": [
+              "Work on simulations to test spacecraft performance",
+              "Collaborate with colleagues on design modifications",
+              "Draft reports on engineering findings"
+          ],
+          "afternoon": [
+              "Conduct research on new materials for spacecraft",
+              "Meet with suppliers to discuss component options",
+              "Prepare presentations for project updates"
+          ],
+          "tools": [
+              "CAD software for design",
+              "Simulation tools for testing",
+              "Project management software",
+              "Data analysis programs",
+              "3D printers for prototyping"
+          ],
+          "environment": "Mostly indoors in an engineering office, with a focus on collaboration and problem-solving."
+      },
+      "whatYouActuallyDo": [
+          "Design spacecraft systems and components.",
+          "Test and analyse spacecraft performance.",
+          "Work with a team to solve engineering problems.",
+          "Create detailed engineering drawings.",
+          "Research new technologies and materials for space applications.",
+          "Prepare reports and presentations for stakeholders."
+      ],
+      "whoThisIsGoodFor": [
+          "Strong interest in space and technology.",
+          "Good at solving complex problems.",
+          "Enjoys working in teams and collaborating.",
+          "Detail-oriented and organised.",
+          "Curious and eager to learn new things."
+      ],
+      "topSkills": [
+          "Understanding of orbital mechanics.",
+          "Proficiency in CAD software.",
+          "Ability to conduct thermal analysis.",
+          "Knowledge of propulsion systems.",
+          "Strong analytical and critical thinking skills.",
+          "Good communication and teamwork skills."
+      ],
+      "entryPaths": [
+          "Complete a bachelor's degree in Aerospace Engineering.",
+          "Pursue a master's degree or PhD in Astronautical Engineering.",
+          "Look for internships with aerospace companies.",
+          "Consider joining a space research programme.",
+          "Apply for apprenticeships in engineering firms."
+      ],
+      "realityCheck": "You will spend a lot of time on complex calculations and simulations before seeing your designs come to life."
   },
   "astrophysicist": {
       "typicalDay": {
@@ -1369,6 +2134,66 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "You will spend a lot of time on detailed design work and testing, which can be repetitive."
   },
+  "avionics-engineer": {
+      "typicalDay": {
+          "morning": [
+              "Check emails and messages from the team about ongoing projects.",
+              "Attend a morning meeting to discuss project updates and deadlines.",
+              "Review designs and specifications for current avionics systems."
+          ],
+          "midday": [
+              "Work on coding and testing software for avionics systems.",
+              "Collaborate with colleagues to troubleshoot any issues with designs.",
+              "Update project documentation to reflect recent changes."
+          ],
+          "afternoon": [
+              "Conduct tests on electronic systems to ensure they meet standards.",
+              "Prepare reports on test results and findings for the team.",
+              "Plan for upcoming projects and set goals for the next day."
+          ],
+          "tools": [
+              "CAD software for design work.",
+              "Embedded systems development tools.",
+              "Testing equipment for avionics systems.",
+              "Version control software like Git.",
+              "Simulation software for system analysis."
+          ],
+          "environment": "Mostly indoors in an engineering office, with a mix of team collaboration and focused individual work."
+      },
+      "whatYouActuallyDo": [
+          "Design electronic systems for aircraft and spacecraft.",
+          "Write code in C/C++ for avionics software.",
+          "Test and validate electronic components and systems.",
+          "Collaborate with other engineers to solve technical problems.",
+          "Document designs and testing procedures for compliance.",
+          "Stay updated on avionics standards and regulations.",
+          "Participate in project meetings to discuss progress and challenges."
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys solving complex problems.",
+          "Good at working with technology and electronics.",
+          "Able to focus for long periods on detailed tasks.",
+          "Likes collaborating with a team.",
+          "Curious about how things work and eager to learn."
+      ],
+      "topSkills": [
+          "Strong understanding of embedded systems.",
+          "Proficiency in C/C++ programming.",
+          "Knowledge of signal processing techniques.",
+          "Ability to conduct thorough testing and analysis.",
+          "Familiarity with avionics standards and regulations.",
+          "Good communication skills for teamwork.",
+          "Attention to detail in design and documentation."
+      ],
+      "entryPaths": [
+          "Complete a Master's in Electrical or Aerospace Engineering with an avionics specialisation.",
+          "Pursue relevant internships during your studies to gain practical experience.",
+          "Look for apprenticeships with aviation or aerospace companies.",
+          "Consider joining engineering projects or competitions to build your skills.",
+          "Apply for entry-level positions in related fields to gain experience."
+      ],
+      "realityCheck": "The work can involve long hours of troubleshooting and testing, which may not be as exciting as it sounds."
+  },
   "bailiff": {
       "typicalDay": {
           "morning": [
@@ -1583,6 +2408,58 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "The job can be physically demanding, especially during busy hours when you have to keep up with many orders."
   },
+  "base-jumper": {
+      "typicalDay": {
+          "morning": [
+              "Check weather conditions for safe jumping.",
+              "Prepare and pack parachute gear.",
+              "Scout locations for potential jumps."
+          ],
+          "midday": [
+              "Meet with fellow jumpers to discuss plans.",
+              "Perform safety checks on equipment.",
+              "Practice jumps from lower heights to maintain skills."
+          ],
+          "afternoon": [
+              "Make several jumps from chosen locations.",
+              "Review jump footage to assess performance.",
+              "Engage in physical training or conditioning."
+          ],
+          "tools": [
+              "Parachute gear including rigging and altimeter.",
+              "GoPro or other camera for filming jumps.",
+              "Safety equipment like helmets and protective clothing."
+          ],
+          "environment": "Mostly outdoors at various locations, often remote, with a focus on safety and precision."
+      },
+      "whatYouActuallyDo": [
+          "Plan jumps based on weather and site conditions.",
+          "Pack and maintain parachute equipment.",
+          "Execute jumps from fixed objects with precision.",
+          "Assess risks before each jump.",
+          "Review footage to improve techniques.",
+          "Train physically to stay fit for jumping.",
+          "Network with other BASE jumpers for advice and mentorship."
+      ],
+      "whoThisIsGoodFor": [
+          "Thrives under pressure.",
+          "Enjoys outdoor activities and adventure.",
+          "Has a strong sense of spatial awareness."
+      ],
+      "topSkills": [
+          "Expertise in skydiving techniques.",
+          "Ability to assess risks quickly.",
+          "Strong physical fitness for endurance.",
+          "Calm focus in high-stress situations.",
+          "Good communication skills for teamwork."
+      ],
+      "entryPaths": [
+          "Complete 1000+ skydives to build experience.",
+          "Seek mentorship from experienced BASE jumpers.",
+          "Join skydiving clubs to network and learn."
+      ],
+      "realityCheck": "The training is intense, and you need to be very disciplined to stay safe while pushing your limits."
+  },
   "beatmaker": {
       "typicalDay": {
           "morning": [
@@ -1641,6 +2518,173 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "Building a reputation takes time, and early work may not get much attention."
   },
+  "big-wave-surf-instructor": {
+      "typicalDay": {
+          "morning": [
+              "Check weather and wave conditions for safety",
+              "Prepare equipment and surfboards for the day",
+              "Brief surfers on safety and techniques before hitting the water"
+          ],
+          "midday": [
+              "Supervise surfers while they practice paddling and catching waves",
+              "Provide individual feedback and tips to improve their skills",
+              "Monitor ocean conditions and adjust plans as needed"
+          ],
+          "afternoon": [
+              "Lead surfers on advanced sessions, focusing on big-wave techniques",
+              "Conduct safety drills and rescue practice",
+              "Debrief with surfers, discussing their performance and areas for improvement"
+          ],
+          "tools": [
+              "Surfboards",
+              "Wetsuits",
+              "Safety equipment (like leashes and flotation devices)",
+              "Communication radios",
+              "First aid kit"
+          ],
+          "environment": "Mostly outdoors at the beach, working in the water with surfers and constantly observing ocean conditions."
+      },
+      "whatYouActuallyDo": [
+          "Teach advanced surfers how to handle big waves safely.",
+          "Assess ocean conditions and decide when it’s safe to surf.",
+          "Demonstrate paddling techniques and wave-catching strategies.",
+          "Provide immediate feedback to help surfers improve their skills.",
+          "Ensure all safety protocols are followed during sessions."
+      ],
+      "whoThisIsGoodFor": [
+          "Confident in the water and comfortable with big waves.",
+          "Good at explaining things clearly to others.",
+          "Enjoys physical activity and being outdoors.",
+          "Able to stay calm in high-pressure situations."
+      ],
+      "topSkills": [
+          "Advanced surfing techniques for big waves.",
+          "Strong understanding of ocean behaviour and safety.",
+          "Ability to teach and motivate others.",
+          "Physical fitness and stamina for long sessions.",
+          "Quick decision-making in changing conditions."
+      ],
+      "entryPaths": [
+          "Get an ISA surf instructor certification.",
+          "Gain big-wave surfing experience through training camps.",
+          "Complete a water safety training course.",
+          "Look for apprenticeships with experienced surf instructors.",
+          "Join surf schools or clubs that focus on advanced surfing."
+      ],
+      "realityCheck": "The job requires a high level of fitness and experience, and the conditions can change rapidly, making safety a constant concern."
+  },
+  "bilingual-customer-support-specialist": {
+      "typicalDay": {
+          "morning": [
+              "Check emails and respond to customer queries in both languages.",
+              "Handle live chat requests from customers.",
+              "Review any unresolved issues from the previous day."
+          ],
+          "midday": [
+              "Attend a team meeting to discuss common customer issues.",
+              "Update support documentation based on customer feedback.",
+              "Assist customers over the phone with their inquiries."
+          ],
+          "afternoon": [
+              "Follow up on ongoing customer cases via email.",
+              "Collaborate with other departments to resolve complex issues.",
+              "Prepare a summary report of customer interactions for the day."
+          ],
+          "tools": [
+              "Customer relationship management (CRM) software",
+              "Live chat software",
+              "Email management tools",
+              "Phone systems",
+              "Knowledge base for support documentation"
+          ],
+          "environment": "Mostly indoors in an office setting, with a mix of team collaboration and individual tasks."
+      },
+      "whatYouActuallyDo": [
+          "Respond to customer questions in two languages via chat, email, or phone.",
+          "Help customers troubleshoot issues with products or services.",
+          "Document customer interactions and solutions in the CRM.",
+          "Provide feedback on common customer problems to improve services.",
+          "Work with other teams to escalate issues when needed."
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys helping others and solving problems.",
+          "Good at communicating in multiple languages.",
+          "Patient and calm under pressure."
+      ],
+      "topSkills": [
+          "Fluency in at least two languages.",
+          "Strong written and verbal communication.",
+          "Ability to stay patient and focused during difficult calls.",
+          "Problem-solving skills to address customer issues.",
+          "Attention to detail when documenting cases."
+      ],
+      "entryPaths": [
+          "Complete a relevant vocational programme in customer service.",
+          "Gain fluency in target languages through studies or immersion.",
+          "Look for entry-level positions in companies that value bilingual skills.",
+          "Consider internships in customer support roles.",
+          "Pursue customer service training courses."
+      ],
+      "realityCheck": "The job can be repetitive, as you'll often deal with the same types of questions every day."
+  },
+  "biology-teacher": {
+      "typicalDay": {
+          "morning": [
+              "Prepare lesson plans and materials for the day's classes.",
+              "Set up lab equipment or fieldwork tools if needed.",
+              "Check students' assignments and provide feedback."
+          ],
+          "midday": [
+              "Teach biology classes, covering topics like genetics and ecology.",
+              "Engage students in discussions and answer their questions.",
+              "Supervise students during lab experiments or field trips."
+          ],
+          "afternoon": [
+              "Grade assignments and tests from the day's lessons.",
+              "Meet with colleagues to discuss curriculum and student progress.",
+              "Plan future lessons and update classroom resources."
+          ],
+          "tools": [
+              "Whiteboard and markers",
+              "Lab equipment (microscopes, petri dishes)",
+              "Educational software for presentations"
+          ],
+          "environment": "Mostly indoors in a classroom or laboratory, with a mix of teaching and hands-on activities."
+      },
+      "whatYouActuallyDo": [
+          "Prepare and deliver engaging biology lessons.",
+          "Create and mark assignments and tests.",
+          "Help students understand complex topics in an easy way.",
+          "Organise and supervise lab experiments.",
+          "Plan field trips to explore ecological topics.",
+          "Communicate with parents about student progress.",
+          "Collaborate with other teachers on interdisciplinary projects."
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys explaining concepts to others.",
+          "Has a passion for science and nature.",
+          "Likes working with young people.",
+          "Comfortable leading group activities.",
+          "Patient and supportive when students struggle."
+      ],
+      "topSkills": [
+          "Strong knowledge of biology topics.",
+          "Ability to create engaging lesson plans.",
+          "Good communication skills for teaching.",
+          "Organisational skills for managing classes and resources.",
+          "Experience with lab techniques and safety.",
+          "Ability to encourage teamwork during projects.",
+          "Flexibility to adapt lessons based on student needs."
+      ],
+      "entryPaths": [
+          "Complete a Master's in Biology and a PPU (Pedagogical Practice Unit).",
+          "Consider a bachelor's degree in biology with teaching qualifications.",
+          "Look for internships or volunteer opportunities in schools.",
+          "Gain experience through tutoring or coaching.",
+          "Explore job openings at local schools or educational institutions."
+      ],
+      "realityCheck": "The workload can be heavy, with a lot of grading and planning outside of teaching hours."
+  },
   "blockchain-developer": {
       "typicalDay": {
           "morning": [
@@ -1693,6 +2737,56 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
           "Participate in coding bootcamps that focus on blockchain development."
       ],
       "realityCheck": "Many projects require long hours of coding and debugging, which can be repetitive and challenging."
+  },
+  "bmx-rider": {
+      "typicalDay": {
+          "morning": [
+              "Practice BMX tricks at a local park",
+              "Review footage from previous rides",
+              "Plan the day's training goals"
+          ],
+          "midday": [
+              "Attend a fitness session or workout",
+              "Meet with a coach for feedback",
+              "Engage with sponsors or brands online"
+          ],
+          "afternoon": [
+              "Participate in a local competition or jam",
+              "Create content for social media",
+              "Connect with other riders for collaboration"
+          ],
+          "tools": [
+              "BMX bike",
+              "Protective gear (helmet, pads)",
+              "Camera or smartphone for content creation"
+          ],
+          "environment": "Mostly outdoors at skate parks and competition venues, with a mix of training and social time."
+      },
+      "whatYouActuallyDo": [
+          "Train daily to improve BMX skills and techniques.",
+          "Compete in local and national BMX events.",
+          "Create and edit video content for social media.",
+          "Maintain and repair your BMX bike regularly.",
+          "Network with sponsors and other riders to build your brand."
+      ],
+      "whoThisIsGoodFor": [
+          "Adventurous and fearless.",
+          "Enjoys physical activity and staying fit.",
+          "Creative with a passion for social media."
+      ],
+      "topSkills": [
+          "Advanced BMX riding techniques.",
+          "Ability to perform under pressure during competitions.",
+          "Strong fitness and endurance.",
+          "Content creation and editing skills.",
+          "Good networking and communication skills."
+      ],
+      "entryPaths": [
+          "Start riding BMX at a young age and enter local competitions.",
+          "Gain sponsorship through social media presence.",
+          "Join BMX clubs or teams to connect with other riders."
+      ],
+      "realityCheck": "Most of your income depends on sponsorships and winning contests, which can be unpredictable."
   },
   "brand-ambassador": {
       "typicalDay": {
@@ -2682,6 +3776,56 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "You spend a lot of time waiting for clients, which can be less exciting than it sounds."
   },
+  "chemistry-teacher": {
+      "typicalDay": {
+          "morning": [
+              "Prepare lesson plans for the day's classes",
+              "Set up lab equipment for experiments",
+              "Grade assignments from previous lessons"
+          ],
+          "midday": [
+              "Teach a chemistry class focusing on theory",
+              "Supervise students during a lab session",
+              "Answer student questions and provide feedback"
+          ],
+          "afternoon": [
+              "Meet with colleagues to discuss curriculum",
+              "Organise materials for upcoming classes",
+              "Attend a staff meeting or professional development session"
+          ],
+          "tools": [
+              "Lab equipment (beakers, Bunsen burners)",
+              "Chemistry textbooks",
+              "Interactive whiteboard or projector"
+          ],
+          "environment": "Mostly indoors in a classroom and lab, with a mix of teaching and hands-on experiments."
+      },
+      "whatYouActuallyDo": [
+          "Plan and deliver engaging chemistry lessons.",
+          "Demonstrate lab techniques and safety procedures.",
+          "Help students with experiments and projects.",
+          "Assess student work and provide constructive feedback.",
+          "Maintain a safe and organised lab environment."
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys explaining complex topics simply.",
+          "Patient and supportive with students.",
+          "Likes working with hands-on activities."
+      ],
+      "topSkills": [
+          "Strong knowledge of chemistry concepts.",
+          "Ability to design effective experiments.",
+          "Skill in managing classroom behaviour.",
+          "Good communication and presentation skills.",
+          "Attention to detail in lab safety."
+      ],
+      "entryPaths": [
+          "Complete a Master's in Chemistry followed by a PPU.",
+          "Consider teaching internships or assistant roles.",
+          "Gain experience through volunteering in schools."
+      ],
+      "realityCheck": "You spend a lot of time managing classroom behaviour and ensuring safety, which can be challenging."
+  },
   "child-protection-officer": {
       "typicalDay": {
           "morning": [
@@ -3643,6 +4787,110 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "Most of your time is spent alone creating music, which can be isolating and requires self-discipline."
   },
+  "computational-linguist": {
+      "typicalDay": {
+          "morning": [
+              "Check emails and respond to team queries.",
+              "Review ongoing projects and set priorities for the day.",
+              "Run tests on language models and analyse results."
+          ],
+          "midday": [
+              "Attend a team meeting to discuss project updates.",
+              "Collaborate with software developers on integrating NLP tools.",
+              "Read recent research papers on language processing."
+          ],
+          "afternoon": [
+              "Work on coding for new features in NLP applications.",
+              "Prepare documentation for algorithms and models.",
+              "Test new speech recognition software and collect data."
+          ],
+          "tools": [
+              "Python for programming.",
+              "TensorFlow or PyTorch for machine learning.",
+              "GitHub for version control.",
+              "Jupyter notebooks for data analysis.",
+              "Linguistic databases for research."
+          ],
+          "environment": "Mostly indoors in an office or lab, working at a computer with regular collaboration and meetings."
+      },
+      "whatYouActuallyDo": [
+          "Develop and improve language models for software applications.",
+          "Analyse text data to identify patterns and trends.",
+          "Collaborate with linguists and developers on projects.",
+          "Test and troubleshoot NLP tools and applications.",
+          "Stay updated on the latest research in computational linguistics."
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys problem-solving and analytical thinking.",
+          "Has a strong interest in language and technology.",
+          "Comfortable working with complex data sets.",
+          "Likes collaborating with others on projects."
+      ],
+      "topSkills": [
+          "Strong programming skills, especially in Python.",
+          "Understanding of linguistic principles and theories.",
+          "Ability to analyse large amounts of data.",
+          "Experience with machine learning and NLP techniques.",
+          "Good communication skills for teamwork."
+      ],
+      "entryPaths": [
+          "Complete a bachelor's degree in linguistics, computer science, or a related field.",
+          "Pursue a master's or PhD in Computational Linguistics or NLP.",
+          "Look for internships or apprenticeships in tech companies.",
+          "Engage in projects or research during university studies."
+      ],
+      "realityCheck": "The work can be quite technical and requires a deep understanding of both language and programming."
+  },
+  "computer-science-teacher": {
+      "typicalDay": {
+          "morning": [
+              "Prepare lesson plans and materials for the day.",
+              "Set up computers and software for class activities.",
+              "Check students' assignments and provide feedback."
+          ],
+          "midday": [
+              "Teach programming concepts using hands-on exercises.",
+              "Assist students with coding projects and problem-solving.",
+              "Organise group discussions on computer science topics."
+          ],
+          "afternoon": [
+              "Grade assignments and tests.",
+              "Meet with colleagues to discuss curriculum improvements.",
+              "Plan future lessons based on student needs."
+          ],
+          "tools": [
+              "Computers with programming software.",
+              "Learning management systems (e.g. Moodle).",
+              "Projectors for presentations."
+          ],
+          "environment": "Mostly indoors in a classroom, working with students in a mix of teaching and one-on-one support."
+      },
+      "whatYouActuallyDo": [
+          "Teach students how to code using different programming languages.",
+          "Explain complex computer science concepts in simple terms.",
+          "Create engaging lessons that encourage student participation.",
+          "Support students in troubleshooting their coding problems.",
+          "Assess student progress and adapt teaching methods accordingly."
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys explaining technical topics to others.",
+          "Patient and understanding when students struggle.",
+          "Passionate about technology and education."
+      ],
+      "topSkills": [
+          "Strong knowledge of programming languages.",
+          "Ability to create clear lesson plans.",
+          "Good communication skills for teaching.",
+          "Problem-solving skills to help students with challenges.",
+          "Patience to work with diverse learning paces."
+      ],
+      "entryPaths": [
+          "Complete a Master's degree in Computer Science.",
+          "Obtain a PPU (Praktisk-pedagogisk utdanning) qualification.",
+          "Gain experience through internships or volunteering in schools."
+      ],
+      "realityCheck": "You spend a lot of time managing classroom behaviour and less time on coding than you might expect."
+  },
   "computer-vision-engineer": {
       "typicalDay": {
           "morning": [
@@ -3753,6 +5001,66 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
           "Work experience in construction roles to build skills."
       ],
       "realityCheck": "You will spend a lot of time solving unexpected problems on site, which can be stressful."
+  },
+  "construction-project-manager": {
+      "typicalDay": {
+          "morning": [
+              "Check emails and messages from contractors and clients.",
+              "Review project schedules and update timelines.",
+              "Conduct a site walk to assess progress and safety."
+          ],
+          "midday": [
+              "Meet with subcontractors to discuss daily tasks.",
+              "Review and approve invoices for work completed.",
+              "Update project documentation and reports."
+          ],
+          "afternoon": [
+              "Attend a project meeting with architects and engineers.",
+              "Address any safety concerns raised by the team.",
+              "Plan for upcoming phases of construction."
+          ],
+          "tools": [
+              "Project management software (e.g., Microsoft Project)",
+              "Construction management apps (e.g., Procore)",
+              "Technical drawing software (e.g., AutoCAD)",
+              "Safety compliance checklists",
+              "Communication tools (e.g., Slack, email)"
+          ],
+          "environment": "Mostly outdoors on construction sites, with some time spent in an office for planning and meetings."
+      },
+      "whatYouActuallyDo": [
+          "Plan construction projects from start to finish.",
+          "Coordinate and supervise subcontractors and workers.",
+          "Ensure compliance with safety regulations and building codes.",
+          "Manage budgets and track project expenses.",
+          "Communicate with clients and stakeholders regularly.",
+          "Resolve any issues that arise on site.",
+          "Review and interpret technical drawings and plans."
+      ],
+      "whoThisIsGoodFor": [
+          "Organised and detail-oriented.",
+          "Good at problem-solving and thinking on your feet.",
+          "Able to communicate clearly with different people.",
+          "Comfortable working in different weather conditions.",
+          "Enjoys being hands-on and working outdoors."
+      ],
+      "topSkills": [
+          "Strong project management skills.",
+          "Ability to read and understand technical drawings.",
+          "Knowledge of safety regulations (HMS compliance).",
+          "Effective communication with diverse teams.",
+          "Budgeting and financial management.",
+          "Time management and scheduling.",
+          "Experience in site coordination."
+      ],
+      "entryPaths": [
+          "Bachelor's or Master's in Civil Engineering or Construction Management.",
+          "Complete a fagbrev in construction-related fields.",
+          "Gain 5-10 years of experience on construction sites.",
+          "Obtain an HMS-kort for safety compliance.",
+          "Attend specific courses on project management and construction."
+      ],
+      "realityCheck": "The job often involves long hours on site and can be stressful with tight deadlines."
   },
   "construction-worker": {
       "typicalDay": {
@@ -4059,6 +5367,61 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "The training is long and demanding, often taking over a decade to become fully qualified."
   },
+  "cosmetologist": {
+      "typicalDay": {
+          "morning": [
+              "Prepare the salon for clients by cleaning and organising tools.",
+              "Set up workstations with products and equipment needed for the day.",
+              "Consult with clients about their desired services and preferences."
+          ],
+          "midday": [
+              "Perform haircuts and styles for clients.",
+              "Apply hair colour or treatments as requested.",
+              "Provide skincare treatments like facials or exfoliations."
+          ],
+          "afternoon": [
+              "Do manicures and pedicures for clients.",
+              "Clean and sanitise tools and work areas after each client.",
+              "Manage appointments and update client records."
+          ],
+          "tools": [
+              "Hair cutting scissors",
+              "Hair dye and applicators",
+              "Facial products and equipment",
+              "Nail polish and manicure tools",
+              "Towels and sanitising solutions"
+          ],
+          "environment": "Mostly indoors in a salon, standing for long periods while interacting with clients."
+      },
+      "whatYouActuallyDo": [
+          "Cut and style hair according to client requests.",
+          "Apply hair colour and treatments safely.",
+          "Perform facials and other skincare services.",
+          "Give manicures and pedicures with attention to detail.",
+          "Maintain a clean and hygienic workspace.",
+          "Consult with clients to understand their beauty needs.",
+          "Keep up with beauty trends and techniques."
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys being creative and artistic.",
+          "Good at communicating with different people.",
+          "Has a steady hand and attention to detail."
+      ],
+      "topSkills": [
+          "Hair cutting and styling techniques.",
+          "Knowledge of skincare products and treatments.",
+          "Nail care and design skills.",
+          "Strong customer service abilities.",
+          "Time management for appointments."
+      ],
+      "entryPaths": [
+          "Complete a vocational cosmetology programme (2-3 years).",
+          "Obtain a licence to practice as a cosmetologist.",
+          "Consider apprenticeships in salons to gain experience.",
+          "Look for entry-level positions in beauty salons."
+      ],
+      "realityCheck": "The job can be physically demanding, and you may deal with difficult clients at times."
+  },
   "counsellor": {
       "typicalDay": {
           "morning": [
@@ -4274,6 +5637,57 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
           "Join online trading communities for support."
       ],
       "realityCheck": "The market can be very volatile, and losses are common, especially when starting out."
+  },
+  "curriculum-developer": {
+      "typicalDay": {
+          "morning": [
+              "Review feedback from teachers on existing curricula.",
+              "Meet with a team to brainstorm new course ideas.",
+              "Research the latest trends in education."
+          ],
+          "midday": [
+              "Draft lesson plans for a new subject.",
+              "Consult with subject matter experts for accuracy.",
+              "Update existing course materials based on new guidelines."
+          ],
+          "afternoon": [
+              "Present new curriculum proposals to school administrators.",
+              "Collaborate with graphic designers to create engaging materials.",
+              "Attend workshops or training sessions to improve skills."
+          ],
+          "tools": [
+              "Microsoft Word for document creation.",
+              "Google Drive for collaboration.",
+              "Learning management systems (LMS) for course delivery."
+          ],
+          "environment": "Mostly indoors in an office or educational institution, working with a mix of teams and independently."
+      },
+      "whatYouActuallyDo": [
+          "Create and organise curricula for different subjects.",
+          "Work with teachers to understand their needs.",
+          "Develop assessments to measure student learning.",
+          "Ensure that materials meet educational standards.",
+          "Revise curricula based on student and teacher feedback.",
+          "Stay updated on educational research and best practices."
+      ],
+      "whoThisIsGoodFor": [
+          "Creative thinkers who enjoy problem-solving.",
+          "Detail-oriented individuals who like organising information.",
+          "Collaborative people who work well in teams."
+      ],
+      "topSkills": [
+          "Strong writing skills for creating clear materials.",
+          "Ability to analyse educational research.",
+          "Experience in project management for curriculum development.",
+          "Good communication skills for working with teachers.",
+          "Knowledge of different teaching methods and strategies."
+      ],
+      "entryPaths": [
+          "Complete a Master's in Education with a focus on curriculum design.",
+          "Gain experience as a teacher to understand classroom needs.",
+          "Look for internships or entry-level positions in educational organisations."
+      ],
+      "realityCheck": "You may spend a lot of time revising and adapting materials based on feedback, which can be more challenging than expected."
   },
   "customs-officer": {
       "typicalDay": {
@@ -4601,6 +6015,56 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
           "Consider volunteering or internships in dermatology."
       ],
       "realityCheck": "The training is long and demanding, with many years of study and practice required before you can perform surgeries independently."
+  },
+  "dermatologist": {
+      "typicalDay": {
+          "morning": [
+              "Review patient files and notes from previous visits.",
+              "Conduct skin examinations for new patients.",
+              "Perform minor procedures like biopsies."
+          ],
+          "midday": [
+              "Meet with patients to discuss treatment options.",
+              "Administer injections for conditions like psoriasis.",
+              "Attend a team meeting to discuss complex cases."
+          ],
+          "afternoon": [
+              "Follow up with patients on their treatment progress.",
+              "Document patient interactions and update records.",
+              "Consult with other specialists as needed."
+          ],
+          "tools": [
+              "Dermatoscope for skin examinations.",
+              "Medical software for patient records.",
+              "Surgical instruments for procedures."
+          ],
+          "environment": "Mostly indoors in a clinic or hospital, with a mix of patient consultations and administrative tasks."
+      },
+      "whatYouActuallyDo": [
+          "Examine skin, hair, and nails for various conditions.",
+          "Diagnose issues based on patient history and tests.",
+          "Treat conditions with medications, procedures, or referrals.",
+          "Educate patients about skin care and prevention.",
+          "Work with a team of healthcare professionals for comprehensive care."
+      ],
+      "whoThisIsGoodFor": [
+          "Detail-oriented and observant.",
+          "Good at communicating with patients.",
+          "Comfortable performing hands-on procedures."
+      ],
+      "topSkills": [
+          "Strong clinical skills for accurate diagnosis.",
+          "Ability to recognise patterns in skin conditions.",
+          "Good communication for explaining treatments.",
+          "Manual dexterity for performing procedures.",
+          "Time management to handle multiple patients efficiently."
+      ],
+      "entryPaths": [
+          "Complete a medical degree (6 years) followed by a specialisation in Dermatology (5 years).",
+          "Apply for medical school through Samordna opptak.",
+          "Consider internships in dermatology during medical training."
+      ],
+      "realityCheck": "The training is long and demanding, with many years of study before you can practice independently."
   },
   "detective": {
       "typicalDay": {
@@ -5143,6 +6607,112 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "You often deal with heavy emotional situations, which can be challenging and draining."
   },
+  "drama-teacher": {
+      "typicalDay": {
+          "morning": [
+              "Prepare lesson plans and materials for the day's classes.",
+              "Set up the classroom or theatre space for rehearsals.",
+              "Meet with students for one-on-one feedback sessions."
+          ],
+          "midday": [
+              "Teach drama classes focusing on acting techniques and improvisation.",
+              "Conduct a workshop on theatre history or stagecraft.",
+              "Plan and rehearse scenes with students for upcoming performances."
+          ],
+          "afternoon": [
+              "Direct rehearsals for school productions and provide guidance.",
+              "Meet with other teachers to discuss student progress.",
+              "Organise props and costumes for upcoming shows."
+          ],
+          "tools": [
+              "Scriptbooks and play texts",
+              "Sound and lighting equipment",
+              "Costume and prop inventory"
+          ],
+          "environment": "Mostly indoors in a classroom or theatre, with a lively atmosphere and a mix of teaching and directing."
+      },
+      "whatYouActuallyDo": [
+          "Teach students acting skills and techniques.",
+          "Direct school plays and performances.",
+          "Create lesson plans and teaching materials.",
+          "Assess students' progress and provide feedback.",
+          "Organise auditions and casting for productions.",
+          "Collaborate with other teachers on interdisciplinary projects.",
+          "Maintain the theatre space and equipment."
+      ],
+      "whoThisIsGoodFor": [
+          "Creative and expressive individuals.",
+          "Good at communicating with young people.",
+          "Enjoys working in a team and collaborating.",
+          "Patient and understanding when giving feedback."
+      ],
+      "topSkills": [
+          "Strong knowledge of drama and theatre techniques.",
+          "Ability to direct and organise rehearsals.",
+          "Effective communication with students and staff.",
+          "Empathy to understand students' needs.",
+          "Creative problem-solving for production challenges.",
+          "Time management for balancing teaching and directing."
+      ],
+      "entryPaths": [
+          "Complete a Bachelor's or Master's in Drama or Theatre.",
+          "Finish a PPU (praktisk-pedagogisk utdanning) for teaching certification.",
+          "Gain experience through internships or volunteer work in schools.",
+          "Apply for teaching positions in local schools or drama academies."
+      ],
+      "realityCheck": "You spend a lot of time managing student behaviour and logistics, not just teaching drama."
+  },
+  "driving-instructor": {
+      "typicalDay": {
+          "morning": [
+              "Prepare lesson plans for the day",
+              "Check the condition of the vehicle",
+              "Review the progress of each learner driver"
+          ],
+          "midday": [
+              "Conduct driving lessons with students",
+              "Provide feedback on their driving skills",
+              "Answer questions about driving theory"
+          ],
+          "afternoon": [
+              "Complete administrative tasks like scheduling lessons",
+              "Update student records and progress reports",
+              "Prepare for the next day's lessons"
+          ],
+          "tools": [
+              "Driving simulator software",
+              "Vehicle controls and safety equipment",
+              "Student progress tracking software"
+          ],
+          "environment": "Mostly outdoors in the car and on the road, with some time spent in an office for planning and admin."
+      },
+      "whatYouActuallyDo": [
+          "Teach learners how to operate a vehicle safely.",
+          "Explain road signs and traffic rules.",
+          "Assess students' driving skills during lessons.",
+          "Provide constructive feedback to help students improve.",
+          "Help students prepare for the driving test."
+      ],
+      "whoThisIsGoodFor": [
+          "Patient with learners who make mistakes.",
+          "Enjoys teaching and sharing knowledge.",
+          "Calm under pressure, especially in traffic."
+      ],
+      "topSkills": [
+          "Strong communication skills to explain concepts clearly.",
+          "Knowledge of road safety regulations.",
+          "Ability to assess and evaluate driving skills.",
+          "Patience to work with nervous or inexperienced drivers.",
+          "Organisational skills for scheduling and record-keeping."
+      ],
+      "entryPaths": [
+          "Complete videregående education.",
+          "Hold a Class B driving licence for at least two years.",
+          "Attend a two-year Trafikklærer programme at a fagskole.",
+          "Obtain kjøreskolelærerbevis from Statens vegvesen."
+      ],
+      "realityCheck": "The job can be challenging when dealing with nervous learners who struggle to grasp driving concepts."
+  },
   "drone-operator-uav": {
       "typicalDay": {
           "morning": [
@@ -5417,6 +6987,118 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "You often wear many hats, managing everything from sourcing to customer service, which can be overwhelming at times."
   },
+  "editor": {
+      "typicalDay": {
+          "morning": [
+              "Review submitted articles and provide feedback to writers",
+              "Edit drafts for clarity and structure",
+              "Attend a team meeting to discuss upcoming projects"
+          ],
+          "midday": [
+              "Communicate with writers about revisions",
+              "Research topics for future content",
+              "Proofread final drafts before publication"
+          ],
+          "afternoon": [
+              "Collaborate with designers on layout and presentation",
+              "Update project timelines and manage deadlines",
+              "Plan content calendar for the next month"
+          ],
+          "tools": [
+              "Word processing software (e.g., Microsoft Word, Google Docs)",
+              "Project management tools (e.g., Trello, Asana)",
+              "Editing software (e.g., Grammarly, Hemingway)"
+          ],
+          "environment": "Mostly indoors in an office setting, working at a desk with a mix of individual tasks and team collaboration."
+      },
+      "whatYouActuallyDo": [
+          "Read and assess articles or manuscripts submitted by writers.",
+          "Provide constructive feedback to help writers improve their work.",
+          "Edit content for grammar, punctuation, and style consistency.",
+          "Coordinate with other team members to ensure projects stay on track.",
+          "Prepare content for publication, including formatting and layout.",
+          "Research topics to ensure accuracy and relevance in writing.",
+          "Communicate with writers regularly to discuss revisions and deadlines."
+      ],
+      "whoThisIsGoodFor": [
+          "Detail-oriented and organised individuals.",
+          "Good communicators who can give and receive feedback.",
+          "People who enjoy reading and writing.",
+          "Those who can manage multiple projects at once."
+      ],
+      "topSkills": [
+          "Strong writing and editing abilities.",
+          "Attention to detail in grammar and style.",
+          "Good judgement for assessing content quality.",
+          "Effective communication with writers and team members.",
+          "Project management skills to handle deadlines and workflows."
+      ],
+      "entryPaths": [
+          "Complete a bachelor's degree in Journalism, English, or Publishing.",
+          "Gain editing experience through internships or freelance work.",
+          "Consider a vocational programme in publishing or media.",
+          "Look for entry-level positions at publishing houses or media companies."
+      ],
+      "realityCheck": "The job often involves a lot of editing and feedback, which can be repetitive at times."
+  },
+  "education-consultant": {
+      "typicalDay": {
+          "morning": [
+              "Review data from schools to identify areas for improvement.",
+              "Meet with school leaders to discuss their needs.",
+              "Prepare presentations for upcoming workshops."
+          ],
+          "midday": [
+              "Conduct a workshop for teachers on new teaching methods.",
+              "Analyse feedback from previous sessions.",
+              "Plan future projects based on current trends in education."
+          ],
+          "afternoon": [
+              "Write reports summarising findings and recommendations.",
+              "Consult with ed-tech firms about product development.",
+              "Network with other education professionals at events."
+          ],
+          "tools": [
+              "Microsoft Excel for data analysis.",
+              "Presentation software like PowerPoint.",
+              "Communication tools like Zoom or Teams."
+          ],
+          "environment": "Mostly indoors at schools or offices, with a mix of meetings and workshops."
+      },
+      "whatYouActuallyDo": [
+          "Advise schools on improving their curriculum.",
+          "Help teachers develop their skills through training.",
+          "Analyse student performance data to suggest changes.",
+          "Create resources to support educational initiatives.",
+          "Collaborate with educational technology companies.",
+          "Attend conferences to stay updated on education trends.",
+          "Write reports to communicate findings and suggestions."
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys problem-solving and finding solutions.",
+          "Good at explaining complex ideas simply.",
+          "Likes working with teachers and school staff.",
+          "Comfortable presenting in front of groups.",
+          "Passionate about improving education for students."
+      ],
+      "topSkills": [
+          "Strong communication for clear advice.",
+          "Data analysis to interpret student performance.",
+          "Project management to oversee educational initiatives.",
+          "Interpersonal skills for building relationships.",
+          "Knowledge of educational policies and practices.",
+          "Adaptability to adjust strategies based on feedback.",
+          "Critical thinking to assess and improve educational systems."
+      ],
+      "entryPaths": [
+          "Obtain a Master's in Education.",
+          "Gain 5+ years of teaching or leadership experience.",
+          "Consider a relevant internship with an education consultancy.",
+          "Network with professionals in the education sector.",
+          "Look for job openings in educational organisations or ed-tech companies."
+      ],
+      "realityCheck": "You will spend a lot of time analysing data and writing reports, which can be less exciting than working directly with students."
+  },
   "educational-content-creator": {
       "typicalDay": {
           "morning": [
@@ -5473,6 +7155,112 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
           "Networking with other content creators for collaboration opportunities."
       ],
       "realityCheck": "Creating content takes a lot of time and effort, and it can be challenging to grow an audience."
+  },
+  "educational-trainer": {
+      "typicalDay": {
+          "morning": [
+              "Prepare training materials for the day's workshops.",
+              "Set up the training room with necessary equipment.",
+              "Review feedback from previous sessions to improve content."
+          ],
+          "midday": [
+              "Conduct a workshop for teachers on new teaching methods.",
+              "Facilitate group discussions to share experiences.",
+              "Provide one-on-one support to teachers needing help."
+          ],
+          "afternoon": [
+              "Evaluate the effectiveness of the day's training.",
+              "Plan future workshops based on teacher needs.",
+              "Meet with school leaders to discuss improvement strategies."
+          ],
+          "tools": [
+              "Presentation software (e.g., PowerPoint)",
+              "Video conferencing tools (e.g., Zoom)",
+              "Learning management systems (LMS)",
+              "Feedback forms or surveys",
+              "Projectors and whiteboards"
+          ],
+          "environment": "Mostly indoors in schools or training centres, with a mix of group activities and individual work."
+      },
+      "whatYouActuallyDo": [
+          "Design training programmes for teachers.",
+          "Deliver workshops on various teaching strategies.",
+          "Assess the needs of teachers and schools.",
+          "Provide coaching and support to educators.",
+          "Collect and analyse feedback to improve training sessions."
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys teaching and sharing knowledge.",
+          "Good at communicating ideas clearly.",
+          "Patient and supportive when helping others.",
+          "Organised and able to manage multiple tasks.",
+          "Comfortable working with adults in a learning environment."
+      ],
+      "topSkills": [
+          "Strong communication skills for teaching.",
+          "Ability to create engaging training materials.",
+          "Facilitation skills for group discussions.",
+          "Assessment skills to evaluate training effectiveness.",
+          "Knowledge of educational theories and practices."
+      ],
+      "entryPaths": [
+          "Complete a Master's in Education.",
+          "Gain classroom teaching experience.",
+          "Participate in adult training workshops.",
+          "Obtain relevant certifications in training.",
+          "Look for internships or entry-level positions in educational organisations."
+      ],
+      "realityCheck": "You spend a lot of time preparing and adapting content based on teacher feedback, which can be time-consuming."
+  },
+  "efl-teacher": {
+      "typicalDay": {
+          "morning": [
+              "Prepare lesson plans and materials for the day's classes.",
+              "Set up the classroom and check equipment.",
+              "Teach the first English class to students."
+          ],
+          "midday": [
+              "Have lunch with colleagues or students.",
+              "Review student progress and adjust lesson plans if needed.",
+              "Teach a second class, focusing on speaking and listening skills."
+          ],
+          "afternoon": [
+              "Conduct one-on-one tutoring sessions with students.",
+              "Grade assignments and provide feedback.",
+              "Plan activities for the next day's lessons."
+          ],
+          "tools": [
+              "Whiteboard and markers",
+              "Projector and laptop",
+              "Textbooks and online resources"
+          ],
+          "environment": "Mostly indoors in a classroom, with a lively atmosphere and interaction with students from different backgrounds."
+      },
+      "whatYouActuallyDo": [
+          "Teach English grammar, vocabulary, and pronunciation.",
+          "Create engaging lesson plans to keep students interested.",
+          "Assess student progress and adjust teaching methods.",
+          "Organise cultural activities to help students practise English.",
+          "Support students with their individual learning needs."
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys working with diverse groups of people.",
+          "Adaptable to new cultures and environments.",
+          "Confident in speaking and presenting in front of others."
+      ],
+      "topSkills": [
+          "Strong communication skills for teaching and explaining concepts.",
+          "Ability to plan and organise lessons effectively.",
+          "Cultural sensitivity to connect with students.",
+          "Patience when working with learners at different levels.",
+          "Independence to manage classes and solve problems on your own."
+      ],
+      "entryPaths": [
+          "Complete a bachelor's degree in English or education.",
+          "Obtain a CELTA or TEFL certification.",
+          "Look for teaching positions through language schools abroad."
+      ],
+      "realityCheck": "You may face challenges adapting to different cultural expectations and classroom behaviours."
   },
   "emergency-dispatcher": {
       "typicalDay": {
@@ -5899,6 +7687,56 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "The job involves a lot of paperwork and can be stressful when deadlines approach."
   },
+  "esl-teacher": {
+      "typicalDay": {
+          "morning": [
+              "Prepare lesson plans for the day",
+              "Set up the classroom with materials",
+              "Greet students and take attendance"
+          ],
+          "midday": [
+              "Teach grammar and vocabulary through activities",
+              "Assist students with speaking and listening exercises",
+              "Provide feedback on assignments"
+          ],
+          "afternoon": [
+              "Evaluate student progress and adjust lessons",
+              "Organise group discussions on cultural topics",
+              "Meet with colleagues to discuss student needs"
+          ],
+          "tools": [
+              "Whiteboard and markers",
+              "Language learning software",
+              "Printed handouts and worksheets"
+          ],
+          "environment": "Mostly indoors in a classroom setting, with a mix of teaching and planning time."
+      },
+      "whatYouActuallyDo": [
+          "Plan lessons that suit different language levels.",
+          "Teach students how to speak, read, and write in English.",
+          "Create engaging activities to help students learn.",
+          "Assess students' progress and provide support.",
+          "Encourage students to practice speaking in class."
+      ],
+      "whoThisIsGoodFor": [
+          "Patient with diverse learners",
+          "Enjoys working with people from different cultures",
+          "Good at explaining things simply"
+      ],
+      "topSkills": [
+          "Strong communication skills",
+          "Ability to adapt lessons to student needs",
+          "Cultural sensitivity",
+          "Classroom management",
+          "Creativity in lesson planning"
+      ],
+      "entryPaths": [
+          "Complete a Bachelor's degree in English or Education.",
+          "Obtain a TEFL or CELTA certification.",
+          "Look for teaching positions in language schools or community centres."
+      ],
+      "realityCheck": "You may face challenges with students who have very different backgrounds and learning styles."
+  },
   "esports-analyst": {
       "typicalDay": {
           "morning": [
@@ -6108,6 +7946,58 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "You often spend more time on paperwork and budgets than on the exciting parts of estate management."
   },
+  "esthetician": {
+      "typicalDay": {
+          "morning": [
+              "Set up treatment rooms with the necessary products and tools.",
+              "Check appointments and greet clients as they arrive.",
+              "Prepare for the first client by reviewing their skin-care needs."
+          ],
+          "midday": [
+              "Perform facials or skin treatments for clients.",
+              "Discuss aftercare with clients and recommend products.",
+              "Clean and sanitise tools and work areas between clients."
+          ],
+          "afternoon": [
+              "Continue with client appointments and treatments.",
+              "Attend to any administrative tasks, like scheduling.",
+              "Restock products and supplies as needed."
+          ],
+          "tools": [
+              "Facial steamer",
+              "Exfoliating tools",
+              "Skincare products",
+              "Towels and linens",
+              "Sanitising equipment"
+          ],
+          "environment": "Mostly indoors in a salon or spa, with a calm atmosphere and a focus on client comfort."
+      },
+      "whatYouActuallyDo": [
+          "Perform skin treatments like facials and peels.",
+          "Provide hair removal services such as waxing.",
+          "Consult with clients about their skin-care routines.",
+          "Keep detailed notes on client preferences and skin conditions.",
+          "Maintain hygiene standards in the treatment area."
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys helping others feel good about themselves.",
+          "Has a steady hand for precision work.",
+          "Likes learning about skin care and beauty products."
+      ],
+      "topSkills": [
+          "Understanding different skin types and conditions.",
+          "Communicating effectively with clients.",
+          "Following hygiene and safety protocols.",
+          "Using various skin-care tools and products.",
+          "Managing time well between appointments."
+      ],
+      "entryPaths": [
+          "Complete a vocational esthetician programme (1-2 years).",
+          "Obtain relevant certifications in skin care.",
+          "Look for apprenticeships at local salons or spas."
+      ],
+      "realityCheck": "You spend a lot of time on your feet and must handle various skin conditions, which can be challenging."
+  },
   "event-photographer": {
       "typicalDay": {
           "morning": [
@@ -6162,6 +8052,338 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
           "Participate in local events to network and find opportunities"
       ],
       "realityCheck": "You often have to work long hours on your feet and deal with unpredictable situations at events."
+  },
+  "expedition-leader": {
+      "typicalDay": {
+          "morning": [
+              "Check weather conditions and plan the day's route.",
+              "Prepare and pack equipment for the group.",
+              "Conduct a safety briefing for the team."
+          ],
+          "midday": [
+              "Lead the group along the planned route.",
+              "Monitor the group's energy levels and adjust the pace.",
+              "Teach navigation skills to team members."
+          ],
+          "afternoon": [
+              "Set up camp and organise gear for the night.",
+              "Prepare a meal for the group.",
+              "Conduct a debriefing to discuss the day's challenges."
+          ],
+          "tools": [
+              "GPS devices",
+              "compass",
+              "first aid kit",
+              "camping gear",
+              "communication radios"
+          ],
+          "environment": "Mostly outdoors in remote locations, with a focus on teamwork and adapting to changing conditions."
+      },
+      "whatYouActuallyDo": [
+          "Plan and lead multi-day expeditions in various terrains.",
+          "Ensure the safety and well-being of all team members.",
+          "Teach outdoor skills like navigation and survival techniques.",
+          "Manage logistics, including food and equipment.",
+          "Adapt plans based on weather and group dynamics."
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys the outdoors and physical challenges.",
+          "Calm under pressure and can make quick decisions.",
+          "Good at communicating and leading a team."
+      ],
+      "topSkills": [
+          "Strong leadership abilities.",
+          "Expertise in navigation and map reading.",
+          "Proficient in first aid and emergency response.",
+          "Ability to manage logistics and resources.",
+          "Excellent problem-solving skills."
+      ],
+      "entryPaths": [
+          "Obtain a mountain guide or wilderness leader certification.",
+          "Gain experience through volunteering on expeditions.",
+          "Complete a relevant vocational programme in outdoor education."
+      ],
+      "realityCheck": "You will face unexpected challenges and weather changes that require quick thinking and adaptability."
+  },
+  "extreme-sports-athlete": {
+      "typicalDay": {
+          "morning": [
+              "Train for several hours in your chosen sport, focusing on technique and fitness.",
+              "Review video footage of previous performances to identify areas for improvement.",
+              "Attend a team meeting to discuss upcoming competitions and strategies."
+          ],
+          "midday": [
+              "Have lunch with fellow athletes or sponsors to discuss collaborations.",
+              "Engage with fans on social media, sharing updates and training tips.",
+              "Participate in a photo shoot or video content creation for sponsors."
+          ],
+          "afternoon": [
+              "Continue training, possibly at a different location to build skills in varied environments.",
+              "Work on mental preparation techniques, such as visualization or meditation.",
+              "Attend a local event or competition to scout talent and network."
+          ],
+          "tools": [
+              "Sports equipment specific to your discipline (e.g., skateboard, surfboard, climbing gear).",
+              "Cameras or drones for capturing training sessions.",
+              "Fitness tracking apps to monitor performance."
+          ],
+          "environment": "Often outdoors in various locations, with a mix of training, competitions, and media events."
+      },
+      "whatYouActuallyDo": [
+          "Train daily to improve skills and physical fitness.",
+          "Compete in various events and contests throughout the year.",
+          "Create and share content for social media to engage with fans.",
+          "Work with sponsors to promote their products.",
+          "Network with other athletes and industry professionals.",
+          "Manage your schedule around competitions and training camps.",
+          "Stay updated on trends and changes in your sport."
+      ],
+      "whoThisIsGoodFor": [
+          "Adventurous and willing to take risks.",
+          "Highly motivated and disciplined.",
+          "Comfortable being in the spotlight and engaging with fans."
+      ],
+      "topSkills": [
+          "Exceptional physical fitness and endurance.",
+          "Ability to perform under pressure during competitions.",
+          "Strong communication skills for engaging with sponsors and fans.",
+          "Creative thinking for developing unique content.",
+          "Risk assessment skills to manage safety during extreme activities."
+      ],
+      "entryPaths": [
+          "Compete in local and national competitions to gain recognition.",
+          "Seek sponsorships from brands related to your sport.",
+          "Join clubs or teams that focus on extreme sports.",
+          "Build a social media presence to attract followers and sponsors.",
+          "Participate in training camps or workshops to improve skills."
+      ],
+      "realityCheck": "The competition is fierce, and injuries can be a regular part of the job."
+  },
+  "extreme-sports-event-organizer": {
+      "typicalDay": {
+          "morning": [
+              "Check emails and messages from sponsors and participants",
+              "Meet with the team to discuss the day's tasks",
+              "Review the event schedule and make necessary adjustments"
+          ],
+          "midday": [
+              "Visit the event site to assess setup progress",
+              "Communicate with vendors about equipment and supplies",
+              "Update social media with event information"
+          ],
+          "afternoon": [
+              "Coordinate with volunteers and staff for event roles",
+              "Handle any last-minute issues that arise",
+              "Prepare for the next day's activities"
+          ],
+          "tools": [
+              "Event management software",
+              "Communication apps like Slack or WhatsApp",
+              "Social media platforms for marketing"
+          ],
+          "environment": "Mostly outdoors at various event locations, with a mix of on-site management and office work."
+      },
+      "whatYouActuallyDo": [
+          "Plan the logistics for events, including location and equipment",
+          "Negotiate contracts with sponsors and vendors",
+          "Create promotional materials and manage marketing efforts",
+          "Ensure safety measures are in place for participants",
+          "Oversee the setup and breakdown of event sites",
+          "Communicate with participants and answer their questions",
+          "Evaluate event success and gather feedback for improvements"
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys being active and outdoors",
+          "Good at solving problems quickly",
+          "Comfortable leading a team",
+          "Able to handle stress and last-minute changes"
+      ],
+      "topSkills": [
+          "Strong organisational skills for planning events",
+          "Effective communication for working with diverse groups",
+          "Ability to manage budgets and negotiate deals",
+          "Risk management skills to ensure safety at events",
+          "Flexibility to adapt to changing situations",
+          "Networking skills to build relationships in the industry"
+      ],
+      "entryPaths": [
+          "Bachelor's degree in Event Management or Sport Management",
+          "Internships with event planning companies or sports organisations",
+          "Networking through industry events and conferences",
+          "Volunteering at local sports events to gain experience"
+      ],
+      "realityCheck": "The job often requires long hours and can be stressful, especially as events approach."
+  },
+  "extreme-sports-photographer": {
+      "typicalDay": {
+          "morning": [
+              "Check weather conditions and plan for the day’s shoot",
+              "Pack camera gear and ensure everything is charged",
+              "Travel to the location with athletes"
+          ],
+          "midday": [
+              "Set up equipment and test shots",
+              "Capture action shots of athletes during their activities",
+              "Review photos on-site and adjust settings as needed"
+          ],
+          "afternoon": [
+              "Continue shooting and experiment with different angles",
+              "Interview athletes for stories to accompany photos",
+              "Pack up equipment and head back from the location"
+          ],
+          "tools": [
+              "DSLR or mirrorless camera",
+              "Lenses for different shooting conditions",
+              "Editing software like Adobe Lightroom or Photoshop",
+              "Tripod or stabiliser for steady shots",
+              "Drone for aerial shots"
+          ],
+          "environment": "Mostly outdoors in challenging conditions, often in remote locations, with a focus on capturing dynamic action."
+      },
+      "whatYouActuallyDo": [
+          "Take photos of athletes during extreme sports events.",
+          "Edit and process images to create a polished final product.",
+          "Communicate with athletes to understand their stories and backgrounds.",
+          "Scout locations to find the best spots for shooting.",
+          "Manage your equipment and ensure everything is ready for shoots.",
+          "Work with sponsors or media to deliver the desired content.",
+          "Build and maintain a portfolio to attract new clients."
+      ],
+      "whoThisIsGoodFor": [
+          "Passionate about photography and sports.",
+          "Comfortable working in various weather conditions.",
+          "Enjoys being active and on the move.",
+          "Has a good eye for detail and composition.",
+          "Able to work independently and manage time well."
+      ],
+      "topSkills": [
+          "Advanced photography techniques and equipment handling.",
+          "Knowledge of extreme sports and athlete behaviour.",
+          "Strong editing skills using software like Lightroom.",
+          "Ability to tell a story through images.",
+          "Good communication skills for working with athletes.",
+          "Physical fitness to keep up with athletes in action.",
+          "Problem-solving skills for unexpected situations."
+      ],
+      "entryPaths": [
+          "Complete a photography course or programme.",
+          "Gain experience in a specific extreme sport.",
+          "Build a portfolio by shooting local events or athletes.",
+          "Consider internships with sports media or photography companies.",
+          "Network within the extreme sports community."
+      ],
+      "realityCheck": "You often have to wait for the right moment, which can mean long hours with little action."
+  },
+  "extreme-sports-safety-coordinator": {
+      "typicalDay": {
+          "morning": [
+              "Review safety plans for upcoming events",
+              "Conduct risk assessments on equipment and locations",
+              "Meet with the rescue team to discuss protocols"
+          ],
+          "midday": [
+              "Inspect safety gear and equipment",
+              "Update emergency contact lists",
+              "Attend a briefing with event organisers"
+          ],
+          "afternoon": [
+              "Train staff on safety procedures",
+              "Evaluate past events for safety improvements",
+              "Prepare reports on safety measures for stakeholders"
+          ],
+          "tools": [
+              "Safety gear (helmets, harnesses)",
+              "First aid kits",
+              "Risk assessment software",
+              "Communication radios",
+              "Emergency response plans"
+          ],
+          "environment": "Mostly outdoors at various extreme sports locations, with a mix of hands-on inspections and meetings."
+      },
+      "whatYouActuallyDo": [
+          "Create safety plans for extreme sports events.",
+          "Assess risks associated with different activities.",
+          "Coordinate with rescue teams for emergencies.",
+          "Train staff on safety protocols.",
+          "Inspect equipment and safety gear regularly.",
+          "Communicate safety measures to participants.",
+          "Review and improve safety practices after events."
+      ],
+      "whoThisIsGoodFor": [
+          "Detail-oriented and organised.",
+          "Calm under pressure.",
+          "Enjoys outdoor activities.",
+          "Good at working with teams.",
+          "Strong communicator."
+      ],
+      "topSkills": [
+          "Conducting risk assessments.",
+          "Understanding safety regulations.",
+          "Performing first aid.",
+          "Leading rescue operations.",
+          "Effective communication.",
+          "Problem-solving in emergencies."
+      ],
+      "entryPaths": [
+          "Complete a vocational programme in wilderness safety.",
+          "Obtain sport-specific rescue certifications.",
+          "Gain experience through internships with extreme sports companies.",
+          "Pursue further education in safety management.",
+          "Look for apprenticeships with safety organisations."
+      ],
+      "realityCheck": "You often have to deal with unexpected situations that require quick thinking and adaptability."
+  },
+  "extreme-sports-videographer": {
+      "typicalDay": {
+          "morning": [
+              "Check equipment and prepare for the day’s shoot.",
+              "Meet with athletes to discuss the filming plan.",
+              "Scout locations for the best filming spots."
+          ],
+          "midday": [
+              "Film action shots using follow-cam or drones.",
+              "Capture interviews with athletes about their experiences.",
+              "Review footage on-site to ensure quality."
+          ],
+          "afternoon": [
+              "Edit video clips for immediate social media posts.",
+              "Organise footage for future projects.",
+              "Plan the next shoot based on weather and athlete schedules."
+          ],
+          "tools": [
+              "Cameras (DSLR or mirrorless)",
+              "Drones for aerial shots",
+              "Editing software (like Adobe Premiere Pro)",
+              "Stabilizers for smooth footage",
+              "Audio recording equipment"
+          ],
+          "environment": "Often outdoors in various weather conditions, moving between filming locations and working closely with athletes."
+      },
+      "whatYouActuallyDo": [
+          "Film athletes performing extreme sports like skiing or mountain biking.",
+          "Edit video footage into engaging content for social media.",
+          "Operate drones to capture aerial views of sports events.",
+          "Collaborate with athletes to understand their stories.",
+          "Manage equipment and ensure everything is ready for shoots."
+      ],
+      "whoThisIsGoodFor": [
+          "Adventurous and willing to work in unpredictable environments.",
+          "Creative with a good eye for detail.",
+          "Comfortable working with technology and editing software."
+      ],
+      "topSkills": [
+          "Videography and camera operation.",
+          "Editing video content effectively.",
+          "Drone piloting and safety.",
+          "Understanding of extreme sports.",
+          "Strong storytelling ability."
+      ],
+      "entryPaths": [
+          "Complete a relevant film or videography programme.",
+          "Gain sport-specific skills through training or personal experience.",
+          "Build a portfolio showcasing your work with athletes."
+      ],
+      "realityCheck": "The job often involves long hours in challenging conditions, and you need to be prepared for unexpected changes in plans."
   },
   "facilities-manager": {
       "typicalDay": {
@@ -6549,6 +8771,60 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "The path to directing can be long and requires a lot of experience in smaller roles before you get to lead a project."
   },
+  "finance-project-manager": {
+      "typicalDay": {
+          "morning": [
+              "Check emails and respond to urgent queries from team members",
+              "Review project timelines and update progress on tasks",
+              "Hold a brief meeting with key stakeholders to align on priorities"
+          ],
+          "midday": [
+              "Prepare reports on project status for management",
+              "Coordinate with IT and legal teams to ensure compliance requirements are met",
+              "Attend a workshop or training session on new regulatory changes"
+          ],
+          "afternoon": [
+              "Facilitate a project update meeting with all team members",
+              "Draft communications to inform stakeholders of project developments",
+              "Review and analyse risk assessments related to ongoing projects"
+          ],
+          "tools": [
+              "Microsoft Project for project planning",
+              "Excel for financial analysis and reporting",
+              "Collaboration tools like Teams or Slack for communication"
+          ],
+          "environment": "Mostly indoors in an office setting, with a mix of meetings and focused work time."
+      },
+      "whatYouActuallyDo": [
+          "Lead and manage multiple projects at once.",
+          "Coordinate between different departments like IT, legal, and finance.",
+          "Ensure all projects meet compliance deadlines.",
+          "Communicate regularly with stakeholders to keep them informed.",
+          "Identify and manage risks associated with projects.",
+          "Prepare detailed reports and presentations for management.",
+          "Monitor project budgets and resources."
+      ],
+      "whoThisIsGoodFor": [
+          "Good at organising and managing multiple tasks.",
+          "Enjoys working with different teams and people.",
+          "Strong problem-solver who can think critically.",
+          "Detail-oriented and able to spot errors quickly."
+      ],
+      "topSkills": [
+          "Understanding of financial regulations and compliance.",
+          "Effective communication skills for stakeholder engagement.",
+          "Ability to manage project timelines and deliverables.",
+          "Analytical skills for assessing risks and project performance.",
+          "Proficiency in project management software and tools."
+      ],
+      "entryPaths": [
+          "Bachelor's or Master's in Finance, Economics, or Business.",
+          "Start as a financial analyst or consultant to gain experience.",
+          "Obtain project management certifications like PMP or PRINCE2.",
+          "Look for internships or entry-level roles in banks or financial institutions."
+      ],
+      "realityCheck": "You will spend a lot of time managing expectations and dealing with compliance details, which can be tedious."
+  },
   "financial-analyst": {
       "typicalDay": {
           "morning": [
@@ -6760,6 +9036,62 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
           "Gain experience in engineering roles related to aerospace."
       ],
       "realityCheck": "The training and preparation can take years, and the work can be highly technical and demanding."
+  },
+  "flight-test-engineer": {
+      "typicalDay": {
+          "morning": [
+              "Review test plans and check equipment before flights.",
+              "Meet with the flight crew to discuss the day's objectives.",
+              "Instrument the aircraft and ensure all systems are operational."
+          ],
+          "midday": [
+              "Conduct flight tests and gather data during the flight.",
+              "Monitor instruments and make adjustments as needed.",
+              "Debrief with the team after each flight to discuss findings."
+          ],
+          "afternoon": [
+              "Analyse collected data to identify any issues.",
+              "Prepare reports on test results and recommend improvements.",
+              "Attend meetings to discuss future test plans and strategies."
+          ],
+          "tools": [
+              "Flight data recorders",
+              "Telemetry systems",
+              "Data analysis software",
+              "Aircraft instrumentation",
+              "Simulation tools"
+          ],
+          "environment": "Mostly indoors in an office setting, with regular time spent at airfields during flight tests."
+      },
+      "whatYouActuallyDo": [
+          "Plan and coordinate flight tests for new aircraft.",
+          "Instrument aircraft with necessary sensors and equipment.",
+          "Execute test cards that outline specific flight maneuvers.",
+          "Collect and analyse data from flights to ensure safety and performance.",
+          "Work closely with pilots and engineers to solve problems.",
+          "Document findings and prepare detailed reports.",
+          "Participate in safety reviews and risk assessments."
+      ],
+      "whoThisIsGoodFor": [
+          "Analytical thinker who enjoys solving complex problems.",
+          "Calm under pressure and can handle stressful situations.",
+          "Detail-oriented and enjoys working with technical data."
+      ],
+      "topSkills": [
+          "Strong data analysis skills for interpreting flight data.",
+          "Knowledge of aircraft systems and instrumentation.",
+          "Excellent communication skills for teamwork and reporting.",
+          "Ability to stay calm in high-pressure situations.",
+          "Understanding of safety regulations and procedures."
+      ],
+      "entryPaths": [
+          "Complete a Master's degree in Aerospace Engineering.",
+          "Attend flight test school or relevant training programmes.",
+          "Gain experience through internships with aerospace companies.",
+          "Look for apprenticeships or entry-level positions in aviation.",
+          "Consider relevant employers like Kongsberg or Airbus."
+      ],
+      "realityCheck": "The job involves a lot of detailed analysis and paperwork, not just flying planes."
   },
   "food-blogger": {
       "typicalDay": {
@@ -7299,6 +9631,56 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "The emotional weight of the job can be challenging, as you often deal with difficult family situations."
   },
+  "freediving-instructor": {
+      "typicalDay": {
+          "morning": [
+              "Set up equipment for the day's lessons.",
+              "Review safety protocols with students.",
+              "Conduct warm-up exercises with the group."
+          ],
+          "midday": [
+              "Teach breath-hold techniques in shallow water.",
+              "Monitor students' progress and provide feedback.",
+              "Discuss physiology and its effects on freediving."
+          ],
+          "afternoon": [
+              "Guide students on deeper dives, ensuring safety.",
+              "Conduct rescue drills and practice emergency responses.",
+              "Pack up equipment and debrief with students."
+          ],
+          "tools": [
+              "Freediving gear (wetsuits, fins, masks)",
+              "Buoys and ropes for depth training",
+              "First aid kit"
+          ],
+          "environment": "Mostly outdoors in coastal areas or lakes, with a focus on water safety and student interaction."
+      },
+      "whatYouActuallyDo": [
+          "Teach students how to hold their breath safely.",
+          "Demonstrate proper techniques for diving.",
+          "Ensure a safe environment for all participants.",
+          "Monitor and support students during dives.",
+          "Provide feedback on technique and performance."
+      ],
+      "whoThisIsGoodFor": [
+          "Comfortable in water and enjoys swimming.",
+          "Patient and enjoys teaching others.",
+          "Able to stay calm in emergencies."
+      ],
+      "topSkills": [
+          "Freediving techniques and safety protocols.",
+          "Effective communication and teaching skills.",
+          "Knowledge of human physiology related to diving.",
+          "Ability to assess and respond to emergencies.",
+          "Patience and encouragement for students."
+      ],
+      "entryPaths": [
+          "Complete an AIDA, Molchanovs, or PADI Freediver instructor certification.",
+          "Gain experience as a freediving assistant or guide.",
+          "Participate in local freediving clubs or training camps."
+      ],
+      "realityCheck": "The job involves a lot of responsibility for student safety, which can be stressful at times."
+  },
   "freelance-photographer": {
       "typicalDay": {
           "morning": [
@@ -7352,6 +9734,112 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
           "Use social media to showcase your work and attract clients"
       ],
       "realityCheck": "Finding clients and steady work can take time, and you often handle all aspects of the business."
+  },
+  "freestyle-ski-instructor": {
+      "typicalDay": {
+          "morning": [
+              "Prepare equipment and check the weather conditions.",
+              "Meet with students and discuss the day's goals.",
+              "Warm up with basic skiing drills."
+          ],
+          "midday": [
+              "Teach jumps and tricks in the freestyle park.",
+              "Provide feedback and tips to students.",
+              "Take a break for lunch with the team."
+          ],
+          "afternoon": [
+              "Lead a backcountry skiing session, focusing on terrain assessment.",
+              "Discuss avalanche safety and awareness with students.",
+              "Wrap up with a cool-down session and gather feedback."
+          ],
+          "tools": [
+              "Skis and snowboards",
+              "Safety equipment (avalanche transceiver, shovel, probe)",
+              "Communication radio",
+              "Video camera for recording sessions",
+              "Ski poles"
+          ],
+          "environment": "Mostly outdoors on ski slopes, with a mix of teaching on the mountain and socialising with students."
+      },
+      "whatYouActuallyDo": [
+          "Teach students how to perform jumps and tricks safely.",
+          "Assess the terrain for safe skiing routes.",
+          "Explain avalanche safety and rescue techniques.",
+          "Monitor students' progress and adapt lessons accordingly.",
+          "Encourage students and build their confidence on skis."
+      ],
+      "whoThisIsGoodFor": [
+          "Passionate about skiing and the outdoors.",
+          "Enjoys teaching and helping others improve.",
+          "Comfortable making decisions in changing weather conditions."
+      ],
+      "topSkills": [
+          "Strong skiing ability in various conditions.",
+          "Knowledge of avalanche safety and rescue.",
+          "Ability to teach and break down complex techniques.",
+          "Good communication skills with students of all levels.",
+          "Strong assessment skills to evaluate terrain and student performance."
+      ],
+      "entryPaths": [
+          "Obtain a ski instructor certification (ISIA or national).",
+          "Complete a vocational programme in ski instruction.",
+          "Gain experience through apprenticeships at ski schools.",
+          "Specialise in freestyle or backcountry skiing through additional courses.",
+          "Look for seasonal work at ski resorts."
+      ],
+      "realityCheck": "The job can be physically demanding, and weather conditions can change quickly, impacting your plans."
+  },
+  "freestyle-snowboard-instructor": {
+      "typicalDay": {
+          "morning": [
+              "Prepare equipment and check weather conditions before lessons start.",
+              "Meet with students and discuss goals for the day.",
+              "Warm up with basic drills to assess skill levels."
+          ],
+          "midday": [
+              "Lead freestyle park sessions, focusing on jumps and rails.",
+              "Provide feedback and tips to students after each run.",
+              "Monitor students' progress and adjust lessons as needed."
+          ],
+          "afternoon": [
+              "Transition to backcountry training, discussing avalanche safety.",
+              "Conduct guided runs in the backcountry, teaching techniques.",
+              "Wrap up the day with a group debrief and feedback session."
+          ],
+          "tools": [
+              "Snowboard and bindings",
+              "Safety gear (helmets, avalanche beacons)",
+              "Video camera for recording student progress"
+          ],
+          "environment": "Mostly outdoors on snowy slopes, with a mix of teaching, guiding, and ensuring safety."
+      },
+      "whatYouActuallyDo": [
+          "Teach students how to perform tricks in the freestyle park.",
+          "Guide groups safely in backcountry areas.",
+          "Assess student abilities and tailor lessons to their needs.",
+          "Explain avalanche safety and how to recognise risks.",
+          "Provide constructive feedback to help students improve.",
+          "Set up and maintain equipment for lessons.",
+          "Encourage a fun and safe learning environment."
+      ],
+      "whoThisIsGoodFor": [
+          "Passionate about snowboarding and the outdoors.",
+          "Enjoys teaching and helping others improve.",
+          "Comfortable working in varying weather conditions."
+      ],
+      "topSkills": [
+          "Advanced snowboarding techniques for freestyle and backcountry.",
+          "Strong communication skills for teaching.",
+          "Knowledge of avalanche safety and rescue methods.",
+          "Patience when working with different skill levels.",
+          "Ability to assess risks and ensure student safety."
+      ],
+      "entryPaths": [
+          "Obtain a snowboard instructor certification (ISIA or national).",
+          "Complete a vocational programme in sports coaching.",
+          "Gain experience by working as a ski resort instructor or guide."
+      ],
+      "realityCheck": "The weather can change quickly, and you must adapt your plans on the spot."
   },
   "freight-driver": {
       "typicalDay": {
@@ -7610,6 +10098,126 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "The long training period can be exhausting, and the hours are often unpredictable."
   },
+  "generative-ai-engineer": {
+      "typicalDay": {
+          "morning": [
+              "Check emails and messages from the team.",
+              "Review the progress of ongoing projects.",
+              "Attend a stand-up meeting to discuss daily goals."
+          ],
+          "midday": [
+              "Work on coding new features for AI tools.",
+              "Test and debug code to improve performance.",
+              "Collaborate with designers to refine user interfaces."
+          ],
+          "afternoon": [
+              "Integrate APIs for different applications.",
+              "Write documentation for new features.",
+              "Participate in a brainstorming session for future projects."
+          ],
+          "tools": [
+              "Python programming language",
+              "TensorFlow or PyTorch for model training",
+              "Git for version control",
+              "Jupyter Notebooks for experimentation",
+              "Slack for team communication"
+          ],
+          "environment": "Mostly indoors in an office or tech lab, working at a desk with a mix of coding and team collaboration."
+      },
+      "whatYouActuallyDo": [
+          "Develop and improve AI models that generate text or images.",
+          "Write clean and efficient code to implement features.",
+          "Test AI outputs to ensure quality and relevance.",
+          "Collaborate with other engineers and designers on projects.",
+          "Stay updated with the latest trends in AI technology."
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys problem-solving and logical thinking.",
+          "Has a strong interest in technology and AI.",
+          "Likes working on complex projects with a team."
+      ],
+      "topSkills": [
+          "Proficiency in Python programming.",
+          "Understanding of generative models and machine learning.",
+          "Ability to debug and troubleshoot code.",
+          "Familiarity with API integration.",
+          "Good communication skills for teamwork."
+      ],
+      "entryPaths": [
+          "Complete a Bachelor's or Master's degree in Computer Science or AI.",
+          "Join a vocational programme focused on software development.",
+          "Look for internships at tech companies working with AI.",
+          "Apply for apprenticeships in software engineering.",
+          "Participate in coding bootcamps that focus on AI technologies."
+      ],
+      "realityCheck": "The work can be challenging, especially when models don't perform as expected, requiring a lot of testing and tweaking."
+  },
+  "geography-teacher": {
+      "typicalDay": {
+          "morning": [
+              "Prepare lesson plans and gather materials for the day.",
+              "Set up the classroom for the first lesson.",
+              "Check emails from students or staff.",
+              "Review current events related to geography.",
+              "Meet with colleagues to discuss student progress."
+          ],
+          "midday": [
+              "Teach two or three geography classes.",
+              "Engage students in discussions about maps and fieldwork.",
+              "Provide feedback on students' assignments.",
+              "Supervise students during lunch break.",
+              "Plan upcoming field trips or activities."
+          ],
+          "afternoon": [
+              "Teach another geography class or conduct a practical session.",
+              "Grade assignments and provide comments.",
+              "Meet with parents or guardians if necessary.",
+              "Attend a staff meeting to discuss curriculum changes.",
+              "Organise resources for the next day's lessons."
+          ],
+          "tools": [
+              "Textbooks and educational resources.",
+              "Maps and atlases.",
+              "Projector and computer for presentations.",
+              "Fieldwork equipment like compasses or GPS devices.",
+              "Online teaching platforms for assignments."
+          ],
+          "environment": "Mostly indoors in a classroom, with some time spent outside during fieldwork activities."
+      },
+      "whatYouActuallyDo": [
+          "Create engaging lesson plans that cover various geography topics.",
+          "Teach students about physical geography, human geography, and environmental issues.",
+          "Use maps and technology to help students understand geographical concepts.",
+          "Conduct field trips to explore local geography and ecosystems.",
+          "Assess student performance through tests and projects.",
+          "Encourage critical thinking about current events and their geographical implications.",
+          "Collaborate with other teachers on interdisciplinary projects."
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys sharing knowledge with others.",
+          "Curious about the world and how it works.",
+          "Good at explaining complex ideas simply.",
+          "Likes working with students of different ages.",
+          "Patient and adaptable to different learning styles."
+      ],
+      "topSkills": [
+          "Strong understanding of geography and related topics.",
+          "Ability to engage students and make lessons interesting.",
+          "Skills in using technology for teaching.",
+          "Organisational skills for planning lessons and activities.",
+          "Effective communication skills for interacting with students and parents.",
+          "Critical thinking to discuss and analyse current events.",
+          "Fieldwork skills for conducting outdoor lessons."
+      ],
+      "entryPaths": [
+          "Complete a Master's degree in Geography.",
+          "Obtain a PPU (Praktisk-pedagogisk utdanning) for teaching qualifications.",
+          "Gain experience through volunteering in schools or educational programmes.",
+          "Consider an apprenticeship in teaching to gain practical experience.",
+          "Look for positions in schools that offer mentorship for new teachers."
+      ],
+      "realityCheck": "The workload can be heavy, especially during exam periods when you have to grade many papers."
+  },
   "ground-control-operator": {
       "typicalDay": {
           "morning": [
@@ -7767,6 +10375,58 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
           "Gain experience through internships in hospitals or clinics."
       ],
       "realityCheck": "The training is long and intense, often taking over a decade to become fully qualified."
+  },
+  "hang-gliding-instructor": {
+      "typicalDay": {
+          "morning": [
+              "Check weather conditions and plan the day's flights.",
+              "Set up hang gliding equipment for students.",
+              "Brief students on safety protocols and flight techniques."
+          ],
+          "midday": [
+              "Assist students with launching their gliders.",
+              "Monitor students in the air and provide guidance.",
+              "Debrief students after their flights to discuss performance."
+          ],
+          "afternoon": [
+              "Conduct advanced technique training for experienced students.",
+              "Maintain and inspect hang gliding equipment.",
+              "Organise and clean up the training area."
+          ],
+          "tools": [
+              "Hang gliders",
+              "Safety helmets",
+              "Radio communication devices",
+              "Flight logs",
+              "Weather monitoring tools"
+          ],
+          "environment": "Mostly outdoors at a flying site, with a mix of teaching, supervising, and equipment maintenance."
+      },
+      "whatYouActuallyDo": [
+          "Teach students how to launch and land safely.",
+          "Guide students during their flights to improve their skills.",
+          "Assess weather conditions to ensure safe flying.",
+          "Manage risks and ensure all safety measures are followed.",
+          "Maintain hang gliding equipment and prepare it for use."
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys being outdoors and active.",
+          "Has a passion for flying and adventure.",
+          "Patient and able to teach others effectively."
+      ],
+      "topSkills": [
+          "Advanced hang gliding techniques",
+          "Knowledge of aerodynamics",
+          "Ability to assess weather conditions",
+          "Strong communication skills",
+          "Risk management and safety awareness"
+      ],
+      "entryPaths": [
+          "Obtain a hang gliding instructor certification.",
+          "Complete a vocational programme in aviation or outdoor education.",
+          "Gain extensive flight hours as a hang glider before teaching."
+      ],
+      "realityCheck": "You spend a lot of time managing safety and dealing with changing weather conditions, which can be stressful."
   },
   "head-of-bss": {
       "typicalDay": {
@@ -8154,6 +10814,107 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "The training is long and demanding, often taking over a decade before you can operate independently."
   },
+  "high-school-teacher": {
+      "typicalDay": {
+          "morning": [
+              "Prepare lesson plans for the day's classes.",
+              "Set up the classroom for the first lesson.",
+              "Grade assignments from previous lessons."
+          ],
+          "midday": [
+              "Teach two or three classes in your specialist subjects.",
+              "Provide feedback to students during breaks.",
+              "Attend a staff meeting to discuss student progress."
+          ],
+          "afternoon": [
+              "Hold office hours for students needing extra help.",
+              "Plan upcoming assessments and projects.",
+              "Reflect on the day's lessons and adjust future plans."
+          ],
+          "tools": [
+              "Whiteboard and markers",
+              "Projector and computer",
+              "Learning management system (LMS)"
+          ],
+          "environment": "Mostly indoors in a classroom, with a mix of teaching and planning time."
+      },
+      "whatYouActuallyDo": [
+          "Teach lessons in your specialist subjects.",
+          "Create and mark assignments and tests.",
+          "Support students with their learning needs.",
+          "Manage classroom behaviour and dynamics.",
+          "Communicate with parents about student progress."
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys working with young people.",
+          "Good at explaining complex ideas simply.",
+          "Patient and adaptable in different situations."
+      ],
+      "topSkills": [
+          "Strong knowledge of your subject area.",
+          "Ability to create engaging lesson plans.",
+          "Skill in assessing student work fairly.",
+          "Good communication with students and parents.",
+          "Classroom management techniques."
+      ],
+      "entryPaths": [
+          "Complete a Master's degree in your subject area.",
+          "Finish a PPU (pedagogical qualification) programme.",
+          "Apply for teaching positions in upper-secondary schools."
+      ],
+      "realityCheck": "The workload can be heavy, especially during exam periods with lots of grading."
+  },
+  "history-teacher": {
+      "typicalDay": {
+          "morning": [
+              "Prepare lesson plans for the day's classes",
+              "Set up classroom materials and resources",
+              "Review student assignments from the previous lesson"
+          ],
+          "midday": [
+              "Teach history lessons to different classes",
+              "Engage students in discussions about historical events",
+              "Provide feedback on student work"
+          ],
+          "afternoon": [
+              "Meet with colleagues to discuss curriculum and teaching strategies",
+              "Grade assignments and plan future lessons",
+              "Communicate with parents about student progress"
+          ],
+          "tools": [
+              "Whiteboard and markers",
+              "Projector for presentations",
+              "Textbooks and online resources"
+          ],
+          "environment": "Mostly indoors in a classroom, with a mix of teaching, grading, and planning."
+      },
+      "whatYouActuallyDo": [
+          "Create engaging history lessons for students.",
+          "Help students learn to analyse historical sources.",
+          "Encourage discussions about historical events and their relevance today.",
+          "Assess student understanding through tests and assignments.",
+          "Collaborate with other teachers on interdisciplinary projects."
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys storytelling and sharing knowledge.",
+          "Curious about the past and its impact on the present.",
+          "Good at explaining complex ideas in simple terms."
+      ],
+      "topSkills": [
+          "Strong knowledge of historical events and contexts.",
+          "Ability to critically evaluate sources and information.",
+          "Effective communication and presentation skills.",
+          "Patience and understanding when working with students.",
+          "Creative thinking to make lessons interesting."
+      ],
+      "entryPaths": [
+          "Complete a Bachelor's degree in History.",
+          "Pursue a Master's degree in History.",
+          "Complete a PPU (Praktisk-pedagogisk utdanning) to qualify as a teacher.",
+          "Consider internships or volunteer work in schools."
+      ],
+      "realityCheck": "The workload can be high, especially during exam periods when grading and planning intensifies."
+  },
   "homelessness-support-worker": {
       "typicalDay": {
           "morning": [
@@ -8418,6 +11179,60 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "You often deal with difficult situations and must remain calm and supportive, even when clients are stressed."
   },
+  "ice-climbing-guide": {
+      "typicalDay": {
+          "morning": [
+              "Check weather conditions and avalanche reports.",
+              "Prepare climbing gear and equipment.",
+              "Brief climbers on safety protocols and the day's plan."
+          ],
+          "midday": [
+              "Lead climbers on the route, ensuring safety and technique.",
+              "Provide instruction on ice climbing techniques.",
+              "Take breaks to assess progress and hydration."
+          ],
+          "afternoon": [
+              "Continue climbing and navigate challenging sections.",
+              "Monitor climbers for fatigue and safety.",
+              "Return to base and pack away equipment."
+          ],
+          "tools": [
+              "Ice axes",
+              "Crampons",
+              "Climbing ropes",
+              "Avalanche safety gear",
+              "GPS devices"
+          ],
+          "environment": "Mostly outdoors in cold, mountainous areas, with a focus on safety and teamwork."
+      },
+      "whatYouActuallyDo": [
+          "Lead groups of climbers up frozen waterfalls.",
+          "Teach climbing techniques and safety measures.",
+          "Assess the climbing conditions and make decisions.",
+          "Set up and manage rope systems for safety.",
+          "Monitor weather changes and adjust plans accordingly."
+      ],
+      "whoThisIsGoodFor": [
+          "Loves the outdoors and winter sports.",
+          "Enjoys teaching and sharing knowledge.",
+          "Comfortable in high-risk environments.",
+          "Good at problem-solving on the spot."
+      ],
+      "topSkills": [
+          "Expertise in ice climbing techniques.",
+          "Ability to assess avalanche risks.",
+          "Strong communication skills for teaching.",
+          "Physical fitness and stamina for climbing.",
+          "Knowledge of rope systems and safety protocols."
+      ],
+      "entryPaths": [
+          "Obtain IFMGA or national ice guide certification.",
+          "Gain extensive experience in winter mountaineering.",
+          "Complete a relevant vocational programme.",
+          "Participate in internships with experienced guides."
+      ],
+      "realityCheck": "The job often involves long hours in harsh conditions, and not every day will be perfect for climbing."
+  },
   "illustrator": {
       "typicalDay": {
           "morning": [
@@ -8638,6 +11453,108 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "Building a substantial following takes time and consistent effort, and not every post will go viral."
   },
+  "instructional-designer": {
+      "typicalDay": {
+          "morning": [
+              "Review feedback from learners on current courses",
+              "Meet with subject matter experts to discuss course content",
+              "Create storyboards for new training modules"
+          ],
+          "midday": [
+              "Develop interactive elements for online courses",
+              "Test course functionality on different devices",
+              "Attend a team meeting to discuss project timelines"
+          ],
+          "afternoon": [
+              "Update course materials based on new research",
+              "Collaborate with graphic designers on visual content",
+              "Analyse learner data to improve course effectiveness"
+          ],
+          "tools": [
+              "Articulate 360",
+              "Adobe Creative Suite",
+              "Learning Management Systems (LMS)",
+              "Google Workspace",
+              "Survey tools (e.g., SurveyMonkey)"
+          ],
+          "environment": "Mostly indoors in an office or home office, working independently with occasional team collaboration."
+      },
+      "whatYouActuallyDo": [
+          "Design and organise online courses for different subjects.",
+          "Create engaging content that helps learners understand complex topics.",
+          "Test and revise courses based on user feedback.",
+          "Work with teachers and trainers to ensure courses meet their needs.",
+          "Use data to see how well courses are performing and where they can improve."
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys solving problems and finding creative solutions.",
+          "Good at explaining things clearly to others.",
+          "Likes using technology and learning new software."
+      ],
+      "topSkills": [
+          "Understanding learning theories and how people learn.",
+          "Creating clear and engaging course content.",
+          "Using design software to create visuals.",
+          "Analysing feedback and data to improve courses.",
+          "Project management to keep courses on schedule."
+      ],
+      "entryPaths": [
+          "Complete a Bachelor's or Master's degree in Education or Learning Design.",
+          "Build a portfolio of course design work to show potential employers.",
+          "Look for internships or entry-level roles in educational technology companies."
+      ],
+      "realityCheck": "You often spend a lot of time revising and testing courses before they are ready for learners."
+  },
+  "interpreter": {
+      "typicalDay": {
+          "morning": [
+              "Attend a morning briefing to understand the agenda for the day.",
+              "Review notes and materials for upcoming meetings or conferences.",
+              "Set up interpreting equipment if needed."
+          ],
+          "midday": [
+              "Interpret for a business meeting, translating discussions in real time.",
+              "Take breaks to rest your voice and recharge your focus.",
+              "Review any new terminology or phrases that came up during the meeting."
+          ],
+          "afternoon": [
+              "Interpret for a healthcare appointment, ensuring clear communication.",
+              "Take notes on key points discussed for future reference.",
+              "Debrief with colleagues about the day's assignments."
+          ],
+          "tools": [
+              "Interpreting equipment (headsets, microphones)",
+              "Note-taking materials (notebooks, pens)",
+              "Computer with translation software"
+          ],
+          "environment": "Work is mostly indoors in various settings like offices or hospitals, often requiring quick thinking and adaptability."
+      },
+      "whatYouActuallyDo": [
+          "Listen to speakers and translate their words into another language.",
+          "Take notes to help remember key points during interpretation.",
+          "Prepare for assignments by researching topics and terminology.",
+          "Manage stress and stay composed during high-pressure situations.",
+          "Work with clients to ensure clear communication and understanding."
+      ],
+      "whoThisIsGoodFor": [
+          "Good at focusing for long periods without getting distracted.",
+          "Enjoys learning about different cultures and languages.",
+          "Calm under pressure, especially in fast-paced environments."
+      ],
+      "topSkills": [
+          "Fluency in at least two languages.",
+          "Strong note-taking skills for quick reference.",
+          "Ability to think and respond quickly.",
+          "Cultural awareness to understand context.",
+          "Excellent listening and comprehension skills."
+      ],
+      "entryPaths": [
+          "Complete a Master's in Interpreting or Translation Studies.",
+          "Gain experience through internships or volunteer work.",
+          "Look for entry-level positions in translation agencies."
+      ],
+      "realityCheck": "The job can be stressful, especially when interpreting complex subjects with little preparation."
+  },
   "investment-banker": {
       "typicalDay": {
           "morning": [
@@ -8845,6 +11762,58 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "The work can be physically demanding and requires you to be on your feet for long periods."
   },
+  "kitesurfing-instructor": {
+      "typicalDay": {
+          "morning": [
+              "Set up kites and equipment for the day's lessons.",
+              "Check the weather conditions and wind strength.",
+              "Brief students on safety and lesson plans."
+          ],
+          "midday": [
+              "Teach kitesurfing techniques to beginners.",
+              "Assist students with their first water starts.",
+              "Provide feedback and tips to improve their skills."
+          ],
+          "afternoon": [
+              "Lead advanced students through new tricks and wave riding.",
+              "Pack down equipment after lessons.",
+              "Conduct a debrief with students about their progress."
+          ],
+          "tools": [
+              "Kitesurfing kites",
+              "Boards",
+              "Safety gear (helmets, life vests)",
+              "Communication radio",
+              "Weather apps"
+          ],
+          "environment": "Mostly outdoors at a beach, working in the sun and wind, with a focus on teaching and safety."
+      },
+      "whatYouActuallyDo": [
+          "Teach beginners how to control a kite and ride a board.",
+          "Ensure all students follow safety protocols.",
+          "Adjust lessons based on students' progress and weather conditions.",
+          "Help students overcome their fears and build confidence.",
+          "Organise and maintain kitesurfing equipment."
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys being outdoors and active.",
+          "Patient and encouraging with learners.",
+          "Good at reading weather and wind patterns."
+      ],
+      "topSkills": [
+          "Kitesurfing technique and safety knowledge.",
+          "Effective communication and teaching skills.",
+          "Ability to assess and respond to changing weather.",
+          "Patience and encouragement for students.",
+          "Problem-solving in challenging conditions."
+      ],
+      "entryPaths": [
+          "Obtain IKO or VDWS kitesurfing instructor certification.",
+          "Gain experience by volunteering at kitesurfing schools.",
+          "Complete a relevant vocational programme in sports instruction."
+      ],
+      "realityCheck": "The job can be physically demanding, especially when handling equipment and teaching in varying weather conditions."
+  },
   "land-surveyor": {
       "typicalDay": {
           "morning": [
@@ -8904,6 +11873,160 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "You will spend a lot of time outdoors in various weather, and the work can be physically demanding."
   },
+  "language-data-annotator": {
+      "typicalDay": {
+          "morning": [
+              "Check emails and messages from the team.",
+              "Review guidelines for data annotation tasks.",
+              "Start annotating new transcripts or dialogues."
+          ],
+          "midday": [
+              "Take a break for lunch.",
+              "Continue with annotation tasks.",
+              "Attend a short team meeting to discuss progress."
+          ],
+          "afternoon": [
+              "Finish annotating the day's assigned data.",
+              "Double-check work for consistency and accuracy.",
+              "Submit completed tasks for review."
+          ],
+          "tools": [
+              "Annotation software like Prodigy or Labelbox.",
+              "Spreadsheet tools for tracking progress.",
+              "Communication tools like Slack or Microsoft Teams."
+          ],
+          "environment": "Mostly indoors in a quiet office or remote, focusing on screens with structured tasks."
+      },
+      "whatYouActuallyDo": [
+          "Read through transcripts and dialogues to understand context.",
+          "Label parts of text with the correct tags or sentiments.",
+          "Ensure annotations are consistent with guidelines.",
+          "Collaborate with team members to resolve any questions.",
+          "Review feedback on your annotations and improve where needed."
+      ],
+      "whoThisIsGoodFor": [
+          "Detail-oriented and patient.",
+          "Enjoys working with language and text.",
+          "Interested in technology and machine learning."
+      ],
+      "topSkills": [
+          "Strong attention to detail.",
+          "Good understanding of language and context.",
+          "Ability to follow guidelines accurately.",
+          "Patience for repetitive tasks.",
+          "Basic computer skills for using software."
+      ],
+      "entryPaths": [
+          "Complete a relevant bachelor's degree in linguistics or a related field.",
+          "Participate in annotation training programmes.",
+          "Look for internships or entry-level positions with tech companies."
+      ],
+      "realityCheck": "The work can be repetitive and requires a lot of focus for long periods."
+  },
+  "language-teacher": {
+      "typicalDay": {
+          "morning": [
+              "Prepare lesson plans and materials for the day's classes.",
+              "Set up the classroom with necessary resources.",
+              "Take attendance and greet students."
+          ],
+          "midday": [
+              "Teach language classes focusing on grammar and vocabulary.",
+              "Engage students in speaking exercises and group activities.",
+              "Provide feedback on students' progress and assignments."
+          ],
+          "afternoon": [
+              "Plan future lessons and assess student work.",
+              "Meet with colleagues to discuss teaching strategies.",
+              "Attend staff meetings or professional development sessions."
+          ],
+          "tools": [
+              "Whiteboard and markers",
+              "Language textbooks",
+              "Digital learning platforms",
+              "Audio-visual equipment",
+              "Assessment tools"
+          ],
+          "environment": "Mostly indoors in a classroom setting, with a mix of teaching and planning time."
+      },
+      "whatYouActuallyDo": [
+          "Create engaging lesson plans for different language levels.",
+          "Teach grammar, vocabulary, and pronunciation.",
+          "Encourage students to practice speaking and writing.",
+          "Assess student work and provide constructive feedback.",
+          "Incorporate cultural elements into lessons to enhance learning."
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys sharing knowledge with others.",
+          "Patient and able to explain concepts in different ways.",
+          "Passionate about languages and cultures."
+      ],
+      "topSkills": [
+          "Mastery of the language being taught.",
+          "Ability to create engaging lesson plans.",
+          "Strong communication skills for explaining concepts.",
+          "Patience when working with students of varying abilities.",
+          "Cultural knowledge to make lessons relevant."
+      ],
+      "entryPaths": [
+          "Complete a Master's degree in the language you want to teach.",
+          "Obtain a PPU (Praktisk-pedagogisk utdanning) qualification.",
+          "Consider teaching assistant roles to gain experience.",
+          "Look for internships or volunteer opportunities in schools.",
+          "Explore language schools for teaching positions."
+      ],
+      "realityCheck": "Classroom management can be challenging, especially with diverse student needs."
+  },
+  "language-tutor": {
+      "typicalDay": {
+          "morning": [
+              "Prepare lesson plans and materials for the day's sessions.",
+              "Review students' progress and adjust plans if needed.",
+              "Set up the online platform or classroom space."
+          ],
+          "midday": [
+              "Conduct one-on-one tutoring sessions with students.",
+              "Provide feedback on homework and exercises.",
+              "Answer students' questions and clarify doubts."
+          ],
+          "afternoon": [
+              "Plan future lessons based on students' needs.",
+              "Engage in language practice with peers or through online resources.",
+              "Reflect on the day's sessions and note any improvements."
+          ],
+          "tools": [
+              "Video conferencing software (like Zoom or Skype)",
+              "Language learning platforms (like Duolingo or Babbel)",
+              "Whiteboard or digital note-taking tools"
+          ],
+          "environment": "Usually works from home or a quiet classroom, with flexible hours depending on student schedules."
+      },
+      "whatYouActuallyDo": [
+          "Teach language skills to individuals or small groups.",
+          "Create lesson plans tailored to each student's level.",
+          "Help students with pronunciation and grammar.",
+          "Encourage conversation practice to build confidence.",
+          "Assess students' progress and adapt lessons accordingly."
+      ],
+      "whoThisIsGoodFor": [
+          "Patient and encouraging with learners.",
+          "Enjoys explaining concepts clearly.",
+          "Able to adapt to different learning styles."
+      ],
+      "topSkills": [
+          "Strong fluency in the target language.",
+          "Ability to create engaging lesson plans.",
+          "Good communication and listening skills.",
+          "Cultural knowledge to share with students.",
+          "Patience when working with learners at different levels."
+      ],
+      "entryPaths": [
+          "Strong fluency in the language, often through personal study or experience.",
+          "Teaching certification or language-related courses can be beneficial.",
+          "Volunteering in language exchange programmes to gain experience."
+      ],
+      "realityCheck": "Building a steady stream of students can take time and effort, especially at the start."
+  },
   "launch-operations-engineer": {
       "typicalDay": {
           "morning": [
@@ -8961,6 +12084,58 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "The job can involve long hours and high stress, especially close to launch time."
   },
+  "learning-support-specialist": {
+      "typicalDay": {
+          "morning": [
+              "Meet with students to review their progress and set goals.",
+              "Prepare tailored learning materials for different needs.",
+              "Conduct assessments to identify specific challenges."
+          ],
+          "midday": [
+              "Provide one-on-one support to students during lessons.",
+              "Collaborate with teachers to adapt lesson plans.",
+              "Attend meetings with parents to discuss student progress."
+          ],
+          "afternoon": [
+              "Conduct small group sessions focusing on specific skills.",
+              "Document student progress and update records.",
+              "Research new strategies and resources for learning support."
+          ],
+          "tools": [
+              "Educational software for learning assessments.",
+              "Specialised teaching materials and resources.",
+              "Communication tools for collaborating with teachers and parents."
+          ],
+          "environment": "Mostly indoors in a school setting, working closely with students and teachers in a supportive atmosphere."
+      },
+      "whatYouActuallyDo": [
+          "Help students with dyslexia or ADHD understand their lessons better.",
+          "Create personalised learning plans based on each student’s needs.",
+          "Use different teaching methods to make learning easier.",
+          "Monitor and track students' progress over time.",
+          "Work with teachers to adapt classroom activities for all students."
+      ],
+      "whoThisIsGoodFor": [
+          "Patient and understanding towards students' challenges.",
+          "Good at explaining things in different ways.",
+          "Enjoys working collaboratively with teachers and parents."
+      ],
+      "topSkills": [
+          "Ability to assess individual learning needs.",
+          "Skill in adapting teaching methods and resources.",
+          "Strong communication skills for working with students and families.",
+          "Patience when working with students who need extra help.",
+          "Organisational skills for managing multiple students' plans."
+      ],
+      "entryPaths": [
+          "Complete a Bachelor's degree in Education with a focus on learning support.",
+          "Pursue a Master's degree in Educational Psychology.",
+          "Gain experience through internships or volunteer work in schools.",
+          "Look for apprenticeships or positions in special education settings.",
+          "Consider additional certifications in specific learning difficulties."
+      ],
+      "realityCheck": "You may spend a lot of time on paperwork and assessments, which can feel less rewarding than direct teaching."
+  },
   "leasing-agent": {
       "typicalDay": {
           "morning": [
@@ -9012,6 +12187,59 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "You will spend a lot of time dealing with paperwork and tenant issues, which can be tedious."
   },
+  "lecturer": {
+      "typicalDay": {
+          "morning": [
+              "Prepare lecture notes and materials for the day's classes.",
+              "Meet with students for office hours to discuss coursework.",
+              "Check and respond to emails from students and colleagues."
+          ],
+          "midday": [
+              "Deliver lectures or lead seminars for undergraduate students.",
+              "Grade assignments or exams from previous weeks.",
+              "Attend departmental meetings to discuss curriculum and student progress."
+          ],
+          "afternoon": [
+              "Conduct research related to your field of study.",
+              "Mentor students on their projects or career paths.",
+              "Plan future lectures and update course content."
+          ],
+          "tools": [
+              "Presentation software (like PowerPoint or Google Slides)",
+              "Learning management systems (such as Canvas or Moodle)",
+              "Research databases (like JSTOR or Google Scholar)"
+          ],
+          "environment": "Mostly indoors in a university classroom or office, with a mix of teaching and research time."
+      },
+      "whatYouActuallyDo": [
+          "Teach lectures and lead discussions on your subject.",
+          "Create and mark assignments and exams for students.",
+          "Provide feedback to help students improve their work.",
+          "Conduct research and publish findings in academic journals.",
+          "Advise students on their academic and career choices."
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys explaining complex topics clearly.",
+          "Passionate about a specific subject area.",
+          "Comfortable speaking in front of groups.",
+          "Willing to spend time on research and writing."
+      ],
+      "topSkills": [
+          "Deep knowledge of your subject area.",
+          "Ability to create engaging presentations.",
+          "Strong writing skills for assessments and research.",
+          "Good organisational skills for managing multiple classes.",
+          "Effective communication skills for interacting with students."
+      ],
+      "entryPaths": [
+          "Complete a Master's degree in your chosen subject.",
+          "Pursue a PhD for higher education teaching roles.",
+          "Gain teaching experience as a teaching assistant during your studies.",
+          "Look for lecturer positions at universities in Norway.",
+          "Consider applying for research grants to support your work."
+      ],
+      "realityCheck": "You spend a lot of time on research and grading, which can be more time-consuming than teaching."
+  },
   "lettings-agent": {
       "typicalDay": {
           "morning": [
@@ -9061,6 +12289,64 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
           "Consider internships with real estate agencies."
       ],
       "realityCheck": "You spend a lot of time dealing with paperwork and administrative tasks, not just showing properties."
+  },
+  "lexicographer": {
+      "typicalDay": {
+          "morning": [
+              "Review recent word submissions and updates from colleagues.",
+              "Conduct research on new words and their usage in different contexts.",
+              "Update existing dictionary entries with new information."
+          ],
+          "midday": [
+              "Attend a team meeting to discuss ongoing projects and deadlines.",
+              "Collaborate with editors to ensure consistency in definitions.",
+              "Read articles or books to find new terms or phrases."
+          ],
+          "afternoon": [
+              "Write and edit definitions for clarity and accuracy.",
+              "Analyse language data from corpora to track word usage trends.",
+              "Prepare reports on word development for publication."
+          ],
+          "tools": [
+              "Dictionary databases",
+              "Corpus analysis software",
+              "Word processing software",
+              "Online research tools",
+              "Collaboration platforms"
+          ],
+          "environment": "Mostly indoors in an office or home office, with a quiet atmosphere focused on research and writing."
+      },
+      "whatYouActuallyDo": [
+          "Research the meanings and origins of words.",
+          "Write clear and concise definitions.",
+          "Edit dictionary entries for accuracy and consistency.",
+          "Analyse language data to understand how words are used.",
+          "Collaborate with other linguists and editors.",
+          "Stay updated on language trends and new words.",
+          "Prepare entries for publication in print or online."
+      ],
+      "whoThisIsGoodFor": [
+          "Detail-oriented and precise.",
+          "Enjoys reading and writing.",
+          "Curious about language and its evolution.",
+          "Good at researching and synthesising information."
+      ],
+      "topSkills": [
+          "Strong language skills in the target language.",
+          "Research skills to find reliable information.",
+          "Writing skills for clear definitions.",
+          "Attention to detail for accuracy.",
+          "Ability to analyse language data.",
+          "Collaboration skills for working with a team."
+      ],
+      "entryPaths": [
+          "Complete a Master's in Linguistics or a relevant language.",
+          "Pursue an internship with a publishing company.",
+          "Look for entry-level positions at dictionary publishers.",
+          "Consider a research assistant role in linguistics.",
+          "Join professional organisations for networking opportunities."
+      ],
+      "realityCheck": "The work can be quite solitary and involves a lot of detailed research that may not seem exciting."
   },
   "lifeguard": {
       "typicalDay": {
@@ -9220,6 +12506,109 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "You may spend long hours setting up equipment and working in various weather conditions."
   },
+  "linguist": {
+      "typicalDay": {
+          "morning": [
+              "Read research papers and articles related to language studies.",
+              "Attend meetings with colleagues to discuss ongoing projects.",
+              "Conduct experiments or tests on language data."
+          ],
+          "midday": [
+              "Write reports summarising research findings.",
+              "Analyse data collected from language studies.",
+              "Collaborate with other linguists on joint research."
+          ],
+          "afternoon": [
+              "Prepare presentations for conferences or lectures.",
+              "Review and edit academic papers for publication.",
+              "Teach or assist in university classes on linguistics."
+          ],
+          "tools": [
+              "Statistical software for data analysis (e.g., SPSS, R).",
+              "Phonetic analysis tools (e.g., Praat).",
+              "Word processing software (e.g., Microsoft Word, LaTeX)."
+          ],
+          "environment": "Mostly indoors in an academic setting, with a mix of research, teaching, and meetings."
+      },
+      "whatYouActuallyDo": [
+          "Conduct research on different languages and dialects.",
+          "Analyse language patterns and structures.",
+          "Write academic papers and articles on findings.",
+          "Teach students about linguistics and language theory.",
+          "Present research at conferences and seminars."
+      ],
+      "whoThisIsGoodFor": [
+          "Curious about how languages work.",
+          "Enjoys reading and researching complex topics.",
+          "Good at analysing data and patterns."
+      ],
+      "topSkills": [
+          "Strong writing skills for reports and papers.",
+          "Ability to analyse language data effectively.",
+          "Research skills to gather and evaluate information.",
+          "Understanding of phonetics and language sounds.",
+          "Critical thinking to solve language-related problems."
+      ],
+      "entryPaths": [
+          "Complete a bachelor's degree in linguistics or a related field.",
+          "Pursue a master's degree in linguistics.",
+          "Consider a PhD for advanced research roles.",
+          "Look for internships or assistant positions at universities.",
+          "Engage in language-related projects or volunteer work."
+      ],
+      "realityCheck": "Many linguists spend a lot of time on research and writing, which can be quite isolating."
+  },
+  "literacy-coach": {
+      "typicalDay": {
+          "morning": [
+              "Meet with teachers to discuss lesson plans and student needs.",
+              "Observe classrooms to assess teaching methods.",
+              "Provide feedback to teachers on literacy instruction."
+          ],
+          "midday": [
+              "Conduct small group reading sessions with students.",
+              "Review student progress data and plan interventions.",
+              "Collaborate with special education staff on literacy strategies."
+          ],
+          "afternoon": [
+              "Develop literacy resources and materials for teachers.",
+              "Hold workshops for teachers on best practices in reading.",
+              "Meet with parents to discuss student literacy goals."
+          ],
+          "tools": [
+              "Educational software for tracking student progress.",
+              "Assessment tools for evaluating reading levels.",
+              "Resource books on literacy strategies."
+          ],
+          "environment": "Mostly indoors in a school setting, working closely with teachers and students throughout the day."
+      },
+      "whatYouActuallyDo": [
+          "Coach teachers on effective literacy teaching methods.",
+          "Analyse student reading data to identify areas for improvement.",
+          "Lead reading interventions for struggling students.",
+          "Create engaging literacy resources and materials.",
+          "Conduct professional development workshops for staff.",
+          "Support students in developing their reading and writing skills."
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys helping others improve their skills.",
+          "Good at explaining things clearly.",
+          "Patient and supportive with students and teachers."
+      ],
+      "topSkills": [
+          "Strong understanding of literacy development.",
+          "Ability to analyse data to inform teaching.",
+          "Effective communication skills for coaching.",
+          "Creativity in developing engaging learning materials.",
+          "Experience in classroom teaching."
+      ],
+      "entryPaths": [
+          "Complete a Master's in Literacy or Education.",
+          "Gain classroom teaching experience before applying.",
+          "Look for positions in schools that focus on literacy improvement."
+      ],
+      "realityCheck": "You spend a lot of time assessing data and planning, which can feel repetitive at times."
+  },
   "live-streamer": {
       "typicalDay": {
           "morning": [
@@ -9322,6 +12711,108 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
           "Entry-level positions in customer service at financial firms."
       ],
       "realityCheck": "You spend a lot of time reviewing documents and dealing with regulations, which can be tedious."
+  },
+  "localization-project-manager": {
+      "typicalDay": {
+          "morning": [
+              "Check emails and respond to urgent messages from translators and clients.",
+              "Review project timelines and update schedules as needed.",
+              "Hold a quick team meeting to discuss ongoing projects."
+          ],
+          "midday": [
+              "Coordinate with translators to clarify any questions they have.",
+              "Update project management software with progress reports.",
+              "Meet with clients to discuss project requirements and feedback."
+          ],
+          "afternoon": [
+              "Review completed translations for quality assurance.",
+              "Prepare reports on project status for stakeholders.",
+              "Plan upcoming projects and allocate resources."
+          ],
+          "tools": [
+              "Project management software (like Asana or Trello)",
+              "Localization tools (like SDL Trados or MemoQ)",
+              "Communication platforms (like Slack or Microsoft Teams)"
+          ],
+          "environment": "Mostly indoors in an office setting, with a mix of meetings and focused work time."
+      },
+      "whatYouActuallyDo": [
+          "Manage multiple localization projects at the same time.",
+          "Coordinate with translators to ensure deadlines are met.",
+          "Communicate with clients to understand their needs.",
+          "Monitor project budgets and adjust as necessary.",
+          "Ensure translations are accurate and culturally appropriate."
+      ],
+      "whoThisIsGoodFor": [
+          "Organised and detail-oriented individuals.",
+          "Good communicators who enjoy working with diverse teams.",
+          "Problem-solvers who can handle unexpected challenges."
+      ],
+      "topSkills": [
+          "Strong project management skills.",
+          "Ability to use localization tools effectively.",
+          "Excellent communication skills, both written and verbal.",
+          "Experience in vendor management and negotiation.",
+          "Budgeting and financial planning skills."
+      ],
+      "entryPaths": [
+          "Obtain a bachelor's degree in a relevant field.",
+          "Gain a project management certification.",
+          "Get experience through internships in localization or translation companies."
+      ],
+      "realityCheck": "Managing multiple projects can be stressful, especially when deadlines are tight."
+  },
+  "localization-specialist": {
+      "typicalDay": {
+          "morning": [
+              "Review project briefs and understand client requirements",
+              "Translate text using computer-assisted translation (CAT) tools",
+              "Check for cultural relevance in the content"
+          ],
+          "midday": [
+              "Attend a team meeting to discuss ongoing projects",
+              "Collaborate with designers to ensure proper formatting",
+              "Perform quality control checks on translated content"
+          ],
+          "afternoon": [
+              "Make revisions based on feedback from clients",
+              "Research specific cultural references or idioms",
+              "Prepare final versions of documents for delivery"
+          ],
+          "tools": [
+              "Computer-assisted translation (CAT) tools like SDL Trados or MemoQ",
+              "Project management software like Trello or Asana",
+              "Glossaries and style guides for reference"
+          ],
+          "environment": "Mostly indoors in an office setting, with a focus on individual work and occasional team collaboration."
+      },
+      "whatYouActuallyDo": [
+          "Translate software, websites, and documents into the target language.",
+          "Ensure that the content is culturally appropriate for the audience.",
+          "Use CAT tools to improve translation efficiency.",
+          "Check translations for accuracy and consistency.",
+          "Work with clients to understand their specific needs and preferences."
+      ],
+      "whoThisIsGoodFor": [
+          "Detail-oriented and organised individuals",
+          "People who enjoy learning about different cultures",
+          "Good communicators who can work independently"
+      ],
+      "topSkills": [
+          "Proficiency in at least two languages",
+          "Experience with localisation tools (CAT)",
+          "Strong writing and editing skills",
+          "Ability to research cultural nuances",
+          "Attention to detail in proofreading"
+      ],
+      "entryPaths": [
+          "Bachelor's degree in Translation or Linguistics",
+          "Master's degree in Translation Studies",
+          "Vocational programmes in language and technology",
+          "Internships with localisation companies",
+          "Entry-level positions in translation agencies"
+      ],
+      "realityCheck": "The work can be repetitive, and you may spend a lot of time in front of a computer screen."
   },
   "logistics-driver": {
       "typicalDay": {
@@ -9432,6 +12923,58 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "You may spend a lot of time dealing with unexpected issues that can disrupt plans."
   },
+  "manufacturing-engineer": {
+      "typicalDay": {
+          "morning": [
+              "Check production line performance data from the previous day",
+              "Meet with the production team to discuss issues",
+              "Review designs for new product layouts"
+          ],
+          "midday": [
+              "Conduct tests on new manufacturing processes",
+              "Update CAD models based on feedback",
+              "Analyse data to identify areas for improvement"
+          ],
+          "afternoon": [
+              "Collaborate with other engineers on ongoing projects",
+              "Prepare reports on production efficiency",
+              "Plan training sessions for staff on new processes"
+          ],
+          "tools": [
+              "CAD software for designing layouts",
+              "Data analysis tools like Excel or specialised software",
+              "Communication tools for team meetings"
+          ],
+          "environment": "Mostly indoors in a factory setting, with a mix of hands-on work and computer-based tasks."
+      },
+      "whatYouActuallyDo": [
+          "Design production line layouts to maximise efficiency.",
+          "Analyse data to find ways to reduce waste.",
+          "Work with teams to troubleshoot production issues.",
+          "Implement changes to improve manufacturing processes.",
+          "Create detailed reports on production performance."
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys solving practical problems.",
+          "Good at working with numbers and data.",
+          "Likes working in a team environment.",
+          "Has a keen eye for detail."
+      ],
+      "topSkills": [
+          "Understanding of CAD software.",
+          "Ability to analyse and interpret data.",
+          "Knowledge of lean manufacturing principles.",
+          "Strong problem-solving skills.",
+          "Good communication skills for teamwork."
+      ],
+      "entryPaths": [
+          "Complete a Bachelor's degree in Industrial or Mechanical Engineering.",
+          "Pursue relevant internships during university.",
+          "Look for apprenticeships in manufacturing companies.",
+          "Consider a fagbrev in a related field."
+      ],
+      "realityCheck": "You will spend a lot of time analysing data and making small adjustments, which can feel tedious."
+  },
   "marine": {
       "typicalDay": {
           "morning": [
@@ -9537,6 +13080,170 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
           "Look for graduate programmes at financial institutions."
       ],
       "realityCheck": "The job often involves long hours of data analysis and can be quite repetitive at times."
+  },
+  "materials-engineer": {
+      "typicalDay": {
+          "morning": [
+              "Check emails and respond to queries from team members.",
+              "Review test results from previous experiments.",
+              "Prepare samples for testing."
+          ],
+          "midday": [
+              "Conduct tests on materials to assess their properties.",
+              "Meet with colleagues to discuss project updates.",
+              "Document findings and update project reports."
+          ],
+          "afternoon": [
+              "Analyse data from experiments and write summaries.",
+              "Research new materials and technologies.",
+              "Plan future experiments based on results."
+          ],
+          "tools": [
+              "Microscope for analysing materials.",
+              "Testing machines for stress and heat resistance.",
+              "Software for data analysis and simulation."
+          ],
+          "environment": "Mostly indoors in a lab setting, with a focus on experiments and data analysis."
+      },
+      "whatYouActuallyDo": [
+          "Select appropriate materials for specific products.",
+          "Test materials for strength, durability, and resistance.",
+          "Develop new materials to meet project requirements.",
+          "Collaborate with designers and engineers on projects.",
+          "Document and report on test results and findings."
+      ],
+      "whoThisIsGoodFor": [
+          "Curious about how things are made.",
+          "Enjoys problem-solving and analytical thinking.",
+          "Comfortable working in a lab environment."
+      ],
+      "topSkills": [
+          "Understanding of materials science principles.",
+          "Ability to conduct and interpret tests.",
+          "Attention to detail in experiments.",
+          "Strong analytical skills for data interpretation.",
+          "Good communication skills for teamwork."
+      ],
+      "entryPaths": [
+          "Complete a Master's in Materials Science or Metallurgical Engineering.",
+          "Pursue relevant internships during university studies.",
+          "Apply for entry-level positions in engineering firms."
+      ],
+      "realityCheck": "You may spend a lot of time in the lab, which can be repetitive and requires patience."
+  },
+  "mathematics-teacher": {
+      "typicalDay": {
+          "morning": [
+              "Prepare lesson plans for the day",
+              "Set up classroom for the first lesson",
+              "Grade assignments from previous classes"
+          ],
+          "midday": [
+              "Teach a mathematics lesson to students",
+              "Provide one-on-one support to struggling students",
+              "Meet with colleagues to discuss student progress"
+          ],
+          "afternoon": [
+              "Assign homework and explain expectations",
+              "Conduct a short quiz to assess understanding",
+              "Reflect on the day's lessons and plan for tomorrow"
+          ],
+          "tools": [
+              "Whiteboard and markers",
+              "Mathematics textbooks",
+              "Calculator",
+              "Computer for lesson planning",
+              "Online resources for interactive learning"
+          ],
+          "environment": "Mostly indoors in a classroom, with a structured schedule and interaction with students throughout the day."
+      },
+      "whatYouActuallyDo": [
+          "Plan and deliver engaging mathematics lessons.",
+          "Assess students' understanding and provide feedback.",
+          "Adapt teaching methods to meet different learning styles.",
+          "Help students with homework and exam preparation.",
+          "Communicate with parents about student progress.",
+          "Collaborate with other teachers on interdisciplinary projects.",
+          "Participate in professional development to improve teaching skills."
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys explaining complex ideas simply.",
+          "Patient and understanding with students.",
+          "Passionate about mathematics and teaching.",
+          "Good at managing a classroom environment.",
+          "Able to motivate and inspire young learners."
+      ],
+      "topSkills": [
+          "Strong understanding of mathematics concepts.",
+          "Ability to create clear lesson plans.",
+          "Skill in diagnosing student learning needs.",
+          "Patience in working with diverse learners.",
+          "Effective communication with students and parents.",
+          "Ability to use technology in teaching.",
+          "Classroom management skills."
+      ],
+      "entryPaths": [
+          "Complete a Master's in Mathematics followed by a PPU.",
+          "Pursue a Bachelor's degree in Mathematics and then a teaching qualification.",
+          "Consider a teaching apprenticeship programme.",
+          "Gain experience through volunteer tutoring or mentoring.",
+          "Look for positions in schools that offer training programmes."
+      ],
+      "realityCheck": "The first few years can involve a lot of preparation and classroom management, which can be overwhelming."
+  },
+  "medical-laboratory-technician": {
+      "typicalDay": {
+          "morning": [
+              "Prepare and set up laboratory equipment for tests",
+              "Receive and log samples from clinics and hospitals",
+              "Calibrate instruments to ensure accurate results"
+          ],
+          "midday": [
+              "Conduct tests on blood and tissue samples",
+              "Record and analyse test results",
+              "Clean and maintain laboratory workspaces"
+          ],
+          "afternoon": [
+              "Prepare reports of findings for doctors",
+              "Discuss results with colleagues or supervisors",
+              "Order supplies and manage inventory"
+          ],
+          "tools": [
+              "Microscopes",
+              "Centrifuges",
+              "Pipettes",
+              "Autoclaves",
+              "Computer software for data management"
+          ],
+          "environment": "Mostly indoors in a laboratory, with a focus on accuracy and attention to detail."
+      },
+      "whatYouActuallyDo": [
+          "Run tests on samples to check for diseases",
+          "Maintain and calibrate laboratory equipment",
+          "Ensure samples are handled and stored correctly",
+          "Document results and maintain accurate records",
+          "Work with other healthcare professionals to discuss findings"
+      ],
+      "whoThisIsGoodFor": [
+          "Detail-oriented and methodical",
+          "Enjoys working with scientific equipment",
+          "Good at problem-solving",
+          "Able to work independently and as part of a team"
+      ],
+      "topSkills": [
+          "Strong understanding of biology and chemistry",
+          "Precision in following protocols",
+          "Ability to operate laboratory instruments",
+          "Good documentation and record-keeping skills",
+          "Teamwork and communication skills"
+      ],
+      "entryPaths": [
+          "Bachelor's in Biomedical Laboratory Science (3 years)",
+          "Fagbrev in laboratory technology",
+          "Apprenticeships in healthcare settings",
+          "Relevant internships during studies"
+      ],
+      "realityCheck": "You spend a lot of time on repetitive tasks, which can be less exciting than it sounds."
   },
   "medical-secretary": {
       "typicalDay": {
@@ -9978,6 +13685,60 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "The job can be demanding physically and mentally, requiring strong discipline and resilience."
   },
+  "mission-control-specialist": {
+      "typicalDay": {
+          "morning": [
+              "Review telemetry data from overnight missions.",
+              "Attend a team briefing about the day's objectives.",
+              "Perform routine checks on communication systems."
+          ],
+          "midday": [
+              "Monitor the spacecraft's systems and performance.",
+              "Send commands to adjust the spacecraft's trajectory.",
+              "Document any anomalies or issues for review."
+          ],
+          "afternoon": [
+              "Participate in troubleshooting sessions for any problems.",
+              "Collaborate with engineers to discuss system updates.",
+              "Prepare reports on mission status and performance."
+          ],
+          "tools": [
+              "Telemetry software for monitoring spacecraft data.",
+              "Communication systems for sending commands.",
+              "Diagnostic tools for troubleshooting issues."
+          ],
+          "environment": "Mostly indoors in a control room, with a focus on monitoring and quick decision-making."
+      },
+      "whatYouActuallyDo": [
+          "Monitor spacecraft systems during live missions.",
+          "Send commands to the spacecraft based on mission needs.",
+          "Troubleshoot and resolve issues that arise during operations.",
+          "Collaborate with a team of engineers and specialists.",
+          "Document mission progress and any anomalies."
+      ],
+      "whoThisIsGoodFor": [
+          "Calm under pressure.",
+          "Good at problem-solving.",
+          "Enjoys working in a team.",
+          "Able to focus for long periods.",
+          "Willing to work irregular hours."
+      ],
+      "topSkills": [
+          "Understanding telemetry data.",
+          "Ability to follow detailed procedures.",
+          "Strong diagnostic thinking.",
+          "Effective communication skills.",
+          "Experience with shift work."
+      ],
+      "entryPaths": [
+          "Bachelor's or Master's degree in Aerospace or Engineering.",
+          "Complete an internship with a space agency or aerospace company.",
+          "Participate in relevant training programmes.",
+          "Consider a fagbrev in a related technical field.",
+          "Look for entry-level positions at organisations like NASA or ESA."
+      ],
+      "realityCheck": "The work can involve long hours and requires intense focus, especially during critical mission phases."
+  },
   "mission-specialist": {
       "typicalDay": {
           "morning": [
@@ -10189,6 +13950,115 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
           "Freelance projects to build experience and reputation."
       ],
       "realityCheck": "The job often involves long hours in front of a computer, and feedback can be subjective and challenging to navigate."
+  },
+  "motocross-rider": {
+      "typicalDay": {
+          "morning": [
+              "Wake up early and do a fitness training session.",
+              "Check and maintain your motocross bike.",
+              "Review the race schedule and plan for the day."
+          ],
+          "midday": [
+              "Practice riding on a dirt track.",
+              "Work on bike adjustments with your mechanic.",
+              "Take part in team meetings to discuss strategies."
+          ],
+          "afternoon": [
+              "Participate in timed practice runs.",
+              "Engage in mental training or visualization exercises.",
+              "Prepare gear and equipment for the next race."
+          ],
+          "tools": [
+              "Motocross bike",
+              "Protective gear (helmet, pads)",
+              "Tools for bike maintenance",
+              "Fitness tracking apps",
+              "Race timing equipment"
+          ],
+          "environment": "Mostly outdoors on dirt tracks, with a mix of training and competitive events."
+      },
+      "whatYouActuallyDo": [
+          "Train physically to stay fit for racing.",
+          "Practice riding techniques and improve skills.",
+          "Maintain and repair your motocross bike.",
+          "Develop race strategies and tactics.",
+          "Compete in races and push for the best times."
+      ],
+      "whoThisIsGoodFor": [
+          "Adventurous and thrill-seeking.",
+          "Physically fit and enjoys sports.",
+          "Able to handle pressure and stay focused.",
+          "Good at working with mechanics and tools."
+      ],
+      "topSkills": [
+          "High level of fitness and endurance.",
+          "Knowledge of motocross bike mechanics.",
+          "Ability to analyse race conditions quickly.",
+          "Strong mental resilience under pressure.",
+          "Effective communication with team members."
+      ],
+      "entryPaths": [
+          "Start in amateur motocross events.",
+          "Join a local motocross club for training.",
+          "Seek sponsorships to compete in national circuits.",
+          "Attend motocross schools or camps.",
+          "Network with other riders and teams for opportunities."
+      ],
+      "realityCheck": "The competition is tough, and success often relies on sponsorships and connections in the sport."
+  },
+  "mountaineering-guide": {
+      "typicalDay": {
+          "morning": [
+              "Check weather conditions and plan the day's route.",
+              "Prepare climbing gear and ensure all equipment is in good condition.",
+              "Brief the group on safety procedures and the day's objectives."
+          ],
+          "midday": [
+              "Lead the group up the mountain, ensuring everyone is safe and comfortable.",
+              "Teach climbing techniques and glacier travel skills.",
+              "Take breaks for food and hydration while monitoring the group's energy levels."
+          ],
+          "afternoon": [
+              "Continue the ascent or begin the descent, depending on the day's goals.",
+              "Provide support and encouragement to climbers who may be struggling.",
+              "Review the day’s progress and discuss plans for the next day."
+          ],
+          "tools": [
+              "Climbing ropes and harnesses",
+              "Ice axes and crampons",
+              "GPS and navigation tools",
+              "First aid kit",
+              "Communication devices"
+          ],
+          "environment": "Mostly outdoors in rugged mountain terrain, with a focus on teamwork and safety."
+      },
+      "whatYouActuallyDo": [
+          "Lead groups on climbs while ensuring their safety.",
+          "Teach climbing techniques and mountain skills.",
+          "Assess weather and terrain conditions regularly.",
+          "Provide first aid when necessary.",
+          "Plan and prepare for expeditions, including logistics."
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys physical challenges and outdoor activities.",
+          "Good at problem-solving in unpredictable situations.",
+          "Comfortable leading and motivating others.",
+          "Has a strong sense of responsibility for others' safety."
+      ],
+      "topSkills": [
+          "Expertise in mountaineering techniques.",
+          "Knowledge of glacier travel and safety.",
+          "Strong navigation skills using maps and GPS.",
+          "Ability to lead and manage a group effectively.",
+          "First aid and emergency response skills."
+      ],
+      "entryPaths": [
+          "Obtain IFMGA / UIAGM certification through training programmes.",
+          "Gain experience by working as an assistant guide on expeditions.",
+          "Complete relevant vocational training in outdoor leadership.",
+          "Participate in internships with established guiding companies."
+      ],
+      "realityCheck": "You spend a lot of time preparing and managing logistics, not just climbing."
   },
   "music-content-creator": {
       "typicalDay": {
@@ -11280,6 +15150,56 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "Building a client base can take time and requires consistent marketing efforts."
   },
+  "online-instructor": {
+      "typicalDay": {
+          "morning": [
+              "Plan lessons and create course materials.",
+              "Record video lectures or tutorials.",
+              "Check student messages and respond to queries."
+          ],
+          "midday": [
+              "Grade assignments and provide feedback.",
+              "Engage with students in discussion forums.",
+              "Update course content based on feedback."
+          ],
+          "afternoon": [
+              "Research new teaching methods and tools.",
+              "Attend online workshops or webinars for professional development.",
+              "Collaborate with other instructors on course improvements."
+          ],
+          "tools": [
+              "Video editing software (e.g., Camtasia, Adobe Premiere)",
+              "Learning management systems (e.g., Moodle, Canvas)",
+              "Communication tools (e.g., Zoom, Slack)"
+          ],
+          "environment": "Mostly working from home, with a flexible schedule and a focus on digital communication."
+      },
+      "whatYouActuallyDo": [
+          "Create engaging online courses in your subject area.",
+          "Record and edit video lectures for students.",
+          "Interact with learners through forums and live sessions.",
+          "Assess student work and provide constructive feedback.",
+          "Stay updated on trends in online education and technology."
+      ],
+      "whoThisIsGoodFor": [
+          "Self-motivated and organised individuals.",
+          "Comfortable with technology and online tools.",
+          "Enjoys helping others learn and grow."
+      ],
+      "topSkills": [
+          "Strong knowledge of the subject you teach.",
+          "Ability to create engaging video content.",
+          "Effective communication skills for online interaction.",
+          "Time management to balance course creation and student support.",
+          "Adaptability to new teaching methods and technologies."
+      ],
+      "entryPaths": [
+          "Gain subject expertise through a relevant degree or experience.",
+          "Complete online teaching courses or certifications.",
+          "Build a portfolio of online courses to showcase your skills."
+      ],
+      "realityCheck": "You spend a lot of time creating content and engaging with students, which can feel isolating at times."
+  },
   "online-personality": {
       "typicalDay": {
           "morning": [
@@ -11495,6 +15415,56 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "The job can be stressful, especially during volatile market conditions, and requires a strong focus on detail."
   },
+  "optometrist": {
+      "typicalDay": {
+          "morning": [
+              "Check and prepare equipment for vision tests.",
+              "Consult with patients about their eye health.",
+              "Perform vision tests on patients."
+          ],
+          "midday": [
+              "Analyse test results and discuss findings with patients.",
+              "Prescribe glasses or contact lenses based on test results.",
+              "Update patient records with test results and prescriptions."
+          ],
+          "afternoon": [
+              "Conduct follow-up appointments with patients.",
+              "Educate patients on eye care and proper lens use.",
+              "Maintain and clean optical equipment."
+          ],
+          "tools": [
+              "Phoropter for vision testing.",
+              "Ophthalmoscope for eye examinations.",
+              "Computer software for patient records."
+          ],
+          "environment": "Mostly indoors in a clinical setting, with a mix of patient consultations and administrative tasks."
+      },
+      "whatYouActuallyDo": [
+          "Test patients' vision using various equipment.",
+          "Identify eye diseases and conditions.",
+          "Prescribe corrective lenses for vision problems.",
+          "Provide advice on eye health and care.",
+          "Keep detailed records of patient examinations and treatments."
+      ],
+      "whoThisIsGoodFor": [
+          "Detail-oriented and precise.",
+          "Enjoys helping others with health issues.",
+          "Good at communicating complex information simply."
+      ],
+      "topSkills": [
+          "Strong clinical judgement to assess eye health.",
+          "Ability to use vision testing equipment accurately.",
+          "Good communication skills for patient interaction.",
+          "Attention to detail when recording results.",
+          "Knowledge of eye care products and services."
+      ],
+      "entryPaths": [
+          "Complete a Bachelor's degree in Optometry.",
+          "Apply for a licensing exam after graduation.",
+          "Consider internships or apprenticeships in optical clinics."
+      ],
+      "realityCheck": "You spend a lot of time on detailed tests and paperwork, which can be less exciting than expected."
+  },
   "oral-maxillofacial-surgeon": {
       "typicalDay": {
           "morning": [
@@ -11550,6 +15520,61 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
           "Consider additional certifications in surgical techniques."
       ],
       "realityCheck": "The training path is long and requires years of education and hands-on experience before you can operate independently."
+  },
+  "orbital-analyst": {
+      "typicalDay": {
+          "morning": [
+              "Check satellite positions and status updates.",
+              "Run simulations to predict satellite trajectories.",
+              "Attend a team meeting to discuss ongoing projects."
+          ],
+          "midday": [
+              "Analyse data from recent satellite manoeuvres.",
+              "Adjust models based on new information.",
+              "Create visualisations to explain trajectory changes."
+          ],
+          "afternoon": [
+              "Collaborate with engineers on collision avoidance strategies.",
+              "Document findings and update reports.",
+              "Prepare presentations for stakeholders."
+          ],
+          "tools": [
+              "Python for scripting and analysis.",
+              "Software like MATLAB for modelling.",
+              "Data visualisation tools like Tableau."
+          ],
+          "environment": "Mostly indoors in an office setting, working at a computer with a focus on teamwork and problem-solving."
+      },
+      "whatYouActuallyDo": [
+          "Model satellite paths to predict their movements.",
+          "Plan manoeuvres to avoid potential collisions.",
+          "Use data analysis to improve predictions.",
+          "Communicate findings to engineers and project managers.",
+          "Update simulation software with new data.",
+          "Monitor satellite performance during operations."
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys solving complex problems.",
+          "Has a strong interest in space and technology.",
+          "Good at working with numbers and data.",
+          "Comfortable using programming languages.",
+          "Likes collaborating with others on technical projects."
+      ],
+      "topSkills": [
+          "Understanding of orbital mechanics.",
+          "Proficiency in Python programming.",
+          "Strong analytical skills for data interpretation.",
+          "Ability to model and simulate complex systems.",
+          "Good communication skills for sharing results."
+      ],
+      "entryPaths": [
+          "Complete a Master's in Aerospace Engineering or Physics.",
+          "Pursue internships with space agencies or aerospace companies.",
+          "Look for apprenticeships in related fields.",
+          "Engage in projects or competitions related to satellite technology.",
+          "Consider relevant courses in mathematics and programming during videregående."
+      ],
+      "realityCheck": "The work can involve long hours of data analysis and may not always feel exciting, especially when dealing with technical details."
   },
   "orchestra-member": {
       "typicalDay": {
@@ -11761,6 +15786,58 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "The job can involve long hours outdoors in all weather conditions, which can be physically demanding."
   },
+  "outdoor-survival-instructor": {
+      "typicalDay": {
+          "morning": [
+              "Set up the camp and prepare equipment for the day's activities.",
+              "Brief students on safety and the day's survival skills topics.",
+              "Demonstrate how to build a shelter using natural materials."
+          ],
+          "midday": [
+              "Lead a group in a navigation exercise using a map and compass.",
+              "Teach students how to start a fire without matches.",
+              "Conduct a foraging session, identifying edible plants."
+          ],
+          "afternoon": [
+              "Practice wilderness first aid scenarios with the group.",
+              "Review the day's lessons and answer any questions.",
+              "Pack up the camp and ensure all equipment is accounted for."
+          ],
+          "tools": [
+              "Map and compass",
+              "First aid kit",
+              "Fire-starting tools",
+              "Camping equipment",
+              "Foraging guidebooks"
+          ],
+          "environment": "Mostly outdoors in various weather conditions, with a focus on hands-on learning and teamwork."
+      },
+      "whatYouActuallyDo": [
+          "Teach students how to survive in the wilderness.",
+          "Demonstrate practical skills like building shelters and starting fires.",
+          "Guide students through navigation exercises.",
+          "Lead foraging sessions to identify safe plants.",
+          "Provide first aid training and respond to emergencies."
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys being outdoors and in nature.",
+          "Good at teaching and explaining things.",
+          "Calm and collected in stressful situations."
+      ],
+      "topSkills": [
+          "Wilderness survival skills",
+          "Effective communication",
+          "First aid knowledge",
+          "Navigation skills",
+          "Ability to work in a team"
+      ],
+      "entryPaths": [
+          "Complete a wilderness/survival instructor certification.",
+          "Gain experience through outdoor education programmes.",
+          "Look for apprenticeships with outdoor adventure companies."
+      ],
+      "realityCheck": "The job can be physically demanding, and you must be prepared for all kinds of weather."
+  },
   "outreach-worker": {
       "typicalDay": {
           "morning": [
@@ -11926,6 +16003,56 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "The job can be physically demanding and requires a lot of preparation work before you get to the fun part of painting."
   },
+  "paragliding-instructor": {
+      "typicalDay": {
+          "morning": [
+              "Check weather conditions and plan the day's lessons.",
+              "Prepare equipment and ensure everything is in working order.",
+              "Meet students and discuss their goals for the day."
+          ],
+          "midday": [
+              "Conduct ground school sessions on safety and techniques.",
+              "Assist students with setting up their gear.",
+              "Lead students on their first flights or practice sessions."
+          ],
+          "afternoon": [
+              "Monitor students during flights and provide in-air instructions.",
+              "Debrief students after flights, discussing what went well and what to improve.",
+              "Pack up equipment and prepare for the next day."
+          ],
+          "tools": [
+              "Paragliding gear (wing, harness, helmet)",
+              "Radio communication devices",
+              "Weather apps and tools"
+          ],
+          "environment": "Mostly outdoors on launch sites and landing zones, with a mix of teaching and hands-on flying."
+      },
+      "whatYouActuallyDo": [
+          "Teach students how to set up and fly a paraglider.",
+          "Ensure students understand safety procedures and risk management.",
+          "Evaluate students' flying skills and provide feedback.",
+          "Help students improve their techniques, like thermalling.",
+          "Stay updated on weather conditions that affect flying."
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys being outdoors and in nature.",
+          "Patient and encouraging when teaching others.",
+          "Comfortable making decisions in changing conditions."
+      ],
+      "topSkills": [
+          "Strong paragliding skills and knowledge of techniques.",
+          "Ability to read and interpret weather patterns.",
+          "Effective communication and teaching skills.",
+          "Risk management and safety awareness.",
+          "Patience and adaptability with students."
+      ],
+      "entryPaths": [
+          "Obtain a paragliding instructor certification from a recognised body.",
+          "Accumulate over 500 hours of flight time.",
+          "Participate in paragliding courses and workshops."
+      ],
+      "realityCheck": "The job can involve long hours outdoors in various weather conditions, which can be tiring."
+  },
   "park-ranger": {
       "typicalDay": {
           "morning": [
@@ -11981,6 +16108,56 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
           "Look for apprenticeships in related fields like park management."
       ],
       "realityCheck": "You spend a lot of time outdoors in all weather, which can be tough and tiring."
+  },
+  "parkour-athlete": {
+      "typicalDay": {
+          "morning": [
+              "Wake up and do a warm-up routine to prepare for training.",
+              "Practice basic movements like rolls and vaults at a local park.",
+              "Film some of the training sessions for social media content."
+          ],
+          "midday": [
+              "Have a healthy lunch to refuel energy.",
+              "Attend a coaching clinic or workshop to learn new techniques.",
+              "Do strength and conditioning exercises at the gym."
+          ],
+          "afternoon": [
+              "Train with other athletes to practice tricks and stunts.",
+              "Review and edit videos from earlier sessions.",
+              "Plan and brainstorm ideas for future content or performances."
+          ],
+          "tools": [
+              "Camera for filming content.",
+              "Gym equipment like weights and mats.",
+              "Parkour-specific gear like shoes and protective equipment."
+          ],
+          "environment": "Mostly outdoors in parks and urban areas, with a mix of training and filming."
+      },
+      "whatYouActuallyDo": [
+          "Train daily to improve your skills and fitness.",
+          "Perform at competitions or events.",
+          "Create and edit videos for social media.",
+          "Collaborate with other athletes and coaches.",
+          "Stay updated on parkour trends and techniques."
+      ],
+      "whoThisIsGoodFor": [
+          "Very physically active and fit.",
+          "Creative and enjoys expressing themselves through movement.",
+          "Self-motivated and able to work independently."
+      ],
+      "topSkills": [
+          "Advanced movement techniques and body control.",
+          "Ability to film and edit videos.",
+          "Strong physical fitness and stamina.",
+          "Creativity in developing new tricks and routines.",
+          "Good communication skills for working with others."
+      ],
+      "entryPaths": [
+          "Self-trained through practice and online resources.",
+          "Attend coaching clinics or workshops.",
+          "Join a local parkour community or group."
+      ],
+      "realityCheck": "The journey can be tough, with many injuries and setbacks along the way."
   },
   "pastry-chef": {
       "typicalDay": {
@@ -12138,6 +16315,56 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
           "Network with professionals in the aerospace industry."
       ],
       "realityCheck": "The role requires extensive training and preparation, often with long hours and high stress during missions."
+  },
+  "pe-teacher": {
+      "typicalDay": {
+          "morning": [
+              "Prepare lesson plans for the day's classes.",
+              "Set up equipment for sports activities.",
+              "Take attendance for each class."
+          ],
+          "midday": [
+              "Teach physical education classes focusing on different sports.",
+              "Supervise students during lunch breaks.",
+              "Meet with colleagues to discuss student progress."
+          ],
+          "afternoon": [
+              "Coach a school sports team during practice.",
+              "Provide feedback and encouragement to students.",
+              "Clean up equipment and organise the gym."
+          ],
+          "tools": [
+              "Sports equipment (balls, nets, etc.)",
+              "Fitness tracking apps",
+              "First aid kit"
+          ],
+          "environment": "Mostly indoors in a gymnasium or sports hall, with time spent outdoors for activities and matches."
+      },
+      "whatYouActuallyDo": [
+          "Plan and deliver physical education lessons.",
+          "Teach students the rules and techniques of various sports.",
+          "Assess student performance and provide feedback.",
+          "Organise and supervise sports events and competitions.",
+          "Encourage teamwork and sportsmanship among students."
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys being active and promoting fitness.",
+          "Good at motivating and inspiring others.",
+          "Comfortable working with children and teenagers."
+      ],
+      "topSkills": [
+          "Strong knowledge of sports and fitness.",
+          "Ability to teach and explain movements clearly.",
+          "Good communication skills for interacting with students.",
+          "First aid skills for handling injuries.",
+          "Organisational skills for planning events."
+      ],
+      "entryPaths": [
+          "Complete a bachelor's degree in Sport Science or Physical Education.",
+          "Pursue a Postgraduate Certificate in Education (PPU).",
+          "Consider an apprenticeship or internship in a school setting."
+      ],
+      "realityCheck": "You spend a lot of time managing behaviour and keeping students engaged, not just teaching sports."
   },
   "performance-analyst": {
       "typicalDay": {
@@ -12468,6 +16695,176 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "You often have to work long hours and adapt quickly to changing situations, which can be challenging."
   },
+  "physical-therapist": {
+      "typicalDay": {
+          "morning": [
+              "Review patient files and treatment plans",
+              "Prepare treatment area and equipment",
+              "Meet with the first patient for assessment"
+          ],
+          "midday": [
+              "Conduct therapy sessions with patients",
+              "Document patient progress in files",
+              "Attend a team meeting to discuss cases"
+          ],
+          "afternoon": [
+              "Continue therapy sessions with afternoon patients",
+              "Update treatment plans based on progress",
+              "Clean and organise the therapy space"
+          ],
+          "tools": [
+              "Therapy tables",
+              "Resistance bands",
+              "Ultrasound machines",
+              "Exercise mats",
+              "Computer for documentation"
+          ],
+          "environment": "Mostly indoors in a clinic, with a mix of patient interaction and administrative work."
+      },
+      "whatYouActuallyDo": [
+          "Help patients regain movement after injuries or surgeries.",
+          "Create exercise plans tailored to individual needs.",
+          "Use hands-on techniques to relieve pain and improve function.",
+          "Teach patients how to perform exercises correctly.",
+          "Monitor and record patients' progress over time.",
+          "Communicate with doctors and other healthcare professionals.",
+          "Educate patients about their conditions and recovery."
+      ],
+      "whoThisIsGoodFor": [
+          "Empathetic and caring towards others.",
+          "Enjoys helping people improve their health.",
+          "Good at explaining things in simple terms.",
+          "Patient and willing to work at a slow pace.",
+          "Comfortable working closely with different types of people."
+      ],
+      "topSkills": [
+          "Manual therapy techniques",
+          "Exercise prescription knowledge",
+          "Understanding of human anatomy",
+          "Strong communication skills",
+          "Ability to motivate and encourage patients",
+          "Problem-solving skills for treatment planning",
+          "Attention to detail in patient assessments"
+      ],
+      "entryPaths": [
+          "Complete a Bachelor's degree in Physiotherapy.",
+          "Apply for a vocational programme related to health care.",
+          "Gain experience through internships or volunteering in clinics.",
+          "Consider further certifications in specialised therapy areas.",
+          "Look for apprenticeships in health care settings."
+      ],
+      "realityCheck": "The job can be physically demanding, and you may deal with patients who are frustrated or in pain."
+  },
+  "physician-assistant": {
+      "typicalDay": {
+          "morning": [
+              "Review patient charts and prepare for the day's appointments.",
+              "Assist in morning rounds with the supervising doctor.",
+              "Conduct initial assessments for new patients."
+          ],
+          "midday": [
+              "Perform minor procedures like stitches or injections.",
+              "Document patient progress in their medical records.",
+              "Consult with nurses about patient care plans."
+          ],
+          "afternoon": [
+              "Follow up with patients on their treatment plans.",
+              "Order lab tests or imaging as needed.",
+              "Attend a team meeting to discuss patient cases."
+          ],
+          "tools": [
+              "Electronic health records (EHR) software",
+              "Stethoscope",
+              "Syringes and needles",
+              "Medical imaging equipment",
+              "Diagnostic tools like blood pressure monitors"
+          ],
+          "environment": "Mostly indoors in a healthcare facility, working closely with doctors and other healthcare staff."
+      },
+      "whatYouActuallyDo": [
+          "Take patient histories and perform physical exams.",
+          "Diagnose common illnesses and injuries.",
+          "Prescribe medications under a doctor's supervision.",
+          "Educate patients about their health conditions.",
+          "Assist in surgeries or other medical procedures.",
+          "Manage follow-up care and patient referrals.",
+          "Collaborate with other healthcare professionals."
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys working in a team.",
+          "Has strong communication skills.",
+          "Is detail-oriented and organised.",
+          "Can handle stressful situations calmly.",
+          "Cares about helping others."
+      ],
+      "topSkills": [
+          "Clinical assessment skills",
+          "Ability to diagnose conditions",
+          "Effective communication with patients",
+          "Teamwork in a healthcare setting",
+          "Accurate documentation of patient care",
+          "Time management for multiple patients",
+          "Basic surgical skills"
+      ],
+      "entryPaths": [
+          "Complete a bachelor's degree in a health-related field.",
+          "Apply for a Master's in Physician Assistant studies.",
+          "Consider volunteering or internships in healthcare settings.",
+          "Look for apprenticeships in medical clinics.",
+          "Check for job openings in hospitals or clinics that hire assistants."
+      ],
+      "realityCheck": "The workload can be heavy, and you may face difficult patient situations regularly."
+  },
+  "physics-teacher": {
+      "typicalDay": {
+          "morning": [
+              "Prepare lesson plans and materials for the day's classes.",
+              "Set up experiments or demonstrations for the students.",
+              "Check student assignments and provide feedback."
+          ],
+          "midday": [
+              "Teach physics classes, explaining concepts and answering questions.",
+              "Monitor student engagement and understanding during lessons.",
+              "Meet with colleagues to discuss curriculum and student progress."
+          ],
+          "afternoon": [
+              "Grade tests and assignments to assess student performance.",
+              "Hold office hours for students needing extra help.",
+              "Attend staff meetings or professional development sessions."
+          ],
+          "tools": [
+              "Whiteboard and markers for teaching.",
+              "Laboratory equipment for experiments.",
+              "Computer for preparing lessons and grading."
+          ],
+          "environment": "Mostly indoors in a classroom and lab setting, with a mix of teaching and hands-on activities."
+      },
+      "whatYouActuallyDo": [
+          "Plan lessons that cover various physics topics.",
+          "Explain complex ideas in simple terms.",
+          "Conduct experiments to demonstrate physics principles.",
+          "Assess student understanding through tests and quizzes.",
+          "Support students in preparing for university-level physics."
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys explaining difficult concepts clearly.",
+          "Has a strong interest in science and mathematics.",
+          "Likes working with young people and helping them learn."
+      ],
+      "topSkills": [
+          "Strong knowledge of physics and mathematics.",
+          "Ability to design engaging experiments.",
+          "Clear communication skills for teaching.",
+          "Patience when working with students.",
+          "Organisational skills for managing lesson plans and grading."
+      ],
+      "entryPaths": [
+          "Complete a Master's in Physics followed by a PPU (Praktisk-Pedagogisk Utdanning).",
+          "Consider teaching assistant roles during university.",
+          "Look for internships in educational settings."
+      ],
+      "realityCheck": "You will spend a lot of time grading and preparing, which can take away from actual teaching."
+  },
   "plastic-surgeon": {
       "typicalDay": {
           "morning": [
@@ -12682,6 +17079,60 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "You often spend long hours in front of a computer, and the work can be repetitive and detail-focused."
   },
+  "preschool-teacher": {
+      "typicalDay": {
+          "morning": [
+              "Set up play areas with toys and activities.",
+              "Welcome children and help them settle in.",
+              "Plan and lead a morning circle with songs and stories."
+          ],
+          "midday": [
+              "Supervise outdoor play and ensure safety.",
+              "Prepare and serve lunch to the children.",
+              "Engage in arts and crafts activities with small groups."
+          ],
+          "afternoon": [
+              "Read stories to the children during quiet time.",
+              "Organise a group game or activity.",
+              "Clean up the classroom and prepare for the next day."
+          ],
+          "tools": [
+              "Educational toys and games",
+              "Art supplies like paper and paint",
+              "Basic kitchen equipment for snacks",
+              "Storybooks",
+              "Outdoor play equipment"
+          ],
+          "environment": "Mostly indoors in a bright, colourful classroom, with lots of movement and noise from the children."
+      },
+      "whatYouActuallyDo": [
+          "Plan fun activities that help children learn through play.",
+          "Teach basic skills like counting and sharing.",
+          "Support children's emotional and social development.",
+          "Communicate with parents about their child's progress.",
+          "Keep a safe and clean environment for the children."
+      ],
+      "whoThisIsGoodFor": [
+          "Loves being around young children.",
+          "Patient and understanding.",
+          "Creative and enjoys making activities fun.",
+          "Good at communicating with both kids and adults."
+      ],
+      "topSkills": [
+          "Understanding child development stages.",
+          "Creating engaging lesson plans.",
+          "Managing a classroom full of energetic children.",
+          "Building relationships with parents.",
+          "Observing and assessing children's progress."
+      ],
+      "entryPaths": [
+          "Complete a Bachelor's in Early Childhood Education.",
+          "Consider a vocational programme in childcare.",
+          "Look for apprenticeships in kindergartens.",
+          "Gain experience through volunteering at preschools."
+      ],
+      "realityCheck": "You will spend a lot of time managing behaviour and keeping children engaged, which can be tiring."
+  },
   "private-music-tutor": {
       "typicalDay": {
           "morning": [
@@ -12733,6 +17184,58 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
           "Gain experience by volunteering or teaching at local schools."
       ],
       "realityCheck": "Building a steady stream of students can take time, especially when starting out."
+  },
+  "private-tutor": {
+      "typicalDay": {
+          "morning": [
+              "Prepare lesson plans based on student needs.",
+              "Review previous lessons and make notes.",
+              "Set up online tools or materials for the session."
+          ],
+          "midday": [
+              "Conduct one-on-one tutoring sessions with students.",
+              "Provide feedback and encouragement during sessions.",
+              "Adjust teaching methods based on student progress."
+          ],
+          "afternoon": [
+              "Assess student homework and provide corrections.",
+              "Communicate with parents about student progress.",
+              "Plan future lessons based on student goals."
+          ],
+          "tools": [
+              "Laptop or tablet for online tutoring.",
+              "Whiteboard or paper for writing notes.",
+              "Educational software or apps for practice."
+          ],
+          "environment": "Mostly working from home or online, with a flexible schedule that depends on student availability."
+      },
+      "whatYouActuallyDo": [
+          "Help students understand difficult concepts in a specific subject.",
+          "Create personalised lesson plans based on student needs.",
+          "Track student progress and adjust teaching methods.",
+          "Provide practice exercises to reinforce learning.",
+          "Communicate regularly with parents about student performance."
+      ],
+      "whoThisIsGoodFor": [
+          "Patient and understanding when explaining concepts.",
+          "Good at breaking down complex topics into simpler parts.",
+          "Enjoys working one-on-one with students.",
+          "Flexible and able to adapt to different learning styles."
+      ],
+      "topSkills": [
+          "Strong knowledge in the subject you are tutoring.",
+          "Ability to explain concepts clearly.",
+          "Patience when working through challenges.",
+          "Reliability in keeping scheduled sessions.",
+          "Good organisational skills for planning lessons."
+      ],
+      "entryPaths": [
+          "Become a private tutor through subject expertise, often as a university student.",
+          "Consider tutoring platforms that connect you with students.",
+          "Gain experience by volunteering as a tutor in schools.",
+          "Use social media to advertise your tutoring services."
+      ],
+      "realityCheck": "Finding students can be challenging at first, and it may take time to build a steady client base."
   },
   "probation-officer": {
       "typicalDay": {
@@ -12892,6 +17395,58 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "The path to becoming a professional athlete is long and requires consistent hard work, often with setbacks and injuries along the way."
   },
+  "professor": {
+      "typicalDay": {
+          "morning": [
+              "Prepare lectures or seminars for students.",
+              "Meet with research students to discuss their projects.",
+              "Review and respond to emails from colleagues and students."
+          ],
+          "midday": [
+              "Teach a class or lead a seminar.",
+              "Attend departmental meetings to discuss research and teaching.",
+              "Work on grant applications or research proposals."
+          ],
+          "afternoon": [
+              "Conduct research or write academic papers.",
+              "Supervise PhD students or postdocs in their work.",
+              "Meet with collaborators to discuss joint research projects."
+          ],
+          "tools": [
+              "Academic journals for research.",
+              "Presentation software for lectures.",
+              "Data analysis software for research."
+          ],
+          "environment": "Mostly indoors at a university campus, with a mix of teaching, research, and administrative tasks."
+      },
+      "whatYouActuallyDo": [
+          "Teach university courses in your subject area.",
+          "Conduct original research and publish findings.",
+          "Supervise master's and PhD students.",
+          "Apply for research funding through grants.",
+          "Participate in academic committees and governance."
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys in-depth study and research.",
+          "Good at explaining complex ideas simply.",
+          "Organised and able to manage multiple projects."
+      ],
+      "topSkills": [
+          "Deep knowledge in a specific academic field.",
+          "Ability to write clear and persuasive grant proposals.",
+          "Strong communication skills for teaching.",
+          "Leadership skills to guide students and junior staff.",
+          "Critical thinking for research and problem-solving."
+      ],
+      "entryPaths": [
+          "Complete a PhD in your chosen field.",
+          "Gain experience as a postdoctoral researcher.",
+          "Publish research in academic journals.",
+          "Apply for teaching positions at universities.",
+          "Network with academics in your field."
+      ],
+      "realityCheck": "The path to becoming a professor is long and involves years of study and research before you can secure a permanent position."
+  },
   "programme-manager": {
       "typicalDay": {
           "morning": [
@@ -12947,6 +17502,122 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
           "Consider working for companies known for project management training."
       ],
       "realityCheck": "You often deal with unexpected problems and may need to adjust plans frequently."
+  },
+  "prompt-engineer": {
+      "typicalDay": {
+          "morning": [
+              "Review user feedback on AI interactions",
+              "Draft new prompts for different scenarios",
+              "Attend a team meeting to discuss project updates"
+          ],
+          "midday": [
+              "Test prompts with the AI and evaluate responses",
+              "Collaborate with designers on user experience",
+              "Research best practices in AI communication"
+          ],
+          "afternoon": [
+              "Refine prompts based on testing results",
+              "Document findings and share with the team",
+              "Plan future experiments to improve AI interactions"
+          ],
+          "tools": [
+              "Text editors for writing prompts",
+              "AI platforms for testing interactions",
+              "Collaboration software for team communication"
+          ],
+          "environment": "Mostly indoors at a tech office, working at a desk with a mix of individual and team tasks."
+      },
+      "whatYouActuallyDo": [
+          "Create instructions for AI to understand user requests.",
+          "Test how well the AI responds to different prompts.",
+          "Work with teams to improve how users interact with AI.",
+          "Gather and analyse feedback from users about AI responses.",
+          "Experiment with new ways to phrase questions for the AI."
+      ],
+      "whoThisIsGoodFor": [
+          "Creative thinkers who enjoy problem-solving.",
+          "Detail-oriented individuals who like writing.",
+          "People who are curious about technology and AI."
+      ],
+      "topSkills": [
+          "Strong writing skills for clear instructions.",
+          "Ability to evaluate AI responses critically.",
+          "Creativity in designing engaging prompts.",
+          "Technical understanding of AI and language models.",
+          "Experimentation skills to test new ideas."
+      ],
+      "entryPaths": [
+          "Bachelor's degree in Computer Science or Linguistics.",
+          "Self-taught portfolio showcasing prompt engineering.",
+          "Internships or entry-level roles in tech companies."
+      ],
+      "realityCheck": "You will spend a lot of time testing and refining prompts, which can be repetitive."
+  },
+  "proofreader": {
+      "typicalDay": {
+          "morning": [
+              "Check emails for new projects or deadlines.",
+              "Read through a document to get a sense of its content.",
+              "Mark any obvious errors or issues.",
+              "Take notes on areas needing more attention.",
+              "Update your task list for the day."
+          ],
+          "midday": [
+              "Focus on proofreading a specific document.",
+              "Check for typos and grammatical errors.",
+              "Ensure formatting is consistent throughout the text.",
+              "Refer to style guides as needed.",
+              "Discuss any major changes with the writer or editor."
+          ],
+          "afternoon": [
+              "Make final adjustments to the document.",
+              "Prepare the document for submission or publication.",
+              "Review any feedback received on previous work.",
+              "Organise your workspace and files.",
+              "Plan for the next day's tasks."
+          ],
+          "tools": [
+              "Word processing software (like Microsoft Word or Google Docs)",
+              "Style guides (like APA or Chicago Manual of Style)",
+              "Spell check and grammar tools (like Grammarly)",
+              "Note-taking apps or tools",
+              "Project management software (like Trello or Asana)"
+          ],
+          "environment": "Mostly indoors in a quiet office or home office, with a focus on individual work and occasional meetings."
+      },
+      "whatYouActuallyDo": [
+          "Read texts carefully to find mistakes.",
+          "Check for correct grammar and punctuation.",
+          "Ensure the text follows specific style guidelines.",
+          "Make notes on areas that need clarification.",
+          "Communicate with writers to resolve issues.",
+          "Edit formatting to meet publication standards.",
+          "Submit the final version of documents."
+      ],
+      "whoThisIsGoodFor": [
+          "Detail-oriented and careful.",
+          "Enjoys reading and writing.",
+          "Patient and persistent in finding errors.",
+          "Good at following rules and guidelines.",
+          "Works well alone and manages time effectively."
+      ],
+      "topSkills": [
+          "Strong command of grammar and punctuation.",
+          "Ability to spot inconsistencies in texts.",
+          "Familiarity with various style guides.",
+          "Effective communication skills for discussing changes.",
+          "Organisational skills to manage multiple projects.",
+          "Patience to review lengthy documents thoroughly.",
+          "Proficiency in using word processing software."
+      ],
+      "entryPaths": [
+          "Complete a Bachelor's degree in Language, Literature, or Journalism.",
+          "Obtain a proofreading certification.",
+          "Gain experience through internships or freelance work.",
+          "Consider vocational programmes in editing or writing.",
+          "Look for entry-level positions at publishing companies."
+      ],
+      "realityCheck": "You often spend long hours focused on small details, which can be tiring and repetitive."
   },
   "property-administrator": {
       "typicalDay": {
@@ -13333,6 +18004,57 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "You spend a lot of time travelling to different properties, which can be tiring and unpredictable."
   },
+  "propulsion-engineer": {
+      "typicalDay": {
+          "morning": [
+              "Review design specifications for current projects",
+              "Attend team meetings to discuss project progress",
+              "Conduct simulations using software tools"
+          ],
+          "midday": [
+              "Collaborate with colleagues on engine design improvements",
+              "Perform calculations related to propulsion systems",
+              "Test components in the lab or simulation environment"
+          ],
+          "afternoon": [
+              "Document findings and update project reports",
+              "Research new propulsion technologies and methods",
+              "Prepare presentations for project updates"
+          ],
+          "tools": [
+              "CFD software for simulations",
+              "Testing equipment for engines",
+              "Design software like CAD"
+          ],
+          "environment": "Mostly indoors in an engineering office or lab, with a mix of teamwork and individual tasks."
+      },
+      "whatYouActuallyDo": [
+          "Design and develop engines for aircraft and spacecraft.",
+          "Run simulations to test how engines perform under different conditions.",
+          "Work with a team to solve problems in engine design.",
+          "Test prototypes to ensure they work as intended.",
+          "Keep up with new technologies in propulsion systems."
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys problem-solving and critical thinking.",
+          "Has a strong interest in physics and engineering.",
+          "Likes working on complex projects with a team."
+      ],
+      "topSkills": [
+          "Understanding of thermodynamics and fluid dynamics.",
+          "Ability to use design and simulation software.",
+          "Strong analytical skills for testing and troubleshooting.",
+          "Good communication for collaborating with team members.",
+          "Attention to detail in design and testing processes."
+      ],
+      "entryPaths": [
+          "Complete a Master's in Aerospace or Mechanical Engineering.",
+          "Gain experience through internships in aerospace companies.",
+          "Consider a bachelor's degree followed by a relevant master's programme.",
+          "Look for apprenticeships in engineering firms focusing on propulsion."
+      ],
+      "realityCheck": "The work can involve long hours in front of a computer, with a lot of detailed calculations and testing."
+  },
   "prosecutor": {
       "typicalDay": {
           "morning": [
@@ -13553,6 +18275,58 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "You often spend a lot of time on paperwork and data analysis, which can feel tedious."
   },
+  "quality-assurance-engineer": {
+      "typicalDay": {
+          "morning": [
+              "Review product specifications and requirements.",
+              "Develop test plans for upcoming products.",
+              "Attend a team meeting to discuss project updates."
+          ],
+          "midday": [
+              "Conduct tests on products to find defects.",
+              "Document test results and findings.",
+              "Communicate with suppliers about quality issues."
+          ],
+          "afternoon": [
+              "Analyse test data to identify trends.",
+              "Prepare reports on quality metrics.",
+              "Meet with the engineering team to suggest improvements."
+          ],
+          "tools": [
+              "Test management software",
+              "Quality auditing tools",
+              "Documentation software",
+              "Data analysis tools"
+          ],
+          "environment": "Mostly indoors in an office, with a mix of team collaboration and independent work."
+      },
+      "whatYouActuallyDo": [
+          "Create detailed test plans for products.",
+          "Run tests to check for defects in products.",
+          "Write reports on quality issues and test results.",
+          "Work with suppliers to ensure they meet quality standards.",
+          "Help solve problems by finding the root cause of defects."
+      ],
+      "whoThisIsGoodFor": [
+          "Detail-oriented and methodical.",
+          "Enjoys solving problems.",
+          "Good at working with numbers and data."
+      ],
+      "topSkills": [
+          "Attention to detail when reviewing products.",
+          "Understanding of ISO quality standards.",
+          "Ability to document findings clearly.",
+          "Skills in root-cause analysis to identify issues.",
+          "Experience with auditing processes."
+      ],
+      "entryPaths": [
+          "Bachelor's degree in Engineering or Quality Management.",
+          "Relevant internships in quality assurance.",
+          "Vocational programmes focused on engineering.",
+          "Apprenticeships with engineering firms."
+      ],
+      "realityCheck": "You will spend a lot of time documenting and analysing data, which can be repetitive."
+  },
   "quality-assurance-food": {
       "typicalDay": {
           "morning": [
@@ -13713,6 +18487,58 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "You spend a lot of time focused on technical details and ensuring safety, which can feel repetitive."
   },
+  "radiologic-technologist": {
+      "typicalDay": {
+          "morning": [
+              "Check and prepare imaging equipment for the day.",
+              "Review patient schedules and medical histories.",
+              "Set up the X-ray or MRI room for the first patient."
+          ],
+          "midday": [
+              "Perform imaging procedures on patients.",
+              "Ensure patients are comfortable and informed.",
+              "Document images and patient information in the system."
+          ],
+          "afternoon": [
+              "Clean and maintain imaging equipment after use.",
+              "Assist radiologists with any additional imaging needs.",
+              "Review the day's work and prepare for the next day."
+          ],
+          "tools": [
+              "X-ray machines",
+              "CT scanners",
+              "MRI machines",
+              "ultrasound equipment",
+              "computer software for image analysis"
+          ],
+          "environment": "Mostly indoors in a hospital or clinic, working closely with patients and medical staff."
+      },
+      "whatYouActuallyDo": [
+          "Take X-rays, CT scans, and MRIs of patients.",
+          "Position patients correctly for imaging.",
+          "Monitor patients during imaging procedures.",
+          "Maintain and calibrate imaging equipment.",
+          "Ensure safety protocols regarding radiation are followed."
+      ],
+      "whoThisIsGoodFor": [
+          "Detail-oriented and precise.",
+          "Comfortable working with patients.",
+          "Able to stay calm in stressful situations."
+      ],
+      "topSkills": [
+          "Operating advanced imaging equipment.",
+          "Understanding human anatomy.",
+          "Following strict safety protocols.",
+          "Communicating effectively with patients.",
+          "Attention to detail in image quality."
+      ],
+      "entryPaths": [
+          "Complete a Bachelor's in Radiography (3 years).",
+          "Look for apprenticeship opportunities in hospitals.",
+          "Consider vocational programmes related to healthcare."
+      ],
+      "realityCheck": "You will spend a lot of time standing and moving around, which can be tiring."
+  },
   "radiologist": {
       "typicalDay": {
           "morning": [
@@ -13768,6 +18594,65 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
           "Look for apprenticeships or fellowships post-specialisation."
       ],
       "realityCheck": "The training is long and intense, with many years focused on studying and practical experience before you become a fully qualified radiologist."
+  },
+  "rally-driver": {
+      "typicalDay": {
+          "morning": [
+              "Arrive at the rally stage and inspect the car.",
+              "Review pace notes and discuss strategies with the co-driver.",
+              "Warm up physically with stretches and light exercises."
+          ],
+          "midday": [
+              "Participate in practice runs to test the car and track.",
+              "Adjust car settings based on performance feedback.",
+              "Attend team briefings to discuss the day's events."
+          ],
+          "afternoon": [
+              "Compete in timed stages against other drivers.",
+              "Communicate with the co-driver during the race.",
+              "Review performance data after each stage."
+          ],
+          "tools": [
+              "Rally car with specific modifications.",
+              "Pace note books.",
+              "Timing equipment.",
+              "Communication radios.",
+              "GPS devices."
+          ],
+          "environment": "Mostly outdoors on various terrains, working closely with a team and dealing with changing weather conditions."
+      },
+      "whatYouActuallyDo": [
+          "Drive a rally car on unpaved roads at high speeds.",
+          "Follow pace notes called out by the co-driver.",
+          "Test and adjust car settings for optimal performance.",
+          "Work with a team to prepare the car before races.",
+          "Participate in practice sessions to improve skills.",
+          "Communicate effectively with the team during events.",
+          "Maintain physical fitness for endurance during races."
+      ],
+      "whoThisIsGoodFor": [
+          "Thrives under pressure and enjoys competition.",
+          "Has good hand-eye coordination and quick reflexes.",
+          "Enjoys teamwork and collaboration with a co-driver.",
+          "Is physically fit and can handle long hours of driving.",
+          "Loves cars and understands vehicle mechanics."
+      ],
+      "topSkills": [
+          "Exceptional driving skills, especially on rough terrain.",
+          "Ability to read and follow pace notes accurately.",
+          "Strong communication skills with the co-driver.",
+          "Physical fitness to endure long races.",
+          "Problem-solving skills to adjust car settings quickly.",
+          "Teamwork to collaborate effectively with the support crew."
+      ],
+      "entryPaths": [
+          "Start in karting or local rally events.",
+          "Obtain a national rally licence through training.",
+          "Gain experience by joining a rally team as a support member.",
+          "Participate in regional competitions to build a reputation.",
+          "Network with teams and sponsors for potential opportunities."
+      ],
+      "realityCheck": "The competition is fierce, and it takes years of practice and dedication to get to the top levels of rally driving."
   },
   "real-estate-agent": {
       "typicalDay": {
@@ -15203,6 +20088,60 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "You will spend a lot of time debugging code and fixing issues before you see your designs come to life."
   },
+  "rock-climbing-guide": {
+      "typicalDay": {
+          "morning": [
+              "Check weather conditions and climbing routes for the day",
+              "Gather climbing gear and safety equipment",
+              "Meet with clients and discuss the day's plan"
+          ],
+          "midday": [
+              "Lead clients on climbing routes, providing instruction",
+              "Monitor clients' safety and technique while climbing",
+              "Take breaks for snacks and hydration"
+          ],
+          "afternoon": [
+              "Continue climbing or descend safely from the route",
+              "Debrief with clients about the day's experiences",
+              "Pack up climbing gear and clean the area"
+          ],
+          "tools": [
+              "Climbing harnesses",
+              "Ropes and carabiners",
+              "Safety helmets",
+              "Climbing shoes",
+              "First aid kit"
+          ],
+          "environment": "Mostly outdoors on climbing routes, with a focus on safety and client interaction."
+      },
+      "whatYouActuallyDo": [
+          "Lead climbers safely up various climbing routes.",
+          "Teach climbing techniques and safety protocols.",
+          "Assess risks and make decisions based on conditions.",
+          "Provide encouragement and support to climbers.",
+          "Ensure all equipment is in good condition and used correctly."
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys outdoor activities and nature.",
+          "Calm under pressure and can make quick decisions.",
+          "Good at teaching and helping others improve.",
+          "Physically fit and enjoys climbing."
+      ],
+      "topSkills": [
+          "Advanced climbing skills and techniques.",
+          "Knowledge of rope systems and safety measures.",
+          "Ability to assess risks in climbing environments.",
+          "Strong communication skills for teaching.",
+          "Problem-solving skills in challenging situations."
+      ],
+      "entryPaths": [
+          "Obtain IFMGA or national climbing guide certification.",
+          "Complete a vocational programme in outdoor education.",
+          "Gain extensive climbing experience through personal climbing and assisting experienced guides.",
+          "Look for apprenticeships with established climbing schools."
+      ],
+      "realityCheck": "The job can involve long hours in varying weather conditions, which can be physically demanding."
+  },
   "rocket-scientist": {
       "typicalDay": {
           "morning": [
@@ -15466,6 +20405,111 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "You often deal with complex and emotional issues, which can be challenging and draining."
   },
+  "school-counselor": {
+      "typicalDay": {
+          "morning": [
+              "Meet with students for one-on-one counselling sessions.",
+              "Review student records and notes from previous meetings.",
+              "Prepare materials for workshops on mental health."
+          ],
+          "midday": [
+              "Conduct group sessions on stress management.",
+              "Attend staff meetings to discuss student wellbeing.",
+              "Follow up with students who have ongoing concerns."
+          ],
+          "afternoon": [
+              "Make referrals to external mental health services if needed.",
+              "Organise resources and information for students and parents.",
+              "Plan and implement school-wide mental health initiatives."
+          ],
+          "tools": [
+              "Counselling software for tracking student progress.",
+              "Resource materials for mental health education.",
+              "Communication tools for contacting parents and external services."
+          ],
+          "environment": "Mostly indoors in a school setting, working in a private office with a mix of student consultations and administrative tasks."
+      },
+      "whatYouActuallyDo": [
+          "Listen to students' concerns about their mental health.",
+          "Help students set goals for their personal and academic lives.",
+          "Provide support during difficult times, like family issues or bullying.",
+          "Teach coping strategies for stress and anxiety.",
+          "Work with teachers to create a supportive school environment.",
+          "Connect students with additional resources or professionals when needed.",
+          "Maintain confidentiality and trust with students."
+      ],
+      "whoThisIsGoodFor": [
+          "Empathetic and patient individuals.",
+          "Good listeners who can stay calm under pressure.",
+          "People who enjoy helping others solve problems."
+      ],
+      "topSkills": [
+          "Strong listening skills to understand students' needs.",
+          "Ability to build trust and rapport with students.",
+          "Knowledge of mental health resources and referral processes.",
+          "Skills in organising and leading workshops.",
+          "Crisis management skills for urgent situations.",
+          "Understanding of child development and educational systems."
+      ],
+      "entryPaths": [
+          "Complete a bachelor's degree in Counselling, Psychology, or Social Work.",
+          "Pursue a master's degree with a focus on school counselling.",
+          "Gain experience through internships or volunteer work in schools.",
+          "Consider additional certifications in mental health or counselling.",
+          "Look for positions in schools or educational institutions."
+      ],
+      "realityCheck": "You may spend a lot of time managing paperwork and referrals, which can take away from direct student interaction."
+  },
+  "science-teacher": {
+      "typicalDay": {
+          "morning": [
+              "Prepare lesson plans and gather materials for experiments.",
+              "Set up the classroom for the day's activities.",
+              "Check in with students about their homework."
+          ],
+          "midday": [
+              "Teach a science lesson on a specific topic.",
+              "Guide students through a hands-on experiment.",
+              "Provide feedback on students' progress and understanding."
+          ],
+          "afternoon": [
+              "Grade assignments and assessments.",
+              "Meet with other teachers to discuss student progress.",
+              "Organise materials and plan for the next day's lessons."
+          ],
+          "tools": [
+              "Lab equipment for experiments.",
+              "Computers for lesson planning and grading.",
+              "Textbooks and educational resources."
+          ],
+          "environment": "Mostly indoors in a classroom and laboratory, with a mix of teaching and hands-on activities."
+      },
+      "whatYouActuallyDo": [
+          "Plan and deliver engaging science lessons.",
+          "Create and supervise experiments for students.",
+          "Assess and grade student work regularly.",
+          "Support students with different learning needs.",
+          "Maintain a safe learning environment in the lab."
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys explaining complex ideas simply.",
+          "Passionate about science and learning.",
+          "Patient and supportive with students."
+      ],
+      "topSkills": [
+          "Strong knowledge of biology, chemistry, and physics.",
+          "Ability to design and conduct experiments safely.",
+          "Effective communication with students.",
+          "Classroom management skills.",
+          "Creativity in lesson planning."
+      ],
+      "entryPaths": [
+          "Complete a Master's in Natural Sciences.",
+          "Follow up with a PPU (Praktisk-pedagogisk utdanning) programme.",
+          "Consider teaching internships during your studies."
+      ],
+      "realityCheck": "You spend a lot of time managing classroom behaviour, which can be challenging."
+  },
   "scouting-analyst": {
       "typicalDay": {
           "morning": [
@@ -15521,6 +20565,56 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
           "Networking with professionals in the sports industry."
       ],
       "realityCheck": "The job often involves long hours of watching footage and analysing data, which can be repetitive."
+  },
+  "scuba-diving-instructor": {
+      "typicalDay": {
+          "morning": [
+              "Prepare diving equipment for the day's lessons.",
+              "Conduct briefings on safety and diving procedures.",
+              "Check weather and water conditions."
+          ],
+          "midday": [
+              "Lead open water dives with students.",
+              "Monitor students' progress and provide feedback.",
+              "Ensure all equipment is functioning properly."
+          ],
+          "afternoon": [
+              "Assist with any equipment repairs or maintenance.",
+              "Review the day's dives with students.",
+              "Plan future lessons and trips."
+          ],
+          "tools": [
+              "Diving gear (wet suits, tanks, regulators)",
+              "Underwater cameras",
+              "Dive computers"
+          ],
+          "environment": "Mostly outdoors in water, with a mix of teaching onshore and diving in various locations."
+      },
+      "whatYouActuallyDo": [
+          "Teach students how to dive safely.",
+          "Lead diving excursions and courses.",
+          "Inspect and maintain diving equipment.",
+          "Ensure students understand safety protocols.",
+          "Help students with any difficulties underwater."
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys being in and around water.",
+          "Good at explaining things clearly.",
+          "Patient and calm under pressure."
+      ],
+      "topSkills": [
+          "Strong scuba diving skills.",
+          "Ability to teach and communicate.",
+          "Knowledge of safety procedures.",
+          "Equipment maintenance skills.",
+          "Ability to assess conditions and risks."
+      ],
+      "entryPaths": [
+          "Complete a PADI or SSI scuba instructor certification.",
+          "Gain experience by working as a dive master.",
+          "Participate in internships at dive schools or resorts."
+      ],
+      "realityCheck": "You spend a lot of time teaching and ensuring safety rather than just diving for fun."
   },
   "search-and-rescue-operator": {
       "typicalDay": {
@@ -15625,6 +20719,56 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
           "Pursue vocational training in security services."
       ],
       "realityCheck": "The job can be repetitive, with long hours spent on patrol or monitoring."
+  },
+  "senior-lecturer": {
+      "typicalDay": {
+          "morning": [
+              "Prepare lecture materials and slides for upcoming classes.",
+              "Meet with students for office hours to discuss their progress.",
+              "Review and grade assignments from previous classes."
+          ],
+          "midday": [
+              "Teach a lecture or seminar to a group of students.",
+              "Attend faculty meetings to discuss course offerings and curriculum.",
+              "Collaborate with colleagues on research projects."
+          ],
+          "afternoon": [
+              "Supervise graduate students working on their theses.",
+              "Conduct research or write articles for academic journals.",
+              "Plan future courses and update course content."
+          ],
+          "tools": [
+              "Presentation software (e.g., PowerPoint, Google Slides)",
+              "Learning management systems (e.g., Canvas, Moodle)",
+              "Research databases and academic journals"
+          ],
+          "environment": "Mostly indoors at a university campus, with a mix of teaching, research, and administrative tasks."
+      },
+      "whatYouActuallyDo": [
+          "Teach university-level courses in your subject area.",
+          "Guide and mentor students in their studies and research.",
+          "Develop new course materials and update existing ones.",
+          "Conduct research and publish findings in academic journals.",
+          "Participate in academic committees and contribute to university governance."
+      ],
+      "whoThisIsGoodFor": [
+          "Passionate about a specific subject and keen to share knowledge.",
+          "Enjoys mentoring and helping students succeed.",
+          "Able to balance teaching and research responsibilities."
+      ],
+      "topSkills": [
+          "Deep knowledge of your subject area.",
+          "Ability to create engaging and informative lectures.",
+          "Strong communication skills for presenting ideas clearly.",
+          "Organisational skills for managing multiple courses and deadlines.",
+          "Research skills for conducting studies and writing papers."
+      ],
+      "entryPaths": [
+          "Complete a PhD in your chosen field.",
+          "Gain teaching experience as a teaching assistant during your studies.",
+          "Publish research papers to build your academic profile."
+      ],
+      "realityCheck": "The pressure to publish research can be intense, and teaching loads can vary each semester."
   },
   "session-musician": {
       "typicalDay": {
@@ -15842,6 +20986,123 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "You may spend a lot of time on routine tasks before getting to work on exciting projects."
   },
+  "skateboarder-pro": {
+      "typicalDay": {
+          "morning": [
+              "Wake up and do a warm-up routine.",
+              "Practice tricks at a local skatepark.",
+              "Film some of the best tricks for social media."
+          ],
+          "midday": [
+              "Meet with sponsors to discuss upcoming projects.",
+              "Edit video footage from the morning session.",
+              "Take a break and rest your body."
+          ],
+          "afternoon": [
+              "Join friends for a skate session to try new tricks.",
+              "Attend a skateboarding event or contest.",
+              "Network with other skaters and brands."
+          ],
+          "tools": [
+              "Skateboard",
+              "Helmet",
+              "Camera for filming",
+              "Editing software",
+              "Social media platforms"
+          ],
+          "environment": "Mostly outdoors at skateparks or urban spots, with a mix of practice and socialising."
+      },
+      "whatYouActuallyDo": [
+          "Train daily to improve your skateboarding skills.",
+          "Participate in contests and showcase your tricks.",
+          "Create video content to share on social media.",
+          "Collaborate with brands for sponsored content.",
+          "Stay fit and healthy to maintain performance.",
+          "Network with other skaters and industry professionals.",
+          "Manage your online presence and brand image."
+      ],
+      "whoThisIsGoodFor": [
+          "Passionate about skateboarding and sports.",
+          "Creative with a unique style.",
+          "Comfortable performing in front of crowds.",
+          "Resilient and able to handle failure.",
+          "Enjoys working independently and with a team."
+      ],
+      "topSkills": [
+          "Advanced skateboarding techniques.",
+          "Creativity in trick selection and video style.",
+          "Physical fitness and stamina.",
+          "Filming and video editing skills.",
+          "Brand awareness and marketing understanding.",
+          "Networking and relationship-building.",
+          "Time management for training and projects."
+      ],
+      "entryPaths": [
+          "Start competing in local skate contests.",
+          "Build a social media following by sharing videos.",
+          "Seek sponsorships from skate brands.",
+          "Join a skateboarding club or community.",
+          "Participate in skate workshops and events."
+      ],
+      "realityCheck": "The competition is tough, and it takes years of dedication to get noticed."
+  },
+  "skydiving-instructor": {
+      "typicalDay": {
+          "morning": [
+              "Check weather conditions and safety equipment",
+              "Prepare gear for tandem jumps",
+              "Review jump plans with students"
+          ],
+          "midday": [
+              "Conduct tandem jumps with first-time skydivers",
+              "Debrief students after their jumps",
+              "Perform equipment maintenance and checks"
+          ],
+          "afternoon": [
+              "Teach ground school for AFF students",
+              "Supervise solo jumps for progressing skydivers",
+              "Complete paperwork and log jump records"
+          ],
+          "tools": [
+              "Skydiving gear (parachutes, altimeters, helmets)",
+              "Radio communication devices",
+              "Safety equipment (first aid kits, tools for gear maintenance)"
+          ],
+          "environment": "Mostly outdoors at a skydiving centre, with a mix of training and jumping in a high-energy setting."
+      },
+      "whatYouActuallyDo": [
+          "Teach people how to skydive safely.",
+          "Guide first-time jumpers through tandem jumps.",
+          "Prepare students for solo jumps and advanced courses.",
+          "Inspect and maintain skydiving equipment.",
+          "Monitor weather conditions for safe jumps.",
+          "Provide feedback and support to students after jumps.",
+          "Complete necessary paperwork and keep records."
+      ],
+      "whoThisIsGoodFor": [
+          "Loves adventure and outdoor activities.",
+          "Stays calm under pressure.",
+          "Enjoys teaching and helping others learn.",
+          "Is patient and supportive with nervous students.",
+          "Has a strong focus on safety."
+      ],
+      "topSkills": [
+          "Expertise in skydiving techniques.",
+          "Strong teaching and communication skills.",
+          "Ability to assess and manage risks.",
+          "Patience when working with beginners.",
+          "Good physical fitness for jumping and gear handling.",
+          "Quick decision-making in changing conditions."
+      ],
+      "entryPaths": [
+          "Complete a USPA or FAI instructor certification.",
+          "Gain experience through an apprenticeship at a skydiving centre.",
+          "Participate in skydiving courses and build jump hours.",
+          "Obtain relevant certifications for tandem and AFF instruction.",
+          "Join local skydiving clubs to network and learn."
+      ],
+      "realityCheck": "The job can involve long hours and waiting around for the right weather conditions."
+  },
   "sniper": {
       "typicalDay": {
           "morning": [
@@ -16009,6 +21270,55 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
           "Look for positions in local municipalities or NGOs."
       ],
       "realityCheck": "The role involves a lot of administrative work and can be quite stressful, especially when managing multiple cases and budgets."
+  },
+  "social-studies-teacher": {
+      "typicalDay": {
+          "morning": [
+              "Prepare lesson plans and materials for the day",
+              "Check emails and respond to student inquiries",
+              "Set up the classroom for the first lesson"
+          ],
+          "midday": [
+              "Teach a class on current events and facilitate discussions",
+              "Grade assignments and provide feedback to students",
+              "Meet with colleagues to discuss student progress"
+          ],
+          "afternoon": [
+              "Conduct a workshop on critical thinking skills",
+              "Plan future lessons and update curriculum resources",
+              "Hold office hours for students needing extra help"
+          ],
+          "tools": [
+              "Whiteboard and markers",
+              "Projector and presentation software",
+              "Learning management system (LMS) for assignments"
+          ],
+          "environment": "Mostly indoors in a classroom, with a mix of teaching, grading, and planning time."
+      },
+      "whatYouActuallyDo": [
+          "Teach students about politics, economics, and sociology.",
+          "Create engaging lesson plans that cover important topics.",
+          "Lead class discussions and encourage student participation.",
+          "Assess student work and provide constructive feedback.",
+          "Stay updated on current events to relate lessons to real life."
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys discussing ideas and current events.",
+          "Patient and supportive when helping students learn.",
+          "Good at explaining complex topics in simple terms."
+      ],
+      "topSkills": [
+          "Strong knowledge of social sciences.",
+          "Ability to lead discussions and engage students.",
+          "Organisational skills for lesson planning and grading.",
+          "Critical thinking to analyse and discuss various viewpoints."
+      ],
+      "entryPaths": [
+          "Complete a Master's in Social Science followed by a PPU.",
+          "Pursue a relevant bachelor's degree and then a teaching qualification.",
+          "Gain experience through internships in schools or educational programmes."
+      ],
+      "realityCheck": "You spend a lot of time preparing lessons and grading, which can be more demanding than expected."
   },
   "soldier": {
       "typicalDay": {
@@ -16549,6 +21859,59 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "The work can be very technical and requires a lot of focus, especially during complex projects."
   },
+  "spacecraft-engineer": {
+      "typicalDay": {
+          "morning": [
+              "Review design documents for spacecraft components",
+              "Attend team meetings to discuss project progress",
+              "Collaborate with colleagues on thermal analysis tasks"
+          ],
+          "midday": [
+              "Conduct tests on spacecraft systems in the lab",
+              "Update project timelines and schedules",
+              "Prepare reports on integration processes"
+          ],
+          "afternoon": [
+              "Troubleshoot issues with spacecraft prototypes",
+              "Coordinate with suppliers for component deliveries",
+              "Present findings to the engineering team"
+          ],
+          "tools": [
+              "CAD software for design",
+              "Thermal analysis tools",
+              "Project management software",
+              "Testing equipment for spacecraft systems",
+              "Communication tools for team collaboration"
+          ],
+          "environment": "Mostly indoors in an engineering lab, with a mix of hands-on testing and computer work."
+      },
+      "whatYouActuallyDo": [
+          "Design spacecraft systems like thermal control and communication.",
+          "Build and test prototypes to ensure they work correctly.",
+          "Integrate different components to create a complete spacecraft.",
+          "Plan missions and ensure all systems are ready for launch.",
+          "Collaborate with other engineers to solve design problems."
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys solving complex problems.",
+          "Has a strong interest in space and technology.",
+          "Good at working in teams and communicating ideas."
+      ],
+      "topSkills": [
+          "Strong analytical skills for problem-solving.",
+          "Proficiency in CAD software for design.",
+          "Ability to conduct thermal analysis.",
+          "Experience with project management.",
+          "Attention to detail during testing and integration."
+      ],
+      "entryPaths": [
+          "Complete a Master's in Aerospace Engineering.",
+          "Gain experience through internships at aerospace companies.",
+          "Look for apprenticeships in engineering firms.",
+          "Participate in university projects related to spacecraft design."
+      ],
+      "realityCheck": "The work can be very technical and requires a lot of attention to detail, which can be challenging."
+  },
   "spacecraft-pilot": {
       "typicalDay": {
           "morning": [
@@ -16658,6 +22021,64 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
           "Gain experience in technical roles at organisations like ESA."
       ],
       "realityCheck": "The training is long and demanding, and you may spend years preparing before your first spacewalk."
+  },
+  "special-education-teacher": {
+      "typicalDay": {
+          "morning": [
+              "Prepare lesson plans tailored to individual students",
+              "Set up learning materials and resources",
+              "Meet with teaching assistants to discuss student progress"
+          ],
+          "midday": [
+              "Conduct one-on-one sessions with students",
+              "Monitor and support students during lunch",
+              "Attend meetings with parents or guardians"
+          ],
+          "afternoon": [
+              "Review student work and provide feedback",
+              "Collaborate with other teachers on student strategies",
+              "Plan for the next day's lessons and activities"
+          ],
+          "tools": [
+              "Specialised teaching software",
+              "Educational resources and materials",
+              "Communication devices for non-verbal students"
+          ],
+          "environment": "Mostly indoors in a classroom setting, with a focus on individual and small group interactions."
+      },
+      "whatYouActuallyDo": [
+          "Create individualised learning plans for each student.",
+          "Teach academic subjects using specialised methods.",
+          "Support students with behavioural challenges.",
+          "Adapt lesson content to meet diverse needs.",
+          "Communicate regularly with parents about progress.",
+          "Work with other professionals like psychologists and speech therapists.",
+          "Monitor student development and adjust teaching strategies."
+      ],
+      "whoThisIsGoodFor": [
+          "Patient and understanding with children.",
+          "Enjoys problem-solving and adapting lessons.",
+          "Good at working as part of a team.",
+          "Able to handle challenging behaviours calmly.",
+          "Creative in finding new ways to teach."
+      ],
+      "topSkills": [
+          "Knowledge of special education strategies.",
+          "Ability to create tailored lesson plans.",
+          "Strong communication skills with students and parents.",
+          "Patience in dealing with diverse learning needs.",
+          "Collaboration with other educators and specialists.",
+          "Flexibility in adapting to changing classroom dynamics.",
+          "Observation skills to track student progress."
+      ],
+      "entryPaths": [
+          "Complete a teacher education programme with a focus on special education.",
+          "Pursue a master's degree in special education.",
+          "Gain experience through internships or volunteer work in schools.",
+          "Consider an apprenticeship in educational support roles.",
+          "Look for job openings in schools that have special education programmes."
+      ],
+      "realityCheck": "You will spend a lot of time finding the right approach for each student, which can be challenging and time-consuming."
   },
   "special-forces-operator": {
       "typicalDay": {
@@ -16812,6 +22233,61 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
           "Consider a fagbrev in a related field for experience."
       ],
       "realityCheck": "You will spend a lot of time documenting progress and planning sessions, which can feel repetitive."
+  },
+  "speech-therapist": {
+      "typicalDay": {
+          "morning": [
+              "Review patient files and treatment plans",
+              "Conduct assessments for new clients",
+              "Prepare materials for therapy sessions"
+          ],
+          "midday": [
+              "Hold individual therapy sessions with clients",
+              "Consult with families about progress and strategies",
+              "Document session outcomes and update records"
+          ],
+          "afternoon": [
+              "Plan and organise group therapy activities",
+              "Attend team meetings to discuss patient care",
+              "Research new techniques and approaches in speech therapy"
+          ],
+          "tools": [
+              "Assessment tools for speech and language",
+              "Therapy materials like flashcards and games",
+              "Computer software for documentation"
+          ],
+          "environment": "Mostly indoors in a clinic or hospital, working with patients one-on-one and in groups."
+      },
+      "whatYouActuallyDo": [
+          "Assess clients' speech and language abilities",
+          "Create personalised therapy plans for each client",
+          "Conduct therapy sessions to improve communication skills",
+          "Help clients with swallowing difficulties",
+          "Educate families on how to support their loved ones",
+          "Monitor progress and adjust therapy as needed",
+          "Collaborate with other healthcare professionals"
+      ],
+      "whoThisIsGoodFor": [
+          "Empathetic and good at listening",
+          "Enjoys working closely with people of all ages",
+          "Patient and persistent in helping others",
+          "Comfortable explaining complex ideas simply"
+      ],
+      "topSkills": [
+          "Strong communication skills",
+          "Ability to assess and analyse speech disorders",
+          "Creativity in developing therapy activities",
+          "Patience when working with clients",
+          "Good organisational skills for managing caseloads",
+          "Ability to work as part of a healthcare team"
+      ],
+      "entryPaths": [
+          "Complete a Master's in Speech & Language Pathology",
+          "Pursue a bachelor's degree in a related field first",
+          "Look for internships or volunteer opportunities in healthcare settings",
+          "Consider a fagbrev in health and social care as a starting point"
+      ],
+      "realityCheck": "The work can be emotionally challenging, especially when clients struggle to make progress."
   },
   "spinal-surgeon": {
       "typicalDay": {
@@ -17992,6 +23468,62 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "Building a solid portfolio takes time and effort, and early jobs may be less glamorous than expected."
   },
+  "stunt-performer": {
+      "typicalDay": {
+          "morning": [
+              "Arrive on set and check the day's schedule.",
+              "Warm up with physical exercises and stretches.",
+              "Review the stunt choreography with the director."
+          ],
+          "midday": [
+              "Rehearse stunts with actors and crew.",
+              "Discuss safety measures with the stunt coordinator.",
+              "Perform stunts for camera and get feedback."
+          ],
+          "afternoon": [
+              "Film additional takes of stunts as needed.",
+              "Help set up equipment for the next scene.",
+              "Debrief with the team about what worked and what didn't."
+          ],
+          "tools": [
+              "Safety harnesses",
+              "Props for fight scenes",
+              "Cameras to record stunts",
+              "Protective gear",
+              "Communication radios"
+          ],
+          "environment": "Mostly outdoors or on set, involving a lot of physical activity and teamwork."
+      },
+      "whatYouActuallyDo": [
+          "Perform fight scenes, falls, and other stunts safely.",
+          "Work closely with the director and stunt coordinator.",
+          "Train regularly to stay fit and improve skills.",
+          "Learn new stunt techniques and specialisations.",
+          "Help with safety planning and risk assessments."
+      ],
+      "whoThisIsGoodFor": [
+          "Physically fit and agile.",
+          "Enjoys working in a team.",
+          "Comfortable taking risks.",
+          "Good at following instructions.",
+          "Passionate about film and acting."
+      ],
+      "topSkills": [
+          "Strong physical fitness.",
+          "Expertise in stunt techniques.",
+          "Ability to assess risks quickly.",
+          "Acting skills to portray characters convincingly.",
+          "Reliability and punctuality on set."
+      ],
+      "entryPaths": [
+          "Complete a stunt training programme.",
+          "Build industry contacts through internships or networking.",
+          "Specialise in areas like driving, aerial stunts, or fight choreography.",
+          "Join a stunt performer guild or organisation.",
+          "Participate in local theatre or film projects to gain experience."
+      ],
+      "realityCheck": "The work can be physically demanding and often involves long hours waiting around on set."
+  },
   "submarine-officer": {
       "typicalDay": {
           "morning": [
@@ -18104,6 +23636,58 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
           "Consider applying for positions in clinics or community organisations focused on addiction."
       ],
       "realityCheck": "Building trust with clients can take time, and not every client will be ready to change."
+  },
+  "subtitler": {
+      "typicalDay": {
+          "morning": [
+              "Check emails for new projects or feedback from clients.",
+              "Review scripts and prepare materials for subtitling.",
+              "Start creating subtitles for the first video of the day."
+          ],
+          "midday": [
+              "Edit and time the subtitles to match the video.",
+              "Consult with colleagues about translation choices.",
+              "Take a break and refresh before the afternoon tasks."
+          ],
+          "afternoon": [
+              "Finish subtitling the morning video and submit it for review.",
+              "Start on a new project, focusing on cultural adaptation.",
+              "Attend a team meeting to discuss upcoming deadlines."
+          ],
+          "tools": [
+              "Subtitling software (like Aegisub or Subtitle Edit)",
+              "Video editing software (like Adobe Premiere Pro)",
+              "Translation memory tools (like SDL Trados)"
+          ],
+          "environment": "Mostly indoors in a quiet office or home office, with a focus on screens and deadlines."
+      },
+      "whatYouActuallyDo": [
+          "Translate dialogue and narration from one language to another.",
+          "Time subtitles to sync with the video.",
+          "Ensure subtitles are concise and easy to read.",
+          "Adapt cultural references for the target audience.",
+          "Review and edit subtitles for accuracy and clarity."
+      ],
+      "whoThisIsGoodFor": [
+          "Detail-oriented and organised.",
+          "Enjoys working with languages.",
+          "Good at managing time and meeting deadlines."
+      ],
+      "topSkills": [
+          "Strong translation skills in at least two languages.",
+          "Proficiency with subtitling software.",
+          "Ability to work under pressure.",
+          "Good understanding of cultural nuances.",
+          "Attention to detail in timing and text."
+      ],
+      "entryPaths": [
+          "Complete a relevant translation degree or course.",
+          "Gain experience with internships in media or translation.",
+          "Learn subtitling software through online courses.",
+          "Look for apprenticeships with media companies.",
+          "Build a portfolio with sample subtitles to showcase skills."
+      ],
+      "realityCheck": "You may spend a lot of time working alone, and the feedback process can be tough."
   },
   "support-worker": {
       "typicalDay": {
@@ -18635,6 +24219,116 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "The hours can be long and unpredictable, especially during busy times or late nights."
   },
+  "teacher-generalist": {
+      "typicalDay": {
+          "morning": [
+              "Prepare lesson materials and set up the classroom.",
+              "Welcome students and take attendance.",
+              "Teach the first lesson of the day."
+          ],
+          "midday": [
+              "Supervise students during lunch break.",
+              "Mark assignments from the morning lessons.",
+              "Plan for the next lesson or unit."
+          ],
+          "afternoon": [
+              "Teach the afternoon lessons.",
+              "Provide support to students who need extra help.",
+              "Meet with colleagues to discuss student progress."
+          ],
+          "tools": [
+              "Whiteboard and markers",
+              "Projector or smartboard",
+              "Learning management system (LMS)",
+              "Student assessment tools",
+              "Stationery supplies"
+          ],
+          "environment": "Mostly indoors in a classroom, with a mix of teaching, student interaction, and administrative tasks."
+      },
+      "whatYouActuallyDo": [
+          "Plan and prepare lessons based on the curriculum.",
+          "Teach subjects to students of different ages.",
+          "Mark and provide feedback on students' work.",
+          "Support students with their learning and personal issues.",
+          "Communicate with parents about student progress.",
+          "Participate in staff meetings and training.",
+          "Organise classroom activities and events."
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys working with young people.",
+          "Patient and empathetic towards students.",
+          "Good at explaining things clearly.",
+          "Able to manage a classroom effectively.",
+          "Creative in finding engaging ways to teach."
+      ],
+      "topSkills": [
+          "Strong knowledge of the subject you teach.",
+          "Effective communication with students and parents.",
+          "Classroom management techniques.",
+          "Ability to adapt lessons for different learning styles.",
+          "Empathy and understanding of student needs.",
+          "Time management for lesson planning and grading.",
+          "Collaboration with other teachers and staff."
+      ],
+      "entryPaths": [
+          "Complete a Bachelor's in Education or a relevant subject.",
+          "Follow up with a Teacher Education programme.",
+          "Consider an apprenticeship in teaching or student assistant roles.",
+          "Look for internships in schools during your studies.",
+          "Apply through Samordna opptak for teacher education courses."
+      ],
+      "realityCheck": "You spend a lot of time on planning and marking, which can be overwhelming at times."
+  },
+  "teaching-assistant": {
+      "typicalDay": {
+          "morning": [
+              "Prepare materials for the day's lessons",
+              "Assist the teacher in setting up the classroom",
+              "Help students with questions before class starts"
+          ],
+          "midday": [
+              "Run a seminar or group discussion",
+              "Mark assignments or tests",
+              "Provide one-on-one support to students who need help"
+          ],
+          "afternoon": [
+              "Organise resources for the next day's lessons",
+              "Attend staff meetings or briefings",
+              "Communicate with students about upcoming deadlines"
+          ],
+          "tools": [
+              "Whiteboard and markers",
+              "Computer for marking and preparing materials",
+              "Learning management system for tracking student progress"
+          ],
+          "environment": "Mostly indoors in a classroom, with a mix of teaching and administrative tasks."
+      },
+      "whatYouActuallyDo": [
+          "Assist the teacher with lesson planning and preparation.",
+          "Run small group discussions or seminars.",
+          "Mark assignments and provide feedback to students.",
+          "Help students understand difficult topics one-on-one.",
+          "Keep track of student attendance and participation."
+      ],
+      "whoThisIsGoodFor": [
+          "Patient and understanding with others.",
+          "Good at explaining things simply.",
+          "Enjoys working with young people."
+      ],
+      "topSkills": [
+          "Strong knowledge of the subject area.",
+          "Good communication skills.",
+          "Ability to manage time effectively.",
+          "Patience when helping students.",
+          "Attention to detail in marking work."
+      ],
+      "entryPaths": [
+          "Enrol in a relevant university programme.",
+          "Complete a fagbrev in education or a related field.",
+          "Seek part-time work as a student assistant while studying."
+      ],
+      "realityCheck": "You might spend a lot of time on marking and administration, which isn't always exciting."
+  },
   "team-manager": {
       "typicalDay": {
           "morning": [
@@ -18795,6 +24489,58 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
           "Look for apprenticeship opportunities with tech companies."
       ],
       "realityCheck": "It can take years of experience to reach this level, and the role often involves balancing many competing priorities."
+  },
+  "technical-instructor": {
+      "typicalDay": {
+          "morning": [
+              "Prepare lesson plans and materials for the day's classes.",
+              "Set up equipment or software for practical training.",
+              "Review students' previous work and provide feedback."
+          ],
+          "midday": [
+              "Conduct hands-on training sessions with students.",
+              "Answer questions and provide support to learners.",
+              "Assess students' understanding through quizzes or practical tests."
+          ],
+          "afternoon": [
+              "Evaluate students' progress and adjust lesson plans as needed.",
+              "Meet with colleagues to discuss curriculum improvements.",
+              "Document student performance and provide reports."
+          ],
+          "tools": [
+              "Computers with training software",
+              "Machinery relevant to the technical skills being taught",
+              "Assessment tools like quizzes and feedback forms"
+          ],
+          "environment": "Mostly indoors in a classroom or workshop setting, with a mix of teaching and hands-on training."
+      },
+      "whatYouActuallyDo": [
+          "Teach adults how to use specific software or machinery.",
+          "Create lesson plans that fit the needs of your students.",
+          "Provide one-on-one support to help students understand difficult concepts.",
+          "Assess students' skills through practical exercises and tests.",
+          "Update training materials to keep them relevant and effective."
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys explaining complex ideas simply.",
+          "Patient and supportive when helping others learn.",
+          "Likes working with technology and tools.",
+          "Comfortable in front of a group and speaking clearly."
+      ],
+      "topSkills": [
+          "Strong understanding of the technical skills being taught.",
+          "Ability to design engaging training materials.",
+          "Patience when working with learners of different levels.",
+          "Skill in assessing and providing constructive feedback.",
+          "Good communication skills to explain concepts clearly."
+      ],
+      "entryPaths": [
+          "Gain a technical degree or vocational training in your field.",
+          "Complete an instructor certification programme.",
+          "Look for apprenticeships or entry-level teaching roles in technical schools.",
+          "Consider relevant organisations or companies that offer training roles."
+      ],
+      "realityCheck": "You may spend a lot of time preparing materials and assessing students, not just teaching."
   },
   "telco-account-manager": {
       "typicalDay": {
@@ -21289,6 +27035,64 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "The path to becoming a professional player is long and requires significant financial investment."
   },
+  "terminologist": {
+      "typicalDay": {
+          "morning": [
+              "Review terminology requests from colleagues or clients.",
+              "Update existing entries in the terminology database.",
+              "Research new terms relevant to ongoing projects."
+          ],
+          "midday": [
+              "Attend a team meeting to discuss terminology issues.",
+              "Collaborate with translators to ensure consistency.",
+              "Draft guidelines for using specific terms."
+          ],
+          "afternoon": [
+              "Conduct in-depth research on complex terminology.",
+              "Create new entries for the terminology database.",
+              "Respond to queries about terminology from other departments."
+          ],
+          "tools": [
+              "Terminology management software (e.g., SDL MultiTerm)",
+              "Research databases (e.g., Google Scholar)",
+              "Collaboration tools (e.g., Slack, Microsoft Teams)",
+              "Word processing software (e.g., Microsoft Word)",
+              "Spreadsheets (e.g., Excel) for organising data"
+          ],
+          "environment": "Mostly indoors in an office setting, with a focus on individual work and occasional team collaboration."
+      },
+      "whatYouActuallyDo": [
+          "Manage and update a database of terms used in specific fields.",
+          "Research and verify the accuracy of terminology.",
+          "Work with translators to ensure consistent use of terms.",
+          "Write clear definitions and usage examples.",
+          "Create style guides for terminology use.",
+          "Respond to questions about terminology from colleagues.",
+          "Train others on how to use the terminology database."
+      ],
+      "whoThisIsGoodFor": [
+          "Detail-oriented individuals who enjoy research.",
+          "Good communicators who can explain complex concepts simply.",
+          "People who like working independently and in teams.",
+          "Those with a passion for languages and linguistics."
+      ],
+      "topSkills": [
+          "Strong research skills to find accurate information.",
+          "Attention to detail for maintaining consistency.",
+          "Good writing skills for creating clear definitions.",
+          "Ability to collaborate with others effectively.",
+          "Knowledge of specific terminology in various fields.",
+          "Problem-solving skills for dealing with ambiguities."
+      ],
+      "entryPaths": [
+          "Complete a Master's in Translation or Linguistics with a focus on terminology.",
+          "Gain experience through internships in translation companies.",
+          "Look for entry-level positions in language services or publishing.",
+          "Pursue relevant certifications in terminology management.",
+          "Network with professionals in the field through events or online platforms."
+      ],
+      "realityCheck": "It can be challenging to keep up with constantly evolving terminology in different fields."
+  },
   "test-automation-engineer": {
       "typicalDay": {
           "morning": [
@@ -21664,6 +27468,112 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
           "Consider a master's degree for advanced roles."
       ],
       "realityCheck": "The job can be very stressful, especially during market fluctuations."
+  },
+  "transcriptionist": {
+      "typicalDay": {
+          "morning": [
+              "Check emails for new transcription assignments.",
+              "Listen to audio recordings and start transcribing.",
+              "Proofread completed transcripts for errors."
+          ],
+          "midday": [
+              "Take a break to rest your eyes and hands.",
+              "Continue working on ongoing transcription projects.",
+              "Organise files and keep track of deadlines."
+          ],
+          "afternoon": [
+              "Finish any remaining transcription tasks.",
+              "Submit completed work to clients or supervisors.",
+              "Review feedback on previous transcripts and make adjustments."
+          ],
+          "tools": [
+              "Computer with transcription software.",
+              "Headphones for clear audio.",
+              "Word processing software like Microsoft Word."
+          ],
+          "environment": "Mostly indoors at a quiet office or home office, working independently with flexible hours."
+      },
+      "whatYouActuallyDo": [
+          "Listen to audio recordings carefully.",
+          "Type out what you hear accurately and quickly.",
+          "Ensure correct spelling and grammar in transcripts.",
+          "Maintain confidentiality of sensitive information.",
+          "Manage your time to meet deadlines."
+      ],
+      "whoThisIsGoodFor": [
+          "Detail-oriented and focused.",
+          "Good at listening and understanding different accents.",
+          "Able to work independently for long periods."
+      ],
+      "topSkills": [
+          "Fast and accurate typing.",
+          "Strong listening skills.",
+          "Good grammar and punctuation knowledge.",
+          "Ability to maintain confidentiality.",
+          "Time management and organisation."
+      ],
+      "entryPaths": [
+          "Complete a secretarial or transcription certification programme.",
+          "Practice fast typing through online courses.",
+          "Look for internships or entry-level jobs in transcription.",
+          "Freelance for clients to build experience.",
+          "Check job listings on platforms like Finn.no for opportunities."
+      ],
+      "realityCheck": "The work can be repetitive and requires a lot of concentration for long periods."
+  },
+  "translator": {
+      "typicalDay": {
+          "morning": [
+              "Review texts that need translation.",
+              "Research specific terminology and context.",
+              "Begin translating the first document."
+          ],
+          "midday": [
+              "Continue translating documents.",
+              "Proofread translations for accuracy.",
+              "Communicate with clients for clarification."
+          ],
+          "afternoon": [
+              "Finalise translations and format documents.",
+              "Stay updated on language trends and changes.",
+              "Organise files and manage deadlines."
+          ],
+          "tools": [
+              "Translation software (e.g. SDL Trados, MemoQ)",
+              "Dictionary and thesaurus tools",
+              "Research databases and glossaries"
+          ],
+          "environment": "Mostly indoors, often working from home or in an office, with a quiet atmosphere focused on individual tasks."
+      },
+      "whatYouActuallyDo": [
+          "Translate written texts from one language to another.",
+          "Research terminology and cultural context.",
+          "Proofread your own and others' translations.",
+          "Communicate with clients about their needs.",
+          "Stay updated on language changes and trends.",
+          "Organise your workload and manage deadlines."
+      ],
+      "whoThisIsGoodFor": [
+          "Bilingual and enjoys working with languages.",
+          "Detail-oriented and able to focus for long periods.",
+          "Self-motivated and disciplined in managing time.",
+          "Curious about different cultures and contexts."
+      ],
+      "topSkills": [
+          "Bilingual mastery of source and target languages.",
+          "Strong writing skills for clear translations.",
+          "Research skills to find accurate terms.",
+          "Cultural awareness to ensure context is correct.",
+          "Self-discipline to meet deadlines and manage projects."
+      ],
+      "entryPaths": [
+          "Bachelor's degree in Translation Studies or languages.",
+          "Master's degree for advanced roles.",
+          "Internships with translation agencies.",
+          "Freelancing to build a portfolio.",
+          "Online courses or certifications in translation."
+      ],
+      "realityCheck": "The work can be solitary and requires a lot of self-motivation to stay on track."
   },
   "transplant-surgeon": {
       "typicalDay": {
@@ -22535,6 +28445,114 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "Many performances are unpaid or low-paid at the start, and building a reputation takes time and effort."
   },
+  "vocational-education-teacher": {
+      "typicalDay": {
+          "morning": [
+              "Prepare lesson plans for the day's classes",
+              "Set up practical equipment and tools for students",
+              "Review students' progress and give feedback"
+          ],
+          "midday": [
+              "Teach a theory class about safety regulations",
+              "Supervise students during hands-on activities",
+              "Meet with other teachers to discuss curriculum updates"
+          ],
+          "afternoon": [
+              "Assist students with their projects and answer questions",
+              "Evaluate students' work and provide constructive criticism",
+              "Organise materials and tools for the next day's lessons"
+          ],
+          "tools": [
+              "Whiteboard and markers",
+              "PowerPoint presentations",
+              "Hand tools and machinery for practical lessons",
+              "Safety gear and equipment",
+              "Computers for administrative tasks"
+          ],
+          "environment": "Mostly indoors in a classroom and workshop setting, with a mix of teaching and hands-on training."
+      },
+      "whatYouActuallyDo": [
+          "Teach students about their chosen trade in both theory and practice.",
+          "Prepare students for real-world work environments.",
+          "Ensure students understand safety procedures and regulations.",
+          "Mentor students and help them develop their skills.",
+          "Connect students with industry professionals for internships or job placements."
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys working with hands-on projects.",
+          "Good at explaining complex ideas simply.",
+          "Passionate about a specific trade and sharing knowledge.",
+          "Patient and supportive when mentoring students."
+      ],
+      "topSkills": [
+          "Mastery of the specific trade being taught.",
+          "Ability to teach practical skills effectively.",
+          "Strong communication skills for classroom instruction.",
+          "Mentoring and guiding students in their learning.",
+          "Knowledge of safety standards and procedures."
+      ],
+      "entryPaths": [
+          "Complete a trade certification in your chosen field.",
+          "Gain at least two years of trade experience.",
+          "Complete a pedagogical programme for vocational teachers (PPU-Y).",
+          "Apply for teaching positions at vocational schools or colleges."
+      ],
+      "realityCheck": "You spend a lot of time managing classroom behaviour and ensuring safety, which can be challenging."
+  },
+  "voice-over-artist": {
+      "typicalDay": {
+          "morning": [
+              "Warm up my voice with exercises.",
+              "Review scripts for the day's recordings.",
+              "Set up my recording equipment in the home studio."
+          ],
+          "midday": [
+              "Record voiceovers for various projects.",
+              "Edit audio files for clarity and quality.",
+              "Take breaks to rest my voice."
+          ],
+          "afternoon": [
+              "Send completed recordings to clients.",
+              "Respond to emails and marketing inquiries.",
+              "Update my demo reel with new work."
+          ],
+          "tools": [
+              "Microphone",
+              "Audio interface",
+              "Recording software (like Audacity or Adobe Audition)",
+              "Headphones",
+              "Soundproofing materials"
+          ],
+          "environment": "Mostly working from home in a quiet space, with a flexible schedule."
+      },
+      "whatYouActuallyDo": [
+          "Record voice for commercials, audiobooks, and animations.",
+          "Edit audio to remove mistakes and improve sound quality.",
+          "Communicate with clients to understand their needs.",
+          "Market myself through social media and networking.",
+          "Create a demo reel to showcase my voice work."
+      ],
+      "whoThisIsGoodFor": [
+          "Creative and expressive individuals.",
+          "People who enjoy acting and storytelling.",
+          "Self-motivated and organised workers."
+      ],
+      "topSkills": [
+          "Strong voice control and modulation.",
+          "Ability to interpret scripts and act.",
+          "Basic audio editing skills.",
+          "Self-discipline to work independently.",
+          "Marketing skills to promote my work."
+      ],
+      "entryPaths": [
+          "Take voice training or acting classes.",
+          "Create a demo reel to showcase your voice.",
+          "Set up a basic home studio for recording.",
+          "Join local acting or voice-over groups.",
+          "Look for internships or entry-level jobs in media."
+      ],
+      "realityCheck": "Building a client base takes time and persistence, and you may face a lot of rejection initially."
+  },
   "warehouse-picker": {
       "typicalDay": {
           "morning": [
@@ -22814,6 +28832,62 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "The job often involves long hours and unpredictable schedules, especially on weekends."
   },
+  "whitewater-rafting-guide": {
+      "typicalDay": {
+          "morning": [
+              "Check weather conditions and river levels",
+              "Prepare equipment and safety gear",
+              "Brief the group on safety and paddling techniques"
+          ],
+          "midday": [
+              "Guide the group down the river, navigating rapids",
+              "Communicate with team members to ensure safety",
+              "Monitor the group's performance and provide support"
+          ],
+          "afternoon": [
+              "Wrap up the rafting trip and assist with unloading equipment",
+              "Conduct a debrief with the group about their experience",
+              "Clean and maintain gear for the next trip"
+          ],
+          "tools": [
+              "Rafts",
+              "Paddles",
+              "Safety equipment (helmets, life jackets)",
+              "Communication devices (radios)",
+              "First aid kit"
+          ],
+          "environment": "Mostly outdoors on rivers, with a focus on teamwork and physical activity."
+      },
+      "whatYouActuallyDo": [
+          "Lead rafting trips for groups of varying skill levels.",
+          "Ensure the safety of all participants during the trip.",
+          "Teach paddling techniques and river safety.",
+          "Read the river to navigate rapids effectively.",
+          "Respond to emergencies and perform rescues if needed.",
+          "Maintain and check all rafting equipment regularly.",
+          "Provide a fun and engaging experience for guests."
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys being outdoors and active.",
+          "Comfortable working in a team.",
+          "Able to stay calm in stressful situations."
+      ],
+      "topSkills": [
+          "Strong paddling and rafting skills.",
+          "Knowledge of swiftwater rescue techniques.",
+          "Good communication skills for briefing and guiding.",
+          "Physical fitness to handle the demands of the job.",
+          "Ability to read and understand river conditions."
+      ],
+      "entryPaths": [
+          "Obtain a whitewater rafting guide certification.",
+          "Complete a swiftwater rescue course.",
+          "Look for apprenticeships with rafting companies.",
+          "Participate in outdoor education programmes.",
+          "Gain experience as a river safety volunteer."
+      ],
+      "realityCheck": "The job can be physically demanding and weather-dependent, which might lead to last-minute changes in plans."
+  },
   "wildlife-photographer": {
       "typicalDay": {
           "morning": [
@@ -22868,6 +28942,118 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
           "Building a portfolio through local wildlife projects."
       ],
       "realityCheck": "Many days involve waiting and not getting the perfect shot, which can be frustrating."
+  },
+  "windsurfing-instructor": {
+      "typicalDay": {
+          "morning": [
+              "Set up windsurfing equipment on the beach.",
+              "Check weather conditions and water safety.",
+              "Prepare lesson plans for different skill levels."
+          ],
+          "midday": [
+              "Teach beginner windsurfing lessons.",
+              "Provide feedback and tips to students.",
+              "Assist with rigging and de-rigging equipment."
+          ],
+          "afternoon": [
+              "Conduct advanced lessons focusing on freestyle techniques.",
+              "Supervise students practicing their skills.",
+              "Pack up equipment and clean the area."
+          ],
+          "tools": [
+              "Windsurfing boards and sails",
+              "Safety gear (life jackets, helmets)",
+              "Communication radios"
+          ],
+          "environment": "Mostly outdoors on the beach, working with students in the water and on land."
+      },
+      "whatYouActuallyDo": [
+          "Teach windsurfing skills to beginners and advanced students.",
+          "Ensure safety on the water during lessons.",
+          "Set up and maintain windsurfing equipment.",
+          "Assess students' progress and adapt lessons accordingly.",
+          "Provide encouragement and support to help students improve."
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys being outdoors and active.",
+          "Patient and good at explaining things.",
+          "Comfortable in the water and has good swimming skills."
+      ],
+      "topSkills": [
+          "Strong windsurfing skills and techniques.",
+          "Ability to teach and communicate clearly.",
+          "Knowledge of water safety and rescue procedures.",
+          "Experience with rigging and maintaining equipment.",
+          "Patience and adaptability when working with different skill levels."
+      ],
+      "entryPaths": [
+          "Obtain a VDWS national windsurfing instructor certification.",
+          "Complete a vocational programme in sports coaching.",
+          "Gain experience as an assistant instructor at a local windsurfing school."
+      ],
+      "realityCheck": "You spend a lot of time in the sun and water, which can be exhausting and requires good physical fitness."
+  },
+  "wingsuit-pilot": {
+      "typicalDay": {
+          "morning": [
+              "Check weather conditions for safe flying",
+              "Prepare and inspect wingsuit and gear",
+              "Review flight plans and routes",
+              "Warm-up exercises to prepare physically",
+              "Meet with team for briefing"
+          ],
+          "midday": [
+              "Perform test jumps to assess conditions",
+              "Refine flying techniques with coaching",
+              "Analyse flight data from previous jumps",
+              "Discuss safety protocols with team",
+              "Take breaks to hydrate and rest"
+          ],
+          "afternoon": [
+              "Engage in more challenging jumps",
+              "Record video footage for analysis",
+              "Debrief with team on performance",
+              "Adjust gear based on feedback",
+              "Plan for next jumps or training sessions"
+          ],
+          "tools": [
+              "Wingsuit",
+              "Parachute",
+              "GoPro or other cameras",
+              "Altitude and GPS tracking devices",
+              "Safety gear like helmets and goggles"
+          ],
+          "environment": "Mostly outdoors in mountainous areas, with a focus on high-adrenaline and physically demanding activities."
+      },
+      "whatYouActuallyDo": [
+          "Fly through narrow spaces between cliffs and the ground.",
+          "Perform jumps from high altitudes.",
+          "Monitor weather and environmental conditions.",
+          "Train regularly to improve flight skills.",
+          "Work closely with coaches and other pilots.",
+          "Review video footage to improve techniques.",
+          "Ensure all safety gear is in good condition."
+      ],
+      "whoThisIsGoodFor": [
+          "Thrives in high-pressure situations.",
+          "Enjoys outdoor adventures and extreme sports.",
+          "Has strong physical fitness and coordination.",
+          "Is detail-oriented and safety-conscious."
+      ],
+      "topSkills": [
+          "Flight control in various conditions.",
+          "Spatial awareness to navigate tight spaces.",
+          "Risk management to assess and mitigate dangers.",
+          "Physical conditioning for endurance and strength.",
+          "Mental discipline to stay focused under pressure."
+      ],
+      "entryPaths": [
+          "Complete a skydiving certification programme.",
+          "Progress through BASE jumping training.",
+          "Seek wingsuit coaching from experienced pilots.",
+          "Participate in wingsuit competitions to gain experience."
+      ],
+      "realityCheck": "The training process is long and requires a lot of jumps before you can fly confidently in a wingsuit."
   },
   "yoga-instructor": {
       "typicalDay": {
