@@ -268,7 +268,6 @@ export default function GuardianConsentPage() {
               <ul className="text-sm text-foreground/85 space-y-1.5 leading-relaxed">
                 <li>Honest career information from real sources</li>
                 <li>Age-appropriate content only</li>
-                <li>Structured messaging with verified job posters</li>
                 <li>Clear &ldquo;Report&rdquo; options on every screen</li>
                 <li>GDPR-compliant by design</li>
               </ul>

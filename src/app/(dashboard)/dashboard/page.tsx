@@ -44,6 +44,8 @@ import {
   NotebookPen,
 } from "lucide-react";
 import { useCuriositySaves } from "@/hooks/use-curiosity-saves";
+import { useAllInterestLevels } from "@/hooks/use-interest-level";
+import { InterestLevelStars } from "@/components/interest-level/interest-level-rating";
 import { readLocalJourneyReflections, type LocalReflectionEntry } from "@/lib/library/tabs";
 import { captureClientMutationError } from "@/lib/observability";
 import type { GoalsResponse } from "@/lib/goals/types";
@@ -52,7 +54,6 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { OrientationWalkthrough } from "@/components/onboarding/orientation-walkthrough";
 import { LanguageDropdown } from "@/components/language-dropdown";
-import { VerificationStatus } from "@/components/verification-status";
 import { CareerDetailSheet } from "@/components/career-detail-sheet";
 import { getAllCareers, getSectorForCareer } from "@/lib/career-pathways";
 import {
@@ -695,6 +696,7 @@ export default function DashboardPage() {
     },
   });
 
+  const interestLevels = useAllInterestLevels();
   const primaryGoal = goalsData?.primaryGoal ?? null;
   const _secondaryGoal = goalsData?.secondaryGoal; // Available for future use
   const goalTitle = primaryGoal?.title ?? null;
@@ -969,8 +971,6 @@ export default function DashboardPage() {
           pageKey="dashboard"
           purpose="A snapshot of your journeys, activity, and saved content."
         />
-
-        <VerificationStatus compact />
 
         {/* ── First-action card ───────────────────────────────────
             Three states, in order of priority:
@@ -1258,7 +1258,7 @@ export default function DashboardPage() {
                       <tr className="text-[8px] font-semibold uppercase tracking-wider text-muted-foreground/50 border-b border-border/40 bg-muted/20">
                         <th className="px-2.5 py-1.5">Career</th>
                         <th className="px-2 py-1.5 w-16 text-center">Stage</th>
-                        <th className="px-2 py-1.5 w-20 text-center">Confidence</th>
+                        <th className="px-2 py-1.5 w-24 text-center">Interest</th>
                         <th className="px-2 py-1.5 w-8"></th>
                       </tr>
                     </thead>
@@ -1300,22 +1300,14 @@ export default function DashboardPage() {
                             <td className="px-2 py-1.5 text-center">
                               <span className={cn("inline-flex items-center justify-center h-5 w-5 rounded-md text-[9px] font-bold cursor-help", stageColor)} title={stageTooltip}>{stageLetter}</span>
                             </td>
-                            <td className="px-2 py-1.5 text-center">
-                              {(() => {
-                                const CONF_LABELS = ['Not sure', 'Curious', 'Interested', 'Confident', 'Committed'];
-                                const CONF_COLORS = ['text-red-400', 'text-amber-400', 'text-yellow-400', 'text-emerald-400', 'text-teal-400'];
-                                try {
-                                  const raw = window.localStorage.getItem(`confidence-tracker-${career?.id ?? ''}`);
-                                  if (raw) {
-                                    const entries = JSON.parse(raw) as { score: number }[];
-                                    const last = entries[entries.length - 1];
-                                    if (last?.score >= 1 && last.score <= 5) {
-                                      return <span className={cn('text-[8px] font-medium', CONF_COLORS[last.score - 1])}>{CONF_LABELS[last.score - 1]}</span>;
-                                    }
-                                  }
-                                } catch { /* ignore */ }
-                                return <span className="text-[8px] text-muted-foreground/30">—</span>;
-                              })()}
+                            <td className="px-2 py-1.5">
+                              <span className="flex items-center justify-center">
+                                {career && interestLevels[career.id] ? (
+                                  <InterestLevelStars value={interestLevels[career.id]} />
+                                ) : (
+                                  <span className="text-[8px] text-muted-foreground/30">—</span>
+                                )}
+                              </span>
                             </td>
                             <td className="px-2 py-1.5">
                               {!isCurrentGoal && (
@@ -1415,6 +1407,9 @@ export default function DashboardPage() {
                         <span className="shrink-0 text-sm">{c.careerEmoji}</span>
                         <span className="text-muted-foreground/70 truncate flex-1">{c.careerTitle}</span>
                       </button>
+                      {interestLevels[c.careerId] && (
+                        <InterestLevelStars value={interestLevels[c.careerId]} className="shrink-0" />
+                      )}
                       <span className="text-[9px] text-muted-foreground/30 shrink-0">
                         {(() => {
                           const s = Math.floor((Date.now() - new Date(c.savedAt).getTime()) / 1000);

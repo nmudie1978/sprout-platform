@@ -250,7 +250,7 @@ export default function ProfilePage() {
       toast({
         title: data.profileVisibility ? "Profile is now public" : "Profile is now private",
         description: data.profileVisibility
-          ? "Job posters can view your profile link"
+          ? "Your profile link can be viewed by others"
           : "Your profile is private",
       });
       queryClient.invalidateQueries({ queryKey: ["my-profile"] });
