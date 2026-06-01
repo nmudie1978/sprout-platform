@@ -454,49 +454,6 @@ export default async function LandingPage() {
       </section>
 
       {/* ============================================ */}
-      {/* SECTION 5b — HONEST COMPARISON */}
-      {/* "Why not utdanning.no" — the obvious question for any         */}
-      {/* Norwegian parent or careers counsellor. Answered calmly and   */}
-      {/* factually, not as a knock on a free public resource we        */}
-      {/* actually integrate with.                                       */}
-      {/* ============================================ */}
-      <section className="border-t border-slate-800/60">
-        <div className="mx-auto max-w-3xl px-5 py-20 sm:py-24">
-          <p className="text-[11px] font-medium uppercase tracking-[0.2em] text-neutral-600 mb-4 text-center">
-            An honest question
-          </p>
-          <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-white text-center mb-10">
-            Why not just use utdanning.no?
-          </h2>
-          <div className="space-y-5 text-[15px] leading-relaxed text-neutral-400">
-            <p>
-              utdanning.no will tell you every Norwegian education programme
-              in detail. It&rsquo;s free, authoritative, and genuinely brilliant
-              at what it does. Our programme data comes straight from there.
-            </p>
-            <p>
-              What it won&rsquo;t tell you is{" "}
-              <em>whether you want to do it</em>. That&rsquo;s not a failure
-              &mdash; it&rsquo;s just not what a catalogue is for. It expects
-              you to arrive with your question already formed.
-            </p>
-            <p>
-              Endeavrly is what comes before the catalogue. A calm, paced walk
-              through three stages &mdash;{" "}
-              <span className="text-white">Discover &middot; Understand &middot; Clarity</span>{" "}
-              &mdash; with a voice-narrated career roadmap you can play through,
-              real timelines from Norwegians who&rsquo;ve walked the path,
-              and private reflection prompts that don&rsquo;t feed an algorithm.
-            </p>
-            <p>
-              Then, when you know what you&rsquo;re looking for, utdanning.no
-              is a click away.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* ============================================ */}
       {/* SECTION 5c — BUILT BY (provenance)             */}
       {/* Pre-launch, solo-built. Saying so openly is more                */}
       {/* trust-building than fake testimonials.                          */}
