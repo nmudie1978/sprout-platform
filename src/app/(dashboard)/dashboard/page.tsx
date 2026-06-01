@@ -51,7 +51,7 @@ import { computeLensProgress, isJourneySnapshotWorthy, journeyStageLabel } from 
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { OrientationWalkthrough } from "@/components/onboarding/orientation-walkthrough";
-import { useLocaleSwitch } from "@/hooks/use-locale-switch";
+import { LanguageDropdown } from "@/components/language-dropdown";
 import { VerificationStatus } from "@/components/verification-status";
 import { CareerDetailSheet } from "@/components/career-detail-sheet";
 import { getAllCareers, getSectorForCareer } from "@/lib/career-pathways";
@@ -720,7 +720,6 @@ export default function DashboardPage() {
   });
 
   // Language toggle — always visible
-  const { currentLocale, setLocale, isPending: isLocalePending } = useLocaleSwitch();
 
   // Discover profile — "Who Am I" summary (generic across all goals)
   const { data: discoverData } = useDiscoverRecommendations(session?.user.role === "YOUTH");
@@ -923,34 +922,8 @@ export default function DashboardPage() {
                 <Compass className="h-3.5 w-3.5" />
               </button>
             )}
-            {/* Language toggle — always visible */}
-            {!isLocalePending && (
-              <div className="flex items-center gap-1 rounded-lg border border-border/30 bg-card px-1.5 py-1">
-                <button
-                  onClick={() => setLocale("en-GB")}
-                  className={cn("px-1.5 py-0.5 rounded text-sm transition-all", currentLocale === "en-GB" ? "bg-foreground/10 scale-110" : "opacity-50 hover:opacity-80 grayscale hover:grayscale-0")}
-                  title="Switch to English"
-                >
-                  🇬🇧
-                </button>
-                <span className="text-muted-foreground/20 text-[10px]">|</span>
-                <button
-                  onClick={() => setLocale("nb-NO")}
-                  className={cn("px-1.5 py-0.5 rounded text-sm transition-all", currentLocale === "nb-NO" ? "bg-foreground/10 scale-110" : "opacity-50 hover:opacity-80 grayscale hover:grayscale-0")}
-                  title="Bytt til norsk"
-                >
-                  🇳🇴
-                </button>
-                <span className="text-muted-foreground/20 text-[10px]">|</span>
-                <button
-                  onClick={() => setLocale("es")}
-                  className={cn("px-1.5 py-0.5 rounded text-sm transition-all", currentLocale === "es" ? "bg-foreground/10 scale-110" : "opacity-50 hover:opacity-80 grayscale hover:grayscale-0")}
-                  title="Cambiar a español"
-                >
-                  🇪🇸
-                </button>
-              </div>
-            )}
+            {/* Language switcher — dropdown list (English / Norsk / Español) */}
+            <LanguageDropdown />
             <span className="text-sm text-white/85">
               {dateStr}
             </span>
