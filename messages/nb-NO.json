@@ -44,7 +44,7 @@
     "cardTitle": "Min reise",
     "cardTitleWithGoal": "Min reise mot å bli",
     "chooseGoalPrompt": "Velg et hovedmål for å starte",
-    "completeIndicator": "Reise fullført",
+    "completeIndicator": "Du har utforsket denne mulige framtiden",
     "progressTooltip": "Reisen din følger fremgangen gjennom Utforsk, Forstå og Klarhet — slik at du ser hele bildet av en karrierevei.",
     "hint": "Dette er din vei",
     "discover": {
@@ -260,7 +260,9 @@
       "title": "Fremtiden din er din å utforske.",
       "problem": "Men akkurat nå er arbeidslivet nesten usynlig. Stillingstitler du ikke forstår. Kvalifikasjoner du ikke kan se for deg. Karriereråd som høres likt ut. Ingen viser deg hvordan disse veiene faktisk føles — eller om de passer til den du er i ferd med å bli.",
       "solution": "Endeavrly gir deg det som har manglet. Ekte karrierer. Ærlig informasjon. Et sted å reflektere over hvem du er og prøve ting selv — slik at når du velger en retning, er den din. Ingen tester. Ikke noe press. Bare klarhet.",
-      "cta": "Utforsk Endeavrly"
+      "cta": "Utforsk Endeavrly",
+      "tagline": "Karriere-operativsystemet for unge.",
+      "subhead": "Se din mulige framtid før du forplikter deg til den."
     },
     "framework": {
       "title": "Tre linser. Én reise.",
