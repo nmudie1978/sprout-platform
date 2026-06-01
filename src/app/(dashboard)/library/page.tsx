@@ -54,7 +54,7 @@ export default function LibraryPage() {
       <header className="mb-5">
         <h1 className="text-xl font-bold tracking-tight">My Library</h1>
         <p className="text-sm text-muted-foreground">
-          Everything you&apos;ve saved and written, in one calm place.
+          The possible futures you&apos;re considering — everything you&apos;ve saved, compared and written, in one calm place.
         </p>
       </header>
 

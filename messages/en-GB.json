@@ -44,7 +44,7 @@
     "cardTitle": "My Journey",
     "cardTitleWithGoal": "My Journey to becoming a",
     "chooseGoalPrompt": "Choose a Primary Goal to start",
-    "completeIndicator": "Journey complete",
+    "completeIndicator": "You've explored this possible future",
     "progressTooltip": "Your journey tracks your progress through Discover, Understand, and Clarity — helping you see the full picture of a career path.",
     "hint": "This is your path",
     "discover": {
@@ -260,7 +260,9 @@
       "title": "Your future is yours to explore.",
       "problem": "But right now, the world of work is almost invisible. Job titles you don't understand. Qualifications you can't picture. Career advice that all sounds the same. Nobody shows you what these paths actually feel like — or whether they'd suit the person you're becoming.",
       "solution": "Endeavrly gives you what's been missing. Real careers. Honest information. A space to reflect on who you are and try things for yourself — so when you do choose a direction, it's yours. No quizzes. No pressure. Just clarity.",
-      "cta": "Explore Endeavrly"
+      "cta": "Explore Endeavrly",
+      "tagline": "The Career Operating System for young people.",
+      "subhead": "See your possible future before you commit to it."
     },
     "framework": {
       "title": "Three lenses. One journey.",
