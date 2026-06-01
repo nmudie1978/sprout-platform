@@ -33,11 +33,11 @@ export const STAT_INSIGHTS: StatInsight[] = [
     id: "oecd-job-shadowing",
     headline: "Only 45% of students have experienced real workplaces",
     explanation:
-      "Most career decisions are made without ever seeing how a job actually works. Job shadowing and workplace visits give you real information — not just guesswork from a brochure.",
-    sourceLabel: "OECD PISA · 2024",
+      "Most career decisions are made without ever seeing how a job actually works. Visiting a workplace or sitting in on a role gives you real information — not just guesswork from a brochure.",
+    sourceLabel: "OECD · 2025",
     tags: [
       "workplace_exposure",
-      "job_shadowing",
+      "workplace_visit",
       "first_job",
       "internship",
       "career_pathways",
@@ -61,7 +61,7 @@ export const STAT_INSIGHTS: StatInsight[] = [
     id: "gallup-preparedness",
     headline: "43% of students don't feel prepared for their future",
     explanation:
-      "Feeling unprepared doesn't mean you're behind — it means the system hasn't caught up. Small steps like shadowing someone at work, building one practical skill, or talking to a mentor can make a huge difference.",
+      "Feeling unprepared doesn't mean you're behind — it means the system hasn't caught up. Small steps like sitting in with someone at work, building one practical skill, or talking to a mentor can make a huge difference.",
     sourceLabel: "Gallup · 2025",
     tags: [
       "skills_gap",
@@ -75,7 +75,7 @@ export const STAT_INSIGHTS: StatInsight[] = [
     id: "oecd-career-outcomes",
     headline: "Career exploration leads to better employment outcomes",
     explanation:
-      "Students who explore careers early — through job shadowing, conversations, or mentoring — end up with better jobs, higher earnings, and more satisfaction by age 25. Exploration works.",
+      "Students who explore careers early — through workplace visits, conversations, or mentoring — end up with better jobs, higher earnings, and more satisfaction by age 25. Exploration works.",
     sourceLabel: "OECD · 2024",
     tags: [
       "career_pathways",
