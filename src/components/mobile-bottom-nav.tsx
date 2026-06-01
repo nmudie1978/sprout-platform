@@ -32,14 +32,11 @@ import {
   Briefcase,
   MessageSquare,
   User,
-  PlusCircle,
   LayoutDashboard,
   Route,
   Compass,
-  Search,
   Shield,
   Radar,
-  FileText,
   Calendar,
   BarChart3,
   Bot,
@@ -52,11 +49,9 @@ import {
   Moon,
   LogOut,
   Settings,
-  Users,
   TrendingUp,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { SMALL_JOBS_ENABLED } from "@/lib/feature-flags";
 import {
   Sheet,
   SheetContent,
@@ -88,16 +83,7 @@ const youthBarItems: NavItem[] = [
   { href: "/dashboard", label: "Home", icon: Home },
   { href: "/my-journey", label: "Journey", icon: Route, activePattern: /^\/my-journey/ },
   { href: "/careers", label: "Careers", icon: Compass, activePattern: /^\/careers(?!\/radar)/ },
-  SMALL_JOBS_ENABLED
-    ? { href: "/jobs", label: "Jobs", icon: Search, activePattern: /^\/jobs/ }
-    : { href: "/careers/radar", label: "Radar", icon: Radar, activePattern: /^\/careers\/radar/ },
-];
-
-const employerBarItems: NavItem[] = [
-  { href: "/employer/dashboard", label: "Home", icon: LayoutDashboard },
-  { href: "/employer/post-job", label: "Post", icon: PlusCircle },
-  { href: "/messages", label: "Messages", icon: MessageSquare, activePattern: /^\/messages/ },
-  { href: "/employer/talent", label: "Talent", icon: Users, activePattern: /^\/employer\/talent/ },
+  { href: "/careers/radar", label: "Radar", icon: Radar, activePattern: /^\/careers\/radar/ },
 ];
 
 // ── More drawer — full section tree, mirrored from sidebar-nav ──────
@@ -111,9 +97,6 @@ export const youthDrawerSections: NavSection[] = [
       { href: "/careers/radar", label: "My Career Radar", icon: Radar },
       { href: "/library", label: "My Library", icon: Library },
       { href: "/career-advisor", label: "AI Advisor", icon: Bot },
-      ...(SMALL_JOBS_ENABLED
-        ? [{ href: "/applications", label: "My Small Jobs", icon: FileText }]
-        : []),
     ],
   },
   {
@@ -124,12 +107,6 @@ export const youthDrawerSections: NavSection[] = [
       { href: "/insights", label: "Industry Insights", icon: BarChart3 },
     ],
   },
-  ...(SMALL_JOBS_ENABLED
-    ? [{
-        title: "Small Jobs",
-        items: [{ href: "/jobs", label: "Browse Jobs", icon: Search }],
-      }]
-    : []),
   {
     title: "Account",
     items: [{ href: "/profile", label: "Profile", icon: User }],
@@ -140,25 +117,6 @@ export const youthDrawerSections: NavSection[] = [
       { href: "/info", label: "About", icon: Info },
       { href: "/feedback", label: "Feedback", icon: HelpCircle },
       { href: "/reviews", label: "User Reviews", icon: Quote },
-    ],
-  },
-];
-
-const employerDrawerSections: NavSection[] = [
-  {
-    title: "Manage",
-    items: [
-      { href: "/employer/dashboard", label: "Dashboard", icon: LayoutDashboard },
-      { href: "/employer/post-job", label: "Post Job", icon: PlusCircle },
-      { href: "/employer/talent", label: "Browse Talent", icon: Compass },
-      { href: "/messages", label: "Messages", icon: MessageSquare },
-    ],
-  },
-  {
-    title: "Account",
-    items: [
-      { href: "/employer/settings", label: "Settings", icon: Settings },
-      { href: "/feedback", label: "Support", icon: HelpCircle },
     ],
   },
 ];
@@ -291,15 +249,10 @@ export function MobileBottomNav() {
   }
 
   const role = session.user.role;
-  const barItems: NavItem[] =
-    role === "EMPLOYER" ? employerBarItems : youthBarItems;
+  const barItems: NavItem[] = youthBarItems;
 
   const drawerSections: NavSection[] =
-    role === "EMPLOYER"
-      ? employerDrawerSections
-      : role === "ADMIN"
-        ? adminDrawerSections
-        : youthDrawerSections;
+    role === "ADMIN" ? adminDrawerSections : youthDrawerSections;
 
   const isActive = (item: NavItem) => {
     if (item.activePattern) {

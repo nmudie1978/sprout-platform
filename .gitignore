@@ -41,3 +41,6 @@ prisma/*.db-journal
 
 # QA audit outputs (generated; commit only when intentional)
 scripts/output/
+
+# Local skill tooling — never commit
+.superpowers/
