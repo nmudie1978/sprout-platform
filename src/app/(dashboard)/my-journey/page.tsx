@@ -3313,7 +3313,7 @@ export default function MyJourneyPage() {
           {career && (
             <div className="mt-2 flex items-center gap-2">
               <span className="text-xs text-muted-foreground/70 shrink-0">Interest level:</span>
-              <InterestLevelPicker value={interestLevel} onChange={setInterestLevel} size="sm" />
+              <InterestLevelPicker value={interestLevel} onChange={setInterestLevel} size="sm" showLabel={false} />
             </div>
           )}
           {/* Career Twin entry — "Ask Future Me" (renders only with an active career) */}
