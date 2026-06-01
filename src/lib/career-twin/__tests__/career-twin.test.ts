@@ -30,8 +30,17 @@ const richProfile: CareerTwinProfileContext = {
 };
 
 describe("Career Twin — modes", () => {
-  it("exposes all eight conversation modes", () => {
-    expect(CAREER_TWIN_MODES).toHaveLength(8);
+  it("exposes the seven conversation modes", () => {
+    expect(CAREER_TWIN_MODES).toHaveLength(7);
+    expect(CAREER_TWIN_MODES.map((m) => m.id)).toEqual([
+      "ask_future_me",
+      "study_skills",
+      "money_lifestyle",
+      "hard_truths",
+      "doubts_risks",
+      "opportunities",
+      "next_steps",
+    ]);
   });
 
   it("every mode has a label, a prompt modifier, and at least 3 starter questions", () => {
@@ -50,7 +59,7 @@ describe("Career Twin — modes", () => {
   });
 
   it("isValidModeId guards unknown ids", () => {
-    expect(isValidModeId("day_in_life")).toBe(true);
+    expect(isValidModeId("doubts_risks")).toBe(true);
     expect(isValidModeId("nope")).toBe(false);
     expect(isValidModeId(null)).toBe(false);
   });
@@ -146,15 +155,15 @@ describe("Career Twin — system prompt (content)", () => {
   });
 
   it("reflects the selected mode's steer", () => {
-    const dayMode = getMode("day_in_life");
+    const doubtsMode = getMode("doubts_risks");
     const prompt = buildCareerTwinSystemPrompt({
       persona,
-      mode: dayMode,
+      mode: doubtsMode,
       career: physio,
       profile: richProfile,
     });
-    expect(prompt).toContain(dayMode.label);
-    expect(prompt).toContain(dayMode.promptModifier);
+    expect(prompt).toContain(doubtsMode.label);
+    expect(prompt).toContain(doubtsMode.promptModifier);
   });
 
   it("falls back to a general instruction when no profile context exists", () => {
