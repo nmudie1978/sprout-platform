@@ -34,27 +34,21 @@ const REQUIRED_YOUTH_ROUTES = [
   '/my-journey',        // Journey / bottom bar
   '/careers',           // Explore Careers / bottom bar
   '/careers/radar',     // My Career Radar — previously missing from mobile
-  '/applications',      // My Small Jobs — previously missing from mobile
   '/career-events',     // Youth Events — previously missing from mobile
   '/insights',          // Industry Insights — previously missing from mobile
   '/career-advisor',    // AI Advisor — now under "Yours"
   '/library',           // My Library — saved careers, comparisons, reflections
-  '/jobs',              // Browse Jobs / bottom bar
   '/profile',           // Profile — present but previously hidden behind wrong slot
   '/info',              // About — previously missing from mobile
   '/feedback',          // Feedback — previously missing from mobile
   '/reviews',           // User Reviews — previously missing from mobile
 ];
 
-const REQUIRED_EMPLOYER_ROUTES = [
-  '/employer/dashboard',
-  '/employer/post-job',
-  '/employer/talent',
-  '/messages',
-  '/employer/settings',
-  '/feedback',
-];
-
+// NOTE: The "job poster" (EMPLOYER) role and the small-jobs marketplace
+// were fully removed — Endeavrly is a youth career-exploration platform,
+// not a jobs marketplace. The previous REQUIRED_EMPLOYER_ROUTES / /jobs /
+// /applications checks were dropped with that removal.
+//
 // NOTE: The COMMUNITY_GUARDIAN role and its `/guardian` route were
 // intentionally removed in "Strip jobs-era guardian machinery"
 // (1861776) — such users were promoted to ADMIN. The previous
@@ -76,14 +70,6 @@ describe('MobileBottomNav route coverage (Issue 5 — positive tests)', () => {
         exactMatch.test(NAV_SOURCE),
         `Route "${route}" must appear in mobile-bottom-nav.tsx`,
       ).toBe(true);
-    },
-  );
-
-  it.each(REQUIRED_EMPLOYER_ROUTES)(
-    'exposes employer route %s somewhere in mobile nav',
-    (route) => {
-      const exactMatch = new RegExp(`["']${route.replace(/[/]/g, '\\/')}["']`);
-      expect(exactMatch.test(NAV_SOURCE)).toBe(true);
     },
   );
 
@@ -138,10 +124,6 @@ describe('MobileBottomNav route coverage (Issue 5 — negative tests)', () => {
     // desktop sidebar. If someone removes it from the mobile nav
     // without updating the required-route list, this test flags it.
     expect(NAV_SOURCE).toMatch(/\/careers\/radar/);
-  });
-
-  it('does NOT hide My Small Jobs (Applications)', () => {
-    expect(NAV_SOURCE).toMatch(/\/applications/);
   });
 
   it('does NOT render the nav on auth / legal pages', () => {

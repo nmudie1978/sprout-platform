@@ -17,7 +17,6 @@ import { signOut } from "next-auth/react";
 import { useTheme } from "next-themes";
 import { useQuery } from "@tanstack/react-query";
 import { cn } from "@/lib/utils";
-import { SMALL_JOBS_ENABLED } from "@/lib/feature-flags";
 import {
   Tooltip,
   TooltipContent,
@@ -45,7 +44,6 @@ import {
   Moon,
   LogOut,
   Route,
-  Search,
   FileText,
   Calendar,
   Quote,
@@ -415,12 +413,6 @@ export function SidebarNav({ userRole, userName, userEmail, userProfilePic }: Si
               <NavItem href="/career-events" icon={Calendar} label="Youth Events" active={isActive("/career-events")} collapsed={collapsed} tooltip="Workshops, open days and meet-ups for young people exploring careers." />
               <NavItem href="/insights" icon={BarChart3} label="Industry Insights" active={isActive("/insights")} collapsed={collapsed} tooltip="What's actually happening in different industries — hiring, pay, and outlook." />
             </NavSection>
-
-            {SMALL_JOBS_ENABLED && (
-              <NavSection title="Small Jobs" collapsed={collapsed}>
-                <NavItem href="/jobs" icon={Search} label="Browse" active={isActive("/jobs")} collapsed={collapsed} tooltip="Find local small jobs you can take on safely — agreed externally, no in-app payments." />
-              </NavSection>
-            )}
 
             <NavSection title="Account" collapsed={collapsed}>
               <NavItem href="/profile" icon={User} label="Profile" active={isActive("/profile")} collapsed={collapsed} tooltip="Your display name, bio, city, career goals, job availability and privacy settings — everything that makes up your profile." />
