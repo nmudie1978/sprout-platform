@@ -21,6 +21,8 @@ import { useSession } from "next-auth/react";
 import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useCuriositySaves } from "@/hooks/use-curiosity-saves";
+import { useAllInterestLevels } from "@/hooks/use-interest-level";
+import { InterestLevelStars } from "@/components/interest-level/interest-level-rating";
 import {
   getSavedComparisons,
   type SavedComparison,
@@ -101,6 +103,7 @@ function EmptyState({ children }: { children: React.ReactNode }) {
 
 function SavedCareersTab() {
   const { curiosities, removeCuriosity } = useCuriositySaves();
+  const interestLevels = useAllInterestLevels();
   if (curiosities.length === 0) {
     return (
       <EmptyState>
@@ -128,6 +131,9 @@ function SavedCareersTab() {
             <span className="shrink-0">{c.careerEmoji}</span>
             <span className="truncate flex-1">{c.careerTitle}</span>
           </button>
+          {interestLevels[c.careerId] && (
+            <InterestLevelStars value={interestLevels[c.careerId]} className="shrink-0" />
+          )}
           <button
             type="button"
             onClick={() => removeCuriosity(c.careerId)}

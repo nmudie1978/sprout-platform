@@ -258,7 +258,7 @@ function GoalCard({
               </Select>
             </div>
             <div>
-              <label className="text-sm font-medium mb-1 block">Confidence</label>
+              <label className="text-sm font-medium mb-1 block">Interest level</label>
               <Select
                 value={editForm.confidence}
                 onValueChange={(v) => setEditForm({ ...editForm, confidence: v as GoalConfidence })}
@@ -267,9 +267,9 @@ function GoalCard({
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="low">Low</SelectItem>
-                  <SelectItem value="medium">Medium</SelectItem>
-                  <SelectItem value="high">High</SelectItem>
+                  <SelectItem value="low">Interested</SelectItem>
+                  <SelectItem value="medium">Excited</SelectItem>
+                  <SelectItem value="high">Very interested</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -416,7 +416,7 @@ function GoalCard({
         <div className="flex flex-wrap gap-2">
           <Badge className={statusConfig.color}>{statusConfig.label}</Badge>
           <Badge variant="outline" className={confidenceConfig.color}>
-            {confidenceConfig.label} confidence
+            {goal!.confidence === "low" ? "Interested" : goal!.confidence === "high" ? "Very interested" : "Excited"}
           </Badge>
           <Badge variant="outline" className="text-muted-foreground">
             <Clock className="h-3 w-3 mr-1" />
