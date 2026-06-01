@@ -56,7 +56,7 @@ import {
 // ── Types ────────────────────────────────────────────────────────────
 
 interface SidebarNavProps {
-  userRole: "YOUTH" | "EMPLOYER" | "ADMIN" | "TEACHER";
+  userRole: "YOUTH" | "ADMIN" | "TEACHER";
   userName?: string;
   userEmail?: string;
   userProfilePic?: string | null;

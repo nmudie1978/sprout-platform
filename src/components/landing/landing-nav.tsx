@@ -29,7 +29,7 @@ export function LandingNavAuth() {
           {session.user.email}
         </span>
         <Button asChild className="h-10 sm:h-9 px-3 sm:px-4">
-          <Link href={session.user.role === "EMPLOYER" ? "/employer/dashboard" : "/dashboard"}>
+          <Link href="/dashboard">
             <LayoutDashboard className="h-4 w-4 sm:mr-2" />
             <span className="hidden sm:inline">Dashboard</span>
           </Link>

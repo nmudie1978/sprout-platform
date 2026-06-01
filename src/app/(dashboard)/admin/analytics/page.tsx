@@ -26,7 +26,6 @@ import {
   Calendar,
   ArrowUpRight,
   ArrowDownRight,
-  Building2,
   UserCheck,
   FileText,
   AlertTriangle,
@@ -351,7 +350,6 @@ export default function AdminAnalyticsPage() {
                       <div className="flex items-center gap-2">
                         <div className={`w-3 h-3 rounded-full ${
                           role === "YOUTH" ? "bg-blue-500" :
-                          role === "EMPLOYER" ? "bg-emerald-500" :
                           role === "ADMIN" ? "bg-teal-500" : "bg-amber-500"
                         }`} />
                         <span className="text-sm capitalize">{role.toLowerCase().replace("_", " ")}</span>
@@ -443,35 +441,6 @@ export default function AdminAnalyticsPage() {
             />
           </motion.div>
 
-          {/* Top Employer Spenders */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.35 }}
-          >
-            <TopList
-              title="Top Employer Spenders"
-              items={data?.financial?.topEmployerSpenders || []}
-              renderItem={(item, index) => (
-                <div key={item.postedById} className="flex items-center justify-between p-3 rounded-lg bg-muted/50">
-                  <div className="flex items-center gap-3">
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
-                      index === 0 ? "bg-teal-500 text-white" :
-                      index === 1 ? "bg-teal-400 text-white" :
-                      index === 2 ? "bg-teal-300 text-white" : "bg-muted text-foreground"
-                    }`}>
-                      {index + 1}
-                    </div>
-                    <div>
-                      <p className="font-medium text-sm">{item.companyName}</p>
-                      <p className="text-xs text-muted-foreground">{item._count.id} jobs</p>
-                    </div>
-                  </div>
-                  <p className="font-bold text-teal-600">{formatCurrency(item._sum.payAmount || 0)}</p>
-                </div>
-              )}
-            />
-          </motion.div>
         </div>
 
         {/* Top Performers */}
@@ -507,31 +476,6 @@ export default function AdminAnalyticsPage() {
             />
           </motion.div>
 
-          {/* Most Active Employers */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.45 }}
-          >
-            <TopList
-              title="Most Active Employers"
-              items={data?.topPerformers?.mostActiveEmployers || []}
-              renderItem={(item, index) => (
-                <div key={item.id} className="flex items-center justify-between p-3 rounded-lg bg-muted/50">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-blue-500/10 flex items-center justify-center">
-                      <Building2 className="h-4 w-4 text-blue-600" />
-                    </div>
-                    <div>
-                      <p className="font-medium text-sm">{item.companyName}</p>
-                      <p className="text-xs text-muted-foreground">{item.email}</p>
-                    </div>
-                  </div>
-                  <Badge variant="secondary">{item.jobsPosted} jobs</Badge>
-                </div>
-              )}
-            />
-          </motion.div>
         </div>
 
         {/* Badge Distribution & Recent Signups */}
@@ -584,7 +528,7 @@ export default function AdminAnalyticsPage() {
                     <div key={user.id} className="flex items-center justify-between p-2 rounded-lg bg-muted/30">
                       <div>
                         <p className="text-sm font-medium">
-                          {user.youthProfile?.displayName || user.employerProfile?.companyName || user.email}
+                          {user.youthProfile?.displayName || user.email}
                         </p>
                         <p className="text-xs text-muted-foreground">{formatDate(user.createdAt)}</p>
                       </div>

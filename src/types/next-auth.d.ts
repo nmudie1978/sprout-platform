@@ -24,11 +24,6 @@ declare module "next-auth" {
         profileVisibility: boolean;
         guardianConsent: boolean;
       } | null;
-      employerProfile?: {
-        companyName: string;
-        eidVerified: boolean;
-        ageVerified: boolean;
-      } | null;
     } & DefaultSession["user"];
   }
 

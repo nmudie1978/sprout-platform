@@ -60,7 +60,8 @@ export default function ShadowsPage() {
   const [showGuide, setShowGuide] = useState(true);
 
   const isYouth = session?.user?.role === "YOUTH";
-  const isEmployer = session?.user?.role === "EMPLOYER";
+  // Job-poster (employer) host accounts have been removed; only youth use this surface.
+  const isEmployer = false;
 
   // Fetch shadow requests
   const { data: shadows, isLoading } = useQuery<ShadowRequest[]>({

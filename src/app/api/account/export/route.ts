@@ -34,7 +34,6 @@ export async function GET(req: NextRequest) {
       where: { id: userId },
       include: {
         youthProfile: true,
-        employerProfile: true,
         applications: {
           include: {
             job: {
@@ -136,12 +135,6 @@ export async function GET(req: NextRequest) {
               type: "youth",
               ...user.youthProfile,
               // Remove internal IDs
-              userId: undefined,
-            }
-          : user.role === "EMPLOYER"
-          ? {
-              type: "employer",
-              ...user.employerProfile,
               userId: undefined,
             }
           : null,
