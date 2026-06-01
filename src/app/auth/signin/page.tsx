@@ -23,9 +23,7 @@ export default function SignInPage() {
   // Handle redirect when session becomes available
   useEffect(() => {
     if (redirecting && status === "authenticated" && session?.user?.role) {
-      const destination = session.user.role === "EMPLOYER"
-        ? "/employer/dashboard"
-        : "/dashboard";
+      const destination = "/dashboard";
       router.push(destination);
       router.refresh();
     }
@@ -34,9 +32,7 @@ export default function SignInPage() {
   // If already authenticated, redirect immediately
   useEffect(() => {
     if (status === "authenticated" && session?.user?.role && !loading) {
-      const destination = session.user.role === "EMPLOYER"
-        ? "/employer/dashboard"
-        : "/dashboard";
+      const destination = "/dashboard";
       router.push(destination);
     }
   }, [session, status, loading, router]);
@@ -79,9 +75,7 @@ export default function SignInPage() {
         const sessionData = await response.json();
 
         if (sessionData?.user?.role) {
-          const destination = sessionData.user.role === "EMPLOYER"
-            ? "/employer/dashboard"
-            : "/dashboard";
+          const destination = "/dashboard";
           router.push(destination);
           router.refresh();
         } else {

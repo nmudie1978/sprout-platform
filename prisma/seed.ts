@@ -2604,13 +2604,7 @@ This platform helps you earn money through micro-jobs while discovering potentia
     update: {},
     create: {
       email: 'demo-employer@youthplatform.no',
-      role: 'EMPLOYER',
-      employerProfile: {
-        create: {
-          companyName: 'Demo Local Services',
-          verified: true,
-        },
-      },
+      role: 'YOUTH',
     },
   });
 
@@ -3054,13 +3048,7 @@ This platform helps you earn money through micro-jobs while discovering potentia
       update: {},
       create: {
         email: emp.email,
-        role: 'EMPLOYER',
-        employerProfile: {
-          create: {
-            companyName: emp.company,
-            verified: true,
-          },
-        },
+        role: 'YOUTH',
       },
     });
     employers.push(employer);
@@ -3264,45 +3252,21 @@ This platform helps you earn money through micro-jobs while discovering potentia
   const nickyEmployer = await prisma.user.upsert({
     where: { email: 'nickymudie@hotmail.com' },
     update: {
-      role: 'EMPLOYER',
+      role: 'YOUTH',
       ageBracket: 'EIGHTEEN_TWENTY',
       accountStatus: 'ACTIVE',
       dateOfBirth: new Date('1990-01-15'), // Set DOB for age verification
     },
     create: {
       email: 'nickymudie@hotmail.com',
-      role: 'EMPLOYER',
+      role: 'YOUTH',
       ageBracket: 'EIGHTEEN_TWENTY',
       accountStatus: 'ACTIVE',
       dateOfBirth: new Date('1990-01-15'), // Set DOB for age verification
-      employerProfile: {
-        create: {
-          companyName: 'Nicky\'s Services',
-          bio: 'Local family services offering various jobs for youth workers.',
-          verified: true,
-          ageVerified: true,
-        },
-      },
     },
   });
 
-  // Ensure employer profile exists and has correct settings
-  await prisma.employerProfile.upsert({
-    where: { userId: nickyEmployer.id },
-    update: {
-      verified: true,
-      ageVerified: true,
-    },
-    create: {
-      userId: nickyEmployer.id,
-      companyName: 'Nicky\'s Services',
-      bio: 'Local family services offering various jobs for youth workers.',
-      verified: true,
-      ageVerified: true,
-    },
-  });
-
-  console.log('✅ Created/found nickymudie@hotmail.com employer');
+  console.log('✅ Created/found nickymudie@hotmail.com poster');
 
   // Create jobs for Nicky's employer account
   const nickyJobsData = [

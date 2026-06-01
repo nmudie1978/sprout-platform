@@ -37,11 +37,6 @@ export async function GET() {
             onboardingCompletedAt: true,
           },
         },
-        employerProfile: {
-          select: {
-            companyName: true,
-          },
-        },
       },
       orderBy: { createdAt: 'desc' },
       take: 200,
@@ -52,7 +47,6 @@ export async function GET() {
     const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     const totalUsers = await prisma.user.count();
     const youthCount = await prisma.user.count({ where: { role: 'YOUTH' } });
-    const employerCount = await prisma.user.count({ where: { role: 'EMPLOYER' } });
     const today = await prisma.user.count({
       where: { createdAt: { gte: todayStart } },
     });
@@ -73,7 +67,6 @@ export async function GET() {
         createdAt: true,
         fullName: true,
         youthProfile: { select: { displayName: true } },
-        employerProfile: { select: { companyName: true } },
       },
       orderBy: { createdAt: 'desc' },
     });
@@ -84,7 +77,6 @@ export async function GET() {
       stats: {
         total: totalUsers,
         youth: youthCount,
-        employers: employerCount,
         today,
         last7Days,
         last30Days,

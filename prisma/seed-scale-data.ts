@@ -524,9 +524,6 @@ async function resetScaleData(): Promise<void> {
   await prisma.youthProfile.deleteMany({
     where: { user: { email: { endsWith: SCALE_EMAIL_DOMAIN } } },
   });
-  await prisma.employerProfile.deleteMany({
-    where: { user: { email: { endsWith: SCALE_EMAIL_DOMAIN } } },
-  });
   await prisma.user.deleteMany({
     where: { email: { endsWith: SCALE_EMAIL_DOMAIN } },
   });
@@ -597,22 +594,12 @@ async function seedEmployers(employerData: GeneratedEmployer[]): Promise<Map<str
       data: {
         email: employer.email,
         password: hashedPassword,
-        role: 'EMPLOYER',
+        role: 'YOUTH',
         dateOfBirth: employer.dateOfBirth,
         accountStatus: 'ACTIVE',
         location: employer.city,
         isVerifiedAdult: true,
         verifiedAt: new Date(),
-        employerProfile: {
-          create: {
-            companyName: employer.companyName,
-            bio: employer.bio,
-            verified: true,
-            eidVerified: true,
-            eidVerifiedAt: new Date(),
-            ageVerified: true,
-          },
-        },
       },
     });
 

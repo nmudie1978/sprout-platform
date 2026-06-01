@@ -31,7 +31,6 @@ export default async function AdminReportDetailPage({ params }: PageProps) {
           email: true,
           role: true,
           youthProfile: { select: { displayName: true } },
-          employerProfile: { select: { companyName: true } },
         },
       },
       assignedGuardian: {
@@ -59,14 +58,12 @@ export default async function AdminReportDetailPage({ params }: PageProps) {
           where: { id: report.targetId },
           include: {
             youthProfile: { select: { displayName: true, city: true } },
-            employerProfile: { select: { companyName: true, eidVerified: true, ageVerified: true } },
           },
         })
       : null;
 
   const reporterName =
     report.reporter.youthProfile?.displayName ??
-    report.reporter.employerProfile?.companyName ??
     report.reporter.email ??
     "—";
   const reasonLabel = REPORT_REASONS[report.reason as keyof typeof REPORT_REASONS] ?? report.reason;
@@ -147,7 +144,7 @@ export default async function AdminReportDetailPage({ params }: PageProps) {
             Reported user
           </p>
           <p className="text-sm font-medium text-foreground/90">
-            {targetUser.youthProfile?.displayName ?? targetUser.employerProfile?.companyName ?? targetUser.email}
+            {targetUser.youthProfile?.displayName ?? targetUser.email}
           </p>
           <p className="text-xs text-muted-foreground mt-0.5">
             {targetUser.role} · {targetUser.email}

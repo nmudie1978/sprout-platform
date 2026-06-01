@@ -41,14 +41,6 @@ export async function GET(
             email: true,
             fullName: true,
             isVerifiedAdult: true,
-            employerProfile: {
-              select: {
-                companyName: true,
-                companyLogo: true,
-                verified: true,
-                bio: true,
-              },
-            },
           },
         },
         reflection: true,

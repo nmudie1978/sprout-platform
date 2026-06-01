@@ -211,7 +211,6 @@ export async function GET(req: NextRequest) {
           select: {
             id: true,
             youthProfile: { select: { displayName: true, avatarId: true } },
-            employerProfile: { select: { companyName: true } },
           },
         },
       },

@@ -591,9 +591,6 @@ async function cleanupDemoData() {
   await prisma.youthProfile.deleteMany({
     where: { user: { email: { endsWith: DEMO_EMAIL_DOMAIN } } },
   });
-  await prisma.employerProfile.deleteMany({
-    where: { user: { email: { endsWith: DEMO_EMAIL_DOMAIN } } },
-  });
 
   // 8. Delete demo users
   await prisma.user.deleteMany({
@@ -671,32 +668,11 @@ async function seedDemoUsers() {
       create: {
         email: employer.email,
         password: hashedPassword,
-        role: UserRole.EMPLOYER,
+        role: UserRole.YOUTH,
         accountStatus: AccountStatus.ACTIVE,
         emailVerified: new Date(),
         isVerifiedAdult: true,
         verifiedAt: new Date(),
-      },
-    });
-
-    await prisma.employerProfile.upsert({
-      where: { userId: user.id },
-      update: {
-        companyName: employer.companyName,
-        bio: employer.bio,
-        verified: true,
-        ageVerified: true,
-        eidVerified: true,
-        eidVerifiedAt: new Date(),
-      },
-      create: {
-        userId: user.id,
-        companyName: employer.companyName,
-        bio: employer.bio,
-        verified: true,
-        ageVerified: true,
-        eidVerified: true,
-        eidVerifiedAt: new Date(),
       },
     });
 

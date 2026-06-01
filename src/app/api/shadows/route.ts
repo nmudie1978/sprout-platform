@@ -31,13 +31,6 @@ export async function GET(req: NextRequest) {
               email: true,
               fullName: true,
               isVerifiedAdult: true,
-              employerProfile: {
-                select: {
-                  companyName: true,
-                  companyLogo: true,
-                  verified: true,
-                },
-              },
             },
           },
           reflection: {
@@ -45,32 +38,6 @@ export async function GET(req: NextRequest) {
               id: true,
               createdAt: true,
               overallExperience: true,
-            },
-          },
-        },
-        orderBy: { createdAt: "desc" },
-      });
-
-      return NextResponse.json(shadows);
-    } else if (session.user.role === "EMPLOYER") {
-      // Employer/Host sees requests sent to them
-      const shadows = await prisma.shadowRequest.findMany({
-        where: {
-          hostId: session.user.id,
-          ...(status ? { status: status as any } : {}),
-        },
-        include: {
-          youth: {
-            select: {
-              id: true,
-              email: true,
-              youthProfile: {
-                select: {
-                  displayName: true,
-                  avatarId: true,
-                  city: true,
-                },
-              },
             },
           },
         },

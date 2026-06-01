@@ -24,16 +24,11 @@ interface UserData {
     primaryGoal: Record<string, unknown> | null;
     onboardingCompletedAt: string | null;
   } | null;
-  employerProfile: {
-    companyName: string;
-    city: string | null;
-  } | null;
 }
 
 interface Stats {
   total: number;
   youth: number;
-  employers: number;
   today: number;
   last7Days: number;
   last30Days: number;
@@ -46,7 +41,6 @@ interface RecentSignup {
   createdAt: string;
   fullName: string | null;
   youthProfile: { displayName: string } | null;
-  employerProfile: { companyName: string } | null;
 }
 
 function formatDate(date: string): string {
@@ -106,7 +100,6 @@ export default function AdminUsersPage() {
       u.email.toLowerCase().includes(q) ||
       (u.fullName || "").toLowerCase().includes(q) ||
       (u.youthProfile?.displayName || "").toLowerCase().includes(q) ||
-      (u.employerProfile?.companyName || "").toLowerCase().includes(q) ||
       (u.youthProfile?.city || "").toLowerCase().includes(q)
     );
   });
@@ -155,10 +148,6 @@ export default function AdminUsersPage() {
               <p className="text-2xl font-bold text-emerald-400">{stats.youth}</p>
               <p className="text-xs text-slate-400">Youth</p>
             </div>
-            <div className="rounded-lg bg-slate-800 border border-slate-700/50 p-4 text-center">
-              <p className="text-2xl font-bold text-blue-400">{stats.employers}</p>
-              <p className="text-xs text-slate-400">Employers</p>
-            </div>
             <div className="rounded-lg bg-slate-800 border border-emerald-500/30 p-4 text-center">
               <p className="text-2xl font-bold text-emerald-300">{stats.today}</p>
               <p className="text-xs text-slate-400">Today</p>
@@ -192,7 +181,7 @@ export default function AdminUsersPage() {
                     </Badge>
                     <div className="min-w-0">
                       <p className="text-sm text-slate-200 truncate">
-                        {user.youthProfile?.displayName || user.employerProfile?.companyName || user.fullName || "—"}
+                        {user.youthProfile?.displayName || user.fullName || "—"}
                       </p>
                       <p className="text-xs text-slate-400 truncate">{user.email}</p>
                     </div>
@@ -241,12 +230,10 @@ export default function AdminUsersPage() {
                 {filtered.map((user) => {
                   const name =
                     user.youthProfile?.displayName ||
-                    user.employerProfile?.companyName ||
                     user.fullName ||
                     "—";
                   const city =
                     user.youthProfile?.city ||
-                    user.employerProfile?.city ||
                     "—";
                   const goalTitle =
                     (user.youthProfile?.primaryGoal as Record<string, string>)?.title || "—";
@@ -268,9 +255,7 @@ export default function AdminUsersPage() {
                           className={
                             user.role === "YOUTH"
                               ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
-                              : user.role === "EMPLOYER"
-                                ? "bg-blue-500/10 text-blue-400 border-blue-500/20"
-                                : "bg-red-500/10 text-red-400 border-red-500/20"
+                              : "bg-red-500/10 text-red-400 border-red-500/20"
                           }
                         >
                           {user.role}

@@ -158,16 +158,10 @@ async function getOrCreateEmployers() {
         data: {
           email,
           password: await bcrypt.hash('demo-nick6-pass', 10),
-          role: 'EMPLOYER',
+          role: 'YOUTH',
           accountStatus: 'ACTIVE',
           emailVerified: new Date(),
           fullName: names[i],
-          employerProfile: {
-            create: {
-              companyName: names[i],
-              verified: true,
-            },
-          },
         },
       });
     }
