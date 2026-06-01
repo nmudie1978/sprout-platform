@@ -46,7 +46,6 @@ import {
   Route,
   FileText,
   Calendar,
-  Quote,
   ChevronDown,
   Radar,
   Zap,
@@ -421,7 +420,6 @@ export function SidebarNav({ userRole, userName, userEmail, userProfilePic }: Si
             <NavSection title="Endeavrly" collapsed={collapsed}>
               <NavItem href="/info" icon={Info} label="About" active={isActive("/info")} collapsed={collapsed} tooltip="Learn what Endeavrly is, how we keep it safe, and who it's for." />
               <NavItem href="/feedback" icon={HelpCircle} label="Feedback" active={isActive("/feedback")} collapsed={collapsed} tooltip="Share feedback, report a problem, or suggest an idea." />
-              <NavItem href="/reviews" icon={Quote} label="User Reviews" active={isActive("/reviews")} collapsed={collapsed} tooltip="Hear what other youth and guardians think of Endeavrly." />
             </NavSection>
           </>
         )}

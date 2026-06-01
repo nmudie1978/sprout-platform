@@ -78,7 +78,6 @@ export default function robots(): MetadataRoute.Robots {
           "/insights",
           "/feedback",
           "/earnings",
-          "/reviews",
           "/messages",
           "/goals",
           "/growth",
