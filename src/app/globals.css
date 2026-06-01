@@ -4,39 +4,43 @@
 
 @layer base {
   :root {
-    /* ── Light mode theme tokens — DD · Purple Bliss ───────────────
-       Canvas: deep aubergine (#360033) → teal (#0b8793). Moody,
-       rich, keeps teal as the brand on one end. Cards are white,
-       sidebar is pale lavender, primary is teal. */
-    --background: 250 28% 36%;          /* fallback — .bg-background is transparent in light mode; the ambient gradient is the real canvas */
-    --foreground: 300 32% 12%;          /* near-black plum — reads on white cards and pale-lavender sidebar */
-    --card: 0 0% 100%;                  /* pure white — crisp on the moody aubergine/teal canvas */
-    --card-foreground: 300 32% 12%;
+    /* ── Light mode theme tokens — Warm Paper ──────────────────────
+       Calm, premium "warm paper" canvas (#F7F5F2) — not stark white,
+       not corporate. Cards are white with soft warm borders; the
+       brand stays Endeavrly teal; active states use soft teal.
+       Dark mode (.dark) is the app DEFAULT and is left untouched. */
+    --background: 36 24% 96%;           /* #F7F5F2 — warm paper page canvas */
+    --foreground: 257 9% 15%;           /* #25232A — near-black with a faint plum warmth */
+    --card: 0 0% 100%;                  /* #FFFFFF — crisp white cards on warm paper */
+    --card-foreground: 257 9% 15%;
     --popover: 0 0% 100%;
-    --popover-foreground: 300 32% 12%;
-    --primary: 186 70% 32%;             /* teal brand — the light end of the canvas gradient */
+    --popover-foreground: 257 9% 15%;
+    --primary: 173 80% 40%;             /* #14B8A6 — Endeavrly teal */
     --primary-foreground: 0 0% 100%;
-    --secondary: 280 20% 93%;
-    --secondary-foreground: 300 32% 14%;
-    --muted: 280 18% 92%;               /* pale lavender muted surface */
-    --muted-foreground: 300 28% 24%;    /* deep plum — reads clearly on pale-lavender sidebar + white cards + mid-canvas */
-    --accent: 186 45% 93%;              /* pale teal accent */
-    --accent-foreground: 186 70% 22%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 280 12% 70%;
-    --input: 280 12% 70%;
-    --ring: 186 70% 32%;
+    --secondary: 36 28% 93%;            /* #F2EEE8 — secondary warm surface */
+    --secondary-foreground: 257 9% 15%;
+    --muted: 37 26% 90%;                /* #ECE7DF — muted warm surface */
+    --muted-foreground: 268 7% 44%;     /* #6F6877 — secondary text; faint /50–/40 variants stay legible */
+    --accent: 169 66% 92%;              /* #DDF8F3 — soft teal accent background */
+    --accent-foreground: 175 77% 26%;   /* #0F766E — deep teal */
+    --destructive: 0 65% 61%;           /* #DC5A5A — soft, calm danger */
+    --destructive-foreground: 0 0% 100%;
+    --border: 35 24% 86%;               /* #E4DDD3 — soft warm border */
+    --input: 35 24% 86%;
+    --ring: 173 80% 40%;
     --radius: 0.75rem;
-    --sidebar: 280 16% 78%;             /* pale lavender — sits between card and canvas */
-    --sidebar-foreground: 300 32% 14%;
-    --sidebar-border: 280 14% 62%;
+    --sidebar: 36 28% 93%;              /* #F2EEE8 — warm paper sidebar */
+    --sidebar-foreground: 268 7% 44%;   /* #6F6877 */
+    --sidebar-border: 35 24% 86%;       /* #E4DDD3 */
     /* Glow brand — teal, used by the Glow component in light mode */
-    --brand: 186 70% 36%;
-    --brand-foreground: 186 65% 42%;
-    --gradient-1: linear-gradient(120deg, hsl(303 100% 11%) 0%, hsl(186 86% 31%) 100%);
-    --gradient-2: linear-gradient(120deg, hsl(186 70% 36%) 0%, hsl(186 70% 32%) 100%);
-    --gradient-3: linear-gradient(120deg, hsl(303 100% 11% / 0.1) 0%, hsl(186 86% 31% / 0.1) 100%);
+    --brand: 173 80% 40%;
+    --brand-foreground: 175 77% 26%;
+    /* gradient-1 paints the onboarding walkthrough panel (it uses light
+       text), so keep it a teal panel — readable + on-brand. The warm
+       paper page canvas lives in AmbientLightBackground, not here. */
+    --gradient-1: linear-gradient(140deg, hsl(173 80% 40%) 0%, hsl(175 77% 26%) 100%);
+    --gradient-2: linear-gradient(140deg, hsl(173 80% 40%) 0%, hsl(175 77% 26%) 100%);
+    --gradient-3: linear-gradient(140deg, hsl(173 80% 40% / 0.08) 0%, hsl(175 77% 26% / 0.08) 100%);
   }
 
   .dark {
