@@ -18,7 +18,7 @@ export default function SafetyGuidelinesPage() {
           </div>
           <div>
             <h1 className="text-3xl font-bold">Safety & Community Guidelines</h1>
-            <p className="text-muted-foreground">Last updated: 23 March 2026</p>
+            <p className="text-muted-foreground">Last updated: 1 June 2026</p>
           </div>
         </div>
       </div>
@@ -29,84 +29,52 @@ export default function SafetyGuidelinesPage() {
           <section className="mb-8">
             <h2>Our Commitment to Safety</h2>
             <p>
-              Endeavrly is designed with safety as a core principle. We connect young people with
-              appropriate work opportunities and career development tools in a protected environment.
-              These guidelines help ensure everyone has a positive and safe experience.
+              Endeavrly is a career-exploration platform built safety-first for young people aged
+              15&ndash;23. Safety isn&apos;t a feature bolted on &mdash; it shapes what the platform
+              deliberately does <em>not</em> do. These guidelines explain how we keep it a calm,
+              protected space.
             </p>
           </section>
 
           <section className="mb-8">
-            <h2>Appropriate Tasks Only</h2>
+            <h2>Safety by Design</h2>
             <p>
-              All jobs posted on Endeavrly must be appropriate for young workers. The following
-              types of work are not permitted:
+              We remove whole categories of risk by design:
             </p>
             <ul>
-              <li>Medical or healthcare tasks requiring professional qualifications</li>
-              <li>Childcare for infants or very young children without supervision</li>
-              <li>Work involving hazardous materials or dangerous equipment</li>
-              <li>Tasks that require working alone in private residences with unfamiliar adults</li>
-              <li>Work during prohibited hours for minors under Norwegian law</li>
-              <li>Any task that could put a young person at physical or emotional risk</li>
-            </ul>
-            <p>
-              Job postings that violate these rules will be removed. Repeat offenders will be
-              permanently banned from the Platform.
-            </p>
-          </section>
-
-          <section className="mb-8">
-            <h2>Communication Guidelines</h2>
-            <p>
-              All communication between users should remain professional and work-focused:
-            </p>
-            <ul>
-              <li>Use the structured messaging features provided by the Platform</li>
-              <li>Never pressure anyone to share personal contact information</li>
-              <li>Do not request meetings outside of agreed work arrangements</li>
-              <li>Do not send personal, inappropriate, or off-topic messages</li>
-              <li>Report any communication that makes you uncomfortable</li>
-            </ul>
-            <p>
-              Communication between minors and adults is restricted to structured message formats.
-              Free-text messaging with minors is not permitted on the Platform.
-            </p>
-          </section>
-
-          <section className="mb-8">
-            <h2>Meeting Safely</h2>
-            <p>
-              When meeting for work, use common sense and prioritise your safety:
-            </p>
-            <ul>
-              <li>Tell a parent, guardian, or trusted adult where you will be and when you expect to return</li>
-              <li>Meet in public places when possible for initial introductions</li>
-              <li>Trust your instincts — if something feels wrong, leave</li>
-              <li>Have your phone charged and a way to contact someone if you need help</li>
-              <li>Do not go to a location you are unfamiliar with without telling someone</li>
+              <li><strong>No open social or messaging features</strong> — there are no DMs, friend requests, or chats between users, so there is no channel for grooming or harassment.</li>
+              <li><strong>No public profiles or contact sharing</strong> — your details aren&apos;t broadcast, and emails/phone numbers are hidden by default.</li>
+              <li><strong>No jobs, payments, or marketplace</strong> — Endeavrly does not connect you with paid work or handle money, so there are no transactions or strangers to meet.</li>
+              <li><strong>No popularity or comparison mechanics</strong> — no followers, leaderboards, or public rankings.</li>
+              <li><strong>Minimal data</strong> — we collect only what the experience needs. See our <Link href="/legal/privacy" className="text-primary hover:underline">Privacy Policy</Link>.</li>
             </ul>
           </section>
 
           <section className="mb-8">
-            <h2>Reporting and Blocking</h2>
+            <h2>Age-Appropriate Content & AI</h2>
             <p>
-              If you encounter inappropriate behaviour, you can:
+              Content is written for a 15&ndash;23 audience. Our AI features (the Career Advisor and
+              Career Twin) operate within strict guardrails: they stay on careers and education, never
+              provide therapy or medical advice, and, if someone seems distressed, gently point to a
+              trusted adult or a support line rather than trying to counsel. AI responses are guidance,
+              not fact &mdash; see our <Link href="/legal/disclaimer" className="text-primary hover:underline">Disclaimer</Link>.
             </p>
-            <ul>
-              <li><strong>Report</strong> — flag a user, job posting, or message for review by our moderation team</li>
-              <li><strong>Block</strong> — prevent a user from contacting you or viewing your profile</li>
-            </ul>
+          </section>
+
+          <section className="mb-8">
+            <h2>Reporting & Moderation</h2>
             <p>
-              All reports are reviewed by our team. We take safety concerns seriously and
-              will take action where necessary, including suspending or removing users from the Platform.
-              You will not be penalised for making a report in good faith.
+              If you see content or behaviour that feels wrong, use the in-app <strong>Report</strong>
+              tools to flag it for our moderation team. All reports are reviewed, we act where needed
+              (including removing content or suspending accounts), and you will never be penalised for
+              reporting in good faith.
             </p>
           </section>
 
           <section className="mb-8">
             <h2>Emergency Situations</h2>
             <p>
-              If you are in immediate danger or witness a crime, contact emergency services first:
+              If you are in immediate danger, contact emergency services first:
             </p>
             <ul>
               <li><strong>Police:</strong> 112</li>
@@ -114,42 +82,22 @@ export default function SafetyGuidelinesPage() {
               <li><strong>Fire:</strong> 110</li>
             </ul>
             <p>
-              Do not rely solely on platform reporting in an emergency. After ensuring your safety,
-              you may also report the incident to Endeavrly so we can take appropriate action on the Platform.
+              If you&apos;re struggling, please also reach out to a trusted adult or a support line
+              (in Norway, Mental Helse: 116 123).
             </p>
           </section>
 
           <section className="mb-8">
             <h2>For Parents and Guardians</h2>
             <p>
-              We encourage open communication between young people and their parents or guardians
-              about their activities on Endeavrly. You can:
+              We encourage open conversations between young people and their families about exploring
+              careers. You can:
             </p>
             <ul>
-              <li>Review the types of jobs your young person is interested in</li>
-              <li>Discuss safety practices before they accept work</li>
-              <li>Be available as a point of contact during jobs</li>
-              <li>Contact us at any time with questions or concerns about your child&apos;s safety</li>
-              <li>Revoke guardian consent at any time, which will restrict your child&apos;s ability to apply for jobs</li>
+              <li>Explore the platform together and talk through what they&apos;re discovering</li>
+              <li>Share your own career path to help young people, via <Link href="/for-parents" className="text-primary hover:underline">For Parents</Link> &mdash; no account needed</li>
+              <li>Contact us at any time with questions or concerns</li>
             </ul>
-          </section>
-
-          <section className="mb-8">
-            <h2>How Does Payment Work?</h2>
-            <p>
-              Endeavrly does not process payments or hold money. Workers and employers agree
-              payment terms directly with each other.
-            </p>
-            <ul>
-              <li>Discuss and agree on payment before starting any work</li>
-              <li>Make sure you understand how and when you will be paid</li>
-              <li>Cash payment at the end of a job is common for small jobs</li>
-              <li>Keep records of completed work and payments received</li>
-            </ul>
-            <p className="text-muted-foreground">
-              This approach allows Endeavrly to stay focused on safety, trust, and connecting
-              young people with local opportunities.
-            </p>
           </section>
 
           <section className="mb-8">
@@ -161,7 +109,7 @@ export default function SafetyGuidelinesPage() {
               <li><Link href="/legal/terms" className="text-primary hover:underline">Terms of Service</Link></li>
               <li><Link href="/legal/privacy" className="text-primary hover:underline">Privacy Policy</Link></li>
               <li><Link href="/legal/eligibility" className="text-primary hover:underline">Age & Eligibility</Link></li>
-              <li><Link href="/legal/disclaimer" className="text-primary hover:underline">Health & Safety Disclaimer</Link></li>
+              <li><Link href="/legal/disclaimer" className="text-primary hover:underline">Disclaimer</Link></li>
             </ul>
           </section>
 

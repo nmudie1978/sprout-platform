@@ -17,7 +17,7 @@ export default function PrivacyPolicyPage() {
           </div>
           <div>
             <h1 className="text-3xl font-bold">Privacy Policy</h1>
-            <p className="text-muted-foreground">Last updated: 23 March 2026</p>
+            <p className="text-muted-foreground">Last updated: 1 June 2026</p>
           </div>
         </div>
       </div>
@@ -53,8 +53,6 @@ export default function PrivacyPolicyPage() {
               <li><strong>Account information:</strong> email address and authentication credentials</li>
               <li><strong>Profile information:</strong> name, date of birth, skills, interests, career goals, and optional profile photo</li>
               <li><strong>Journey data:</strong> your reflections, strengths, career explorations, and learning progress</li>
-              <li><strong>Job-related data:</strong> job applications, structured messages, and feedback</li>
-              <li><strong>Guardian information:</strong> where a user is under 18, we collect limited parent or guardian contact details for consent purposes</li>
             </ul>
 
             <h3>3.2 Information Collected Automatically</h3>
@@ -81,8 +79,7 @@ export default function PrivacyPolicyPage() {
             <ul>
               <li>Provide and operate the Platform, including account management and authentication</li>
               <li>Enable the My Journey feature, including career exploration and skill development tracking</li>
-              <li>Facilitate connections between youth workers and job posters through structured messaging</li>
-              <li>Verify user age and, where required, guardian consent</li>
+              <li>Verify user age (a one-time 15&ndash;23 eligibility check at sign-up)</li>
               <li>Moderate content and enforce our Safety Guidelines</li>
               <li>Respond to reports and safeguarding concerns</li>
               <li>Send essential service communications (e.g., account verification, safety alerts)</li>
@@ -105,16 +102,21 @@ export default function PrivacyPolicyPage() {
 
             <h3>5.1 Processing Data of Minors</h3>
             <p>
-              For users under 16 years of age, we obtain verifiable parental or guardian consent before processing personal data, in accordance with GDPR Article 8 and Norwegian law. Users aged 16 and over may consent independently to data processing in the context of our services.
+              Endeavrly is for young people aged 15&ndash;23 and is privacy-by-design: we collect only
+              the minimal personal data needed to operate a career-exploration service, do not run
+              tracking ads or behavioural profiling, and have no messaging or marketplace features.
+              We process minors&apos; data on this minimised basis and apply GDPR safeguards (data
+              minimisation, the rights below, and parental access on request). The lawful basis for
+              processing the data of under-16s is being kept under legal review.
             </p>
           </section>
 
           <section className="mb-8">
             <h2>6. Data Sharing and Disclosure</h2>
 
-            <h3>6.1 Between Users</h3>
+            <h3>6.1 Profile Visibility</h3>
             <p>
-              When you apply for a job or interact with another user, limited profile information (such as your first name, age bracket, and relevant skills) may be visible to that user. Full contact details are not shared unless you choose to provide them.
+              Endeavrly has no messaging or social features, so your data is not shared with other users by default. If you choose to make your profile public, a limited set of profile information may be visible via your profile link; your email and contact details are never publicly displayed.
             </p>
 
             <h3>6.2 Service Providers (Data Processors)</h3>
@@ -151,7 +153,6 @@ export default function PrivacyPolicyPage() {
             <ul>
               <li><strong>Active accounts:</strong> data is retained for the duration of your account</li>
               <li><strong>Deleted accounts:</strong> personal data is erased within 30 days of account deletion, except where retention is required by law</li>
-              <li><strong>Job applications:</strong> retained for 12 months after the related job has closed</li>
               <li><strong>Reports and safeguarding records:</strong> retained for up to 3 years, or longer where required for legal proceedings</li>
               <li><strong>Anonymised analytics data:</strong> may be retained indefinitely as it cannot identify individuals</li>
             </ul>
@@ -185,9 +186,8 @@ export default function PrivacyPolicyPage() {
             <ul>
               <li>We collect only the minimum data necessary for the Platform to function</li>
               <li>We do not serve targeted advertising or engage in behavioural profiling</li>
-              <li>We require parental or guardian consent for users under 16</li>
+              <li>There are no messaging, social, or marketplace features — and no contact between users</li>
               <li>Personal contact information is not publicly displayed</li>
-              <li>Communication between minors and adults is restricted to structured messaging formats</li>
               <li>Parents or guardians may request access to, correction of, or deletion of their child&apos;s data at any time</li>
             </ul>
           </section>

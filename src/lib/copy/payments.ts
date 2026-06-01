@@ -1,26 +1,26 @@
 /**
- * Payment disclosure copy constants
- * Centralized copy for payment-related disclosures across the app
+ * Payment disclosure copy constants.
  *
- * IMPORTANT: Endeavrly does NOT process, hold, or transfer payments.
- * These disclosures clarify that payments are arranged externally.
+ * IMPORTANT: Endeavrly does NOT process, hold, or transfer payments, and there
+ * is nothing to pay for. It is a career-exploration platform — no in-app
+ * purchases, subscriptions, or paid work.
  */
 
 export const PAYMENT_COPY = {
   // Terms page - full disclosure
   terms: {
     title: "Payments",
-    body: "Endeavrly does not process, hold, or transfer payments between users. Any payment for a job or service is agreed and handled directly between the job poster and the youth using external payment methods (for example, bank transfer or Vipps). Endeavrly is not a party to any payment arrangement or agreement between users.",
-    clarification: "Endeavrly is a connection platform and does not provide payment services.",
+    body: "Endeavrly does not process, hold, or transfer payments, and there is nothing to pay for. It is a career-exploration platform — there are no in-app purchases, subscriptions, or paid work.",
+    clarification: "Endeavrly does not provide payment services and is not a marketplace.",
   },
 
   // In-app compact disclosure
   compact: {
-    text: "Payments are arranged directly between you and the other party. Endeavrly does not handle payments.",
+    text: "Endeavrly is free to use and does not handle any payments.",
   },
 
-  // Messaging-specific (shown once per conversation)
+  // Generic disclosure
   messaging: {
-    text: "Payments are arranged directly between you and the other party. Endeavrly does not handle payments.",
+    text: "Endeavrly is free to use and does not handle any payments.",
   },
 } as const;

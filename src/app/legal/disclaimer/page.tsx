@@ -3,8 +3,8 @@ import { AlertCircle } from "lucide-react";
 import Link from "next/link";
 
 export const metadata = {
-  title: "Health & Safety Disclaimer | Endeavrly",
-  description: "Health and safety disclaimer for using the Endeavrly platform",
+  title: "Disclaimer | Endeavrly",
+  description: "Disclaimer for using the Endeavrly career-exploration platform",
 };
 
 export default function DisclaimerPage() {
@@ -17,8 +17,8 @@ export default function DisclaimerPage() {
             <AlertCircle className="h-6 w-6 text-orange-600" />
           </div>
           <div>
-            <h1 className="text-3xl font-bold">Health & Safety Disclaimer</h1>
-            <p className="text-muted-foreground">Last updated: 23 March 2026</p>
+            <h1 className="text-3xl font-bold">Disclaimer</h1>
+            <p className="text-muted-foreground">Last updated: 1 June 2026</p>
           </div>
         </div>
       </div>
@@ -29,125 +29,66 @@ export default function DisclaimerPage() {
           <section className="mb-8">
             <h2>Platform Role</h2>
             <p>
-              Endeavrly is a platform that connects young people with career development opportunities
-              and local work. We facilitate introductions between job seekers and job posters, but we
-              do not supervise, manage, or control the work itself.
+              Endeavrly is a career-exploration and information platform for young people
+              (ages 15&ndash;23). It helps you explore careers, understand realistic education
+              pathways, and reflect on your direction.
             </p>
             <p>
-              Endeavrly is <strong>not an employer</strong>. We do not hire, employ, or
-              contract workers. Any work arrangement is directly between the youth
-              worker and the job poster. Endeavrly is not a party to any employment or service agreement between users.
+              Endeavrly is <strong>not</strong> a jobs marketplace, recruiter, employer, or
+              staffing agency, and it does <strong>not</strong> process payments or connect you
+              with paid work. It is also not a substitute for professional careers guidance from a
+              school counsellor, careers adviser, or other qualified professional.
             </p>
           </section>
 
           <section className="mb-8">
-            <h2>User Responsibility</h2>
+            <h2>Information, Not Advice</h2>
             <p>
-              All users are responsible for:
+              The career information on Endeavrly &mdash; including salary ranges, growth outlooks,
+              education routes, entry requirements, and timelines &mdash; is provided for general
+              guidance only. It is drawn from public sources, may be approximate, and can become out
+              of date or vary by country, region, employer, and individual circumstances.
             </p>
             <ul>
-              <li>Assessing the safety and suitability of any work arrangement before it begins</li>
-              <li>Ensuring any work complies with applicable Norwegian laws and regulations</li>
-              <li>Taking reasonable precautions for personal safety</li>
-              <li>Communicating clearly about expectations, requirements, and working conditions</li>
-              <li>Reporting any concerns to Endeavrly and, where appropriate, to local authorities</li>
+              <li>Figures are estimates and ranges, not guarantees.</li>
+              <li>Always verify important details (e.g. entry requirements, application deadlines, fees) with official sources before making decisions.</li>
+              <li>Any decisions you make about your education or career are your own.</li>
             </ul>
           </section>
 
           <section className="mb-8">
-            <h2>For Youth Workers</h2>
+            <h2>AI Features</h2>
             <p>
-              Before accepting any job, consider:
+              Some features &mdash; such as the AI Career Advisor and Career Twin &mdash; generate
+              responses using AI. These are intended to help you think and explore. They can be
+              incomplete or wrong, and the Career Twin is <strong>a simulation, not a prediction</strong>
+              of your future. Treat AI output as a starting point and check anything important.
             </p>
-            <ul>
-              <li>Whether the task is within your abilities and comfort level</li>
-              <li>Whether the work environment appears safe and appropriate</li>
-              <li>Whether the job description matches what is actually being asked of you</li>
-              <li>Whether you have informed a parent, guardian, or trusted adult about the arrangement</li>
-            </ul>
-            <p>
-              You have the right to decline any work that makes you uncomfortable or
-              that you believe is unsafe. You will not be penalised on the Platform for declining work.
-            </p>
-          </section>
-
-          <section className="mb-8">
-            <h2>For Job Posters</h2>
-            <p>
-              Job posters are responsible for:
-            </p>
-            <ul>
-              <li>Providing safe and appropriate working conditions</li>
-              <li>Complying with the Norwegian Working Environment Act (<em>Arbeidsmiljøloven</em>) and related regulations for young workers</li>
-              <li>Accurately describing job requirements, conditions, and compensation</li>
-              <li>Ensuring tasks are appropriate for the worker&apos;s age group</li>
-              <li>Having appropriate liability insurance where required by law</li>
-              <li>Not asking young workers to perform tasks beyond what was agreed in the job posting</li>
-            </ul>
           </section>
 
           <section className="mb-8">
             <h2>Limitation of Liability</h2>
             <p>
-              Endeavrly does not supervise jobs or work performed through connections
-              made on the Platform. To the fullest extent permitted by Norwegian law, we are not liable for:
+              To the fullest extent permitted by Norwegian law, Endeavrly is not liable for decisions
+              made, or actions taken, in reliance on information or AI-generated content on the
+              Platform, nor for any loss arising from inaccurate, incomplete, or out-of-date content.
             </p>
-            <ul>
-              <li>Injuries, accidents, or harm occurring during work</li>
-              <li>The quality of work performed or received</li>
-              <li>Payment disputes between users</li>
-              <li>Actions or omissions of users on or off the Platform</li>
-              <li>Loss of earnings, property, or other direct or indirect damages</li>
-            </ul>
             <p>
-              Nothing in this disclaimer limits liability for death or personal injury caused by negligence,
-              fraud, or any other liability that cannot be excluded or limited under Norwegian law.
+              Nothing in this disclaimer limits liability for death or personal injury caused by
+              negligence, fraud, or any other liability that cannot be excluded or limited under
+              Norwegian law.
             </p>
           </section>
 
           <section className="mb-8">
-            <h2>Payments</h2>
+            <h2>Reporting & Safety</h2>
             <p>
-              Endeavrly does not process, hold, or transfer payments between users. All payments are arranged
-              and completed directly between the job poster and the youth worker, outside our Platform. We are not responsible for:
+              We take safety seriously. Please report any inappropriate content or behaviour using the
+              in-app reporting tools. For a personal emergency or immediate danger, contact local
+              authorities directly (Police: 112, Ambulance: 113, Fire: 110).
             </p>
-            <ul>
-              <li>Non-payment or late payment for completed work</li>
-              <li>Payment disputes between users</li>
-              <li>Tax obligations arising from earnings</li>
-            </ul>
             <p>
-              Users should keep their own records of work completed and payments received.
-              For amounts above applicable thresholds, users may have tax reporting obligations
-              under Norwegian law.
-            </p>
-          </section>
-
-          <section className="mb-8">
-            <h2>Insurance</h2>
-            <p>
-              Endeavrly does not provide insurance coverage for users. We recommend:
-            </p>
-            <ul>
-              <li>Youth workers check whether their family&apos;s home insurance provides any relevant coverage</li>
-              <li>Job posters ensure they have appropriate liability insurance for the work being performed</li>
-              <li>Both parties clarify insurance arrangements before work begins</li>
-            </ul>
-          </section>
-
-          <section className="mb-8">
-            <h2>Reporting Issues</h2>
-            <p>
-              While we do not supervise work arrangements, we take safety seriously.
-              Please report:
-            </p>
-            <ul>
-              <li>Unsafe or inappropriate job postings using the in-app reporting feature</li>
-              <li>Inappropriate behaviour via our reporting and blocking tools</li>
-              <li>Serious safety concerns to local authorities (Police: 112, Ambulance: 113, Fire: 110)</li>
-            </ul>
-            <p>
-              See our <Link href="/legal/safety" className="text-primary hover:underline">Safety & Community Guidelines</Link> for more information on reporting and staying safe.
+              See our <Link href="/legal/safety" className="text-primary hover:underline">Safety &amp; Community Guidelines</Link> for more on reporting and staying safe.
             </p>
           </section>
 
