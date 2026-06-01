@@ -33,6 +33,8 @@ import type { CareerGoal, GoalSlot } from "@/lib/goals/types";
 import { createEmptyGoal } from "@/lib/goals/types";
 import { syncGuidanceGoal } from "@/lib/guidance/rules";
 import { useCuriositySaves } from "@/hooks/use-curiosity-saves";
+import { useInterestLevel } from "@/hooks/use-interest-level";
+import { InterestLevelPicker } from "@/components/interest-level/interest-level-rating";
 
 interface CareerDetailSheetProps {
   career: Career | null;
@@ -149,6 +151,7 @@ export function CareerDetailSheet({
   const [showSwapModal, setShowSwapModal] = useState(false);
   const [savingSlot, setSavingSlot] = useState<GoalSlot | null>(null);
   const { saveCuriosity, removeCuriosity, isSaved: isCuriositySaved } = useCuriositySaves();
+  const { level: interestLevel, setLevel: setInterestLevel } = useInterestLevel(career?.id ?? null);
 
   const isYouth = session?.user?.role === "YOUTH";
 
@@ -405,6 +408,20 @@ export function CareerDetailSheet({
                     Your Primary Goal is the career you focus on first. My Journey gives you the full picture \u2014 and you can change it anytime.
                   </p>
                 </div>
+
+                {/* Interest Level \u2014 how strongly this possible future resonates */}
+                {isYouth && (
+                  <div className="rounded-lg border border-amber-500/20 bg-amber-500/[0.04] p-3">
+                    <p className="text-xs font-medium text-foreground/80">
+                      How strongly does this future resonate with you?
+                    </p>
+                    <InterestLevelPicker
+                      value={interestLevel}
+                      onChange={setInterestLevel}
+                      className="mt-1.5"
+                    />
+                  </div>
+                )}
 
                 {/* Actions */}
                 <div className="space-y-2">

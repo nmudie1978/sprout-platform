@@ -41,6 +41,8 @@ import {
 } from '@/components/ui/tooltip';
 import { cn, slugify } from '@/lib/utils';
 import { useGoals } from '@/hooks/use-goals';
+import { useInterestLevel } from '@/hooks/use-interest-level';
+import { InterestLevelPicker } from '@/components/interest-level/interest-level-rating';
 import { getAllCareers, getSectorForCareer, getPensionNote, type Career } from '@/lib/career-pathways';
 import type { CareerDetails } from '@/lib/career-typical-days';
 import type { CareerProgression } from '@/lib/career-progressions';
@@ -3099,6 +3101,8 @@ export default function MyJourneyPage() {
     return getAllCareers().find((c) => c.title === goalTitle) || null;
   }, [goalTitle]);
 
+  const { level: interestLevel, setLevel: setInterestLevel } = useInterestLevel(career?.id ?? null);
+
   const [activeTab, setActiveTab] = useState<V2Tab>('discover');
 
   // ── Tab gating ─────────────────────────────────────────────────────
@@ -3305,6 +3309,13 @@ export default function MyJourneyPage() {
               <Pencil className="h-3.5 w-3.5" />
             </button>
           </div>
+          {/* Interest Level — how strongly this possible future resonates */}
+          {career && (
+            <div className="mt-2 flex items-center gap-2">
+              <span className="text-xs text-muted-foreground/70 shrink-0">Interest level:</span>
+              <InterestLevelPicker value={interestLevel} onChange={setInterestLevel} size="sm" />
+            </div>
+          )}
           {/* Career Twin entry — "Ask Future Me" (renders only with an active career) */}
           <div className="mt-3">
             <CareerTwinCta variant="journey" />
