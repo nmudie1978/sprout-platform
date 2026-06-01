@@ -95,6 +95,11 @@ export function getOpportunitiesForCareer(
   return matches;
 }
 
+/** True when the career has at least one curated opportunity (location-agnostic). */
+export function hasOpportunities(careerId: string): boolean {
+  return getOpportunitiesForCareer(careerId).length > 0;
+}
+
 export function getTypeLabel(type: OpportunityType): string {
   return TYPE_LABELS[type];
 }

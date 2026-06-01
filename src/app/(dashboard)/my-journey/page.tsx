@@ -65,6 +65,9 @@ import { SalaryProgressionChart } from '@/components/journey/salary-progression'
 import { DeadlineAwareness } from '@/components/journey/deadline-awareness';
 import { ShareJourney } from '@/components/journey/share-journey';
 import { OpportunityMatches } from '@/components/journey/opportunity-matches';
+import { hasTopEmployers } from '@/lib/career-employers';
+import { hasMyths } from '@/lib/career-myths';
+import { hasOpportunities } from '@/lib/opportunities';
 import { ConfidenceTracker } from '@/components/journey/confidence-tracker';
 import { CareerTwinCta } from '@/components/career-twin/career-twin-cta';
 // Day simulation removed per user request
@@ -1142,15 +1145,19 @@ function UnderstandTab({
 
       </SectionCard>
 
-      {/* ── Where People Work ── */}
-      <SectionCard>
-        <SectionHeader icon={Building2} title="Where People Work" tooltip="Norwegian companies where this role is most common — with links to their careers pages." collapsed={uCollapsed('u-salary')} onToggle={() => uToggle('u-salary')} />
-        {!uCollapsed('u-salary') && (
-          <div className="p-4 sm:p-5">
-            <TopEmployers careerId={career?.id ?? null} />
-          </div>
-        )}
-      </SectionCard>
+      {/* ── Where People Work — only shown when we have curated employer
+          data for this career, so careers without it don't render an
+          empty section. ── */}
+      {career?.id && hasTopEmployers(career.id) && (
+        <SectionCard>
+          <SectionHeader icon={Building2} title="Where People Work" tooltip="Norwegian companies where this role is most common — with links to their careers pages." collapsed={uCollapsed('u-salary')} onToggle={() => uToggle('u-salary')} />
+          {!uCollapsed('u-salary') && (
+            <div className="p-4 sm:p-5">
+              <TopEmployers careerId={career.id} />
+            </div>
+          )}
+        </SectionCard>
+      )}
 
       {/* ── Education Pathway — School Readiness + Study Path as tabs
           inside a single card. The two sections used to live as two
@@ -1565,36 +1572,51 @@ function UnderstandTab({
         );
       })()}
 
-      {/* ── Misconceptions + Live Opportunities — tabbed ── */}
-      <SectionCard>
-        <SectionHeader icon={Shield} title="Misconceptions & Opportunities" collapsed={uCollapsed('u-myths')} onToggle={() => uToggle('u-myths')} />
-        {!uCollapsed('u-myths') && (
-          <div className="p-4 sm:p-5">
-            <Tabs defaultValue="myths">
-              <TabsList className="w-full justify-start border-b border-border/20 bg-transparent rounded-none px-0 h-auto pb-0">
-                <TabsTrigger
-                  value="myths"
-                  className="rounded-none border-b-2 border-transparent data-[state=active]:border-teal-500 data-[state=active]:bg-transparent data-[state=active]:shadow-none px-4 pb-2 text-[11px]"
-                >
-                  Common Misconceptions
-                </TabsTrigger>
-                <TabsTrigger
-                  value="opportunities"
-                  className="rounded-none border-b-2 border-transparent data-[state=active]:border-teal-500 data-[state=active]:bg-transparent data-[state=active]:shadow-none px-4 pb-2 text-[11px]"
-                >
-                  Live Opportunities
-                </TabsTrigger>
-              </TabsList>
-              <TabsContent value="myths" className="mt-4">
-                <CareerMythBuster careerId={career?.id ?? null} />
-              </TabsContent>
-              <TabsContent value="opportunities" className="mt-4">
-                <OpportunityMatches careerId={career?.id ?? null} />
-              </TabsContent>
-            </Tabs>
-          </div>
-        )}
-      </SectionCard>
+      {/* ── Misconceptions + Live Opportunities — tabbed. Each tab only
+          appears when we actually have data for it, and the whole card is
+          hidden when neither does, so careers without curated myths or
+          opportunities don't render an empty section. ── */}
+      {(() => {
+        const cid = career?.id ?? null;
+        const showMyths = cid ? hasMyths(cid) : false;
+        const showOpps = cid ? hasOpportunities(cid) : false;
+        if (!showMyths && !showOpps) return null;
+        const triggerClass =
+          'rounded-none border-b-2 border-transparent data-[state=active]:border-teal-500 data-[state=active]:bg-transparent data-[state=active]:shadow-none px-4 pb-2 text-[11px]';
+        return (
+          <SectionCard>
+            <SectionHeader icon={Shield} title="Misconceptions & Opportunities" collapsed={uCollapsed('u-myths')} onToggle={() => uToggle('u-myths')} />
+            {!uCollapsed('u-myths') && (
+              <div className="p-4 sm:p-5">
+                <Tabs defaultValue={showMyths ? 'myths' : 'opportunities'}>
+                  <TabsList className="w-full justify-start border-b border-border/20 bg-transparent rounded-none px-0 h-auto pb-0">
+                    {showMyths && (
+                      <TabsTrigger value="myths" className={triggerClass}>
+                        Common Misconceptions
+                      </TabsTrigger>
+                    )}
+                    {showOpps && (
+                      <TabsTrigger value="opportunities" className={triggerClass}>
+                        Live Opportunities
+                      </TabsTrigger>
+                    )}
+                  </TabsList>
+                  {showMyths && (
+                    <TabsContent value="myths" className="mt-4">
+                      <CareerMythBuster careerId={cid} />
+                    </TabsContent>
+                  )}
+                  {showOpps && (
+                    <TabsContent value="opportunities" className="mt-4">
+                      <OpportunityMatches careerId={cid} />
+                    </TabsContent>
+                  )}
+                </Tabs>
+              </div>
+            )}
+          </SectionCard>
+        );
+      })()}
 
       <UnderstandConfirmCard careerTitle={goalTitle} onChange={onConfirmChange} />
 
