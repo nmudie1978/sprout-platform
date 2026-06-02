@@ -188,6 +188,7 @@ model User {
   reports                    Report[]
   aiIntentLogs               AiIntentLog[]
   aiChatMessages             AiChatMessage[]
+  careerTwinMessages         CareerTwinMessage[]
   accounts                   Account[]
   sessions                   Session[]
   notifications              Notification[]
@@ -1310,6 +1311,23 @@ model AiChatMessage {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId, createdAt])
+}
+
+/// One persisted turn of a Career Twin conversation. Scoped per user AND per
+/// career so "Doctor future self" and "Software dev future self" are distinct
+/// threads. Youth conversation data — always query by userId; cascade-delete.
+model CareerTwinMessage {
+  id        String   @id @default(cuid())
+  userId    String
+  careerId  String // resolved catalog id, or a title hint for off-catalog careers
+  role      String // "user" | "assistant"
+  content   String   @db.Text
+  mode      String? // career-twin mode id active for this turn (e.g. "hard_truths")
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, careerId, createdAt])
 }
 
 // ============================================
