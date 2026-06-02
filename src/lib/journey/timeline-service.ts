@@ -348,41 +348,6 @@ export const TimelineEvents = {
       type: 'PLAN_UPDATED',
     }),
 
-  shadowRequested: (userId: string, requestId: string, hostName?: string) =>
-    createTimelineEvent({
-      userId,
-      type: 'SHADOW_REQUESTED',
-      metadata: { requestId, host: hostName },
-    }),
-
-  shadowApproved: (userId: string, requestId: string) =>
-    createTimelineEvent({
-      userId,
-      type: 'SHADOW_APPROVED',
-      metadata: { requestId },
-    }),
-
-  shadowDeclined: (userId: string, requestId: string) =>
-    createTimelineEvent({
-      userId,
-      type: 'SHADOW_DECLINED',
-      metadata: { requestId },
-    }),
-
-  shadowCompleted: (userId: string, requestId: string) =>
-    createTimelineEvent({
-      userId,
-      type: 'SHADOW_COMPLETED',
-      metadata: { requestId },
-    }),
-
-  shadowSkipped: (userId: string, reason: string) =>
-    createTimelineEvent({
-      userId,
-      type: 'SHADOW_SKIPPED',
-      metadata: { reason },
-    }),
-
   alignedActionCompleted: (userId: string, actionType: string, details?: Record<string, unknown>) =>
     createTimelineEvent({
       userId,

@@ -49,7 +49,6 @@ export const JOURNEY_STATES = [
   'ROLE_DEEP_DIVE',            // Step 3: Complete 1 role deep dive (MANDATORY)
   // UNDERSTAND lens
   'REVIEW_INDUSTRY_OUTLOOK',   // Step 1: Review industry outlook (MANDATORY)
-  'CAREER_SHADOW',             // Step 2: Career shadow (MANDATORY)
   'CREATE_ACTION_PLAN',        // Step 3: Create draft action plan (MANDATORY)
   // ACT lens
   'COMPLETE_ALIGNED_ACTION',   // Step 1: Complete 1 aligned action (MANDATORY)
@@ -69,7 +68,7 @@ export const OPTIONAL_JOURNEY_STATES: JourneyStateId[] = [
 // Mandatory states per lens
 export const MANDATORY_STATES: Record<JourneyLens, JourneyStateId[]> = {
   DISCOVER: ['REFLECT_ON_STRENGTHS', 'EXPLORE_CAREERS', 'ROLE_DEEP_DIVE'],
-  UNDERSTAND: ['REVIEW_INDUSTRY_OUTLOOK', 'CAREER_SHADOW', 'CREATE_ACTION_PLAN'],
+  UNDERSTAND: ['REVIEW_INDUSTRY_OUTLOOK', 'CREATE_ACTION_PLAN'],
   ACT: ['COMPLETE_ALIGNED_ACTION', 'SUBMIT_ACTION_REFLECTION'],
 };
 
@@ -142,16 +141,6 @@ export const JOURNEY_STATE_CONFIG: Record<JourneyStateId, StateConfig> = {
     mandatory: true,
     stepNumber: 1,
   },
-  CAREER_SHADOW: {
-    id: 'CAREER_SHADOW',
-    lens: 'UNDERSTAND',
-    phase: 'REALITY',
-    title: 'Path, Skills & Requirements',
-    description: 'Find out what qualifications, skills, and experience are needed to get started in this career.',
-    order: 4,
-    mandatory: true,
-    stepNumber: 2,
-  },
 
   // UNDERSTAND → STRATEGY
   CREATE_ACTION_PLAN: {
@@ -162,7 +151,7 @@ export const JOURNEY_STATE_CONFIG: Record<JourneyStateId, StateConfig> = {
     description: 'Confirm what you\'ve learned by writing down 3 actions you can take to move forward based on your research.',
     order: 5,
     mandatory: true,
-    stepNumber: 3,
+    stepNumber: 2,
   },
 
   // ==========================================
@@ -242,7 +231,6 @@ export const LENS_DESCRIPTIONS: Record<JourneyLens, { title: string; subtitle: s
 
 export const ALIGNED_ACTION_TYPES = [
   'SMALL_JOB',
-  'CAREER_SHADOW',
   'PERSONAL_PROJECT',
   'COURSE_OR_CERTIFICATION',
   'INDUSTRY_EVENT',
@@ -254,7 +242,6 @@ export type AlignedActionType = (typeof ALIGNED_ACTION_TYPES)[number];
 
 export const ALIGNED_ACTION_LABELS: Record<AlignedActionType, string> = {
   SMALL_JOB: 'Small Job',
-  CAREER_SHADOW: 'Career Shadow',
   PERSONAL_PROJECT: 'Personal Project',
   COURSE_OR_CERTIFICATION: 'Course or Certification',
   INDUSTRY_EVENT: 'Industry Event',
@@ -371,17 +358,6 @@ export interface JourneySummary {
   };
   lastTimelineEventAt: string | null;
 
-  // Shadowing summary
-  shadowSummary: {
-    total: number;
-    accepted: number;
-    skipped: boolean;
-    skipReason: string | null;
-    pending: number;
-    completed: number;
-    declined: number;
-    lastUpdatedAt: string | null;
-  };
 
   // Reflections summary
   reflectionSummary: {
@@ -646,7 +622,6 @@ export type StepCompletionData =
   | RoleDeepDiveData
   | ReviewIndustryOutlookData
   | CreateActionPlanData
-  | CareerShadowData
   | CompleteAlignedActionData
   | SubmitActionReflectionData
   | UpdatePlanData
@@ -694,16 +669,6 @@ export interface CreateActionPlanData {
   plan: RolePlan;
 }
 
-export interface CareerShadowData {
-  type: 'CAREER_SHADOW';
-  shadowRequestId?: string;
-  skipped?: boolean;
-  skipReason?: string;
-  qualifications?: string[];
-  keySkills?: string[];
-  courses?: string[];
-  requirements?: string[];
-}
 
 export interface SaveInsightsData {
   type: 'SAVE_INSIGHTS';
@@ -801,17 +766,6 @@ export const DEFAULT_JOURNEY_SUMMARY: JourneySummary = {
     thisMonth: 0,
   },
   lastTimelineEventAt: null,
-  // Shadows
-  shadowSummary: {
-    total: 0,
-    accepted: 0,
-    skipped: false,
-    skipReason: null,
-    pending: 0,
-    completed: 0,
-    declined: 0,
-    lastUpdatedAt: null,
-  },
   // Reflections
   reflectionSummary: {
     total: 0,
@@ -956,7 +910,6 @@ export const LEGACY_STATE_MAPPING: Record<string, JourneyStateId | null> = {
   'CAPABILITY_REFLECTION': 'REFLECT_ON_STRENGTHS',
   'CAREER_DISCOVERY': 'EXPLORE_CAREERS',
   'ROLE_DEEP_DIVE': 'ROLE_DEEP_DIVE',
-  'CAREER_SHADOW_REQUEST': 'CAREER_SHADOW',
   'INDUSTRY_INSIGHTS': 'REVIEW_INDUSTRY_OUTLOOK',
   'PLAN_BUILD': 'CREATE_ACTION_PLAN',
   'CONTINUOUS_GROWTH': null, // No direct mapping
