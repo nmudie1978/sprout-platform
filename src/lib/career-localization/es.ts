@@ -145,60 +145,75 @@ export const ES_CAREER_LOCALIZATION: Record<string, CareerLocalizationEntry> = {
   },
 
   // ── Round 2 additions (common Spanish youth paths) ──────────────────
-  // Spanish description (all) + cited EUR salary where verifiable. Salaries
-  // are approx 2025 gross-annual ranges from calculaahora.es (INE basis) and
-  // oficinaempleo.com / xtart.com. Education paths for these are a follow-up
-  // data pass (omitted = card shows no path, never a Norwegian one).
+  // Spanish description (all) + cited EUR salary where verifiable (salaries =
+  // approx 2025 gross-annual ranges: calculaahora.es INE basis / oficinaempleo
+  // / xtart). Education paths cited to official catalogs: TodoFP families
+  // catalog (FP routes) and official university Grado pages/offers.
+  // police-officer + real-estate-agent: education path held back (no single
+  // official route to cite — varies by oposición / professional registration).
   chef: {
     description: "Crea platos y dirige la cocina: prepara, emplata y coordina al equipo.",
     salary: { value: "16.500 – 30.000 €/año brutos (ayudante → jefe de cocina)", source: "https://calculaahora.es/blog/sueldo-medio-profesiones-espana.html" },
+    educationPath: { value: "FP: Técnico en Cocina y Gastronomía (Grado Medio), o Técnico Superior en Dirección de Cocina.", source: "https://www.todofp.es/que-estudiar/familias-profesionales.html" },
   },
   accountant: {
     description: "Lleva las cuentas: registra ingresos y gastos, impuestos y balances.",
     salary: { value: "21.000 – 48.000 €/año brutos (según experiencia)", source: "https://calculaahora.es/blog/sueldo-medio-profesiones-espana.html" },
+    educationPath: { value: "FP: Técnico Superior en Administración y Finanzas, o Grado en Administración y Dirección de Empresas (ADE) / Economía.", source: "https://www.todofp.es/que-estudiar/familias-profesionales.html" },
   },
   journalist: {
     description: "Investiga, escribe y cuenta historias e información de actualidad.",
     salary: { value: "18.000 – 38.000 €/año brutos", source: "https://calculaahora.es/blog/sueldo-medio-profesiones-espana.html" },
+    educationPath: { value: "Grado en Periodismo (4 años).", source: "https://www.uv.es/uvweb/college/en/undergraduate-studies/undergraduate-studies-/degree-programmes-offered/degree-journalism-2010-1285846094474/titulacio.html?id=1285847461402" },
   },
   "graphic-designer": {
     description: "Diseña piezas visuales: logos, carteles, webs y material de marca.",
     salary: { value: "19.000 – 44.000 €/año brutos", source: "https://calculaahora.es/blog/sueldo-medio-profesiones-espana.html" },
+    educationPath: { value: "FP: Técnico Superior en Gráfica Publicitaria (Artes Plásticas y Diseño), o Grado en Diseño.", source: "https://www.todofp.es/que-estudiar/familias-profesionales.html" },
   },
   pharmacist: {
     description: "Dispensa medicamentos y asesora sobre su uso seguro y la salud.",
     salary: { value: "28.000 – 42.000 €/año brutos", source: "https://calculaahora.es/blog/sueldo-medio-profesiones-espana.html" },
+    educationPath: { value: "Grado en Farmacia (5 años); colegiación para ejercer.", source: "https://www.us.es/estudiar/que-estudiar/oferta-de-grados" },
   },
   veterinarian: {
     description: "Cuida la salud de los animales: previene, diagnostica y trata.",
     salary: { value: "20.000 – 38.000 €/año brutos", source: "https://calculaahora.es/blog/sueldo-medio-profesiones-espana.html" },
+    educationPath: { value: "Grado en Veterinaria (5 años); colegiación para ejercer.", source: "https://veterinaria.ucm.es/grado" },
   },
   "social-worker": {
     description: "Acompaña a personas y familias y las conecta con recursos y apoyos.",
     salary: { value: "20.000 – 33.000 €/año brutos", source: "https://calculaahora.es/blog/sueldo-medio-profesiones-espana.html" },
+    educationPath: { value: "Grado en Trabajo Social (4 años).", source: "https://www.us.es/estudiar/que-estudiar/oferta-de-grados" },
   },
   "civil-engineer": {
     description: "Diseña y supervisa obras: carreteras, puentes, edificios e infraestructuras.",
     salary: { value: "32.000 – 40.000 €/año brutos", source: "https://www.oficinaempleo.com/blog/sueldo-medio-por-profesion-en-espana-datos-actualizados-a-2025/" },
+    educationPath: { value: "Grado en Ingeniería Civil (4 años); máster habilitante para algunas atribuciones.", source: "https://www.us.es/estudiar/que-estudiar/oferta-de-grados" },
   },
   "hotel-manager": {
     description: "Dirige un hotel: equipo, clientes, reservas y que todo funcione.",
     salary: { value: "40.000 – 60.000 €/año brutos", source: "https://www.oficinaempleo.com/blog/sueldo-medio-por-profesion-en-espana-datos-actualizados-a-2025/" },
+    educationPath: { value: "FP: Técnico Superior en Gestión de Alojamientos Turísticos, o Grado en Turismo.", source: "https://www.todofp.es/que-estudiar/familias-profesionales.html" },
   },
   "web-developer": {
     description: "Construye y mantiene páginas y aplicaciones web con código.",
     salary: { value: "25.000 – 50.000 €/año brutos (sénior más)", source: "https://www.xtart.com/blog/cuanto-gana-un-programador-en-espana" },
+    educationPath: { value: "FP: Técnico Superior en Desarrollo de Aplicaciones Web (DAW), o Grado en Ingeniería Informática.", source: "https://www.todofp.es/que-estudiar/familias-profesionales.html" },
   },
-  // Salary held back (not verified for Spain) — Spanish description only for now.
   hairdresser: {
     description: "Corta, peina y cuida el cabello, y aconseja a cada cliente.",
+    educationPath: { value: "FP: Técnico en Peluquería y Cosmética Capilar (Grado Medio).", source: "https://www.todofp.es/que-estudiar/familias-profesionales.html" },
   },
   "marketing-manager": {
     description: "Planifica y dirige campañas para dar a conocer productos y marcas.",
+    educationPath: { value: "Grado en Marketing o en Publicidad y RR.PP.; también FP Superior en Marketing y Publicidad.", source: "https://www.us.es/estudiar/que-estudiar/oferta-de-grados" },
   },
   "preschool-teacher": {
     description: "Acompaña y enseña a los más pequeños en sus primeros años de aprendizaje.",
+    educationPath: { value: "Grado en Maestro/a en Educación Infantil (4 años) con prácticas.", source: "https://www.uv.es/uvweb/college/en/undergraduate-studies/undergraduate-studies-/degree-programmes-offered/degree-preschool-education-1285846094474/Titulacio.html?id=1285847460706" },
   },
+  // Education path held back — route is an oposición / professional registration, no single official page to cite.
   "police-officer": {
     description: "Protege a las personas, previene el delito y vela por la seguridad.",
   },
@@ -207,14 +222,18 @@ export const ES_CAREER_LOCALIZATION: Record<string, CareerLocalizationEntry> = {
   },
   "personal-trainer": {
     description: "Diseña entrenamientos y motiva a las personas a mejorar su forma física.",
+    educationPath: { value: "FP: Técnico Superior en Acondicionamiento Físico, o Grado en Ciencias de la Actividad Física y del Deporte (CAFD).", source: "https://www.todofp.es/que-estudiar/familias-profesionales.html" },
   },
   paramedic: {
     description: "Atiende urgencias y traslada a pacientes, estabilizándolos en el camino.",
+    educationPath: { value: "FP: Técnico en Emergencias Sanitarias (Grado Medio).", source: "https://www.todofp.es/que-estudiar/familias-profesionales.html" },
   },
   carpenter: {
     description: "Trabaja la madera: fabrica y monta muebles, puertas y estructuras.",
+    educationPath: { value: "FP: Técnico en Carpintería y Mueble (Grado Medio).", source: "https://www.todofp.es/que-estudiar/familias-profesionales.html" },
   },
   "dental-hygienist": {
     description: "Cuida la higiene bucodental y ayuda en los tratamientos del dentista.",
+    educationPath: { value: "FP: Técnico Superior en Higiene Bucodental (Grado Superior).", source: "https://www.todofp.es/que-estudiar/familias-profesionales.html" },
   },
 };
