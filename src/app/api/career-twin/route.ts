@@ -19,6 +19,8 @@ import {
 } from "@/lib/ai-guardrails";
 import { checkRateLimit, RateLimits } from "@/lib/rate-limit";
 import { logAndSwallow } from "@/lib/observability";
+import { loadTwinHistory, appendTwinTurns, toPromptHistory } from "@/lib/career-twin/history";
+import { loadTwinMemory, isReturningAfterGap } from "@/lib/career-twin/memory";
 
 function isOpenAIConfigured(): boolean {
   const apiKey = process.env.OPENAI_API_KEY;
@@ -64,6 +66,11 @@ export async function GET(req: NextRequest) {
     const profile = await loadProfileContext(session.user.id);
     const persona = buildPersona({ userId: session.user.id, career, profile });
 
+    const [history, memory] = await Promise.all([
+      loadTwinHistory(session.user.id, career.id),
+      loadTwinMemory(session.user.id, career.id),
+    ]);
+
     return NextResponse.json({
       needsCareer: false,
       career: { id: career.id, title: career.title, emoji: career.emoji ?? null },
@@ -76,6 +83,13 @@ export async function GET(req: NextRequest) {
         description: m.description,
         starterQuestions: m.starterQuestions,
       })),
+      history: history
+        .filter((r) => r.role === "user" || r.role === "assistant")
+        .map((r) => ({ role: r.role, content: r.content })),
+      checkIn: {
+        returning: isReturningAfterGap(memory.daysSinceLastVisit),
+        daysSinceLastVisit: memory.daysSinceLastVisit,
+      },
     });
   } catch (error) {
     console.error("[Career Twin] GET error:", error);
@@ -99,11 +113,6 @@ export async function POST(req: NextRequest) {
     const message: string = (body.message ?? "").toString();
     const modeId: string = (body.mode ?? "").toString();
     const careerIdParam: string | null = body.careerId ?? null;
-    const conversationHistory: { role: string; content: string }[] = Array.isArray(
-      body.conversationHistory,
-    )
-      ? body.conversationHistory
-      : [];
 
     if (!message.trim()) {
       return NextResponse.json({ error: "Message is required" }, { status: 400 });
@@ -135,31 +144,25 @@ export async function POST(req: NextRequest) {
     const profile = await loadProfileContext(session.user.id);
     const persona = buildPersona({ userId: session.user.id, career, profile });
     const mode = getMode(modeId);
+    const memory = await loadTwinMemory(session.user.id, career.id);
     const replyLanguage = localeToLanguage(req.cookies.get("NEXT_LOCALE")?.value);
-    const systemPrompt = buildCareerTwinSystemPrompt({ persona, mode, career, profile, language: replyLanguage });
+    const systemPrompt = buildCareerTwinSystemPrompt({ persona, mode, career, profile, language: replyLanguage, memory });
 
     const openai = getOpenAIClient();
     if (!openai) {
+      await appendTwinTurns(session.user.id, career.id, [{ role: "user", content: message, mode: mode.id }]);
       return NextResponse.json({ message: twinFallback(career.title), fallback: true });
     }
 
+    const dbHistory = await loadTwinHistory(session.user.id, career.id);
     const messages: OpenAI.Chat.ChatCompletionMessageParam[] = [
       { role: "system", content: systemPrompt },
     ];
-    conversationHistory.slice(-6).forEach((m) => {
-      if (m.role === "user" || m.role === "assistant") {
-        messages.push({ role: m.role, content: (m.content ?? "").toString().slice(0, 2000) });
-      }
-    });
+    toPromptHistory(dbHistory, 6).forEach((m) => messages.push({ role: m.role, content: m.content }));
     messages.push({ role: "user", content: message.slice(0, 2000) });
 
     const completion = await openai.chat.completions.create(
-      {
-        model: "gpt-4o-mini",
-        messages,
-        temperature: 0.8,
-        max_tokens: 500,
-      },
+      { model: "gpt-4o-mini", messages, temperature: 0.8, max_tokens: 500 },
       { timeout: 25_000 },
     );
 
@@ -168,6 +171,7 @@ export async function POST(req: NextRequest) {
     // Output safety net (reuses the platform guardrails)
     const safety = isResponseSafe(assistantMessage);
     if (!assistantMessage || !safety.safe) {
+      await appendTwinTurns(session.user.id, career.id, [{ role: "user", content: message, mode: mode.id }]);
       return NextResponse.json({ message: twinFallback(career.title), fallback: true });
     }
     // Only enforce English when English is the target language — Norwegian
@@ -178,6 +182,11 @@ export async function POST(req: NextRequest) {
         assistantMessage = twinFallback(career.title);
       }
     }
+
+    await appendTwinTurns(session.user.id, career.id, [
+      { role: "user", content: message, mode: mode.id },
+      { role: "assistant", content: assistantMessage, mode: mode.id },
+    ]);
 
     return NextResponse.json({ message: assistantMessage, mode: mode.id });
   } catch (error) {
