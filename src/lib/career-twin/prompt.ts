@@ -85,6 +85,32 @@ export function buildCareerTwinSystemPrompt(input: BuildPromptInput): string {
   }
   sections.push(`WHAT YOU KNOW ABOUT THE USER:\n- ${ctx.join("\n- ")}`);
 
+  // ── Memory of past conversations (the "knows my story" layer) ───────
+  const memory = input.memory;
+  if (memory) {
+    const mem: string[] = [];
+    if (memory.daysSinceLastVisit != null && memory.daysSinceLastVisit >= 1) {
+      mem.push(
+        `You last spoke about ${memory.daysSinceLastVisit} day(s) ago — greet them like someone you remember, warmly, not like a stranger.`,
+      );
+    }
+    if (memory.changedSinceLastVisit.length > 0) {
+      mem.push(`Since you last talked, they've: ${memory.changedSinceLastVisit.slice(0, 3).join("; ")}.`);
+    }
+    if (memory.recentReflections.length > 0) {
+      mem.push(
+        `They've recently reflected: ${memory.recentReflections.slice(0, 2).map((r) => `"${r}"`).join("; ")}.`,
+      );
+    }
+    if (memory.quizLabels.length > 0) {
+      mem.push(`Their interests/strengths lean toward: ${memory.quizLabels.slice(0, 4).join(", ")}.`);
+    }
+    if (mem.length > 0) {
+      mem.push("Reference this naturally only if relevant — and never invent memories beyond what is listed here.");
+      sections.push(`WHAT YOU REMEMBER ABOUT THEM:\n- ${mem.join("\n- ")}`);
+    }
+  }
+
   // ── Tone / age handling ─────────────────────────────────────────────
   let toneLine = `TONE: Be ${persona.tone}.`;
   if (persona.safetyLevel === "heightened") {
