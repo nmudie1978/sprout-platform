@@ -27,6 +27,23 @@ export const SUPPORTED_COUNTRIES: Country[] = [
 
 export const DEFAULT_COUNTRY = "Norway";
 
+/**
+ * Countries we have actually localised end-to-end (education routes,
+ * salaries, programmes, and — critically — crisis info). Only these are
+ * offered in the signup/profile picker: capturing an unlocalised country
+ * would silently serve Norwegian content (incl. wrong emergency numbers).
+ * Re-add a country here once its data lands. Always a subset of
+ * SUPPORTED_COUNTRIES (the roadmap list).
+ */
+export const LAUNCHED_COUNTRIES: Country[] = SUPPORTED_COUNTRIES.filter(
+  (c) => c.name === "Norway" || c.name === "Spain",
+);
+
+/** True only for countries we have fully localised (offered in the picker). */
+export function isLaunchedCountry(name?: string | null): boolean {
+  return !!name && LAUNCHED_COUNTRIES.some((c) => c.name === name);
+}
+
 const COUNTRY_NAMES = new Set(SUPPORTED_COUNTRIES.map((c) => c.name));
 
 /** Normalise an arbitrary input to a supported country name, or the default. */
