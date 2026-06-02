@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Suspense } from "react";
 import { LandingNavAuthClient } from "@/components/landing/landing-nav-auth-client";
+import { LanguageDropdown } from "@/components/language-dropdown";
 import { getTranslations } from "next-intl/server";
 import { Button } from "@/components/ui/button";
 import {
@@ -115,6 +116,12 @@ export default async function LandingPage() {
           </Link>
 
           <div className="flex items-center gap-3 sm:gap-5">
+            {/* Language switcher — always reachable, even logged out.
+                Wrapped in `dark` so the trigger matches the always-dark nav
+                regardless of the visitor's theme preference. */}
+            <div className="dark flex items-center">
+              <LanguageDropdown />
+            </div>
             <Suspense
               fallback={
                 <div className="flex items-center gap-2 sm:gap-4">

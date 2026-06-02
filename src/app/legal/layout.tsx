@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Star, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { LanguageDropdown } from "@/components/language-dropdown";
 
 export default function LegalLayout({
   children,
@@ -18,12 +19,15 @@ export default function LegalLayout({
               Endeavrly
             </span>
           </Link>
-          <Button variant="ghost" size="sm" asChild>
-            <Link href="/">
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Back to Home
-            </Link>
-          </Button>
+          <div className="flex items-center gap-2 sm:gap-3">
+            <LanguageDropdown />
+            <Button variant="ghost" size="sm" asChild>
+              <Link href="/">
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                Back to Home
+              </Link>
+            </Button>
+          </div>
         </div>
       </header>
 
