@@ -52,6 +52,13 @@ export async function GET(req: NextRequest) {
       orderBy: { grantedAt: "desc" },
     });
 
+    // Fetch Career Twin conversation messages
+    const twinMessages = await prisma.careerTwinMessage.findMany({
+      where: { userId },
+      orderBy: { createdAt: "asc" },
+      select: { careerId: true, role: true, content: true, mode: true, createdAt: true },
+    });
+
     // Structure the export data
     const exportData = {
       exportDate: new Date().toISOString(),
@@ -94,6 +101,7 @@ export async function GET(req: NextRequest) {
         grantedAt: c.grantedAt,
         revokedAt: c.revokedAt,
       })),
+      careerTwinConversations: twinMessages,
     };
 
     // Log successful export
