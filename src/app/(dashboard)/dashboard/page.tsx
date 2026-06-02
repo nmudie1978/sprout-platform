@@ -9,9 +9,9 @@ import { ToastAction } from "@/components/ui/toast";
  * Layout:
  * 1. Greeting header with date
  * 2. My Journey card (circular progress, stage, progress bar)
- * 3. Career Snapshot (left) + Previously Explored Journeys (right)
- * 4. My Library (left) + Saved Careers (right)
- * 5. Saved Careers
+ * 3. Career Snapshot
+ * 4. My Explored Journeys (left) + Saved Careers (right)
+ * 5. Saved Resources (left) + Reflections (right)
  * 6. Industry Insights Ticker
  */
 
@@ -40,7 +40,6 @@ import {
   Heart,
   X,
   AlertTriangle,
-  Star,
   NotebookPen,
 } from "lucide-react";
 import { useCuriositySaves } from "@/hooks/use-curiosity-saves";
@@ -1223,7 +1222,6 @@ export default function DashboardPage() {
               <div className="mt-3 space-y-2.5">
                 {/* Quiet acknowledgement that this journey is complete */}
                 <div className="flex items-center gap-1.5 text-[10px] font-medium text-muted-foreground/70">
-                  <Star className="h-3 w-3 shrink-0 fill-amber-400 text-amber-400" />
                   <span>{t('journey.completeIndicator')}</span>
                 </div>
                 {/* Calm next step so completion isn't a dead-end. Opens the
@@ -1265,7 +1263,7 @@ export default function DashboardPage() {
           />
         )}
 
-        {/* ── 4. Explored Journeys + My Library ─────────────────── */}
+        {/* ── 4. My Explored Journeys + Saved Careers ─────────────── */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
           <DashboardSection
             title="My Explored Journeys"
@@ -1319,7 +1317,6 @@ export default function DashboardPage() {
                         const stageLetter = stageLabel === 'Clarity' || stageLabel === 'Complete' ? 'C' : stageLabel === 'Understand' ? 'U' : 'D';
                         const stageTooltip = stageLabel === 'Clarity' || stageLabel === 'Complete' ? 'Clarity — building your roadmap' : stageLabel === 'Understand' ? 'Understand — exploring the role in depth' : 'Discover — exploring what this career is about';
                         const stageColor = stageLetter === 'C' ? 'text-primary bg-primary/15' : stageLetter === 'U' ? 'text-primary/80 bg-primary/10' : 'text-muted-foreground bg-muted';
-                        const isComplete = stageLabel === 'Complete';
                         return (
                           <tr
                             key={goal.goalId}
@@ -1337,12 +1334,6 @@ export default function DashboardPage() {
                                 <span className={cn("text-xs truncate", isCurrentGoal ? "font-medium text-foreground" : "text-foreground/75")}>
                                   {goal.goalTitle}
                                 </span>
-                                {isComplete && (
-                                  <Star
-                                    className="h-3 w-3 shrink-0 fill-amber-400 text-amber-400"
-                                    aria-label="Journey complete"
-                                  />
-                                )}
                               </span>
                             </td>
                             <td className="px-2 py-1.5 text-center">
@@ -1403,26 +1394,7 @@ export default function DashboardPage() {
           })()}
           </DashboardSection>
 
-          {/* Saved Resources (renamed from "My Library" — the new
-              /library page now owns that name; this is saved articles/videos). */}
-          <DashboardSection
-            title="Saved Resources"
-            icon={BookmarkCheck}
-            iconColor="text-muted-foreground"
-            tooltip="Articles, videos, and resources you've saved from Industry Insights."
-            className="mb-0"
-            fixedHeight="h-[180px] overflow-y-auto"
-            action={savedSummary.total > 0 ? (
-              <span className="text-xs text-muted-foreground/40">{savedSummary.total}</span>
-            ) : undefined}
-          >
-            <LibraryCard items={savedItemsList} total={savedSummary.total} onRemove={removeLibraryItem} />
-          </DashboardSection>
-        </div>
-
-        {/* ── 5. Saved Careers ─────────────────────── */}
-        <div className={`grid grid-cols-1 ${SMALL_JOBS_ENABLED ? "sm:grid-cols-2" : ""} gap-4 mb-4 items-stretch`}>
-          {/* Saved Careers */}
+          {/* ── Saved Careers (Row A right column) ── */}
           <DashboardSection
             title={t('savedCareers.title')}
             icon={Heart}
@@ -1512,10 +1484,64 @@ export default function DashboardPage() {
               <p className="text-xs text-muted-foreground/50">{t('savedCareers.emptyState')}</p>
             )}
           </DashboardSection>
+        </div>
 
-          {/* Small Jobs — compact. Hidden until the marketplace
-              re-opens; gated by NEXT_PUBLIC_SMALL_JOBS_ENABLED. */}
-          {SMALL_JOBS_ENABLED && (
+        {/* ── 5. Saved Resources + Reflections (Row B — 2-col grid) ── */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4 items-stretch">
+          {/* Saved Resources (renamed from "My Library" — the new
+              /library page now owns that name; this is saved articles/videos). */}
+          <DashboardSection
+            title="Saved Resources"
+            icon={BookmarkCheck}
+            iconColor="text-muted-foreground"
+            tooltip="Articles, videos, and resources you've saved from Industry Insights."
+            className="mb-0"
+            fixedHeight="h-[180px] overflow-y-auto"
+            action={savedSummary.total > 0 ? (
+              <span className="text-xs text-muted-foreground/40">{savedSummary.total}</span>
+            ) : undefined}
+          >
+            <LibraryCard items={savedItemsList} total={savedSummary.total} onRemove={removeLibraryItem} />
+          </DashboardSection>
+
+          {/* ── Reflections preview ── */}
+          <DashboardSection
+            title="Reflections"
+            icon={NotebookPen}
+            iconColor="text-muted-foreground"
+            tooltip="Short notes you've written as you move through My Journey."
+            className="mb-0"
+            fixedHeight="h-[180px] overflow-y-auto"
+            action={
+              <Link href="/library?tab=reflections" className="text-xs text-primary/70 hover:text-primary transition-colors">
+                See all →
+              </Link>
+            }
+          >
+            {recentReflections.length > 0 ? (
+              <ul className="space-y-2">
+                {recentReflections.slice(0, 2).map((r) => {
+                  const career = getAllCareers().find((c) => c.id === r.careerSlug);
+                  return (
+                    <li key={r.id} className="rounded-control border border-border/60 bg-muted/10 px-2.5 py-2">
+                      <p className="text-xs text-muted-foreground/60 mb-0.5 line-clamp-1">
+                        {career ? `${career.emoji} ${career.title}` : r.careerSlug} · {r.lensLabel}
+                      </p>
+                      <p className="text-xs text-muted-foreground/80 line-clamp-2">{r.text}</p>
+                    </li>
+                  );
+                })}
+              </ul>
+            ) : (
+              <p className="text-xs text-muted-foreground/50">Your reflections will appear here as you move through My Journey.</p>
+            )}
+          </DashboardSection>
+        </div>
+
+        {/* Small Jobs — compact. Hidden until the marketplace
+            re-opens; gated by NEXT_PUBLIC_SMALL_JOBS_ENABLED. */}
+        {SMALL_JOBS_ENABLED && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
           <DashboardSection
             title={t('smallJobs.title')}
             icon={Briefcase}
@@ -1553,43 +1579,8 @@ export default function DashboardPage() {
               )}
             </div>
           </DashboardSection>
-          )}
         </div>
-
-        {/* ── 5b. Reflections preview ─────────────────────── */}
-        <div className="grid grid-cols-1 gap-4 mb-4">
-          <DashboardSection
-            title="Reflections"
-            icon={NotebookPen}
-            iconColor="text-muted-foreground"
-            tooltip="Short notes you've written as you move through My Journey."
-            className="mb-0"
-            fixedHeight="h-[180px] overflow-y-auto"
-            action={
-              <Link href="/library?tab=reflections" className="text-xs text-primary/70 hover:text-primary transition-colors">
-                See all →
-              </Link>
-            }
-          >
-            {recentReflections.length > 0 ? (
-              <ul className="space-y-2">
-                {recentReflections.slice(0, 2).map((r) => {
-                  const career = getAllCareers().find((c) => c.id === r.careerSlug);
-                  return (
-                    <li key={r.id} className="rounded-control border border-border/60 bg-muted/10 px-2.5 py-2">
-                      <p className="text-xs text-muted-foreground/60 mb-0.5 line-clamp-1">
-                        {career ? `${career.emoji} ${career.title}` : r.careerSlug} · {r.lensLabel}
-                      </p>
-                      <p className="text-xs text-muted-foreground/80 line-clamp-2">{r.text}</p>
-                    </li>
-                  );
-                })}
-              </ul>
-            ) : (
-              <p className="text-xs text-muted-foreground/50">Your reflections will appear here as you move through My Journey.</p>
-            )}
-          </DashboardSection>
-        </div>
+        )}
 
       </div>
 
