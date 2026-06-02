@@ -319,6 +319,7 @@
     "acceptTerms": "Acepto los Términos y la Política de Privacidad"
   },
   "insights": {
+    "countryNotice": "Estos datos se basan en el mercado laboral noruego; todavía no los hemos adaptado a {country}.",
     "pageTitle": "Análisis del",
     "pageTitleGradient": "sector",
     "pageDescription": "Datos reales sobre carreras, sectores y el mercado laboral",

@@ -319,6 +319,7 @@
     "acceptTerms": "Jeg godtar vilkårene og personvernreglene"
   },
   "insights": {
+    "countryNotice": "Denne innsikten er basert på det norske arbeidsmarkedet – vi har ikke tilpasset den til {country} ennå.",
     "pageTitle": "Bransje",
     "pageTitleGradient": "Innsikt",
     "pageDescription": "Forstå hva som former karrierer globalt",
