@@ -757,12 +757,6 @@ function RadarCoachTip({
         {tip.text}
       </span>
       <button
-        onClick={onEditPreferences}
-        className="shrink-0 text-teal-500 hover:text-teal-400 font-medium transition-colors whitespace-nowrap"
-      >
-        {tip.cta}
-      </button>
-      <button
         onClick={() => {
           setDismissed(true);
           try { localStorage.setItem(COACH_DISMISS_KEY, "1"); } catch { /* noop */ }
