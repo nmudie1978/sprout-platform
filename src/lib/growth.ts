@@ -1,5 +1,5 @@
 import { prisma } from '@/lib/prisma';
-import { TrustSignalType, TrustSignalSource, ResponsibilityLevel } from '@prisma/client';
+import { TrustSignalType } from '@prisma/client';
 
 // ============================================
 // GROWTH TRACKING (Feature 4)
@@ -59,103 +59,13 @@ export async function getUserGrowthGraph(userId: string): Promise<GrowthGraph | 
     return null;
   }
 
-  // Get all job completions with feedback
-  const completions = await prisma.jobCompletion.findMany({
-    where: { youthId: userId },
-    include: {
-      feedback: true,
-      job: { select: { title: true, category: true } },
-    },
-    orderBy: { completedAt: 'desc' },
-  });
-
-  // Calculate monthly aggregations
-  const monthlyMap = new Map<string, {
-    jobs: number;
-    punctuality: number[];
-    communication: number[];
-    quality: number[];
-    responsibility: Record<ResponsibilityLevel, number>;
-    wouldRehire: number;
-  }>();
-
-  let totalWouldRehire = 0;
-  const skillCounts = new Map<string, number>();
-
-  for (const completion of completions) {
-    const monthKey = completion.completedAt.toISOString().slice(0, 7);
-
-    if (!monthlyMap.has(monthKey)) {
-      monthlyMap.set(monthKey, {
-        jobs: 0,
-        punctuality: [],
-        communication: [],
-        quality: [],
-        responsibility: { BASIC: 0, INTERMEDIATE: 0, ADVANCED: 0 },
-        wouldRehire: 0,
-      });
-    }
-
-    const monthData = monthlyMap.get(monthKey)!;
-    monthData.jobs++;
-
-    if (completion.feedback) {
-      monthData.punctuality.push(completion.feedback.punctuality);
-      monthData.communication.push(completion.feedback.communication);
-      monthData.quality.push(completion.feedback.quality);
-      monthData.responsibility[completion.feedback.responsibilityLevel]++;
-
-      if (completion.feedback.wouldRehire) {
-        monthData.wouldRehire++;
-        totalWouldRehire++;
-      }
-
-      // Count skills demonstrated
-      for (const skillSlug of completion.feedback.skillsDemonstrated) {
-        skillCounts.set(skillSlug, (skillCounts.get(skillSlug) || 0) + 1);
-      }
-    }
-  }
-
-  // Convert monthly map to sorted array
-  const monthlyProgress: GrowthMonthData[] = Array.from(monthlyMap.entries())
-    .map(([month, data]) => ({
-      month,
-      jobsCompleted: data.jobs,
-      avgPunctuality: data.punctuality.length > 0
-        ? data.punctuality.reduce((a, b) => a + b, 0) / data.punctuality.length
-        : 0,
-      avgCommunication: data.communication.length > 0
-        ? data.communication.reduce((a, b) => a + b, 0) / data.communication.length
-        : 0,
-      avgQuality: data.quality.length > 0
-        ? data.quality.reduce((a, b) => a + b, 0) / data.quality.length
-        : 0,
-      responsibilityDistribution: data.responsibility,
-      wouldRehireCount: data.wouldRehire,
-    }))
-    .sort((a, b) => a.month.localeCompare(b.month));
-
-  // Get skills with names
-  const skillSlugs = Array.from(skillCounts.keys());
-  const skills = await prisma.skill.findMany({
-    where: { slug: { in: skillSlugs } },
-    select: { slug: true, name: true, category: true },
-  });
-
-  const skillsDemonstrated: SkillDemonstrated[] = skills.map(skill => ({
-    slug: skill.slug,
-    name: skill.name,
-    category: skill.category,
-    count: skillCounts.get(skill.slug) || 0,
-  })).sort((a, b) => b.count - a.count);
-
-  // Calculate supervision split
-  const supervisionSplit = {
-    supervised: completions.filter(c => c.supervision === 'SUPERVISED').length,
-    unsupervised: completions.filter(c => c.supervision === 'UNSUPERVISED').length,
-    unknown: completions.filter(c => c.supervision === 'UNKNOWN').length,
-  };
+  // Jobs marketplace removed: there are no job completions or structured
+  // feedback to aggregate. Growth now reflects trust signals only (still kept),
+  // until a replacement experience signal is wired. Job-derived metrics are 0.
+  const monthlyProgress: GrowthMonthData[] = [];
+  const totalWouldRehire = 0;
+  const skillsDemonstrated: SkillDemonstrated[] = [];
+  const supervisionSplit = { supervised: 0, unsupervised: 0, unknown: 0 };
 
   // Get trust signals aggregated by type
   const trustSignals = await prisma.trustSignal.groupBy({
@@ -167,7 +77,7 @@ export async function getUserGrowthGraph(userId: string): Promise<GrowthGraph | 
 
   return {
     monthlyProgress,
-    totalJobsCompleted: completions.length,
+    totalJobsCompleted: 0,
     totalWouldRehire,
     skillsDemonstrated,
     supervisionSplit,

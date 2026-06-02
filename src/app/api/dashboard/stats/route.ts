@@ -27,30 +27,9 @@ export async function GET() {
     });
     const profileId = profile?.id;
 
-    // Applications stats (uses youthId)
-    const applications = await prisma.application.findMany({
-      where: { youthId: userId },
-      select: { status: true, createdAt: true, job: { select: { title: true } } },
-      orderBy: { createdAt: 'desc' },
-      take: 20,
-    });
-
-    const appStats = {
-      applied: applications.length,
-      waiting: applications.filter((a) => a.status === 'PENDING').length,
-      accepted: applications.filter((a) => a.status === 'ACCEPTED').length,
-      done: applications.filter((a) => ['WITHDRAWN', 'REJECTED'].includes(a.status)).length,
-    };
-
-    // Last completed job
-    const lastCompletion = await prisma.jobCompletion.findFirst({
-      where: { youthId: userId },
-      orderBy: { completedAt: 'desc' },
-      select: { completedAt: true, job: { select: { title: true, location: true } } },
-    });
-    const lastCompletedJob = lastCompletion
-      ? { title: lastCompletion.job.title, completedAt: lastCompletion.completedAt.toISOString(), location: lastCompletion.job.location }
-      : null;
+    // Jobs marketplace removed — no applications/completions to report.
+    const appStats = { applied: 0, waiting: 0, accepted: 0, done: 0 };
+    const lastCompletedJob = null;
 
     // Saved content (uses profileId)
     let savedSummary = { total: 0, byType: { articles: 0, videos: 0, podcasts: 0, shorts: 0 } };
@@ -94,15 +73,6 @@ export async function GET() {
 
     // Recent activity (combine various actions)
     const recentActivity: { type: string; title: string; time: string }[] = [];
-
-    // Recent applications
-    for (const app of applications.slice(0, 3)) {
-      recentActivity.push({
-        type: 'application',
-        title: `Applied to ${app.job.title}`,
-        time: app.createdAt.toISOString(),
-      });
-    }
 
     // Recent saved items
     if (profileId) {

@@ -2,13 +2,16 @@ export const dynamic = "force-dynamic";
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
 import { calculateSkillLevels } from "@/lib/skills-mapping";
 
 /**
  * GET /api/profile/skills
- * Returns calculated skill levels based on user's completed jobs
- * Optimized to only fetch completed jobs for the current user
+ * Returns calculated soft-skill levels for the current youth.
+ *
+ * NOTE: This previously derived levels from completed marketplace jobs, which
+ * no longer exist. Until a replacement experience signal is wired (journey
+ * activity, courses, quizzes), this returns baseline (zeroed) levels so the
+ * skills surface renders without fabricated data.
  */
 export async function GET() {
   try {
@@ -18,29 +21,8 @@ export async function GET() {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // Fetch only completed jobs for this user directly
-    // Much more efficient than fetching all jobs and filtering
-    const completedApplications = await prisma.application.findMany({
-      where: {
-        youthId: session.user.id,
-        status: "ACCEPTED",
-        job: {
-          status: "COMPLETED",
-        },
-      },
-      select: {
-        job: {
-          select: {
-            id: true,
-            title: true,
-            category: true,
-            requiredTraits: true,
-          },
-        },
-      },
-    });
-
-    const completedJobs = completedApplications.map((app) => app.job);
+    // No marketplace job-completion source anymore — baseline levels for now.
+    const completedJobs: { category: string }[] = [];
     const skillLevels = calculateSkillLevels(completedJobs);
 
     const response = NextResponse.json(skillLevels);

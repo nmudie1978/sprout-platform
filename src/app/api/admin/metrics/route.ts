@@ -84,165 +84,15 @@ export async function GET(request: NextRequest) {
     };
 
     // ============================================
-    // JOB METRICS (AGGREGATED ONLY)
+    // JOBS MARKETPLACE REMOVED
     // ============================================
-
-    // Total jobs
-    const totalJobs = await prisma.microJob.count();
-
-    // Jobs in date range
-    const newJobs = await prisma.microJob.count({
-      where: { createdAt: { gte: startDate } },
-    });
-
-    // Jobs by status
-    const jobsByStatus = await prisma.microJob.groupBy({
-      by: ["status"],
-      _count: { id: true },
-    });
-
-    // Run all time-series and remaining queries in parallel.
-    // Time-series per-day counts come from a `findMany` pulling just
-    // the `createdAt` column in the date range and bucketing in JS.
-    // For 7/14/30-day windows on youth-platform volumes this is a
-    // trivial dataset; swapping to groupBy-friendly Prisma removes
-    // the $queryRaw surface without a measurable perf hit, and the
-    // endpoint has a 5-min cache on top.
-    const [
-      jobsInRange,
-      topCategories,
-      topLocationsRaw,
-      totalApplications,
-      newApplications,
-      applicationsByStatus,
-      applicationsInRange,
-      totalMessages,
-      newMessages,
-      messagesInRange,
-      activeMessageSenders,
-      activeApplicants,
-    ] = await Promise.all([
-      // Jobs in date range — bucketed in JS below
-      prisma.microJob.findMany({
-        where: { createdAt: { gte: startDate } },
-        select: { createdAt: true },
-      }),
-
-      // Top 5 categories
-      prisma.microJob.groupBy({
-        by: ["category"],
-        _count: { id: true },
-        orderBy: { _count: { id: "desc" } },
-        take: 5,
-      }),
-
-      // Top 5 locations - use groupBy instead of fetching all records
-      prisma.microJob.groupBy({
-        by: ["location"],
-        where: { location: { not: "" } },
-        _count: { id: true },
-        orderBy: { _count: { id: "desc" } },
-        take: 20, // fetch extra to handle city extraction deduplication
-      }),
-
-      // Total applications
-      prisma.application.count(),
-
-      // Applications in date range
-      prisma.application.count({
-        where: { createdAt: { gte: startDate } },
-      }),
-
-      // Applications by status
-      prisma.application.groupBy({
-        by: ["status"],
-        _count: { id: true },
-      }),
-
-      // Applications in date range — bucketed in JS below
-      prisma.application.findMany({
-        where: { createdAt: { gte: startDate } },
-        select: { createdAt: true },
-      }),
-
-      // Total messages
-      prisma.message.count(),
-
-      // Messages in date range
-      prisma.message.count({
-        where: { createdAt: { gte: startDate } },
-      }),
-
-      // Messages in date range — bucketed in JS below
-      prisma.message.findMany({
-        where: { createdAt: { gte: startDate } },
-        select: { createdAt: true },
-      }),
-
-      // Active message senders
-      prisma.message.findMany({
-        where: { createdAt: { gte: startDate } },
-        select: { senderId: true },
-        distinct: ["senderId"],
-      }),
-
-      // Active applicants
-      prisma.application.findMany({
-        where: { createdAt: { gte: startDate } },
-        select: { youthId: true },
-        distinct: ["youthId"],
-      }),
-    ]);
-
-    // Bucket per-day counts from the raw createdAt timestamps.
-    // Matches the previous DATE_TRUNC('day', ...) behaviour in UTC.
-    const bucketByDay = (rows: Array<{ createdAt: Date }>) => {
-      const map = new Map<string, number>();
-      for (const row of rows) {
-        const d = formatDate(row.createdAt);
-        map.set(d, (map.get(d) ?? 0) + 1);
-      }
-      return map;
-    };
-
-    const jobsDayMap = bucketByDay(jobsInRange);
-    const appsDayMap = bucketByDay(applicationsInRange);
-    const msgsDayMap = bucketByDay(messagesInRange);
-
-    // Fill in all days (including zeros) for the time series
-    const jobsPerDay: { date: string; count: number }[] = [];
-    const applicationsPerDay: { date: string; count: number }[] = [];
-    const messagesPerDay: { date: string; count: number }[] = [];
-
+    // The jobs/applications/messaging marketplace has been removed. These
+    // sections are retained as zeroed series so the admin dashboard renders
+    // unchanged; only user metrics carry real data now.
+    const zeroSeries: { date: string; count: number }[] = [];
     for (let i = validDays - 1; i >= 0; i--) {
-      const d = formatDate(getDaysAgo(i));
-      jobsPerDay.push({ date: d, count: jobsDayMap.get(d) || 0 });
-      applicationsPerDay.push({ date: d, count: appsDayMap.get(d) || 0 });
-      messagesPerDay.push({ date: d, count: msgsDayMap.get(d) || 0 });
+      zeroSeries.push({ date: formatDate(getDaysAgo(i)), count: 0 });
     }
-
-    // Extract city from location and aggregate
-    const locationCounts: Record<string, number> = {};
-    topLocationsRaw.forEach((row) => {
-      if (row.location) {
-        const city = (row.location as string).split(",")[0].trim();
-        const count = typeof row._count === 'number' ? row._count : (row._count as { id: number }).id;
-        if (city) {
-          locationCounts[city] = (locationCounts[city] || 0) + count;
-        }
-      }
-    });
-    const topLocations = Object.entries(locationCounts)
-      .sort((a, b) => b[1] - a[1])
-      .slice(0, 5)
-      .map(([location, count]) => ({ location, count }));
-
-    const uniqueActiveUsers = new Set([
-      ...activeMessageSenders.map((m) => m.senderId),
-      ...activeApplicants.map((a) => a.youthId),
-    ]);
-
-    const activeUsers = uniqueActiveUsers.size;
 
     // ============================================
     // RESPONSE
@@ -266,33 +116,24 @@ export async function GET(request: NextRequest) {
         })),
       },
       jobs: {
-        total: totalJobs,
-        new: newJobs,
-        byStatus: jobsByStatus.map((s) => ({
-          status: s.status,
-          count: s._count.id,
-        })),
-        perDay: jobsPerDay,
-        topCategories: topCategories.map((c) => ({
-          category: c.category,
-          count: c._count.id,
-        })),
-        topLocations,
+        total: 0,
+        new: 0,
+        byStatus: [],
+        perDay: zeroSeries,
+        topCategories: [],
+        topLocations: [],
       },
       applications: {
-        total: totalApplications,
-        new: newApplications,
-        byStatus: applicationsByStatus.map((s) => ({
-          status: s.status,
-          count: s._count.id,
-        })),
-        perDay: applicationsPerDay,
+        total: 0,
+        new: 0,
+        byStatus: [],
+        perDay: zeroSeries,
       },
       engagement: {
-        totalMessages,
-        newMessages,
-        messagesPerDay,
-        activeUsers,
+        totalMessages: 0,
+        newMessages: 0,
+        messagesPerDay: zeroSeries,
+        activeUsers: 0,
       },
     });
     // Admin metrics are expensive; cache for 5 min

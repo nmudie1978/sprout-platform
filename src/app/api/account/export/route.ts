@@ -34,35 +34,6 @@ export async function GET(req: NextRequest) {
       where: { id: userId },
       include: {
         youthProfile: true,
-        applications: {
-          include: {
-            job: {
-              select: {
-                id: true,
-                title: true,
-                category: true,
-                payAmount: true,
-                payType: true,
-              },
-            },
-          },
-        },
-        reviews: true,
-        receivedReviews: true,
-        postedJobs: {
-          select: {
-            id: true,
-            title: true,
-            category: true,
-            description: true,
-            payAmount: true,
-            payType: true,
-            location: true,
-            status: true,
-            createdAt: true,
-          },
-        },
-        earnings: true,
         badges: true,
         notifications: {
           take: 100, // Limit to recent notifications
@@ -74,39 +45,6 @@ export async function GET(req: NextRequest) {
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
-
-    // Fetch messages separately (can be large)
-    const messages = await prisma.message.findMany({
-      where: { senderId: userId },
-      select: {
-        id: true,
-        content: true,
-        createdAt: true,
-        conversation: {
-          select: {
-            id: true,
-            participant1Id: true,
-            participant2Id: true,
-          },
-        },
-      },
-      orderBy: { createdAt: "desc" },
-      take: 500, // Limit to recent messages
-    });
-
-    // Fetch conversations
-    const conversations = await prisma.conversation.findMany({
-      where: {
-        OR: [{ participant1Id: userId }, { participant2Id: userId }],
-      },
-      select: {
-        id: true,
-        createdAt: true,
-        lastMessageAt: true,
-        participant1Id: true,
-        participant2Id: true,
-      },
-    });
 
     // Fetch consent records
     const consents = await prisma.consentRecord.findMany({
@@ -138,54 +76,9 @@ export async function GET(req: NextRequest) {
               userId: undefined,
             }
           : null,
-      applications: user.applications.map((app) => ({
-        id: app.id,
-        status: app.status,
-        message: app.message,
-        createdAt: app.createdAt,
-        job: app.job,
-      })),
-      postedJobs: user.postedJobs,
-      reviewsGiven: user.reviews.map((r) => ({
-        id: r.id,
-        punctuality: r.punctuality,
-        communication: r.communication,
-        reliability: r.reliability,
-        overall: r.overall,
-        positiveTags: r.positiveTags,
-        comment: r.comment,
-        createdAt: r.createdAt,
-      })),
-      reviewsReceived: user.receivedReviews.map((r) => ({
-        id: r.id,
-        punctuality: r.punctuality,
-        communication: r.communication,
-        reliability: r.reliability,
-        overall: r.overall,
-        positiveTags: r.positiveTags,
-        comment: r.comment,
-        createdAt: r.createdAt,
-      })),
-      earnings: user.earnings.map((e) => ({
-        amount: e.amount,
-        status: e.status,
-        earnedAt: e.earnedAt,
-      })),
       badges: user.badges.map((b) => ({
         type: b.type,
         earnedAt: b.earnedAt,
-      })),
-      messages: messages.map((m) => ({
-        id: m.id,
-        content: m.content,
-        createdAt: m.createdAt,
-        conversationId: m.conversation.id,
-      })),
-      conversations: conversations.map((c) => ({
-        id: c.id,
-        createdAt: c.createdAt,
-        lastMessageAt: c.lastMessageAt,
-        isParticipant1: c.participant1Id === userId,
       })),
       notifications: user.notifications.map((n) => ({
         type: n.type,
@@ -208,10 +101,8 @@ export async function GET(req: NextRequest) {
       userId,
       action: AuditAction.DATA_EXPORT_COMPLETED,
       metadata: {
-        applicationCount: user.applications.length,
-        reviewCount: user.reviews.length,
-        messageCount: messages.length,
-        jobCount: user.postedJobs.length,
+        badgeCount: user.badges.length,
+        notificationCount: user.notifications.length,
       },
       ipAddress: req.headers.get("x-forwarded-for") || undefined,
       userAgent: req.headers.get("user-agent") || undefined,

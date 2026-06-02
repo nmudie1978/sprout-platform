@@ -1,5 +1,3 @@
-import { JobCategory } from "@prisma/client";
-
 // Soft skills that youth can develop
 export const SOFT_SKILLS = [
   "reliability",
@@ -16,8 +14,8 @@ export const SOFT_SKILLS = [
 
 export type SoftSkill = typeof SOFT_SKILLS[number];
 
-// Map job categories to the soft skills they develop
-export const JOB_CATEGORY_SKILLS: Record<JobCategory, SoftSkill[]> = {
+// Map activity/experience categories to the soft skills they develop
+export const JOB_CATEGORY_SKILLS: Record<string, SoftSkill[]> = {
   BABYSITTING: [
     "responsibility",
     "communication",
@@ -70,13 +68,13 @@ export const JOB_CATEGORY_SKILLS: Record<JobCategory, SoftSkill[]> = {
 
 // Calculate skill levels based on completed jobs
 export function calculateSkillLevels(
-  completedJobs: { category: JobCategory }[]
+  completedJobs: { category: string }[]
 ): Record<SoftSkill, number> {
   const skillCounts: Record<string, number> = {};
 
   // Count how many times each skill was practiced
   completedJobs.forEach((job) => {
-    const skills = JOB_CATEGORY_SKILLS[job.category];
+    const skills = JOB_CATEGORY_SKILLS[job.category] ?? [];
     skills.forEach((skill) => {
       skillCounts[skill] = (skillCounts[skill] || 0) + 1;
     });

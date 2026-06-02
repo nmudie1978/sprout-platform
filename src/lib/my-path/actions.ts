@@ -3,12 +3,10 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { skillsPerJobCategory } from "../../../prisma/seed";
-import type { JobCategory, Prisma } from "@prisma/client";
+import type { Prisma } from "@prisma/client";
 import {
   getRecommendationsFromAspiration,
   calculateCareerMatch,
-  getCareerById,
   getCategoryForCareer,
   getCareersForCategory,
   type Career,
@@ -55,6 +53,9 @@ interface VaultItemSummary {
   createdAt: Date;
 }
 
+// NOTE: The jobs marketplace has been removed. SmartJobPick and the
+// "recommended jobs" surface are retained as inert types/stubs so callers
+// (e.g. onboarding) keep compiling; they now resolve to empty lists.
 export interface SmartJobPick {
   id: string;
   title: string;
@@ -152,6 +153,55 @@ export interface MultipleCareerJourneys {
   availabilityLevel: string | null;
 }
 
+// Build a single SingleCareerJourney from an aspiration goal + the user's skills.
+function buildJourneyForGoal(
+  goal: string,
+  userSkills: string[]
+): SingleCareerJourney | null {
+  const recommendations = getRecommendationsFromAspiration(goal);
+  if (recommendations.length === 0) return null;
+
+  const targetCareer = recommendations[0].career;
+  const category = getCategoryForCareer(targetCareer.id) || null;
+  const skillsNeeded = targetCareer.keySkills || [];
+  const skillsNeededLower = skillsNeeded.map((s) => s.toLowerCase());
+
+  const skillsYouHave = userSkills.filter((skill) =>
+    skillsNeededLower.some(
+      (needed) => needed.includes(skill) || skill.includes(needed)
+    )
+  );
+
+  const skillsToGain = skillsNeeded.filter(
+    (skill) =>
+      !userSkills.some(
+        (userSkill) =>
+          userSkill.includes(skill.toLowerCase()) ||
+          skill.toLowerCase().includes(userSkill)
+      )
+  );
+
+  const skillMatchPercent = calculateCareerMatch(userSkills, targetCareer);
+
+  const relatedCareers = category
+    ? getCareersForCategory(category)
+        .filter((c) => c.id !== targetCareer.id)
+        .slice(0, 4)
+    : [];
+
+  return {
+    targetCareer,
+    careerAspiration: goal,
+    educationPath: targetCareer.educationPath || null,
+    skillsNeeded,
+    skillsYouHave,
+    skillsToGain,
+    skillMatchPercent,
+    relatedCareers,
+    category,
+  };
+}
+
 // Get Multiple Career Journeys - for users with multiple career goals
 export async function getMultipleCareerJourneys(): Promise<MultipleCareerJourneys | null> {
   const session = await getServerSession(authOptions);
@@ -159,8 +209,7 @@ export async function getMultipleCareerJourneys(): Promise<MultipleCareerJourney
 
   const userId = session.user.id;
 
-  // Fetch user profile and skill data
-  const [youthProfile, skillSignals, completedJobs] = await Promise.all([
+  const [youthProfile, skillSignals] = await Promise.all([
     prisma.youthProfile.findUnique({
       where: { userId },
       select: {
@@ -173,36 +222,17 @@ export async function getMultipleCareerJourneys(): Promise<MultipleCareerJourney
       where: { userId },
       include: { skill: true },
     }),
-    prisma.jobCompletion.findMany({
-      where: {
-        youthId: userId,
-        outcome: "COMPLETED",
-      },
-      include: {
-        job: {
-          select: { payAmount: true },
-        },
-      },
-    }),
   ]);
 
   // Extract user's skills
   const userSkills = [...new Set(skillSignals.map((s) => s.skill.name.toLowerCase()))];
 
-  // Calculate total earnings
-  const totalEarnings = completedJobs.reduce(
-    (sum, job) => sum + (job.job.payAmount || 0),
-    0
-  );
-
-  // Get availability level for runway data
   const availabilityLevel = youthProfile?.availabilityLevel || null;
 
   // Collect all career goals (from careerAspiration and desiredRoles)
   const careerGoals: string[] = [];
 
   if (youthProfile?.careerAspiration) {
-    // Split comma-separated career aspirations into individual goals
     const aspirations = youthProfile.careerAspiration
       .split(/[,;]/)
       .map((s) => s.trim())
@@ -227,59 +257,18 @@ export async function getMultipleCareerJourneys(): Promise<MultipleCareerJourney
   const seenCareerIds = new Set<string>();
 
   for (const goal of careerGoals) {
-    const recommendations = getRecommendationsFromAspiration(goal);
-    if (recommendations.length > 0) {
-      const targetCareer = recommendations[0].career;
-
-      // Skip if we already have this career
-      if (seenCareerIds.has(targetCareer.id)) continue;
-      seenCareerIds.add(targetCareer.id);
-
-      const category = getCategoryForCareer(targetCareer.id) || null;
-      const skillsNeeded = targetCareer.keySkills || [];
-      const skillsNeededLower = skillsNeeded.map((s) => s.toLowerCase());
-
-      const skillsYouHave = userSkills.filter((skill) =>
-        skillsNeededLower.some(
-          (needed) => needed.includes(skill) || skill.includes(needed)
-        )
-      );
-
-      const skillsToGain = skillsNeeded.filter(
-        (skill) =>
-          !userSkills.some(
-            (userSkill) =>
-              userSkill.includes(skill.toLowerCase()) ||
-              skill.toLowerCase().includes(userSkill)
-          )
-      );
-
-      const skillMatchPercent = calculateCareerMatch(userSkills, targetCareer);
-
-      const relatedCareers = category
-        ? getCareersForCategory(category)
-            .filter((c) => c.id !== targetCareer.id)
-            .slice(0, 4)
-        : [];
-
-      journeys.push({
-        targetCareer,
-        careerAspiration: goal,
-        educationPath: targetCareer.educationPath || null,
-        skillsNeeded,
-        skillsYouHave,
-        skillsToGain,
-        skillMatchPercent,
-        relatedCareers,
-        category,
-      });
+    const journey = buildJourneyForGoal(goal, userSkills);
+    if (journey && !seenCareerIds.has(journey.targetCareer.id)) {
+      seenCareerIds.add(journey.targetCareer.id);
+      journeys.push(journey);
     }
   }
 
   return {
     journeys,
-    completedJobsCount: completedJobs.length,
-    totalEarnings,
+    // Jobs marketplace removed — no completions/earnings.
+    completedJobsCount: 0,
+    totalEarnings: 0,
     userSkills,
     availabilityLevel,
   };
@@ -292,88 +281,21 @@ export async function getCareerJourneyForGoal(goal: string): Promise<CareerJourn
 
   const userId = session.user.id;
 
-  // Fetch user profile and skill data
-  const [skillSignals, completedJobs] = await Promise.all([
-    prisma.userSkillSignal.findMany({
-      where: { userId },
-      include: { skill: true },
-    }),
-    prisma.jobCompletion.findMany({
-      where: {
-        youthId: userId,
-        outcome: "COMPLETED",
-      },
-      include: {
-        job: {
-          select: { payAmount: true },
-        },
-      },
-    }),
-  ]);
+  const skillSignals = await prisma.userSkillSignal.findMany({
+    where: { userId },
+    include: { skill: true },
+  });
 
-  // Extract user's skills
   const userSkills = [...new Set(skillSignals.map((s) => s.skill.name.toLowerCase()))];
 
-  // Find target career from the specific goal
-  let targetCareer: Career | null = null;
-  let category: CareerCategory | null = null;
-
-  const recommendations = getRecommendationsFromAspiration(goal);
-  if (recommendations.length > 0) {
-    targetCareer = recommendations[0].career;
-    category = getCategoryForCareer(targetCareer.id) || null;
-  }
-
-  if (!targetCareer) {
-    return null;
-  }
-
-  // Calculate skills analysis
-  const skillsNeeded = targetCareer.keySkills || [];
-  const skillsNeededLower = skillsNeeded.map((s) => s.toLowerCase());
-
-  const skillsYouHave = userSkills.filter((skill) =>
-    skillsNeededLower.some(
-      (needed) => needed.includes(skill) || skill.includes(needed)
-    )
-  );
-
-  const skillsToGain = skillsNeeded.filter(
-    (skill) =>
-      !userSkills.some(
-        (userSkill) =>
-          userSkill.includes(skill.toLowerCase()) ||
-          skill.toLowerCase().includes(userSkill)
-      )
-  );
-
-  const skillMatchPercent = calculateCareerMatch(userSkills, targetCareer);
-
-  // Get related careers in same category
-  const relatedCareers = category
-    ? getCareersForCategory(category)
-        .filter((c) => c.id !== targetCareer?.id)
-        .slice(0, 4)
-    : [];
-
-  // Calculate total earnings
-  const totalEarnings = completedJobs.reduce(
-    (sum, app) => sum + (app.job.payAmount || 0),
-    0
-  );
+  const journey = buildJourneyForGoal(goal, userSkills);
+  if (!journey) return null;
 
   return {
-    targetCareer,
-    careerAspiration: goal,
-    educationPath: targetCareer.educationPath || null,
-    skillsNeeded,
-    skillsYouHave,
-    skillsToGain,
-    skillMatchPercent,
-    relatedCareers,
-    category,
-    completedJobsCount: completedJobs.length,
-    totalEarnings,
+    ...journey,
+    // Jobs marketplace removed — no completions/earnings.
+    completedJobsCount: 0,
+    totalEarnings: 0,
   };
 }
 
@@ -384,8 +306,7 @@ export async function getCareerJourney(): Promise<CareerJourneyData | null> {
 
   const userId = session.user.id;
 
-  // Fetch user profile and skill data
-  const [youthProfile, skillSignals, completedJobs] = await Promise.all([
+  const [youthProfile, skillSignals] = await Promise.all([
     prisma.youthProfile.findUnique({
       where: { userId },
       select: {
@@ -397,92 +318,32 @@ export async function getCareerJourney(): Promise<CareerJourneyData | null> {
       where: { userId },
       include: { skill: true },
     }),
-    prisma.jobCompletion.findMany({
-      where: {
-        youthId: userId,
-        outcome: "COMPLETED",
-      },
-      include: {
-        job: {
-          select: { payAmount: true },
-        },
-      },
-    }),
   ]);
 
-  // Extract user's skills
   const userSkills = [...new Set(skillSignals.map((s) => s.skill.name.toLowerCase()))];
 
-  // Find target career from aspiration
-  let targetCareer: Career | null = null;
-  let category: CareerCategory | null = null;
-
+  // Find target career from aspiration, falling back to desiredRoles.
+  let journey: SingleCareerJourney | null = null;
   if (youthProfile?.careerAspiration) {
-    const recommendations = getRecommendationsFromAspiration(youthProfile.careerAspiration);
-    if (recommendations.length > 0) {
-      targetCareer = recommendations[0].career;
-      category = getCategoryForCareer(targetCareer.id) || null;
-    }
+    journey = buildJourneyForGoal(youthProfile.careerAspiration, userSkills);
   }
-
-  // If no aspiration, try to match from desiredRoles
-  if (!targetCareer && youthProfile?.desiredRoles?.length) {
-    const roleAspiration = youthProfile.desiredRoles.join(" ");
-    const recommendations = getRecommendationsFromAspiration(roleAspiration);
-    if (recommendations.length > 0) {
-      targetCareer = recommendations[0].career;
-      category = getCategoryForCareer(targetCareer.id) || null;
-    }
+  if (!journey && youthProfile?.desiredRoles?.length) {
+    journey = buildJourneyForGoal(youthProfile.desiredRoles.join(" "), userSkills);
   }
-
-  // Calculate skills analysis
-  const skillsNeeded = targetCareer?.keySkills || [];
-  const skillsNeededLower = skillsNeeded.map((s) => s.toLowerCase());
-
-  const skillsYouHave = userSkills.filter((skill) =>
-    skillsNeededLower.some(
-      (needed) => needed.includes(skill) || skill.includes(needed)
-    )
-  );
-
-  const skillsToGain = skillsNeeded.filter(
-    (skill) =>
-      !userSkills.some(
-        (userSkill) =>
-          userSkill.includes(skill.toLowerCase()) ||
-          skill.toLowerCase().includes(userSkill)
-      )
-  );
-
-  const skillMatchPercent = targetCareer
-    ? calculateCareerMatch(userSkills, targetCareer)
-    : 0;
-
-  // Get related careers in same category
-  const relatedCareers = category
-    ? getCareersForCategory(category)
-        .filter((c) => c.id !== targetCareer?.id)
-        .slice(0, 4)
-    : [];
-
-  // Calculate total earnings
-  const totalEarnings = completedJobs.reduce(
-    (sum, app) => sum + (app.job.payAmount || 0),
-    0
-  );
 
   return {
-    targetCareer,
+    targetCareer: journey?.targetCareer ?? null,
     careerAspiration: youthProfile?.careerAspiration || null,
-    educationPath: targetCareer?.educationPath || null,
-    skillsNeeded,
-    skillsYouHave,
-    skillsToGain,
-    skillMatchPercent,
-    relatedCareers,
-    category,
-    completedJobsCount: completedJobs.length,
-    totalEarnings,
+    educationPath: journey?.educationPath ?? null,
+    skillsNeeded: journey?.skillsNeeded ?? [],
+    skillsYouHave: journey?.skillsYouHave ?? [],
+    skillsToGain: journey?.skillsToGain ?? [],
+    skillMatchPercent: journey?.skillMatchPercent ?? 0,
+    relatedCareers: journey?.relatedCareers ?? [],
+    category: journey?.category ?? null,
+    // Jobs marketplace removed — no completions/earnings.
+    completedJobsCount: 0,
+    totalEarnings: 0,
   };
 }
 
@@ -494,34 +355,26 @@ export async function getMyPathOverview(): Promise<PathOverview | null> {
   const userId = session.user.id;
 
   // Fetch data in parallel
-  const [snapshot, skillSignals, vaultItems, alerts, youthProfile] =
-    await Promise.all([
-      prisma.pathSnapshot.findFirst({
-        where: { userId },
-        orderBy: { createdAt: "desc" },
-      }),
-      prisma.userSkillSignal.findMany({
-        where: { userId },
-        include: { skill: true },
-        orderBy: { strength: "desc" },
-        take: 10,
-      }),
-      prisma.vaultItem.findMany({
-        where: { userId },
-        orderBy: { createdAt: "desc" },
-        take: 5,
-      }),
-      prisma.opportunityAlertEvent.count({
-        where: { userId, seenAt: null },
-      }),
-      prisma.youthProfile.findUnique({
-        where: { userId },
-        select: { desiredRoles: true, locationBase: true },
-      }),
-    ]);
-
-  // Get smart job picks
-  const recommendedJobs = await getSmartJobPicksInternal(userId, 3);
+  const [snapshot, skillSignals, vaultItems, alerts] = await Promise.all([
+    prisma.pathSnapshot.findFirst({
+      where: { userId },
+      orderBy: { createdAt: "desc" },
+    }),
+    prisma.userSkillSignal.findMany({
+      where: { userId },
+      include: { skill: true },
+      orderBy: { strength: "desc" },
+      take: 10,
+    }),
+    prisma.vaultItem.findMany({
+      where: { userId },
+      orderBy: { createdAt: "desc" },
+      take: 5,
+    }),
+    prisma.opportunityAlertEvent.count({
+      where: { userId, seenAt: null },
+    }),
+  ]);
 
   // Aggregate skill signals
   const skillMap = new Map<
@@ -575,116 +428,17 @@ export async function getMyPathOverview(): Promise<PathOverview | null> {
       : null,
     topSkills,
     recentVault,
-    recommendedJobs,
+    // Jobs marketplace removed — no job recommendations.
+    recommendedJobs: [],
     alertCount: alerts,
   };
 }
 
-// Internal helper for smart job picks
-async function getSmartJobPicksInternal(
-  userId: string,
-  limit: number = 10
-): Promise<SmartJobPick[]> {
-  // Get user's profile and history
-  const [youthProfile, completedJobs, skillSignals] = await Promise.all([
-    prisma.youthProfile.findUnique({
-      where: { userId },
-      select: {
-        desiredRoles: true,
-        locationBase: true,
-        skillTags: true,
-      },
-    }),
-    prisma.jobCompletion.findMany({
-      where: { youthId: userId, outcome: "COMPLETED" },
-      include: { job: { select: { category: true } } },
-      take: 20,
-    }),
-    prisma.userSkillSignal.findMany({
-      where: { userId },
-      include: { skill: true },
-    }),
-  ]);
-
-  // Get available jobs
-  const jobs = await prisma.microJob.findMany({
-    where: {
-      status: "POSTED",
-      isPaused: false,
-    },
-    orderBy: { createdAt: "desc" },
-    take: 50,
-  });
-
-  // Build skill gaps map
-  const userSkillSlugs = new Set(skillSignals.map((s) => s.skill.slug));
-  const completedCategories = new Set(completedJobs.map((j) => j.job.category));
-
-  // Score and rank jobs
-  const scoredJobs = jobs.map((job) => {
-    let score = 0;
-    const reasons: string[] = [];
-
-    // Skill growth score (higher if job builds skills user lacks)
-    const jobSkills =
-      skillsPerJobCategory[job.category as keyof typeof skillsPerJobCategory] ||
-      [];
-    const newSkillsCount = jobSkills.filter(
-      (s: string) => !userSkillSlugs.has(s)
-    ).length;
-    if (newSkillsCount > 0) {
-      score += newSkillsCount * 10;
-      reasons.push(`Builds ${newSkillsCount} new skills`);
-    }
-
-    // Earnings score (higher pay = higher score)
-    if (job.payAmount >= 200) {
-      score += 20;
-      reasons.push("Good pay");
-    } else if (job.payAmount >= 150) {
-      score += 10;
-    }
-
-    // Category match (if user has done similar before, slight boost)
-    if (completedCategories.has(job.category)) {
-      score += 5;
-      reasons.push("Similar to past jobs");
-    }
-
-    // Recency bonus
-    const daysOld = Math.floor(
-      (Date.now() - job.createdAt.getTime()) / (1000 * 60 * 60 * 24)
-    );
-    if (daysOld < 3) {
-      score += 10;
-      reasons.push("Recently posted");
-    }
-
-    return {
-      id: job.id,
-      title: job.title,
-      category: job.category,
-      payAmount: job.payAmount,
-      payType: job.payType,
-      location: job.location,
-      score,
-      reasons: reasons.slice(0, 3),
-    };
-  });
-
-  return scoredJobs
-    .sort((a, b) => b.score - a.score)
-    .slice(0, limit);
-}
-
-// Get Smart Job Picks
+// Get Smart Job Picks — jobs marketplace removed, always empty.
 export async function getSmartJobPicks(
-  limit: number = 10
+  _limit: number = 10
 ): Promise<SmartJobPick[]> {
-  const session = await getServerSession(authOptions);
-  if (!session || session.user.role !== "YOUTH") return [];
-
-  return getSmartJobPicksInternal(session.user.id, limit);
+  return [];
 }
 
 // Get Skills → Jobs Ladder
@@ -765,14 +519,12 @@ export async function getSkillsJobsLadder(): Promise<SkillsJobsLadder | null> {
   const topBuildingSkills = buildingSkills.slice(0, 5);
   const topGapSkills = gapSkills.slice(0, 5);
 
-  // Get recommended jobs for skill building
-  const recommendedJobs = await getSmartJobPicksInternal(userId, 5);
-
   return {
     targetRoles: youthProfile?.desiredRoles || [],
     buildingSkills: topBuildingSkills,
     gapSkills: topGapSkills,
-    recommendedJobs,
+    // Jobs marketplace removed — no job recommendations.
+    recommendedJobs: [],
   };
 }
 
@@ -783,26 +535,13 @@ export async function getStrengthsProfile(): Promise<StrengthsProfile | null> {
 
   const userId = session.user.id;
 
-  // Get skill signals with evidence
-  const [skillSignals, feedbacks, reviews] = await Promise.all([
-    prisma.userSkillSignal.findMany({
-      where: { userId },
-      include: { skill: true },
-      orderBy: { strength: "desc" },
-    }),
-    prisma.structuredFeedback.findMany({
-      where: {
-        jobCompletion: { youthId: userId },
-      },
-      orderBy: { createdAt: "desc" },
-      take: 10,
-    }),
-    prisma.review.findMany({
-      where: { reviewedId: userId },
-      orderBy: { createdAt: "desc" },
-      take: 10,
-    }),
-  ]);
+  // Strengths are now derived from skill signals only (job feedback/reviews
+  // were removed with the marketplace).
+  const skillSignals = await prisma.userSkillSignal.findMany({
+    where: { userId },
+    include: { skill: true },
+    orderBy: { strength: "desc" },
+  });
 
   // Aggregate skill strengths
   const skillMap = new Map<
@@ -828,61 +567,25 @@ export async function getStrengthsProfile(): Promise<StrengthsProfile | null> {
     .map(([id, data]) => ({ id, ...data }))
     .sort((a, b) => b.totalStrength - a.totalStrength);
 
-  const topStrengths: StrengthItem[] = sortedSkills.slice(0, 3).map((skill) => {
-    // Build evidence from reviews and feedback
-    let evidence = "";
-    const avgRating =
-      reviews.length > 0
-        ? (
-            reviews.reduce((sum, r) => sum + r.overall, 0) / reviews.length
-          ).toFixed(1)
-        : null;
-
-    if (skill.sources.length > 0) {
-      evidence = skill.sources[0];
-    } else if (avgRating) {
-      evidence = `Based on ${reviews.length} reviews (${avgRating} avg)`;
-    } else {
-      evidence = "From your completed jobs";
-    }
-
-    return {
-      name: skill.name,
-      evidence,
-      level: "strong" as const,
-    };
-  });
+  const topStrengths: StrengthItem[] = sortedSkills.slice(0, 3).map((skill) => ({
+    name: skill.name,
+    evidence: skill.sources.length > 0 ? skill.sources[0] : "From your activity so far",
+    level: "strong" as const,
+  }));
 
   const growingStrengths: StrengthItem[] = sortedSkills
     .slice(3, 6)
     .map((skill) => ({
       name: skill.name,
-      evidence: "Building through recent work",
+      evidence: "Building through recent activity",
       level: "emerging" as const,
     }));
 
-  // Growth edges based on feedback patterns
-  const growthEdges: string[] = [];
-
-  // Analyze feedback for areas to improve
-  if (feedbacks.length > 0) {
-    const avgPunctuality =
-      feedbacks.reduce((sum, f) => sum + f.punctuality, 0) / feedbacks.length;
-    const avgCommunication =
-      feedbacks.reduce((sum, f) => sum + f.communication, 0) / feedbacks.length;
-
-    if (avgPunctuality < 4) {
-      growthEdges.push("Try arriving 10 minutes early to boost punctuality");
-    }
-    if (avgCommunication < 4) {
-      growthEdges.push("Keep employers updated throughout the job");
-    }
-  }
-
-  if (growthEdges.length === 0) {
-    growthEdges.push("Try a new job category to expand your skills");
-    growthEdges.push("Complete more jobs to build stronger evidence");
-  }
+  // Growth edges — generic guidance now that job feedback is gone.
+  const growthEdges: string[] = [
+    "Explore a new career to widen your options",
+    "Add evidence of your skills to your Vault",
+  ];
 
   return {
     topStrengths,
@@ -897,15 +600,14 @@ export async function getCoursesForMe(): Promise<CourseRecommendation[]> {
   if (!session || session.user.role !== "YOUTH") return [];
 
   // MVP: Return curated courses based on common needs
-  // In production, this would be dynamic based on user's skill gaps
   const courses: CourseRecommendation[] = [
     {
       id: "course-first-aid",
-      title: "Basic First Aid for Babysitters",
+      title: "Basic First Aid",
       provider: "Norwegian Red Cross",
       duration: "4 hours",
       cost: "Free",
-      reason: "Essential for childcare jobs",
+      reason: "A valued, widely-recognised skill",
       link: "https://www.rodekors.no/",
     },
     {
@@ -914,7 +616,7 @@ export async function getCoursesForMe(): Promise<CourseRecommendation[]> {
       provider: "Mattilsynet",
       duration: "2 hours",
       cost: "Free",
-      reason: "Required for cooking/catering jobs",
+      reason: "Useful across many career paths",
     },
     {
       id: "course-digital-skills",
@@ -922,7 +624,7 @@ export async function getCoursesForMe(): Promise<CourseRecommendation[]> {
       provider: "Karriereveiledning.no",
       duration: "Self-paced",
       cost: "Free",
-      reason: "Improves tech help opportunities",
+      reason: "Builds in-demand tech confidence",
     },
     {
       id: "course-communication",
@@ -930,7 +632,7 @@ export async function getCoursesForMe(): Promise<CourseRecommendation[]> {
       provider: "ung.no",
       duration: "1 hour",
       cost: "Free",
-      reason: "Helps in all job types",
+      reason: "Helps in every career",
     },
   ];
 
@@ -1031,14 +733,6 @@ export async function getVaultItems() {
   const items = await prisma.vaultItem.findMany({
     where: { userId: session.user.id },
     orderBy: { createdAt: "desc" },
-    include: {
-      job: {
-        select: {
-          title: true,
-          category: true,
-        },
-      },
-    },
   });
 
   return items;
@@ -1049,7 +743,6 @@ export async function createVaultItem(data: {
   type: string;
   title: string;
   description?: string;
-  jobId?: string;
   url?: string;
   metadata?: Record<string, string | number | boolean | null>;
 }): Promise<{ success: boolean; id?: string; error?: string }> {
@@ -1065,7 +758,6 @@ export async function createVaultItem(data: {
         type: data.type,
         title: data.title,
         description: data.description,
-        jobId: data.jobId,
         url: data.url,
         metadata: data.metadata ?? undefined,
         isPrivate: true,
@@ -1085,115 +777,77 @@ export async function generatePathSnapshot(): Promise<PathSnapshotData | null> {
 
   const userId = session.user.id;
 
-  // Gather user data for snapshot generation
-  const [youthProfile, completedJobs, skillSignals, reviews] =
-    await Promise.all([
-      prisma.youthProfile.findUnique({
-        where: { userId },
-        select: {
-          desiredRoles: true,
-          careerAspiration: true,
-          completedJobsCount: true,
-          averageRating: true,
-        },
-      }),
-      prisma.jobCompletion.findMany({
-        where: { youthId: userId, outcome: "COMPLETED" },
-        include: { job: { select: { category: true, title: true } } },
-        orderBy: { completedAt: "desc" },
-        take: 10,
-      }),
-      prisma.userSkillSignal.findMany({
-        where: { userId },
-        include: { skill: true },
-      }),
-      prisma.review.findMany({
-        where: { reviewedId: userId },
-        orderBy: { createdAt: "desc" },
-        take: 5,
-      }),
-    ]);
+  // Snapshot is now built from profile direction + skill signals + vault
+  // (job completions and reviews were removed with the marketplace).
+  const [youthProfile, skillSignals] = await Promise.all([
+    prisma.youthProfile.findUnique({
+      where: { userId },
+      select: {
+        desiredRoles: true,
+        careerAspiration: true,
+      },
+    }),
+    prisma.userSkillSignal.findMany({
+      where: { userId },
+      include: { skill: true },
+    }),
+  ]);
 
-  // Determine confidence level
+  const skillCount = skillSignals.length;
+
+  // Determine confidence level from how much the user has built so far.
   let confidence: "low" | "medium" | "high" = "low";
-  if (completedJobs.length >= 5 && reviews.length >= 3) {
+  if (skillCount >= 6) {
     confidence = "high";
-  } else if (completedJobs.length >= 2 || reviews.length >= 1) {
+  } else if (skillCount >= 2) {
     confidence = "medium";
   }
 
   // Generate headline
   let headline = "Starting your journey";
-  if (completedJobs.length >= 5) {
+  if (skillCount >= 6) {
     headline = "Building momentum";
-  } else if (completedJobs.length >= 2) {
-    headline = "Growing your experience";
-  } else if (completedJobs.length >= 1) {
-    headline = "Your first steps";
+  } else if (skillCount >= 2) {
+    headline = "Growing your direction";
   }
 
   // Generate direction (1-3 roles)
   const direction: string[] = [];
   if (youthProfile?.desiredRoles && youthProfile.desiredRoles.length > 0) {
     direction.push(...youthProfile.desiredRoles.slice(0, 3));
+  } else if (youthProfile?.careerAspiration) {
+    direction.push(youthProfile.careerAspiration);
   } else {
-    // Infer from completed job categories
-    const categoryCount = new Map<string, number>();
-    for (const job of completedJobs) {
-      const count = categoryCount.get(job.job.category) || 0;
-      categoryCount.set(job.job.category, count + 1);
-    }
-    const topCategories = Array.from(categoryCount.entries())
-      .sort((a, b) => b[1] - a[1])
-      .slice(0, 2)
-      .map(([cat]) => cat);
-
-    if (topCategories.length > 0) {
-      direction.push(...topCategories);
-    } else {
-      direction.push("Explore different opportunities");
-    }
+    direction.push("Explore different careers");
   }
 
-  // Generate next actions (3-7)
+  // Generate next actions (career-exploration focused)
   const nextActions: NextAction[] = [];
 
-  // Always suggest completing more jobs if low count
-  if (completedJobs.length < 3) {
-    nextActions.push({
-      type: "earn",
-      action: "Complete your first few jobs to build your profile",
-      link: "/jobs",
-    });
-  }
-
-  // Suggest skill building based on gaps
   const skillSlugs = new Set(skillSignals.map((s) => s.skill.slug));
   if (!skillSlugs.has("communication")) {
     nextActions.push({
       type: "learn",
-      action: "Take on a job that requires clear communication",
+      action: "Build a clear-communication skill with a short course",
+      link: "/my-path/courses",
     });
   }
 
-  // Suggest building vault
   const vaultCount = await prisma.vaultItem.count({ where: { userId } });
   if (vaultCount < 3) {
     nextActions.push({
       type: "grow",
-      action: "Add completed jobs to your Vault as proof",
+      action: "Add proof of your skills to your Vault",
       link: "/my-path/vault",
     });
   }
 
-  // Always add a learn action
   nextActions.push({
     type: "learn",
     action: "Check out recommended courses",
     link: "/my-path/courses",
   });
 
-  // Add explore action if no desired roles set
   if (!youthProfile?.desiredRoles?.length) {
     nextActions.push({
       type: "grow",
@@ -1202,27 +856,20 @@ export async function generatePathSnapshot(): Promise<PathSnapshotData | null> {
     });
   }
 
-  // Add a job action
   nextActions.push({
-    type: "earn",
-    action: "Apply to a recommended job match",
-    link: "/my-path/job-picks",
+    type: "grow",
+    action: "Explore careers that match your interests",
+    link: "/careers",
   });
 
   // Cap at 7 actions
   const finalActions = nextActions.slice(0, 7);
 
   // Generate rationale
-  let rationale = "";
-  if (completedJobs.length > 0) {
-    rationale = `Based on ${completedJobs.length} completed job${completedJobs.length > 1 ? "s" : ""}`;
-    if (reviews.length > 0 && youthProfile?.averageRating) {
-      rationale += ` with ${youthProfile.averageRating.toFixed(1)} average rating`;
-    }
-    rationale += ".";
-  } else {
-    rationale = "Get started by completing your first job.";
-  }
+  const rationale =
+    skillCount > 0
+      ? `Based on ${skillCount} skill signal${skillCount > 1 ? "s" : ""} you've built.`
+      : "Get started by exploring careers and building your profile.";
 
   // Save snapshot
   const snapshot = await prisma.pathSnapshot.create({

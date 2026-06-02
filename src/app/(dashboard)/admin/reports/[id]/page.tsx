@@ -48,10 +48,6 @@ export default async function AdminReportDetailPage({ params }: PageProps) {
   }
 
   // Fetch the target's details so the admin can make an informed call
-  const targetJob =
-    report.targetType === "JOB_POST"
-      ? await prisma.microJob.findUnique({ where: { id: report.targetId } })
-      : null;
   const targetUser =
     report.targetType === "USER"
       ? await prisma.user.findUnique({
@@ -120,24 +116,6 @@ export default async function AdminReportDetailPage({ params }: PageProps) {
         <p className="text-xs text-muted-foreground mt-0.5">{report.reporter.email} · {report.reporter.role}</p>
       </div>
 
-      {targetJob && (
-        <div className="rounded-lg border border-border/40 bg-card p-4 mb-6">
-          <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">
-            Reported job
-          </p>
-          <p className="text-sm font-medium text-foreground/90">{targetJob.title}</p>
-          <p className="text-xs text-muted-foreground mt-0.5">
-            {targetJob.category} · {targetJob.location ?? "—"} · {targetJob.status}
-            {targetJob.isPaused && <span className="ml-2 text-amber-500">· PAUSED</span>}
-          </p>
-          {targetJob.description && (
-            <p className="text-xs text-foreground/70 mt-2 whitespace-pre-wrap max-h-32 overflow-y-auto">
-              {targetJob.description}
-            </p>
-          )}
-        </div>
-      )}
-
       {targetUser && (
         <div className="rounded-lg border border-border/40 bg-card p-4 mb-6">
           <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">
@@ -181,9 +159,7 @@ export default async function AdminReportDetailPage({ params }: PageProps) {
         reportId={report.id}
         currentStatus={report.status}
         targetType={report.targetType}
-        targetAlreadyPaused={
-          targetJob?.isPaused ?? targetUser?.isPaused ?? false
-        }
+        targetAlreadyPaused={targetUser?.isPaused ?? false}
       />
     </div>
   );
