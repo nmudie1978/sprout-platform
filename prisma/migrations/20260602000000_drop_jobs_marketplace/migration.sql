@@ -8,6 +8,16 @@
 -- DESTRUCTIVE: drops tables and all their data. Take a DB backup first.
 -- See prisma/migrations/20260602000000_drop_jobs_marketplace/RUNBOOK.md
 
+-- DropPolicy (Supabase RLS — not tracked by Prisma; must be removed before the
+-- tables they guard can be dropped. message_participant_read references
+-- "Conversation", which blocked the first deploy attempt with error 2BP01).
+DROP POLICY IF EXISTS "application_youth_self" ON "Application";
+DROP POLICY IF EXISTS "conversation_participant_read" ON "Conversation";
+DROP POLICY IF EXISTS "conversation_participant_write" ON "Conversation";
+DROP POLICY IF EXISTS "conversation_report_reporter_access" ON "ConversationReport";
+DROP POLICY IF EXISTS "message_participant_read" ON "Message";
+DROP POLICY IF EXISTS "message_sender_write" ON "Message";
+
 -- DropForeignKey
 ALTER TABLE "WorkerCareerSnapshot" DROP CONSTRAINT "WorkerCareerSnapshot_workerId_fkey";
 
