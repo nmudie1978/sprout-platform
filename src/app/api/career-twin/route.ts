@@ -19,7 +19,7 @@ import {
 } from "@/lib/ai-guardrails";
 import { checkRateLimit, RateLimits } from "@/lib/rate-limit";
 import { logAndSwallow } from "@/lib/observability";
-import { loadTwinHistory, appendTwinTurns, toPromptHistory } from "@/lib/career-twin/history";
+import { loadTwinHistory, appendTwinTurns, toPromptHistory, TWIN_CONTEXT_TURNS } from "@/lib/career-twin/history";
 import { loadTwinMemory, isReturningAfterGap } from "@/lib/career-twin/memory";
 
 function isOpenAIConfigured(): boolean {
@@ -138,15 +138,14 @@ export async function POST(req: NextRequest) {
     // Distress / unsafe content → supportive, non-diagnostic, route to a trusted adult.
     const intent = classifyIntent(message);
     if (intent === "unsafe") {
+      // Intentionally NOT persisted — we don't replay distress signals into future model context.
       return NextResponse.json({ message: getFallbackResponse("unsafe"), intent: "unsafe" });
     }
 
     const profile = await loadProfileContext(session.user.id);
     const persona = buildPersona({ userId: session.user.id, career, profile });
     const mode = getMode(modeId);
-    const memory = await loadTwinMemory(session.user.id, career.id);
     const replyLanguage = localeToLanguage(req.cookies.get("NEXT_LOCALE")?.value);
-    const systemPrompt = buildCareerTwinSystemPrompt({ persona, mode, career, profile, language: replyLanguage, memory });
 
     const openai = getOpenAIClient();
     if (!openai) {
@@ -154,11 +153,16 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ message: twinFallback(career.title), fallback: true });
     }
 
-    const dbHistory = await loadTwinHistory(session.user.id, career.id);
+    const [memory, dbHistory] = await Promise.all([
+      loadTwinMemory(session.user.id, career.id),
+      loadTwinHistory(session.user.id, career.id),
+    ]);
+    const systemPrompt = buildCareerTwinSystemPrompt({ persona, mode, career, profile, language: replyLanguage, memory });
+
     const messages: OpenAI.Chat.ChatCompletionMessageParam[] = [
       { role: "system", content: systemPrompt },
     ];
-    toPromptHistory(dbHistory, 6).forEach((m) => messages.push({ role: m.role, content: m.content }));
+    toPromptHistory(dbHistory, TWIN_CONTEXT_TURNS).forEach((m) => messages.push({ role: m.role, content: m.content }));
     messages.push({ role: "user", content: message.slice(0, 2000) });
 
     const completion = await openai.chat.completions.create(
@@ -179,15 +183,19 @@ export async function POST(req: NextRequest) {
     if (replyLanguage === "English") {
       const lang = detectNonEnglishResponse(assistantMessage);
       if (lang.isNonEnglish) {
-        assistantMessage = twinFallback(career.title);
+        await appendTwinTurns(session.user.id, career.id, [{ role: "user", content: message, mode: mode.id }]);
+        return NextResponse.json({ message: twinFallback(career.title), fallback: true });
       }
     }
 
-    await appendTwinTurns(session.user.id, career.id, [
-      { role: "user", content: message, mode: mode.id },
-      { role: "assistant", content: assistantMessage, mode: mode.id },
-    ]);
-
+    try {
+      await appendTwinTurns(session.user.id, career.id, [
+        { role: "user", content: message, mode: mode.id },
+        { role: "assistant", content: assistantMessage, mode: mode.id },
+      ]);
+    } catch (persistErr) {
+      logAndSwallow("career-twin:POST:persist")(persistErr);
+    }
     return NextResponse.json({ message: assistantMessage, mode: mode.id });
   } catch (error) {
     logAndSwallow("career-twin:POST")(error);

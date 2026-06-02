@@ -16,6 +16,9 @@ export interface TwinTurn {
   content: string;
 }
 
+/** How many recent turns to replay into the model context. */
+export const TWIN_CONTEXT_TURNS = 6;
+
 /** Pure: clamp DB rows to the last `limit` valid turns for the model context. */
 export function toPromptHistory(rows: TwinRow[], limit: number): TwinTurn[] {
   return rows
