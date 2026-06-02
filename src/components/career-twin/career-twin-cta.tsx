@@ -36,6 +36,7 @@ export function CareerTwinCta({
   const t = useTranslations("careerTwin");
   const [career, setCareer] = useState<CareerInfo | null>(null);
   const [dismissed, setDismissed] = useState(false);
+  const [returning, setReturning] = useState(false);
 
   // Read the saved dismissal once on mount (guards against SSR/localStorage
   // throwing in private tabs). Only relevant to the dashboard card.
@@ -53,9 +54,11 @@ export function CareerTwinCta({
     fetch("/api/career-twin")
       .then((r) => r.json())
       .then((data) => {
-        if (!cancelled && !data.needsCareer && data.career) {
+        if (cancelled) return;
+        if (!data.needsCareer && data.career) {
           setCareer({ id: data.career.id, title: data.career.title });
         }
+        if (data?.checkIn?.returning) setReturning(true);
       })
       .catch(() => {});
     return () => {
@@ -66,7 +69,12 @@ export function CareerTwinCta({
   if (!career) return null;
 
   const href = `/career-advisor?tab=twin&career=${encodeURIComponent(career.id)}`;
-  const title = variant === "dashboard" ? t("meetFutureYou") : t("askFutureMe");
+  const title =
+    variant === "dashboard"
+      ? returning
+        ? t("checkInFutureYou")
+        : t("meetFutureYou")
+      : t("askFutureMe");
 
   // Compact inline pill for the Journey surface (not dismissible).
   if (variant === "journey") {
@@ -111,7 +119,9 @@ export function CareerTwinCta({
           </div>
           <div className="min-w-0 flex-1">
             <h3 className="font-bold text-base leading-tight">{title}</h3>
-            <p className="text-sm text-muted-foreground mt-0.5">{t("meetFutureYouBody")}</p>
+            <p className="text-sm text-muted-foreground mt-0.5">
+              {returning ? t("checkInFutureYouBody") : t("meetFutureYouBody")}
+            </p>
           </div>
           <Button
             size="sm"

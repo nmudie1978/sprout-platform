@@ -384,6 +384,8 @@
     "noActiveGoal": "Velg et reisemål først, så kan karrieretvillingen legge til steg.",
     "meetFutureYou": "Møt Framtidige Deg",
     "meetFutureYouBody": "Spør karrieretvillingen din hvordan denne veien kan føles.",
+    "checkInFutureYou": "Sjekk inn med Framtidige Deg",
+    "checkInFutureYouBody": "Det er en stund siden — se hvordan ditt fremtidige jeg svarer nå.",
     "askFutureMe": "Spør Framtidige Meg",
     "talkToFutureSelfAs": "Snakk med ditt framtidige jeg som {career}",
     "setPrimaryGoal": "Sett som hovedmål",

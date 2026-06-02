@@ -384,6 +384,8 @@
     "noActiveGoal": "Pick a journey goal first, then your Career Twin can add steps to it.",
     "meetFutureYou": "Meet Future You",
     "meetFutureYouBody": "Ask your Career Twin what this path could feel like.",
+    "checkInFutureYou": "Check in with Future You",
+    "checkInFutureYouBody": "It's been a while — see how your future self responds now.",
     "askFutureMe": "Ask Future Me",
     "talkToFutureSelfAs": "Talk to your future self as a {career}",
     "setPrimaryGoal": "Set as Primary Goal",

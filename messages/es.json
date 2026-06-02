@@ -384,6 +384,8 @@
     "noActiveGoal": "Elige primero un objetivo de recorrido para que tu Gemelo de Carrera pueda añadirle pasos.",
     "meetFutureYou": "Conoce a tu yo del futuro",
     "meetFutureYouBody": "Pregúntale a tu Gemelo de Carrera cómo podría sentirse este camino.",
+    "checkInFutureYou": "Comprueba cómo está tu yo del futuro",
+    "checkInFutureYouBody": "Ha pasado un tiempo — descubre cómo responde ahora tu yo del futuro.",
     "askFutureMe": "Pregunta a mi yo del futuro",
     "talkToFutureSelfAs": "Habla con tu yo del futuro como {career}",
     "setPrimaryGoal": "Fijar como objetivo principal",
