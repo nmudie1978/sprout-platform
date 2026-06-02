@@ -80,6 +80,17 @@ export function useInterestLevel(careerId: string | null | undefined) {
       } catch {
         /* private tab — keep the in-memory value */
       }
+      // Persist to the server so the rating survives logout and follows the
+      // user across devices (source of truth for the My Library "Exploring"
+      // tab). Fire-and-forget: localStorage above is the optimistic layer.
+      void fetch("/api/career-interest", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ careerId, level: next }),
+        keepalive: true,
+      }).catch(() => {
+        /* offline / transient — localStorage keeps the value */
+      });
     },
     [userId, careerId],
   );
