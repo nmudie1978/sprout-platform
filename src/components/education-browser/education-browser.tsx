@@ -36,6 +36,7 @@ import {
 } from '@/components/ui/tooltip';
 import {
   getProgrammesForCareer,
+  type NordicCountry,
   getProgrammeById,
   getInstitutionById,
   getAllInstitutions,
@@ -67,6 +68,8 @@ const PAGE_SIZE = 5;
 interface EducationBrowserProps {
   careerTitle: string | null;
   careerId?: string | null;
+  /** The viewer's country — Study Path shows only this country's programmes. */
+  country?: NordicCountry;
 }
 
 function useFoundation() {
@@ -91,7 +94,7 @@ const COUNTRY_FLAGS: Record<string, string> = {
   ES: '🇪🇸',
 };
 
-export function EducationBrowser({ careerTitle, careerId }: EducationBrowserProps) {
+export function EducationBrowser({ careerTitle, careerId, country }: EducationBrowserProps) {
   const { data: foundation } = useFoundation();
 
   const lookup = careerId || careerTitle || '';
@@ -103,8 +106,10 @@ export function EducationBrowser({ careerTitle, careerId }: EducationBrowserProp
   // are irrelevant to them. Where we don't yet have Spanish data for a
   // career, the list is intentionally empty (an honest "nothing here yet")
   // rather than showing Norwegian programmes.
+  // Prefer the viewer's stored country (so e.g. a Spain user never sees
+  // Norwegian programmes); fall back to the UI locale when no country is passed.
   const locale = useLocale();
-  const educationCountry = locale === 'es' ? 'ES' : undefined;
+  const educationCountry = country ?? (locale === 'es' ? 'ES' : undefined);
 
   const careerProgrammes = useMemo<ProgrammeWithInstitution[]>(() => {
     if (!resolvedId) return [];
