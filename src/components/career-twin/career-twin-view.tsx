@@ -449,8 +449,10 @@ export function CareerTwinView({
         <div className="h-[420px] overflow-y-auto px-4 sm:px-6 py-4 space-y-4 bg-gradient-to-b from-background to-muted/20">
           {returningDays != null && (
             <div className="mb-4 rounded-card border border-border bg-primary/5 px-4 py-3 text-sm text-foreground/80">
-              Welcome back — it&apos;s been about {Math.max(1, Math.round(returningDays / 7))} week
-              {Math.round(returningDays / 7) === 1 ? "" : "s"}. Your future self has been waiting. Pick up where you left off.
+              {(() => {
+                const weeks = Math.max(1, Math.round(returningDays / 7));
+                return `Welcome back — it's been about ${weeks} week${weeks === 1 ? "" : "s"}. Your future self has been waiting. Pick up where you left off.`;
+              })()}
             </div>
           )}
           {messages.length === 0 ? (
