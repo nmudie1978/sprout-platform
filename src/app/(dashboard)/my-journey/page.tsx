@@ -49,7 +49,8 @@ import type { CareerProgression } from '@/lib/career-progressions';
 import type { RealityCheckResult } from '@/lib/career-reality-types';
 import type { NextStep } from '@/lib/reports/journey';
 import { pickCelebrationMessage } from '@/lib/journey/celebration-messages';
-import { getCertificationPath, getCareerRequirements, getNorwayProgrammes, getProgrammesForCareer } from '@/lib/education';
+import { getCertificationPath, getCareerRequirements, getNorwayProgrammes, getProgrammesForCareer, type NordicCountry } from '@/lib/education';
+import { countryToCode, DEFAULT_COUNTRY } from '@/lib/countries';
 import {
   parseGradeRequirement,
   formatGradeLabel,
@@ -909,6 +910,23 @@ function UnderstandTab({
   const { data: courseSearchData } = useCourseSearch(goalTitle);
   const { data: realityData, isLoading: realityLoading } = useCareerReality(goalTitle);
 
+  // Study Path is country-scoped: a viewer only sees programmes for their own
+  // country (defaults to Norway when unknown), so e.g. Spain users never see
+  // Norwegian listings.
+  const { data: countryData } = useQuery<{ country?: string | null }>({
+    queryKey: ['profile-country'],
+    queryFn: async () => {
+      const res = await fetch('/api/profile');
+      if (!res.ok) return {};
+      return res.json();
+    },
+    staleTime: 60 * 1000,
+  });
+  const educationCountry = useMemo<NordicCountry | undefined>(() => {
+    const code = countryToCode(countryData?.country ?? DEFAULT_COUNTRY);
+    return (code ?? undefined) as NordicCountry | undefined;
+  }, [countryData?.country]);
+
   // All hooks must be called before any early return
   const [openSection, setOpenSection] = useState<string | null>(null);
   const [selectedRow, setSelectedRow] = useState<number | null>(null);
@@ -1164,8 +1182,8 @@ function UnderstandTab({
         // version: hardcoded NORWAY_PROGRAMMES map, 3-layer programmes
         // via getProgrammesForCareer, or a universityPath.programme in
         // career-requirements. Any of the three = hasStudyPath.
-        const hardcoded = career ? getNorwayProgrammes(career.id, goalTitle || career.title) : null;
-        const nordicProgs = career ? getProgrammesForCareer(career.id, { country: 'NO' }) : [];
+        const hardcoded = (career && educationCountry === 'NO') ? getNorwayProgrammes(career.id, goalTitle || career.title) : null;
+        const nordicProgs = career ? getProgrammesForCareer(career.id, educationCountry ? { country: educationCountry } : undefined) : [];
         const reqs = career ? getCareerRequirements(career.id) : null;
         const hasStudyPath =
           !!(hardcoded && hardcoded.programmes && hardcoded.programmes.length > 0) ||
@@ -1464,7 +1482,7 @@ function UnderstandTab({
 
                   <TabsContent value="study-path" className="mt-5 space-y-6">
                     {hasStudyPath ? (
-                      <EducationBrowser careerTitle={goalTitle} careerId={career?.id ?? null} />
+                      <EducationBrowser careerTitle={goalTitle} careerId={career?.id ?? null} country={educationCountry} />
                     ) : (
                       <div className="rounded-control border border-dashed border-border/40 bg-muted/10 p-4 text-center">
                         <p className="text-sm font-medium text-foreground/80">No formal study path required</p>
