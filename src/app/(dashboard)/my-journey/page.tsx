@@ -329,7 +329,7 @@ function SectionCard({ children, className, style, accent }: { children: React.R
   // The drop-shadow layer (rgba(0,0,0,0.2)) is unchanged — that's a
   // structural shadow, not part of the glow.
   return (
-    <div className={cn('rounded-card border-[1.2px] border-border/60 bg-card/50 overflow-hidden shadow-sm', accentBorder, className)} style={style}>
+    <div className={cn('rounded-card border-[1.2px] border-border bg-card/50 overflow-hidden shadow-sm', accentBorder, className)} style={style}>
       {children}
     </div>
   );
@@ -424,7 +424,7 @@ function EmptyState({ icon: Icon, message }: { icon: typeof Target; message: str
 
 function StatCard({ label, value, icon: Icon, accent, tooltip }: { label: string; value: string; icon: typeof TrendingUp; accent?: string; tooltip?: string }) {
   const card = (
-    <div className={cn('rounded-control border border-border/30 bg-background/50 p-3.5 flex flex-col items-center text-center', tooltip && 'cursor-help')}>
+    <div className={cn('rounded-control border border-border bg-background/50 p-3.5 flex flex-col items-center text-center', tooltip && 'cursor-help')}>
       <div className="flex items-center justify-center gap-2 mb-1.5">
         <Icon className={cn('h-3.5 w-3.5', accent || 'text-muted-foreground/50')} />
         <span className="text-xs font-medium text-success/60 uppercase tracking-wider">{label}</span>
@@ -631,7 +631,7 @@ function DiscoverTab({
             ].map((tile) => {
               const Icon = tile.icon;
               return (
-                <div key={tile.label} className="rounded-control border border-border/40 bg-card/30 px-3 py-2.5">
+                <div key={tile.label} className="rounded-control border border-border bg-card/30 px-3 py-2.5">
                   <div className="flex items-center gap-2 mb-1.5">
                     <Icon className="h-3 w-3 text-muted-foreground/55 shrink-0" />
                     <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground/50">
@@ -781,7 +781,7 @@ function DiscoverTab({
           const yearsFromNow =
             qualifiedAge != null && userAge != null ? qualifiedAge - userAge : years;
           return (
-            <div className="rounded-card border border-border/30 bg-card/50 p-4">
+            <div className="rounded-card border border-border bg-card/50 p-4">
               <div className="flex items-center gap-2 mb-2">
                 <Clock className="h-3.5 w-3.5 text-accent" />
                 <span className="text-xs font-semibold text-accent uppercase tracking-wider">Timeline</span>
@@ -799,7 +799,7 @@ function DiscoverTab({
         })()}
 
         {/* Work environment — always visible */}
-        <div className="rounded-card border border-border/30 bg-card/50 p-4">
+        <div className="rounded-card border border-border bg-card/50 p-4">
           <div className="flex items-center gap-2 mb-2">
             <MapPin className="h-3.5 w-3.5 text-warning" />
             <span className="text-xs font-semibold text-warning uppercase tracking-wider">Where you&apos;ll work</span>
@@ -1440,7 +1440,7 @@ function UnderstandTab({
                             ].map((tile) => {
                               const Icon = tile.icon;
                               return (
-                                <div key={tile.label} className="rounded-control border border-border/40 bg-card/30 px-3 py-2.5">
+                                <div key={tile.label} className="rounded-control border border-border bg-card/30 px-3 py-2.5">
                                   <div className="flex items-center gap-2 mb-1.5">
                                     <Icon className="h-3 w-3 text-muted-foreground/55 shrink-0" />
                                     <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground/50">
