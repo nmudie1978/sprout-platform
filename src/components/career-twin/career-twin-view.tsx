@@ -90,6 +90,7 @@ export function CareerTwinView({
   const [showGoalModal, setShowGoalModal] = useState(false);
   const [showGoalPicker, setShowGoalPicker] = useState(false);
   const [settingGoal, setSettingGoal] = useState(false);
+  const [returningDays, setReturningDays] = useState<number | null>(null);
 
   const queryClient = useQueryClient();
   const endRef = useRef<HTMLDivElement>(null);
@@ -114,6 +115,18 @@ export function CareerTwinView({
             data.persona.strengthsAssumedFromProfile.length === 0,
         );
         setModes(data.modes ?? []);
+        if (Array.isArray(data.history) && data.history.length > 0) {
+          setMessages(
+            data.history.map((m: { role: "user" | "assistant"; content: string }, i: number) => ({
+              id: `hist-${i}`,
+              role: m.role,
+              content: m.content,
+            })),
+          );
+        }
+        if (data.checkIn?.returning) {
+          setReturningDays(data.checkIn.daysSinceLastVisit ?? null);
+        }
         track("career_twin_opened", { career: data.career.title });
         track("career_twin_persona_created", { career: data.career.title });
       })
@@ -225,10 +238,6 @@ export function CareerTwinView({
             careerId: career.id,
             mode: modeId,
             message: trimmed,
-            conversationHistory: messages.slice(-6).map((m) => ({
-              role: m.role,
-              content: m.content,
-            })),
           }),
         });
         const data = await res.json();
@@ -254,7 +263,7 @@ export function CareerTwinView({
         setSending(false);
       }
     },
-    [career, modeId, messages, sending],
+    [career, modeId, sending],
   );
 
   const saveInsight = async (msg: TwinMessage) => {
@@ -438,6 +447,12 @@ export function CareerTwinView({
 
         {/* Chat area */}
         <div className="h-[420px] overflow-y-auto px-4 sm:px-6 py-4 space-y-4 bg-gradient-to-b from-background to-muted/20">
+          {returningDays != null && (
+            <div className="mb-4 rounded-card border border-border bg-primary/5 px-4 py-3 text-sm text-foreground/80">
+              Welcome back — it&apos;s been about {Math.max(1, Math.round(returningDays / 7))} week
+              {Math.round(returningDays / 7) === 1 ? "" : "s"}. Your future self has been waiting. Pick up where you left off.
+            </div>
+          )}
           {messages.length === 0 ? (
             <div className="h-full flex flex-col items-center justify-center text-center">
               <p className="text-sm text-muted-foreground mb-3">{t("suggested")}</p>
