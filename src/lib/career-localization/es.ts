@@ -143,4 +143,78 @@ export const ES_CAREER_LOCALIZATION: Record<string, CareerLocalizationEntry> = {
       source: "https://www.todofp.es/que-estudiar/familias-profesionales/instalacion-mantenimiento/instalaciones-produccion-calor.html",
     },
   },
+
+  // ── Round 2 additions (common Spanish youth paths) ──────────────────
+  // Spanish description (all) + cited EUR salary where verifiable. Salaries
+  // are approx 2025 gross-annual ranges from calculaahora.es (INE basis) and
+  // oficinaempleo.com / xtart.com. Education paths for these are a follow-up
+  // data pass (omitted = card shows no path, never a Norwegian one).
+  chef: {
+    description: "Crea platos y dirige la cocina: prepara, emplata y coordina al equipo.",
+    salary: { value: "16.500 – 30.000 €/año brutos (ayudante → jefe de cocina)", source: "https://calculaahora.es/blog/sueldo-medio-profesiones-espana.html" },
+  },
+  accountant: {
+    description: "Lleva las cuentas: registra ingresos y gastos, impuestos y balances.",
+    salary: { value: "21.000 – 48.000 €/año brutos (según experiencia)", source: "https://calculaahora.es/blog/sueldo-medio-profesiones-espana.html" },
+  },
+  journalist: {
+    description: "Investiga, escribe y cuenta historias e información de actualidad.",
+    salary: { value: "18.000 – 38.000 €/año brutos", source: "https://calculaahora.es/blog/sueldo-medio-profesiones-espana.html" },
+  },
+  "graphic-designer": {
+    description: "Diseña piezas visuales: logos, carteles, webs y material de marca.",
+    salary: { value: "19.000 – 44.000 €/año brutos", source: "https://calculaahora.es/blog/sueldo-medio-profesiones-espana.html" },
+  },
+  pharmacist: {
+    description: "Dispensa medicamentos y asesora sobre su uso seguro y la salud.",
+    salary: { value: "28.000 – 42.000 €/año brutos", source: "https://calculaahora.es/blog/sueldo-medio-profesiones-espana.html" },
+  },
+  veterinarian: {
+    description: "Cuida la salud de los animales: previene, diagnostica y trata.",
+    salary: { value: "20.000 – 38.000 €/año brutos", source: "https://calculaahora.es/blog/sueldo-medio-profesiones-espana.html" },
+  },
+  "social-worker": {
+    description: "Acompaña a personas y familias y las conecta con recursos y apoyos.",
+    salary: { value: "20.000 – 33.000 €/año brutos", source: "https://calculaahora.es/blog/sueldo-medio-profesiones-espana.html" },
+  },
+  "civil-engineer": {
+    description: "Diseña y supervisa obras: carreteras, puentes, edificios e infraestructuras.",
+    salary: { value: "32.000 – 40.000 €/año brutos", source: "https://www.oficinaempleo.com/blog/sueldo-medio-por-profesion-en-espana-datos-actualizados-a-2025/" },
+  },
+  "hotel-manager": {
+    description: "Dirige un hotel: equipo, clientes, reservas y que todo funcione.",
+    salary: { value: "40.000 – 60.000 €/año brutos", source: "https://www.oficinaempleo.com/blog/sueldo-medio-por-profesion-en-espana-datos-actualizados-a-2025/" },
+  },
+  "web-developer": {
+    description: "Construye y mantiene páginas y aplicaciones web con código.",
+    salary: { value: "25.000 – 50.000 €/año brutos (sénior más)", source: "https://www.xtart.com/blog/cuanto-gana-un-programador-en-espana" },
+  },
+  // Salary held back (not verified for Spain) — Spanish description only for now.
+  hairdresser: {
+    description: "Corta, peina y cuida el cabello, y aconseja a cada cliente.",
+  },
+  "marketing-manager": {
+    description: "Planifica y dirige campañas para dar a conocer productos y marcas.",
+  },
+  "preschool-teacher": {
+    description: "Acompaña y enseña a los más pequeños en sus primeros años de aprendizaje.",
+  },
+  "police-officer": {
+    description: "Protege a las personas, previene el delito y vela por la seguridad.",
+  },
+  "real-estate-agent": {
+    description: "Ayuda a comprar, vender y alquilar viviendas y locales.",
+  },
+  "personal-trainer": {
+    description: "Diseña entrenamientos y motiva a las personas a mejorar su forma física.",
+  },
+  paramedic: {
+    description: "Atiende urgencias y traslada a pacientes, estabilizándolos en el camino.",
+  },
+  carpenter: {
+    description: "Trabaja la madera: fabrica y monta muebles, puertas y estructuras.",
+  },
+  "dental-hygienist": {
+    description: "Cuida la higiene bucodental y ayuda en los tratamientos del dentista.",
+  },
 };
