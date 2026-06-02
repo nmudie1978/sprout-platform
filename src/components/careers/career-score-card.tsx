@@ -6,11 +6,15 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ArrowRight } from "lucide-react";
 import type { Career } from "@/lib/career-pathways";
+import type { LocalizedCareerView } from "@/lib/career-localization/types";
 
 interface CareerScoreCardProps {
-  career: Career;
+  career: Career | LocalizedCareerView;
   matchScore: number; // 0–100
   onLearnMore: () => void;
+  /** Localized "not yet tailored to your country" label; shown when the
+   *  career view is marked not-localized. Omit for the default (Norway) path. */
+  notTailoredLabel?: string;
 }
 
 type Strength = "weak" | "moderate" | "strong";
@@ -103,9 +107,10 @@ function HalfCircleGauge({ value, gradId }: { value: number; gradId: string }) {
   );
 }
 
-export function CareerScoreCard({ career, matchScore, onLearnMore }: CareerScoreCardProps) {
+export function CareerScoreCard({ career, matchScore, onLearnMore, notTailoredLabel }: CareerScoreCardProps) {
   const strength = getStrength(matchScore);
   const gradId = `career-grad-${career.id}`;
+  const notTailored = "isLocalized" in career && career.isLocalized === false;
 
   return (
     <Card className="relative overflow-hidden border-border/40 bg-card/80 hover:border-pink-500/40 transition-colors h-full flex flex-col">
@@ -114,10 +119,19 @@ export function CareerScoreCard({ career, matchScore, onLearnMore }: CareerScore
         <div className="flex items-center gap-2.5">
           <span className="text-xl shrink-0">{career.emoji}</span>
           <div className="min-w-0 flex-1">
-            <h3 className="text-sm font-semibold truncate leading-tight">{career.title}</h3>
+            <div className="flex items-center gap-1.5 min-w-0">
+              <h3 className="text-sm font-semibold truncate leading-tight">{career.title}</h3>
+              {notTailored && notTailoredLabel && (
+                <Badge variant="outline" className="text-[8px] px-1 py-0 shrink-0 text-muted-foreground border-border">
+                  {notTailoredLabel}
+                </Badge>
+              )}
+            </div>
             {career.avgSalary && (
               <p className="text-[10px] text-muted-foreground/60 tabular-nums truncate">
-                {career.avgSalary.split(" ")[0]} kr/year
+                {career.avgSalary.includes("kr")
+                  ? `${career.avgSalary.split(" ")[0]} kr/year`
+                  : career.avgSalary}
               </p>
             )}
           </div>

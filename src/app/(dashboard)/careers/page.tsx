@@ -518,9 +518,10 @@ function CareersPageContent() {
                 return (
                   <CareerScoreCard
                     key={career.id}
-                    career={career}
+                    career={localizeCareer(career, userCountry)}
                     matchScore={matchScore}
                     onLearnMore={() => setSelectedCareer(career)}
+                    notTailoredLabel={notTailoredLabel}
                   />
                 );
               })}
