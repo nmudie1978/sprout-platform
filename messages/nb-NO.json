@@ -398,6 +398,7 @@
     "goalSetToast": "Satt som hovedmål!",
     "goalSetToastBody": "Se og tilpass det på Min reise.",
     "goalSetError": "Kunne ikke sette målet ditt",
-    "goalSetErrorBody": "Prøv igjen om et øyeblikk."
+    "goalSetErrorBody": "Prøv igjen om et øyeblikk.",
+    "welcomeBack": "Velkommen tilbake — det er omtrent {weeks, plural, one {# uke} other {# uker}} siden sist. Ditt fremtidige jeg har ventet. Fortsett der du slapp."
   }
 }

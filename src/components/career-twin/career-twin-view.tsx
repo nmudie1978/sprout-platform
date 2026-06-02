@@ -451,7 +451,7 @@ export function CareerTwinView({
             <div className="mb-4 rounded-card border border-border bg-primary/5 px-4 py-3 text-sm text-foreground/80">
               {(() => {
                 const weeks = Math.max(1, Math.round(returningDays / 7));
-                return `Welcome back — it's been about ${weeks} week${weeks === 1 ? "" : "s"}. Your future self has been waiting. Pick up where you left off.`;
+                return t("welcomeBack", { weeks });
               })()}
             </div>
           )}

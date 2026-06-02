@@ -398,6 +398,7 @@
     "goalSetToast": "Set as Primary Goal!",
     "goalSetToastBody": "View and customise it on My Journey.",
     "goalSetError": "Couldn't set your goal",
-    "goalSetErrorBody": "Please try again in a moment."
+    "goalSetErrorBody": "Please try again in a moment.",
+    "welcomeBack": "Welcome back — it's been about {weeks, plural, one {# week} other {# weeks}}. Your future self has been waiting. Pick up where you left off."
   }
 }

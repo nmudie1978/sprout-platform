@@ -398,6 +398,7 @@
     "goalSetToast": "¡Fijado como objetivo principal!",
     "goalSetToastBody": "Míralo y personalízalo en Mi recorrido.",
     "goalSetError": "No se ha podido fijar tu objetivo",
-    "goalSetErrorBody": "Inténtalo de nuevo en un momento."
+    "goalSetErrorBody": "Inténtalo de nuevo en un momento.",
+    "welcomeBack": "Bienvenido de nuevo — ha pasado {weeks, plural, one {# semana} other {# semanas}}. Tu yo del futuro te ha estado esperando. Retoma donde lo dejaste."
   }
 }

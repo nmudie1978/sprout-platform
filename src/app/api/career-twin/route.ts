@@ -149,7 +149,6 @@ export async function POST(req: NextRequest) {
 
     const openai = getOpenAIClient();
     if (!openai) {
-      await appendTwinTurns(session.user.id, career.id, [{ role: "user", content: message, mode: mode.id }]);
       return NextResponse.json({ message: twinFallback(career.title), fallback: true });
     }
 
@@ -175,7 +174,6 @@ export async function POST(req: NextRequest) {
     // Output safety net (reuses the platform guardrails)
     const safety = isResponseSafe(assistantMessage);
     if (!assistantMessage || !safety.safe) {
-      await appendTwinTurns(session.user.id, career.id, [{ role: "user", content: message, mode: mode.id }]);
       return NextResponse.json({ message: twinFallback(career.title), fallback: true });
     }
     // Only enforce English when English is the target language — Norwegian
@@ -183,7 +181,6 @@ export async function POST(req: NextRequest) {
     if (replyLanguage === "English") {
       const lang = detectNonEnglishResponse(assistantMessage);
       if (lang.isNonEnglish) {
-        await appendTwinTurns(session.user.id, career.id, [{ role: "user", content: message, mode: mode.id }]);
         return NextResponse.json({ message: twinFallback(career.title), fallback: true });
       }
     }
