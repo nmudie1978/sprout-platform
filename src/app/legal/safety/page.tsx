@@ -74,16 +74,17 @@ export default function SafetyGuidelinesPage() {
           <section className="mb-8">
             <h2>Emergency Situations</h2>
             <p>
-              If you are in immediate danger, contact emergency services first:
+              If you are in immediate danger, contact your local emergency services first:
             </p>
             <ul>
-              <li><strong>Police:</strong> 112</li>
-              <li><strong>Ambulance:</strong> 113</li>
-              <li><strong>Fire:</strong> 110</li>
+              <li><strong>Anywhere in the EU (including Norway and Spain):</strong> 112</li>
+              <li><strong>In Norway specifically:</strong> Police 112 · Ambulance 113 · Fire 110</li>
+              <li><strong>Outside the EU:</strong> use your country&apos;s official emergency number.</li>
             </ul>
             <p>
-              If you&apos;re struggling, please also reach out to a trusted adult or a support line
-              (in Norway, Mental Helse: 116 123).
+              If you&apos;re struggling, please also reach out to a trusted adult or a local support
+              line — for example, in Norway: Mental Helse 116 123; in Spain: 024 (Línea de Atención
+              a la Conducta Suicida). Elsewhere, search for your country&apos;s helpline.
             </p>
           </section>
 

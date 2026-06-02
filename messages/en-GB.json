@@ -319,6 +319,7 @@
     "acceptTerms": "I accept the Terms and Privacy Policy"
   },
   "insights": {
+    "countryNotice": "These insights are based on the Norwegian labour market — we haven't tailored them to {country} yet.",
     "pageTitle": "Industry",
     "pageTitleGradient": "Insights",
     "pageDescription": "Real data on careers, industries, and the job market",

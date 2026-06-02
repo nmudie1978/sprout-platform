@@ -35,6 +35,7 @@ import { motion } from "framer-motion";
 
 // Lightweight components loaded eagerly
 import { WeeklyFactNudge } from "@/components/insights/weekly-fact-nudge";
+import { CountryDataNotice } from "@/components/insights/country-data-notice";
 import { PageContext } from "@/components/ui/page-context";
 import { InsightUpdateToast } from "@/components/insights/insight-update-toast";
 import { RecentInsightUpdates } from "@/components/insights/recent-insight-updates";
@@ -178,6 +179,9 @@ export default function IndustryInsightsPage() {
         centered
         infoTooltip="Explore real data about careers, industries, and the job market. Browse global trends, youth-specific insights, and curated articles and videos to help you make informed decisions."
       />
+
+      {/* Honesty: Insights data is Norway-based — say so for non-Norway users. */}
+      <CountryDataNotice />
 
       {/* Trust line + section guide */}
       <motion.div
