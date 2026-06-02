@@ -110,6 +110,7 @@
     }
   },
   "careers": {
+    "notTailored": "Ikke tilpasset landet ditt ennå",
     "titlePrefix": "Utforsk",
     "titleGradient": "Karrierer",
     "description": "Lær hva ulike jobber virkelig innebærer før du bestemmer deg",
