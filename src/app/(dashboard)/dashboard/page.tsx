@@ -732,6 +732,21 @@ export default function DashboardPage() {
     durationMs: 4000,
   });
 
+  // Post-completion nudge — once the active career reaches Clarity (3/3),
+  // spotlight the "Change" control so the user discovers they can explore
+  // an alternative career. Keyed per career so it shows once per completion
+  // and never again for that career.
+  const completionSlug = (goalTitle ?? "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
+  const completionNudge = useSubtleHint({
+    hintKey: `journey-complete-nudge-${completionSlug}`,
+    enabled: clarityDone && !!goalTitle && status !== "loading",
+    delayMs: 1500,
+    durationMs: 6000,
+  });
+
   // Language toggle — always visible
 
   // Discover profile — "Who Am I" summary (generic across all goals)
@@ -1079,6 +1094,7 @@ export default function DashboardPage() {
                 </h2>
                 {goalTitle && (
                   <button
+                    data-spotlight="change-button"
                     onClick={(e) => { e.preventDefault(); e.stopPropagation(); setShowGoalSheet(true); }}
                     className="mt-0.5 -ml-1 inline-flex items-center gap-1 rounded-control px-1.5 py-0.5 text-xs font-medium capitalize text-primary/90 hover:text-primary/80 hover:bg-primary/10 transition-colors"
                   >
@@ -1204,9 +1220,23 @@ export default function DashboardPage() {
                 Dashboard we only need a quiet marker that this journey
                 is complete, consistent across refresh and revisit. */}
             {completedLensCount === 3 && (
-              <div className="mt-3 flex items-center gap-1.5 text-[10px] font-medium text-muted-foreground/70">
-                <Star className="h-3 w-3 shrink-0 fill-amber-400 text-amber-400" />
-                <span>{t('journey.completeIndicator')}</span>
+              <div className="mt-3 space-y-2.5">
+                {/* Quiet acknowledgement that this journey is complete */}
+                <div className="flex items-center gap-1.5 text-[10px] font-medium text-muted-foreground/70">
+                  <Star className="h-3 w-3 shrink-0 fill-amber-400 text-amber-400" />
+                  <span>{t('journey.completeIndicator')}</span>
+                </div>
+                {/* Calm next step so completion isn't a dead-end. Opens the
+                    same career picker as "Change"; preventDefault/stopPropagation
+                    because the whole card is a Link to /my-journey. */}
+                <button
+                  onClick={(e) => { e.preventDefault(); e.stopPropagation(); setShowGoalSheet(true); }}
+                  className="inline-flex items-center gap-1.5 rounded-control border border-primary/20 bg-primary/5 px-2.5 py-1.5 text-xs font-medium text-primary hover:bg-primary/10 transition-colors"
+                >
+                  <Compass className="h-3.5 w-3.5 shrink-0" />
+                  <span>{t('journey.exploreAnother')}</span>
+                  <ArrowRight className="h-3 w-3 shrink-0" />
+                </button>
               </div>
             )}
 
@@ -1638,6 +1668,15 @@ export default function DashboardPage() {
         onDismiss={dashboardHint.dismiss}
         text="Choose a career goal to start your journey"
         targetSelector='[data-spotlight="journey-card"]'
+      />
+
+      {/* Spotlight — after completing a journey, point to "Change" so the
+          user discovers they can explore an alternative career */}
+      <SpotlightHint
+        visible={completionNudge.visible}
+        onDismiss={completionNudge.dismiss}
+        text={t('journey.completeNudge')}
+        targetSelector='[data-spotlight="change-button"]'
       />
     </div>
   );
