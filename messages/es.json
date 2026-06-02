@@ -45,6 +45,8 @@
     "cardTitleWithGoal": "Mi recorrido para ser",
     "chooseGoalPrompt": "Elige un objetivo principal para empezar",
     "completeIndicator": "Has explorado este posible futuro",
+    "completeNudge": "Ahora prueba a cambiar a una carrera alternativa para explorar más.",
+    "exploreAnother": "Explora otra carrera",
     "progressTooltip": "Tu recorrido sigue tu progreso por Descubrir, Entender y Claridad — para ayudarte a ver el panorama completo de una carrera.",
     "hint": "Este es tu camino",
     "discover": {

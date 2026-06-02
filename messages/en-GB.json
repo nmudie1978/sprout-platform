@@ -45,6 +45,8 @@
     "cardTitleWithGoal": "My Journey to becoming a",
     "chooseGoalPrompt": "Choose a Primary Goal to start",
     "completeIndicator": "You've explored this possible future",
+    "completeNudge": "Now try changing to an alternative career to explore further.",
+    "exploreAnother": "Explore another career",
     "progressTooltip": "Your journey tracks your progress through Discover, Understand, and Clarity — helping you see the full picture of a career path.",
     "hint": "This is your path",
     "discover": {
