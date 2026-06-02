@@ -31,69 +31,28 @@ export async function GET(req: NextRequest) {
     const monthAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
     const threeMonthsAgo = new Date(today.getTime() - 90 * 24 * 60 * 60 * 1000);
 
-    // Run all queries in parallel for performance
+    // ============================================
+    // JOBS MARKETPLACE REMOVED
+    // ============================================
+    // The jobs / earnings / applications / reviews / messaging marketplace has
+    // been removed. Those sections are now reported as zero. Only user, badge,
+    // and community/moderation metrics carry real data.
+    //
+    // Run the surviving (non-marketplace) queries in parallel.
     const [
-      // User Stats
       totalUsers,
       usersByRole,
       usersThisWeek,
       usersThisMonth,
       usersByAccountStatus,
-
-      // Job Stats
-      totalJobs,
-      jobsByStatus,
-      jobsByCategory,
-      jobsThisWeek,
-      jobsThisMonth,
-
-      // Financial Stats
-      totalEarnings,
-      topYouthEarners,
-      topEmployerSpenders,
-      earningsThisMonth,
-      averageJobValue,
-
-      // Application Stats
-      totalApplications,
-      applicationsByStatus,
-      applicationsThisWeek,
-
-      // Review Stats
-      totalReviews,
-      averageRating,
-      reviewsThisMonth,
-
-      // Engagement Stats
-      totalMessages,
-      messagesThisWeek,
-      totalConversations,
-
-      // Badge Stats
       badgeDistribution,
       totalBadgesAwarded,
-
-      // Community Stats
       totalCommunities,
       totalReports,
       reportsByStatus,
-
-      // Recent Signups
       recentSignups,
-
-      // User Growth (last 12 weeks)
       userGrowth,
-
-      // Job Completion Rate
-      completedJobs,
-      cancelledJobs,
-
-      // Active Users (users who logged in / had activity)
-      activeUsersThisWeek,
-
-      // Top Rated Youth
       topRatedYouth,
-
     ] = await Promise.all([
       // Total Users
       prisma.user.count(),
@@ -119,106 +78,6 @@ export async function GET(req: NextRequest) {
         by: ["accountStatus"],
         _count: { id: true },
       }),
-
-      // Total Jobs
-      prisma.microJob.count(),
-
-      // Jobs by Status
-      prisma.microJob.groupBy({
-        by: ["status"],
-        _count: { id: true },
-      }),
-
-      // Jobs by Category
-      prisma.microJob.groupBy({
-        by: ["category"],
-        _count: { id: true },
-        orderBy: { _count: { id: "desc" } },
-      }),
-
-      // Jobs this week
-      prisma.microJob.count({
-        where: { createdAt: { gte: weekAgo } },
-      }),
-
-      // Jobs this month
-      prisma.microJob.count({
-        where: { createdAt: { gte: monthAgo } },
-      }),
-
-      // Total Earnings
-      prisma.earning.aggregate({
-        _sum: { amount: true },
-      }),
-
-      // Top Youth Earners
-      prisma.earning.groupBy({
-        by: ["youthId"],
-        _sum: { amount: true },
-        _count: { id: true },
-        orderBy: { _sum: { amount: "desc" } },
-        take: 10,
-      }),
-
-      // Top Employer Spenders (from jobs)
-      prisma.microJob.groupBy({
-        by: ["postedById"],
-        where: { status: { in: ["COMPLETED", "REVIEWED"] } },
-        _sum: { payAmount: true },
-        _count: { id: true },
-        orderBy: { _sum: { payAmount: "desc" } },
-        take: 10,
-      }),
-
-      // Earnings this month
-      prisma.earning.aggregate({
-        where: { createdAt: { gte: monthAgo } },
-        _sum: { amount: true },
-      }),
-
-      // Average job value
-      prisma.microJob.aggregate({
-        where: { status: { in: ["COMPLETED", "REVIEWED"] } },
-        _avg: { payAmount: true },
-      }),
-
-      // Total Applications
-      prisma.application.count(),
-
-      // Applications by Status
-      prisma.application.groupBy({
-        by: ["status"],
-        _count: { id: true },
-      }),
-
-      // Applications this week
-      prisma.application.count({
-        where: { createdAt: { gte: weekAgo } },
-      }),
-
-      // Total Reviews
-      prisma.review.count(),
-
-      // Average Rating
-      prisma.review.aggregate({
-        _avg: { overall: true },
-      }),
-
-      // Reviews this month
-      prisma.review.count({
-        where: { createdAt: { gte: monthAgo } },
-      }),
-
-      // Total Messages
-      prisma.message.count(),
-
-      // Messages this week
-      prisma.message.count({
-        where: { createdAt: { gte: weekAgo } },
-      }),
-
-      // Total Conversations
-      prisma.conversation.count(),
 
       // Badge Distribution
       prisma.badge.groupBy({
@@ -268,28 +127,8 @@ export async function GET(req: NextRequest) {
         ORDER BY week ASC
       `,
 
-      // Completed Jobs
-      prisma.microJob.count({
-        where: { status: { in: ["COMPLETED", "REVIEWED"] } },
-      }),
-
-      // Cancelled Jobs
-      prisma.microJob.count({
-        where: { status: "CANCELLED" },
-      }),
-
-      // Active users (users who sent messages or applied to jobs this week)
-      prisma.user.count({
-        where: {
-          OR: [
-            { messagesSent: { some: { createdAt: { gte: weekAgo } } } },
-            { applications: { some: { createdAt: { gte: weekAgo } } } },
-            { postedJobs: { some: { createdAt: { gte: weekAgo } } } },
-          ],
-        },
-      }),
-
-      // Top Rated Youth Workers
+      // Top Rated Youth (legacy rating fields retained on YouthProfile; no
+      // longer written, so this is expected to be empty).
       prisma.youthProfile.findMany({
         where: {
           averageRating: { not: null },
@@ -307,36 +146,6 @@ export async function GET(req: NextRequest) {
       }),
     ]);
 
-    // Batch-fetch profiles instead of N+1 individual queries
-    const youthProfiles = await prisma.youthProfile.findMany({
-      where: { userId: { in: topYouthEarners.map((e) => e.youthId) } },
-      select: { userId: true, displayName: true, averageRating: true },
-    });
-
-    const youthProfileMap = new Map(youthProfiles.map((p) => [p.userId, p]));
-
-    const enrichedTopYouthEarners = topYouthEarners.map((earner) => {
-      const profile = youthProfileMap.get(earner.youthId);
-      return {
-        ...earner,
-        displayName: profile?.displayName || "Unknown",
-        averageRating: profile?.averageRating,
-      };
-    });
-
-    // Job posters have been removed — spending leaderboards no longer carry a
-    // company identity.
-    const enrichedTopEmployerSpenders = topEmployerSpenders.map((spender) => ({
-      ...spender,
-      companyName: "Individual",
-    }));
-
-    // Calculate completion rate
-    const totalFinishedJobs = completedJobs + cancelledJobs;
-    const completionRate = totalFinishedJobs > 0
-      ? Math.round((completedJobs / totalFinishedJobs) * 100)
-      : 0;
-
     // Postgres COUNT(*) comes back as BigInt — JSON.stringify throws
     // on BigInt, which surfaces as "Failed to fetch analytics" on the
     // client. Coerce to Number for the JSON response.
@@ -353,16 +162,16 @@ export async function GET(req: NextRequest) {
       // Overview
       overview: {
         totalUsers,
-        totalJobs,
-        totalEarnings: totalEarnings._sum.amount || 0,
-        totalApplications,
-        totalReviews,
-        totalMessages,
-        totalConversations,
+        totalJobs: 0,
+        totalEarnings: 0,
+        totalApplications: 0,
+        totalReviews: 0,
+        totalMessages: 0,
+        totalConversations: 0,
         totalBadgesAwarded,
-        averageJobValue: averageJobValue._avg.payAmount || 0,
-        averageRating: averageRating._avg.overall || 0,
-        completionRate,
+        averageJobValue: 0,
+        averageRating: 0,
+        completionRate: 0,
       },
 
       // Users
@@ -377,52 +186,43 @@ export async function GET(req: NextRequest) {
         }, {} as Record<string, number>),
         newThisWeek: usersThisWeek,
         newThisMonth: usersThisMonth,
-        activeThisWeek: activeUsersThisWeek,
+        activeThisWeek: 0,
         recentSignups,
         growth: userGrowthSafe,
       },
 
-      // Jobs
+      // Jobs (marketplace removed — zeroed)
       jobs: {
-        byStatus: jobsByStatus.reduce((acc, item) => {
-          acc[item.status] = item._count.id;
-          return acc;
-        }, {} as Record<string, number>),
-        byCategory: jobsByCategory.map(item => ({
-          category: item.category,
-          count: item._count.id,
-        })),
-        newThisWeek: jobsThisWeek,
-        newThisMonth: jobsThisMonth,
-        completed: completedJobs,
-        cancelled: cancelledJobs,
-        completionRate,
+        byStatus: {} as Record<string, number>,
+        byCategory: [] as { category: string; count: number }[],
+        newThisWeek: 0,
+        newThisMonth: 0,
+        completed: 0,
+        cancelled: 0,
+        completionRate: 0,
       },
 
-      // Applications
+      // Applications (marketplace removed — zeroed)
       applications: {
-        byStatus: applicationsByStatus.reduce((acc, item) => {
-          acc[item.status] = item._count.id;
-          return acc;
-        }, {} as Record<string, number>),
-        thisWeek: applicationsThisWeek,
+        byStatus: {} as Record<string, number>,
+        thisWeek: 0,
       },
 
-      // Financial
+      // Financial (marketplace removed — zeroed)
       financial: {
-        totalEarnings: totalEarnings._sum.amount || 0,
-        earningsThisMonth: earningsThisMonth._sum.amount || 0,
-        averageJobValue: averageJobValue._avg.payAmount || 0,
-        topYouthEarners: enrichedTopYouthEarners,
-        topEmployerSpenders: enrichedTopEmployerSpenders,
+        totalEarnings: 0,
+        earningsThisMonth: 0,
+        averageJobValue: 0,
+        topYouthEarners: [] as unknown[],
+        topEmployerSpenders: [] as unknown[],
       },
 
-      // Engagement
+      // Engagement (marketplace messaging removed — zeroed)
       engagement: {
-        totalMessages,
-        messagesThisWeek,
-        totalConversations,
-        reviewsThisMonth,
+        totalMessages: 0,
+        messagesThisWeek: 0,
+        totalConversations: 0,
+        reviewsThisMonth: 0,
       },
 
       // Achievements

@@ -38,12 +38,6 @@ export async function GET(req: NextRequest) {
         where: { id: session.user.id },
         include: {
           youthProfile: true,
-          careerSnapshot: {
-            select: {
-              primaryInterest: true,
-              exploring: true,
-            },
-          },
         },
       });
 
@@ -61,13 +55,19 @@ export async function GET(req: NextRequest) {
         }
       }
 
-      // Get career goals from snapshot
-      if (user?.careerSnapshot) {
-        if (user.careerSnapshot.primaryInterest) {
-          userCareerGoals.push(user.careerSnapshot.primaryInterest);
+      // Get career goals from the youth profile (aspiration + desired roles)
+      const profile = user?.youthProfile;
+      if (profile) {
+        if (profile.careerAspiration) {
+          userCareerGoals.push(
+            ...profile.careerAspiration
+              .split(/[,;]/)
+              .map((s) => s.trim())
+              .filter(Boolean)
+          );
         }
-        if (user.careerSnapshot.exploring && user.careerSnapshot.exploring.length > 0) {
-          userCareerGoals.push(...user.careerSnapshot.exploring);
+        if (profile.desiredRoles?.length) {
+          userCareerGoals.push(...profile.desiredRoles);
         }
       }
     }
