@@ -110,6 +110,7 @@
     }
   },
   "careers": {
+    "notTailored": "Aún no adaptado a tu país",
     "titlePrefix": "Explorar",
     "titleGradient": "Carreras",
     "description": "Descubre cómo son de verdad los distintos trabajos antes de decidir nada",

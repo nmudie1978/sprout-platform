@@ -17,7 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { SUPPORTED_COUNTRIES, DEFAULT_COUNTRY } from "@/lib/countries";
+import { LAUNCHED_COUNTRIES, DEFAULT_COUNTRY } from "@/lib/countries";
 import { Sparkles, Loader2, ArrowLeft, ArrowRight } from "lucide-react";
 
 /**
@@ -416,7 +416,7 @@ function SignUpForm() {
                       <SelectValue placeholder="Select your country" />
                     </SelectTrigger>
                     <SelectContent>
-                      {SUPPORTED_COUNTRIES.map((c) => (
+                      {LAUNCHED_COUNTRIES.map((c) => (
                         <SelectItem key={c.code} value={c.name}>
                           {c.name}
                         </SelectItem>

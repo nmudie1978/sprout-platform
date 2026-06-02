@@ -12,6 +12,7 @@
  */
 import { norwayContext } from "./norway";
 import { spainContext } from "./spain";
+import { internationalContext } from "./international";
 
 export interface CountryContext {
   /** ISO 3166-1 alpha-2 */
@@ -38,9 +39,10 @@ const REGISTRY: Record<string, CountryContext> = {
 };
 
 /**
- * Resolve a country's AI context. Falls back to Norway (the platform
- * default) for unknown/missing countries — never throws.
+ * Resolve a country's AI context. Falls back to a NEUTRAL international
+ * context (never silently Norway) for unknown/missing/unlocalised countries
+ * — so we never serve a wrong-country crisis number or NOK pay. Never throws.
  */
 export function getCountryContext(country?: string | null): CountryContext {
-  return (country && REGISTRY[country]) || norwayContext;
+  return (country && REGISTRY[country]) || internationalContext;
 }

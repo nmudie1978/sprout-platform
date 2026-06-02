@@ -25,6 +25,7 @@ import {
   getAllCareers,
   type Career,
 } from "@/lib/career-pathways";
+import { localizeCareer } from "@/lib/career-localization";
 import { useCareerFilters } from "@/lib/career-filters/use-career-filters";
 import { getAllSkills, getSalaryBounds } from "@/lib/career-filters/utils";
 import { useIsMobile } from "@/hooks/use-media-query";
@@ -41,6 +42,11 @@ function CareersPageContent() {
   const router = useRouter();
   const pathname = usePathname();
   const isMobile = useIsMobile();
+  // Country-aware localization: localize the RENDERED view only (filtering/
+  // sorting/matching keep using the raw career objects). Norway/default/
+  // logged-out → unchanged.
+  const userCountry = session?.user?.youthProfile?.country ?? null;
+  const notTailoredLabel = t("careers.notTailored");
   const [selectedCareer, setSelectedCareer] = useState<Career | null>(null);
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
 
@@ -404,10 +410,11 @@ function CareersPageContent() {
                 transition={{ delay: Math.min(index * 0.02, 0.3) }}
               >
                 <CareerCardV2
-                  career={career}
+                  career={localizeCareer(career, userCountry)}
                   viewMode={viewMode}
                   matchScore={recommendationMap.get(career.id)}
                   onLearnMore={() => setSelectedCareer(career)}
+                  notTailoredLabel={notTailoredLabel}
                 />
               </motion.div>
             ))}
@@ -524,8 +531,9 @@ function CareersPageContent() {
 
       {/* Career Detail Sheet with Learn More content */}
       <CareerDetailSheet
-        career={selectedCareer}
+        career={selectedCareer ? localizeCareer(selectedCareer, userCountry) : selectedCareer}
         onClose={() => setSelectedCareer(null)}
+        notTailoredLabel={notTailoredLabel}
       />
 
     </div>

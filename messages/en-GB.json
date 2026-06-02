@@ -110,6 +110,7 @@
     }
   },
   "careers": {
+    "notTailored": "Not yet tailored to your country",
     "titlePrefix": "Explore",
     "titleGradient": "Careers",
     "description": "Learn what different jobs are really like before deciding anything",

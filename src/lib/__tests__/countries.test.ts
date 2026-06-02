@@ -3,6 +3,9 @@ import {
   normaliseCountry,
   countryToCode,
   defaultLocaleForCountry,
+  LAUNCHED_COUNTRIES,
+  SUPPORTED_COUNTRIES,
+  isLaunchedCountry,
 } from "../countries";
 
 describe("countries helpers", () => {
@@ -24,5 +27,20 @@ describe("countries helpers", () => {
     expect(defaultLocaleForCountry("Spain")).toBe("es");
     expect(defaultLocaleForCountry("Norway")).toBeNull();
     expect(defaultLocaleForCountry(undefined)).toBeNull();
+  });
+});
+
+describe("launched countries", () => {
+  it("launches exactly Norway and Spain", () => {
+    expect(LAUNCHED_COUNTRIES.map((c) => c.name)).toEqual(["Norway", "Spain"]);
+  });
+  it("is a subset of SUPPORTED_COUNTRIES", () => {
+    const supported = new Set(SUPPORTED_COUNTRIES.map((c) => c.name));
+    for (const c of LAUNCHED_COUNTRIES) expect(supported.has(c.name)).toBe(true);
+  });
+  it("isLaunchedCountry only true for launched", () => {
+    expect(isLaunchedCountry("Spain")).toBe(true);
+    expect(isLaunchedCountry("Italy")).toBe(false);
+    expect(isLaunchedCountry(null)).toBe(false);
   });
 });

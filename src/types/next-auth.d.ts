@@ -23,6 +23,8 @@ declare module "next-auth" {
         displayName: string;
         profileVisibility: boolean;
         guardianConsent: boolean;
+        /** YouthProfile.country — drives country-aware localization (e.g. Spain). */
+        country?: string | null;
       } | null;
     } & DefaultSession["user"];
   }

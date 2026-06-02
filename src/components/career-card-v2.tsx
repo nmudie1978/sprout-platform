@@ -17,7 +17,13 @@ import {
   ChevronRight,
 } from "lucide-react";
 import type { Career } from "@/lib/career-pathways";
+import type { LocalizedCareerView } from "@/lib/career-localization/types";
 import { getSectorForCareer } from "@/lib/career-pathways";
+
+/** True when a localized view explicitly marks this career as not-yet-tailored. */
+function isNotTailored(career: Career | LocalizedCareerView): boolean {
+  return "isLocalized" in career && career.isLocalized === false;
+}
 import { getAcademicProfile, getDemandLabel, getDemandColors } from "@/lib/education/academic-readiness";
 
 export type ViewMode = "list" | "small" | "large";
@@ -53,10 +59,13 @@ function shortSector(careerId: string): string {
 }
 
 interface CareerCardV2Props {
-  career: Career;
+  career: Career | LocalizedCareerView;
   viewMode: ViewMode;
   matchScore?: number;
   onLearnMore: () => void;
+  /** Localized "not yet tailored to your country" label; shown when the
+   *  career view is marked not-localized. Omit for the default (Norway) path. */
+  notTailoredLabel?: string;
 }
 
 const growthConfig = {
@@ -83,13 +92,14 @@ const growthConfig = {
 /**
  * List View Row - Entire row is clickable
  */
-function ListRow({ career, matchScore, onLearnMore }: Omit<CareerCardV2Props, "viewMode">) {
+function ListRow({ career, matchScore, onLearnMore, notTailoredLabel }: Omit<CareerCardV2Props, "viewMode">) {
   const growth = growthConfig[career.growthOutlook];
   const GrowthIcon = growth.icon;
-  const salaryShort = career.avgSalary.split(" ")[0];
+  const notTailored = isNotTailored(career);
+  const salaryShort = career.avgSalary ? career.avgSalary.split(" ")[0] : "";
 
   const sector = shortSector(career.id);
-  const path = shortPath(career.educationPath);
+  const path = career.educationPath ? shortPath(career.educationPath) : "";
   const academic = getAcademicProfile(career);
   const demandColor = getDemandColors(academic.demand);
 
@@ -109,6 +119,11 @@ function ListRow({ career, matchScore, onLearnMore }: Omit<CareerCardV2Props, "v
             className="text-[9px] px-1.5 py-0 shrink-0 bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-400"
           >
             Entry
+          </Badge>
+        )}
+        {notTailored && notTailoredLabel && (
+          <Badge variant="outline" className="text-[9px] px-1.5 py-0 shrink-0 text-muted-foreground border-border" title={notTailoredLabel}>
+            {notTailoredLabel}
           </Badge>
         )}
       </span>
@@ -175,10 +190,11 @@ function ListRow({ career, matchScore, onLearnMore }: Omit<CareerCardV2Props, "v
 /**
  * Small Card View - Entire card is clickable
  */
-function SmallCard({ career, matchScore, onLearnMore }: Omit<CareerCardV2Props, "viewMode">) {
+function SmallCard({ career, matchScore, onLearnMore, notTailoredLabel }: Omit<CareerCardV2Props, "viewMode">) {
   const growth = growthConfig[career.growthOutlook];
   const GrowthIcon = growth.icon;
-  const salaryShort = career.avgSalary.split(" ")[0];
+  const notTailored = isNotTailored(career);
+  const salaryShort = career.avgSalary ? career.avgSalary.split(" ")[0] : "";
   const visibleSkills = career.keySkills.slice(0, 2);
   const extraSkills = career.keySkills.length - 2;
   const dailyPreview = career.dailyTasks.slice(0, 2).join(" · ");
@@ -204,6 +220,11 @@ function SmallCard({ career, matchScore, onLearnMore }: Omit<CareerCardV2Props, 
                     Entry
                   </Badge>
                 )}
+                {notTailored && notTailoredLabel && (
+                  <Badge variant="outline" className="text-[9px] px-1 py-0 shrink-0 text-muted-foreground border-border">
+                    {notTailoredLabel}
+                  </Badge>
+                )}
               </div>
               {dailyPreview && (
                 <p className="text-[11px] text-muted-foreground line-clamp-1 mt-0.5">
@@ -227,10 +248,12 @@ function SmallCard({ career, matchScore, onLearnMore }: Omit<CareerCardV2Props, 
           </div>
 
           <div className="flex items-center gap-1.5 flex-wrap">
-            <Badge variant="secondary" className="text-[9px] px-1.5 py-0">
-              <Banknote className="h-2.5 w-2.5 mr-0.5" />
-              {salaryShort}
-            </Badge>
+            {salaryShort && (
+              <Badge variant="secondary" className="text-[9px] px-1.5 py-0">
+                <Banknote className="h-2.5 w-2.5 mr-0.5" />
+                {salaryShort}
+              </Badge>
+            )}
             <Badge variant="outline" className={`text-[9px] px-1.5 py-0 ${growth.bg} border-0`}>
               <GrowthIcon className={`h-2.5 w-2.5 mr-0.5 ${growth.color}`} />
               <span className={growth.color}>{growth.label}</span>
@@ -266,9 +289,10 @@ function SmallCard({ career, matchScore, onLearnMore }: Omit<CareerCardV2Props, 
 /**
  * Large Card View - Entire card is clickable
  */
-function LargeCard({ career, matchScore, onLearnMore }: Omit<CareerCardV2Props, "viewMode">) {
+function LargeCard({ career, matchScore, onLearnMore, notTailoredLabel }: Omit<CareerCardV2Props, "viewMode">) {
   const growth = growthConfig[career.growthOutlook];
   const GrowthIcon = growth.icon;
+  const notTailored = isNotTailored(career);
   const visibleSkills = career.keySkills.slice(0, 4);
   const extraSkills = career.keySkills.length - 4;
   const dailyPreview = career.dailyTasks.slice(0, 2).join(" · ");
@@ -292,6 +316,11 @@ function LargeCard({ career, matchScore, onLearnMore }: Omit<CareerCardV2Props, 
                     className="text-[10px] px-1.5 py-0 shrink-0 bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-400"
                   >
                     Entry Level
+                  </Badge>
+                )}
+                {notTailored && notTailoredLabel && (
+                  <Badge variant="outline" className="text-[10px] px-1.5 py-0 shrink-0 text-muted-foreground border-border">
+                    {notTailoredLabel}
                   </Badge>
                 )}
               </div>
@@ -322,10 +351,12 @@ function LargeCard({ career, matchScore, onLearnMore }: Omit<CareerCardV2Props, 
           </div>
 
           <div className="flex items-center gap-2 flex-wrap mb-3">
-            <Badge variant="secondary" className="text-[10px] px-2 py-0.5">
-              <Banknote className="h-3 w-3 mr-1" />
-              {career.avgSalary}
-            </Badge>
+            {career.avgSalary && (
+              <Badge variant="secondary" className="text-[10px] px-2 py-0.5">
+                <Banknote className="h-3 w-3 mr-1" />
+                {career.avgSalary}
+              </Badge>
+            )}
             <Badge variant="outline" className={`text-[10px] px-2 py-0.5 ${growth.bg} border-0`}>
               <GrowthIcon className={`h-3 w-3 mr-1 ${growth.color}`} />
               <span className={growth.color}>{growth.label} Growth</span>
@@ -363,8 +394,9 @@ export const CareerCardV2 = memo(function CareerCardV2({
   viewMode,
   matchScore,
   onLearnMore,
+  notTailoredLabel,
 }: CareerCardV2Props) {
-  const props = { career, matchScore, onLearnMore };
+  const props = { career, matchScore, onLearnMore, notTailoredLabel };
 
   switch (viewMode) {
     case "list":

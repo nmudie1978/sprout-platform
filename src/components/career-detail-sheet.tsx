@@ -29,6 +29,7 @@ import {
 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import type { Career } from "@/lib/career-pathways";
+import type { LocalizedCareerView } from "@/lib/career-localization/types";
 import type { CareerGoal, GoalSlot } from "@/lib/goals/types";
 import { createEmptyGoal } from "@/lib/goals/types";
 import { syncGuidanceGoal } from "@/lib/guidance/rules";
@@ -37,8 +38,11 @@ import { useInterestLevel } from "@/hooks/use-interest-level";
 import { InterestLevelPicker } from "@/components/interest-level/interest-level-rating";
 
 interface CareerDetailSheetProps {
-  career: Career | null;
+  career: Career | LocalizedCareerView | null;
   onClose: () => void;
+  /** Localized "not yet tailored to your country" label; shown when the
+   *  career view is marked not-localized. Omit for the default (Norway) path. */
+  notTailoredLabel?: string;
 }
 
 const growthConfig = {
@@ -144,6 +148,7 @@ function SwapGoalModal({
 export function CareerDetailSheet({
   career,
   onClose,
+  notTailoredLabel,
 }: CareerDetailSheetProps) {
   const { data: session, update: refreshSession } = useSession();
   const queryClient = useQueryClient();
@@ -331,6 +336,11 @@ export function CareerDetailSheet({
                           Entry Level
                         </Badge>
                       )}
+                      {"isLocalized" in career && career.isLocalized === false && notTailoredLabel && (
+                        <Badge variant="outline" className="text-[10px] px-1.5 py-0 shrink-0 text-muted-foreground border-border">
+                          {notTailoredLabel}
+                        </Badge>
+                      )}
                     </div>
                     <DialogDescription className="text-sm text-muted-foreground mt-1 break-words">
                       {career.description}
@@ -365,7 +375,7 @@ export function CareerDetailSheet({
                       <Banknote className="h-3.5 w-3.5 text-green-600 shrink-0" />
                       <span className="text-[10px] font-medium">Salary</span>
                     </div>
-                    <p className="text-xs font-semibold leading-snug break-words">{career.avgSalary}</p>
+                    <p className="text-xs font-semibold leading-snug break-words">{career.avgSalary || "—"}</p>
                   </div>
                   <div className="p-2 rounded-lg border bg-muted/30 min-w-0">
                     <div className="flex items-center gap-1.5 mb-0.5">
