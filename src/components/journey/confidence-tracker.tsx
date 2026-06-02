@@ -1,17 +1,21 @@
 'use client';
 
 /**
- * Decision Confidence Tracker — lets the user rate how confident
- * they feel about their chosen career (1-5 scale). Tracks changes
- * over time so the user can see their confidence evolve.
+ * Interest Tracker — the single "How interested are you?" control in Clarity.
+ * Sets the career's Interest Level (1–5), which is the headline metric that
+ * also surfaces on the dashboard (via useInterestLevel / useAllInterestLevels).
+ * It additionally keeps a small device-local history so the user can see how
+ * their interest has evolved over time.
  *
- * Stored in localStorage per career. Not shared with guardians
- * or anyone else — purely a self-reflection tool.
+ * Stored in localStorage per career. Not shared with guardians or anyone else
+ * — purely a self-reflection tool.
  */
 
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { Gauge, TrendingUp, TrendingDown, Minus } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useInterestLevel } from '@/hooks/use-interest-level';
+import type { InterestLevel } from '@/lib/interest-level/types';
 
 interface ConfidenceTrackerProps {
   careerId: string;
@@ -23,7 +27,7 @@ interface ConfidenceEntry {
   timestamp: number;
 }
 
-const LABELS = ['Not sure', 'Curious', 'Interested', 'Confident', 'Committed'];
+const LABELS = ['Curious', 'Interested', 'Excited', 'Very interested', 'This feels right'];
 const COLORS = [
   'bg-red-400/80',
   'bg-amber-400/80',
@@ -58,13 +62,17 @@ export function ConfidenceTracker({ careerId, careerTitle }: ConfidenceTrackerPr
   const [history, setHistory] = useState<ConfidenceEntry[]>([]);
   const [hydrated, setHydrated] = useState(false);
 
-  // Hydrate from localStorage
+  // The headline interest level — shared with the dashboard.
+  const { level, setLevel } = useInterestLevel(careerId);
+
+  // Hydrate history from localStorage
   useEffect(() => {
     setHistory(loadHistory(careerId));
     setHydrated(true);
   }, [careerId]);
 
-  const currentScore = history.length > 0 ? history[history.length - 1].score : 0;
+  // Active highlight tracks the dashboard-synced interest level.
+  const currentScore = level ?? 0;
   const previousScore = history.length > 1 ? history[history.length - 2].score : null;
 
   const trend = useMemo(() => {
@@ -75,15 +83,16 @@ export function ConfidenceTracker({ careerId, careerTitle }: ConfidenceTrackerPr
   }, [currentScore, previousScore]);
 
   const handleRate = useCallback((score: number) => {
-    const newEntry: ConfidenceEntry = { score, timestamp: Date.now() };
-    // Don't add duplicate if same score as last entry within 1 hour
+    // 1) Set the headline interest level (this is what the dashboard reflects).
+    setLevel(score as InterestLevel);
+
+    // 2) Record it in the local history for the over-time sparkline.
     const last = history[history.length - 1];
     if (last && last.score === score && Date.now() - last.timestamp < 3600000) return;
-
-    const updated = [...history, newEntry];
+    const updated = [...history, { score, timestamp: Date.now() }];
     setHistory(updated);
     saveHistory(careerId, updated);
-  }, [careerId, history]);
+  }, [careerId, history, setLevel]);
 
   if (!hydrated) return null;
 
@@ -92,7 +101,7 @@ export function ConfidenceTracker({ careerId, careerTitle }: ConfidenceTrackerPr
       <div className="flex items-center gap-2">
         <Gauge className="h-3.5 w-3.5 text-primary" />
         <h3 className="text-[12px] font-semibold text-foreground/85">
-          How confident do you feel?
+          How interested are you?
         </h3>
         {trend === 'up' && <TrendingUp className="h-3 w-3 text-emerald-400" />}
         {trend === 'down' && <TrendingDown className="h-3 w-3 text-red-400" />}
@@ -142,7 +151,7 @@ export function ConfidenceTracker({ careerId, careerTitle }: ConfidenceTrackerPr
 
       {currentScore === 0 && (
         <p className="text-[9px] text-muted-foreground/50 text-center">
-          Rate how you feel about {careerTitle} — track your confidence over time
+          Tell us how interested you are in {careerTitle} — it shapes your dashboard and grows over time
         </p>
       )}
     </div>

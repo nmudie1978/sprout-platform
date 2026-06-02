@@ -30,6 +30,7 @@ import {
   Heart, Wrench, Check, CheckCircle2, Clock, MapPin, Award, Users,
   DollarSign, BarChart3, Layers, AlertCircle, Plus, Trash2, Tag, Video, Zap, Info,
   Building2, Shield, Loader2, Download, FileText, ListChecks, CheckCircle,
+  Calendar,
 } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -41,8 +42,6 @@ import {
 } from '@/components/ui/tooltip';
 import { cn, slugify } from '@/lib/utils';
 import { useGoals } from '@/hooks/use-goals';
-import { useInterestLevel } from '@/hooks/use-interest-level';
-import { InterestLevelPicker } from '@/components/interest-level/interest-level-rating';
 import { getAllCareers, getSectorForCareer, getPensionNote, type Career } from '@/lib/career-pathways';
 import type { CareerDetails } from '@/lib/career-typical-days';
 import type { CareerProgression } from '@/lib/career-progressions';
@@ -71,7 +70,6 @@ import { hasTopEmployers } from '@/lib/career-employers';
 import { hasMyths } from '@/lib/career-myths';
 import { hasOpportunities } from '@/lib/opportunities';
 import { ConfidenceTracker } from '@/components/journey/confidence-tracker';
-import { CareerTwinCta } from '@/components/career-twin/career-twin-cta';
 // Day simulation removed per user request
 // AI Impact section removed per user request
 import type { Journey } from '@/lib/journey/career-journey-types';
@@ -1954,7 +1952,7 @@ function ClarityTab({ goalTitle, career }: { goalTitle: string | null; career: C
   // per-user via localStorage so the user's choice survives reloads.
   const [roadmapCollapsed, setRoadmapCollapsed] = useState(false);
   const [momentumCollapsed, setMomentumCollapsed] = useState(false);
-  const [claritySubTab, setClaritySubTab] = useState<'momentum' | 'real-paths'>('momentum');
+  const [claritySubTab, setClaritySubTab] = useState<'momentum' | 'key-dates' | 'real-paths'>('momentum');
   const { isCollapsed: gCollapsed, toggle: gToggle } = useSectionCollapse(['g-field']);
   useEffect(() => {
     try {
@@ -2416,6 +2414,19 @@ function ClarityTab({ goalTitle, career }: { goalTitle: string | null; career: C
           </button>
           <button
             type="button"
+            onClick={() => setClaritySubTab('key-dates')}
+            className={cn(
+              "flex-1 flex items-center justify-center gap-2 px-4 py-3 text-xs font-medium transition-colors",
+              claritySubTab === 'key-dates'
+                ? "text-sky-400 border-b-2 border-sky-400 -mb-px"
+                : "text-muted-foreground/50 hover:text-muted-foreground"
+            )}
+          >
+            <Calendar className="h-3.5 w-3.5" />
+            Key Dates
+          </button>
+          <button
+            type="button"
             onClick={() => setClaritySubTab('real-paths')}
             className={cn(
               "flex-1 flex items-center justify-center gap-2 px-4 py-3 text-xs font-medium transition-colors",
@@ -2667,6 +2678,13 @@ function ClarityTab({ goalTitle, career }: { goalTitle: string | null; career: C
         </div>
         )}
 
+        {/* Tab content: Key Dates */}
+        {claritySubTab === 'key-dates' && (
+          <div className="p-4 sm:p-5">
+            <DeadlineAwareness careerId={career?.id ?? null} />
+          </div>
+        )}
+
         {/* Tab content: Real Career Paths */}
         {claritySubTab === 'real-paths' && (
         <div className="p-4 space-y-4">
@@ -2755,13 +2773,6 @@ function ClarityTab({ goalTitle, career }: { goalTitle: string | null; career: C
           )}
         </div>
         )}
-      </SectionCard>
-
-      {/* ── Key Dates ── */}
-      <SectionCard>
-        <div className="p-4 sm:p-5">
-          <DeadlineAwareness careerId={career?.id ?? null} />
-        </div>
       </SectionCard>
 
       {/* ── Confidence Tracker (after dates — user absorbs roadmap + deadlines, then reflects) ── */}
@@ -3087,7 +3098,6 @@ export default function MyJourneyPage() {
     return getAllCareers().find((c) => c.title === goalTitle) || null;
   }, [goalTitle]);
 
-  const { level: interestLevel, setLevel: setInterestLevel } = useInterestLevel(career?.id ?? null);
 
   const [activeTab, setActiveTab] = useState<V2Tab>('discover');
 
@@ -3294,17 +3304,6 @@ export default function MyJourneyPage() {
             <button onClick={() => setGoalSheetOpen(true)} className="p-1 rounded-md text-muted-foreground/40 hover:text-muted-foreground hover:bg-muted/50 transition-colors" title="Change Primary Goal">
               <Pencil className="h-3.5 w-3.5" />
             </button>
-          </div>
-          {/* Interest Level — how strongly this possible future resonates */}
-          {career && (
-            <div className="mt-2 flex items-center gap-2">
-              <span className="text-xs text-muted-foreground/70 shrink-0">Interest level:</span>
-              <InterestLevelPicker value={interestLevel} onChange={setInterestLevel} size="sm" />
-            </div>
-          )}
-          {/* Career Twin entry — "Ask Future Me" (renders only with an active career) */}
-          <div className="mt-3">
-            <CareerTwinCta variant="journey" />
           </div>
         </div>
 
