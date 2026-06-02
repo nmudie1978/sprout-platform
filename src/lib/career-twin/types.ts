@@ -44,6 +44,20 @@ export interface CareerTwinProfileContext {
   journeyStage?: string | null;
 }
 
+/** What the Twin "remembers" about a returning user — built server-side. */
+export interface TwinMemory {
+  /** ISO timestamp of the user's previous turn with THIS career's Twin, or null on first visit. */
+  lastVisitAt: string | null;
+  /** Whole days since the last turn (null on first ever visit). */
+  daysSinceLastVisit: number | null;
+  /** Up to 2 recent journey reflection responses (trimmed). */
+  recentReflections: string[];
+  /** Short labels of things that changed since lastVisitAt (e.g. "set a new primary goal"). */
+  changedSinceLastVisit: string[];
+  /** Top industry/strength labels from the user's latest career quiz. */
+  quizLabels: string[];
+}
+
 /**
  * The career the Twin is grounded in. May come from the rich catalog OR
  * be a minimal title-only context for careers not yet in the catalog —
@@ -99,4 +113,6 @@ export interface BuildPromptInput {
   profile?: CareerTwinProfileContext | null;
   /** Language the Twin should reply in (from the user's UI locale). Defaults to English. */
   language?: string;
+  /** What the Twin remembers about a returning user (built server-side). */
+  memory?: TwinMemory | null;
 }
