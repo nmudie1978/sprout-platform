@@ -508,6 +508,19 @@ export default function DashboardPage() {
     setCareerMatchesCardDismissed(true);
   }, []);
 
+  // "New here? Take a quick look around" first-run card — dismissible.
+  const [firstRunCardDismissed, setFirstRunCardDismissed] = useState(true);
+  useEffect(() => {
+    setFirstRunCardDismissed(
+      typeof window !== "undefined" &&
+        window.localStorage.getItem("firstRunCardDismissed") === "1"
+    );
+  }, []);
+  const dismissFirstRunCard = useCallback(() => {
+    try { window.localStorage.setItem("firstRunCardDismissed", "1"); } catch {}
+    setFirstRunCardDismissed(true);
+  }, []);
+
   const { data: onboardingStatus, refetch: refetchOnboarding } = useQuery({
     queryKey: ["onboarding-status"],
     queryFn: async () => {
@@ -990,10 +1003,18 @@ export default function DashboardPage() {
 
           // State 1: brand-new user — the walkthrough auto-opens; this is a
           // fallback card in case they closed it without completing.
-          if (isFirstLogin) {
+          if (isFirstLogin && !firstRunCardDismissed) {
             return (
               <div className="mb-6">
                 <GlassCard className="relative overflow-hidden border-border/40">
+                  <button
+                    onClick={dismissFirstRunCard}
+                    aria-label="Dismiss"
+                    title="Dismiss"
+                    className="absolute top-3 right-3 p-1.5 rounded-control text-muted-foreground/60 hover:text-foreground hover:bg-muted/40 transition-colors"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
                   <div className="p-5 sm:p-6">
                     <div className="flex items-start gap-4">
                       <div className="p-2.5 rounded-control bg-muted/30 shrink-0">

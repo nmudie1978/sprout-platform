@@ -28,6 +28,7 @@ import {
   type SavedComparison,
 } from "@/components/career-radar/saved-comparisons-tray";
 import { getAllCareers, type Career } from "@/lib/career-pathways";
+import { CompareModal } from "@/components/compare/compare-modal";
 import {
   resolveLibraryTab,
   readLocalJourneyReflections,
@@ -150,7 +151,9 @@ function SavedCareersTab() {
 
 function ComparedTab() {
   const [comparisons, setComparisons] = useState<SavedComparison[]>([]);
+  const [openCareers, setOpenCareers] = useState<Career[] | null>(null);
   useEffect(() => setComparisons(getSavedComparisons()), []);
+
   if (comparisons.length === 0) {
     return (
       <EmptyState>
@@ -159,34 +162,47 @@ function ComparedTab() {
       </EmptyState>
     );
   }
+
+  // Resolve the saved career ids to full Career records, then open the
+  // side-by-side comparison modal.
+  const allCareers = getAllCareers();
+  const openComparison = (cmp: SavedComparison) => {
+    const resolved = cmp.careers
+      .map((c) => allCareers.find((x) => x.id === c.id))
+      .filter((x): x is Career => !!x);
+    if (resolved.length > 0) setOpenCareers(resolved);
+  };
+
   return (
-    <ul className="space-y-2">
-      {comparisons.map((cmp) => (
-        <li
-          key={cmp.id}
-          className="rounded-control border border-border/60 bg-muted/10 px-3 py-2.5"
-        >
-          {cmp.title && (
-            <p className="text-xs text-muted-foreground/70 mb-1">{cmp.title}</p>
-          )}
-          {/* A comparison spans several careers (not one journey), so each
-              career is individually clickable → opens that career on Explore. */}
-          <p className="text-sm flex flex-wrap items-center gap-x-1 gap-y-1">
-            {cmp.careers.map((c, i) => (
-              <span key={c.id} className="inline-flex items-center">
-                {i > 0 && <span className="text-muted-foreground/40 mx-1.5">vs</span>}
-                <Link
-                  href={`/careers?open=${encodeURIComponent(c.id)}`}
-                  className="rounded-control px-1 -mx-1 hover:bg-muted/40 hover:underline underline-offset-2 transition-colors"
-                >
-                  {c.emoji} {c.title}
-                </Link>
-              </span>
-            ))}
-          </p>
-        </li>
-      ))}
-    </ul>
+    <>
+      <ul className="space-y-2">
+        {comparisons.map((cmp) => (
+          <li key={cmp.id}>
+            {/* One clickable row → opens the full side-by-side comparison. */}
+            <button
+              onClick={() => openComparison(cmp)}
+              className="w-full text-left rounded-control border border-border/60 bg-muted/10 px-3 py-2.5 hover:bg-muted/30 hover:border-border transition-colors"
+            >
+              <p className="text-sm flex flex-wrap items-center gap-x-1 gap-y-1">
+                {cmp.careers.map((c, i) => (
+                  <span key={c.id} className="inline-flex items-center">
+                    {i > 0 && <span className="text-muted-foreground/40 mx-1.5">vs</span>}
+                    <span>{c.emoji} {c.title}</span>
+                  </span>
+                ))}
+              </p>
+            </button>
+          </li>
+        ))}
+      </ul>
+      <CompareModal
+        open={!!openCareers}
+        careers={openCareers ?? []}
+        preferences={null}
+        onClose={() => setOpenCareers(null)}
+        onRemove={() => {}}
+      />
+    </>
   );
 }
 
