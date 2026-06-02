@@ -17,10 +17,15 @@ describe("getCountryContext", () => {
     expect(ctx.crisisLine).toMatch(/116 111/);
   });
 
-  it("falls back to Norway for unknown / missing country (never throws)", () => {
-    expect(getCountryContext(null).code).toBe("NO");
-    expect(getCountryContext(undefined).code).toBe("NO");
-    expect(getCountryContext("Atlantis").code).toBe("NO");
-    expect(getCountryContext("").code).toBe("NO");
+  it("falls back to a NEUTRAL international context — never silently Norway", () => {
+    // Safety: an unlocalised country must NOT inherit Norway's currency or
+    // (critically) its crisis number. See international.ts.
+    for (const input of [null, undefined, "Atlantis", "", "Italy"] as const) {
+      const ctx = getCountryContext(input);
+      expect(ctx.code).toBe("INT");
+      expect(ctx.code).not.toBe("NO");
+      expect(ctx.currency).not.toBe("NOK");
+      expect(ctx.crisisLine).not.toMatch(/116 111/);
+    }
   });
 });
