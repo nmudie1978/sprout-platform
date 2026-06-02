@@ -24,11 +24,12 @@ youth-platform/
 │   ├── app/                    # Next.js App Router
 │   │   ├── (dashboard)/        # Protected routes layout
 │   │   │   ├── dashboard/
-│   │   │   ├── jobs/
+│   │   │   ├── careers/
+│   │   │   ├── my-journey/
 │   │   │   ├── explore/
 │   │   │   ├── ask-a-pro/
+│   │   │   ├── library/
 │   │   │   ├── profile/
-│   │   │   ├── employer/
 │   │   │   └── admin/
 │   │   ├── auth/              # Auth pages
 │   │   ├── api/               # API routes & Server Actions
@@ -153,17 +154,7 @@ youth-platform/
 #### Prisma ORM
 ```typescript
 // Efficient database queries with Prisma
-const jobs = await prisma.microJob.findMany({
-  where: { status: 'POSTED' },
-  include: {
-    postedBy: {
-      select: {
-        employerProfile: {
-          select: { companyName: true }
-        }
-      }
-    }
-  },
+const careers = await prisma.careerCard.findMany({
   orderBy: { createdAt: 'desc' }
 });
 ```
@@ -176,9 +167,9 @@ const jobs = await prisma.microJob.findMany({
 
 ```typescript
 const { data, isLoading } = useQuery({
-  queryKey: ['jobs'],
+  queryKey: ['careers'],
   queryFn: async () => {
-    const response = await fetch('/api/jobs');
+    const response = await fetch('/api/careers');
     return response.json();
   },
   staleTime: 60 * 1000,
@@ -430,16 +421,16 @@ User sees result
 
 #### RESTful API Routes
 ```typescript
-// /api/jobs/route.ts
+// /api/careers/route.ts
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const category = searchParams.get('category');
 
-  const jobs = await prisma.microJob.findMany({
+  const careers = await prisma.careerCard.findMany({
     where: category ? { category } : {},
   });
 
-  return Response.json(jobs);
+  return Response.json(careers);
 }
 ```
 
@@ -448,17 +439,17 @@ export async function GET(request: Request) {
 // app/actions.ts
 'use server'
 
-export async function createJob(formData: FormData) {
+export async function saveReflection(formData: FormData) {
   const data = Object.fromEntries(formData);
 
-  await prisma.microJob.create({
+  await prisma.journeyReflection.create({
     data: {
-      title: data.title as string,
+      content: data.content as string,
       // ...
     },
   });
 
-  revalidatePath('/jobs');
+  revalidatePath('/my-journey');
 }
 ```
 
