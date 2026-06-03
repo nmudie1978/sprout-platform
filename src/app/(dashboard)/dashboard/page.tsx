@@ -49,16 +49,11 @@ import {
   Heart,
   X,
   AlertTriangle,
-  NotebookPen,
 } from "lucide-react";
 import { useCuriositySaves } from "@/hooks/use-curiosity-saves";
 import { useAllInterestLevels } from "@/hooks/use-interest-level";
 import { InterestLevelStars } from "@/components/interest-level/interest-level-rating";
-import { readLocalJourneyReflections, type LocalReflectionEntry } from "@/lib/library/tabs";
-import {
-  ensureJourneyNotebooksHydrated,
-  JOURNEY_NOTEBOOKS_HYDRATED_EVENT,
-} from "@/lib/journey/notebook-sync";
+import { WorthALook } from "@/components/dashboard/worth-a-look";
 import { captureClientMutationError } from "@/lib/observability";
 import type { GoalsResponse } from "@/lib/goals/types";
 import { computeLensProgress, isJourneySnapshotWorthy, journeyStageLabel } from "@/lib/journey/lens-progress";
@@ -613,33 +608,6 @@ export default function DashboardPage() {
     refetchOnWindowFocus: true,
   });
 
-  // Reflections preview — read straight from device storage (where the
-  // JourneyReflectionsTray writes them); "See all →" opens
-  // /library?tab=reflections. Populated after mount to avoid a hydration
-  // mismatch on the localStorage read.
-  const reflectionsUserId = session?.user?.id;
-  const [recentReflections, setRecentReflections] = useState<LocalReflectionEntry[]>([]);
-  useEffect(() => {
-    if (!reflectionsUserId || typeof window === "undefined") {
-      setRecentReflections([]);
-      return;
-    }
-    const read = () =>
-      setRecentReflections(readLocalJourneyReflections(reflectionsUserId, window.localStorage));
-    read();
-    // Reconcile with the server once, then re-read when the cache refreshes
-    // (server hydration, a tray edit, or another tab).
-    void ensureJourneyNotebooksHydrated(reflectionsUserId);
-    window.addEventListener(JOURNEY_NOTEBOOKS_HYDRATED_EVENT, read);
-    window.addEventListener("endeavrly:journey-reflections-changed", read);
-    window.addEventListener("storage", read);
-    return () => {
-      window.removeEventListener(JOURNEY_NOTEBOOKS_HYDRATED_EVENT, read);
-      window.removeEventListener("endeavrly:journey-reflections-changed", read);
-      window.removeEventListener("storage", read);
-    };
-  }, [reflectionsUserId]);
-
   // Explored journeys — all goals the user has saved progress for
   const { data: exploredGoalsData } = useQuery<{
     goals: { goalId: string; goalTitle: string; isActive: boolean; updatedAt: string }[];
@@ -869,6 +837,18 @@ export default function DashboardPage() {
   const savedItemsList = dashboardStats?.savedItemsList ?? [];
   const recentActivity = dashboardStats?.recentActivity ?? [];
   const { curiosities: savedCareers, removeCuriosity } = useCuriositySaves();
+
+  // Durable "interest cluster" powering the Worth-a-look card: the careers the
+  // user is circling (saved + interest-rated), NOT the volatile primary goal —
+  // so it survives goal switches and works with no goal set.
+  const worthALookCareerIds = useMemo(
+    () => Array.from(new Set([
+      ...savedCareers.map((c) => c.careerId),
+      ...Object.keys(interestLevels),
+    ])),
+    [savedCareers, interestLevels],
+  );
+
   const [savedCareersPage, setSavedCareersPage] = useState(0);
   const [savedCareerDetail, setSavedCareerDetail] = useState<ReturnType<typeof getAllCareers>[number] | null>(null);
   const savedCareersPerPage = 4;
@@ -1565,37 +1545,24 @@ export default function DashboardPage() {
             <LibraryCard items={savedItemsList} total={savedSummary.total} onRemove={removeLibraryItem} />
           </DashboardSection>
 
-          {/* ── Reflections preview ── */}
+          {/* ── Worth a look — fresh, verified world-of-work reads, gently
+              leaned toward the sectors the user keeps exploring. Replaces the
+              old Reflections preview; the full reflections history lives in
+              My Library. ── */}
           <DashboardSection
-            title="Reflections"
-            icon={NotebookPen}
-            iconColor="text-muted-foreground"
-            tooltip="Short notes you've written as you move through My Journey."
+            title="Worth a look"
+            icon={Sparkles}
+            iconColor="text-violet-400"
+            tooltip="Fresh, verified reads from the world of work — tuned to the careers you keep exploring."
             className="mb-0"
             fixedHeight="h-[180px] overflow-y-auto"
             action={
-              <Link href="/library?tab=reflections" className="text-xs text-primary/70 hover:text-primary transition-colors">
-                See all →
+              <Link href="/insights" className="text-xs text-primary/70 hover:text-primary transition-colors">
+                More →
               </Link>
             }
           >
-            {recentReflections.length > 0 ? (
-              <ul className="space-y-2">
-                {recentReflections.slice(0, 2).map((r) => {
-                  const career = getAllCareers().find((c) => c.id === r.careerSlug);
-                  return (
-                    <li key={r.id} className="rounded-control border border-border/60 bg-muted/10 px-2.5 py-2">
-                      <p className="text-xs text-muted-foreground/60 mb-0.5 line-clamp-1">
-                        {career ? `${career.emoji} ${career.title}` : r.careerSlug} · {r.lensLabel}
-                      </p>
-                      <p className="text-xs text-muted-foreground/80 line-clamp-2">{r.text}</p>
-                    </li>
-                  );
-                })}
-              </ul>
-            ) : (
-              <p className="text-xs text-muted-foreground/50">Your reflections will appear here as you move through My Journey.</p>
-            )}
+            <WorthALook careerIds={worthALookCareerIds} />
           </DashboardSection>
         </div>
 
