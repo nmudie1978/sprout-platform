@@ -32,6 +32,8 @@ export interface ExploringEntry {
   interest: InterestLevel | null;
   /** True when the journey reached Clarity (all lenses done). */
   completed: boolean;
+  /** True when this is the user's current/active primary goal. */
+  isActive: boolean;
 }
 
 export interface ExploringGroup {
