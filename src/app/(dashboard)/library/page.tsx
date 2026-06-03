@@ -57,6 +57,15 @@ import {
   JOURNEY_NOTEBOOKS_HYDRATED_EVENT,
 } from "@/lib/journey/notebook-sync";
 
+// Journey order + per-lens accent for the Reflections rail. Calm, distinct
+// dots so a career's Discover → Understand → Clarity arc reads at a glance.
+const LENS_RANK: Record<string, number> = { discover: 0, understand: 1, clarity: 2 };
+const LENS_STYLE: Record<string, { dot: string; label: string }> = {
+  discover: { dot: "bg-sky-400/80", label: "text-sky-400/80" },
+  understand: { dot: "bg-violet-400/80", label: "text-violet-400/80" },
+  clarity: { dot: "bg-emerald-400/80", label: "text-emerald-400/80" },
+};
+
 export default function LibraryPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -440,28 +449,87 @@ function ReflectionsTab() {
     return c ? { label: c.title, emoji: c.emoji ?? "📝" } : { label: slug, emoji: "📝" };
   };
 
+  // Group reflections under the career they belong to, then order each
+  // group's notes into journey order (Discover → Understand → Clarity) so a
+  // career card reads as one continuous reflection arc. Careers themselves
+  // surface most-recently-touched first.
+  const groups = (() => {
+    const byCareer = new Map<string, LocalReflectionEntry[]>();
+    for (const e of entries) {
+      const list = byCareer.get(e.careerSlug);
+      if (list) list.push(e);
+      else byCareer.set(e.careerSlug, [e]);
+    }
+    return Array.from(byCareer.entries())
+      .map(([slug, items]) => ({
+        slug,
+        latest: items.reduce((acc, e) => (e.updatedAt && e.updatedAt > acc ? e.updatedAt : acc), ""),
+        items: [...items].sort(
+          (a, b) => (LENS_RANK[a.lens] ?? 9) - (LENS_RANK[b.lens] ?? 9),
+        ),
+      }))
+      .sort((a, b) => b.latest.localeCompare(a.latest));
+  })();
+
   return (
-    <ul className="space-y-3">
-      {entries.map((e) => {
-        const career = careerFor(e.careerSlug);
+    <div className="space-y-4">
+      {groups.map((g) => {
+        const career = careerFor(g.slug);
         return (
-          <li key={e.id}>
-            {/* Click → My Journey, opening the lens (Discover/Understand/
-                Clarity) this reflection was written on. The journey reads
-                the tab from the URL hash. */}
-            <Link
-              href={`/my-journey#${e.lens}`}
-              className="block rounded-control border border-border/60 bg-muted/10 px-4 py-3 hover:bg-muted/30 hover:border-border transition-colors"
-            >
-              <p className="text-xs text-muted-foreground/70 mb-1">
-                <span className="mr-1">{career.emoji}</span>
-                {career.label} · {e.lensLabel}
-              </p>
-              <p className="text-sm whitespace-pre-wrap">{e.text}</p>
-            </Link>
-          </li>
+          <section
+            key={g.slug}
+            className="rounded-control border border-border/60 bg-muted/10 overflow-hidden"
+          >
+            {/* Career header — one heading per journey, not per note. */}
+            <div className="flex items-center gap-2.5 border-b border-border/60 bg-muted/20 px-4 py-3">
+              <span className="text-lg leading-none">{career.emoji}</span>
+              <h3 className="min-w-0 flex-1 truncate text-sm font-semibold tracking-tight">
+                {career.label}
+              </h3>
+              <span className="shrink-0 text-[11px] text-muted-foreground/60">
+                {g.items.length} {g.items.length === 1 ? "note" : "notes"}
+              </span>
+            </div>
+
+            {/* The career's reflections as a vertical journey rail. */}
+            <ol className="relative px-4 py-3.5">
+              <span
+                aria-hidden
+                className="absolute left-[19px] top-6 bottom-6 w-px bg-border/50"
+              />
+              {g.items.map((e, i) => {
+                const lens = LENS_STYLE[e.lens] ?? LENS_STYLE.discover;
+                return (
+                  <li key={e.id} className={cn("relative pl-5", i > 0 && "mt-3.5")}>
+                    {/* Click → My Journey, opening the lens this note was
+                        written on (the journey reads the tab from the hash). */}
+                    <Link href={`/my-journey#${e.lens}`} className="group block">
+                      <span
+                        aria-hidden
+                        className={cn(
+                          "absolute left-0 top-1.5 h-1.5 w-1.5 rounded-full ring-2 ring-muted/10",
+                          lens.dot,
+                        )}
+                      />
+                      <span
+                        className={cn(
+                          "text-[11px] font-medium uppercase tracking-wide",
+                          lens.label,
+                        )}
+                      >
+                        {e.lensLabel}
+                      </span>
+                      <p className="whitespace-pre-wrap text-sm text-foreground/90 transition-colors group-hover:text-foreground">
+                        {e.text}
+                      </p>
+                    </Link>
+                  </li>
+                );
+              })}
+            </ol>
+          </section>
         );
       })}
-    </ul>
+    </div>
   );
 }
