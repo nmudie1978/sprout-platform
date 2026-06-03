@@ -1,0 +1,66 @@
+name: Refresh insights pool
+
+# Runs every Sunday at 04:00 UTC (staggered after events 02:00 and
+# provider-URL validation 03:00), or on manual trigger. Re-verifies every
+# URL in the Industry Insights pool and re-checks stale items via
+# `scripts/refresh-insights-pool.ts`, then opens a PR with the updated
+# data/insights/*.json. Without this the pool decays silently — it last
+# ran manually on 2026-02-12 and ~49% of items had drifted to "failed"
+# (mostly tier-1 sources bot-blocking the old verifier; see
+# src/lib/insights/verify-classify.ts).
+#
+# Zero manual effort — just review and merge the PR.
+
+on:
+  schedule:
+    - cron: '0 4 * * 0'
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Refresh insights pool
+        run: npm run insights:refresh
+
+      # Open a PR with any changes
+      - uses: peter-evans/create-pull-request@v6
+        with:
+          title: 'chore: refresh industry insights pool'
+          body: |
+            Automated weekly refresh of `data/insights/verified-pool.json`
+            and `data/insights/pool-metadata.json`.
+
+            Every pool URL was re-verified (HEAD → GET fallback) and stale
+            items (>7 days) re-checked via `scripts/refresh-insights-pool.ts`.
+            Classification lives in `src/lib/insights/verify-classify.ts`:
+            tier-1 domains that bot-block (401/403/429) or hiccup (5xx) are
+            kept as reachable; only 404/410, soft-404 stubs, and unreachable
+            hosts are marked failed.
+
+            **Review checklist:**
+            - If `totalFailed` jumped sharply, a host likely changed its URL
+              scheme — spot-check 2–3 failed items before merging.
+            - If > 30% of items failed, investigate first (likely a network
+              hiccup from the CI runner, not real link rot).
+            - New seed candidates in `data/insights/seed-candidates.json` are
+              promoted into the pool only if they verify.
+          branch: chore/refresh-insights-pool
+          commit-message: 'chore: refresh industry insights pool'
+          labels: automated, data
+          delete-branch: true

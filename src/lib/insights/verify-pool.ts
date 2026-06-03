@@ -3,28 +3,33 @@
  *
  * Verifies URLs in the insights pool are live and accessible.
  * Pattern: HEAD first → GET fallback → content sanity checks.
- * Matches the approach in src/lib/events/verify-url.ts.
+ *
+ * The pass/fail decision lives in `verify-classify.ts` (pure + unit
+ * tested). This module owns the network I/O: realistic request headers,
+ * HEAD→GET fallback, a single retry on transient network error, and the
+ * 8s timeout.
  */
 
 import type { PoolItem } from "./pool-types";
 import { isAllowedDomain } from "./domain-allowlist";
+import { classifyVerification, isLoginWall } from "./verify-classify";
 
 const REQUEST_TIMEOUT_MS = 8_000;
-const MIN_BODY_LENGTH = 1_000; // Detect soft 404 pages
 
-const USER_AGENT =
-  "Mozilla/5.0 (compatible; Endeavrly-InsightsVerifier/1.0)";
+// A realistic browser User-Agent + Accept headers. Many tier-1 sources
+// (WEF, OECD, ILO, WIPO) 403/429 an obvious bot UA, which previously
+// caused them to be marked dead. Looking like a browser cuts those
+// false failures at the source.
+const REQUEST_HEADERS: Record<string, string> = {
+  "User-Agent":
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+  Accept:
+    "text/html,application/xhtml+xml,application/xml;q=0.9,application/pdf;q=0.9,*/*;q=0.8",
+  "Accept-Language": "en-GB,en;q=0.9",
+};
 
-/** Common login/auth redirect indicators */
-const LOGIN_SIGNALS = [
-  "meta http-equiv=\"refresh\"",
-  "window.location",
-  "/login",
-  "/signin",
-  "/auth",
-  "/sso",
-  "id=\"login-form\"",
-];
+// Re-exported for backwards compatibility (was originally defined here).
+export { isLoginWall };
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -44,15 +49,26 @@ async function fetchWithTimeout(
   }
 }
 
-/** Check response body for login wall indicators */
-export function isLoginWall(headers: Headers, body?: string): boolean {
-  const location = headers.get("location") ?? "";
-  if (LOGIN_SIGNALS.some((s) => location.toLowerCase().includes(s))) {
-    return true;
+/** HEAD first, GET fallback. Returns the response + whether GET was used. */
+async function fetchHeadThenGet(
+  url: string,
+): Promise<{ response: Response; usedGet: boolean }> {
+  try {
+    const response = await fetchWithTimeout(
+      url,
+      { method: "HEAD", headers: REQUEST_HEADERS, redirect: "follow" },
+      REQUEST_TIMEOUT_MS,
+    );
+    return { response, usedGet: false };
+  } catch {
+    // HEAD blocked / errored — fall back to GET.
+    const response = await fetchWithTimeout(
+      url,
+      { method: "GET", headers: REQUEST_HEADERS, redirect: "follow" },
+      REQUEST_TIMEOUT_MS,
+    );
+    return { response, usedGet: true };
   }
-  if (!body) return false;
-  const lower = body.toLowerCase().slice(0, 5_000); // Only check start
-  return LOGIN_SIGNALS.some((s) => lower.includes(s));
 }
 
 // ---------------------------------------------------------------------------
@@ -61,82 +77,50 @@ export function isLoginWall(headers: Headers, body?: string): boolean {
 
 export async function verifyPoolItem(item: PoolItem): Promise<PoolItem> {
   const now = new Date().toISOString();
+  const fail = (): PoolItem => ({
+    ...item,
+    verificationStatus: "failed",
+    lastVerifiedAt: now,
+  });
 
-  // 1. Domain allowlist check
-  if (!isAllowedDomain(item.domain)) {
-    return {
-      ...item,
-      verificationStatus: "failed",
-      lastVerifiedAt: now,
-    };
-  }
+  // 1. Domain allowlist check — the pool only carries curated tier-1 domains.
+  const trusted = isAllowedDomain(item.domain);
+  if (!trusted) return fail();
 
+  // 2. Fetch, with a single retry on transient network error before giving up.
+  let response: Response;
+  let usedGet: boolean;
   try {
-    // 2. Try HEAD first
-    let response: Response;
-    let usedGet = false;
+    ({ response, usedGet } = await fetchHeadThenGet(item.sourceUrl));
+  } catch {
     try {
-      response = await fetchWithTimeout(
-        item.sourceUrl,
-        {
-          method: "HEAD",
-          headers: { "User-Agent": USER_AGENT },
-          redirect: "follow",
-        },
-        REQUEST_TIMEOUT_MS,
-      );
+      ({ response, usedGet } = await fetchHeadThenGet(item.sourceUrl));
     } catch {
-      // HEAD blocked — fall back to GET
-      response = await fetchWithTimeout(
-        item.sourceUrl,
-        {
-          method: "GET",
-          headers: { "User-Agent": USER_AGENT },
-          redirect: "follow",
-        },
-        REQUEST_TIMEOUT_MS,
-      );
-      usedGet = true;
+      return fail(); // genuinely unreachable (DNS fail / refused / repeated timeout)
     }
-
-    // 3. HTTP status check
-    if (response.status < 200 || response.status >= 400) {
-      return {
-        ...item,
-        verificationStatus: "failed",
-        lastVerifiedAt: now,
-      };
-    }
-
-    // 4. Content-type sanity
-    const ct = (response.headers.get("content-type") ?? "").toLowerCase();
-    if (item.contentType === "pdf" && !ct.includes("pdf") && !ct.includes("html")) {
-      return { ...item, verificationStatus: "failed", lastVerifiedAt: now };
-    }
-
-    // 5. For GET responses, check body length + login wall
-    if (usedGet) {
-      const body = await response.text();
-      if (body.length < MIN_BODY_LENGTH) {
-        return { ...item, verificationStatus: "failed", lastVerifiedAt: now };
-      }
-      if (isLoginWall(response.headers, body)) {
-        return { ...item, verificationStatus: "failed", lastVerifiedAt: now };
-      }
-    }
-
-    return {
-      ...item,
-      verificationStatus: "verified",
-      lastVerifiedAt: now,
-    };
-  } catch (err) {
-    return {
-      ...item,
-      verificationStatus: "failed",
-      lastVerifiedAt: now,
-    };
   }
+
+  // 3. Gather what the classifier needs. Read the body only on the GET path.
+  const responseContentType = response.headers.get("content-type") ?? undefined;
+  let body: string | undefined;
+  if (usedGet) {
+    try {
+      body = await response.text();
+    } catch {
+      body = "";
+    }
+  }
+
+  const status = classifyVerification({
+    status: response.status,
+    trusted,
+    contentType: item.contentType,
+    responseContentType,
+    body,
+    headers: response.headers,
+  });
+
+  return { ...item, verificationStatus: status, lastVerifiedAt: now };
 }
 
 // ---------------------------------------------------------------------------
