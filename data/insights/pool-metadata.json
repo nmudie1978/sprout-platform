@@ -1,10 +1,10 @@
 {
-  "lastRefreshISO": "2026-02-12T19:44:36.918Z",
+  "lastRefreshISO": "2026-06-03T18:52:50.403Z",
   "totalItems": 41,
-  "totalVerified": 21,
-  "totalFailed": 20,
+  "totalVerified": 19,
+  "totalFailed": 22,
   "totalPending": 0,
-  "duplicatesRejected": 0,
+  "duplicatesRejected": 41,
   "byType": {
     "article": 17,
     "video": 11,
@@ -57,21 +57,21 @@
       "checked": 2,
       "passed": 1,
       "failed": 1,
-      "lastCheckedAt": "2026-02-12T19:44:09.808Z"
+      "lastCheckedAt": "2026-06-03T18:51:40.402Z"
     },
     {
       "domain": "mckinsey.com",
       "checked": 4,
-      "passed": 2,
-      "failed": 2,
-      "lastCheckedAt": "2026-02-12T19:44:28.254Z"
+      "passed": 0,
+      "failed": 4,
+      "lastCheckedAt": "2026-06-03T18:52:16.333Z"
     },
     {
       "domain": "deloitte.com",
       "checked": 1,
       "passed": 1,
       "failed": 0,
-      "lastCheckedAt": "2026-02-12T19:44:01.628Z"
+      "lastCheckedAt": "2026-06-03T18:52:12.588Z"
     },
     {
       "domain": "wipo.int",
@@ -85,7 +85,7 @@
       "checked": 1,
       "passed": 1,
       "failed": 0,
-      "lastCheckedAt": "2026-02-12T19:44:04.914Z"
+      "lastCheckedAt": "2026-06-03T18:52:12.737Z"
     },
     {
       "domain": "visualcapitalist.com",
@@ -99,14 +99,14 @@
       "checked": 2,
       "passed": 2,
       "failed": 0,
-      "lastCheckedAt": "2026-02-12T19:44:27.399Z"
+      "lastCheckedAt": "2026-06-03T18:52:49.919Z"
     },
     {
       "domain": "youtube.com",
       "checked": 11,
       "passed": 11,
       "failed": 0,
-      "lastCheckedAt": "2026-02-12T19:44:36.559Z"
+      "lastCheckedAt": "2026-06-03T18:52:50.209Z"
     },
     {
       "domain": "bcg.com",
@@ -120,7 +120,7 @@
       "checked": 1,
       "passed": 1,
       "failed": 0,
-      "lastCheckedAt": "2026-02-12T19:44:11.418Z"
+      "lastCheckedAt": "2026-06-03T18:52:15.616Z"
     },
     {
       "domain": "ec.europa.eu",
@@ -134,14 +134,14 @@
       "checked": 1,
       "passed": 1,
       "failed": 0,
-      "lastCheckedAt": "2026-02-12T19:44:13.961Z"
+      "lastCheckedAt": "2026-06-03T18:52:15.735Z"
     },
     {
       "domain": "accenture.com",
       "checked": 1,
       "passed": 1,
       "failed": 0,
-      "lastCheckedAt": "2026-02-12T19:44:26.188Z"
+      "lastCheckedAt": "2026-06-03T18:52:49.742Z"
     },
     {
       "domain": "unicef.org",
