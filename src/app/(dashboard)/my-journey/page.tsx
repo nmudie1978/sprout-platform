@@ -29,9 +29,8 @@ import {
   Target, Sparkles, Save, Maximize2, X,
   Heart, Wrench, Check, CheckCircle2, Clock, MapPin, Award, Users,
   DollarSign, BarChart3, Layers, AlertCircle, Plus, Trash2, Tag, Video, Zap, Info,
-  Building2, Shield, Loader2, Download, FileText, ListChecks, CheckCircle,
+  Building2, Shield, Loader2, Download, FileText, CheckCircle,
 } from 'lucide-react';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   Tooltip,
@@ -45,7 +44,6 @@ import { getAllCareers, getSectorForCareer, getPensionNote, type Career } from '
 import type { CareerDetails } from '@/lib/career-typical-days';
 import type { CareerProgression } from '@/lib/career-progressions';
 import type { RealityCheckResult } from '@/lib/career-reality-types';
-import type { NextStep } from '@/lib/reports/journey';
 import { getCertificationPath, getCareerRequirements, getNorwayProgrammes, getProgrammesForCareer, type NordicCountry } from '@/lib/education';
 import { countryToCode, DEFAULT_COUNTRY } from '@/lib/countries';
 import {
@@ -2731,18 +2729,6 @@ function ClarityCompletionCard({
   const [isGeneratingReport, setIsGeneratingReport] = useState(false);
   const [reportError, setReportError] = useState<string | null>(null);
 
-  const { data: recommendationsData } = useQuery<{ nextSteps: NextStep[] }>({
-    queryKey: ['my-journey-recommendations', careerTitle],
-    queryFn: async () => {
-      const res = await fetch('/api/reports/my-journey');
-      if (!res.ok) throw new Error('Failed to load recommendations');
-      return res.json();
-    },
-    enabled: clarityComplete,
-    staleTime: 5 * 60 * 1000,
-  });
-  const recommendations = recommendationsData?.nextSteps ?? [];
-
   // Auto-mark Clarity as active on the dashboard when both conditions are met.
   useEffect(() => {
     if (clarityComplete && careerTitle) {
@@ -2859,8 +2845,7 @@ function ClarityCompletionCard({
       )}
       {clarityComplete && (
         /* Centred slim success row + a short human note underneath.
-           Only as wide as its content: status label + two icon
-           actions (recommendations + PDF). */
+           Only as wide as its content: status label + PDF export. */
         <div className="flex flex-col items-center gap-3">
         <div className="inline-flex items-center gap-3 rounded-lg border border-emerald-500/25 bg-gradient-to-r from-emerald-500/[0.06] via-emerald-500/[0.03] to-transparent px-3 py-2">
           <div className="flex items-center gap-2">
@@ -2877,55 +2862,6 @@ function ClarityCompletionCard({
           </div>
 
           <div className="flex items-center gap-1">
-            {/* Recommendations popover — icon only, opens a small card with the nextSteps list. */}
-            <Popover>
-              <PopoverTrigger asChild>
-                <button
-                  type="button"
-                  aria-label="Recommended next moves"
-                  title="Recommended next moves"
-                  disabled={recommendations.length === 0}
-                  className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-border/40 bg-background/40 text-foreground/70 hover:text-emerald-300 hover:border-emerald-500/40 hover:bg-emerald-500/5 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-                >
-                  <ListChecks className="h-4 w-4" />
-                </button>
-              </PopoverTrigger>
-              <PopoverContent
-                align="end"
-                sideOffset={8}
-                className="w-80 p-0 border-border/60 bg-card/95 backdrop-blur"
-              >
-                <div className="px-4 py-3 border-b border-border/30">
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-emerald-400/80">Next moves</p>
-                  <p className="text-xs text-muted-foreground/70 mt-0.5">Ranked from your Journey. Full detail lives in the PDF report.</p>
-                </div>
-                <ul className="max-h-72 overflow-y-auto divide-y divide-border/20">
-                  {recommendations.slice(0, 6).map((step, i) => (
-                    <li key={i} className="px-4 py-2.5 flex items-start gap-2.5">
-                      <span
-                        className={cn(
-                          'mt-[6px] inline-block h-1.5 w-1.5 rounded-full shrink-0',
-                          step.priority === 'foundational'
-                            ? 'bg-amber-400'
-                            : step.priority === 'next'
-                              ? 'bg-emerald-400'
-                              : 'bg-sky-400',
-                        )}
-                        aria-hidden
-                      />
-                      <div className="min-w-0">
-                        <p className="text-xs font-medium text-foreground/90 leading-snug">{step.headline}</p>
-                        <p className="text-[11px] text-muted-foreground/70 leading-snug mt-0.5">{step.body}</p>
-                      </div>
-                    </li>
-                  ))}
-                  {recommendations.length === 0 && (
-                    <li className="px-4 py-6 text-center text-xs text-muted-foreground/60">Loading recommendations…</li>
-                  )}
-                </ul>
-              </PopoverContent>
-            </Popover>
-
             {/* PDF export — icon only, loading spinner + error state. */}
             <button
               type="button"
