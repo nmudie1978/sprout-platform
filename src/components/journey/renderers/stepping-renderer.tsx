@@ -32,11 +32,17 @@ export function SteppingRenderer({ journey, onItemClick, cardDataMap, onProgress
     return items.length - 1;
   }, [cardDataMap, items]);
 
+  // The single "you are here" highlight is the foundation ("Now") card above —
+  // that is the user's genuine current position. Journey items are all
+  // upcoming, so none of them get the amber "current" border: we only give the
+  // first not-yet-done step slightly brighter text ('next'). Previously the
+  // first journey step was also marked 'current', producing a confusing second
+  // amber highlight that falsely flagged a years-away step (e.g. "Apply for
+  // university · Age 18") as the user's current step.
   const stateFor = (i: number): StepState => {
     const status = cardDataMap?.[items[i].id]?.status;
     if (status === 'done') return 'completed';
-    if (i === youAreHereIndex) return 'current';
-    if (i === youAreHereIndex + 1) return 'next';
+    if (i === youAreHereIndex) return 'next';
     return 'future';
   };
 
