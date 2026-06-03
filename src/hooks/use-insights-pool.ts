@@ -8,29 +8,39 @@ import { useInsightsHistory } from './use-insights-history';
 async function fetchBatch(
   excludeIds: string[],
   size: number = 5,
+  tags: string[] = [],
 ): Promise<PoolBatchResponse> {
   const params = new URLSearchParams();
   params.set('size', String(size));
   if (excludeIds.length > 0) {
     params.set('exclude', excludeIds.join(','));
   }
+  if (tags.length > 0) {
+    params.set('tags', tags.join(','));
+  }
   const res = await fetch(`/api/insights/pool?${params.toString()}`);
   if (!res.ok) throw new Error('Failed to fetch insights pool');
   return res.json();
 }
 
-export function useInsightsPool(batchSize: number = 5) {
+/**
+ * @param batchSize how many items to fetch per batch
+ * @param tags soft-boost tags — items matching these float to the top, but the
+ *   batch still fills with fresh/diverse items, so results are never empty.
+ */
+export function useInsightsPool(batchSize: number = 5, tags: string[] = []) {
   const { recordShown, getExcludeIds } = useInsightsHistory();
   const [allShownIds, setAllShownIds] = useState<string[]>(() => getExcludeIds());
 
+  const tagsKey = tags.join(',');
   const {
     data,
     isLoading,
     refetch,
     isFetching,
   } = useQuery<PoolBatchResponse>({
-    queryKey: ['insights-pool', allShownIds],
-    queryFn: () => fetchBatch(allShownIds, batchSize),
+    queryKey: ['insights-pool', allShownIds, tagsKey],
+    queryFn: () => fetchBatch(allShownIds, batchSize, tags),
     staleTime: 1000 * 60 * 5,
   });
 
