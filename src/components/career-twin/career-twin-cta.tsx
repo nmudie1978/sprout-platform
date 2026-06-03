@@ -88,15 +88,17 @@ export function CareerTwinCta({
         : t("meetFutureYou")
       : t("askFutureMe");
 
-  // Completion reward embedded inside the dashboard My Journey card, shown
-  // only once the journey reaches 3/3 (gated by the parent). Rendered as a
-  // <button> rather than a <Link> because the journey card is itself wrapped
-  // in a <Link href="/my-journey"> — nested anchors are invalid HTML. We
-  // navigate via the router and stop propagation so the click doesn't also
-  // trigger the surrounding card link.
+  // Completion pointer embedded inside the dashboard My Journey card, shown
+  // only once the journey reaches 3/3 (gated by the parent). Now that the
+  // Career Twin lives in My Journey → Clarity, this is just a quiet one-line
+  // pointer — deliberately small and subtle. Rendered as a <button> rather
+  // than a <Link> because the journey card is itself wrapped in a
+  // <Link href="/my-journey"> — nested anchors are invalid HTML. We navigate
+  // via the router and stop propagation so the click doesn't also trigger the
+  // surrounding card link.
   if (variant === "journeyComplete") {
     return (
-      <div className={`mt-5 pt-4 border-t border-border/30 ${className ?? ""}`}>
+      <div className={`mt-3 pt-2.5 border-t border-border/20 ${className ?? ""}`}>
         <button
           type="button"
           onClick={(e) => {
@@ -105,23 +107,11 @@ export function CareerTwinCta({
             track("career_twin_opened", { source: "journey-complete" });
             router.push(href);
           }}
-          className="group/twin -mx-2 flex w-full items-center gap-3 rounded-control px-2 py-2 text-left transition-colors hover:bg-primary/5"
+          className="group/twin inline-flex items-center gap-1.5 text-xs text-muted-foreground transition-colors hover:text-primary"
         >
-          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
-            <CheckCircle2 className="h-4 w-4" />
-          </span>
-          <span className="min-w-0 flex-1">
-            <span className="block text-sm font-semibold text-foreground">
-              {t("journeyComplete")}
-            </span>
-            <span className="block text-xs text-muted-foreground">
-              {t("meetFutureSelfAs", { career: career.title })}
-            </span>
-          </span>
-          <span className="inline-flex shrink-0 items-center gap-1 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-medium text-primary transition-colors group-hover/twin:bg-primary/15">
-            {t("talk")}
-            <ArrowRight className="h-3.5 w-3.5" />
-          </span>
+          <CheckCircle2 className="h-3.5 w-3.5 shrink-0 text-primary/60" />
+          <span>{t("meetFutureSelfAs", { career: career.title })}</span>
+          <ArrowRight className="h-3 w-3 shrink-0 transition-transform group-hover/twin:translate-x-0.5" />
         </button>
       </div>
     );
