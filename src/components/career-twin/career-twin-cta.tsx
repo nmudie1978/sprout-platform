@@ -30,13 +30,18 @@ const DISMISS_KEY = "endeavrly:career-twin-cta-dismissed";
 export function CareerTwinCta({
   variant = "dashboard",
   className,
+  career: careerProp,
 }: {
   variant?: "dashboard" | "journey" | "journeyComplete";
   className?: string;
+  /** When provided, the CTA is grounded to this career instead of
+   *  self-resolving the user's primary goal — needed inside My Journey →
+   *  Clarity, which may be showing a non-primary explored goal. */
+  career?: CareerInfo | null;
 }) {
   const t = useTranslations("careerTwin");
   const router = useRouter();
-  const [career, setCareer] = useState<CareerInfo | null>(null);
+  const [career, setCareer] = useState<CareerInfo | null>(careerProp ?? null);
   const [dismissed, setDismissed] = useState(false);
   const [returning, setReturning] = useState(false);
 
@@ -52,6 +57,11 @@ export function CareerTwinCta({
   }, [variant]);
 
   useEffect(() => {
+    // Grounded by the caller (e.g. Clarity) → use it directly, no fetch.
+    if (careerProp) {
+      setCareer(careerProp);
+      return;
+    }
     let cancelled = false;
     fetch("/api/career-twin")
       .then((r) => r.json())
@@ -66,7 +76,7 @@ export function CareerTwinCta({
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [careerProp]);
 
   if (!career) return null;
 
