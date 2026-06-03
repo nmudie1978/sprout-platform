@@ -30,7 +30,6 @@ import {
   Heart, Wrench, Check, CheckCircle2, Clock, MapPin, Award, Users,
   DollarSign, BarChart3, Layers, AlertCircle, Plus, Trash2, Tag, Video, Zap, Info,
   Building2, Shield, Loader2, Download, FileText, ListChecks, CheckCircle,
-  Calendar,
 } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -63,13 +62,11 @@ import { getRoutesForCareer } from '@/lib/education/routes';
 import { CareerMythBuster } from '@/components/journey/career-myth-buster';
 import { TopEmployers } from '@/components/journey/top-employers';
 import { SalaryProgressionChart } from '@/components/journey/salary-progression';
-import { DeadlineAwareness } from '@/components/journey/deadline-awareness';
 import { OpportunityMatches } from '@/components/journey/opportunity-matches';
 import { hasTopEmployers } from '@/lib/career-employers';
 import { hasMyths } from '@/lib/career-myths';
 import { hasOpportunities } from '@/lib/opportunities';
 import { ConfidenceTracker } from '@/components/journey/confidence-tracker';
-import { ClarityTwinEntry } from '@/components/career-twin/clarity-twin-entry';
 // Day simulation removed per user request
 // AI Impact section removed per user request
 import type { Journey } from '@/lib/journey/career-journey-types';
@@ -86,6 +83,19 @@ const GoalSelectionSheet = dynamic(
 const JourneyReflectionsTray = dynamic(
   () => import('@/components/journey/journey-reflections-tray').then((m) => m.JourneyReflectionsTray),
   { ssr: false }
+);
+// Career Twin — the first Clarity sub-tab. Opens inline within the tab so the
+// user never leaves their journey. Heavy, so it's only loaded when rendered.
+const CareerTwinView = dynamic(
+  () => import('@/components/career-twin/career-twin-view').then((m) => m.CareerTwinView),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="flex items-center justify-center py-16 text-sm text-muted-foreground">
+        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+      </div>
+    ),
+  }
 );
 
 // ─── Types ───────────────────────────────────────────────────────────────────
@@ -1939,11 +1949,7 @@ function CareerNotes({ careerTitle, collapsed, onToggle }: { careerTitle: string
 
 function ClarityTab({ goalTitle, career }: { goalTitle: string | null; career: Career | null }) {
   const { data: detailsData } = useCareerDetails(career?.id ?? null);
-  const { data: storiesData } = useCareerStories(career?.id ?? null);
-  const { data: contributedData } = useContributedPaths(career?.id ?? null);
   const details = detailsData?.details ?? null;
-  const careerStories = storiesData?.stories ?? [];
-  const contributedPaths = contributedData?.paths ?? [];
 
   // Education context — drives the foundation gate for Play and Clarity completion.
   const { data: eduCtxData } = useQuery<{ educationContext: { stage?: string } | null }>({
@@ -1969,7 +1975,7 @@ function ClarityTab({ goalTitle, career }: { goalTitle: string | null; career: C
   // per-user via localStorage so the user's choice survives reloads.
   const [roadmapCollapsed, setRoadmapCollapsed] = useState(false);
   const [momentumCollapsed, setMomentumCollapsed] = useState(false);
-  const [claritySubTab, setClaritySubTab] = useState<'momentum' | 'key-dates' | 'real-paths'>('momentum');
+  const [claritySubTab, setClaritySubTab] = useState<'ask-future-me' | 'momentum'>('ask-future-me');
   const { isCollapsed: gCollapsed, toggle: gToggle } = useSectionCollapse(['g-field']);
   useEffect(() => {
     try {
@@ -2412,16 +2418,23 @@ function ClarityTab({ goalTitle, career }: { goalTitle: string | null; career: C
         )}
       </AnimatePresence>
 
-      {/* Career Twin — always-on companion once the journey reaches Clarity.
-          Grounded to this career (not necessarily the primary goal). */}
-      {career && goalTitle && (
-        <ClarityTwinEntry career={{ id: career.id, title: goalTitle }} />
-      )}
-
-      {/* 2. Momentum + Real Career Paths — tabbed container */}
-      <SectionCard className="border-amber-500/20" style={{ boxShadow: '0 0 20px rgba(245,158,11,0.06)' }}>
+      {/* 2. Ask Future Me + Momentum — tabbed container */}
+      <SectionCard>
         {/* Tab bar */}
         <div className="flex border-b border-border/20">
+          <button
+            type="button"
+            onClick={() => setClaritySubTab('ask-future-me')}
+            className={cn(
+              "flex-1 flex items-center justify-center gap-2 px-4 py-3 text-xs font-medium transition-colors",
+              claritySubTab === 'ask-future-me'
+                ? "text-primary border-b-2 border-primary -mb-px"
+                : "text-muted-foreground/50 hover:text-muted-foreground"
+            )}
+          >
+            <Sparkles className="h-3.5 w-3.5" />
+            Ask Future Me
+          </button>
           <button
             type="button"
             onClick={() => setClaritySubTab('momentum')}
@@ -2435,33 +2448,15 @@ function ClarityTab({ goalTitle, career }: { goalTitle: string | null; career: C
             <Zap className="h-3.5 w-3.5" />
             Momentum
           </button>
-          <button
-            type="button"
-            onClick={() => setClaritySubTab('key-dates')}
-            className={cn(
-              "flex-1 flex items-center justify-center gap-2 px-4 py-3 text-xs font-medium transition-colors",
-              claritySubTab === 'key-dates'
-                ? "text-sky-400 border-b-2 border-sky-400 -mb-px"
-                : "text-muted-foreground/50 hover:text-muted-foreground"
-            )}
-          >
-            <Calendar className="h-3.5 w-3.5" />
-            Key Dates
-          </button>
-          <button
-            type="button"
-            onClick={() => setClaritySubTab('real-paths')}
-            className={cn(
-              "flex-1 flex items-center justify-center gap-2 px-4 py-3 text-xs font-medium transition-colors",
-              claritySubTab === 'real-paths'
-                ? "text-violet-400 border-b-2 border-violet-400 -mb-px"
-                : "text-muted-foreground/50 hover:text-muted-foreground"
-            )}
-          >
-            <Users className="h-3.5 w-3.5" />
-            Real Career Paths
-          </button>
         </div>
+
+        {/* Tab content: Ask Future Me — the Career Twin, inline. Opening it
+            here never navigates away, so the user keeps their place in Clarity. */}
+        {claritySubTab === 'ask-future-me' && (
+          <div className="p-4">
+            <CareerTwinView initialCareerId={career?.id ?? null} />
+          </div>
+        )}
 
         {/* Tab content: Momentum */}
         {claritySubTab === 'momentum' && (
@@ -2701,101 +2696,6 @@ function ClarityTab({ goalTitle, career }: { goalTitle: string | null; career: C
         </div>
         )}
 
-        {/* Tab content: Key Dates */}
-        {claritySubTab === 'key-dates' && (
-          <div className="p-4 sm:p-5">
-            <DeadlineAwareness careerId={career?.id ?? null} />
-          </div>
-        )}
-
-        {/* Tab content: Real Career Paths */}
-        {claritySubTab === 'real-paths' && (
-        <div className="p-4 space-y-4">
-          {/* From the Field — real professional stories */}
-          {careerStories.length > 0 && (
-            <div>
-              <div className="flex items-center gap-2 mb-2">
-                <Video className="h-3.5 w-3.5 text-rose-400" />
-                <h4 className="text-xs font-semibold text-foreground/80">From the Field</h4>
-                <span className="text-[10px] text-muted-foreground/30">{careerStories.length} stories</span>
-              </div>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                {careerStories.slice(0, 4).map((story) => (
-                  <div key={story.id} className="rounded-lg border border-border/20 bg-background/20 overflow-hidden">
-                    <div className="aspect-video">
-                      <iframe
-                        src={`https://www.youtube.com/embed/${story.videoId}`}
-                        className="w-full h-full"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowFullScreen
-                        title={story.headline}
-                      />
-                    </div>
-                    <div className="p-2">
-                      <p className="text-[10px] font-semibold text-foreground/80 mb-0.5 line-clamp-2 leading-tight">{story.headline}</p>
-                      <p className="text-[9px] text-muted-foreground/55 truncate">
-                        {story.name} — {story.jobTitle}
-                        {story.company ? ` at ${story.company}` : ''}
-                        {story.yearsInRole ? ` · ${story.yearsInRole} years` : ''}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Contributed paths */}
-          {contributedPaths.length > 0 && (
-            <div>
-              <div className="flex items-center gap-2 mb-2">
-                <Users className="h-3.5 w-3.5 text-violet-400" />
-                <h4 className="text-xs font-semibold text-foreground/80">Real Paths from Real People</h4>
-                <span className="text-[10px] text-muted-foreground/30">{contributedPaths.length} path{contributedPaths.length !== 1 ? 's' : ''}</span>
-              </div>
-              <div className="space-y-3">
-                {contributedPaths.map((path) => (
-                  <a
-                    key={path.id}
-                    href="/parents-paths"
-                    className="block rounded-lg border border-border/20 bg-background/20 p-3 hover:bg-background/40 transition-colors"
-                  >
-                    <div className="flex items-center gap-2 mb-2">
-                      <div className="h-7 w-7 rounded-full bg-primary/10 flex items-center justify-center text-[10px] font-bold text-primary shrink-0">
-                        {path.displayName.charAt(0).toUpperCase()}
-                      </div>
-                      <div className="min-w-0">
-                        <p className="text-xs font-medium text-foreground/90 truncate">{path.displayName}</p>
-                        <p className="text-[10px] text-muted-foreground/60 truncate">
-                          {path.currentTitle} · {path.country}
-                        </p>
-                      </div>
-                    </div>
-                    <p className="text-[10px] text-foreground/70 line-clamp-2 mb-2">
-                      {path.howIGotHere}
-                    </p>
-                    {path.adviceToSeventeen && (
-                      <p className="text-[10px] text-primary/60 mt-2 pt-2 border-t border-border/10 italic line-clamp-2">
-                        &ldquo;{path.adviceToSeventeen}&rdquo;
-                      </p>
-                    )}
-                  </a>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Neutral empty state. We deliberately do NOT invite youths to
-              "share a career path" — contributing real timelines is for
-              parents/professionals (via the public /for-parents → /contribute
-              flow), not young people, who haven't walked a path yet. */}
-          {careerStories.length === 0 && contributedPaths.length === 0 && (
-            <p className="text-[11px] text-muted-foreground/55 text-center py-4">
-              Real career paths from people who&rsquo;ve walked this route will appear here as they&rsquo;re added.
-            </p>
-          )}
-        </div>
-        )}
       </SectionCard>
 
       {/* ── Confidence Tracker (after dates — user absorbs roadmap + deadlines, then reflects) ── */}
