@@ -371,6 +371,7 @@ model YouthProfile {
 
   // Relations for new journey features
   savedItems          SavedItem[]
+  savedCareers        SavedCareer[]
   reflections         JourneyReflection[]
   journeyNotes        JourneyNote[]
   traitObservations   TraitObservation[]
@@ -2095,6 +2096,24 @@ model SavedItem {
   @@index([type])
   @@index([savedAt])
   @@index([careerPathId])
+}
+
+/// A career the youth bookmarked (the heart on a career card). One row per
+/// profile+career. Mirrors the former SavedCuriosity localStorage shape so the
+/// dashboard's "Saved Careers" survives a device/browser change.
+model SavedCareer {
+  id          String   @id @default(cuid())
+  profileId   String
+  careerId    String // slug or catalog id
+  careerTitle String
+  careerEmoji String?
+  note        String?  @db.Text
+  savedAt     DateTime @default(now())
+
+  profile YouthProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@unique([profileId, careerId])
+  @@index([profileId, savedAt])
 }
 
 // ============================================
