@@ -13,11 +13,12 @@
  */
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { track } from "@vercel/analytics";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Sparkles, ArrowRight, X } from "lucide-react";
+import { Sparkles, ArrowRight, X, CheckCircle2 } from "lucide-react";
 
 interface CareerInfo {
   id: string;
@@ -30,10 +31,11 @@ export function CareerTwinCta({
   variant = "dashboard",
   className,
 }: {
-  variant?: "dashboard" | "journey";
+  variant?: "dashboard" | "journey" | "journeyComplete";
   className?: string;
 }) {
   const t = useTranslations("careerTwin");
+  const router = useRouter();
   const [career, setCareer] = useState<CareerInfo | null>(null);
   const [dismissed, setDismissed] = useState(false);
   const [returning, setReturning] = useState(false);
@@ -75,6 +77,45 @@ export function CareerTwinCta({
         ? t("checkInFutureYou")
         : t("meetFutureYou")
       : t("askFutureMe");
+
+  // Completion reward embedded inside the dashboard My Journey card, shown
+  // only once the journey reaches 3/3 (gated by the parent). Rendered as a
+  // <button> rather than a <Link> because the journey card is itself wrapped
+  // in a <Link href="/my-journey"> — nested anchors are invalid HTML. We
+  // navigate via the router and stop propagation so the click doesn't also
+  // trigger the surrounding card link.
+  if (variant === "journeyComplete") {
+    return (
+      <div className={`mt-5 pt-4 border-t border-border/30 ${className ?? ""}`}>
+        <button
+          type="button"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            track("career_twin_opened", { source: "journey-complete" });
+            router.push(href);
+          }}
+          className="group/twin -mx-2 flex w-full items-center gap-3 rounded-control px-2 py-2 text-left transition-colors hover:bg-primary/5"
+        >
+          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+            <CheckCircle2 className="h-4 w-4" />
+          </span>
+          <span className="min-w-0 flex-1">
+            <span className="block text-sm font-semibold text-foreground">
+              {t("journeyComplete")}
+            </span>
+            <span className="block text-xs text-muted-foreground">
+              {t("meetFutureSelfAs", { career: career.title })}
+            </span>
+          </span>
+          <span className="inline-flex shrink-0 items-center gap-1 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-medium text-primary transition-colors group-hover/twin:bg-primary/15">
+            {t("talk")}
+            <ArrowRight className="h-3.5 w-3.5" />
+          </span>
+        </button>
+      </div>
+    );
+  }
 
   // Compact inline pill for the Journey surface (not dismissible).
   if (variant === "journey") {
