@@ -855,7 +855,7 @@ export interface ReflectionPrompt {
 export const REFLECTION_PROMPTS: Record<ReflectionContextType, string[]> = {
   ALIGNED_ACTION: [
     'What did you learn from this experience?',
-    'How does this connect to your primary goal?',
+    'How does this connect to your career goal?',
     'What would you do differently next time?',
   ],
   ROLE_DEEP_DIVE: [

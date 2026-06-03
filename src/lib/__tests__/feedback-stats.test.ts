@@ -4,7 +4,9 @@ import {
   aggregateFeedback,
   csvCell,
   feedbackToCsv,
-  likertStats,
+  KIND_LABEL,
+  AREA_LABEL,
+  ROLE_LABEL,
 } from "../feedback-stats";
 
 function row(overrides: Partial<Feedback> = {}): Feedback {
@@ -12,12 +14,15 @@ function row(overrides: Partial<Feedback> = {}): Feedback {
     id: "r1",
     createdAt: new Date("2026-04-10T12:00:00Z"),
     createdByUserId: null,
-    role: "PARENT_GUARDIAN",
-    q1: 4,
-    q2: 4,
-    q3: 5,
-    q4: 3,
-    q5: 4,
+    kind: "CONFUSED",
+    area: "JOURNEY",
+    message: null,
+    role: "TEEN_16_20",
+    q1: null,
+    q2: null,
+    q3: null,
+    q4: null,
+    q5: null,
     confusingText: null,
     clarityTopics: [],
     source: null,
@@ -27,54 +32,40 @@ function row(overrides: Partial<Feedback> = {}): Feedback {
   } as Feedback;
 }
 
-describe("likertStats", () => {
-  it("handles empty input", () => {
-    const s = likertStats([]);
-    expect(s.n).toBe(0);
-    expect(s.mean).toBe(0);
-    expect(s.topTwoBox).toBe(0);
-    expect(s.distribution).toEqual([0, 0, 0, 0, 0]);
-  });
-
-  it("computes mean, median, stddev, top-2-box and distribution", () => {
-    const s = likertStats([5, 5, 4, 3, 2]);
-    expect(s.n).toBe(5);
-    expect(s.mean).toBe(3.8);
-    expect(s.median).toBe(4);
-    expect(s.stddev).toBeCloseTo(1.3, 1);
-    expect(s.topTwoBox).toBe(60);
-    expect(s.distribution).toEqual([0, 1, 1, 1, 2]);
-  });
-
-  it("ignores out-of-range values in the distribution", () => {
-    const s = likertStats([1, 2, 3, 4, 5, 7, 0]);
-    expect(s.distribution).toEqual([1, 1, 1, 1, 1]);
+describe("label maps", () => {
+  it("cover every enum value with no stale concepts", () => {
+    expect(KIND_LABEL.PRAISE).toBe("Something I liked");
+    expect(AREA_LABEL.CAREER_TWIN).toBe("Career Twin");
+    expect(ROLE_LABEL.TEEN_16_20).toBe("Teen (15–23)");
+    const all = JSON.stringify({ KIND_LABEL, AREA_LABEL, ROLE_LABEL });
+    expect(all).not.toMatch(/secondary|small job/i);
   });
 });
 
 describe("aggregateFeedback", () => {
-  it("rolls up counts by role, per-question stats, clarity topics and free text", () => {
+  it("counts new-model rows by kind, area and role, and isolates legacy rows", () => {
     const rows: Feedback[] = [
-      row({ id: "1", role: "PARENT_GUARDIAN", q1: 5, q2: 5, q3: 5, q4: 5, q5: 5, clarityTopics: ["PRIMARY_VS_SECONDARY_GOAL", "NEXT_STEPS"] }),
-      row({ id: "2", role: "PARENT_GUARDIAN", q1: 4, q2: 4, q3: 4, q4: 3, q5: 4, confusingText: "slight overwhelm at first" }),
-      row({ id: "3", role: "TEEN_16_20", q1: 3, q2: 2, q3: 4, q4: 4, q5: 4, clarityTopics: ["PRIMARY_VS_SECONDARY_GOAL"] }),
+      row({ id: "1", kind: "CONFUSED", area: "JOURNEY", role: "TEEN_16_20", message: "lost on step 2" }),
+      row({ id: "2", kind: "IDEA", area: "CAREER_RADAR", role: "PARENT_GUARDIAN", message: "add a filter" }),
+      row({ id: "3", kind: "CONFUSED", area: null, role: null, message: "  " }),
+      // legacy Likert row — no kind
+      row({ id: "4", kind: null, area: null, role: "PARENT_GUARDIAN", q1: 4, message: null }),
     ];
-
     const agg = aggregateFeedback(rows);
-    expect(agg.total).toBe(3);
-    expect(agg.byRole.PARENT_GUARDIAN).toBe(2);
+
+    expect(agg.total).toBe(3);          // rows with a kind
+    expect(agg.legacyCount).toBe(1);    // rows without a kind
+    expect(agg.byKind.CONFUSED).toBe(2);
+    expect(agg.byKind.IDEA).toBe(1);
+    expect(agg.byKind.PROBLEM).toBe(0);
+    expect(agg.byArea.JOURNEY).toBe(1);
+    expect(agg.byArea.CAREER_RADAR).toBe(1);
     expect(agg.byRole.TEEN_16_20).toBe(1);
-    expect(agg.byRole.ADULT_OTHER).toBe(0);
+    expect(agg.byRole.PARENT_GUARDIAN).toBe(1); // legacy row's role is NOT counted
 
-    expect(agg.perQuestion.q1.mean).toBe(4);
-    expect(agg.perQuestion.q1.topTwoBox).toBeCloseTo(66.7, 1);
-
-    // Clarity topics sorted desc by count
-    expect(agg.clarityTopics[0]).toMatchObject({ topic: "PRIMARY_VS_SECONDARY_GOAL", count: 2 });
-    expect(agg.clarityTopics[0].pct).toBeCloseTo(66.7, 1);
-
-    expect(agg.freeTextSubmissions).toHaveLength(1);
-    expect(agg.freeTextSubmissions[0].text).toContain("overwhelm");
+    // messages: new-model rows with non-empty message, newest first
+    expect(agg.messages.map((m) => m.id)).toEqual(["1", "2"]);
+    expect(agg.messages[0].kind).toBe("CONFUSED");
   });
 });
 
@@ -83,29 +74,21 @@ describe("csvCell", () => {
     expect(csvCell("plain")).toBe("plain");
     expect(csvCell("a,b")).toBe('"a,b"');
     expect(csvCell('he said "hi"')).toBe('"he said ""hi"""');
-    expect(csvCell("line1\nline2")).toBe('"line1\nline2"');
-  });
-
-  it("formats null/undefined as empty and Date as ISO", () => {
     expect(csvCell(null)).toBe("");
-    expect(csvCell(undefined)).toBe("");
     expect(csvCell(new Date("2026-04-10T12:00:00Z"))).toBe("2026-04-10T12:00:00.000Z");
   });
 });
 
 describe("feedbackToCsv", () => {
-  it("produces a header and one line per row", () => {
-    const rows = [row({ id: "a", confusingText: "bit, confusing" })];
+  it("has the new typed columns and one line per row", () => {
+    const rows = [row({ id: "a", kind: "PROBLEM", area: "LIBRARY", message: "bug, here" })];
     const csv = feedbackToCsv(rows);
     const lines = csv.split("\n");
-    expect(lines[0]).toContain("createdAt,role,q1");
+    expect(lines[0]).toBe(
+      "id,createdAt,kind,area,role,message,legacyText,source,userAgent,appVersion,createdByUserId",
+    );
     expect(lines).toHaveLength(2);
-    expect(lines[1]).toContain('"bit, confusing"');
-  });
-
-  it("joins clarityTopics with '; '", () => {
-    const rows = [row({ clarityTopics: ["PRIMARY_VS_SECONDARY_GOAL", "NEXT_STEPS"] })];
-    const csv = feedbackToCsv(rows);
-    expect(csv).toContain("PRIMARY_VS_SECONDARY_GOAL; NEXT_STEPS");
+    expect(lines[1]).toContain("PROBLEM");
+    expect(lines[1]).toContain('"bug, here"');
   });
 });

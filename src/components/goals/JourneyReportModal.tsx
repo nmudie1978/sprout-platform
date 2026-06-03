@@ -19,7 +19,6 @@ interface JourneyReportModalProps {
   open: boolean;
   onClose: () => void;
   primaryGoal: CareerGoal | null;
-  secondaryGoal: CareerGoal | null;
   hasNotes: boolean;
   hasJobs: boolean;
 }
@@ -28,7 +27,6 @@ export function JourneyReportModal({
   open,
   onClose,
   primaryGoal,
-  secondaryGoal,
   hasNotes,
   hasJobs,
 }: JourneyReportModalProps) {
@@ -105,17 +103,11 @@ export function JourneyReportModal({
           </p>
           <div className="space-y-1">
             <div className="flex justify-between text-sm gap-2">
-              <span className="text-muted-foreground flex-shrink-0">Primary Goal</span>
+              <span className="text-muted-foreground flex-shrink-0">Career goal</span>
               <span className="font-medium truncate">
                 {primaryGoal?.title || "Not set"}
               </span>
             </div>
-            {secondaryGoal && (
-              <div className="flex justify-between text-sm gap-2">
-                <span className="text-muted-foreground flex-shrink-0">Secondary Goal</span>
-                <span className="font-medium truncate">{secondaryGoal.title}</span>
-              </div>
-            )}
           </div>
         </div>
 

@@ -49,7 +49,7 @@ const STEPS: WalkthroughStep[] = [
     iconColor: "text-pink-500",
     iconBg: "bg-pink-500/10",
     title: "Career Radar",
-    body: "This is where you explore careers and choose your Primary Goal \u2014 the one career you want to focus on first. Tell it what you enjoy and it maps careers across every path, including ones you\u2019ve never heard of.",
+    body: "This is where you explore careers and choose your career goal \u2014 the one career you want to focus on first. Tell it what you enjoy and it maps careers across every path, including ones you\u2019ve never heard of.",
   },
   {
     icon: LayoutDashboard,
@@ -63,7 +63,7 @@ const STEPS: WalkthroughStep[] = [
     iconColor: "text-violet-500",
     iconBg: "bg-violet-500/10",
     title: "My Journey",
-    body: "Once you\u2019ve set a Primary Goal, this is where you explore it properly. Three phases \u2014 Discover, Understand, and Clarity \u2014 help you figure out if it\u2019s right for you.",
+    body: "Once you\u2019ve set a career goal, this is where you explore it properly. Three phases \u2014 Discover, Understand, and Clarity \u2014 help you figure out if it\u2019s right for you.",
   },
   {
     icon: Bot,
@@ -83,8 +83,8 @@ const STEPS: WalkthroughStep[] = [
     icon: Compass,
     iconColor: "text-teal-500",
     iconBg: "bg-teal-500/10",
-    title: "Choose your first Primary Goal",
-    body: "Head to Career Radar, explore what\u2019s out there, and set one career as your Primary Goal. That\u2019s your starting point \u2014 you can always change it later.",
+    title: "Choose your first career goal",
+    body: "Head to Career Radar, explore what\u2019s out there, and set one career as your career goal. That\u2019s your starting point \u2014 you can always change it later.",
   },
 ];
 
@@ -271,7 +271,7 @@ export function OrientationWalkthrough({
             >
               {isLast ? (
                 <>
-                  Find your Primary Goal
+                  Find your career goal
                   <Sparkles className="h-3.5 w-3.5 ml-1.5" />
                 </>
               ) : (

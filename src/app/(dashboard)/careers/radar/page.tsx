@@ -196,8 +196,8 @@ const RADAR_TIPS = [
     description: "The radar is only as good as what you tell it. Tap 'Edit preferences' to change your subjects, work style, or people preference — the radar updates instantly.",
   },
   {
-    title: "Set your Primary Goal",
-    description: "Found something interesting? Set it as your Primary Goal from the career detail sheet. That unlocks the full My Journey experience \u2014 roadmap, voice narration, and a Momentum list of concrete next moves. You can change it anytime.",
+    title: "Set your career goal",
+    description: "Found something interesting? Set it as your career goal from the career detail sheet. That unlocks the full My Journey experience \u2014 roadmap, voice narration, and a Momentum list of concrete next moves. You can change it anytime.",
   },
 ];
 

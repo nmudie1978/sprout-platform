@@ -285,7 +285,7 @@ export default function AboutPage() {
               </h2>
             </div>
             <p className="text-muted-foreground leading-relaxed">
-              Endeavrly doesn&apos;t ask you to pick a career forever. It asks you to explore. Set a Primary Goal
+              Endeavrly doesn&apos;t ask you to pick a career forever. It asks you to explore. Set a career goal
               to focus on one career first, change it whenever you need to, or just browse and try things.
               There are no rankings, no leaderboards, and no algorithm telling you what to become.
               Your progress is personal and private. The only person it needs to make sense to is you.

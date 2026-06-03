@@ -37,8 +37,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Avatar } from "@/components/avatar";
-import { GoalSelectionSheet } from "@/components/goals/GoalSelectionSheet";
-import { useClearGoal } from "@/hooks/use-goals";
 import Link from "next/link";
 import type { GoalSlot } from "@/lib/goals/types";
 
@@ -102,12 +100,6 @@ export default function ProfilePage() {
   const [dobDay, setDobDay] = useState("");
   const [dobMonth, setDobMonth] = useState("");
   const [dobYear, setDobYear] = useState("");
-
-  // Goal sheet state
-  const [showGoalSheet, setShowGoalSheet] = useState(false);
-  const [goalSheetTargetSlot, setGoalSheetTargetSlot] = useState<GoalSlot | null>(null);
-  const [showGoalChangeWarning, setShowGoalChangeWarning] = useState(false);
-  const clearGoal = useClearGoal();
 
   // Discovery quiz dialog
   const [showDiscoveryQuiz, setShowDiscoveryQuiz] = useState(false);
@@ -662,37 +654,21 @@ export default function ProfilePage() {
                     </TooltipTrigger>
                     <TooltipContent side="right" className="max-w-[260px] text-xs p-3">
                       <p className="font-medium mb-1">Why this matters</p>
-                      <p className="text-muted-foreground">Your primary goal drives your entire My Journey experience — from research and career roadmap to action planning. You can change it anytime; your progress is saved per goal.</p>
+                      <p className="text-muted-foreground">Your career goal drives your entire My Journey experience — from research and career roadmap to action planning. Set or change it in My Journey; your progress is saved per goal.</p>
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
               </div>
-              <Button
-                size="sm"
-                variant={goalsData?.primaryGoal ? "ghost" : "default"}
-                className={goalsData?.primaryGoal ? "text-xs text-muted-foreground/50 hover:text-muted-foreground" : "text-xs"}
-                onClick={() => {
-                  if (goalsData?.primaryGoal) {
-                    setShowGoalChangeWarning(true);
-                  } else {
-                    setGoalSheetTargetSlot("primary");
-                    setShowGoalSheet(true);
-                  }
-                }}
-              >
-                <Target className="h-3.5 w-3.5 mr-1" />
-                {goalsData?.primaryGoal ? "Change" : "Set a Goal"}
-              </Button>
             </div>
 
             {/* Goals grid */}
             {goalsData?.primaryGoal ? (
-              <div className="grid gap-3 sm:grid-cols-2">
+              <div className="grid gap-3">
                 {/* Primary Goal */}
                 <div className="rounded-control border border-primary/20 bg-primary/5 p-3">
                   <div className="flex items-center justify-between mb-1.5">
                     <div className="flex items-center gap-1">
-                      <span className="text-xs font-medium uppercase tracking-wider text-primary/60">Primary Goal</span>
+                      <span className="text-xs font-medium uppercase tracking-wider text-primary/60">Career goal</span>
                       <TooltipProvider delayDuration={150}>
                         <Tooltip>
                           <TooltipTrigger asChild>
@@ -701,7 +677,7 @@ export default function ProfilePage() {
                           <TooltipContent side="top" className="max-w-[260px] text-xs leading-snug">
                             <p className="font-semibold mb-1">Your main career focus</p>
                             <p className="text-muted-foreground">
-                              The Primary Goal powers everything in My Journey — your roadmap, study paths, suggested actions, voice simulation, and progress. Pick the one you most want to explore in depth.
+                              Your career goal powers everything in My Journey — your roadmap, study paths, suggested actions, voice simulation, and progress. Set or change it in My Journey.
                             </p>
                           </TooltipContent>
                         </Tooltip>
@@ -720,40 +696,6 @@ export default function ProfilePage() {
                   </div>
                   <p className="text-sm font-semibold truncate">{goalsData.primaryGoal.title}</p>
                 </div>
-
-                {/* Secondary Goal — clickable to set/change */}
-                <button
-                  type="button"
-                  onClick={() => setShowGoalSheet(true)}
-                  className={`rounded-control border p-3 text-left w-full transition-colors hover:bg-muted/30 ${goalsData.secondaryGoal ? 'border-border/50 bg-card/50' : 'border-dashed border-border/30 bg-transparent'}`}
-                >
-                  <div className="flex items-center justify-between mb-1.5">
-                    <div className="flex items-center gap-1">
-                      <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground/50">Secondary Goal</span>
-                      <TooltipProvider delayDuration={150}>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Info className="h-3 w-3 text-muted-foreground/40 hover:text-muted-foreground/70 cursor-help transition-colors" />
-                          </TooltipTrigger>
-                          <TooltipContent side="top" className="max-w-[260px] text-xs leading-snug">
-                            <p className="font-semibold mb-1">A backup to keep on your radar</p>
-                            <p className="text-muted-foreground">
-                              A placeholder for a second career you&#39;re curious about. It doesn&#39;t drive your journey — only your Primary Goal does.
-                            </p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-                    </div>
-                    <span className="text-xs text-muted-foreground/40 font-medium">
-                      {goalsData.secondaryGoal ? "Change" : "Set"}
-                    </span>
-                  </div>
-                  {goalsData.secondaryGoal ? (
-                    <p className="text-sm font-medium truncate text-muted-foreground">{goalsData.secondaryGoal.title}</p>
-                  ) : (
-                    <p className="text-xs text-muted-foreground/40">No backup goal set</p>
-                  )}
-                </button>
               </div>
             ) : (
               <div className="rounded-control border border-dashed border-success/20 p-6 flex flex-col items-center text-center">
@@ -1019,59 +961,14 @@ export default function ProfilePage() {
             </Card>
           )}
 
-          {/* Career Goal moved to top of page */}
-
-          {/* Goal Change Warning */}
-          {showGoalChangeWarning && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={() => setShowGoalChangeWarning(false)}>
-              <div className="bg-card border border-border rounded-card p-6 max-w-md w-full shadow-sm" onClick={(e) => e.stopPropagation()}>
-                <h3 className="text-lg font-semibold mb-2">Change your career goal?</h3>
-                <p className="text-sm text-muted-foreground mb-3">
-                  <strong>{goalsData?.primaryGoal?.title}</strong> will be replaced as your Primary Goal. Any progress is saved and you can switch back anytime.
-                </p>
-                <div className="rounded-control bg-muted/50 border border-border/50 p-3 mb-4 space-y-1.5">
-                  <p className="text-xs font-medium text-muted-foreground/80">What happens when you switch:</p>
-                  <ul className="text-xs text-muted-foreground/60 space-y-1 ml-3">
-                    <li className="flex items-start gap-1.5"><span className="text-success mt-0.5">&#10003;</span> Strengths and interests carry over to any goal</li>
-                    <li className="flex items-start gap-1.5"><span className="text-success mt-0.5">&#10003;</span> Research, actions, and roadmap saved per goal</li>
-                    <li className="flex items-start gap-1.5"><span className="text-success mt-0.5">&#10003;</span> Switch back to restore all previous progress</li>
-                  </ul>
-                </div>
-                <div className="flex justify-end gap-3">
-                  <Button variant="outline" size="sm" onClick={() => setShowGoalChangeWarning(false)}>
-                    Keep current goal
-                  </Button>
-                  <Button size="sm" className="bg-warning text-primary-foreground hover:bg-warning/90" onClick={() => {
-                    setShowGoalChangeWarning(false);
-                    setGoalSheetTargetSlot("primary");
-                    setShowGoalSheet(true);
-                  }}>
-                    Change goal
-                  </Button>
-                </div>
-              </div>
-            </div>
-          )}
+          {/* Career goal lives at the top of the page (display-only here —
+              it's set and changed in My Journey, not in Profile). */}
 
           {/* Discovery Quiz Dialog */}
           <DiscoveryQuizDialog
             open={showDiscoveryQuiz}
             onClose={() => setShowDiscoveryQuiz(false)}
             initialValue={(profile?.discoveryPreferences as DiscoveryPreferences) || null}
-          />
-
-          {/* Goal Selection Sheet (overlay, stays on /profile) */}
-          <GoalSelectionSheet
-            open={showGoalSheet}
-            onClose={() => setShowGoalSheet(false)}
-            targetSlot={goalSheetTargetSlot}
-            primaryGoal={goalsData?.primaryGoal || null}
-            secondaryGoal={goalsData?.secondaryGoal || null}
-            onSuccess={() => {
-              queryClient.invalidateQueries({ queryKey: ["goals"] });
-              queryClient.invalidateQueries({ queryKey: ["goals"] });
-              queryClient.invalidateQueries({ queryKey: ["journey-state"] });
-            }}
           />
 
           {/* Give Feedback (Beta) */}

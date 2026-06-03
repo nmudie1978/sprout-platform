@@ -354,9 +354,10 @@ model YouthProfile {
   // Used by Career Radar to surface aligned roles across prestige tiers.
   discoveryPreferences Json?
 
-  // Structured Career Goals (Primary + Secondary)
+  // Structured Career Goal (single Primary goal — the one the journey follows).
+  // The former `secondaryGoal` was removed: "other careers I'm considering" is
+  // already covered by Saved careers + interest levels, so it was redundant.
   primaryGoal        Json? // {title, status, confidence, timeframe, why, nextSteps[], skills[]}
-  secondaryGoal      Json? // Same structure, optional
   generatedTimeline  Json? // Cached AI-generated career timeline
   foundationCardData Json? // User-editable "Your Foundation" step — persists across goal changes
 
@@ -1800,6 +1801,22 @@ model CareerEvent {
 // IN-APP FEEDBACK (BETA)
 // ============================================
 
+enum FeedbackKind {
+  CONFUSED
+  PROBLEM
+  IDEA
+  PRAISE
+}
+
+enum FeedbackArea {
+  JOURNEY
+  CAREER_RADAR
+  EXPLORE_CAREERS
+  LIBRARY
+  CAREER_TWIN
+  OTHER
+}
+
 // Role of feedback submitter
 enum FeedbackRole {
   TEEN_16_20
@@ -1821,34 +1838,34 @@ model Feedback {
   createdByUserId String?
   createdByUser   User?   @relation(fields: [createdByUserId], references: [id], onDelete: SetNull)
 
-  // Who is giving feedback
-  role FeedbackRole
+  // Typed feedback (current model)
+  kind    FeedbackKind?
+  area    FeedbackArea?
+  message String?       @db.VarChar(1000)
 
-  // Likert scale questions (1-5)
-  // Q1: "I understood what this app is for."
-  q1 Int
-  // Q2: "I understood what I should do first."
-  q2 Int
-  // Q3: "The app felt calm and not overwhelming."
-  q3 Int
-  // Q4: "The focus on having a main goal made sense to me."
-  q4 Int
-  // Q5: "I would feel comfortable using this (or letting my child use this)."
-  q5 Int
+  // Who is giving feedback (optional)
+  role FeedbackRole?
 
-  // Optional free-text: "What, if anything, felt confusing or unclear?"
-  confusingText String? @db.VarChar(500)
+  // Legacy Likert pilot fields (no longer collected; kept for old rows)
+  q1 Int?
+  q2 Int?
+  q3 Int?
+  q4 Int?
+  q5 Int?
 
-  // Optional multi-select clarity topics
+  // Legacy free-text + clarity topics (kept for old rows)
+  confusingText String?  @db.VarChar(500)
   clarityTopics String[]
 
   // Optional metadata
-  source     String? @db.VarChar(50) // e.g., "profile", "invite"
-  userAgent  String? @db.VarChar(200) // Browser info (truncated)
+  source     String? @db.VarChar(50)
+  userAgent  String? @db.VarChar(200)
   appVersion String? @db.VarChar(20)
 
   @@index([createdAt])
   @@index([role])
+  @@index([kind])
+  @@index([area])
 }
 
 // ============================================

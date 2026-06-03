@@ -580,7 +580,7 @@ export default function DashboardPage() {
     queryKey: ["goals"],
     queryFn: async () => {
       const response = await fetch("/api/goals");
-      if (!response.ok) return { primaryGoal: null, secondaryGoal: null };
+      if (!response.ok) return { primaryGoal: null };
       return response.json();
     },
     enabled: session?.user.role === "YOUTH",
@@ -690,7 +690,6 @@ export default function DashboardPage() {
 
   const interestLevels = useAllInterestLevels();
   const primaryGoal = goalsData?.primaryGoal ?? null;
-  const _secondaryGoal = goalsData?.secondaryGoal; // Available for future use
   const goalTitle = primaryGoal?.title ?? null;
 
   // ── Journey progress (Discover / Understand / Clarity) ─────────
@@ -1105,7 +1104,7 @@ export default function DashboardPage() {
                   <button
                     data-spotlight="change-button"
                     onClick={(e) => { e.preventDefault(); e.stopPropagation(); setShowGoalSheet(true); }}
-                    className="mt-0.5 -ml-1 inline-flex items-center gap-1 rounded-control px-1.5 py-0.5 text-xs font-medium capitalize text-primary/90 hover:text-primary/80 hover:bg-primary/10 transition-colors"
+                    className="mt-0.5 -ml-1 inline-flex items-center gap-1 rounded-control px-1.5 py-0.5 text-xs font-medium capitalize text-sky-400/90 hover:text-sky-300 hover:bg-sky-400/10 transition-colors"
                   >
                     <Pencil className="h-3 w-3" />
                     {t('common.change')}
@@ -1638,7 +1637,6 @@ export default function DashboardPage() {
         onClose={() => setShowGoalSheet(false)}
         targetSlot="primary"
         primaryGoal={primaryGoal}
-        secondaryGoal={goalsData?.secondaryGoal ?? null}
         onSuccess={() => setShowGoalSheet(false)}
       />
 

@@ -234,8 +234,8 @@ function NextBestActionCard({
     if (!hasGoals) {
       return {
         id: "set-goal",
-        title: "Set your first Primary Goal",
-        description: "Choose the career you want to explore properly first. You can change it anytime.",
+        title: "Set your first career goal",
+        description: "Choose the career you want to explore properly. You can change it anytime.",
         href: "/my-journey?section=goals",
         icon: Target,
         priority: "high",
