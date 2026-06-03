@@ -51,6 +51,7 @@ import {
   LIBRARY_TABS,
   type LibraryTab,
   type LocalReflectionEntry,
+  type ReflectionLens,
 } from "@/lib/library/tabs";
 import {
   ensureJourneyNotebooksHydrated,
@@ -440,28 +441,62 @@ function ReflectionsTab() {
     return c ? { label: c.title, emoji: c.emoji ?? "📝" } : { label: slug, emoji: "📝" };
   };
 
+  // Group reflections under the career they belong to. Each career group is
+  // ordered by its most recent reflection (so the journey you touched last
+  // floats to the top), and within a group the lenses read in journey order
+  // (Discover → Understand → Clarity) rather than by timestamp.
+  const LENS_RANK: Record<ReflectionLens, number> = {
+    discover: 0,
+    understand: 1,
+    clarity: 2,
+  };
+  const groupBySlug = new Map<string, LocalReflectionEntry[]>();
+  for (const e of entries) {
+    const list = groupBySlug.get(e.careerSlug);
+    if (list) list.push(e);
+    else groupBySlug.set(e.careerSlug, [e]);
+  }
+  const groups = [...groupBySlug.entries()]
+    .map(([slug, list]) => ({
+      slug,
+      career: careerFor(slug),
+      entries: [...list].sort((a, b) => LENS_RANK[a.lens] - LENS_RANK[b.lens]),
+      newest: list.reduce((max, e) => {
+        const ts = e.updatedAt ?? "";
+        return ts > max ? ts : max;
+      }, ""),
+    }))
+    .sort((a, b) => b.newest.localeCompare(a.newest));
+
   return (
-    <ul className="space-y-3">
-      {entries.map((e) => {
-        const career = careerFor(e.careerSlug);
-        return (
-          <li key={e.id}>
-            {/* Click → My Journey, opening the lens (Discover/Understand/
-                Clarity) this reflection was written on. The journey reads
-                the tab from the URL hash. */}
-            <Link
-              href={`/my-journey#${e.lens}`}
-              className="block rounded-control border border-border/60 bg-muted/10 px-4 py-3 hover:bg-muted/30 hover:border-border transition-colors"
-            >
-              <p className="text-xs text-muted-foreground/70 mb-1">
-                <span className="mr-1">{career.emoji}</span>
-                {career.label} · {e.lensLabel}
-              </p>
-              <p className="text-sm whitespace-pre-wrap">{e.text}</p>
-            </Link>
-          </li>
-        );
-      })}
-    </ul>
+    <div className="space-y-6">
+      {groups.map((group) => (
+        <section key={group.slug}>
+          <div className="flex items-center gap-2 mb-2 px-0.5">
+            <span className="text-sm shrink-0">{group.career.emoji}</span>
+            <h3 className="text-sm font-semibold text-foreground/85 truncate">{group.career.label}</h3>
+            <span className="text-xs text-muted-foreground/40 tabular-nums">
+              {group.entries.length}
+            </span>
+          </div>
+          <ul className="space-y-2">
+            {group.entries.map((e) => (
+              <li key={e.id}>
+                {/* Click → My Journey, opening the lens (Discover/Understand/
+                    Clarity) this reflection was written on. The journey reads
+                    the tab from the URL hash. */}
+                <Link
+                  href={`/my-journey#${e.lens}`}
+                  className="block rounded-control border border-border/60 bg-muted/10 px-4 py-3 hover:bg-muted/30 hover:border-border transition-colors"
+                >
+                  <p className="text-xs text-muted-foreground/70 mb-1">{e.lensLabel}</p>
+                  <p className="text-sm whitespace-pre-wrap">{e.text}</p>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))}
+    </div>
   );
 }
