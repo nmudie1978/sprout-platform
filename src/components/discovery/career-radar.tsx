@@ -1239,19 +1239,19 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
 
   return (
     <>
-    <div className="radar-scope rounded-2xl border bg-card overflow-hidden">
+    <div className="radar-scope rounded-2xl border bg-muted dark:bg-card overflow-hidden">
       {/* Primary Goal indicator — always visible when a goal is set */}
       {goalsData?.primaryGoal?.title && (
         <Link
           href="/my-journey"
-          className="flex items-center gap-2 px-4 py-2 border-b border-border/30 bg-amber-500/[0.04] hover:bg-amber-500/[0.08] transition-colors group"
+          className="flex items-center gap-2 px-4 py-2 border-b border-border/30 bg-amber-500/[0.07] hover:bg-amber-500/[0.12] dark:bg-amber-500/[0.04] dark:hover:bg-amber-500/[0.08] transition-colors group"
           title="Go to My Journey to explore this career in depth"
         >
-          <span className="inline-flex items-center justify-center h-5 w-5 rounded-full border-[1.5px] border-amber-400/60 shrink-0">
-            <Star className="h-2.5 w-2.5 text-amber-400" />
+          <span className="inline-flex items-center justify-center h-5 w-5 rounded-full border-[1.5px] border-amber-600/50 dark:border-amber-400/60 shrink-0">
+            <Star className="h-2.5 w-2.5 text-amber-600 dark:text-amber-400" />
           </span>
-          <span className="text-[11px] text-amber-400/80">Primary Goal:</span>
-          <span className="text-[11px] font-medium text-teal-300">{goalsData.primaryGoal.title}</span>
+          <span className="text-[11px] text-amber-700 dark:text-amber-400/80">Primary Goal:</span>
+          <span className="text-[11px] font-medium text-teal-700 dark:text-teal-300">{goalsData.primaryGoal.title}</span>
           <ArrowRight className="h-3 w-3 text-muted-foreground/30 group-hover:text-amber-400 transition-colors ml-auto shrink-0" />
         </Link>
       )}

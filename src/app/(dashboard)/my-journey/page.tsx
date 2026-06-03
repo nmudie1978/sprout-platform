@@ -1464,40 +1464,6 @@ function UnderstandTab({
                               </p>
                             </div>
                           )}
-
-                          {/* ── Three small side-by-side boxes
-                              (Demand / Pathway / Competition). Neutral
-                              styling per "not too much colour" — muted
-                              icons, plain foreground values. All
-                              colour-coding lives upstream in the grade
-                              meter and subject chips so this recap
-                              reads as a plain spec strip, not a
-                              traffic-light dashboard. */}
-                          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
-                            {[
-                              { label: 'Demand',      icon: TrendingUp, value: getDemandLabel(ap.demand),                    hint: demandHint[ap.demand] },
-                              { label: 'Pathway',     icon: Award,      value: getPathwayLabel(ap.pathwayType),              hint: pathwayHint[ap.pathwayType] },
-                              { label: 'Competition', icon: Target,     value: getCompetitivenessLabel(ap.competitiveness),  hint: compHint[ap.competitiveness] },
-                            ].map((tile) => {
-                              const Icon = tile.icon;
-                              return (
-                                <div key={tile.label} className="rounded-control border border-border bg-card/30 px-3 py-2.5">
-                                  <div className="flex items-center gap-2 mb-1.5">
-                                    <Icon className="h-3 w-3 text-muted-foreground/55 shrink-0" />
-                                    <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground/50">
-                                      {tile.label}
-                                    </span>
-                                  </div>
-                                  <p className="text-xs font-semibold text-foreground/90">
-                                    {tile.value}
-                                  </p>
-                                  <p className="text-xs text-muted-foreground/50 mt-0.5 leading-snug">
-                                    {tile.hint}
-                                  </p>
-                                </div>
-                              );
-                            })}
-                          </div>
                         </div>
                       );
                     })()}
