@@ -179,14 +179,20 @@ async function main(): Promise<void> {
   }
 
   // -----------------------------------------------------------------------
-  // Phase 2: Re-verify stale items
+  // Phase 2: Re-verify stale + previously-failed items
   // -----------------------------------------------------------------------
-  log(bold("\n— Phase 2: Re-verify Stale Items —"));
+  log(bold("\n— Phase 2: Re-verify Stale + Failed Items —"));
 
+  // Re-check stale verified items AND every previously-failed item. Failed
+  // items were never re-verified before, so a transient block (anti-bot 403,
+  // timeout) or a verifier improvement could never recover an authoritative
+  // source once it had been marked failed — it stayed hidden forever.
   const staleItems = pool.filter(
-    (item) => item.verificationStatus === "verified" && isStale(item),
+    (item) =>
+      item.verificationStatus === "failed" ||
+      (item.verificationStatus === "verified" && isStale(item)),
   );
-  log(`  ${staleItems.length} items need re-verification (>${STALE_DAYS} days old)`);
+  log(`  ${staleItems.length} items need re-verification (failed, or verified >${STALE_DAYS} days old)`);
 
   let reVerified = 0;
   let reFailed = 0;
