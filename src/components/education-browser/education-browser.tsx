@@ -26,6 +26,7 @@ import {
   AlignJustify,
   ChevronRight,
   ChevronDown,
+  Globe,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import {
@@ -50,7 +51,6 @@ import {
   type Institution,
   type CareerRequirements,
 } from '@/lib/education';
-import { isAcademicTrackCareer } from '@/lib/education/route-scope';
 import { RoutePicker } from './route-picker';
 import { StageBlock } from './stage-block';
 import { getAllCareers } from '@/lib/career-pathways';
@@ -111,10 +111,27 @@ export function EducationBrowser({ careerTitle, careerId, country }: EducationBr
   const locale = useLocale();
   const educationCountry = country ?? (locale === 'es' ? 'ES' : undefined);
 
-  const careerProgrammes = useMemo<ProgrammeWithInstitution[]>(() => {
+  // International toggle — by default the table shows only the viewer's
+  // country, but some careers (e.g. astronaut/pilot) have relevant
+  // programmes across the other Nordic+ES countries too. When the toggle
+  // is on we drop the country filter and surface every country's listings.
+  const [showInternational, setShowInternational] = useState(false);
+
+  const domesticProgrammes = useMemo<ProgrammeWithInstitution[]>(() => {
     if (!resolvedId) return [];
     return getProgrammesForCareer(resolvedId, educationCountry ? { country: educationCountry } : undefined);
   }, [resolvedId, educationCountry]);
+
+  const internationalProgrammes = useMemo<ProgrammeWithInstitution[]>(() => {
+    if (!resolvedId) return [];
+    return getProgrammesForCareer(resolvedId);
+  }, [resolvedId]);
+
+  // Only worth offering the toggle when other countries actually add
+  // options the viewer can't already see.
+  const hasInternational = Boolean(educationCountry) && internationalProgrammes.length > domesticProgrammes.length;
+
+  const careerProgrammes = hasInternational && showInternational ? internationalProgrammes : domesticProgrammes;
 
   // Phase 3 — route picker. Only surfaces when the career has >1
   // route. Selection persists per career in localStorage so a user
@@ -327,29 +344,29 @@ export function EducationBrowser({ careerTitle, careerId, country }: EducationBr
       {(advanced || alternativePaths.length > 0) && (
         <div className={cn('grid gap-3', advanced && alternativePaths.length > 0 ? 'grid-cols-1 sm:grid-cols-2' : 'grid-cols-1')}>
           {advanced && (
-            <div className="rounded-xl border border-blue-500/15 bg-blue-500/[0.04] px-4 py-3.5">
+            <div className="rounded-xl border border-border bg-card/40 px-4 py-3.5">
               <div className="flex items-center gap-2 mb-1.5">
-                <Info className="h-3.5 w-3.5 text-blue-400 shrink-0" />
-                <span className="text-[10px] font-semibold text-blue-400/80 uppercase tracking-wider">Career pathway</span>
+                <Info className="h-3.5 w-3.5 text-muted-foreground/60 shrink-0" />
+                <span className="text-[10px] font-semibold text-muted-foreground/70 uppercase tracking-wider">Career pathway</span>
               </div>
               <p className="text-[12px] text-foreground/85 leading-relaxed">
                 {advanced.specialisationNote}
               </p>
-              <p className="text-[10px] text-blue-300/40 mt-1.5">
+              <p className="text-[10px] text-muted-foreground/45 mt-1.5">
                 Programmes below are for the foundational degree.
               </p>
             </div>
           )}
           {alternativePaths.length > 0 && (
-            <div className="rounded-xl border border-amber-500/15 bg-amber-500/[0.03] px-4 py-3.5">
+            <div className="rounded-xl border border-border bg-card/40 px-4 py-3.5">
               <div className="flex items-center gap-2 mb-1.5">
-                <Route className="h-3.5 w-3.5 text-amber-400 shrink-0" />
-                <span className="text-[10px] font-semibold text-amber-400/80 uppercase tracking-wider">Alternative routes</span>
+                <Route className="h-3.5 w-3.5 text-muted-foreground/60 shrink-0" />
+                <span className="text-[10px] font-semibold text-muted-foreground/70 uppercase tracking-wider">Alternative routes</span>
               </div>
               <ul className="space-y-1">
                 {alternativePaths.map((path) => (
                   <li key={path} className="text-[12px] text-foreground/85 leading-relaxed flex items-start gap-2">
-                    <span className="text-amber-400/60 mt-1.5 h-1 w-1 rounded-full bg-amber-400/60 shrink-0" />
+                    <span className="mt-1.5 h-1 w-1 rounded-full bg-muted-foreground/40 shrink-0" />
                     {path}
                   </li>
                 ))}
@@ -377,21 +394,6 @@ export function EducationBrowser({ careerTitle, careerId, country }: EducationBr
           selectedRouteId={selectedRouteId}
           onSelect={handleRouteSelect}
         />
-      )}
-
-      {/* ── Single-route disclaimer ──────────────────────────────────
-          Until the multi-route Study Path rework lands per career,
-          academic-track careers without multiple routes yet show this
-          honest "more is coming" line. Auto-hides as soon as the
-          route picker is visible (i.e. once Phase 4 fills in
-          alternative routes for this career). */}
-      {!showRoutePicker && isAcademicTrackCareer(resolvedId) && (
-        <div className="rounded-md border border-amber-500/20 bg-amber-500/[0.04] px-3 py-2.5">
-          <p className="text-[11px] text-amber-200/80 leading-relaxed">
-            <span className="font-medium text-amber-200">Showing the most common route.</span>{' '}
-            We&apos;re adding alternative pathways (counselling, lateral entry, study abroad, etc.) for this career soon.
-          </p>
-        </div>
       )}
 
       {/* ── Stage-based view (Phase 3.5) ─────────────────────────────
@@ -440,7 +442,7 @@ export function EducationBrowser({ careerTitle, careerId, country }: EducationBr
         const pageData = filtered.slice(start, end);
         return (
           <>
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between gap-3">
               <p className="text-[11px] text-muted-foreground/70">
                 {filtered.length} programme{filtered.length !== 1 ? 's' : ''} at{' '}
                 {groups.length} institution{groups.length !== 1 ? 's' : ''}
@@ -451,6 +453,23 @@ export function EducationBrowser({ careerTitle, careerId, country }: EducationBr
                   <> &middot; alignment based on {foundation.currentSubjects.length} subject{foundation.currentSubjects.length !== 1 ? 's' : ''}</>
                 )}
               </p>
+              {hasInternational && (
+                <button
+                  type="button"
+                  onClick={() => { setShowInternational((v) => !v); setPage(1); }}
+                  aria-pressed={showInternational}
+                  className={cn(
+                    'inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[10px] font-medium transition-colors shrink-0',
+                    showInternational
+                      ? 'border-primary/40 bg-primary/[0.08] text-primary'
+                      : 'border-border text-muted-foreground/70 hover:text-foreground hover:border-border',
+                  )}
+                  title={showInternational ? 'Showing programmes from all countries' : 'Show programmes from other countries too'}
+                >
+                  <Globe className="h-3 w-3" />
+                  {showInternational ? 'International — on' : 'Show international'}
+                </button>
+              )}
             </div>
 
             {groups.length > 0 ? (
@@ -500,7 +519,7 @@ export function EducationBrowser({ careerTitle, careerId, country }: EducationBr
 
                 {viewMode === 'list' && (
                   <>
-                    <div className="inline-grid grid-cols-[1fr_10rem_6rem_5rem_5rem_7rem] items-center gap-x-4 px-3 py-2 border border-b-0 rounded-t-md bg-teal-500/[0.08] text-[10px] font-bold uppercase tracking-wider text-teal-300 w-full">
+                    <div className="inline-grid grid-cols-[1fr_10rem_6rem_5rem_5rem_7rem] items-center gap-x-4 px-3 py-2 border border-b-0 rounded-t-md bg-muted/40 text-[10px] font-bold uppercase tracking-wider text-muted-foreground/70 w-full">
                       <span>Programme</span>
                       <span>Institution</span>
                       <span>Location</span>
@@ -522,7 +541,7 @@ export function EducationBrowser({ careerTitle, careerId, country }: EducationBr
                           >
                             <span className="flex items-center gap-2 min-w-0">
                               <span className="text-sm flex-shrink-0 leading-none">{COUNTRY_FLAGS[prog.country] ?? ''}</span>
-                              <span className="text-xs font-medium truncate group-hover:text-teal-300 transition-colors">{prog.englishName}</span>
+                              <span className="text-xs font-medium truncate group-hover:text-foreground transition-colors">{prog.englishName}</span>
                             </span>
                             <span className="text-[11px] text-muted-foreground truncate">
                               {inst?.name ?? prog.institution}
