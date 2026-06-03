@@ -149,16 +149,33 @@ interface YouTubeSearchResponse {
 }
 
 function useYouTubeVideo(careerTitle: string | null) {
+  // The Discover video is localized by the user's country (Spain → Spanish,
+  // Norway → Norwegian, else English). We read country from the shared
+  // ['profile-country'] query (React Query dedupes — no extra request) and let
+  // the API do the language work. Wait for the country query to settle before
+  // searching so we don't fire a wasted English search then re-fetch.
+  const countryQuery = useQuery<{ country?: string | null }>({
+    queryKey: ['profile-country'],
+    queryFn: async () => {
+      const res = await fetch('/api/profile');
+      if (!res.ok) return {};
+      return res.json();
+    },
+    staleTime: 60 * 1000,
+  });
+  const country = countryQuery.data?.country ?? null;
+
   return useQuery<YouTubeSearchResponse>({
-    queryKey: ['youtube-video', careerTitle],
+    queryKey: ['youtube-video', careerTitle, country],
     queryFn: async () => {
       if (!careerTitle) return { videos: [], videoId: null, title: null };
-      const query = `day in the life ${careerTitle}`;
-      const res = await fetch(`/api/youtube-search?q=${encodeURIComponent(query)}`);
+      const params = new URLSearchParams({ career: careerTitle });
+      if (country) params.set('country', country);
+      const res = await fetch(`/api/youtube-search?${params.toString()}`);
       if (!res.ok) return { videos: [], videoId: null, title: null };
       return res.json();
     },
-    enabled: !!careerTitle,
+    enabled: !!careerTitle && !countryQuery.isLoading,
     staleTime: 24 * 60 * 60 * 1000,
   });
 }
