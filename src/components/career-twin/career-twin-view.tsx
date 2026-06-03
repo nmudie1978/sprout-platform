@@ -362,6 +362,24 @@ export function CareerTwinView({
   }
 
   // ── Main experience ──────────────────────────────────────────────────
+  // Accent: embedded in Clarity ("Ask Future Me") the Twin adopts the
+  // section's amber/orange accent; standalone (Career Advisor) keeps the
+  // teal brand accent.
+  const accentGradient = embedded
+    ? "bg-gradient-to-br from-amber-500 to-orange-600"
+    : "bg-gradient-to-br from-primary to-teal-600";
+  const accentGradientR = embedded
+    ? "bg-gradient-to-r from-amber-500 to-orange-600"
+    : "bg-gradient-to-r from-primary to-teal-600";
+  const accentChipActive = embedded
+    ? "bg-amber-500 text-white border-amber-500"
+    : "bg-primary text-primary-foreground border-primary";
+  const accentHoverBorder = embedded ? "hover:border-amber-500/50" : "hover:border-primary/50";
+  const accentFocusBorder = embedded ? "focus:border-amber-500" : "focus:border-primary";
+  const accentHoverText = embedded ? "hover:text-amber-500" : "hover:text-primary";
+  const accentSoftBg = embedded ? "bg-amber-500/5" : "bg-primary/5";
+  const accentSpinner = embedded ? "text-amber-500" : "text-primary";
+
   return (
     <div className="space-y-4">
       {/* Header card */}
@@ -473,8 +491,8 @@ export function CareerTwinView({
                 onClick={() => selectMode(m.id)}
                 className={`shrink-0 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
                   m.id === modeId
-                    ? "bg-primary text-primary-foreground border-primary"
-                    : "bg-background hover:border-primary/50"
+                    ? accentChipActive
+                    : `bg-background ${accentHoverBorder}`
                 }`}
               >
                 {m.label}
@@ -483,10 +501,14 @@ export function CareerTwinView({
           </div>
         </div>
 
-        {/* Chat area */}
-        <div className="h-[420px] overflow-y-auto px-4 sm:px-6 py-4 space-y-4 bg-gradient-to-b from-background to-muted/20">
+        {/* Chat area — height trimmed ~20% (420→336px) when embedded in
+            Clarity so the tab reads more compact; standalone keeps 420px. */}
+        <div className={cn(
+          "overflow-y-auto px-4 sm:px-6 py-4 space-y-4 bg-gradient-to-b from-background to-muted/20",
+          embedded ? "h-[336px]" : "h-[420px]",
+        )}>
           {returningDays != null && (
-            <div className="mb-4 rounded-card border border-border bg-primary/5 px-4 py-3 text-sm text-foreground/80">
+            <div className={cn("mb-4 rounded-card border border-border px-4 py-3 text-sm text-foreground/80", accentSoftBg)}>
               {(() => {
                 const weeks = Math.max(1, Math.round(returningDays / 7));
                 return t("welcomeBack", { weeks });
@@ -501,7 +523,7 @@ export function CareerTwinView({
                   <button
                     key={i}
                     onClick={() => send(q)}
-                    className="text-sm text-left px-4 py-2.5 rounded-xl border-2 bg-background hover:border-primary/50 hover:shadow-sm transition-all"
+                    className={cn("text-sm text-left px-4 py-2.5 rounded-xl border-2 bg-background hover:shadow-sm transition-all", accentHoverBorder)}
                   >
                     {q}
                   </button>
@@ -518,7 +540,7 @@ export function CareerTwinView({
                   className={`flex gap-2.5 ${m.role === "user" ? "justify-end" : "justify-start"}`}
                 >
                   {m.role === "assistant" && (
-                    <div className="shrink-0 p-2 rounded-full bg-gradient-to-br from-primary to-teal-600 self-start">
+                    <div className={cn("shrink-0 p-2 rounded-full self-start", accentGradient)}>
                       <Sparkles className="h-4 w-4 text-white" />
                     </div>
                   )}
@@ -526,7 +548,7 @@ export function CareerTwinView({
                     <div
                       className={`rounded-2xl px-4 py-2.5 text-sm whitespace-pre-wrap ${
                         m.role === "user"
-                          ? "bg-gradient-to-r from-primary to-teal-600 text-white"
+                          ? `${accentGradientR} text-white`
                           : "bg-muted"
                       }`}
                     >
@@ -537,7 +559,7 @@ export function CareerTwinView({
                         <button
                           onClick={() => saveInsight(m)}
                           disabled={savedIds.has(m.id)}
-                          className="inline-flex items-center gap-1 text-[11px] text-muted-foreground hover:text-primary disabled:text-emerald-600 transition-colors"
+                          className={cn("inline-flex items-center gap-1 text-[11px] text-muted-foreground disabled:text-emerald-600 transition-colors", accentHoverText)}
                         >
                           {savedIds.has(m.id) ? (
                             <>
@@ -552,7 +574,7 @@ export function CareerTwinView({
                         <button
                           onClick={() => setPendingStep(m)}
                           disabled={addedIds.has(m.id)}
-                          className="inline-flex items-center gap-1 text-[11px] text-muted-foreground hover:text-primary disabled:text-emerald-600 transition-colors"
+                          className={cn("inline-flex items-center gap-1 text-[11px] text-muted-foreground disabled:text-emerald-600 transition-colors", accentHoverText)}
                         >
                           {addedIds.has(m.id) ? (
                             <>
@@ -576,11 +598,11 @@ export function CareerTwinView({
               ))}
               {sending && (
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex gap-2.5">
-                  <div className="shrink-0 p-2 rounded-full bg-gradient-to-br from-primary to-teal-600">
+                  <div className={cn("shrink-0 p-2 rounded-full", accentGradient)}>
                     <Sparkles className="h-4 w-4 text-white" />
                   </div>
                   <div className="bg-muted rounded-2xl px-4 py-2.5 flex items-center gap-2">
-                    <Loader2 className="h-4 w-4 animate-spin text-primary" />
+                    <Loader2 className={cn("h-4 w-4 animate-spin", accentSpinner)} />
                     <span className="text-sm text-muted-foreground">{t("thinking")}</span>
                   </div>
                 </motion.div>
@@ -609,7 +631,7 @@ export function CareerTwinView({
                   key={`${modeId}-${i}`}
                   onClick={() => send(q)}
                   disabled={sending}
-                  className="shrink-0 rounded-full border px-3 py-1.5 text-xs bg-background hover:border-primary/50 disabled:opacity-50 transition-colors"
+                  className={cn("shrink-0 rounded-full border px-3 py-1.5 text-xs bg-background disabled:opacity-50 transition-colors", accentHoverBorder)}
                 >
                   {q}
                 </button>
@@ -639,12 +661,12 @@ export function CareerTwinView({
               placeholder={t("inputPlaceholder")}
               rows={1}
               disabled={sending}
-              className="flex-1 resize-none rounded-xl border-2 border-muted bg-muted/30 px-4 py-3 text-sm focus:border-primary focus:outline-none transition-colors min-h-[52px] max-h-[120px]"
+              className={cn("flex-1 resize-none rounded-xl border-2 border-muted bg-muted/30 px-4 py-3 text-sm focus:outline-none transition-colors min-h-[52px] max-h-[120px]", accentFocusBorder)}
             />
             <Button
               type="submit"
               disabled={!input.trim() || sending}
-              className="bg-gradient-to-r from-primary to-teal-600 px-4"
+              className={cn("px-4", accentGradientR)}
               aria-label={t("send")}
             >
               {sending ? <Loader2 className="h-5 w-5 animate-spin" /> : <Send className="h-5 w-5" />}

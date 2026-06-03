@@ -2436,8 +2436,13 @@ function ClarityTab({ goalTitle, career }: { goalTitle: string | null; career: C
         )}
       </AnimatePresence>
 
-      {/* 2. Ask Future Me + Momentum — tabbed container */}
-      <SectionCard>
+      {/* 2. Ask Future Me + Momentum — tabbed container.
+          Amber edge border + faint amber glow so it reads as part of the
+          orange Clarity section (matches the Roadmap card). */}
+      <SectionCard
+        className="border-amber-500/30"
+        style={{ boxShadow: '0 0 20px rgba(245,158,11,0.06)' }}
+      >
         {/* Tab bar */}
         <div className="flex border-b border-border/20">
           <button
@@ -2446,7 +2451,7 @@ function ClarityTab({ goalTitle, career }: { goalTitle: string | null; career: C
             className={cn(
               "flex-1 flex items-center justify-center gap-2 px-4 py-3 text-xs font-medium transition-colors",
               claritySubTab === 'ask-future-me'
-                ? "text-primary border-b-2 border-primary -mb-px"
+                ? "text-amber-400 border-b-2 border-amber-400 -mb-px"
                 : "text-muted-foreground/50 hover:text-muted-foreground"
             )}
           >
