@@ -62,10 +62,8 @@ import { getRoutesForCareer } from '@/lib/education/routes';
 import { CareerMythBuster } from '@/components/journey/career-myth-buster';
 import { TopEmployers } from '@/components/journey/top-employers';
 import { SalaryProgressionChart } from '@/components/journey/salary-progression';
-import { OpportunityMatches } from '@/components/journey/opportunity-matches';
 import { hasTopEmployers } from '@/lib/career-employers';
 import { hasMyths } from '@/lib/career-myths';
-import { hasOpportunities } from '@/lib/opportunities';
 import { ConfidenceTracker } from '@/components/journey/confidence-tracker';
 // Day simulation removed per user request
 // AI Impact section removed per user request
@@ -956,8 +954,8 @@ function UnderstandTab({
   const [openSection, setOpenSection] = useState<string | null>(null);
   const [selectedRow, setSelectedRow] = useState<number | null>(null);
   const { isCollapsed: uCollapsed, toggle: uToggle } = useSectionCollapse(
-    ['u-tasks', 'u-reality', 'u-day', 'u-myths', 'u-salary', 'u-opportunities', 'u-education-pathway', 'u-notes'],
-    ['u-myths', 'u-opportunities'], // collapsed by default — supplementary sections
+    ['u-tasks', 'u-reality', 'u-day', 'u-myths', 'u-salary', 'u-education-pathway', 'u-notes'],
+    ['u-myths'], // collapsed by default — supplementary sections
   );
 
   if (!career || !goalTitle) {
@@ -1603,46 +1601,19 @@ function UnderstandTab({
         );
       })()}
 
-      {/* ── Misconceptions + Live Opportunities — tabbed. Each tab only
-          appears when we actually have data for it, and the whole card is
-          hidden when neither does, so careers without curated myths or
-          opportunities don't render an empty section. ── */}
+      {/* ── Common Misconceptions — only rendered when we have curated myths
+          for this career, so careers without them don't show an empty
+          section. ── */}
       {(() => {
         const cid = career?.id ?? null;
         const showMyths = cid ? hasMyths(cid) : false;
-        const showOpps = cid ? hasOpportunities(cid) : false;
-        if (!showMyths && !showOpps) return null;
-        const triggerClass =
-          'rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none px-4 pb-2 text-xs';
+        if (!showMyths) return null;
         return (
           <SectionCard>
-            <SectionHeader icon={Shield} title="Misconceptions & Opportunities" collapsed={uCollapsed('u-myths')} onToggle={() => uToggle('u-myths')} />
+            <SectionHeader icon={Shield} title="Common Misconceptions" collapsed={uCollapsed('u-myths')} onToggle={() => uToggle('u-myths')} />
             {!uCollapsed('u-myths') && (
               <div className="p-4 sm:p-5">
-                <Tabs defaultValue={showMyths ? 'myths' : 'opportunities'}>
-                  <TabsList className="w-full justify-start border-b border-border/20 bg-transparent rounded-none px-0 h-auto pb-0">
-                    {showMyths && (
-                      <TabsTrigger value="myths" className={triggerClass}>
-                        Common Misconceptions
-                      </TabsTrigger>
-                    )}
-                    {showOpps && (
-                      <TabsTrigger value="opportunities" className={triggerClass}>
-                        Live Opportunities
-                      </TabsTrigger>
-                    )}
-                  </TabsList>
-                  {showMyths && (
-                    <TabsContent value="myths" className="mt-4">
-                      <CareerMythBuster careerId={cid} />
-                    </TabsContent>
-                  )}
-                  {showOpps && (
-                    <TabsContent value="opportunities" className="mt-4">
-                      <OpportunityMatches careerId={cid} />
-                    </TabsContent>
-                  )}
-                </Tabs>
+                <CareerMythBuster careerId={cid} />
               </div>
             )}
           </SectionCard>
