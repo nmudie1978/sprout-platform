@@ -1134,9 +1134,10 @@ export default function DashboardPage() {
                               isLensDone
                                 ? goalTitle ? "bg-primary" : "bg-foreground/40"
                                 : isActive
-                                  // In-progress stage = light green; completed = dark green.
-                                  // Gives the bar a flowing dark→light→empty progression.
-                                  ? "bg-teal-300"
+                                  // In-progress stage = the same green at half the
+                                  // intensity of a completed (full bg-primary) stage,
+                                  // giving the bar a flowing full→half→empty progression.
+                                  ? "bg-primary/50"
                                   : "bg-transparent"
                             )}
                             style={{ width: isLensDone || isActive ? '100%' : '0%' }}
