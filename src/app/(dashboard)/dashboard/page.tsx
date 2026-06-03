@@ -1096,6 +1096,14 @@ export default function DashboardPage() {
                   {goalTitle ? (
                     <>
                       {t('journey.cardTitle')} &mdash; {goalTitle}
+                      {/* Subtle, calm "complete" cue once all three lenses are
+                          done (3/3). A small check — never a star. */}
+                      {completedLensCount === 3 && (
+                        <span className="inline-flex items-center gap-1 text-xs font-medium text-emerald-400/80">
+                          <CheckCircle2 className="h-3.5 w-3.5 shrink-0" />
+                          Complete
+                        </span>
+                      )}
                     </>
                   ) : (
                     <>
