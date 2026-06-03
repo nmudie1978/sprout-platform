@@ -3,7 +3,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Users, ArrowRight, Quote } from "lucide-react";
+import { Users, ArrowRight, Quote, Play } from "lucide-react";
 import type { CareerLike } from "@/lib/career-voices/match";
 import type { PublicStory, PublicContribution, VoicesResponse } from "@/lib/career-voices/public";
 
@@ -74,8 +74,33 @@ function StoryCard({ story }: { story: PublicStory }) {
       href={story.videoUrl}
       target="_blank"
       rel="noopener noreferrer"
-      className="block rounded-lg border bg-card/50 p-3 hover:border-teal-500/40 transition-colors"
+      className="block overflow-hidden rounded-lg border bg-card/50 hover:border-teal-500/40 transition-colors"
     >
+      {story.videoId && (
+        <div className="relative aspect-video w-full bg-muted">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={`https://img.youtube.com/vi/${story.videoId}/mqdefault.jpg`}
+            alt=""
+            loading="lazy"
+            className="h-full w-full object-cover"
+            onError={(e) => {
+              e.currentTarget.style.display = "none";
+            }}
+          />
+          <div className="absolute inset-0 flex items-center justify-center bg-black/15">
+            <span className="flex h-7 w-7 items-center justify-center rounded-full bg-black/55">
+              <Play className="h-3.5 w-3.5 fill-white text-white" />
+            </span>
+          </div>
+          {story.duration && (
+            <span className="absolute bottom-1 right-1 rounded bg-black/70 px-1 py-0.5 text-[9px] font-medium text-white">
+              {story.duration}
+            </span>
+          )}
+        </div>
+      )}
+      <div className="p-3">
       <p className="text-xs font-semibold leading-snug">{story.headline}</p>
       <p className="mt-1 text-[10px] text-muted-foreground">
         {story.name} · {story.jobTitle}
@@ -89,6 +114,7 @@ function StoryCard({ story }: { story: PublicStory }) {
           ))}
         </ul>
       )}
+      </div>
     </a>
   );
 }
