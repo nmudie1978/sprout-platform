@@ -11,7 +11,7 @@ function entry(
   careerId: string,
   category: ExploringEntry["category"],
   interest: InterestLevel | null,
-  opts: Partial<Pick<ExploringEntry, "title" | "emoji" | "completed">> = {},
+  opts: Partial<Pick<ExploringEntry, "title" | "emoji" | "completed" | "isActive">> = {},
 ): ExploringEntry {
   return {
     careerId,
@@ -20,6 +20,7 @@ function entry(
     category,
     interest,
     completed: opts.completed ?? false,
+    isActive: opts.isActive ?? false,
   };
 }
 

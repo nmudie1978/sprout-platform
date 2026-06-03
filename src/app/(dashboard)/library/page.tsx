@@ -19,7 +19,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { useQuery } from "@tanstack/react-query";
-import { Check, X } from "lucide-react";
+import { Check, X, Star } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useCuriositySaves } from "@/hooks/use-curiosity-saves";
 import { useAllInterestLevels, useInterestLevel } from "@/hooks/use-interest-level";
@@ -128,6 +128,7 @@ interface ExploredGoal {
   goalId: string;
   goalTitle: string;
   journeyCompletedSteps: string[];
+  isActive: boolean;
 }
 
 /** Inline interest rating for an Exploring row — relocated here from the
@@ -239,6 +240,7 @@ function ExploringTab() {
       category: getCategoryForCareer(g.goalId) ?? null,
       interest,
       completed,
+      isActive: g.isActive ?? false,
     };
   });
 
@@ -270,6 +272,12 @@ function ExploringTab() {
                 >
                   <span className="shrink-0">{e.emoji}</span>
                   <span className="truncate">{e.title}</span>
+                  {e.isActive && (
+                    <span className="shrink-0 inline-flex items-center gap-1 text-xs font-medium text-amber-600 dark:text-amber-400">
+                      <Star className="h-3.5 w-3.5 fill-current" />
+                      Current goal
+                    </span>
+                  )}
                   {e.completed && (
                     <span className="shrink-0 inline-flex items-center gap-1 text-xs text-primary">
                       <Check className="h-3.5 w-3.5" />
