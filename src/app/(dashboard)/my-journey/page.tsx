@@ -71,6 +71,7 @@ import { ConfidenceTracker } from '@/components/journey/confidence-tracker';
 // AI Impact section removed per user request
 import type { Journey } from '@/lib/journey/career-journey-types';
 import { setUnderstandConfirmed, isUnderstandConfirmed, setDiscoverConfirmed, isDiscoverConfirmed, markClarityActive } from '@/lib/journey/lens-progress';
+import { hasAskedTwin, TWIN_ASKED_EVENT } from '@/lib/career-twin/asked-signal';
 
 const PersonalCareerTimeline = dynamic(
   () => import('@/components/journey').then((m) => m.PersonalCareerTimeline),
@@ -2707,11 +2708,12 @@ function ClarityTab({ goalTitle, career }: { goalTitle: string | null; career: C
         </SectionCard>
       )}
 
-      {/* ── Clarity completion — auto-derived from foundation + momentum ── */}
+      {/* ── Clarity completion — foundation + one Future Me question
+            (momentum is optional and not required here) ── */}
       <ClarityCompletionCard
         careerTitle={goalTitle}
+        careerId={career?.id ?? null}
         hasFoundation={hasFoundation}
-        hasMomentum={actions.length > 0}
       />
 
     </div>
@@ -2721,14 +2723,52 @@ function ClarityTab({ goalTitle, career }: { goalTitle: string | null; career: C
 
 function ClarityCompletionCard({
   careerTitle,
+  careerId,
   hasFoundation,
-  hasMomentum,
 }: {
   careerTitle: string | null;
+  careerId: string | null;
   hasFoundation: boolean;
-  hasMomentum: boolean;
 }) {
-  const clarityComplete = hasFoundation && hasMomentum;
+  // "Asked Future Me ≥1 question" — seeded from the device flag, kept live via
+  // the asked-signal event (the Twin tab is mounted in the same document).
+  const [hasAskedFutureMe, setHasAskedFutureMe] = useState(false);
+  // Timed hints: nudge the user if they stall on a required step.
+  const [foundationHint, setFoundationHint] = useState(false);
+  const [futureMeHint, setFutureMeHint] = useState(false);
+
+  useEffect(() => {
+    setHasAskedFutureMe(hasAskedTwin(careerId));
+    if (!careerId) return;
+    const onAsked = (e: Event) => {
+      const detail = (e as CustomEvent).detail as { careerId?: string } | undefined;
+      if (detail?.careerId === careerId) setHasAskedFutureMe(true);
+    };
+    window.addEventListener(TWIN_ASKED_EVENT, onAsked);
+    return () => window.removeEventListener(TWIN_ASKED_EVENT, onAsked);
+  }, [careerId]);
+
+  // Raise the foundation hint if it isn't set within 15s.
+  useEffect(() => {
+    if (hasFoundation) {
+      setFoundationHint(false);
+      return;
+    }
+    const id = setTimeout(() => setFoundationHint(true), 15_000);
+    return () => clearTimeout(id);
+  }, [hasFoundation]);
+
+  // Raise the Future Me hint if no question is asked within 20s.
+  useEffect(() => {
+    if (hasAskedFutureMe) {
+      setFutureMeHint(false);
+      return;
+    }
+    const id = setTimeout(() => setFutureMeHint(true), 20_000);
+    return () => clearTimeout(id);
+  }, [hasAskedFutureMe]);
+
+  const clarityComplete = hasFoundation && hasAskedFutureMe;
   const [isGeneratingReport, setIsGeneratingReport] = useState(false);
   const [reportError, setReportError] = useState<string | null>(null);
 
@@ -2799,9 +2839,9 @@ function ClarityCompletionCard({
         Complete Clarity
       </p>
       <div className="space-y-2.5">
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-start gap-2.5">
           <span className={cn(
-            'inline-flex items-center justify-center h-5 w-5 rounded-full border text-[10px] shrink-0',
+            'inline-flex items-center justify-center h-5 w-5 rounded-full border text-[10px] shrink-0 mt-0.5',
             hasFoundation
               ? 'bg-emerald-500 border-emerald-500 text-white'
               : 'border-border/50 text-muted-foreground/40',
@@ -2820,29 +2860,39 @@ function ClarityCompletionCard({
                 ? 'Your foundation is set — the roadmap and narration are personalised to you.'
                 : 'Tap "Your Foundation" on the roadmap to add your school, subjects, and finish year.'}
             </p>
+            {!hasFoundation && foundationHint && (
+              <p className="mt-1 text-[10px] font-medium text-amber-400/90">
+                ↑ Open “Your Foundation” on the roadmap above and add your school, subjects and finish year to personalise everything.
+              </p>
+            )}
           </div>
         </div>
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-start gap-2.5">
           <span className={cn(
-            'inline-flex items-center justify-center h-5 w-5 rounded-full border text-[10px] shrink-0',
-            hasMomentum
+            'inline-flex items-center justify-center h-5 w-5 rounded-full border text-[10px] shrink-0 mt-0.5',
+            hasAskedFutureMe
               ? 'bg-emerald-500 border-emerald-500 text-white'
               : 'border-border/50 text-muted-foreground/40',
           )}>
-            {hasMomentum ? '✓' : '2'}
+            {hasAskedFutureMe ? '✓' : '2'}
           </span>
           <div>
             <p className={cn(
               'text-xs font-medium',
-              hasMomentum ? 'text-foreground/70 line-through decoration-emerald-500/40' : 'text-foreground/85',
+              hasAskedFutureMe ? 'text-foreground/70 line-through decoration-emerald-500/40' : 'text-foreground/85',
             )}>
-              Add your first action in Momentum
+              Ask Future Me a question
             </p>
             <p className="text-[10px] text-muted-foreground/50">
-              {hasMomentum
-                ? 'You\'ve started building momentum — keep going.'
-                : 'Pick a suggestion or write your own next move in the Momentum section above.'}
+              {hasAskedFutureMe
+                ? 'You\'ve spoken with Future You — that\'s what Clarity is about.'
+                : 'Open the "Ask Future Me" tab above and ask one question about this path.'}
             </p>
+            {!hasAskedFutureMe && futureMeHint && (
+              <p className="mt-1 text-[10px] font-medium text-amber-400/90">
+                ↑ Ask Future Me one question in the tab above — even a small one — to finish Clarity.
+              </p>
+            )}
           </div>
         </div>
       </div>
