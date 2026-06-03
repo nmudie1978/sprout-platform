@@ -1258,7 +1258,9 @@ export default function DashboardPage() {
         )}
 
         {/* ── 4. My Explored Journeys + Saved Careers ─────────────── */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+        {/* mb-8 (not mb-4): give a clear gap before the Saved Resources /
+            Worth-a-look row below so the two halves don't read as one block. */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
           <DashboardSection
             title="My Explored Journeys"
             icon={Target}
