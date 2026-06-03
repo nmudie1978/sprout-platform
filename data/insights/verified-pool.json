@@ -19,25 +19,6 @@
     "canonicalUrlHash": "e7513f58d4d95efbf552af42fd1e2ecaf80c4c3f65ecfe7db4baf034c4267ba9"
   },
   {
-    "id": "69061238-648a-4c9b-a234-4276606f1500",
-    "title": "Youth Employment: Global Trends 2024",
-    "summary": "ILO's deep dive into youth unemployment, underemployment, and the skills mismatch hitting Gen Z hardest.",
-    "sourceName": "International Labour Organization",
-    "sourceUrl": "https://www.ilo.org/publications/flagship-reports/global-employment-trends-youth-2024",
-    "contentType": "stat_report",
-    "tags": [
-      "youth-employment",
-      "skills-gap",
-      "global-trends"
-    ],
-    "domain": "ilo.org",
-    "publishDate": "2024-08-12",
-    "addedAt": "2026-02-12T19:43:40.865Z",
-    "lastVerifiedAt": "2026-06-03T19:54:18.459Z",
-    "verificationStatus": "failed",
-    "canonicalUrlHash": "e8aaf11b71917632b8aa49f45af5cfd3d36dd8f18791b0c3f3162b9040d7cef9"
-  },
-  {
     "id": "15af1c15-550c-4a33-a8e0-d0e389d75b6e",
     "title": "OECD Skills Outlook 2023",
     "summary": "How education systems worldwide are adapting (or not) to prepare young people for the jobs of tomorrow.",
@@ -444,25 +425,6 @@
     "duration": "5:30"
   },
   {
-    "id": "4b8e8061-33f8-4c46-a46e-609353fc7277",
-    "title": "Youth and the Changing Nature of Work",
-    "summary": "World Bank data on how gig work, remote work, and digital platforms are reshaping employment for young people.",
-    "sourceName": "World Bank",
-    "sourceUrl": "https://www.worldbank.org/en/topic/socialprotection/publication/the-changing-nature-of-work",
-    "contentType": "stat_report",
-    "tags": [
-      "gig-economy",
-      "digital-skills",
-      "youth-employment"
-    ],
-    "domain": "worldbank.org",
-    "publishDate": "2024-03-01",
-    "addedAt": "2026-02-12T19:44:09.808Z",
-    "lastVerifiedAt": "2026-06-03T19:55:30.905Z",
-    "verificationStatus": "failed",
-    "canonicalUrlHash": "393956cbec8c62200d6b99cd27ded7c98f840b98af8afcefacbfa2e4b4cb0a29"
-  },
-  {
     "id": "c3e692b3-a70a-4361-b29c-6c01d07911b7",
     "title": "BCG: What Gen Z Wants from Employers",
     "summary": "BCG's survey of 5,000+ Gen Z respondents on what makes a job worth having — flexibility, purpose, and growth rank highest.",
@@ -499,25 +461,6 @@
     "lastVerifiedAt": "2026-06-03T19:55:31.541Z",
     "verificationStatus": "verified",
     "canonicalUrlHash": "cfda80e4fbd8040bc2bb39ad92e47e3592df2667035a371c13464f7cf379d0ca"
-  },
-  {
-    "id": "60d61e89-b788-4245-a21c-590534fdbe99",
-    "title": "Eurostat: Youth Unemployment in Europe",
-    "summary": "The latest stats on youth unemployment across EU member states — where the gaps are and what's improving.",
-    "sourceName": "Eurostat",
-    "sourceUrl": "https://ec.europa.eu/eurostat/statistics-explained/index.php?title=Youth_unemployment",
-    "contentType": "stat_report",
-    "tags": [
-      "youth-employment",
-      "europe",
-      "global-trends"
-    ],
-    "domain": "ec.europa.eu",
-    "publishDate": "2024-07-01",
-    "addedAt": "2026-02-12T19:44:12.304Z",
-    "lastVerifiedAt": "2026-06-03T19:55:31.598Z",
-    "verificationStatus": "failed",
-    "canonicalUrlHash": "78e7a17b38956c6430c77209f7a59333001175a840735022b395949bb831bd9d"
   },
   {
     "id": "45f6a0c9-abae-4654-b3d7-e65fa0c7e3a1",
@@ -672,25 +615,6 @@
     "lastVerifiedAt": "2026-06-03T19:56:08.153Z",
     "verificationStatus": "verified",
     "canonicalUrlHash": "d9e3ff5f426f2e732697eba19945035882269ab79577a1fee1b49c362731adb5"
-  },
-  {
-    "id": "5a1b08f3-a20b-44ef-a3c3-c706ceba5e57",
-    "title": "UNICEF: Reimagining Education for the Digital Age",
-    "summary": "What needs to change in how we educate children and youth for a world where digital is everywhere.",
-    "sourceName": "UNICEF",
-    "sourceUrl": "https://www.unicef.org/reports/reimagine-education",
-    "contentType": "stat_report",
-    "tags": [
-      "education",
-      "digital-skills",
-      "youth-employment"
-    ],
-    "domain": "unicef.org",
-    "publishDate": "2024-01-01",
-    "addedAt": "2026-02-12T19:44:26.850Z",
-    "lastVerifiedAt": "2026-06-03T19:56:08.248Z",
-    "verificationStatus": "failed",
-    "canonicalUrlHash": "333b71466e079101c0879f738ca8878d2cefb58621b0bd581e2d87d86f3a7b30"
   },
   {
     "id": "95c8149e-e760-4730-b636-5bd728fc0bd8",

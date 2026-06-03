@@ -9,15 +9,6 @@
     "publishDate": "2025-01-07"
   },
   {
-    "title": "Youth Employment: Global Trends 2024",
-    "summary": "ILO's deep dive into youth unemployment, underemployment, and the skills mismatch hitting Gen Z hardest.",
-    "sourceName": "International Labour Organization",
-    "sourceUrl": "https://www.ilo.org/publications/flagship-reports/global-employment-trends-youth-2024",
-    "contentType": "stat_report",
-    "tags": ["youth-employment", "skills-gap", "global-trends"],
-    "publishDate": "2024-08-12"
-  },
-  {
     "title": "OECD Skills Outlook 2023",
     "summary": "How education systems worldwide are adapting (or not) to prepare young people for the jobs of tomorrow.",
     "sourceName": "OECD",
@@ -214,15 +205,6 @@
     "thumbnailUrl": "https://img.youtube.com/vi/jrV5KMjdWrI/hqdefault.jpg"
   },
   {
-    "title": "Youth and the Changing Nature of Work",
-    "summary": "World Bank data on how gig work, remote work, and digital platforms are reshaping employment for young people.",
-    "sourceName": "World Bank",
-    "sourceUrl": "https://www.worldbank.org/en/topic/socialprotection/publication/the-changing-nature-of-work",
-    "contentType": "stat_report",
-    "tags": ["gig-economy", "digital-skills", "youth-employment"],
-    "publishDate": "2024-03-01"
-  },
-  {
     "title": "BCG: What Gen Z Wants from Employers",
     "summary": "BCG's survey of 5,000+ Gen Z respondents on what makes a job worth having — flexibility, purpose, and growth rank highest.",
     "sourceName": "Boston Consulting Group",
@@ -239,15 +221,6 @@
     "contentType": "stat_report",
     "tags": ["workplace-culture", "ai", "global-trends"],
     "publishDate": "2024-06-25"
-  },
-  {
-    "title": "Eurostat: Youth Unemployment in Europe",
-    "summary": "The latest stats on youth unemployment across EU member states — where the gaps are and what's improving.",
-    "sourceName": "Eurostat",
-    "sourceUrl": "https://ec.europa.eu/eurostat/statistics-explained/index.php?title=Youth_unemployment",
-    "contentType": "stat_report",
-    "tags": ["youth-employment", "europe", "global-trends"],
-    "publishDate": "2024-07-01"
   },
   {
     "title": "How Internships Shape Careers | OECD Education",
@@ -322,15 +295,6 @@
     "contentType": "article",
     "tags": ["gen-z", "technology", "workplace-culture"],
     "publishDate": "2024-10-15"
-  },
-  {
-    "title": "UNICEF: Reimagining Education for the Digital Age",
-    "summary": "What needs to change in how we educate children and youth for a world where digital is everywhere.",
-    "sourceName": "UNICEF",
-    "sourceUrl": "https://www.unicef.org/reports/reimagine-education",
-    "contentType": "stat_report",
-    "tags": ["education", "digital-skills", "youth-employment"],
-    "publishDate": "2024-01-01"
   },
   {
     "title": "Visual Capitalist: The World's Most Spoken Languages",
