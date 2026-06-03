@@ -4,7 +4,9 @@ import { SessionProvider, useSession } from "next-auth/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useState, useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
+import { useTheme } from "next-themes";
 import { ThemeProvider } from "@/components/theme-provider";
+import { readUserTheme, writeUserTheme } from "@/lib/theme/user-theme";
 import { Toaster } from "@/components/ui/toaster";
 import { LifeSkillsProvider } from "@/components/life-skills-provider";
 import { MobileBottomNav } from "@/components/mobile-bottom-nav";
@@ -32,6 +34,42 @@ function CacheCleaner({ queryClient }: { queryClient: QueryClient }) {
       prevUserRef.current = currentUser;
     }
   }, [session?.user?.id, queryClient]);
+
+  return null;
+}
+
+/**
+ * Dark-first per-user theme. next-themes persists one theme per *browser*,
+ * shared across accounts and never reset on login — so a new user can inherit
+ * a light value left by a previous user/session. ThemeBoot fixes that: on each
+ * login (or user switch) it applies THIS user's saved choice, or falls back to
+ * dark, overriding any leaked browser-global value. It then records the user's
+ * subsequent explicit toggles per-user so their opt-in light persists for them
+ * (and only them). Pre-auth routes are already forced dark, and this only runs
+ * once a user id is present, so the two never conflict.
+ */
+function ThemeBoot() {
+  const { data: session } = useSession();
+  const { theme, setTheme } = useTheme();
+  const userId = session?.user?.id;
+  const bootedFor = useRef<string | null>(null);
+
+  // On login / user switch: apply this user's saved theme, else dark.
+  useEffect(() => {
+    if (!userId || typeof window === "undefined") return;
+    if (bootedFor.current === userId) return;
+    bootedFor.current = userId;
+    setTheme(readUserTheme(userId, window.localStorage) ?? "dark");
+  }, [userId, setTheme]);
+
+  // After boot, persist any theme change as this user's explicit choice.
+  useEffect(() => {
+    if (!userId || typeof window === "undefined") return;
+    if (bootedFor.current !== userId) return;
+    if (theme === "light" || theme === "dark") {
+      writeUserTheme(userId, theme, window.localStorage);
+    }
+  }, [theme, userId]);
 
   return null;
 }
@@ -76,6 +114,7 @@ export function Providers({ children, session }: { children: React.ReactNode; se
       <SessionProvider session={session} refetchOnWindowFocus={false} refetchInterval={0}>
         <QueryClientProvider client={queryClient}>
           <CacheCleaner queryClient={queryClient} />
+          <ThemeBoot />
           <LifeSkillsProvider>
             {children}
             <MobileBottomNav />
