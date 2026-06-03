@@ -371,6 +371,8 @@ model YouthProfile {
 
   // Relations for new journey features
   savedItems          SavedItem[]
+  savedCareers        SavedCareer[]
+  journeyNotebooks    JourneyNotebook[]
   reflections         JourneyReflection[]
   journeyNotes        JourneyNote[]
   traitObservations   TraitObservation[]
@@ -2095,6 +2097,44 @@ model SavedItem {
   @@index([type])
   @@index([savedAt])
   @@index([careerPathId])
+}
+
+/// A career the youth bookmarked (the heart on a career card). One row per
+/// profile+career. Mirrors the former SavedCuriosity localStorage shape so the
+/// dashboard's "Saved Careers" survives a device/browser change.
+model SavedCareer {
+  id          String   @id @default(cuid())
+  profileId   String
+  careerId    String // slug or catalog id
+  careerTitle String
+  careerEmoji String?
+  note        String?  @db.Text
+  savedAt     DateTime @default(now())
+
+  profile YouthProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@unique([profileId, careerId])
+  @@index([profileId, savedAt])
+}
+
+/// The "My Journey" reflection notebook: one row per profile+career holding
+/// the free-text Discover / Understand / Clarity reflections. Mirrors the
+/// `endeavrly-journey-reflections` localStorage record so reflections survive
+/// a device/browser change. Distinct from the prompt-based JourneyReflection.
+model JourneyNotebook {
+  id         String   @id @default(cuid())
+  profileId  String
+  careerSlug String
+  discover   String?  @db.Text
+  understand String?  @db.Text
+  clarity    String?  @db.Text
+  updatedAt  DateTime @updatedAt
+  createdAt  DateTime @default(now())
+
+  profile YouthProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@unique([profileId, careerSlug])
+  @@index([profileId, updatedAt])
 }
 
 // ============================================

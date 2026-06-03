@@ -2,6 +2,11 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useSession } from "next-auth/react";
+import {
+  ensureJourneyNotebooksHydrated,
+  persistNotebook,
+  JOURNEY_NOTEBOOKS_HYDRATED_EVENT,
+} from "@/lib/journey/notebook-sync";
 
 export type ReflectionLens = "discover" | "understand" | "clarity";
 
@@ -90,6 +95,10 @@ export function useJourneyReflections(careerSlug: string | null) {
   const [reflections, setReflections] = useState<ReflectionRecord>(EMPTY);
   const loadedRef = useRef(false);
   const externalUpdateRef = useRef(false);
+  const serverWriteTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const pendingWriteRef = useRef<
+    { slug: string; snapshot: { discover: string; understand: string; clarity: string } } | null
+  >(null);
 
   // Reload when the user or chosen career changes
   useEffect(() => {
@@ -100,6 +109,20 @@ export function useJourneyReflections(careerSlug: string | null) {
         loadedRef.current = true;
       });
     }
+  }, [userId, careerSlug]);
+
+  // One-time server reconciliation, then re-read the (now server-synced) cache.
+  useEffect(() => {
+    if (!userId) return;
+    void ensureJourneyNotebooksHydrated(userId);
+    const onHydrated = (e: Event) => {
+      const detail = (e as CustomEvent).detail as { userId?: string } | undefined;
+      if (detail?.userId !== userId) return;
+      externalUpdateRef.current = true;
+      setReflections(load(userId, careerSlug));
+    };
+    window.addEventListener(JOURNEY_NOTEBOOKS_HYDRATED_EVENT, onHydrated);
+    return () => window.removeEventListener(JOURNEY_NOTEBOOKS_HYDRATED_EVENT, onHydrated);
   }, [userId, careerSlug]);
 
   // Persist on change + broadcast
@@ -117,7 +140,34 @@ export function useJourneyReflections(careerSlug: string | null) {
     window.dispatchEvent(
       new CustomEvent(SYNC_EVENT, { detail: { userId, careerSlug } }),
     );
+    // Debounced best-effort server write (the tray fires updateLens per
+    // keystroke; localStorage above is the immediate optimistic layer).
+    if (serverWriteTimer.current) clearTimeout(serverWriteTimer.current);
+    const slug = careerSlug;
+    const snapshot = {
+      discover: reflections.discover,
+      understand: reflections.understand,
+      clarity: reflections.clarity,
+    };
+    pendingWriteRef.current = { slug, snapshot };
+    serverWriteTimer.current = setTimeout(() => {
+      persistNotebook(slug, snapshot);
+      pendingWriteRef.current = null;
+    }, 800);
   }, [reflections, userId, careerSlug]);
+
+  // Flush any pending server write on unmount so the last keystrokes aren't
+  // lost (a fast navigate-away inside the debounce window would otherwise let
+  // stale server data overwrite the local cache on the next hydration).
+  useEffect(() => {
+    return () => {
+      if (serverWriteTimer.current) clearTimeout(serverWriteTimer.current);
+      if (pendingWriteRef.current) {
+        persistNotebook(pendingWriteRef.current.slug, pendingWriteRef.current.snapshot);
+        pendingWriteRef.current = null;
+      }
+    };
+  }, []);
 
   // Same-document sync
   useEffect(() => {
