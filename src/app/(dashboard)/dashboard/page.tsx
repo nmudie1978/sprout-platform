@@ -1238,6 +1238,14 @@ export default function DashboardPage() {
               );
             })()}
 
+            {/* Career Twin completion reward — surfaces "Meet Future You"
+                subtly inside the journey card, but only once the journey
+                reaches 3/3 (Clarity). Replaces the old standalone banner so
+                the Career Twin feels earned rather than promoted. */}
+            {goalCareer && completedLensCount === 3 && (
+              <CareerTwinCta variant="journeyComplete" />
+            )}
+
           </GlassCard>
           );
           return goalTitle ? (
@@ -1251,8 +1259,8 @@ export default function DashboardPage() {
             DidYouKnowCard. Kept there so the top of the page stays
             focused on the active journey and today's actions. */}
 
-        {/* ── Career Twin CTA — "Meet Future You" (only if an active career resolves) ── */}
-        <CareerTwinCta variant="dashboard" className="mb-4" />
+        {/* Career Twin now lives inside the journey card as a 3/3 completion
+            reward (see journeyComplete variant above) — no standalone banner. */}
 
         {/* ── Discovery Nudge — sparse, preference-based suggestion ── */}
         {discoveryPrefs && (
