@@ -2,16 +2,25 @@ import { NextRequest, NextResponse } from 'next/server';
 import { Prisma } from '@prisma/client';
 import { prisma } from '@/lib/prisma';
 import { logAndSwallow } from '@/lib/observability';
+import {
+  videoSearchLocale,
+  buildDayInLifeQuery,
+  buildEnglishDayInLifeQuery,
+  type VideoSearchLocale,
+} from '@/lib/video-locale';
 
 /**
- * GET /api/youtube-search?q=day+in+the+life+Doctor
+ * GET /api/youtube-search?career=Doctor&country=Spain   (preferred)
+ * GET /api/youtube-search?q=day+in+the+life+Doctor        (legacy, English)
  *
- * Searches YouTube and returns up to 5 matching videos. The single-video
- * fields (videoId, title) are kept for backward compatibility with any
- * legacy callers — the `videos` array is what the UI now iterates to let
- * users cycle through alternative Day-in-the-Life clips.
+ * Searches YouTube for a "day in the life" career video and returns up to 5
+ * matches. With `career` (+ optional `country`) the search is localized to the
+ * user's country language (Spain → Spanish, Norway → Norwegian, else English),
+ * falling back to an English search if the localized one finds nothing. The
+ * single-video fields (videoId, title) are kept for backward compatibility; the
+ * `videos` array is what the UI iterates to cycle through alternatives.
  *
- * Results cached in DB for 7 days to conserve API quota.
+ * Results cached in DB (keyed by language) to conserve API quota.
  */
 interface YouTubeVideo {
   videoId: string;
@@ -74,29 +83,79 @@ function normaliseCached(raw: unknown): YouTubeSearchResult {
   return EMPTY_RESULT;
 }
 
+/** One raw YouTube search → mapped, id-validated videos (no relevance filter). */
+async function fetchYouTubeVideos(
+  query: string,
+  lang: string,
+  region: string | undefined,
+  apiKey: string,
+): Promise<YouTubeVideo[]> {
+  const params = new URLSearchParams({
+    part: 'snippet',
+    q: query,
+    type: 'video',
+    maxResults: '5',
+    videoDuration: 'medium',
+    relevanceLanguage: lang,
+    key: apiKey,
+  });
+  if (region) params.set('regionCode', region);
+
+  const res = await fetch(`https://www.googleapis.com/youtube/v3/search?${params.toString()}`, { cache: 'no-store' });
+  if (!res.ok) {
+    console.error('[YouTube Search] API error:', res.status);
+    return [];
+  }
+  const data = await res.json();
+  return (data.items ?? [])
+    .map((it: { id?: { videoId?: string }; snippet?: { title?: string } }) => ({
+      videoId: it.id?.videoId ?? '',
+      title: it.snippet?.title ?? null,
+    }))
+    .filter((v: YouTubeVideo) => Boolean(v.videoId));
+}
+
+/** Strict English title-relevance filter — drops loosely-related junk. */
+function applyRelevanceFilter(videos: YouTubeVideo[], career: string): YouTubeVideo[] {
+  const tokens = careerTokens(career);
+  return videos.filter((v) => isTitleRelevant(v.title ?? '', career, tokens));
+}
+
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
-  const query = searchParams.get('q');
+  const careerParam = searchParams.get('career');
+  const country = searchParams.get('country');
+  const legacyQ = searchParams.get('q');
 
-  if (!query) {
-    return NextResponse.json({ error: 'Missing q parameter' }, { status: 400 });
+  // Resolve search inputs. Preferred: `career` (+ optional `country`) drives a
+  // country-localized search. Legacy: a raw English `q` (kept for back-compat).
+  let career: string;
+  let locale: VideoSearchLocale;
+  let localizedQuery: string;
+  if (careerParam) {
+    career = careerParam.trim();
+    locale = videoSearchLocale(country);
+    localizedQuery = buildDayInLifeQuery(career, country);
+  } else if (legacyQ) {
+    career = extractCareerFromQuery(legacyQ);
+    locale = videoSearchLocale(null); // English
+    localizedQuery = legacyQ;
+  } else {
+    return NextResponse.json({ error: 'Missing career or q parameter' }, { status: 400 });
   }
 
-  // Bumped from `yt:` → `yt2:` so the relevance-filter rollout treats
-  // any previously cached result set (which may contain unrelated junk
-  // videos) as a miss and refetches through the new filter.
-  const cacheKey = `yt2:${query.toLowerCase().trim()}`;
+  // Cache key includes the search language so localized and English results for
+  // the same career never clobber each other. `yt2:` prefix kept so the old
+  // relevance-filter rollout's cache busting still applies.
+  const cacheKey = `yt2:${locale.lang}:${localizedQuery.toLowerCase().trim()}`;
 
-  // Check DB cache. Legacy entries stored only one video — treat those as
-  // a miss so the new multi-video query runs and replaces them. Without
-  // this the "More" control never appears for any career that was
-  // searched under the old single-result API.
+  // Check DB cache. Legacy single-video entries (no `videos[]`) are treated as
+  // a miss so the multi-video query runs and replaces them.
   try {
     const cached = await prisma.videoCache.findUnique({ where: { cacheKey } });
     if (cached && cached.expiresAt > new Date()) {
       const d = cached.data as { videos?: unknown[] };
-      const isLegacy = !Array.isArray(d?.videos);
-      if (!isLegacy) {
+      if (Array.isArray(d?.videos)) {
         return NextResponse.json(normaliseCached(cached.data), {
           headers: { 'Cache-Control': 'public, s-maxage=86400, stale-while-revalidate=86400' },
         });
@@ -110,32 +169,24 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(query)}&type=video&maxResults=5&videoDuration=medium&relevanceLanguage=en&key=${apiKey}`;
-    const res = await fetch(url, { cache: 'no-store' });
+    // 1) Localized search. For non-English we relax the (English) title-token
+    //    relevance filter — the career token is English, so it would reject the
+    //    Spanish/Norwegian titles we deliberately asked for. We trust
+    //    relevanceLanguage + regionCode to keep results on-topic instead.
+    const rawLocalized = await fetchYouTubeVideos(localizedQuery, locale.lang, locale.region, apiKey);
+    let videos = locale.lang === 'en'
+      ? applyRelevanceFilter(rawLocalized, career)
+      : rawLocalized;
+    let usedFallback = false;
 
-    if (!res.ok) {
-      console.error('[YouTube Search] API error:', res.status);
-      return NextResponse.json(EMPTY_RESULT);
+    // 2) English fallback — if the localized search found nothing, fall back to
+    //    the English search so a localized user never sees FEWER videos than an
+    //    English user would for the same career.
+    if (videos.length === 0 && locale.lang !== 'en') {
+      const rawEnglish = await fetchYouTubeVideos(buildEnglishDayInLifeQuery(career), 'en', undefined, apiKey);
+      videos = applyRelevanceFilter(rawEnglish, career);
+      usedFallback = videos.length > 0;
     }
-
-    const data = await res.json();
-    const rawVideos: YouTubeVideo[] = (data.items ?? [])
-      .map((it: { id?: { videoId?: string }; snippet?: { title?: string } }) => ({
-        videoId: it.id?.videoId ?? '',
-        title: it.snippet?.title ?? null,
-      }))
-      .filter((v: YouTubeVideo) => Boolean(v.videoId));
-
-    // Filter to videos whose title actually references the career. For
-    // niche or novel roles the YouTube Data API falls back to loosely
-    // related content (generic leadership videos, unrelated vlogs) and
-    // we'd rather show the "no videos found" empty state than mislead
-    // the user with junk matches.
-    const career = extractCareerFromQuery(query);
-    const tokens = careerTokens(career);
-    const videos = rawVideos.filter((v) =>
-      isTitleRelevant(v.title ?? '', career, tokens),
-    );
 
     const result: YouTubeSearchResult = {
       videos,
@@ -143,11 +194,12 @@ export async function GET(req: NextRequest) {
       title: videos[0]?.title ?? null,
     };
 
-    // Save to DB cache. Hits cache for 7 days. Misses (no relevant videos)
-    // cache for 1 day so that a newly-indexed career picks up sooner,
-    // while still avoiding a repeated YouTube round-trip on every page view.
+    // Localized hit caches 7 days. An English-fallback result (or an empty miss)
+    // caches 1 day so newly-indexed local-language content is picked up sooner.
     const cachePayload = result as unknown as Prisma.InputJsonValue;
-    const ttlMs = videos.length > 0 ? 7 * 24 * 60 * 60 * 1000 : 1 * 24 * 60 * 60 * 1000;
+    const ttlMs = videos.length > 0 && !usedFallback
+      ? 7 * 24 * 60 * 60 * 1000
+      : 1 * 24 * 60 * 60 * 1000;
     prisma.videoCache.upsert({
       where: { cacheKey },
       create: { cacheKey, data: cachePayload, expiresAt: new Date(Date.now() + ttlMs) },
