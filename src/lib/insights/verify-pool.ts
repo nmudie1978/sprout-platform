@@ -49,26 +49,37 @@ async function fetchWithTimeout(
   }
 }
 
-/** HEAD first, GET fallback. Returns the response + whether GET was used. */
+/**
+ * HEAD first, GET fallback. Returns the response + whether GET was used.
+ *
+ * A 2xx/3xx HEAD is trusted as-is. But HEAD is unreliable behind CDNs /
+ * anti-bot layers: they often 403/405 a HEAD they would happily serve on GET,
+ * or return a 403 challenge on HEAD while a GET reveals the real status (e.g. a
+ * genuine 404). So on a 4xx/5xx HEAD — or a HEAD that throws — we confirm with
+ * a GET and classify on that.
+ */
 async function fetchHeadThenGet(
   url: string,
 ): Promise<{ response: Response; usedGet: boolean }> {
   try {
-    const response = await fetchWithTimeout(
+    const head = await fetchWithTimeout(
       url,
       { method: "HEAD", headers: REQUEST_HEADERS, redirect: "follow" },
       REQUEST_TIMEOUT_MS,
     );
-    return { response, usedGet: false };
+    if (head.status >= 200 && head.status < 400) {
+      return { response: head, usedGet: false };
+    }
+    // HEAD returned 4xx/5xx — fall through to a confirming GET.
   } catch {
-    // HEAD blocked / errored — fall back to GET.
-    const response = await fetchWithTimeout(
-      url,
-      { method: "GET", headers: REQUEST_HEADERS, redirect: "follow" },
-      REQUEST_TIMEOUT_MS,
-    );
-    return { response, usedGet: true };
+    // HEAD threw (timeout / reset / anti-bot) — fall through to GET.
   }
+  const response = await fetchWithTimeout(
+    url,
+    { method: "GET", headers: REQUEST_HEADERS, redirect: "follow" },
+    REQUEST_TIMEOUT_MS,
+  );
+  return { response, usedGet: true };
 }
 
 // ---------------------------------------------------------------------------
