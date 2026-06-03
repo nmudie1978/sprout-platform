@@ -1153,8 +1153,10 @@ export default function DashboardPage() {
                             isActive
                               ? cn(
                                   goalTitle ? "text-primary font-semibold" : "text-foreground font-semibold",
-                                  // Gently pulse the stage the user is currently on.
-                                  "animate-stage-pulse",
+                                  // Gently pulse the stage the user is currently on —
+                                  // but once every stage is complete (3/3) there's
+                                  // nothing left to nudge toward, so Clarity rests.
+                                  completedLensCount < 3 && "animate-stage-pulse",
                                 )
                               : "text-muted-foreground/40"
                           )}
@@ -1310,7 +1312,7 @@ export default function DashboardPage() {
                         const stageInfo = journeyStageLabel(goal.goalTitle);
                         const stageLabel = stageInfo?.label ?? 'Discover';
                         const stageLetter = stageLabel === 'Clarity' || stageLabel === 'Complete' ? 'C' : stageLabel === 'Understand' ? 'U' : 'D';
-                        const stageTooltip = stageLabel === 'Clarity' || stageLabel === 'Complete' ? 'Clarity — building your roadmap' : stageLabel === 'Understand' ? 'Understand — exploring the role in depth' : 'Discover — exploring what this career is about';
+                        const stageTooltip = stageLabel === 'Clarity' || stageLabel === 'Complete' ? 'Journey Complete' : stageLabel === 'Understand' ? 'Understand — exploring the role in depth' : 'Discover — exploring what this career is about';
                         const stageColor = stageLetter === 'C' ? 'text-primary bg-primary/15' : stageLetter === 'U' ? 'text-primary/80 bg-primary/10' : 'text-muted-foreground bg-muted';
                         return (
                           <tr
