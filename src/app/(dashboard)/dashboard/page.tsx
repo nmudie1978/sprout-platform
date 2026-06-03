@@ -1133,9 +1133,13 @@ export default function DashboardPage() {
                               "h-full rounded-pill transition-all duration-500",
                               isLensDone
                                 ? goalTitle ? "bg-primary" : "bg-foreground/40"
-                                : "bg-transparent"
+                                : isActive
+                                  // In-progress stage = light green; completed = dark green.
+                                  // Gives the bar a flowing dark→light→empty progression.
+                                  ? "bg-teal-300"
+                                  : "bg-transparent"
                             )}
-                            style={{ width: isLensDone ? '100%' : '0%' }}
+                            style={{ width: isLensDone || isActive ? '100%' : '0%' }}
                           />
                         </div>
                         <p
