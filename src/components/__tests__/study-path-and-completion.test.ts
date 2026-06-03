@@ -55,17 +55,17 @@ const MY_JOURNEY_SOURCE = stripComments(MY_JOURNEY_SOURCE_RAW);
 
 // ── Issue 2 — Completion message leakage ─────────────────────────────
 
-describe('Dashboard completion indicator (Issue 2 — positive tests)', () => {
-  it('renders a subtle completion indicator when all lenses are done', () => {
-    // The Dashboard now shows a text-only completion indicator
-    // instead of the full congrats banner.
-    expect(DASHBOARD_SOURCE).toMatch(/journey\.completeIndicator|Journey complete/);
-    // Completion is a text-only indicator — stars are reserved for the interest-level rating.
-    expect(DASHBOARD_SOURCE).not.toMatch(/aria-label="Journey complete"/);
+describe('Dashboard completion block removed (owner request)', () => {
+  // The dashboard My Journey card's post-completion block (the
+  // "You've explored this possible future" indicator + "Explore
+  // another career" CTA) was removed at the owner's request. These
+  // guard against it being reintroduced.
+  it('no longer renders the "explored this possible future" completion indicator', () => {
+    expect(DASHBOARD_SOURCE).not.toMatch(/journey\.completeIndicator/);
   });
 
-  it('gates the indicator on completedLensCount === 3', () => {
-    expect(DASHBOARD_SOURCE).toMatch(/completedLensCount === 3/);
+  it('no longer renders the "Explore another career" completion CTA', () => {
+    expect(DASHBOARD_SOURCE).not.toMatch(/journey\.exploreAnother/);
   });
 });
 
@@ -92,17 +92,6 @@ describe('Dashboard completion indicator (Issue 2 — negative tests)', () => {
     // Match in any line outside comments — simplest check is that
     // the literal emoji doesn't appear anywhere on the Dashboard.
     expect(DASHBOARD_SOURCE).not.toMatch(/🎉/);
-  });
-
-  it('completion indicator is compact — small sizing only', () => {
-    // The subtle indicator uses text-[10px], not
-    // the old text-sm / text-xs font-bold from the congrats banner.
-    // Anchor on the i18n key 'completeIndicator' — that token only
-    // appears on the compact dashboard indicator.
-    const idx = DASHBOARD_SOURCE.indexOf('completeIndicator');
-    expect(idx).toBeGreaterThan(-1);
-    const surround = DASHBOARD_SOURCE.slice(Math.max(0, idx - 200), idx + 100);
-    expect(surround).toMatch(/text-\[10px\]/);
   });
 
   it('my-journey Clarity completion now renders the slim success row, not the old banner', () => {

@@ -1212,32 +1212,6 @@ export default function DashboardPage() {
               );
             })()}
 
-            {/* Subtle completion indicator — replaces the old congrats
-                banner that used to render here. The full celebration
-                stays inside the Clarity tab's ClarityCompletionCard so the
-                congratulatory moment happens in context. On the
-                Dashboard we only need a quiet marker that this journey
-                is complete, consistent across refresh and revisit. */}
-            {completedLensCount === 3 && (
-              <div className="mt-3 space-y-2.5">
-                {/* Quiet acknowledgement that this journey is complete */}
-                <div className="flex items-center gap-1.5 text-[10px] font-medium text-muted-foreground/70">
-                  <span>{t('journey.completeIndicator')}</span>
-                </div>
-                {/* Calm next step so completion isn't a dead-end. Opens the
-                    same career picker as "Change"; preventDefault/stopPropagation
-                    because the whole card is a Link to /my-journey. */}
-                <button
-                  onClick={(e) => { e.preventDefault(); e.stopPropagation(); setShowGoalSheet(true); }}
-                  className="inline-flex items-center gap-1.5 rounded-control border border-primary/20 bg-primary/5 px-2.5 py-1.5 text-xs font-medium text-primary hover:bg-primary/10 transition-colors"
-                >
-                  <Compass className="h-3.5 w-3.5 shrink-0" />
-                  <span>{t('journey.exploreAnother')}</span>
-                  <ArrowRight className="h-3 w-3 shrink-0" />
-                </button>
-              </div>
-            )}
-
           </GlassCard>
           );
           return goalTitle ? (
