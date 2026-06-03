@@ -12,7 +12,7 @@ import { useState, useEffect, useCallback } from 'react';
 export type TimelineStyle = 'rail' | 'stepping';
 
 const STORAGE_KEY = 'endeavrly-timeline-style';
-const DEFAULT: TimelineStyle = 'stepping';
+const DEFAULT: TimelineStyle = 'rail';
 const VALID: TimelineStyle[] = ['rail', 'stepping'];
 
 export function useTimelineStyle() {

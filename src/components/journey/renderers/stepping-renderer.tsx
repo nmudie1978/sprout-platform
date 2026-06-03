@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils';
 import type { RendererProps } from './types';
 import { SharedNode, type StepState } from './shared-node';
 import { Check } from 'lucide-react';
-import { useFoundationData, FOUNDATION_ITEM_ID } from './foundation-banner';
+import { useFoundationData, useAlignmentGate, AlignmentGateBadge, FOUNDATION_ITEM_ID } from './foundation-banner';
 
 const NODE_SIZE = 40;
 const ROW_HEIGHT = 90;
@@ -16,14 +16,27 @@ export function SteppingRenderer({ journey, onItemClick, cardDataMap, onProgress
   const items = journey.items;
   const totalHeight = (items.length + 1) * ROW_HEIGHT + NODE_SIZE;
 
-  const { foundationItem } = useFoundationData({
+  const schoolTrack = journey.schoolTrack;
+  const firstSchool = schoolTrack && schoolTrack.length > 0 ? schoolTrack[0] : null;
+
+  const { foundationItem, subjectHint } = useFoundationData({
     careerTitle,
     userAge,
     journeyStartAge: journey.startAge,
+    extraSubjects: firstSchool?.subjects,
   });
   const foundationStatus = cardDataMap?.[FOUNDATION_ITEM_ID]?.status;
   const foundationDone = foundationStatus === 'done';
   const foundationState: StepState = foundationDone ? 'completed' : 'current';
+
+  // Subject-gap alarm — same data + gate the rail renderer uses, so the
+  // alarm appears in both modes. Only shown when we have something to judge
+  // AND the journey has at least one education step to align against.
+  const educationIndex = useMemo(
+    () => items.findIndex((it) => it.stage === 'education'),
+    [items]
+  );
+  const alignmentGate = useAlignmentGate(subjectHint);
 
   const youAreHereIndex = useMemo(() => {
     for (let i = 0; i < items.length; i++) {
@@ -70,7 +83,7 @@ export function SteppingRenderer({ journey, onItemClick, cardDataMap, onProgress
         className="absolute flex items-start gap-3"
         style={{ top: 0, left: 0, right: 0 }}
       >
-        <div className="flex-shrink-0">
+        <div className="relative flex-shrink-0">
           <SharedNode
             item={foundationItem}
             onClick={() => !readOnly && onItemClick(foundationItem)}
@@ -79,6 +92,13 @@ export function SteppingRenderer({ journey, onItemClick, cardDataMap, onProgress
             progressStatus={foundationStatus}
             onProgressCycle={onProgressCycle && !readOnly ? () => onProgressCycle(FOUNDATION_ITEM_ID) : undefined}
           />
+          {/* Subject-gap alarm — overlaid on the "Now" node so it reads the
+              same as the rail mode's gate marker. */}
+          {alignmentGate && educationIndex >= 0 && (
+            <div className="absolute -right-2 -top-1 z-20">
+              <AlignmentGateBadge gate={alignmentGate} />
+            </div>
+          )}
         </div>
         <SteppingCard
           item={foundationItem}

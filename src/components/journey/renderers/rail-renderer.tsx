@@ -5,8 +5,8 @@ import { type JourneyItem } from '@/lib/journey/career-journey-types';
 import { cn } from '@/lib/utils';
 import type { RendererProps } from './types';
 import { SharedNode, type StepState } from './shared-node';
-import { BookOpen, Check, ShieldCheck, ShieldAlert, AlertCircle } from 'lucide-react';
-import { useFoundationData, FOUNDATION_ITEM_ID } from './foundation-banner';
+import { BookOpen, Check } from 'lucide-react';
+import { useFoundationData, useAlignmentGate, AlignmentGateBadge, FOUNDATION_ITEM_ID } from './foundation-banner';
 
 const NODE_SIZE = 40;
 const H_SPACING = 200;
@@ -63,24 +63,7 @@ export function RailRenderer({ journey, onItemClick, cardDataMap, onProgressCycl
     () => items.findIndex((it) => it.stage === 'education'),
     [items]
   );
-  const alignmentGate = useMemo(() => {
-    if (!subjectHint) return null;
-    const matched = subjectHint.matchedKey.length;
-    const missing = subjectHint.missingKey.length;
-    const total = matched + missing;
-    if (total === 0) return null;
-    let level: 'aligned' | 'partial' | 'gap';
-    if (missing === 0) level = 'aligned';
-    else if (matched === 0) level = 'gap';
-    else level = 'partial';
-    const tooltip =
-      level === 'aligned'
-        ? `Subjects aligned: ${subjectHint.matchedKey.join(', ')}. You meet the core requirements for this path.`
-        : level === 'partial'
-          ? `Gap: you still need ${subjectHint.missingKey.join(', ')}. Aligned so far: ${subjectHint.matchedKey.join(', ')}.`
-          : `No required subjects yet. You'll need ${subjectHint.missingKey.join(', ')} to qualify for this path.`;
-    return { level, tooltip };
-  }, [subjectHint]);
+  const alignmentGate = useAlignmentGate(subjectHint);
 
   return (
     <div className="pb-4 -mx-2 px-2">
@@ -108,31 +91,8 @@ export function RailRenderer({ journey, onItemClick, cardDataMap, onProgressCycl
           const prevX = educationIndex === 0 ? foundationPos.x : positions[educationIndex - 1].x;
           const gateX = (prevX + eduPos.x) / 2 + NODE_SIZE / 2 - 12;
           return (
-            <div
-              className="absolute z-20"
-              style={{ left: gateX, top: careerLineY - 12 }}
-              title={alignmentGate.tooltip}
-              aria-label={alignmentGate.tooltip}
-            >
-              <div
-                className={cn(
-                  'h-6 w-6 rounded-full flex items-center justify-center border-2 shadow-sm bg-background',
-                  alignmentGate.level === 'aligned' &&
-                    'border-emerald-500 text-emerald-500 animate-pulse',
-                  alignmentGate.level === 'partial' &&
-                    'border-rose-500 text-rose-500 animate-pulse',
-                  alignmentGate.level === 'gap' &&
-                    'border-rose-500 text-rose-500 animate-pulse',
-                )}
-              >
-                {alignmentGate.level === 'aligned' ? (
-                  <ShieldCheck className="h-3.5 w-3.5" strokeWidth={2.5} />
-                ) : alignmentGate.level === 'partial' ? (
-                  <ShieldAlert className="h-3.5 w-3.5" strokeWidth={2.5} />
-                ) : (
-                  <AlertCircle className="h-3.5 w-3.5" strokeWidth={2.5} />
-                )}
-              </div>
+            <div className="absolute z-20" style={{ left: gateX, top: careerLineY - 12 }}>
+              <AlignmentGateBadge gate={alignmentGate} />
             </div>
           );
         })()}

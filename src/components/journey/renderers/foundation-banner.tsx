@@ -14,12 +14,75 @@
 
 import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { ShieldCheck, ShieldAlert, AlertCircle } from 'lucide-react';
+import { cn } from '@/lib/utils';
 import { EDUCATION_STAGE_CONFIG, type EducationContext } from '@/lib/education/types';
 import { calculateSubjectAlignment } from '@/lib/education/alignment';
 import type { JourneyItem } from '@/lib/journey/career-journey-types';
 
 /** Stable ID — must match the id other surfaces check against. */
 export const FOUNDATION_ITEM_ID = 'my-foundation';
+
+type SubjectHint = { matchedKey: string[]; missingKey: string[] } | null | undefined;
+
+export interface AlignmentGate {
+  level: 'aligned' | 'partial' | 'gap';
+  tooltip: string;
+}
+
+/**
+ * Derive the subject-alignment gate (aligned / partial / gap) from a
+ * subjectHint. Shared by the rail + stepping renderers so the alarm reads
+ * identically in both modes. Returns null when there's nothing to judge.
+ */
+export function useAlignmentGate(subjectHint: SubjectHint): AlignmentGate | null {
+  return useMemo(() => {
+    if (!subjectHint) return null;
+    const matched = subjectHint.matchedKey.length;
+    const missing = subjectHint.missingKey.length;
+    const total = matched + missing;
+    if (total === 0) return null;
+    let level: AlignmentGate['level'];
+    if (missing === 0) level = 'aligned';
+    else if (matched === 0) level = 'gap';
+    else level = 'partial';
+    const tooltip =
+      level === 'aligned'
+        ? `Subjects aligned: ${subjectHint.matchedKey.join(', ')}. You meet the core requirements for this path.`
+        : level === 'partial'
+          ? `Gap: you still need ${subjectHint.missingKey.join(', ')}. Aligned so far: ${subjectHint.matchedKey.join(', ')}.`
+          : `No required subjects yet. You'll need ${subjectHint.missingKey.join(', ')} to qualify for this path.`;
+    return { level, tooltip };
+  }, [subjectHint]);
+}
+
+/**
+ * The subject-gap alarm badge — a 24px circle with a shield/alert icon.
+ * Positioning is the caller's responsibility (rail places it on the
+ * horizontal rail; stepping overlays it on the Now node).
+ */
+export function AlignmentGateBadge({ gate }: { gate: AlignmentGate }) {
+  return (
+    <div
+      className={cn(
+        'h-6 w-6 rounded-full flex items-center justify-center border-2 shadow-sm bg-background animate-pulse',
+        gate.level === 'aligned'
+          ? 'border-emerald-500 text-emerald-500'
+          : 'border-rose-500 text-rose-500',
+      )}
+      title={gate.tooltip}
+      aria-label={gate.tooltip}
+    >
+      {gate.level === 'aligned' ? (
+        <ShieldCheck className="h-3.5 w-3.5" strokeWidth={2.5} />
+      ) : gate.level === 'partial' ? (
+        <ShieldAlert className="h-3.5 w-3.5" strokeWidth={2.5} />
+      ) : (
+        <AlertCircle className="h-3.5 w-3.5" strokeWidth={2.5} />
+      )}
+    </div>
+  );
+}
 
 interface UseFoundationDataOptions {
   careerTitle?: string;
