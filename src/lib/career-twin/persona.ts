@@ -86,18 +86,12 @@ function pickTone(age: number | null | undefined): {
 function buildIntro(
   career: CareerTwinCareerContext,
   countryContext: string,
-  strengths: string[],
 ): string {
   const place = countryContext && countryContext !== "your country" ? ` in ${countryContext}` : "";
-  const strengthsLine =
-    strengths.length > 0
-      ? ` I leaned into things you already seem drawn to — like ${strengths.slice(0, 2).join(" and ")}.`
-      : "";
   return (
-    `Hey — I'm you, a few years from now. In this version of the story I followed the path to become a ${career.title}${place}.` +
-    `${strengthsLine}` +
-    ` I can tell you what the study journey felt like, what the work is really like, what I struggled with, and what I'd focus on next if I were you today.` +
-    ` Just remember: this is one possible future, not a promise.`
+    `Hi — I'm you, a few years ahead, working as a ${career.title}${place}. ` +
+    `Ask me what the study and the work are really like, or what I'd focus on next. ` +
+    `This is just one possible future, not a promise.`
   );
 }
 
@@ -122,7 +116,7 @@ export function buildPersona(input: BuildPersonaInput): CareerTwinPersona {
     uncertaintyDisclaimer: UNCERTAINTY_DISCLAIMER,
     tone,
     safetyLevel,
-    intro: buildIntro(career, countryContext, strengths),
+    intro: buildIntro(career, countryContext),
     createdAt: now,
     updatedAt: now,
   };
