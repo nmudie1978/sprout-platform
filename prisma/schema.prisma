@@ -255,6 +255,9 @@ model User {
   // Goal-scoped journey data
   journeyGoalData JourneyGoalData[]
 
+  // Career Interest ★1–5 self-ratings (My Library "Exploring" tab)
+  careerInterests CareerInterest[]
+
   // Saved jobs (bookmarks — separate from Application)
 
   // School mode — a TEACHER owns Cohorts; a YOUTH has CohortMemberships.
@@ -2287,6 +2290,31 @@ model JourneyGoalData {
   @@unique([userId, goalId])
   @@index([userId])
   @@index([userId, isActive])
+}
+
+// ============================================
+// CAREER INTEREST — the ★1–5 self-rating a young
+// person gives a career ("possible future"). Server-
+// authoritative source for the My Library "Exploring"
+// tab (ranked, categorised). Keyed by careerId (the
+// slugified career id) to mirror the device-local
+// store it supersedes. Explicit self-rating only —
+// no behavioural tracking. See docs spec
+// 2026-06-02-library-exploring-tab-design.md.
+// ============================================
+
+model CareerInterest {
+  id        String   @id @default(cuid())
+  userId    String
+  careerId  String // Slugified career id (matches Career.id)
+  level     Int // 1–5 (validated at the API layer)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, careerId])
+  @@index([userId])
 }
 
 // ============================================
