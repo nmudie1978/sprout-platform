@@ -40,7 +40,6 @@ import {
   Radar,
   Bookmark,
   Check,
-  Plus,
   ShieldAlert,
   Target,
   User as UserIcon,
@@ -86,12 +85,8 @@ export function CareerTwinView({
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
   const [savedIds, setSavedIds] = useState<Set<string>>(new Set());
-  const [addedIds, setAddedIds] = useState<Set<string>>(new Set());
-  const [pendingStep, setPendingStep] = useState<TwinMessage | null>(null);
-  const [noGoalNotice, setNoGoalNotice] = useState(false);
   const [currentPrimaryTitle, setCurrentPrimaryTitle] = useState<string | null>(null);
   const [primaryGoal, setPrimaryGoalState] = useState<CareerGoal | null>(null);
-  const [secondaryGoal, setSecondaryGoalState] = useState<CareerGoal | null>(null);
   const [showGoalModal, setShowGoalModal] = useState(false);
   const [showGoalPicker, setShowGoalPicker] = useState(false);
   const [settingGoal, setSettingGoal] = useState(false);
@@ -161,7 +156,6 @@ export function CareerTwinView({
         if (cancelled || !data) return;
         setCurrentPrimaryTitle(data.primaryGoal?.title ?? null);
         setPrimaryGoalState(data.primaryGoal ?? null);
-        setSecondaryGoalState(data.secondaryGoal ?? null);
       })
       .catch(() => {
         /* non-blocking: just hide the "replaces X" hint */
@@ -295,28 +289,6 @@ export function CareerTwinView({
       });
     } catch {
       // Non-blocking: keep the optimistic "Saved" state.
-    }
-  };
-
-  const confirmAddStep = async () => {
-    if (!pendingStep || !career) return;
-    const msg = pendingStep;
-    setPendingStep(null);
-    try {
-      const res = await fetch("/api/career-twin/add-next-step", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text: msg.content }),
-      });
-      const data = await res.json();
-      if (data.noActiveGoal) {
-        setNoGoalNotice(true);
-        return;
-      }
-      setAddedIds((prev) => new Set(prev).add(msg.id));
-      track("career_twin_next_step_added", { career: career.title });
-    } catch {
-      // swallow — surfaced via no UI change
     }
   };
 
@@ -571,21 +543,6 @@ export function CareerTwinView({
                             </>
                           )}
                         </button>
-                        <button
-                          onClick={() => setPendingStep(m)}
-                          disabled={addedIds.has(m.id)}
-                          className={cn("inline-flex items-center gap-1 text-[11px] text-muted-foreground disabled:text-emerald-600 transition-colors", accentHoverText)}
-                        >
-                          {addedIds.has(m.id) ? (
-                            <>
-                              <Check className="h-3 w-3" /> {t("added")}
-                            </>
-                          ) : (
-                            <>
-                              <Plus className="h-3 w-3" /> {t("addNextStep")}
-                            </>
-                          )}
-                        </button>
                       </div>
                     )}
                   </div>
@@ -611,12 +568,6 @@ export function CareerTwinView({
           )}
           <div ref={endRef} />
         </div>
-
-        {noGoalNotice && (
-          <div className="px-4 sm:px-6 py-2 text-xs text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/30 border-t">
-            {t("noActiveGoal")}
-          </div>
-        )}
 
         {/* Active-mode starter questions — keep mode chips actionable once a
             conversation has started (the empty-state block above is hidden). */}
@@ -712,30 +663,6 @@ export function CareerTwinView({
         </DialogContent>
       </Dialog>
 
-      {/* Add-next-step confirmation */}
-      <Dialog open={!!pendingStep} onOpenChange={(o) => !o && setPendingStep(null)}>
-        <DialogContent className="sm:max-w-md max-w-[calc(100vw-2rem)]">
-          <DialogHeader>
-            <DialogTitle>{t("confirmAddTitle")}</DialogTitle>
-            <DialogDescription>{t("confirmAddBody")}</DialogDescription>
-          </DialogHeader>
-          {pendingStep && (
-            <div className="rounded-lg bg-muted p-3 text-sm max-h-32 overflow-y-auto">
-              {pendingStep.content}
-            </div>
-          )}
-          <DialogFooter className="flex-col sm:flex-row gap-2 sm:gap-0">
-            <Button variant="outline" onClick={() => setPendingStep(null)} className="w-full sm:w-auto">
-              {t("cancel")}
-            </Button>
-            <Button onClick={confirmAddStep} className="w-full sm:w-auto bg-gradient-to-r from-primary to-teal-600">
-              <Plus className="h-4 w-4 mr-1.5" />
-              {t("confirmAdd")}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
       {/* Change Primary Goal to a different career — reuses the shared
           search/select sheet (handles its own confirm/swap + toast). */}
       <GoalSelectionSheet
@@ -743,7 +670,6 @@ export function CareerTwinView({
         onClose={() => setShowGoalPicker(false)}
         targetSlot="primary"
         primaryGoal={primaryGoal}
-        secondaryGoal={secondaryGoal}
         onSuccess={() => {
           setShowGoalPicker(false);
           track("career_twin_primary_goal_changed");
@@ -754,7 +680,6 @@ export function CareerTwinView({
               if (!data) return;
               setCurrentPrimaryTitle(data.primaryGoal?.title ?? null);
               setPrimaryGoalState(data.primaryGoal ?? null);
-              setSecondaryGoalState(data.secondaryGoal ?? null);
             })
             .catch(() => {});
           queryClient.invalidateQueries({ queryKey: ["goals"] });
