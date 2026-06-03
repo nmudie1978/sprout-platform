@@ -1,6 +1,8 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
+import { careerTagFromParam } from "./career-param";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   ArrowLeft,
@@ -170,9 +172,19 @@ function PromptBlock({
 
 // ── Main Page ─────────────────────────────────────────────────────
 
-export default function ContributePage() {
+function ContributeForm() {
   const [step, setStep] = useState(0);
   const [form, setForm] = useState<FormData>(INITIAL_FORM);
+  const searchParams = useSearchParams();
+  useEffect(() => {
+    const preset = careerTagFromParam(searchParams.get("career"));
+    if (!preset) return;
+    setForm((prev) =>
+      prev.careerTags.some((t) => t.id === preset.id)
+        ? prev
+        : { ...prev, careerTags: [...prev.careerTags, preset] },
+    );
+  }, [searchParams]);
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -622,5 +634,13 @@ export default function ContributePage() {
         </p>
       </div>
     </div>
+  );
+}
+
+export default function ContributePage() {
+  return (
+    <Suspense fallback={null}>
+      <ContributeForm />
+    </Suspense>
   );
 }
