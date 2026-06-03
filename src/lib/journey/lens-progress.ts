@@ -70,6 +70,7 @@ export function setDiscoverConfirmed(
   } catch {
     /* ignore */
   }
+  persistLensToServer(careerTitle);
 }
 
 export function isDiscoverConfirmed(
@@ -106,6 +107,7 @@ export function markClarityActive(careerTitle: string | null | undefined) {
   } catch {
     /* ignore */
   }
+  persistLensToServer(careerTitle);
 }
 
 /** @deprecated Use `markClarityActive` instead. Kept for backward compatibility. */
@@ -138,6 +140,7 @@ export function setUnderstandConfirmed(
   } catch {
     /* ignore */
   }
+  persistLensToServer(careerTitle);
 }
 
 export function isUnderstandConfirmed(
@@ -148,6 +151,64 @@ export function isUnderstandConfirmed(
     return window.localStorage.getItem(understandKey(careerTitle)) === '1';
   } catch {
     return false;
+  }
+}
+
+export type LensStep = 'discover' | 'understand' | 'clarity';
+
+/** The lens steps currently marked done for a career (read from the cache). */
+export function currentLensSteps(careerTitle: string | null | undefined): LensStep[] {
+  const steps: LensStep[] = [];
+  if (isDiscoverConfirmed(careerTitle)) steps.push('discover');
+  if (isUnderstandConfirmed(careerTitle)) steps.push('understand');
+  if (isClarityActive(careerTitle)) steps.push('clarity');
+  return steps;
+}
+
+/**
+ * Write-through: persist a career's current lens completion to the server
+ * (`JourneyGoalData.journeyCompletedSteps` via the idempotent union endpoint),
+ * keyed by the goal slug, so progress survives logout and follows the user
+ * across devices. Fire-and-forget — localStorage stays the optimistic offline
+ * cache the getters read synchronously. The endpoint only touches existing
+ * goal rows (completion only matters for a career you're actually on) and
+ * unions (completion is monotonic), so this never clobbers another device.
+ */
+function persistLensToServer(careerTitle: string | null | undefined) {
+  if (!careerTitle || typeof window === 'undefined') return;
+  const goalId = careerKey(careerTitle);
+  if (!goalId) return;
+  const steps = currentLensSteps(careerTitle);
+  if (steps.length === 0) return;
+  try {
+    void fetch('/api/journey/completion/sync', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'same-origin',
+      keepalive: true,
+      body: JSON.stringify({ completions: { [goalId]: steps } }),
+    }).catch(() => {});
+  } catch {
+    /* offline — the cache keeps the value until next hydration */
+  }
+}
+
+/**
+ * Apply the server's completed steps to the localStorage cache WITHOUT echoing
+ * back to the server. Used by lens-sync on load so synchronous reads reflect
+ * server state. Additive only (monotonic) — never clears a locally-set flag.
+ */
+export function cacheServerLensSteps(
+  careerTitle: string | null | undefined,
+  steps: readonly string[],
+) {
+  if (!careerTitle || typeof window === 'undefined') return;
+  try {
+    if (steps.includes('discover')) window.localStorage.setItem(discoverKey(careerTitle), '1');
+    if (steps.includes('understand')) window.localStorage.setItem(understandKey(careerTitle), '1');
+    if (steps.includes('clarity')) window.localStorage.setItem(clarityActiveKey(careerTitle), '1');
+  } catch {
+    /* private tab — skip cache write */
   }
 }
 
