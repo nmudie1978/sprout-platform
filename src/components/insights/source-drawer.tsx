@@ -16,6 +16,7 @@ import {
   Calendar,
   Clock,
   BookOpen,
+  History,
 } from "lucide-react";
 import {
   Sheet,
@@ -27,6 +28,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import type { StatDatum } from "@/lib/industry-insights/stat-types";
+import { archiveUrl } from "@/lib/insights/archive-url";
 
 interface SourceDrawerProps {
   stat: StatDatum | null;
@@ -77,15 +79,28 @@ export function SourceDrawer({ stat, open, onOpenChange }: SourceDrawerProps) {
               Source
             </div>
             <p className="text-sm font-medium">{provenance.sourceName}</p>
-            <a
-              href={provenance.sourceUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-sm text-primary hover:underline"
-            >
-              View source
-              <ExternalLink className="h-3.5 w-3.5" />
-            </a>
+            <div className="flex flex-col gap-1.5">
+              <a
+                href={provenance.sourceUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 text-sm text-primary hover:underline"
+              >
+                View source
+                <ExternalLink className="h-3.5 w-3.5" />
+              </a>
+              {/* Graceful fallback: a rotted source link should never strand
+                  the user on a 404 — the archived copy is always reachable. */}
+              <a
+                href={archiveUrl(provenance.sourceUrl)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground hover:underline"
+              >
+                <History className="h-3 w-3" />
+                View archived copy
+              </a>
+            </div>
           </div>
 
           {/* Report title */}
