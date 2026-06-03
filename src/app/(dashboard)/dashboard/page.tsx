@@ -1,7 +1,6 @@
 "use client";
 
 import { toast } from "@/hooks/use-toast";
-import { ToastAction } from "@/components/ui/toast";
 
 /**
  * DASHBOARD PAGE — Information-Rich Overview
@@ -701,20 +700,10 @@ export default function DashboardPage() {
       queryClient.invalidateQueries({ queryKey: ["goal-data"] });
       queryClient.invalidateQueries({ queryKey: ["discover-reflections"] });
       queryClient.invalidateQueries({ queryKey: ["career-insights"] });
-      toast({
-        title: `${goalTitle} set as your career goal`,
-        description: t('switchGoal.toastDescription'),
-        duration: 8000,
-        variant: "success",
-        action: (
-          <ToastAction
-            altText={t('switchGoal.goToJourney')}
-            onClick={() => window.location.assign("/my-journey#discover")}
-          >
-            {t('switchGoal.goToJourney')}
-          </ToastAction>
-        ),
-      });
+      // No success toast here: the caller hard-navigates straight to My
+      // Journey, so a toast would only flash for a frame before the page
+      // tears down (it was unreadable). Landing on the career's journey is
+      // the confirmation.
     },
     onError: () => {
       toast({ title: 'Failed to switch goal. Please try again.', variant: "destructive" });
