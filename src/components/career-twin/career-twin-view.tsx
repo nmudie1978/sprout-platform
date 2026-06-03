@@ -16,6 +16,7 @@ import { useTranslations } from "next-intl";
 import { track } from "@vercel/analytics";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "@/hooks/use-toast";
+import { cn } from "@/lib/utils";
 import { createEmptyGoal, type CareerGoal } from "@/lib/goals/types";
 import { markTwinAsked } from "@/lib/career-twin/asked-signal";
 import { GoalSelectionSheet } from "@/components/goals/GoalSelectionSheet";
@@ -66,8 +67,11 @@ interface CareerInfo {
 
 export function CareerTwinView({
   initialCareerId,
+  embedded = false,
 }: {
   initialCareerId?: string | null;
+  /** Rendered inside My Journey → Clarity: calmer chrome, no goal controls. */
+  embedded?: boolean;
 }) {
   const t = useTranslations("careerTwin");
 
@@ -361,23 +365,32 @@ export function CareerTwinView({
   return (
     <div className="space-y-4">
       {/* Header card */}
-      <Card className="border-2 overflow-hidden">
-        <div className="bg-gradient-to-r from-primary/10 to-teal-500/10 px-4 py-4 sm:px-6">
-          <div className="flex items-start gap-3">
-            <div className="p-2.5 rounded-2xl bg-gradient-to-br from-primary to-teal-600 shrink-0">
-              <Sparkles className="h-5 w-5 text-white" />
-            </div>
-            <div className="min-w-0">
-              <div className="flex items-center gap-2 flex-wrap">
-                <h2 className="font-bold text-lg leading-tight">{t("title")}</h2>
-                <Badge variant="secondary" className="shrink-0">
-                  {career.emoji ? `${career.emoji} ` : ""}
-                  {career.title}
-                </Badge>
+      <Card className={cn("overflow-hidden", embedded ? "border" : "border-2")}>
+        <div className={cn("px-4 py-4 sm:px-6", !embedded && "bg-gradient-to-r from-primary/10 to-teal-500/10")}>
+          {!embedded ? (
+            <div className="flex items-start gap-3">
+              <div className="p-2.5 rounded-2xl bg-gradient-to-br from-primary to-teal-600 shrink-0">
+                <Sparkles className="h-5 w-5 text-white" />
               </div>
-              <p className="text-sm text-muted-foreground mt-0.5">{t("subtitle")}</p>
+              <div className="min-w-0">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <h2 className="font-bold text-lg leading-tight">{t("title")}</h2>
+                  <Badge variant="secondary" className="shrink-0">
+                    {career.emoji ? `${career.emoji} ` : ""}
+                    {career.title}
+                  </Badge>
+                </div>
+                <p className="text-sm text-muted-foreground mt-0.5">{t("subtitle")}</p>
+              </div>
             </div>
-          </div>
+          ) : (
+            // Embedded in Clarity: the tab already reads "Ask Future Me", so keep
+            // it calm — just a small career badge, no loud header.
+            <Badge variant="secondary" className="shrink-0">
+              {career.emoji ? `${career.emoji} ` : ""}
+              {career.title}
+            </Badge>
+          )}
 
           {/* Future-self intro */}
           {intro && (
@@ -394,7 +407,10 @@ export function CareerTwinView({
           )}
 
           {/* Primary Goal action — set/change this career as the user's goal
-              without leaving Career Twin (no redirect to Career Radar). */}
+              without leaving Career Twin (no redirect to Career Radar).
+              Hidden when embedded in Clarity: the journey's goal is fixed
+              there, so there is no "change goal" affordance at all. */}
+          {!embedded && (
           <div className="mt-4 flex items-center gap-2 flex-wrap">
             {isPrimaryGoal ? (
               <div className="inline-flex items-center gap-1.5 rounded-full bg-primary/15 text-primary px-3 py-1.5 text-xs font-semibold">
@@ -423,12 +439,25 @@ export function CareerTwinView({
               {t("changeGoal")}
             </Button>
           </div>
+          )}
         </div>
 
-        {/* Reality-check disclaimer */}
-        <div className="flex items-start gap-2 px-4 sm:px-6 py-2.5 bg-amber-50 dark:bg-amber-950/30 border-y border-amber-200/60 dark:border-amber-900/40">
-          <ShieldAlert className="h-4 w-4 text-amber-600 dark:text-amber-400 mt-0.5 shrink-0" />
-          <p className="text-xs text-amber-800 dark:text-amber-300">
+        {/* Reality-check disclaimer — calmer (muted) when embedded in Clarity,
+            amber on the standalone Career Twin page. */}
+        <div className={cn(
+          "flex items-start gap-2 px-4 sm:px-6 py-2.5 border-y",
+          embedded
+            ? "bg-muted/30 border-border/30"
+            : "bg-amber-50 dark:bg-amber-950/30 border-amber-200/60 dark:border-amber-900/40",
+        )}>
+          <ShieldAlert className={cn(
+            "h-4 w-4 mt-0.5 shrink-0",
+            embedded ? "text-muted-foreground/70" : "text-amber-600 dark:text-amber-400",
+          )} />
+          <p className={cn(
+            "text-xs",
+            embedded ? "text-muted-foreground" : "text-amber-800 dark:text-amber-300",
+          )}>
             <span className="font-semibold">{t("realityCheck")}: </span>
             {t("disclaimer")}
           </p>

@@ -2455,7 +2455,7 @@ function ClarityTab({ goalTitle, career }: { goalTitle: string | null; career: C
             here never navigates away, so the user keeps their place in Clarity. */}
         {claritySubTab === 'ask-future-me' && (
           <div className="p-4">
-            <CareerTwinView initialCareerId={career?.id ?? null} />
+            <CareerTwinView initialCareerId={career?.id ?? null} embedded />
           </div>
         )}
 
