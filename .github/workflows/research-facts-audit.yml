@@ -1,0 +1,43 @@
+name: Research facts freshness audit
+
+# Runs monthly (1st, 06:00 UTC) and on demand. Reports research facts +
+# evidence that are expiring or already expired against the 24-month recency
+# rule (MAX_FACT_AGE_MONTHS / MAX_EVIDENCE_AGE_MONTHS). The script exits 1 when
+# anything is already expired, so this run goes RED as an early warning — fix
+# the data (replace the stat with a fresher source) BEFORE it hard-blocks
+# commits/CI. The status JSON is uploaded as an artifact for triage.
+#
+# Read-only: never edits data, never deploys. A red run here is the signal,
+# not a regression.
+
+on:
+  schedule:
+    - cron: '0 6 1 * *'
+  workflow_dispatch: {}
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Audit research facts freshness
+        id: audit
+        run: npm run refresh:research-facts -- --json
+
+      - name: Upload status report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: research-facts-status
+          path: scripts/output/research-facts-status.json
+          if-no-files-found: warn
