@@ -52,6 +52,7 @@ import { computeLensProgress, isJourneySnapshotWorthy, journeyStageLabel } from 
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { OrientationWalkthrough } from "@/components/onboarding/orientation-walkthrough";
+import { LanguageDropdown } from "@/components/language-dropdown";
 import { CareerDetailSheet } from "@/components/career-detail-sheet";
 import { getAllCareers, getSectorForCareer } from "@/lib/career-pathways";
 import {
@@ -949,7 +950,10 @@ export default function DashboardPage() {
                 <Compass className="h-3.5 w-3.5" />
               </button>
             )}
-            {/* Language switcher now lives in the persistent AppTopBar */}
+            {/* Language switcher — compact icon sitting beside the walkthrough
+                control. This is the app's language entry point (the persistent
+                top bar was removed to save space). */}
+            <LanguageDropdown iconOnly />
             <span className="text-sm text-foreground/85">
               {dateStr}
             </span>
