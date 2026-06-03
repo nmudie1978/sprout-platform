@@ -185,7 +185,7 @@ const config: Config = {
         shine: "shine var(--duration) infinite linear",
         "glow-spin": "glow-spin 12s linear infinite",
         "glow-pulse": "glow-pulse 3s ease-in-out infinite",
-        "stage-pulse": "stage-pulse 1.8s ease-in-out infinite",
+        "stage-pulse": "stage-pulse 3s ease-in-out infinite",
       },
     },
   },
