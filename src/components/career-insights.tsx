@@ -73,8 +73,8 @@ function RecommendedCareersSection({
             <CardTitle className="text-lg">Recommended Careers</CardTitle>
             <CardDescription>
               {hasAspiration
-                ? `Based on your primary goal: "${careerAspiration}"`
-                : "Based on your primary goal"}
+                ? `Based on your career goal: "${careerAspiration}"`
+                : "Based on your career goal"}
             </CardDescription>
           </div>
           <div className="flex items-center gap-2">

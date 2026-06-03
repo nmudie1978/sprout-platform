@@ -179,7 +179,7 @@ export function getEventTitle(type: TimelineEventTypeId, metadata?: Record<strin
     STRENGTHS_CONFIRMED: metadata?.strength ? `Confirmed Strength: ${metadata.strength}` : 'Strengths Confirmed',
     CAREER_EXPLORED: metadata?.career ? `Explored: ${metadata.career}` : 'Career Explored',
     ROLE_DEEP_DIVE_COMPLETED: metadata?.role ? `Deep Dive: ${metadata.role}` : 'Role Deep Dive Completed',
-    PRIMARY_GOAL_SET: metadata?.goal ? `Goal Set: ${metadata.goal}` : 'Primary Goal Set',
+    PRIMARY_GOAL_SET: metadata?.goal ? `Goal Set: ${metadata.goal}` : 'Career goal set',
     INDUSTRY_OUTLOOK_REVIEWED: metadata?.industry ? `Reviewed: ${metadata.industry}` : 'Industry Outlook Reviewed',
     REQUIREMENTS_REVIEWED: metadata?.role ? `Requirements: ${metadata.role}` : 'Requirements Reviewed',
     PLAN_CREATED: metadata?.role ? `Plan Created: ${metadata.role}` : 'Action Plan Created',

@@ -11,14 +11,12 @@ import {
   DialogHeader,
   DialogTitle,
   DialogDescription,
-  DialogFooter,
 } from "@/components/ui/dialog";
 import {
   TrendingUp,
   TrendingDown,
   Minus,
   Banknote,
-  Target,
   Check,
   Loader2,
   Star,
@@ -30,7 +28,7 @@ import {
 import { toast } from "@/hooks/use-toast";
 import type { Career } from "@/lib/career-pathways";
 import type { LocalizedCareerView } from "@/lib/career-localization/types";
-import type { CareerGoal, GoalSlot } from "@/lib/goals/types";
+import type { CareerGoal } from "@/lib/goals/types";
 import { createEmptyGoal } from "@/lib/goals/types";
 import { syncGuidanceGoal } from "@/lib/guidance/rules";
 import { useCuriositySaves } from "@/hooks/use-curiosity-saves";
@@ -64,85 +62,6 @@ const growthConfig = {
   },
 };
 
-// Swap Modal Component
-function SwapGoalModal({
-  open,
-  onClose,
-  careerTitle,
-  primaryGoal,
-  secondaryGoal,
-  onSwap,
-  isPending,
-}: {
-  open: boolean;
-  onClose: () => void;
-  careerTitle: string;
-  primaryGoal: CareerGoal | null;
-  secondaryGoal: CareerGoal | null;
-  onSwap: (slot: GoalSlot) => void;
-  isPending: boolean;
-}) {
-  return (
-    <Dialog open={open} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="max-w-sm">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <ArrowLeftRight className="h-5 w-5 text-teal-500" />
-            Replace a Goal
-          </DialogTitle>
-          <DialogDescription>
-            Both goal slots are full. Choose which goal to replace with "{careerTitle}".
-          </DialogDescription>
-        </DialogHeader>
-
-        <div className="space-y-3 py-4">
-          {primaryGoal && (
-            <button
-              onClick={() => onSwap("primary")}
-              disabled={isPending}
-              className="w-full p-3 rounded-lg border-2 border-teal-200 dark:border-teal-800 hover:border-teal-400 dark:hover:border-teal-600 transition-colors text-left group"
-            >
-              <div className="flex items-center gap-2 mb-1">
-                <Star className="h-4 w-4 text-teal-500 fill-teal-500" />
-                <span className="text-xs font-medium text-muted-foreground">
-                  Replace Primary Goal
-                </span>
-              </div>
-              <p className="font-medium group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
-                {primaryGoal.title}
-              </p>
-            </button>
-          )}
-
-          {secondaryGoal && (
-            <button
-              onClick={() => onSwap("secondary")}
-              disabled={isPending}
-              className="w-full p-3 rounded-lg border hover:border-slate-400 dark:hover:border-slate-600 transition-colors text-left group"
-            >
-              <div className="flex items-center gap-2 mb-1">
-                <Target className="h-4 w-4 text-slate-500" />
-                <span className="text-xs font-medium text-muted-foreground">
-                  Replace Secondary Goal
-                </span>
-              </div>
-              <p className="font-medium group-hover:text-slate-600 dark:group-hover:text-slate-400 transition-colors">
-                {secondaryGoal.title}
-              </p>
-            </button>
-          )}
-        </div>
-
-        <DialogFooter>
-          <Button variant="ghost" onClick={onClose} disabled={isPending}>
-            Cancel
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
-  );
-}
-
 export function CareerDetailSheet({
   career,
   onClose,
@@ -150,9 +69,7 @@ export function CareerDetailSheet({
 }: CareerDetailSheetProps) {
   const { data: session, update: refreshSession } = useSession();
   const queryClient = useQueryClient();
-  const [addedAs, setAddedAs] = useState<GoalSlot | null>(null);
-  const [showSwapModal, setShowSwapModal] = useState(false);
-  const [savingSlot, setSavingSlot] = useState<GoalSlot | null>(null);
+  const [isPrimaryGoal, setIsPrimaryGoal] = useState(false);
   const { saveCuriosity, removeCuriosity, isSaved: isCuriositySaved } = useCuriositySaves();
 
   const isYouth = session?.user?.role === "YOUTH";
@@ -172,36 +89,30 @@ export function CareerDetailSheet({
   });
 
   const primaryGoal: CareerGoal | null = goalsData?.primaryGoal || null;
-  const secondaryGoal: CareerGoal | null = goalsData?.secondaryGoal || null;
 
   // Reset state when career changes
   useEffect(() => {
     if (career) {
-      setAddedAs(null);
-      setShowSwapModal(false);
+      setIsPrimaryGoal(false);
     }
   }, [career?.id]);
 
-  // Check if career is already a goal
+  // Check if this career is already the career goal
   useEffect(() => {
     if (career && goalsData) {
-      if (primaryGoal?.title === career.title) {
-        setAddedAs("primary");
-      } else if (secondaryGoal?.title === career.title) {
-        setAddedAs("secondary");
-      }
+      setIsPrimaryGoal(primaryGoal?.title === career.title);
     }
-  }, [career, goalsData, primaryGoal, secondaryGoal]);
+  }, [career, goalsData, primaryGoal]);
 
-  // Mutation to set career as goal
+  // Mutation to set career as the career goal
   const setGoalMutation = useMutation({
-    mutationFn: async ({ slot, title }: { slot: GoalSlot; title: string }) => {
+    mutationFn: async ({ title }: { title: string }) => {
       const goal = createEmptyGoal(title);
       const putGoal = () =>
         fetch("/api/goals", {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ slot, goal }),
+          body: JSON.stringify({ slot: "primary", goal }),
         });
 
       let response = await putGoal();
@@ -230,21 +141,17 @@ export function CareerDetailSheet({
         err.code = body?.code;
         throw err;
       }
-      return { slot };
+      return;
     },
-    onSuccess: ({ slot }) => {
-      setAddedAs(slot);
-      setShowSwapModal(false);
+    onSuccess: () => {
+      setIsPrimaryGoal(true);
       toast({
-        title: slot === "primary" ? "Set as Primary Goal!" : "Set as Secondary Goal!",
-        description: "View and customise your goals on the Goals page.",
+        title: "Set as your career goal!",
+        description: "View and customise your goal on the Goals page.",
         variant: "success",
       });
-      // Sync guidance dismissals when primary goal changes
-      if (slot === "primary") {
-        const title = career?.title ?? null;
-        syncGuidanceGoal(title);
-      }
+      // Sync guidance dismissals when the career goal changes
+      syncGuidanceGoal(career?.title ?? null);
       // Invalidate all goal-dependent caches so UI reflects the new goal
       queryClient.removeQueries({ queryKey: ["personal-career-timeline"] });
       queryClient.invalidateQueries({ queryKey: ["goals"] });
@@ -277,43 +184,17 @@ export function CareerDetailSheet({
 
   const handleSetAsPrimary = () => {
     if (!career || !isYouth) return;
-
-    // If both slots are full, show swap modal
-    if (primaryGoal && secondaryGoal) {
-      setShowSwapModal(true);
-      return;
-    }
-
-    setSavingSlot("primary");
-    setGoalMutation.mutate({ slot: "primary", title: career.title });
-  };
-
-  const handleSetAsSecondary = () => {
-    if (!career || !isYouth) return;
-
-    // If both slots are full, show swap modal
-    if (primaryGoal && secondaryGoal) {
-      setShowSwapModal(true);
-      return;
-    }
-
-    setSavingSlot("secondary");
-    setGoalMutation.mutate({ slot: "secondary", title: career.title });
-  };
-
-  const handleSwap = (slot: GoalSlot) => {
-    if (!career) return;
-    setSavingSlot(slot);
-    setGoalMutation.mutate({ slot, title: career.title });
+    // Replaces any existing career goal directly. The journey state for the
+    // old goal is snapshotted server-side, so this is reversible.
+    setGoalMutation.mutate({ title: career.title });
   };
 
   // Get career details (use defaults if career is null)
   const growth = career ? growthConfig[career.growthOutlook] : growthConfig.medium;
   const GrowthIcon = growth.icon;
 
-  // Determine which buttons to show
-  const showPrimaryButton = !addedAs;
-  const showSecondaryButton = !addedAs && primaryGoal !== null;
+  // Show the "Set as your career goal" button unless it already is the goal.
+  const showPrimaryButton = !isPrimaryGoal;
 
   return (
     <>
@@ -409,10 +290,10 @@ export function CareerDetailSheet({
                 {/* Journey nudge */}
                 <div className="rounded-lg border border-teal-500/20 bg-teal-500/5 p-3">
                   <p className="text-xs font-medium text-teal-700 dark:text-teal-400">
-                    Set this as your Primary Goal to explore it properly
+                    Set this as your career goal to explore it properly
                   </p>
                   <p className="text-[10px] text-muted-foreground mt-0.5">
-                    Your Primary Goal is the career you focus on first. My Journey gives you the full picture \u2014 and you can change it anytime.
+                    Your career goal is the career you focus on first. My Journey gives you the full picture \u2014 and you can change it anytime.
                   </p>
                 </div>
 
@@ -421,16 +302,16 @@ export function CareerDetailSheet({
                   {isYouth && (
                     <>
                       {/* Already added indicator */}
-                      {addedAs && (
+                      {isPrimaryGoal && (
                         <div className="flex items-center justify-center gap-2 p-2 rounded-lg bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-900">
                           <Check className="h-4 w-4 text-green-600" />
                           <span className="text-sm font-medium text-green-700 dark:text-green-400">
-                            Added as {addedAs === "primary" ? "Primary" : "Secondary"} Goal
+                            Your career goal
                           </span>
                         </div>
                       )}
 
-                      {/* Set as Primary Goal button */}
+                      {/* Set as your career goal button */}
                       {showPrimaryButton && (
                         <Button
                           className="w-full bg-teal-600 hover:bg-teal-700"
@@ -438,7 +319,7 @@ export function CareerDetailSheet({
                           onClick={handleSetAsPrimary}
                           disabled={setGoalMutation.isPending}
                         >
-                          {setGoalMutation.isPending && savingSlot === "primary" ? (
+                          {setGoalMutation.isPending ? (
                             <>
                               <Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" />
                               Setting...
@@ -446,30 +327,7 @@ export function CareerDetailSheet({
                           ) : (
                             <>
                               <Star className="h-3.5 w-3.5 mr-1.5" />
-                              Set as Primary Goal
-                            </>
-                          )}
-                        </Button>
-                      )}
-
-                      {/* Set as Secondary Goal button */}
-                      {showSecondaryButton && (
-                        <Button
-                          variant="outline"
-                          className="w-full"
-                          size="sm"
-                          onClick={handleSetAsSecondary}
-                          disabled={setGoalMutation.isPending}
-                        >
-                          {setGoalMutation.isPending && savingSlot === "secondary" ? (
-                            <>
-                              <Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" />
-                              Setting...
-                            </>
-                          ) : (
-                            <>
-                              <Target className="h-3.5 w-3.5 mr-1.5" />
-                              Set as Secondary Goal
+                              Set as your career goal
                             </>
                           )}
                         </Button>
@@ -498,19 +356,6 @@ export function CareerDetailSheet({
           )}
         </DialogContent>
       </Dialog>
-
-      {/* Swap Modal */}
-      {career && (
-        <SwapGoalModal
-          open={showSwapModal}
-          onClose={() => setShowSwapModal(false)}
-          careerTitle={career.title}
-          primaryGoal={primaryGoal}
-          secondaryGoal={secondaryGoal}
-          onSwap={handleSwap}
-          isPending={setGoalMutation.isPending}
-        />
-      )}
     </>
   );
 }

@@ -9,7 +9,7 @@
  * available as a subtle icon the user can tap any time.
  *
  * Tips are ordered to match the natural flow:
- *   1. Choose your Primary Goal
+ *   1. Choose your career goal
  *   2. Explore your journey (Discover / Understand / Clarity)
  *   3. Play through your roadmap
  *   4. Sharpen your match (Career Radar)
@@ -39,9 +39,9 @@ const TIPS = [
   {
     icon: Compass,
     color: "text-teal-400",
-    title: "Choose your Primary Goal",
+    title: "Choose your career goal",
     description:
-      "Head to Career Radar, find something that sparks your interest, and set it as your Primary Goal \u2014 the career you want to explore properly first. Everything else builds from that choice. You can change it anytime.",
+      "Head to Career Radar, find something that sparks your interest, and set it as your career goal \u2014 the career you want to explore properly. Everything else builds from that choice. You can change it anytime.",
   },
   {
     icon: Route,
@@ -94,7 +94,7 @@ export function DashboardGuideTips({
       const seen = window.localStorage.getItem(STORAGE_KEY) === "1";
       setHasSeen(seen);
       // Auto-open ONLY for genuinely new users: no localStorage flag
-      // AND no primary goal set (proves they haven't used the app).
+      // AND no career goal set (proves they haven't used the app).
       if (!seen && !hasGoal) {
         const t = setTimeout(() => setOpen(true), 1200);
         return () => clearTimeout(t);

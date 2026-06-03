@@ -29,11 +29,14 @@ export interface CareerGoal {
 // API response for goals
 export interface GoalsResponse {
   primaryGoal: CareerGoal | null;
-  secondaryGoal: CareerGoal | null;
 }
 
-// Goal slot type
-export type GoalSlot = "primary" | "secondary";
+// Goal slot type. Only the Primary goal exists — the Secondary goal was
+// removed (it was a redundant single-slot duplicate of Saved careers). The
+// `slot` plumbing is kept as a single-member type so the goals API can grow a
+// second slot later without a signature change, and so any stray "secondary"
+// reference fails typecheck.
+export type GoalSlot = "primary";
 
 // Suggested actions based on goal
 export interface SuggestedAction {
@@ -128,11 +131,11 @@ export function createGoalWithMilestones(
   };
 }
 
-// Onboarding suggestions when no primary goal
+// Onboarding suggestions when no career goal
 export const ONBOARDING_SUGGESTIONS: SuggestedAction[] = [
   { id: "1", text: "Complete your profile", icon: "user", href: "/profile" },
   { id: "2", text: "Explore different careers", icon: "compass", href: "/careers" },
   { id: "3", text: "Take the career quiz", icon: "clipboard", href: "/growth/explore" },
   { id: "4", text: "Browse available jobs", icon: "briefcase", href: "/jobs" },
-  { id: "5", text: "Set your first Primary Goal", icon: "target", href: "/careers" },
+  { id: "5", text: "Set your first career goal", icon: "target", href: "/careers" },
 ];

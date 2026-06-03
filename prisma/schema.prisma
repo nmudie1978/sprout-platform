@@ -354,9 +354,10 @@ model YouthProfile {
   // Used by Career Radar to surface aligned roles across prestige tiers.
   discoveryPreferences Json?
 
-  // Structured Career Goals (Primary + Secondary)
+  // Structured Career Goal (single Primary goal — the one the journey follows).
+  // The former `secondaryGoal` was removed: "other careers I'm considering" is
+  // already covered by Saved careers + interest levels, so it was redundant.
   primaryGoal        Json? // {title, status, confidence, timeframe, why, nextSteps[], skills[]}
-  secondaryGoal      Json? // Same structure, optional
   generatedTimeline  Json? // Cached AI-generated career timeline
   foundationCardData Json? // User-editable "Your Foundation" step — persists across goal changes
 

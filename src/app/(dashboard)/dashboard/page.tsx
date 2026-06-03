@@ -576,7 +576,7 @@ export default function DashboardPage() {
     queryKey: ["goals"],
     queryFn: async () => {
       const response = await fetch("/api/goals");
-      if (!response.ok) return { primaryGoal: null, secondaryGoal: null };
+      if (!response.ok) return { primaryGoal: null };
       return response.json();
     },
     enabled: session?.user.role === "YOUTH",
@@ -702,7 +702,7 @@ export default function DashboardPage() {
       queryClient.invalidateQueries({ queryKey: ["discover-reflections"] });
       queryClient.invalidateQueries({ queryKey: ["career-insights"] });
       toast({
-        title: `${goalTitle} set as your Primary Goal`,
+        title: `${goalTitle} set as your career goal`,
         description: t('switchGoal.toastDescription'),
         duration: 8000,
         variant: "success",
@@ -723,7 +723,6 @@ export default function DashboardPage() {
 
   const interestLevels = useAllInterestLevels();
   const primaryGoal = goalsData?.primaryGoal ?? null;
-  const _secondaryGoal = goalsData?.secondaryGoal; // Available for future use
   const goalTitle = primaryGoal?.title ?? null;
 
   // ── Journey progress (Discover / Understand / Clarity) ─────────
@@ -1634,7 +1633,6 @@ export default function DashboardPage() {
         onClose={() => setShowGoalSheet(false)}
         targetSlot="primary"
         primaryGoal={primaryGoal}
-        secondaryGoal={goalsData?.secondaryGoal ?? null}
         onSuccess={() => setShowGoalSheet(false)}
       />
 

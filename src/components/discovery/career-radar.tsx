@@ -496,14 +496,14 @@ const RADAR_TIPS = [
     color: "text-teal-400",
     title: "Tap any dot to explore",
     description:
-      "Each dot is a career that matches your interests. Tap one to see salary, skills, and growth outlook \u2014 and set it as your Primary Goal if it sparks something.",
+      "Each dot is a career that matches your interests. Tap one to see salary, skills, and growth outlook \u2014 and set it as your career goal if it sparks something.",
   },
   {
     icon: Target,
     color: "text-pink-400",
     title: "Closer to centre = stronger match",
     description:
-      "The radar places your best matches near the centre. Pink glowing dots are your top matches. Your Primary Goal always has a gold ring around it.",
+      "The radar places your best matches near the centre. Pink glowing dots are your top matches. Your career goal always has a gold ring around it.",
   },
   {
     icon: Layers,
@@ -851,7 +851,7 @@ interface PlacedDot {
   cy: number;
   topMatch?: boolean; // First few overall matches — highlighted distinctly
   isActiveGoal?: boolean; // True when this dot is one of the user's active goals
-  goalSlot?: "primary" | "secondary"; // Which slot, if isActiveGoal
+  goalSlot?: "primary"; // Which slot, if isActiveGoal
 }
 
 const TOP_MATCH_COUNT = 3;
@@ -944,7 +944,6 @@ function careerInitials(title: string): string {
 function placeDots(
   careers: Career[],
   primaryGoalId?: string | null,
-  secondaryGoalId?: string | null,
   strongSize: number = STRONG_BAND_SIZE,
   totalSize: number = STRONG_BAND_SIZE + GOOD_BAND_SIZE,
 ): PlacedDot[] {
@@ -1010,15 +1009,9 @@ function placeDots(
         cx: CENTER + r * Math.cos(angleRad),
         cy: CENTER + r * Math.sin(angleRad),
         topMatch: p.idx < TOP_MATCH_COUNT,
-        isActiveGoal:
-          (!!primaryGoalId && p.career.id === primaryGoalId) ||
-          (!!secondaryGoalId && p.career.id === secondaryGoalId),
+        isActiveGoal: !!primaryGoalId && p.career.id === primaryGoalId,
         goalSlot:
-          !!primaryGoalId && p.career.id === primaryGoalId
-            ? "primary"
-            : !!secondaryGoalId && p.career.id === secondaryGoalId
-            ? "secondary"
-            : undefined,
+          !!primaryGoalId && p.career.id === primaryGoalId ? "primary" : undefined,
       });
     });
   }
@@ -1110,12 +1103,11 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
   // career id by case-insensitive title match against CAREER_PATHWAYS.
   const { data: goalsData } = useQuery<{
     primaryGoal: { title?: string | null } | null;
-    secondaryGoal: { title?: string | null } | null;
   }>({
     queryKey: ["goals"],
     queryFn: async () => {
       const res = await fetch("/api/goals");
-      if (!res.ok) return { primaryGoal: null, secondaryGoal: null };
+      if (!res.ok) return { primaryGoal: null };
       return res.json();
     },
     staleTime: 5 * 60 * 1000,
@@ -1132,10 +1124,6 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
   const primaryGoalCareerId = useMemo(
     () => resolveCareerIdByTitle(goalsData?.primaryGoal?.title),
     [goalsData?.primaryGoal?.title]
-  );
-  const secondaryGoalCareerId = useMemo(
-    () => resolveCareerIdByTitle(goalsData?.secondaryGoal?.title),
-    [goalsData?.secondaryGoal?.title]
   );
 
   const zoomIn = () => setZoom((z) => Math.min(ZOOM_MAX, +(z + ZOOM_STEP).toFixed(2)));
@@ -1165,8 +1153,8 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
   }, [preferences, bands.total, presetFilter]);
 
   const dots = useMemo(
-    () => placeDots(matched, primaryGoalCareerId, secondaryGoalCareerId, bands.strong, matched.length),
-    [matched, primaryGoalCareerId, secondaryGoalCareerId, bands.strong]
+    () => placeDots(matched, primaryGoalCareerId, bands.strong, matched.length),
+    [matched, primaryGoalCareerId, bands.strong]
   );
 
   // Filter applied to both the radar dots and the matches report list.
@@ -1206,7 +1194,7 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
         <h3 className="text-sm font-semibold mb-1">Your Career Radar is empty</h3>
         <p className="text-xs text-muted-foreground mb-3 max-w-sm mx-auto">
           Tell us what subjects you enjoy and how you like to work &mdash; we&apos;ll
-          map careers across every path so you can find your first Primary Goal.
+          map careers across every path so you can find your first Career goal.
         </p>
         <Button
           size="sm"
@@ -1240,7 +1228,7 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
   return (
     <>
     <div className="radar-scope rounded-2xl border bg-muted dark:bg-card overflow-hidden">
-      {/* Primary Goal indicator — always visible when a goal is set */}
+      {/* Career goal indicator — always visible when a goal is set */}
       {goalsData?.primaryGoal?.title && (
         <Link
           href="/my-journey"
@@ -1250,7 +1238,7 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
           <span className="inline-flex items-center justify-center h-5 w-5 rounded-full border-[1.5px] border-amber-600/50 dark:border-amber-400/60 shrink-0">
             <Star className="h-2.5 w-2.5 text-amber-600 dark:text-amber-400" />
           </span>
-          <span className="text-[11px] text-amber-700 dark:text-amber-400/80">Primary Goal:</span>
+          <span className="text-[11px] text-amber-700 dark:text-amber-400/80">Career goal:</span>
           <span className="text-[11px] font-medium text-teal-700 dark:text-teal-300">{goalsData.primaryGoal.title}</span>
           <ArrowRight className="h-3 w-3 text-muted-foreground/30 group-hover:text-amber-400 transition-colors ml-auto shrink-0" />
         </Link>
@@ -1343,7 +1331,7 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
                     );
                   })}
                   <div className="border-t mt-1 pt-1 px-2 pb-0.5 text-[9px] text-muted-foreground">
-                    Your Primary Goal is always shown.
+                    Your career goal is always shown.
                   </div>
                 </div>
               </>
@@ -1709,9 +1697,7 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
               )}
               {hovered.isActiveGoal && (
                 <div className="mt-1 text-[10px] text-amber-500 font-medium">
-                  {hovered.goalSlot === "secondary"
-                    ? "Your Secondary Goal"
-                    : "Your Primary Goal"}
+                  Your career goal
                 </div>
               )}
             </div>
@@ -1737,7 +1723,7 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
           </span>
           <span className="flex items-center gap-1">
             <span className="inline-block w-3 h-3 rounded-full border-[1.5px] border-amber-400" />
-            Primary Goal
+            Career goal
           </span>
         </div>
         <span>Inner ring = strongest match</span>

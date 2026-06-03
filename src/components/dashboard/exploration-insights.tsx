@@ -91,7 +91,7 @@ function getExplorationPatterns(
   if (uniqueCategories <= 2 && savedCareers.length >= 3) {
     suggestion = 'Try the "Surprise Me" feature on the Career Radar to discover careers outside your usual pattern.';
   } else if (savedCareers.length >= 5 && !patterns.some((p) => p.includes('broad'))) {
-    suggestion = 'You\'ve explored a solid range — consider setting one as your Primary Goal to unlock the full Journey experience.';
+    suggestion = 'You\'ve explored a solid range — consider setting one as your career goal to unlock the full Journey experience.';
   }
 
   return { patterns, suggestion };
