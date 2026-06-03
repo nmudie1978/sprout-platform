@@ -47,7 +47,6 @@ import type { CareerDetails } from '@/lib/career-typical-days';
 import type { CareerProgression } from '@/lib/career-progressions';
 import type { RealityCheckResult } from '@/lib/career-reality-types';
 import type { NextStep } from '@/lib/reports/journey';
-import { pickCelebrationMessage } from '@/lib/journey/celebration-messages';
 import { getCertificationPath, getCareerRequirements, getNorwayProgrammes, getProgrammesForCareer, type NordicCountry } from '@/lib/education';
 import { countryToCode, DEFAULT_COUNTRY } from '@/lib/countries';
 import {
@@ -65,7 +64,6 @@ import { CareerMythBuster } from '@/components/journey/career-myth-buster';
 import { TopEmployers } from '@/components/journey/top-employers';
 import { SalaryProgressionChart } from '@/components/journey/salary-progression';
 import { DeadlineAwareness } from '@/components/journey/deadline-awareness';
-import { ShareJourney } from '@/components/journey/share-journey';
 import { OpportunityMatches } from '@/components/journey/opportunity-matches';
 import { hasTopEmployers } from '@/lib/career-employers';
 import { hasMyths } from '@/lib/career-myths';
@@ -2802,18 +2800,6 @@ function ClarityTab({ goalTitle, career }: { goalTitle: string | null; career: C
         </SectionCard>
       )}
 
-      {/* ── Share Journey ── */}
-      {goalTitle && (
-        <div className="flex justify-center py-2">
-          <ShareJourney
-            career={career}
-            goalTitle={goalTitle}
-            momentumActions={actions.map((a) => ({ title: a.text, status: a.status ?? (a.done ? 'done' : 'not_started') }))}
-            foundation={eduCtxData?.educationContext as { educationStage?: string; studyTrack?: string; expectedCompletion?: string } | null}
-          />
-        </div>
-      )}
-
       {/* ── Clarity completion — auto-derived from foundation + momentum ── */}
       <ClarityCompletionCard
         careerTitle={goalTitle}
@@ -2838,10 +2824,6 @@ function ClarityCompletionCard({
   const clarityComplete = hasFoundation && hasMomentum;
   const [isGeneratingReport, setIsGeneratingReport] = useState(false);
   const [reportError, setReportError] = useState<string | null>(null);
-
-  // Pick a random warm note once per mount so the same user sees a
-  // stable message within a session but gets a fresh one on next visit.
-  const congratsMessage = useMemo(() => pickCelebrationMessage(), []);
 
   const { data: recommendationsData } = useQuery<{ nextSteps: NextStep[] }>({
     queryKey: ['my-journey-recommendations', careerTitle],
@@ -3049,9 +3031,6 @@ function ClarityCompletionCard({
             <p className="text-[10px] text-rose-400 ml-2 shrink-0" role="alert">{reportError}</p>
           )}
         </div>
-        <p className="max-w-xl text-center text-xs leading-relaxed text-muted-foreground/80">
-          {congratsMessage}
-        </p>
         <Link
           href="/dashboard"
           className="inline-flex items-center gap-1.5 text-[11px] font-medium text-muted-foreground/60 hover:text-emerald-300 transition-colors"
