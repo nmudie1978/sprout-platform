@@ -720,9 +720,6 @@ export default function DashboardPage() {
     onError: () => {
       toast({ title: 'Failed to switch goal. Please try again.', variant: "destructive" });
     },
-    onSettled: () => {
-      setSwitchConfirm(null);
-    },
   });
 
   const interestLevels = useAllInterestLevels();
@@ -826,7 +823,6 @@ export default function DashboardPage() {
   const [showGoalDetail, setShowGoalDetail] = useState(false);
   const [showGoalSheet, setShowGoalSheet] = useState(false);
   const [journeyPage, setJourneyPage] = useState(0);
-  const [switchConfirm, setSwitchConfirm] = useState<{ goalTitle: string; emoji: string } | null>(null);
   const goalCareer = useMemo(() => {
     if (!goalTitle) return null;
     const all = getAllCareers();
@@ -1347,11 +1343,22 @@ export default function DashboardPage() {
                           <tr
                             key={goal.goalId}
                             onClick={() => {
-                              if (!isCurrentGoal) setSwitchConfirm({ goalTitle: goal.goalTitle, emoji: career?.emoji ?? "🎯" });
+                              // Reload an already-explored journey: make it the
+                              // active goal again and jump straight into My
+                              // Journey. No "set primary goal" confirmation —
+                              // the user has already explored this path, so it's
+                              // a resume, not a new commitment. The previous goal
+                              // is saved to Explored Journeys (reversible).
+                              if (isCurrentGoal || switchGoalMutation.isPending) return;
+                              switchGoalMutation.mutate(goal.goalTitle, {
+                                onSuccess: () => window.location.assign("/my-journey"),
+                              });
                             }}
+                            title={isCurrentGoal ? undefined : switchGoalMutation.isPending ? 'Reloading…' : `Reload your ${goal.goalTitle} journey`}
                             className={cn(
                               "transition-colors",
                               isCurrentGoal ? "bg-muted/20" : "hover:bg-muted/30 cursor-pointer",
+                              switchGoalMutation.isPending && "opacity-60 pointer-events-none",
                             )}
                           >
                             <td className="px-2.5 py-1.5">
@@ -1640,44 +1647,6 @@ export default function DashboardPage() {
         onSuccess={() => setShowGoalSheet(false)}
       />
 
-      {/* Switch Journey Confirmation */}
-      {switchConfirm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={() => { if (!switchGoalMutation.isPending) setSwitchConfirm(null); }}>
-          <div className="bg-card border border-border rounded-card p-5 max-w-sm w-full shadow-2xl" onClick={(e) => e.stopPropagation()}>
-            <div className="flex items-center gap-3 mb-3">
-              <span className="text-2xl">{switchConfirm.emoji}</span>
-              <div>
-                <h3 className="text-sm font-semibold">Switch Primary Goal to {switchConfirm.goalTitle}?</h3>
-                <p className="text-xs text-muted-foreground/60">
-                  This will replace your current Primary Goal. Any progress is saved and you can switch back anytime.
-                </p>
-              </div>
-            </div>
-            <p className="text-xs text-muted-foreground/50 mb-4">
-              Your journey for {goalTitle || 'your current goal'} will be saved in Previously Explored Journeys. You can switch back anytime.
-            </p>
-            <div className="flex justify-end gap-2">
-              <button
-                onClick={() => setSwitchConfirm(null)}
-                disabled={switchGoalMutation.isPending}
-                className="px-3 py-1.5 text-xs rounded-control border border-border/50 text-muted-foreground hover:bg-muted/50 transition-colors disabled:opacity-50"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={() => {
-                  switchGoalMutation.reset();
-                  switchGoalMutation.mutate(switchConfirm.goalTitle);
-                }}
-                disabled={switchGoalMutation.isPending}
-                className="px-3 py-1.5 text-xs rounded-control bg-primary hover:bg-primary/90 text-primary-foreground font-medium transition-colors disabled:opacity-50"
-              >
-                {switchGoalMutation.isPending ? 'Switching...' : 'Switch Primary Goal'}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Spotlight — guides new users to choose a Primary Goal */}
       <SpotlightHint
