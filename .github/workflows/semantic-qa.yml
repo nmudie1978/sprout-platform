@@ -1,0 +1,56 @@
+name: Semantic-QA static content
+
+# Quarterly (1st of Jan/Apr/Jul/Oct, 05:00 UTC) + on demand. Runs the
+# semantic-QA agent over slow-drift hand-curated content (career myths +
+# typical-days reality checks) and uploads a REVIEW QUEUE for human triage.
+# It NEVER edits source data — verdicts are advisory; a human decides.
+#
+# Requires the OPENAI_API_KEY secret (same one refresh-career-data uses). If
+# it's absent the run is a no-op with a notice rather than a failure.
+
+on:
+  schedule:
+    - cron: '0 5 1 */3 *'
+  workflow_dispatch:
+    inputs:
+      limit:
+        description: 'Max entries per target (blank = all)'
+        required: false
+        default: ''
+
+jobs:
+  qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Run semantic-QA (myths + typical-days)
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          LIMIT: ${{ github.event.inputs.limit }}
+        run: |
+          if [ -z "$OPENAI_API_KEY" ]; then
+            echo "::notice::OPENAI_API_KEY not set — skipping semantic-QA run."
+            exit 0
+          fi
+          LIMIT_ARG=""
+          if [ -n "$LIMIT" ]; then LIMIT_ARG="--limit=$LIMIT"; fi
+          npx tsx scripts/semantic-qa-static-content.ts --target=myths $LIMIT_ARG
+          npx tsx scripts/semantic-qa-static-content.ts --target=typical-days $LIMIT_ARG
+
+      - name: Upload review queues
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: qa-review-queues
+          path: scripts/output/qa-review-queue-*.json
+          if-no-files-found: ignore

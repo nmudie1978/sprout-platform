@@ -13279,3 +13279,11 @@ export function hasDetailedContent(careerId: string): boolean {
     normalizedId in generatedCareerDetailsMap
   );
 }
+
+/**
+ * The hand-curated career-details map, exposed for the semantic-QA agent
+ * (scripts/semantic-qa-static-content.ts --target=typical-days). Only the
+ * curated entries are re-verified; the generated fallback map is AI output and
+ * not worth fact-checking with AI.
+ */
+export const _CAREER_DETAILS_CURATED_FOR_QA: Record<string, CareerDetails> = careerDetailsMap;
