@@ -1,10 +1,10 @@
 {
-  "lastRefreshISO": "2026-02-12T19:44:36.918Z",
+  "lastRefreshISO": "2026-06-03T19:56:40.948Z",
   "totalItems": 41,
-  "totalVerified": 21,
-  "totalFailed": 20,
+  "totalVerified": 37,
+  "totalFailed": 4,
   "totalPending": 0,
-  "duplicatesRejected": 0,
+  "duplicatesRejected": 41,
   "byType": {
     "article": 17,
     "video": 11,
@@ -34,121 +34,121 @@
     {
       "domain": "weforum.org",
       "checked": 5,
-      "passed": 0,
-      "failed": 5,
-      "lastCheckedAt": "2026-02-12T19:44:23.571Z"
+      "passed": 5,
+      "failed": 0,
+      "lastCheckedAt": "2026-06-03T19:56:06.121Z"
     },
     {
       "domain": "ilo.org",
       "checked": 1,
       "passed": 0,
       "failed": 1,
-      "lastCheckedAt": "2026-02-12T19:43:40.865Z"
+      "lastCheckedAt": "2026-06-03T19:54:18.459Z"
     },
     {
       "domain": "oecd.org",
       "checked": 5,
-      "passed": 0,
-      "failed": 5,
-      "lastCheckedAt": "2026-02-12T19:44:14.637Z"
+      "passed": 5,
+      "failed": 0,
+      "lastCheckedAt": "2026-06-03T19:55:34.079Z"
     },
     {
       "domain": "worldbank.org",
       "checked": 2,
       "passed": 1,
       "failed": 1,
-      "lastCheckedAt": "2026-02-12T19:44:09.808Z"
+      "lastCheckedAt": "2026-06-03T19:55:30.905Z"
     },
     {
       "domain": "mckinsey.com",
       "checked": 4,
-      "passed": 2,
-      "failed": 2,
-      "lastCheckedAt": "2026-02-12T19:44:28.254Z"
+      "passed": 4,
+      "failed": 0,
+      "lastCheckedAt": "2026-06-03T19:56:08.752Z"
     },
     {
       "domain": "deloitte.com",
       "checked": 1,
       "passed": 1,
       "failed": 0,
-      "lastCheckedAt": "2026-02-12T19:44:01.628Z"
+      "lastCheckedAt": "2026-06-03T19:55:24.410Z"
     },
     {
       "domain": "wipo.int",
       "checked": 1,
-      "passed": 0,
-      "failed": 1,
-      "lastCheckedAt": "2026-02-12T19:44:03.505Z"
+      "passed": 1,
+      "failed": 0,
+      "lastCheckedAt": "2026-06-03T19:55:25.853Z"
     },
     {
       "domain": "who.int",
       "checked": 1,
       "passed": 1,
       "failed": 0,
-      "lastCheckedAt": "2026-02-12T19:44:04.914Z"
+      "lastCheckedAt": "2026-06-03T19:55:27.494Z"
     },
     {
       "domain": "visualcapitalist.com",
       "checked": 2,
-      "passed": 0,
-      "failed": 2,
-      "lastCheckedAt": "2026-02-12T19:44:27.190Z"
+      "passed": 2,
+      "failed": 0,
+      "lastCheckedAt": "2026-06-03T19:56:08.383Z"
     },
     {
       "domain": "ourworldindata.org",
       "checked": 2,
       "passed": 2,
       "failed": 0,
-      "lastCheckedAt": "2026-02-12T19:44:27.399Z"
+      "lastCheckedAt": "2026-06-03T19:56:08.427Z"
     },
     {
       "domain": "youtube.com",
       "checked": 11,
       "passed": 11,
       "failed": 0,
-      "lastCheckedAt": "2026-02-12T19:44:36.559Z"
+      "lastCheckedAt": "2026-06-03T19:56:40.755Z"
     },
     {
       "domain": "bcg.com",
       "checked": 1,
-      "passed": 0,
-      "failed": 1,
-      "lastCheckedAt": "2026-02-12T19:44:10.540Z"
+      "passed": 1,
+      "failed": 0,
+      "lastCheckedAt": "2026-06-03T19:55:31.115Z"
     },
     {
       "domain": "pwc.com",
       "checked": 1,
       "passed": 1,
       "failed": 0,
-      "lastCheckedAt": "2026-02-12T19:44:11.418Z"
+      "lastCheckedAt": "2026-06-03T19:55:31.541Z"
     },
     {
       "domain": "ec.europa.eu",
       "checked": 1,
       "passed": 0,
       "failed": 1,
-      "lastCheckedAt": "2026-02-12T19:44:12.304Z"
+      "lastCheckedAt": "2026-06-03T19:55:31.598Z"
     },
     {
       "domain": "unesco.org",
       "checked": 1,
       "passed": 1,
       "failed": 0,
-      "lastCheckedAt": "2026-02-12T19:44:13.961Z"
+      "lastCheckedAt": "2026-06-03T19:55:33.357Z"
     },
     {
       "domain": "accenture.com",
       "checked": 1,
       "passed": 1,
       "failed": 0,
-      "lastCheckedAt": "2026-02-12T19:44:26.188Z"
+      "lastCheckedAt": "2026-06-03T19:56:08.153Z"
     },
     {
       "domain": "unicef.org",
       "checked": 1,
       "passed": 0,
       "failed": 1,
-      "lastCheckedAt": "2026-02-12T19:44:26.850Z"
+      "lastCheckedAt": "2026-06-03T19:56:08.248Z"
     }
   ]
 }

@@ -14,8 +14,8 @@
     "domain": "weforum.org",
     "publishDate": "2025-01-07",
     "addedAt": "2026-02-12T19:43:40.181Z",
-    "lastVerifiedAt": "2026-02-12T19:43:40.182Z",
-    "verificationStatus": "failed",
+    "lastVerifiedAt": "2026-06-03T19:54:17.822Z",
+    "verificationStatus": "verified",
     "canonicalUrlHash": "e7513f58d4d95efbf552af42fd1e2ecaf80c4c3f65ecfe7db4baf034c4267ba9"
   },
   {
@@ -33,7 +33,7 @@
     "domain": "ilo.org",
     "publishDate": "2024-08-12",
     "addedAt": "2026-02-12T19:43:40.865Z",
-    "lastVerifiedAt": "2026-02-12T19:43:40.865Z",
+    "lastVerifiedAt": "2026-06-03T19:54:18.459Z",
     "verificationStatus": "failed",
     "canonicalUrlHash": "e8aaf11b71917632b8aa49f45af5cfd3d36dd8f18791b0c3f3162b9040d7cef9"
   },
@@ -52,8 +52,8 @@
     "domain": "oecd.org",
     "publishDate": "2023-11-07",
     "addedAt": "2026-02-12T19:43:42.114Z",
-    "lastVerifiedAt": "2026-02-12T19:43:42.114Z",
-    "verificationStatus": "failed",
+    "lastVerifiedAt": "2026-06-03T19:54:19.387Z",
+    "verificationStatus": "verified",
     "canonicalUrlHash": "da4f28587b9eca58ed6e5d0a4de86d6808101545cf86cdd00e02bbb145feb078"
   },
   {
@@ -71,8 +71,8 @@
     "domain": "weforum.org",
     "publishDate": "2024-06-14",
     "addedAt": "2026-02-12T19:43:42.522Z",
-    "lastVerifiedAt": "2026-02-12T19:43:42.522Z",
-    "verificationStatus": "failed",
+    "lastVerifiedAt": "2026-06-03T19:54:19.620Z",
+    "verificationStatus": "verified",
     "canonicalUrlHash": "39ee0a70306686c42c1fd5cf14136f7f648b3b35a2bf11828cacdbc04ad23251"
   },
   {
@@ -90,8 +90,8 @@
     "domain": "weforum.org",
     "publishDate": "2024-01-15",
     "addedAt": "2026-02-12T19:43:42.787Z",
-    "lastVerifiedAt": "2026-02-12T19:43:42.787Z",
-    "verificationStatus": "failed",
+    "lastVerifiedAt": "2026-06-03T19:54:19.930Z",
+    "verificationStatus": "verified",
     "canonicalUrlHash": "9cf337cac4fe32efc071d663852be79f199372f0c46a66d7c0660199f2db7cad"
   },
   {
@@ -109,8 +109,8 @@
     "domain": "oecd.org",
     "publishDate": "2024-06-01",
     "addedAt": "2026-02-12T19:43:43.065Z",
-    "lastVerifiedAt": "2026-02-12T19:43:43.065Z",
-    "verificationStatus": "failed",
+    "lastVerifiedAt": "2026-06-03T19:54:20.264Z",
+    "verificationStatus": "verified",
     "canonicalUrlHash": "fd0c2ced43e1db54924da22c4f6d95be06beb0e2e24bf27cfef25b38aeb847e3"
   },
   {
@@ -128,7 +128,7 @@
     "domain": "worldbank.org",
     "publishDate": "2024-08-01",
     "addedAt": "2026-02-12T19:43:43.297Z",
-    "lastVerifiedAt": "2026-02-12T19:43:43.297Z",
+    "lastVerifiedAt": "2026-06-03T19:54:20.323Z",
     "verificationStatus": "verified",
     "canonicalUrlHash": "c8424239dfec1bc353888da612c3790ed2cebcb2257873ab003ee28540ed6389"
   },
@@ -147,8 +147,8 @@
     "domain": "mckinsey.com",
     "publishDate": "2024-01-25",
     "addedAt": "2026-02-12T19:43:44.337Z",
-    "lastVerifiedAt": "2026-02-12T19:43:44.337Z",
-    "verificationStatus": "failed",
+    "lastVerifiedAt": "2026-06-03T19:54:20.403Z",
+    "verificationStatus": "verified",
     "canonicalUrlHash": "5a11958983534e11bf9bc86d6236080300f851b944aa2439bb437be5e8f4bc97"
   },
   {
@@ -166,7 +166,7 @@
     "domain": "mckinsey.com",
     "publishDate": "2023-07-26",
     "addedAt": "2026-02-12T19:43:52.842Z",
-    "lastVerifiedAt": "2026-02-12T19:43:52.842Z",
+    "lastVerifiedAt": "2026-06-03T19:54:52.408Z",
     "verificationStatus": "verified",
     "canonicalUrlHash": "42c37f8b5b402f95e42940ac58f0750b1626690f364915a3a8cc44da90e94698"
   },
@@ -185,7 +185,7 @@
     "domain": "deloitte.com",
     "publishDate": "2024-05-15",
     "addedAt": "2026-02-12T19:44:01.628Z",
-    "lastVerifiedAt": "2026-02-12T19:44:01.628Z",
+    "lastVerifiedAt": "2026-06-03T19:55:24.410Z",
     "verificationStatus": "verified",
     "canonicalUrlHash": "3dfc586b9f6708681abb4e5bcf2112acdc8e73fd1ab37584e65a87f0e38a377e"
   },
@@ -204,8 +204,8 @@
     "domain": "wipo.int",
     "publishDate": "2024-09-26",
     "addedAt": "2026-02-12T19:44:03.505Z",
-    "lastVerifiedAt": "2026-02-12T19:44:03.505Z",
-    "verificationStatus": "failed",
+    "lastVerifiedAt": "2026-06-03T19:55:25.853Z",
+    "verificationStatus": "verified",
     "canonicalUrlHash": "d20f7326e869a8b6e7f7b18f3f90118b65a6f23b404f558665e13d00687883dd"
   },
   {
@@ -223,8 +223,8 @@
     "domain": "oecd.org",
     "publishDate": "2024-09-10",
     "addedAt": "2026-02-12T19:44:04.414Z",
-    "lastVerifiedAt": "2026-02-12T19:44:04.414Z",
-    "verificationStatus": "failed",
+    "lastVerifiedAt": "2026-06-03T19:55:27.067Z",
+    "verificationStatus": "verified",
     "canonicalUrlHash": "0dec55830ee3b76750470dd834e179a6a9d745738b0df6abf7d09c09929b9bd5"
   },
   {
@@ -242,8 +242,8 @@
     "domain": "weforum.org",
     "publishDate": "2023-08-14",
     "addedAt": "2026-02-12T19:44:04.633Z",
-    "lastVerifiedAt": "2026-02-12T19:44:04.633Z",
-    "verificationStatus": "failed",
+    "lastVerifiedAt": "2026-06-03T19:55:27.106Z",
+    "verificationStatus": "verified",
     "canonicalUrlHash": "b7608865a530f3ed10efbc791ace37b685335fa0905f85da83c66382959b0ad0"
   },
   {
@@ -261,7 +261,7 @@
     "domain": "who.int",
     "publishDate": "2024-09-28",
     "addedAt": "2026-02-12T19:44:04.914Z",
-    "lastVerifiedAt": "2026-02-12T19:44:04.914Z",
+    "lastVerifiedAt": "2026-06-03T19:55:27.494Z",
     "verificationStatus": "verified",
     "canonicalUrlHash": "47987e7c9f7b7149b8b475ceccfd0ac67d8941a6d01ed5ed0980e7bc066c4683"
   },
@@ -280,8 +280,8 @@
     "domain": "visualcapitalist.com",
     "publishDate": "2024-03-15",
     "addedAt": "2026-02-12T19:44:05.471Z",
-    "lastVerifiedAt": "2026-02-12T19:44:05.471Z",
-    "verificationStatus": "failed",
+    "lastVerifiedAt": "2026-06-03T19:55:27.650Z",
+    "verificationStatus": "verified",
     "canonicalUrlHash": "33df31bd785157fa692ac70e9ecafb3f4e964ba8152b7d870874348274b17dde"
   },
   {
@@ -299,7 +299,7 @@
     "domain": "ourworldindata.org",
     "publishDate": "2024-01-01",
     "addedAt": "2026-02-12T19:44:05.791Z",
-    "lastVerifiedAt": "2026-02-12T19:44:05.791Z",
+    "lastVerifiedAt": "2026-06-03T19:55:27.707Z",
     "verificationStatus": "verified",
     "canonicalUrlHash": "374f5afb048a78d6f17829d887e62fe52134ec45f7b8c25104dca91573c2e451"
   },
@@ -317,7 +317,7 @@
     ],
     "domain": "youtube.com",
     "addedAt": "2026-02-12T19:44:06.178Z",
-    "lastVerifiedAt": "2026-02-12T19:44:06.178Z",
+    "lastVerifiedAt": "2026-06-03T19:55:28.056Z",
     "verificationStatus": "verified",
     "canonicalUrlHash": "5820883d4e32365fac4ae1e9d793a05d77ccc6dbe5a3ee06c64d384f614dfbb5",
     "thumbnailUrl": "https://img.youtube.com/vi/BqOwmHDrd8I/hqdefault.jpg",
@@ -337,7 +337,7 @@
     ],
     "domain": "youtube.com",
     "addedAt": "2026-02-12T19:44:06.603Z",
-    "lastVerifiedAt": "2026-02-12T19:44:06.603Z",
+    "lastVerifiedAt": "2026-06-03T19:55:28.239Z",
     "verificationStatus": "verified",
     "canonicalUrlHash": "dd92d00e26c253d97664984734bf8fc8ea664bb02b1c4c33ff1ed7342c116066",
     "thumbnailUrl": "https://img.youtube.com/vi/EfxuOCnEHko/hqdefault.jpg",
@@ -357,7 +357,7 @@
     ],
     "domain": "youtube.com",
     "addedAt": "2026-02-12T19:44:07.006Z",
-    "lastVerifiedAt": "2026-02-12T19:44:07.006Z",
+    "lastVerifiedAt": "2026-06-03T19:55:28.437Z",
     "verificationStatus": "verified",
     "canonicalUrlHash": "2926ddadf679526b176579856df68e88cd238e4810e0cdcedf15a2504a8c9980",
     "thumbnailUrl": "https://img.youtube.com/vi/GPNdmCKm1JM/hqdefault.jpg",
@@ -377,7 +377,7 @@
     ],
     "domain": "youtube.com",
     "addedAt": "2026-02-12T19:44:07.376Z",
-    "lastVerifiedAt": "2026-02-12T19:44:07.376Z",
+    "lastVerifiedAt": "2026-06-03T19:55:28.612Z",
     "verificationStatus": "verified",
     "canonicalUrlHash": "3e96f88086288bb452cacb412bcf1c576fac564c25cc716a12c53c8994c21e91",
     "thumbnailUrl": "https://img.youtube.com/vi/rDs3o1uLEdU/hqdefault.jpg",
@@ -397,7 +397,7 @@
     ],
     "domain": "youtube.com",
     "addedAt": "2026-02-12T19:44:08.296Z",
-    "lastVerifiedAt": "2026-02-12T19:44:08.296Z",
+    "lastVerifiedAt": "2026-06-03T19:55:29.555Z",
     "verificationStatus": "verified",
     "canonicalUrlHash": "0fc4f33f9fece4d208addf7b49bc9ae890cc0fb9ced2187d5391ccb0c0e64220",
     "thumbnailUrl": "https://img.youtube.com/vi/k6oMlpF9QEI/hqdefault.jpg",
@@ -417,7 +417,7 @@
     ],
     "domain": "youtube.com",
     "addedAt": "2026-02-12T19:44:08.697Z",
-    "lastVerifiedAt": "2026-02-12T19:44:08.697Z",
+    "lastVerifiedAt": "2026-06-03T19:55:29.715Z",
     "verificationStatus": "verified",
     "canonicalUrlHash": "bfe3da7fde556c879750eeef03ed07e1e7538e124720e878303097a5e9bd0fae",
     "thumbnailUrl": "https://img.youtube.com/vi/o08ykAqLOxk/hqdefault.jpg",
@@ -437,7 +437,7 @@
     ],
     "domain": "youtube.com",
     "addedAt": "2026-02-12T19:44:09.449Z",
-    "lastVerifiedAt": "2026-02-12T19:44:09.449Z",
+    "lastVerifiedAt": "2026-06-03T19:55:30.675Z",
     "verificationStatus": "verified",
     "canonicalUrlHash": "35faac0fed84382e3f68227bb99dbb0d9d2373e8683c2e572367b8608bd3c345",
     "thumbnailUrl": "https://img.youtube.com/vi/jrV5KMjdWrI/hqdefault.jpg",
@@ -458,7 +458,7 @@
     "domain": "worldbank.org",
     "publishDate": "2024-03-01",
     "addedAt": "2026-02-12T19:44:09.808Z",
-    "lastVerifiedAt": "2026-02-12T19:44:09.808Z",
+    "lastVerifiedAt": "2026-06-03T19:55:30.905Z",
     "verificationStatus": "failed",
     "canonicalUrlHash": "393956cbec8c62200d6b99cd27ded7c98f840b98af8afcefacbfa2e4b4cb0a29"
   },
@@ -477,8 +477,8 @@
     "domain": "bcg.com",
     "publishDate": "2024-04-10",
     "addedAt": "2026-02-12T19:44:10.540Z",
-    "lastVerifiedAt": "2026-02-12T19:44:10.540Z",
-    "verificationStatus": "failed",
+    "lastVerifiedAt": "2026-06-03T19:55:31.115Z",
+    "verificationStatus": "verified",
     "canonicalUrlHash": "075dc970593b271f91509f7c6239cd8e0e197ac331f2c76331e9dd38b3f7758d"
   },
   {
@@ -496,7 +496,7 @@
     "domain": "pwc.com",
     "publishDate": "2024-06-25",
     "addedAt": "2026-02-12T19:44:11.418Z",
-    "lastVerifiedAt": "2026-02-12T19:44:11.418Z",
+    "lastVerifiedAt": "2026-06-03T19:55:31.541Z",
     "verificationStatus": "verified",
     "canonicalUrlHash": "cfda80e4fbd8040bc2bb39ad92e47e3592df2667035a371c13464f7cf379d0ca"
   },
@@ -515,7 +515,7 @@
     "domain": "ec.europa.eu",
     "publishDate": "2024-07-01",
     "addedAt": "2026-02-12T19:44:12.304Z",
-    "lastVerifiedAt": "2026-02-12T19:44:12.304Z",
+    "lastVerifiedAt": "2026-06-03T19:55:31.598Z",
     "verificationStatus": "failed",
     "canonicalUrlHash": "78e7a17b38956c6430c77209f7a59333001175a840735022b395949bb831bd9d"
   },
@@ -534,8 +534,8 @@
     "domain": "oecd.org",
     "publishDate": "2024-05-01",
     "addedAt": "2026-02-12T19:44:13.753Z",
-    "lastVerifiedAt": "2026-02-12T19:44:13.753Z",
-    "verificationStatus": "failed",
+    "lastVerifiedAt": "2026-06-03T19:55:33.317Z",
+    "verificationStatus": "verified",
     "canonicalUrlHash": "f5d91ea6d67a9af83d0683146b6c617db69803d46f553e04d3bfc06dd92d5167"
   },
   {
@@ -553,7 +553,7 @@
     "domain": "unesco.org",
     "publishDate": "2024-03-15",
     "addedAt": "2026-02-12T19:44:13.960Z",
-    "lastVerifiedAt": "2026-02-12T19:44:13.961Z",
+    "lastVerifiedAt": "2026-06-03T19:55:33.357Z",
     "verificationStatus": "verified",
     "canonicalUrlHash": "82123e098bffd7256d12b2200ddeaa4cec92001305380d26a928423bfe7d0d00"
   },
@@ -572,8 +572,8 @@
     "domain": "oecd.org",
     "publishDate": "2023-12-12",
     "addedAt": "2026-02-12T19:44:14.637Z",
-    "lastVerifiedAt": "2026-02-12T19:44:14.637Z",
-    "verificationStatus": "failed",
+    "lastVerifiedAt": "2026-06-03T19:55:34.079Z",
+    "verificationStatus": "verified",
     "canonicalUrlHash": "2ee80f8bc01040a0aaa7c1bafc52d5fd56067422cba3d6739f45f5eeb2ad4fa1"
   },
   {
@@ -591,7 +591,7 @@
     "domain": "mckinsey.com",
     "publishDate": "2024-05-21",
     "addedAt": "2026-02-12T19:44:14.840Z",
-    "lastVerifiedAt": "2026-02-12T19:44:14.840Z",
+    "lastVerifiedAt": "2026-06-03T19:55:34.117Z",
     "verificationStatus": "verified",
     "canonicalUrlHash": "d709902c9ca11c41e9a67bb0cedf7b081e8f378530fb3967107642c26d3a5d16"
   },
@@ -610,8 +610,8 @@
     "domain": "weforum.org",
     "publishDate": "2024-01-15",
     "addedAt": "2026-02-12T19:44:23.571Z",
-    "lastVerifiedAt": "2026-02-12T19:44:23.571Z",
-    "verificationStatus": "failed",
+    "lastVerifiedAt": "2026-06-03T19:56:06.121Z",
+    "verificationStatus": "verified",
     "canonicalUrlHash": "c70fe8d8892faeedf2c3222bf77485ccfd2781d45b780e020f1af3f2247d7ee6"
   },
   {
@@ -628,7 +628,7 @@
     ],
     "domain": "youtube.com",
     "addedAt": "2026-02-12T19:44:23.916Z",
-    "lastVerifiedAt": "2026-02-12T19:44:23.916Z",
+    "lastVerifiedAt": "2026-06-03T19:56:06.521Z",
     "verificationStatus": "verified",
     "canonicalUrlHash": "92a131894408a0edd4bb7569978340bccf4a36ebd9bd7ae8c0bb254e32511b7b",
     "thumbnailUrl": "https://img.youtube.com/vi/fxbCHn6gE3U/hqdefault.jpg",
@@ -648,7 +648,7 @@
     ],
     "domain": "youtube.com",
     "addedAt": "2026-02-12T19:44:25.100Z",
-    "lastVerifiedAt": "2026-02-12T19:44:25.101Z",
+    "lastVerifiedAt": "2026-06-03T19:56:07.398Z",
     "verificationStatus": "verified",
     "canonicalUrlHash": "13b6727cc3c373a1e7da97d65f55933bb9d51fabe3542994904b5df391fafa40",
     "thumbnailUrl": "https://img.youtube.com/vi/Y7m9eNoB3NU/hqdefault.jpg",
@@ -669,7 +669,7 @@
     "domain": "accenture.com",
     "publishDate": "2024-10-15",
     "addedAt": "2026-02-12T19:44:26.188Z",
-    "lastVerifiedAt": "2026-02-12T19:44:26.188Z",
+    "lastVerifiedAt": "2026-06-03T19:56:08.153Z",
     "verificationStatus": "verified",
     "canonicalUrlHash": "d9e3ff5f426f2e732697eba19945035882269ab79577a1fee1b49c362731adb5"
   },
@@ -688,7 +688,7 @@
     "domain": "unicef.org",
     "publishDate": "2024-01-01",
     "addedAt": "2026-02-12T19:44:26.850Z",
-    "lastVerifiedAt": "2026-02-12T19:44:26.850Z",
+    "lastVerifiedAt": "2026-06-03T19:56:08.248Z",
     "verificationStatus": "failed",
     "canonicalUrlHash": "333b71466e079101c0879f738ca8878d2cefb58621b0bd581e2d87d86f3a7b30"
   },
@@ -707,8 +707,8 @@
     "domain": "visualcapitalist.com",
     "publishDate": "2024-02-20",
     "addedAt": "2026-02-12T19:44:27.190Z",
-    "lastVerifiedAt": "2026-02-12T19:44:27.190Z",
-    "verificationStatus": "failed",
+    "lastVerifiedAt": "2026-06-03T19:56:08.383Z",
+    "verificationStatus": "verified",
     "canonicalUrlHash": "3f688f941a50cf9ee91719a6273da5d051502078b8ffe5320197ff336390fc55"
   },
   {
@@ -726,7 +726,7 @@
     "domain": "ourworldindata.org",
     "publishDate": "2024-01-01",
     "addedAt": "2026-02-12T19:44:27.398Z",
-    "lastVerifiedAt": "2026-02-12T19:44:27.399Z",
+    "lastVerifiedAt": "2026-06-03T19:56:08.427Z",
     "verificationStatus": "verified",
     "canonicalUrlHash": "290ac80a4d14be761511f451a8e9ce3c577a7ea78038c392a0efd3d47c90a2d6"
   },
@@ -744,7 +744,7 @@
     ],
     "domain": "youtube.com",
     "addedAt": "2026-02-12T19:44:27.881Z",
-    "lastVerifiedAt": "2026-02-12T19:44:27.882Z",
+    "lastVerifiedAt": "2026-06-03T19:56:08.545Z",
     "verificationStatus": "verified",
     "canonicalUrlHash": "d900c3b7f6d927468762eeea5b19a5ee39c46bcb401114f8d0a96ef9e0357250",
     "thumbnailUrl": "https://img.youtube.com/vi/2adYMGCFul0/hqdefault.jpg",
@@ -765,8 +765,8 @@
     "domain": "mckinsey.com",
     "publishDate": "2024-06-30",
     "addedAt": "2026-02-12T19:44:28.254Z",
-    "lastVerifiedAt": "2026-02-12T19:44:28.254Z",
-    "verificationStatus": "failed",
+    "lastVerifiedAt": "2026-06-03T19:56:08.752Z",
+    "verificationStatus": "verified",
     "canonicalUrlHash": "c99662b706ad7a8059240961a0775e3796b7e910064ff076b0f57fb714c91ab6"
   },
   {
@@ -783,7 +783,7 @@
     ],
     "domain": "youtube.com",
     "addedAt": "2026-02-12T19:44:36.559Z",
-    "lastVerifiedAt": "2026-02-12T19:44:36.559Z",
+    "lastVerifiedAt": "2026-06-03T19:56:40.755Z",
     "verificationStatus": "verified",
     "canonicalUrlHash": "7f555283b0da36fd2c3c7512f0ee14d4345d60b0d4201d1d7506731359762452",
     "thumbnailUrl": "https://img.youtube.com/vi/yvJPv5G8rlk/hqdefault.jpg",
