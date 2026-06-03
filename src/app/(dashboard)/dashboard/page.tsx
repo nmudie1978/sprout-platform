@@ -1,7 +1,16 @@
 "use client";
 
 import { toast } from "@/hooks/use-toast";
-import { ToastAction } from "@/components/ui/toast";
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogCancel,
+  AlertDialogAction,
+} from "@/components/ui/alert-dialog";
 
 /**
  * DASHBOARD PAGE — Information-Rich Overview
@@ -701,20 +710,10 @@ export default function DashboardPage() {
       queryClient.invalidateQueries({ queryKey: ["goal-data"] });
       queryClient.invalidateQueries({ queryKey: ["discover-reflections"] });
       queryClient.invalidateQueries({ queryKey: ["career-insights"] });
-      toast({
-        title: `${goalTitle} set as your Primary Goal`,
-        description: t('switchGoal.toastDescription'),
-        duration: 8000,
-        variant: "success",
-        action: (
-          <ToastAction
-            altText={t('switchGoal.goToJourney')}
-            onClick={() => window.location.assign("/my-journey#discover")}
-          >
-            {t('switchGoal.goToJourney')}
-          </ToastAction>
-        ),
-      });
+      // No success toast here: the confirm dialog already gated intent and
+      // the caller hard-navigates straight to My Journey, so a toast would
+      // only flash for a frame before the page tears down. Landing on the
+      // career's journey is the confirmation.
     },
     onError: () => {
       toast({ title: 'Failed to switch goal. Please try again.', variant: "destructive" });
@@ -822,6 +821,9 @@ export default function DashboardPage() {
   const [showGoalDetail, setShowGoalDetail] = useState(false);
   const [showGoalSheet, setShowGoalSheet] = useState(false);
   const [journeyPage, setJourneyPage] = useState(0);
+  // Journey the user has tapped in "My Explored Journeys" and is being
+  // asked to confirm reloading. null = no confirmation pending.
+  const [pendingReloadGoal, setPendingReloadGoal] = useState<string | null>(null);
   const goalCareer = useMemo(() => {
     if (!goalTitle) return null;
     const all = getAllCareers();
@@ -1334,16 +1336,15 @@ export default function DashboardPage() {
                           <tr
                             key={goal.goalId}
                             onClick={() => {
-                              // Reload an already-explored journey: make it the
-                              // active goal again and jump straight into My
-                              // Journey. No "set primary goal" confirmation —
-                              // the user has already explored this path, so it's
-                              // a resume, not a new commitment. The previous goal
-                              // is saved to Explored Journeys (reversible).
+                              // Reloading an already-explored journey makes it
+                              // the active goal again and jumps into My Journey.
+                              // Ask the user to confirm first so an accidental
+                              // tap doesn't switch their active journey out from
+                              // under them. The previous goal stays saved here
+                              // (reversible), so this is a resume, not a new
+                              // commitment — but it's still a context switch.
                               if (isCurrentGoal || switchGoalMutation.isPending) return;
-                              switchGoalMutation.mutate(goal.goalTitle, {
-                                onSuccess: () => window.location.assign("/my-journey"),
-                              });
+                              setPendingReloadGoal(goal.goalTitle);
                             }}
                             title={isCurrentGoal ? undefined : switchGoalMutation.isPending ? 'Reloading…' : `Reload your ${goal.goalTitle} journey`}
                             className={cn(
@@ -1417,6 +1418,42 @@ export default function DashboardPage() {
             );
           })()}
           </DashboardSection>
+
+          <AlertDialog
+            open={pendingReloadGoal !== null}
+            onOpenChange={(open) => {
+              if (!open) setPendingReloadGoal(null);
+            }}
+          >
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Reload this journey?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This makes{" "}
+                  <span className="font-medium text-foreground">{pendingReloadGoal}</span>{" "}
+                  your active journey and takes you to My Journey. Your current
+                  journey stays saved in Explored Journeys, so you can switch
+                  back anytime.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction
+                  disabled={switchGoalMutation.isPending}
+                  onClick={() => {
+                    const goalToLoad = pendingReloadGoal;
+                    if (!goalToLoad) return;
+                    setPendingReloadGoal(null);
+                    switchGoalMutation.mutate(goalToLoad, {
+                      onSuccess: () => window.location.assign("/my-journey"),
+                    });
+                  }}
+                >
+                  Reload journey
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
 
           {/* ── Saved Careers (Row A right column) ── */}
           <DashboardSection
