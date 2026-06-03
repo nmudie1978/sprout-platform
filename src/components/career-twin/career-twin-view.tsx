@@ -17,6 +17,7 @@ import { track } from "@vercel/analytics";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "@/hooks/use-toast";
 import { createEmptyGoal, type CareerGoal } from "@/lib/goals/types";
+import { markTwinAsked } from "@/lib/career-twin/asked-signal";
 import { GoalSelectionSheet } from "@/components/goals/GoalSelectionSheet";
 import { motion, AnimatePresence } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
@@ -123,6 +124,11 @@ export function CareerTwinView({
               content: m.content,
             })),
           );
+          // A prior question (this/another device) satisfies the Clarity
+          // "ask Future Me" step — seed the signal from server history.
+          if (data.history.some((m: { role: string }) => m.role === "user")) {
+            markTwinAsked(data.career.id);
+          }
         }
         if (data.checkIn?.returning) {
           setReturningDays(data.checkIn.daysSinceLastVisit ?? null);
@@ -228,6 +234,9 @@ export function CareerTwinView({
       setMessages((prev) => [...prev, userMsg]);
       setInput("");
       setSending(true);
+      // The user has now asked Future Me a question — this satisfies the
+      // Clarity completion checklist (recorded even if the reply later fails).
+      markTwinAsked(career.id);
       track("career_twin_message_sent", { mode: modeId, career: career.title });
 
       try {
