@@ -22,8 +22,11 @@ import { useQuery } from "@tanstack/react-query";
 import { Check, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useCuriositySaves } from "@/hooks/use-curiosity-saves";
-import { useAllInterestLevels } from "@/hooks/use-interest-level";
-import { InterestLevelStars } from "@/components/interest-level/interest-level-rating";
+import { useAllInterestLevels, useInterestLevel } from "@/hooks/use-interest-level";
+import {
+  InterestLevelStars,
+  InterestLevelPicker,
+} from "@/components/interest-level/interest-level-rating";
 import {
   getSavedComparisons,
   type SavedComparison,
@@ -127,6 +130,24 @@ interface ExploredGoal {
   journeyCompletedSteps: string[];
 }
 
+/** Inline interest rating for an Exploring row — relocated here from the
+ *  career detail sheet so users still set the ★ that powers the ranking.
+ *  Writes server + localStorage and fires the sync event the parent's
+ *  useAllInterestLevels listens to, so the list re-ranks on the spot. */
+function ExploringRowRating({ careerId }: { careerId: string }) {
+  const { level, setLevel, enabled } = useInterestLevel(careerId);
+  if (!enabled) return null;
+  return (
+    <InterestLevelPicker
+      value={level}
+      onChange={setLevel}
+      size="sm"
+      showLabel={false}
+      className="shrink-0"
+    />
+  );
+}
+
 /**
  * EXPLORING — the careers a user has explored in My Journey, as one ranked
  * list grouped by category. Server-authoritative: the journey list and the
@@ -206,7 +227,9 @@ function ExploringTab() {
 
   const entries: ExploringEntry[] = goals.map((g) => {
     const career = getCareerById(g.goalId);
-    const interest = clampInterestLevel(serverInterest[g.goalId] ?? localInterest[g.goalId]);
+    // Prefer the live local map (updates instantly when a row is rated below,
+    // and is itself server-reconciled) so the ranking re-sorts on the spot.
+    const interest = clampInterestLevel(localInterest[g.goalId] ?? serverInterest[g.goalId]);
     const completed =
       (g.journeyCompletedSteps ?? []).includes("clarity") || isClarityActive(g.goalTitle);
     return {
@@ -254,7 +277,7 @@ function ExploringTab() {
                     </span>
                   )}
                 </button>
-                {e.interest && <InterestLevelStars value={e.interest} className="shrink-0" />}
+                <ExploringRowRating careerId={e.careerId} />
               </li>
             ))}
           </ul>
