@@ -679,7 +679,7 @@ export function RoadmapPages({
           title="Your personal roadmap"
           lead="The path from where you are today to the career you're exploring — mapped around your age, your education stage, and your chosen direction."
         />
-        <EmptyState message="Your roadmap will appear here once you've set a primary goal and generated your personalised timeline in the Clarity tab." />
+        <EmptyState message="Your roadmap will appear here once you've set a career goal and generated your personalised timeline in the Clarity tab." />
       </PageFrame>,
     ];
   }

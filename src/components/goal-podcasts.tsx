@@ -24,24 +24,17 @@ import {
 interface GoalPodcastsProps {
   goalTitle: string;
   isPrimary?: boolean;
-  isCollapsed?: boolean; // For secondary goal - can be collapsed
 }
 
 export function GoalPodcasts({
   goalTitle,
   isPrimary = true,
-  isCollapsed = false,
 }: GoalPodcastsProps) {
   // Get podcasts for this goal
   const podcasts = getPodcastsForGoal(goalTitle);
 
   // If no podcasts, don't render anything (as per requirements)
   if (podcasts.length === 0) {
-    return null;
-  }
-
-  // Secondary goal - lighter styling, collapsed by default handled by parent
-  if (isCollapsed) {
     return null;
   }
 

@@ -32,7 +32,7 @@ const goalSchema = z.object({
 });
 
 const updateGoalsSchema = z.object({
-  slot: z.enum(["primary", "secondary"]),
+  slot: z.enum(["primary"]),
   goal: goalSchema.nullable(),
 });
 
@@ -48,13 +48,11 @@ export async function GET() {
       where: { userId: session.user.id },
       select: {
         primaryGoal: true,
-        secondaryGoal: true,
       },
     });
 
     return NextResponse.json({
       primaryGoal: profile?.primaryGoal as CareerGoal | null,
-      secondaryGoal: profile?.secondaryGoal as CareerGoal | null,
     });
   } catch (error) {
     console.error("Error fetching goals:", error);
@@ -81,29 +79,9 @@ export async function PUT(request: Request) {
       ? { ...goal, updatedAt: new Date().toISOString() }
       : Prisma.DbNull;
 
-    // Prevent primary and secondary from having the same title
-    if (goal) {
-      const profile = await prisma.youthProfile.findUnique({
-        where: { userId: session.user.id },
-        select: { primaryGoal: true, secondaryGoal: true },
-      });
-
-      const otherSlot = slot === "primary" ? "secondaryGoal" : "primaryGoal";
-      const otherGoal = profile?.[otherSlot] as CareerGoal | null;
-
-      if (otherGoal && otherGoal.title === goal.title) {
-        return NextResponse.json(
-          { error: "Primary and secondary goals cannot be the same career" },
-          { status: 400 }
-        );
-      }
-    }
-
-    // Determine which field to update
-    const updateData =
-      slot === "primary"
-        ? { primaryGoal: goalWithTimestamp }
-        : { secondaryGoal: goalWithTimestamp };
+    // Only the Primary goal exists, so there is no "other slot" to dedupe
+    // against. `slot` is validated to "primary" above.
+    const updateData = { primaryGoal: goalWithTimestamp };
 
     // If changing the primary goal, save the previous goal's roadmap
     // snapshot under JourneyGoalData and restore the new goal's snapshot
@@ -135,13 +113,13 @@ export async function PUT(request: Request) {
       return out;
     };
 
-    if (slot === "primary" && goal) {
+    if (goal) {
       // Retry + generous timeout: in prod this runs over the Supabase
       // transaction pooler, where a 6-query interactive transaction can
       // exceed Prisma's default 5s timeout or hit a transient pool error.
-      // This is the only goal path using an interactive transaction, which
-      // is why "Set as Primary Goal" could silently 500 while secondary
-      // (a plain upsert) worked.
+      // Setting a goal runs an interactive transaction (snapshot/restore the
+      // per-goal journey state), which is why "Set as Primary Goal" could
+      // silently 500 before the retry was added; clearing is a plain upsert.
       const updatedProfile = await withDbRetry(() =>
         prisma.$transaction(async (tx) => {
         const currentProfile = await tx.youthProfile.findUnique({
@@ -256,11 +234,10 @@ export async function PUT(request: Request) {
       return NextResponse.json({
         success: true,
         primaryGoal: updatedProfile.primaryGoal as CareerGoal | null,
-        secondaryGoal: updatedProfile.secondaryGoal as CareerGoal | null,
       });
     }
 
-    // Non-primary goal or clearing — simple upsert
+    // Clearing the goal (goal === null) — simple upsert
     const updatedProfile = await prisma.youthProfile.upsert({
       where: { userId: session.user.id },
       create: {
@@ -274,7 +251,6 @@ export async function PUT(request: Request) {
     return NextResponse.json({
       success: true,
       primaryGoal: updatedProfile.primaryGoal as CareerGoal | null,
-      secondaryGoal: updatedProfile.secondaryGoal as CareerGoal | null,
     });
   } catch (error) {
     if (error instanceof z.ZodError) {
@@ -302,24 +278,17 @@ export async function DELETE(request: Request) {
     const { searchParams } = new URL(request.url);
     const slot = searchParams.get("slot") as GoalSlot;
 
-    if (!slot || !["primary", "secondary"].includes(slot)) {
+    if (slot !== "primary") {
       return NextResponse.json(
         { error: "Invalid slot parameter" },
         { status: 400 }
       );
     }
 
-    if (slot === "primary") {
-      await prisma.youthProfile.update({
-        where: { userId: session.user.id },
-        data: { primaryGoal: Prisma.DbNull },
-      });
-    } else {
-      await prisma.youthProfile.update({
-        where: { userId: session.user.id },
-        data: { secondaryGoal: Prisma.DbNull },
-      });
-    }
+    await prisma.youthProfile.update({
+      where: { userId: session.user.id },
+      data: { primaryGoal: Prisma.DbNull },
+    });
 
     return NextResponse.json({ success: true });
   } catch (error) {

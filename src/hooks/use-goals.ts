@@ -4,10 +4,9 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "@/hooks/use-toast";
 import type { CareerGoal, GoalSlot, GoalsResponse } from "@/lib/goals/types";
 import { syncGuidanceGoal } from "@/lib/guidance/rules";
-import { logAndSwallow } from "@/lib/observability";
 
 /**
- * Invalidate all caches that derive from the primary goal.
+ * Invalidate all caches that derive from the career goal.
  * Called after any goal mutation to ensure the entire app
  * treats the new goal as the single source of truth.
  */
@@ -22,7 +21,7 @@ function invalidateGoalDependentCaches(queryClient: ReturnType<typeof useQueryCl
 }
 
 /**
- * Fetch the user's primary and secondary goals.
+ * Fetch the user's career goal.
  */
 export function useGoals(enabled = true) {
   return useQuery<GoalsResponse>({
@@ -63,28 +62,13 @@ export function useUpdateGoal() {
 }
 
 /**
- * Clear a specific goal slot, or both slots.
+ * Clear the user's career goal.
  */
 export function useClearGoal() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (slot: GoalSlot | "both") => {
-      if (slot === "both") {
-        const res1 = await fetch("/api/goals", {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ slot: "primary", goal: null }),
-        });
-        if (!res1.ok) throw new Error("Failed to clear primary goal");
-        const res2 = await fetch("/api/goals", {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ slot: "secondary", goal: null }),
-        });
-        if (!res2.ok) throw new Error("Failed to clear secondary goal");
-        return res2.json();
-      }
+    mutationFn: async (slot: GoalSlot = "primary") => {
       const res = await fetch("/api/goals", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -93,91 +77,13 @@ export function useClearGoal() {
       if (!res.ok) throw new Error("Failed to clear goal");
       return res.json();
     },
-    onSuccess: (_data, slot) => {
-      toast({
-        title: slot === "both" ? "Both goals cleared" : `${slot === "primary" ? "Primary" : "Secondary"} goal cleared`,
-        variant: "success",
-      });
-      if (slot === "primary" || slot === "both") {
-        syncGuidanceGoal(null);
-      }
+    onSuccess: () => {
+      toast({ title: "Primary goal cleared", variant: "success" });
+      syncGuidanceGoal(null);
       invalidateGoalDependentCaches(queryClient);
     },
     onError: () => {
       toast({ title: "Failed to clear goal", variant: "destructive" });
-    },
-  });
-}
-
-/**
- * Promote secondary goal to primary (swap them).
- */
-export function usePromoteGoal() {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: async ({
-      currentPrimary,
-      currentSecondary,
-    }: {
-      currentPrimary: CareerGoal | null;
-      currentSecondary: CareerGoal;
-    }) => {
-      const now = new Date().toISOString();
-
-      // Step 1: Clear secondary to avoid duplicate-title conflict
-      const clear = await fetch("/api/goals", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ slot: "secondary", goal: null }),
-      });
-      if (!clear.ok) throw new Error("Failed to clear secondary slot");
-
-      // Step 2: Set the old secondary as the new primary
-      const res1 = await fetch("/api/goals", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          slot: "primary",
-          goal: { ...currentSecondary, updatedAt: now },
-        }),
-      });
-      if (!res1.ok) throw new Error("Failed to promote goal");
-
-      // Step 3: Move old primary to secondary (or leave cleared)
-      const res2 = await fetch("/api/goals", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          slot: "secondary",
-          goal: currentPrimary
-            ? { ...currentPrimary, updatedAt: now }
-            : null,
-        }),
-      });
-      if (!res2.ok) throw new Error("Failed to demote old primary");
-
-      return res2.json();
-    },
-    onSuccess: (_data, variables) => {
-      toast({
-        title: "Goals swapped!",
-        description: "Your secondary goal is now primary.",
-        variant: "success",
-      });
-      syncGuidanceGoal(variables.currentSecondary.title);
-      // Pre-generate the career roadmap for the new primary goal
-      // (fire-and-forget — if it fails the on-demand generate runs
-      // when the user opens Clarity)
-      fetch("/api/journey/generate-timeline", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ career: variables.currentSecondary.title }),
-      }).catch(logAndSwallow("useGoals:pregenerateTimeline"));
-      invalidateGoalDependentCaches(queryClient);
-    },
-    onError: () => {
-      toast({ title: "Failed to swap goals", variant: "destructive" });
     },
   });
 }

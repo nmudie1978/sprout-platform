@@ -164,13 +164,9 @@ function GoalCard({
               }`}
             />
           </div>
-          <h3 className="font-semibold mb-1">
-            {isPrimary ? "No Primary Goal Set" : "No Secondary Goal"}
-          </h3>
+          <h3 className="font-semibold mb-1">No career goal set</h3>
           <p className="text-sm text-muted-foreground mb-4">
-            {isPrimary
-              ? "Set a primary career goal to get personalised suggestions"
-              : "Add a backup goal you're exploring"}
+            Set a primary career goal to get personalised suggestions
           </p>
           <div className="flex flex-col sm:flex-row gap-2 justify-center">
             {isMobile && onOpenGoalSheet && (
@@ -213,7 +209,7 @@ function GoalCard({
             <div className="flex items-center gap-2">
               {isPrimary && <Star className="h-5 w-5 text-primary" />}
               <span className="text-sm font-medium text-muted-foreground">
-                {isPrimary ? "Primary Goal" : "Secondary Goal"}
+                Career goal
               </span>
             </div>
             <div className="flex gap-2">
@@ -391,7 +387,7 @@ function GoalCard({
           <div className="flex items-center gap-2">
             {isPrimary && <Star className="h-5 w-5 text-primary fill-primary" />}
             <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-              {isPrimary ? "Primary Goal" : "Secondary Goal"}
+              Career goal
             </span>
           </div>
           <div className="flex gap-1">
@@ -689,7 +685,6 @@ export default function GoalsPageContent() {
 
   const [editingSlot, setEditingSlot] = useState<GoalSlot | null>(null);
   const [primaryEditForm, setPrimaryEditForm] = useState<CareerGoal | null>(null);
-  const [secondaryEditForm, setSecondaryEditForm] = useState<CareerGoal | null>(null);
   const [showReportModal, setShowReportModal] = useState(false);
   const [showGoalSheet, setShowGoalSheet] = useState(false);
   const [goalSheetTargetSlot, setGoalSheetTargetSlot] = useState<GoalSlot | null>(null);
@@ -742,7 +737,6 @@ export default function GoalsPageContent() {
       queryClient.invalidateQueries({ queryKey: ["profile-completion"] });
       setEditingSlot(null);
       setPrimaryEditForm(null);
-      setSecondaryEditForm(null);
       toast({ title: "Goal updated!" });
     },
     onError: () => {
@@ -800,18 +794,12 @@ export default function GoalsPageContent() {
   });
 
   const primaryGoal: CareerGoal | null = goalsData?.primaryGoal || null;
-  const secondaryGoal: CareerGoal | null = goalsData?.secondaryGoal || null;
   const notes: UserNote[] = notesData?.notes || [];
 
   const handleEditPrimary = useCallback(() => {
     setPrimaryEditForm(primaryGoal || createEmptyGoal(""));
     setEditingSlot("primary");
   }, [primaryGoal]);
-
-  const handleEditSecondary = useCallback(() => {
-    setSecondaryEditForm(secondaryGoal || createEmptyGoal(""));
-    setEditingSlot("secondary");
-  }, [secondaryGoal]);
 
   const handleSavePrimary = useCallback(() => {
     if (!primaryEditForm || !primaryEditForm.title.trim()) {
@@ -821,18 +809,9 @@ export default function GoalsPageContent() {
     updateGoalMutation.mutate({ slot: "primary", goal: primaryEditForm });
   }, [primaryEditForm, updateGoalMutation, toast]);
 
-  const handleSaveSecondary = useCallback(() => {
-    if (!secondaryEditForm || !secondaryEditForm.title.trim()) {
-      toast({ title: "Please enter a goal title", variant: "destructive" });
-      return;
-    }
-    updateGoalMutation.mutate({ slot: "secondary", goal: secondaryEditForm });
-  }, [secondaryEditForm, updateGoalMutation, toast]);
-
   const handleCancel = useCallback(() => {
     setEditingSlot(null);
     setPrimaryEditForm(null);
-    setSecondaryEditForm(null);
   }, []);
 
   const handleOpenGoalSheet = useCallback((slot?: GoalSlot) => {
@@ -867,7 +846,7 @@ export default function GoalsPageContent() {
       {/* Header with report button */}
       <div className="flex items-center justify-between">
         <p className="text-sm text-muted-foreground">
-          Focus on what matters. Set one primary and one secondary career goal.
+          Focus on what matters. Set the one career goal your journey follows.
         </p>
         {primaryGoal && (
           <Button
@@ -882,7 +861,7 @@ export default function GoalsPageContent() {
         )}
       </div>
 
-      {/* Primary Goal */}
+      {/* Career goal */}
       <GoalCard
         goal={primaryGoal}
         slot="primary"
@@ -894,21 +873,6 @@ export default function GoalsPageContent() {
         editForm={primaryEditForm}
         setEditForm={setPrimaryEditForm}
         onOpenGoalSheet={() => handleOpenGoalSheet("primary")}
-        isMobile={isMobile}
-      />
-
-      {/* Secondary Goal */}
-      <GoalCard
-        goal={secondaryGoal}
-        slot="secondary"
-        isEditing={editingSlot === "secondary"}
-        onEdit={handleEditSecondary}
-        onSave={handleSaveSecondary}
-        onCancel={handleCancel}
-        onClear={() => deleteGoalMutation.mutate("secondary")}
-        editForm={secondaryEditForm}
-        setEditForm={setSecondaryEditForm}
-        onOpenGoalSheet={() => handleOpenGoalSheet("secondary")}
         isMobile={isMobile}
       />
 
@@ -930,7 +894,6 @@ export default function GoalsPageContent() {
         open={showReportModal}
         onClose={() => setShowReportModal(false)}
         primaryGoal={primaryGoal}
-        secondaryGoal={secondaryGoal}
         hasNotes={notes.length > 0}
         hasJobs={false}
       />
@@ -940,7 +903,6 @@ export default function GoalsPageContent() {
         onClose={() => setShowGoalSheet(false)}
         targetSlot={goalSheetTargetSlot}
         primaryGoal={primaryGoal}
-        secondaryGoal={secondaryGoal}
         onSuccess={() => {
           queryClient.invalidateQueries({ queryKey: ["goals"] });
           queryClient.invalidateQueries({ queryKey: ["journey-state"] });

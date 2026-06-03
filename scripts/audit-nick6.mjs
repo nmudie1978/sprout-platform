@@ -39,7 +39,7 @@ try {
     p.youthProfile.findUnique({
       where: { userId: uid },
       select: {
-        displayName: true, primaryGoal: true, secondaryGoal: true,
+        displayName: true, primaryGoal: true,
         foundationCardData: true, journeySummary: true, discoveryPreferences: true,
         interests: true, skillTags: true, desiredRoles: true,
       },
@@ -109,7 +109,6 @@ try {
   if (profile) {
     console.log('\n── YouthProfile highlights ──');
     console.log('  primaryGoal        :', profile.primaryGoal ? JSON.stringify(profile.primaryGoal).slice(0, 140) : 'null');
-    console.log('  secondaryGoal      :', profile.secondaryGoal ? JSON.stringify(profile.secondaryGoal).slice(0, 140) : 'null');
     console.log('  foundationCardData :', profile.foundationCardData ? 'yes' : 'null');
     console.log('  journeySummary     :', profile.journeySummary ? 'yes' : 'null');
     console.log('  discoveryPreferences:', profile.discoveryPreferences ? 'yes' : 'null');

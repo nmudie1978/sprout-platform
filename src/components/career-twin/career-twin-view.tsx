@@ -670,7 +670,6 @@ export function CareerTwinView({
         onClose={() => setShowGoalPicker(false)}
         targetSlot="primary"
         primaryGoal={primaryGoal}
-        secondaryGoal={null}
         onSuccess={() => {
           setShowGoalPicker(false);
           track("career_twin_primary_goal_changed");

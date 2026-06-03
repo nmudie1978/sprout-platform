@@ -590,7 +590,7 @@ function DiscoverTab({
   }, [profileData]);
 
   if (!career || !goalTitle) {
-    return <EmptyState icon={Target} message="Choose a Primary Goal to start exploring" />;
+    return <EmptyState icon={Target} message="Choose a career goal to start exploring" />;
   }
 
   const dDetails = discoverDetails?.details ?? null;
@@ -3194,7 +3194,6 @@ export default function MyJourneyPage() {
           open={goalSheetOpen}
           onClose={() => setGoalSheetOpen(false)}
           primaryGoal={goalsData?.primaryGoal || null}
-          secondaryGoal={goalsData?.secondaryGoal || null}
           onSuccess={() => {
             setGoalSheetOpen(false);
             setActiveTab('discover');
@@ -3214,7 +3213,7 @@ export default function MyJourneyPage() {
               <span className="text-muted-foreground/50">My Journey to </span>
               {goalTitle}
             </h1>
-            <button onClick={() => setGoalSheetOpen(true)} className="p-1 rounded-md text-muted-foreground/40 hover:text-muted-foreground hover:bg-muted/50 transition-colors" title="Change Primary Goal">
+            <button onClick={() => setGoalSheetOpen(true)} className="p-1 rounded-md text-muted-foreground/40 hover:text-muted-foreground hover:bg-muted/50 transition-colors" title="Change career goal">
               <Pencil className="h-3.5 w-3.5" />
             </button>
           </div>
@@ -3333,7 +3332,6 @@ export default function MyJourneyPage() {
         open={goalSheetOpen}
         onClose={() => setGoalSheetOpen(false)}
         primaryGoal={goalsData?.primaryGoal || null}
-        secondaryGoal={goalsData?.secondaryGoal || null}
         onSuccess={() => {
           setGoalSheetOpen(false);
           setActiveTab('discover');

@@ -504,11 +504,11 @@ function CareersPageContent() {
               <h2 className="text-lg font-semibold">Recommended for You</h2>
               <span
                 className="text-xs text-muted-foreground cursor-help"
-                title={insightsData?.insightsMessage || "Ranked by similarity to your Primary Goal, any careers you've explored or saved, and your Career Radar preferences."}
+                title={insightsData?.insightsMessage || "Ranked by similarity to your career goal, any careers you've explored or saved, and your Career Radar preferences."}
               >
                 {insightsData?.insightsMessage
                   ? insightsData.insightsMessage.replace(/^Based on your /, "Based on ")
-                  : "Based on your Primary Goal"}
+                  : "Based on your career goal"}
               </span>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">

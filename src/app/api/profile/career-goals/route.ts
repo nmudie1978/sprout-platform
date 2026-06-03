@@ -4,10 +4,11 @@ export const dynamic = "force-dynamic";
  *
  * CORE PRODUCT INVARIANT - Career Goals:
  * - EXACTLY ONE Primary Career Goal (the anchor, default lens for all personalisation)
- * - AT MOST ONE Secondary Career Goal (backup/alternative, always lower priority)
- * - NO concept of third, fourth, or unlimited goals
+ * - NO concept of secondary, third, or unlimited goals (the former Secondary
+ *   goal was removed — Saved careers + interest levels cover "other careers
+ *   I'm considering")
  *
- * The new /api/goals endpoint enforces this invariant with primaryGoal/secondaryGoal JSON fields.
+ * The new /api/goals endpoint enforces this invariant with the primaryGoal JSON field.
  * This legacy endpoint is kept temporarily for backward compatibility but should not be used for new features.
  */
 import { NextResponse } from "next/server";

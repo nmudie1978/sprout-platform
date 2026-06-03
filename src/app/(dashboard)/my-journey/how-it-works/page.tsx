@@ -24,7 +24,7 @@ const STAGES = [
     steps: [
       { name: 'Reflect on Strengths', detail: 'Identify what you\'re naturally good at' },
       { name: 'Explore Careers', detail: 'Browse career paths and save what interests you' },
-      { name: 'Set Your Primary Goal', detail: 'Choose one career to explore properly first' },
+      { name: 'Set your career goal', detail: 'Choose one career to explore properly' },
     ],
     extras: [
       { name: 'Know Yourself Better', detail: '5 self-discovery reflections — motivations, work style, growth areas, role models, and experiences' },
