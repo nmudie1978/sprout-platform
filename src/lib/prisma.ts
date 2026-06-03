@@ -18,7 +18,27 @@ function createClient(): PrismaClient {
   // onto the direct connection, exhausting its small limit and causing
   // intermittent connection 500s on cold invocations. Fall back to
   // DIRECT_URL only if DATABASE_URL is somehow absent.
-  const databaseUrl = process.env.DATABASE_URL || process.env.DIRECT_URL;
+  const pooled = process.env.DATABASE_URL?.trim();
+  const direct = process.env.DIRECT_URL?.trim();
+  const databaseUrl = pooled || direct;
+
+  // Fail-loud guard. Runtime MUST use the pooled connection (DATABASE_URL →
+  // Supabase PgBouncer/Supavisor on :6543). If DATABASE_URL is blank we
+  // silently fall back to DIRECT_URL (:5432) — and every serverless instance
+  // then opens its own direct connection, saturating Supabase's ~60-connection
+  // direct limit. Light reads still squeak through, but multi-query interactive
+  // transactions (e.g. the goal switch in /api/goals) can't acquire a
+  // connection and 500. This regressed silently once (prod DATABASE_URL was
+  // emptied) — surface it loudly so it can't happen quietly again.
+  if (process.env.NODE_ENV === 'production' && !pooled && direct) {
+    console.error(
+      '[prisma] DATABASE_URL is empty in production — falling back to the ' +
+      'DIRECT (:5432) connection. Under serverless load this exhausts Supabase\'s ' +
+      'direct-connection limit and 500s on heavy transactions. Set DATABASE_URL ' +
+      'to the Supabase transaction-pooler URL (:6543, ?pgbouncer=true&connection_limit=1).',
+    );
+  }
+
   return new PrismaClient({
     // Only pass the datasources override when we actually have a URL —
     // otherwise Prisma throws at ctor time. When absent, Prisma falls back
