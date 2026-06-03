@@ -75,7 +75,6 @@ import { GoalSelectionSheet } from "@/components/goals/GoalSelectionSheet";
 import { useSubtleHint } from "@/hooks/use-subtle-hint";
 import { SpotlightHint } from "@/components/ui/spotlight-hint";
 import { DiscoveryNudge } from "@/components/discovery/discovery-nudge";
-import { CareerTwinCta } from "@/components/career-twin/career-twin-cta";
 
 /** Sanitise user-provided URLs — only allow http/https to prevent javascript: XSS */
 function safeHref(url: string): string {
@@ -1251,14 +1250,6 @@ export default function DashboardPage() {
                 </div>
               );
             })()}
-
-            {/* Career Twin completion reward — surfaces "Meet Future You"
-                subtly inside the journey card, but only once the journey
-                reaches 3/3 (Clarity). Replaces the old standalone banner so
-                the Career Twin feels earned rather than promoted. */}
-            {goalCareer && completedLensCount === 3 && (
-              <CareerTwinCta variant="journeyComplete" />
-            )}
 
           </GlassCard>
           );
