@@ -7,7 +7,7 @@ export const feedbackSchema = z.object({
     .enum(["JOURNEY", "CAREER_RADAR", "EXPLORE_CAREERS", "LIBRARY", "CAREER_TWIN", "OTHER"])
     .optional()
     .nullable(),
-  message: z.string().min(1).max(1000),
+  message: z.string().max(1000).refine((s) => s.trim().length > 0, "Message cannot be empty."),
   role: z.enum(["TEEN_16_20", "PARENT_GUARDIAN", "ADULT_OTHER"]).optional().nullable(),
   source: z.string().max(50).optional().nullable(),
 });

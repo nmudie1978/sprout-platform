@@ -34,10 +34,10 @@ export async function POST(request: Request) {
       data: {
         createdByUserId: session?.user?.id || null,
         kind: data.kind,
-        area: data.area || null,
+        area: data.area ?? null,
         message,
-        role: data.role || null,
-        source: data.source || null,
+        role: data.role ?? null,
+        source: data.source ?? null,
         userAgent,
         appVersion: process.env.npm_package_version || null,
       },

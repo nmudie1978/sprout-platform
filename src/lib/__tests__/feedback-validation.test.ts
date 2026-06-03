@@ -32,6 +32,10 @@ describe("feedbackSchema", () => {
     expect(() => feedbackSchema.parse({ kind: "PRAISE", message: "" })).toThrow();
   });
 
+  it("rejects a whitespace-only message (empty after trim)", () => {
+    expect(() => feedbackSchema.parse({ kind: "PRAISE", message: "   " })).toThrow();
+  });
+
   it("rejects an unknown area", () => {
     expect(() => feedbackSchema.parse({ kind: "IDEA", message: "x", area: "JOBS" })).toThrow();
   });
