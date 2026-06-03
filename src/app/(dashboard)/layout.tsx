@@ -3,7 +3,6 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { SidebarNav } from "@/components/sidebar-nav";
 import { MobileBottomNav } from "@/components/mobile-bottom-nav";
-import { AppTopBar } from "@/components/app-top-bar";
 import { AmbientLightBackground } from "@/components/ui/ambient-light-background";
 import { prisma } from "@/lib/prisma";
 import { headers } from "next/headers";
@@ -101,10 +100,9 @@ export default async function DashboardLayout({
 
       {/* Main content area */}
       <div className="flex-1 flex flex-col min-w-0 relative z-10">
-        {/* Persistent top bar — language switcher reachable on every page */}
-        <AppTopBar />
-
-        {/* Main content with bottom padding for mobile nav */}
+        {/* Main content with bottom padding for mobile nav. The language
+            switcher now lives as an icon in the dashboard header (next to the
+            walkthrough control) rather than a persistent top bar. */}
         <main className="flex-1 pb-16 lg:pb-0">{children}</main>
 
         {/* Footer with legal links — hidden on mobile.
