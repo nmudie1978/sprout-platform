@@ -387,6 +387,8 @@
     "noActiveGoal": "Velg et reisemål først, så kan karrieretvillingen legge til steg.",
     "meetFutureYou": "Møt Framtidige Deg",
     "meetFutureYouBody": "Spør karrieretvillingen din hvordan denne veien kan føles.",
+    "checkInFutureYou": "Sjekk inn med Framtidige Deg",
+    "checkInFutureYouBody": "Det er en stund siden — se hvordan ditt fremtidige jeg svarer nå.",
     "askFutureMe": "Spør Framtidige Meg",
     "talkToFutureSelfAs": "Snakk med ditt framtidige jeg som {career}",
     "setPrimaryGoal": "Sett som hovedmål",
@@ -399,6 +401,7 @@
     "goalSetToast": "Satt som hovedmål!",
     "goalSetToastBody": "Se og tilpass det på Min reise.",
     "goalSetError": "Kunne ikke sette målet ditt",
-    "goalSetErrorBody": "Prøv igjen om et øyeblikk."
+    "goalSetErrorBody": "Prøv igjen om et øyeblikk.",
+    "welcomeBack": "Velkommen tilbake — det er omtrent {weeks, plural, one {# uke} other {# uker}} siden sist. Ditt fremtidige jeg har ventet. Fortsett der du slapp."
   }
 }
