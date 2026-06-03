@@ -97,13 +97,14 @@ describe('Dashboard completion indicator (Issue 2 — negative tests)', () => {
   it('my-journey Clarity completion now renders the slim success row, not the old banner', () => {
     // The large "🎉 You've explored X from every angle" banner was
     // replaced with a compact SaaS-style success row — "Journey
-    // complete" label + recommendations popover + PDF export icon.
+    // complete" label + PDF export icon. (The "Next moves" popover was
+    // later removed; the ranked steps live in the exported PDF.)
     // Negative: the old celebration copy must not reappear.
     expect(MY_JOURNEY_SOURCE).not.toMatch(/explored.*from every angle/);
     expect(MY_JOURNEY_SOURCE).not.toMatch(/🎉/);
     // Positive: the new row is present inside the Clarity completion card.
     expect(MY_JOURNEY_SOURCE).toMatch(/Journey complete/);
-    expect(MY_JOURNEY_SOURCE).toMatch(/Recommended next moves|Next moves/);
+    expect(MY_JOURNEY_SOURCE).toMatch(/Export PDF|Export my career journey/);
   });
 });
 
