@@ -76,3 +76,15 @@ export {
   type SavedCareerData,
 } from './saved-careers-service';
 
+// Journey Notebook Service
+export {
+  upsertNotebook,
+  getNotebook,
+  getAllNotebooks,
+  bulkUpsertNotebooks,
+  formatNotebook,
+  type UpsertNotebookInput,
+  type JourneyNotebookData,
+  type NotebookLenses,
+} from './journey-notebook-service';
+

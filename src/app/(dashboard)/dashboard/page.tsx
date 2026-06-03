@@ -46,6 +46,10 @@ import { useCuriositySaves } from "@/hooks/use-curiosity-saves";
 import { useAllInterestLevels } from "@/hooks/use-interest-level";
 import { InterestLevelStars } from "@/components/interest-level/interest-level-rating";
 import { readLocalJourneyReflections, type LocalReflectionEntry } from "@/lib/library/tabs";
+import {
+  ensureJourneyNotebooksHydrated,
+  JOURNEY_NOTEBOOKS_HYDRATED_EVENT,
+} from "@/lib/journey/notebook-sync";
 import { captureClientMutationError } from "@/lib/observability";
 import type { GoalsResponse } from "@/lib/goals/types";
 import { computeLensProgress, isJourneySnapshotWorthy, journeyStageLabel } from "@/lib/journey/lens-progress";
@@ -610,7 +614,20 @@ export default function DashboardPage() {
       setRecentReflections([]);
       return;
     }
-    setRecentReflections(readLocalJourneyReflections(reflectionsUserId, window.localStorage));
+    const read = () =>
+      setRecentReflections(readLocalJourneyReflections(reflectionsUserId, window.localStorage));
+    read();
+    // Reconcile with the server once, then re-read when the cache refreshes
+    // (server hydration, a tray edit, or another tab).
+    void ensureJourneyNotebooksHydrated(reflectionsUserId);
+    window.addEventListener(JOURNEY_NOTEBOOKS_HYDRATED_EVENT, read);
+    window.addEventListener("endeavrly:journey-reflections-changed", read);
+    window.addEventListener("storage", read);
+    return () => {
+      window.removeEventListener(JOURNEY_NOTEBOOKS_HYDRATED_EVENT, read);
+      window.removeEventListener("endeavrly:journey-reflections-changed", read);
+      window.removeEventListener("storage", read);
+    };
   }, [reflectionsUserId]);
 
   // Explored journeys — all goals the user has saved progress for

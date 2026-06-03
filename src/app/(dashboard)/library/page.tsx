@@ -49,6 +49,10 @@ import {
   type LibraryTab,
   type LocalReflectionEntry,
 } from "@/lib/library/tabs";
+import {
+  ensureJourneyNotebooksHydrated,
+  JOURNEY_NOTEBOOKS_HYDRATED_EVENT,
+} from "@/lib/journey/notebook-sync";
 
 export default function LibraryPage() {
   const searchParams = useSearchParams();
@@ -369,14 +373,25 @@ function ReflectionsTab() {
   const userId = session?.user?.id;
   const [entries, setEntries] = useState<LocalReflectionEntry[]>([]);
 
-  // Reflections are written to localStorage by the JourneyReflectionsTray,
-  // so read them straight from this device (same as Saved/Compared).
+  // Reflections persist to the JourneyNotebook table; localStorage is the
+  // device cache the JourneyReflectionsTray writes. Reconcile with the server
+  // once, then re-read whenever the cache refreshes.
   useEffect(() => {
     if (!userId || typeof window === "undefined") {
       setEntries([]);
       return;
     }
-    setEntries(readLocalJourneyReflections(userId, window.localStorage));
+    const read = () => setEntries(readLocalJourneyReflections(userId, window.localStorage));
+    read();
+    void ensureJourneyNotebooksHydrated(userId);
+    window.addEventListener(JOURNEY_NOTEBOOKS_HYDRATED_EVENT, read);
+    window.addEventListener("endeavrly:journey-reflections-changed", read);
+    window.addEventListener("storage", read);
+    return () => {
+      window.removeEventListener(JOURNEY_NOTEBOOKS_HYDRATED_EVENT, read);
+      window.removeEventListener("endeavrly:journey-reflections-changed", read);
+      window.removeEventListener("storage", read);
+    };
   }, [userId]);
 
   if (entries.length === 0) {
