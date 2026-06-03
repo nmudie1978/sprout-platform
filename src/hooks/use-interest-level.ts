@@ -20,6 +20,10 @@ import {
   readInterestLevel,
   readAllInterestLevels,
 } from "@/lib/interest-level/types";
+import {
+  ensureInterestLevelsHydrated,
+  INTEREST_LEVELS_HYDRATED_EVENT,
+} from "@/lib/interest-level/sync";
 
 const SYNC_EVENT = "endeavrly:interest-level-changed";
 
@@ -38,6 +42,20 @@ export function useInterestLevel(careerId: string | null | undefined) {
   useEffect(() => {
     setLevelState(load());
   }, [load]);
+
+  // One-time server reconciliation, then re-read the (now server-synced) cache.
+  useEffect(() => {
+    if (!userId) return;
+    void ensureInterestLevelsHydrated(userId);
+    const onHydrated = (e: Event) => {
+      const detail = (e as CustomEvent).detail as { userId?: string } | undefined;
+      if (detail?.userId !== userId) return;
+      externalUpdateRef.current = true;
+      setLevelState(load());
+    };
+    window.addEventListener(INTEREST_LEVELS_HYDRATED_EVENT, onHydrated);
+    return () => window.removeEventListener(INTEREST_LEVELS_HYDRATED_EVENT, onHydrated);
+  }, [userId, load]);
 
   // Same-document sync (another mount changed this career's level).
   useEffect(() => {
@@ -120,12 +138,16 @@ export function useAllInterestLevels(): Record<string, InterestLevel> {
     }
     const read = () => setLevels(readAllInterestLevels(userId, window.localStorage));
     read();
+    // Reconcile with the server once, then re-read when the cache is refreshed.
+    void ensureInterestLevelsHydrated(userId);
     const onChange = () => read();
     window.addEventListener(SYNC_EVENT, onChange);
     window.addEventListener("storage", onChange);
+    window.addEventListener(INTEREST_LEVELS_HYDRATED_EVENT, onChange);
     return () => {
       window.removeEventListener(SYNC_EVENT, onChange);
       window.removeEventListener("storage", onChange);
+      window.removeEventListener(INTEREST_LEVELS_HYDRATED_EVENT, onChange);
     };
   }, [userId]);
 
