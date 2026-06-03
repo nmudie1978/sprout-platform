@@ -931,3 +931,11 @@
   }
 
 }
+
+/* Respect reduced-motion: the active-stage pulse is decorative, so disable it
+   (the stage stays highlighted via colour/weight, just without the pulse). */
+@media (prefers-reduced-motion: reduce) {
+  .animate-stage-pulse {
+    animation: none !important;
+  }
+}

@@ -166,6 +166,11 @@ const config: Config = {
           "0%, 100%": { opacity: "0.15", boxShadow: "0 0 4px 1px rgba(45,212,191,0.15)" },
           "50%": { opacity: "0.45", boxShadow: "0 0 12px 4px rgba(45,212,191,0.35)" },
         },
+        // Gentle attention pulse for the active My Journey stage label.
+        "stage-pulse": {
+          "0%, 100%": { opacity: "1" },
+          "50%": { opacity: "0.5" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -180,6 +185,7 @@ const config: Config = {
         shine: "shine var(--duration) infinite linear",
         "glow-spin": "glow-spin 12s linear infinite",
         "glow-pulse": "glow-pulse 3s ease-in-out infinite",
+        "stage-pulse": "stage-pulse 1.8s ease-in-out infinite",
       },
     },
   },

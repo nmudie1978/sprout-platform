@@ -1142,7 +1142,11 @@ export default function DashboardPage() {
                           className={cn(
                             "text-xs mt-1 text-center",
                             isActive
-                              ? goalTitle ? "text-primary font-semibold" : "text-foreground font-semibold"
+                              ? cn(
+                                  goalTitle ? "text-primary font-semibold" : "text-foreground font-semibold",
+                                  // Gently pulse the stage the user is currently on.
+                                  "animate-stage-pulse",
+                                )
                               : "text-muted-foreground/40"
                           )}
                         >
