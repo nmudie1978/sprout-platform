@@ -2,7 +2,12 @@
 
 import { useState, useCallback, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import {
   Sparkles,
@@ -135,6 +140,14 @@ export function OrientationWalkthrough({
       <DialogContent
         className="themed-walkthrough sm:max-w-md p-0 gap-0 border-border/50 bg-card overflow-hidden text-white dark:text-card-foreground"
       >
+        {/* Accessible title/description for screen readers — the visible
+            heading swaps per step inside AnimatePresence, so we keep a stable
+            hidden DialogTitle to satisfy Radix's accessibility requirement. */}
+        <DialogTitle className="sr-only">Welcome to Endeavrly</DialogTitle>
+        <DialogDescription className="sr-only">
+          A short guided tour of how Endeavrly helps you explore careers.
+        </DialogDescription>
+
         {/* Progress bar */}
         <div className="h-1 bg-white/20 dark:bg-muted/30 relative">
           <div
