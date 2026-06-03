@@ -57,11 +57,11 @@ const MY_JOURNEY_SOURCE = stripComments(MY_JOURNEY_SOURCE_RAW);
 
 describe('Dashboard completion indicator (Issue 2 — positive tests)', () => {
   it('renders a subtle completion indicator when all lenses are done', () => {
-    // The Dashboard now shows a small flag/icon + completion indicator
-    // text instead of the full congrats banner.
+    // The Dashboard now shows a text-only completion indicator
+    // instead of the full congrats banner.
     expect(DASHBOARD_SOURCE).toMatch(/journey\.completeIndicator|Journey complete/);
-    // Uses a small gold Star as the completion marker.
-    expect(DASHBOARD_SOURCE).toMatch(/Star.*h-3 w-3.*fill-amber-400/);
+    // Completion is a text-only indicator — stars are reserved for the interest-level rating.
+    expect(DASHBOARD_SOURCE).not.toMatch(/aria-label="Journey complete"/);
   });
 
   it('gates the indicator on completedLensCount === 3', () => {
@@ -95,17 +95,14 @@ describe('Dashboard completion indicator (Issue 2 — negative tests)', () => {
   });
 
   it('completion indicator is compact — small sizing only', () => {
-    // The subtle indicator uses text-[10px] and h-3 w-3, not
+    // The subtle indicator uses text-[10px], not
     // the old text-sm / text-xs font-bold from the congrats banner.
     // Anchor on the i18n key 'completeIndicator' — that token only
-    // appears on the compact dashboard indicator (other "Journey
-    // complete" strings elsewhere in the file are aria-labels on
-    // per-goal row markers and don't need the 10px sizing).
+    // appears on the compact dashboard indicator.
     const idx = DASHBOARD_SOURCE.indexOf('completeIndicator');
     expect(idx).toBeGreaterThan(-1);
     const surround = DASHBOARD_SOURCE.slice(Math.max(0, idx - 200), idx + 100);
     expect(surround).toMatch(/text-\[10px\]/);
-    expect(surround).toMatch(/h-3 w-3/);
   });
 
   it('my-journey Clarity completion now renders the slim success row, not the old banner', () => {
