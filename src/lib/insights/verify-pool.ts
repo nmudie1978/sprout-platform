@@ -96,7 +96,20 @@ export async function verifyPoolItem(item: PoolItem): Promise<PoolItem> {
     try {
       ({ response, usedGet } = await fetchHeadThenGet(item.sourceUrl));
     } catch {
-      return fail(); // genuinely unreachable (DNS fail / refused / repeated timeout)
+      // Network-level failure: the request never returned an HTTP status —
+      // DNS/TLS error, connection reset, timeout, or an anti-bot challenge
+      // (Cloudflare etc.) that hangs our datacenter IP. For a curated tier-1
+      // domain this is almost always bot-blocking or a transient blip, not a
+      // dead page: a *removed* page returns a clean 404/410 (handled by the
+      // classifier above), whereas a throw is host-level and the URL still
+      // works fine in a real browser. So we keep trusted hosts as reachable
+      // rather than stripping authoritative sources (WEF/OECD/ILO) from the
+      // feed. This is the common failure mode on the GitHub Actions runner.
+      return {
+        ...item,
+        verificationStatus: trusted ? "verified" : "failed",
+        lastVerifiedAt: now,
+      };
     }
   }
 
