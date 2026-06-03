@@ -53,6 +53,7 @@ import {
 import { captureClientMutationError } from "@/lib/observability";
 import type { GoalsResponse } from "@/lib/goals/types";
 import { computeLensProgress, isJourneySnapshotWorthy, journeyStageLabel } from "@/lib/journey/lens-progress";
+import { useLensProgressSync } from "@/hooks/use-lens-progress-sync";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { OrientationWalkthrough } from "@/components/onboarding/orientation-walkthrough";
@@ -733,9 +734,12 @@ export default function DashboardPage() {
   // Derived directly from goalTitle so the ring updates in the same
   // render that the title changes — no useState/useEffect timing gap.
   // See lib/journey/lens-progress.ts for the rationale.
+  // `lensTick` bumps once the server has hydrated the localStorage cache
+  // (journeyCompletedSteps), so progress made on another device shows here.
+  const lensTick = useLensProgressSync();
   const lensProgress = useMemo(
     () => computeLensProgress({ hasPrimaryGoal: !!goalTitle, careerTitle: goalTitle }),
-    [goalTitle],
+    [goalTitle, lensTick],
   );
 
   const { discoverDone, understandDone, clarityDone, currentLens, completedCount: completedLensCount } =
