@@ -1,36 +1,44 @@
 "use client";
 
 /**
- * Career Twin entry inside My Journey → Clarity. The always-on companion to
- * the dashboard's completion-reward surface (`CareerTwinCta variant=
- * "journeyComplete"`): once a user has worked through to Clarity for a career
- * — itself earned, since Clarity is locked behind Discover → Understand — the
- * Twin becomes a calm, ever-present door to talk their direction through.
+ * Career Twin opt-in inside My Journey → Clarity.
  *
- * Two states:
- *  - Introduce (one-time per career): a warm card the first time the user
- *    reaches Clarity for this career — "you've got a direction, meet Future
- *    You." Opening it or dismissing it settles it into the pill forever after.
- *  - Steady: the compact "Ask Future Me" pill (reuses CareerTwinCta), grounded
- *    to THIS career rather than the user's primary goal.
+ * Deliberately minimal and entirely optional:
+ *  - A single small "Meet Future You" pill — never a promoted card, so it
+ *    doesn't clutter Clarity.
+ *  - Choose it → the Twin opens INLINE, in a dialog over Clarity. It never
+ *    navigates to /career-advisor: leaving the page would break the user's
+ *    journey ("I lose focus on Clarity"). Closing the dialog returns them
+ *    exactly where they were.
+ *  - Don't want it → a quiet ✕ hides the whole section (remembered on this
+ *    device); the inline view is then never shown.
  *
- * Never gated, never a cold promo — it only appears once the journey has been
- * walked. Grounding to the Clarity career matters because Clarity may be
- * showing a non-primary explored goal.
+ * Grounded to the Clarity career (which may be a non-primary explored goal),
+ * not the user's primary goal.
  */
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
-import { useSession } from "next-auth/react";
+import dynamic from "next/dynamic";
 import { useTranslations } from "next-intl";
 import { track } from "@vercel/analytics";
-import { Sparkles, ArrowRight } from "lucide-react";
-import { CareerTwinCta } from "./career-twin-cta";
+import { Sparkles, Loader2, X } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
-/** Per-career flag: has the Clarity introduction been seen/dismissed yet. */
-const INTRO_PREFIX = "endeavrly:twin-introduced";
-/** Matches the JourneyReflectionsTray storage key (see use-journey-reflections). */
-const REFLECTIONS_PREFIX = "endeavrly-journey-reflections";
+// Heavy conversation UI — only load it when the user actually opens the Twin.
+const CareerTwinView = dynamic(
+  () => import("./career-twin-view").then((m) => m.CareerTwinView),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="flex items-center justify-center py-16 text-sm text-muted-foreground">
+        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+      </div>
+    ),
+  },
+);
+
+/** If set, the user has hidden the Clarity Twin option (device-local). */
+const HIDE_KEY = "endeavrly:twin-clarity-hidden";
 
 interface CareerInfo {
   id: string;
@@ -38,117 +46,65 @@ interface CareerInfo {
 }
 
 export function ClarityTwinEntry({ career }: { career: CareerInfo | null }) {
-  const { data: session } = useSession();
-  const userId = session?.user?.id;
   const t = useTranslations("careerTwin");
-  // null = flag not read yet (avoids a flash of the intro card on every load).
-  const [introduced, setIntroduced] = useState<boolean | null>(null);
-  const [hasReflections, setHasReflections] = useState(false);
-
-  const careerId = career?.id ?? null;
+  // null = not read yet (avoids a flash before the hidden flag is known).
+  const [hidden, setHidden] = useState<boolean | null>(null);
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    if (!careerId || typeof window === "undefined") {
-      setIntroduced(true);
-      return;
-    }
     try {
-      setIntroduced(localStorage.getItem(`${INTRO_PREFIX}:${careerId}`) === "1");
+      setHidden(localStorage.getItem(HIDE_KEY) === "1");
     } catch {
-      setIntroduced(true);
+      setHidden(false);
     }
-  }, [careerId]);
+  }, []);
 
-  // Does this career have any reflection yet? Drives the gentle "jot a
-  // reflection first" nudge — the Twin works off the goal + quiz alone, so
-  // this only encourages substance, it never blocks.
-  useEffect(() => {
-    if (!userId || !careerId || typeof window === "undefined") {
-      setHasReflections(false);
-      return;
-    }
+  if (!career || hidden === null || hidden) return null;
+
+  const hide = () => {
+    setHidden(true);
     try {
-      const raw = localStorage.getItem(`${REFLECTIONS_PREFIX}:${userId}:${careerId}`);
-      if (!raw) {
-        setHasReflections(false);
-        return;
-      }
-      const p = JSON.parse(raw) as Record<string, unknown>;
-      const any =
-        String(p?.discover ?? "").trim() ||
-        String(p?.understand ?? "").trim() ||
-        String(p?.clarity ?? "").trim();
-      setHasReflections(Boolean(any));
-    } catch {
-      setHasReflections(false);
-    }
-  }, [userId, careerId]);
-
-  if (!career || introduced === null) return null;
-
-  const href = `/career-advisor?tab=twin&career=${encodeURIComponent(career.id)}`;
-
-  const markIntroduced = () => {
-    setIntroduced(true);
-    try {
-      localStorage.setItem(`${INTRO_PREFIX}:${career.id}`, "1");
+      localStorage.setItem(HIDE_KEY, "1");
     } catch {
       /* best-effort */
     }
+    track("career_twin_cta_dismissed", { source: "clarity-pill" });
   };
 
-  const tip = !hasReflections ? (
-    <p className="mt-2 text-xs text-muted-foreground">{t("reflectionTip")}</p>
-  ) : null;
-
-  // Steady state — the calm inline pill, grounded to this career.
-  if (introduced) {
-    return (
-      <div className="px-1">
-        <CareerTwinCta variant="journey" career={career} />
-        {tip}
-      </div>
-    );
-  }
-
-  // Introduce state — one-time warm card.
   return (
-    <div className="overflow-hidden rounded-card border-2 border-primary/20 bg-gradient-to-r from-primary/10 to-teal-500/10">
-      <div className="flex items-start gap-4 p-4 sm:p-5">
-        <div className="shrink-0 rounded-2xl bg-gradient-to-br from-primary to-teal-600 p-2.5">
-          <Sparkles className="h-5 w-5 text-white" />
-        </div>
-        <div className="min-w-0 flex-1">
-          <h3 className="text-base font-bold leading-tight">{t("meetFutureYou")}</h3>
-          <p className="mt-1 text-sm text-muted-foreground">
-            {t("clarityIntroBody", { career: career.title })}
-          </p>
-          <div className="mt-3 flex flex-wrap items-center gap-2">
-            <Link
-              href={href}
-              onClick={() => {
-                track("career_twin_opened", { source: "clarity-intro" });
-                markIntroduced();
-              }}
-              className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-primary to-teal-600 px-4 py-2 text-sm font-medium text-white transition-opacity hover:opacity-90"
-            >
-              {t("askFutureMe")}
-              <ArrowRight className="h-3.5 w-3.5" />
-            </Link>
-            <button
-              type="button"
-              onClick={() => {
-                track("career_twin_cta_dismissed", { source: "clarity-intro" });
-                markIntroduced();
-              }}
-              className="rounded-full px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-            >
-              {t("maybeLater")}
-            </button>
+    <div className="group flex items-center gap-1 px-1">
+      <button
+        type="button"
+        onClick={() => {
+          track("career_twin_opened", { source: "clarity-pill" });
+          setOpen(true);
+        }}
+        className="group/twin inline-flex items-center gap-1.5 text-xs text-muted-foreground/80 transition-colors hover:text-primary"
+      >
+        <Sparkles className="h-3 w-3 text-primary/50 transition-colors group-hover/twin:text-primary" />
+        {t("meetFutureYou")}
+      </button>
+      <button
+        type="button"
+        onClick={hide}
+        aria-label={t("maybeLater")}
+        title={t("maybeLater")}
+        className="rounded-full p-0.5 text-muted-foreground/40 opacity-0 transition-opacity hover:text-foreground focus:opacity-100 group-hover:opacity-100"
+      >
+        <X className="h-3 w-3" />
+      </button>
+
+      {/* Inline Twin — opens over Clarity, never navigates away. */}
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className="flex max-h-[90vh] max-w-3xl flex-col gap-0 p-0">
+          <DialogHeader className="border-b border-border/30 px-4 pb-3 pt-4 text-left sm:px-5">
+            <DialogTitle className="text-base">{t("meetFutureYou")}</DialogTitle>
+          </DialogHeader>
+          <div className="overflow-y-auto px-4 py-4 sm:px-5">
+            {open && <CareerTwinView initialCareerId={career.id} />}
           </div>
-          {tip}
-        </div>
-      </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
