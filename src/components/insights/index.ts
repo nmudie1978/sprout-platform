@@ -49,9 +49,6 @@ export { VideoInsightModal } from "./video-insight-modal";
 // Build Your Own Path - Entrepreneurship section
 export { FounderSpotlights } from "./founder-spotlights";
 
-// Jobs & Economy Spotlight (WEF Report + CFYE Podcast)
-export { JobsEconomySpotlight } from "./jobs-economy-spotlight";
-
 // Spotlight Carousel (combines PodcastSpotlight + FutureSnapshot)
 export { SpotlightCarousel } from "./spotlight-carousel";
 
