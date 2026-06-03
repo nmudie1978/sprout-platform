@@ -69,6 +69,7 @@ import { hasTopEmployers } from '@/lib/career-employers';
 import { hasMyths } from '@/lib/career-myths';
 import { hasOpportunities } from '@/lib/opportunities';
 import { ConfidenceTracker } from '@/components/journey/confidence-tracker';
+import { ClarityTwinEntry } from '@/components/career-twin/clarity-twin-entry';
 // Day simulation removed per user request
 // AI Impact section removed per user request
 import type { Journey } from '@/lib/journey/career-journey-types';
@@ -2410,6 +2411,12 @@ function ClarityTab({ goalTitle, career }: { goalTitle: string | null; career: C
           <FullscreenRoadmap goalTitle={goalTitle} onClose={() => setRoadmapFullscreen(false)} />
         )}
       </AnimatePresence>
+
+      {/* Career Twin — always-on companion once the journey reaches Clarity.
+          Grounded to this career (not necessarily the primary goal). */}
+      {career && goalTitle && (
+        <ClarityTwinEntry career={{ id: career.id, title: goalTitle }} />
+      )}
 
       {/* 2. Momentum + Real Career Paths — tabbed container */}
       <SectionCard className="border-amber-500/20" style={{ boxShadow: '0 0 20px rgba(245,158,11,0.06)' }}>
