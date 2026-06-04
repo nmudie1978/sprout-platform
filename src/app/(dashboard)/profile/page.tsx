@@ -11,8 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
-import { Switch } from "@/components/ui/switch";
-import { Copy, Eye, EyeOff, Shield, Trash2, AlertTriangle, Target, AlertCircle, User, ExternalLink, MessageSquare, Info, Sparkles, Compass } from "lucide-react";
+import { Trash2, AlertTriangle, Target, AlertCircle, User, ExternalLink, MessageSquare, Info, Sparkles, Compass } from "lucide-react";
 import { DiscoveryQuizDialog } from "@/components/discovery/discovery-quiz-dialog";
 import type { DiscoveryPreferences } from "@/lib/career-pathways";
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
@@ -218,38 +217,6 @@ export default function ProfilePage() {
     },
   });
 
-  const toggleVisibilityMutation = useMutation({
-    mutationFn: async (visible: boolean) => {
-      const response = await fetch("/api/profile", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ profileVisibility: visible }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to update visibility");
-      }
-
-      return response.json();
-    },
-    onSuccess: (data) => {
-      toast({
-        title: data.profileVisibility ? "Profile is now public" : "Profile is now private",
-        description: data.profileVisibility
-          ? "Your profile link can be viewed by others"
-          : "Your profile is private",
-      });
-      queryClient.invalidateQueries({ queryKey: ["my-profile"] });
-    },
-    onError: () => {
-      toast({
-        title: "Error",
-        description: "Failed to update visibility",
-        variant: "destructive",
-      });
-    },
-  });
-
   const updateDateOfBirthMutation = useMutation({
     mutationFn: async (dateOfBirth: string | null) => {
       const response = await fetch("/api/profile", {
@@ -319,17 +286,6 @@ export default function ProfilePage() {
         ? prev.interests.filter((i) => i !== interest)
         : [...prev.interests, interest],
     }));
-  };
-
-  const copyProfileLink = () => {
-    if (profile?.publicProfileSlug) {
-      const url = `${window.location.origin}/p/${profile.publicProfileSlug}`;
-      navigator.clipboard.writeText(url);
-      toast({
-        title: "Link copied!",
-        description: "Your profile link has been copied to clipboard.",
-      });
-    }
   };
 
   if (session?.user.role !== "YOUTH") {
@@ -893,74 +849,6 @@ export default function ProfilePage() {
 
         {/* Sidebar */}
         <div className="space-y-6 relative z-10">
-          {/* Privacy Controls */}
-          {profile && (
-            <Card className="border-2 shadow-sm hover-lift relative z-10">
-              <CardHeader className="relative z-10">
-                <CardTitle className="flex items-center gap-2 text-xl">
-                  <Shield className="h-5 w-5 text-primary" />
-                  Privacy
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4 relative z-10">
-                <div className="flex items-center justify-between">
-                  <div className="flex-1">
-                    <Label htmlFor="visibility" className="cursor-pointer">
-                      Profile Visibility
-                    </Label>
-                    <p className="text-xs text-muted-foreground">
-                      {profile.profileVisibility
-                        ? "Your profile is visible"
-                        : "Your profile is private"}
-                    </p>
-                  </div>
-                  <Switch
-                    id="visibility"
-                    checked={profile.profileVisibility}
-                    onCheckedChange={(checked) =>
-                      toggleVisibilityMutation.mutate(checked)
-                    }
-                  />
-                </div>
-
-                {profile.profileVisibility ? (
-                  <div className="rounded-control bg-muted p-3">
-                    <div className="flex items-center gap-2 text-sm font-medium">
-                      <Eye className="h-4 w-4" />
-                      Profile is Public
-                    </div>
-                    <p className="mt-2 text-xs text-muted-foreground">
-                      Share this link:
-                    </p>
-                    <div className="mt-2 flex items-center gap-2">
-                      <code className="flex-1 truncate rounded-control bg-background px-2 py-1 text-xs">
-                        /p/{profile.publicProfileSlug}
-                      </code>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={copyProfileLink}
-                      >
-                        <Copy className="h-3 w-3" />
-                      </Button>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="rounded-control bg-muted p-3">
-                    <div className="flex items-center gap-2 text-sm font-medium">
-                      <EyeOff className="h-4 w-4" />
-                      Profile is Private
-                    </div>
-                    <p className="mt-2 text-xs text-muted-foreground">
-                      Turn on visibility to share your profile
-                    </p>
-                  </div>
-                )}
-
-              </CardContent>
-            </Card>
-          )}
-
           {/* Career goal lives at the top of the page (display-only here —
               it's set and changed in My Journey, not in Profile). */}
 

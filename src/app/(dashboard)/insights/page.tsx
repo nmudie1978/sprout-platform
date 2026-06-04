@@ -50,10 +50,6 @@ const InsightSection = dynamic(
   () => import("@/components/insights/insight-section").then((m) => m.InsightSection),
   { ssr: false, loading: () => <div className="h-48 animate-pulse rounded-control bg-muted/50" /> }
 );
-const JobsEconomySpotlight = dynamic(
-  () => import("@/components/insights/jobs-economy-spotlight").then((m) => m.JobsEconomySpotlight),
-  { ssr: false, loading: () => <div className="h-48 animate-pulse rounded-control bg-muted/50" /> }
-);
 const WhyThisMatters = dynamic(
   () => import("@/components/insights/why-this-matters").then((m) => m.WhyThisMatters),
   { ssr: false, loading: () => <div className="h-32 animate-pulse rounded-control bg-muted/50" /> }
@@ -271,15 +267,6 @@ export default function IndustryInsightsPage() {
               </p>
             </div>
             <JobMarketStatsCarousel showContextHints={showContextHints} />
-          </motion.div>
-
-          {/* Future of Jobs & Economies (WEF Report + CFYE Podcast) */}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: 0.3 }}
-          >
-            <JobsEconomySpotlight />
           </motion.div>
 
         </div>
