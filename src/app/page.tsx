@@ -29,7 +29,7 @@ import { WordRevealLine, FadeReveal } from "@/components/landing/hero-word-revea
 const TIMELINE_NODES = [
   { step: 1, label: "Discover", caption: "Explore careers, lifestyle and what sparks you" },
   { step: 2, label: "Understand", caption: "Real routes, skills and honest expectations" },
-  { step: 3, label: "Clarity", caption: "Your roadmap, next steps and direction" },
+  { step: 3, label: "Clarity", caption: "Your roadmap, next steps, and your future self" },
 ];
 
 const FEATURES = [
@@ -60,7 +60,7 @@ const FEATURES = [
   {
     title: "Meet your Career Twin",
     description:
-      "Talk to one possible future version of yourself \u2014 already living a career you're curious about. Ask what a normal day feels like, how they got there, or whether it was worth it. Honest about the good and the hard, and always clear it's one possible future, not a prediction.",
+      "Talk to one possible future version of yourself, already living a career you’re curious about. Ask what a normal day feels like, how they got there, or whether it was worth it.",
     icon: MessageCircleHeart,
     accentBg: "bg-violet-500/15",
     accentText: "text-violet-400",
