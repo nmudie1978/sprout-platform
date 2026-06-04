@@ -2,15 +2,22 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Sun, TrendingUp } from "lucide-react";
+import { Sun, TrendingUp, Users, Compass } from "lucide-react";
 import type { CareerLike } from "@/lib/career-voices/match";
-import { daySnapshot, salaryLevels, type DaySnapshot } from "@/lib/career-depth/snapshot";
+import {
+  daySnapshot,
+  salaryLevels,
+  fitSnapshot,
+  type DaySnapshot,
+  type FitSnapshot,
+} from "@/lib/career-depth/snapshot";
 import type { CareerLevel } from "@/lib/career-progressions";
 
 const LEVEL_LABEL: Record<string, string> = { entry: "Entry", mid: "Mid", senior: "Senior", lead: "Lead" };
 
 export function CareerDepth({ career }: { career: CareerLike }) {
   const [day, setDay] = useState<DaySnapshot | null>(null);
+  const [fit, setFit] = useState<FitSnapshot | null>(null);
   const [levels, setLevels] = useState<CareerLevel[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -23,6 +30,7 @@ export function CareerDepth({ career }: { career: CareerLike }) {
         if (!active) return;
         if (d) {
           setDay(daySnapshot(d.details, !!d.hasDetails));
+          setFit(fitSnapshot(d.details, !!d.hasDetails));
           setLevels(salaryLevels(d.progression ?? null));
         }
         setLoading(false);
@@ -36,7 +44,7 @@ export function CareerDepth({ career }: { career: CareerLike }) {
   }, [career.id]);
 
   if (loading) return null;
-  if (!day && levels.length === 0) return null;
+  if (!day && !fit && levels.length === 0) return null;
 
   return (
     <div className="space-y-3">
@@ -56,6 +64,34 @@ export function CareerDepth({ career }: { career: CareerLike }) {
               ))}
             </ul>
           )}
+        </div>
+      )}
+
+      {fit && fit.whoThisIsGoodFor.length > 0 && (
+        <div>
+          <div className="mb-1.5 flex items-center gap-1.5">
+            <Users className="h-3 w-3 text-teal-500" />
+            <span className="text-[10px] font-medium text-muted-foreground">Who tends to thrive here</span>
+          </div>
+          <ul className="space-y-0.5">
+            {fit.whoThisIsGoodFor.map((t, i) => (
+              <li key={i} className="text-[10px] text-muted-foreground/80">• {t}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {fit && fit.entryPaths.length > 0 && (
+        <div>
+          <div className="mb-1.5 flex items-center gap-1.5">
+            <Compass className="h-3 w-3 text-amber-500" />
+            <span className="text-[10px] font-medium text-muted-foreground">Common ways in</span>
+          </div>
+          <ul className="space-y-0.5">
+            {fit.entryPaths.map((t, i) => (
+              <li key={i} className="text-[10px] text-muted-foreground/80">• {t}</li>
+            ))}
+          </ul>
         </div>
       )}
 

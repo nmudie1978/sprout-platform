@@ -22,3 +22,17 @@ export function daySnapshot(details: CareerDetails, hasDetails: boolean): DaySna
 export function salaryLevels(progression: CareerProgression | null): CareerLevel[] {
   return progression?.levels ?? [];
 }
+
+export interface FitSnapshot {
+  whoThisIsGoodFor: string[];
+  entryPaths: string[];
+}
+
+/** "Who tends to thrive here" + "common ways in", ONLY for curated content. */
+export function fitSnapshot(details: CareerDetails, hasDetails: boolean): FitSnapshot | null {
+  if (!hasDetails) return null;
+  const whoThisIsGoodFor = (details.whoThisIsGoodFor ?? []).slice(0, 3);
+  const entryPaths = (details.entryPaths ?? []).slice(0, 3);
+  if (whoThisIsGoodFor.length === 0 && entryPaths.length === 0) return null;
+  return { whoThisIsGoodFor, entryPaths };
+}
