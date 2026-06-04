@@ -94,7 +94,7 @@ export function CoverPage({ vm }: { vm: JourneyReportViewModel }) {
           style={{
             fontFamily: type.display.family,
             fontWeight: type.display.weight,
-            fontSize: 52,
+            fontSize: 26,
             lineHeight: 1.04,
             color: palette.cover.text,
             letterSpacing: -1.2,
