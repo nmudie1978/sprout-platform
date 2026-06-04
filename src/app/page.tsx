@@ -120,7 +120,7 @@ export default async function LandingPage() {
                 Wrapped in `dark` so the trigger matches the always-dark nav
                 regardless of the visitor's theme preference. */}
             <div className="dark flex items-center">
-              <LanguageDropdown />
+              <LanguageDropdown iconOnly />
             </div>
             <Suspense
               fallback={
