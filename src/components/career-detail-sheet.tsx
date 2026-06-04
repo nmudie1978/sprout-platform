@@ -33,6 +33,7 @@ import { createEmptyGoal } from "@/lib/goals/types";
 import { syncGuidanceGoal } from "@/lib/guidance/rules";
 import { useCuriositySaves } from "@/hooks/use-curiosity-saves";
 import { RealVoices } from "@/components/career-voices/real-voices";
+import { CareerDepth } from "@/components/career-depth/career-depth";
 
 interface CareerDetailSheetProps {
   career: Career | LocalizedCareerView | null;
@@ -297,6 +298,9 @@ export function CareerDetailSheet({
                     Your career goal is the career you focus on first. My Journey gives you the full picture \u2014 and you can change it anytime.
                   </p>
                 </div>
+
+                {/* Career depth — day-in-life + pay progression snapshot */}
+                <CareerDepth career={career} />
 
                 {/* Actions */}
                 <div className="space-y-2">
