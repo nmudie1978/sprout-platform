@@ -16,7 +16,6 @@
 
 import { useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { useQuery } from "@tanstack/react-query";
 import { Check, X, Star } from "lucide-react";
@@ -403,6 +402,7 @@ function ComparedTab() {
 function ReflectionsTab() {
   const { data: session } = useSession();
   const userId = session?.user?.id;
+  const router = useRouter();
   const [entries, setEntries] = useState<LocalReflectionEntry[]>([]);
 
   // Reflections persist to the JourneyNotebook table; localStorage is the
@@ -469,32 +469,56 @@ function ReflectionsTab() {
     .sort((a, b) => b.newest.localeCompare(a.newest));
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {groups.map((group) => (
-        <section key={group.slug}>
-          <div className="flex items-center gap-2 mb-2 px-0.5">
+        // Each career is its own bordered container (the "clear container"
+        // that was missing) holding a compact table — same dense, scannable
+        // shape as the Explore-careers / Explored-journeys tables.
+        <section
+          key={group.slug}
+          className="rounded-card border border-border/60 bg-card/40 overflow-hidden"
+        >
+          <div className="flex items-center gap-2 px-3 py-2 border-b border-border/40 bg-muted/10">
             <span className="text-sm shrink-0">{group.career.emoji}</span>
-            <h3 className="text-sm font-semibold text-foreground/85 truncate">{group.career.label}</h3>
-            <span className="text-xs text-muted-foreground/40 tabular-nums">
+            <h3 className="text-xs font-bold uppercase tracking-wide text-foreground truncate">
+              {group.career.label}
+            </h3>
+            <span className="ml-auto text-xs text-muted-foreground/40 tabular-nums">
               {group.entries.length}
             </span>
           </div>
-          <ul className="space-y-2">
-            {group.entries.map((e) => (
-              <li key={e.id}>
-                {/* Click → My Journey, opening the lens (Discover/Understand/
-                    Clarity) this reflection was written on. The journey reads
-                    the tab from the URL hash. */}
-                <Link
-                  href={`/my-journey#${e.lens}`}
-                  className="block rounded-control border border-border/60 bg-muted/10 px-4 py-3 hover:bg-muted/30 hover:border-border transition-colors"
+          {/* Compact table — one single-line row per reflection so the list
+              stays dense instead of tall cards. Row → My Journey, opening the
+              lens (Discover/Understand/Clarity) it was written on. */}
+          <table className="w-full table-fixed text-left">
+            <thead>
+              <tr className="text-[10px] uppercase tracking-wide text-muted-foreground/50">
+                <th className="px-3 py-1.5 font-medium w-24">Stage</th>
+                <th className="px-3 py-1.5 font-medium">Reflection</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-border/30">
+              {group.entries.map((e) => (
+                <tr
+                  key={e.id}
+                  onClick={() => router.push(`/my-journey#${e.lens}`)}
+                  title={`Open ${e.lensLabel} on My Journey`}
+                  className="cursor-pointer hover:bg-muted/30 transition-colors"
                 >
-                  <p className="text-xs text-muted-foreground/70 mb-1">{e.lensLabel}</p>
-                  <p className="text-sm whitespace-pre-wrap">{e.text}</p>
-                </Link>
-              </li>
-            ))}
-          </ul>
+                  <td className="px-3 py-1.5 align-top">
+                    <span className="text-xs font-medium text-muted-foreground/70 whitespace-nowrap">
+                      {e.lensLabel}
+                    </span>
+                  </td>
+                  <td className="px-3 py-1.5">
+                    <span className="block truncate text-xs text-foreground/85">
+                      {e.text}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </section>
       ))}
     </div>
