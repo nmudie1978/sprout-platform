@@ -3073,6 +3073,12 @@ export default function MyJourneyPage() {
 
   useEffect(() => {
     window.location.hash = activeTab;
+    // A freshly-switched lens always opens at the TOP of the section, never
+    // mid-section or below. Setting the hash (or switching while scrolled
+    // down in the previous lens) could otherwise leave the new lens scrolled
+    // partway through, so reset scroll on every Discover/Understand/Clarity
+    // transition.
+    window.scrollTo({ top: 0 });
   }, [activeTab]);
 
   // If the user un-confirms the previous tab while sitting on a now-
