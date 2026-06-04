@@ -1197,7 +1197,9 @@ export default function DashboardPage() {
                 <div className="mt-5 pt-4 border-t border-border/30">
                   <div className="flex items-center gap-1.5 mb-2">
                     <Search className="h-3 w-3 text-primary/70" />
-                    <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground/60">
+                    {/* Match the other section headers (DashboardSection h3):
+                        same weight/tracking/colour, not a dimmer variant. */}
+                    <p className="text-xs font-bold uppercase tracking-wide text-foreground">
                       Career snapshot
                     </p>
                     {salaryStale && (
