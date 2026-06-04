@@ -51,15 +51,6 @@ type StepTip = {
   certs?: Array<{ name: string; provider: string; url: string }>;
 };
 
-/** Build a LinkedIn jobs search URL for a career title, anchored on
- *  Norway since the app's primary market is Nordic. We preserve the
- *  career's natural spelling so "AI Infrastructure Network Engineer"
- *  stays intact in the query — LinkedIn's ranking handles synonyms. */
-function linkedInJobsUrl(careerTitle: string): string {
-  const keywords = encodeURIComponent(careerTitle.trim());
-  return `https://www.linkedin.com/jobs/search/?keywords=${keywords}&location=Norway&f_E=2`; // f_E=2 → Entry level
-}
-
 function getStepTip(item: JourneyItem, careerTitle?: string | null): StepTip | null {
   const title = item.title.toLowerCase();
 
@@ -79,42 +70,27 @@ function getStepTip(item: JourneyItem, careerTitle?: string | null): StepTip | n
     };
   }
 
-  // Entry-level role / first job / junior position — LinkedIn is where
-  // these postings actually live in Norway, so we offer a one-click
-  // search filtered to the career + entry-level jobs in Norway.
+  // Entry-level role / first job / junior position. Endeavrly doesn't run a
+  // live opportunity feed, so the honest pointer is to track the intent in the
+  // Momentum list and apply directly through employers' own career pages.
   if (/apply.*entry|entry.?level.*role|first.*role|first.*job|accept.*entry|junior/i.test(title)) {
-    if (careerTitle) {
-      return {
-        text: `Search LinkedIn for entry-level ${careerTitle} roles in Norway — that's where most of them are actually posted.`,
-        link: linkedInJobsUrl(careerTitle),
-        linkLabel: 'Search LinkedIn',
-        external: true,
-      };
-    }
     return {
-      text: "Search LinkedIn for entry-level roles in your field — that's where most of them are actually posted in Norway.",
-      link: 'https://www.linkedin.com/jobs/search/?f_E=2&location=Norway',
-      linkLabel: 'Open LinkedIn',
-      external: true,
+      text: careerTitle
+        ? `Add this to your Momentum list, then apply directly on employers' own career pages for entry-level ${careerTitle} roles.`
+        : "Add this to your Momentum list, then apply directly on employers' own career pages for entry-level roles in your field.",
     };
   }
 
   // Internship / work experience / volunteering
   //
-  // Endeavrly deliberately does NOT run a live opportunity feed. The
-  // honest pointer is: track the intent in the Momentum list and go
-  // direct to LinkedIn, where Nordic employers actually post.
+  // Endeavrly deliberately does NOT run a live opportunity feed. The honest
+  // pointer is to track the intent in the Momentum list and approach employers
+  // directly through their own career pages.
   if (/intern|work experience|volunteer|placement/i.test(title)) {
-    if (careerTitle) {
-      return {
-        text: `Add this as a concrete step in your Momentum list, then search LinkedIn for ${careerTitle} internships in Norway.`,
-        link: linkedInJobsUrl(`${careerTitle} intern`),
-        linkLabel: 'Search LinkedIn',
-        external: true,
-      };
-    }
     return {
-      text: "Add this as a concrete step in your Momentum list below the roadmap, then search LinkedIn and company career pages directly.",
+      text: careerTitle
+        ? `Add this as a concrete step in your Momentum list, then approach ${careerTitle} employers directly through their own career pages.`
+        : "Add this as a concrete step in your Momentum list below the roadmap, then approach employers directly through their own career pages.",
     };
   }
 
