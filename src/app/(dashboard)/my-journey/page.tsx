@@ -42,6 +42,8 @@ import {
 import { cn, slugify } from '@/lib/utils';
 import { useGoals } from '@/hooks/use-goals';
 import { getAllCareers, getSectorForCareer, getPensionNote, type Career } from '@/lib/career-pathways';
+import { localizeCareer } from '@/lib/career-localization';
+import { displaySalary, displayEducation, showsSalaryProgression } from '@/lib/career-localization/display';
 import type { CareerDetails } from '@/lib/career-typical-days';
 import type { CareerProgression } from '@/lib/career-progressions';
 import type { RealityCheckResult } from '@/lib/career-reality-types';
@@ -589,11 +591,30 @@ function DiscoverTab({
     return age;
   }, [profileData]);
 
+  // The user's country drives salary/education localization for the
+  // active career. Rides the shared ['profile-country'] React Query
+  // cache used elsewhere on the page, so no extra network round-trip.
+  const { data: countryData } = useQuery<{ country?: string | null }>({
+    queryKey: ['profile-country'],
+    queryFn: async () => {
+      const res = await fetch('/api/profile');
+      if (!res.ok) return {};
+      return res.json();
+    },
+    staleTime: 60 * 1000,
+  });
+  const country = countryData?.country ?? null;
+
   if (!career || !goalTitle) {
     return <EmptyState icon={Target} message="Choose a career goal to start exploring" />;
   }
 
   const dDetails = discoverDetails?.details ?? null;
+
+  const lcCareer = career ? localizeCareer(career, country) : null;
+  const lcSalary = lcCareer ? displaySalary(lcCareer) : null;
+  const lcEducation = lcCareer ? displayEducation(lcCareer) : null;
+  const notTailored = "Not tailored for your country yet";
 
   return (
     <div className="space-y-5">
@@ -755,16 +776,24 @@ function DiscoverTab({
                 return (
                   <div className="grid grid-cols-2 gap-3 w-full max-w-md">
                     <div>
-                      <button type="button" onClick={() => setShowSalaryPopup(true)} className="w-full text-left">
-                        <StatCard label="Annual Salary" value={formatSalaryShort(career.avgSalary)} icon={DollarSign} accent="text-success" tooltip={`Typical annual gross salary in Norway: ${career.avgSalary.replace('/year', '')}. Tap to see full progression.`} />
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setShowSalaryPopup(true)}
-                        className="text-xs text-warning/70 hover:text-warning font-medium mt-1.5 flex items-center gap-0.5 transition-colors w-full justify-center"
-                      >
-                        See full progression →
-                      </button>
+                      {lcSalary ? (
+                        <>
+                          <button type="button" onClick={() => setShowSalaryPopup(true)} className="w-full text-left">
+                            <StatCard label="Annual Salary" value={formatSalaryShort(lcSalary)} icon={DollarSign} accent="text-success" tooltip={showsSalaryProgression(country) ? `Typical annual gross salary in Norway: ${lcSalary.replace('/year', '')}. Tap to see full progression.` : `Typical annual gross salary: ${lcSalary.replace('/year', '')}.`} />
+                          </button>
+                          {showsSalaryProgression(country) && (
+                            <button
+                              type="button"
+                              onClick={() => setShowSalaryPopup(true)}
+                              className="text-xs text-warning/70 hover:text-warning font-medium mt-1.5 flex items-center gap-0.5 transition-colors w-full justify-center"
+                            >
+                              See full progression →
+                            </button>
+                          )}
+                        </>
+                      ) : (
+                        <StatCard label="Annual Salary" value={notTailored} icon={DollarSign} accent="text-muted-foreground/60" />
+                      )}
                     </div>
                     <StatCard
                       label="Growth"
@@ -772,7 +801,7 @@ function DiscoverTab({
                       icon={TrendingUp}
                       accent={career.growthOutlook === 'high' ? 'text-success' : career.growthOutlook === 'medium' ? 'text-warning' : 'text-muted-foreground/50'}
                     />
-                    <StatCard label="Sector" value={sectorLabel} icon={Building2} accent={sectorAccent} tooltip={`Most ${career.title} roles in Norway are in the ${sector} sector.`} />
+                    <StatCard label="Sector" value={sectorLabel} icon={Building2} accent={sectorAccent} tooltip={showsSalaryProgression(country) ? `Most ${career.title} roles in Norway are in the ${sector} sector.` : `Most ${career.title} roles are in the ${sector} sector.`} />
                     <StatCard label="Pension" value={sector === 'public' ? 'Strong' : sector === 'private' ? 'Varies' : 'Mixed'} icon={Shield} accent={sector === 'public' ? 'text-success' : 'text-muted-foreground/60'} tooltip={pensionNote} />
                   </div>
                 );
@@ -791,7 +820,8 @@ function DiscoverTab({
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         {/* How long */}
         {(() => {
-          const yearMatch = career.educationPath.match(/(\d+)\s*[–\-+]\s*(\d+)?\s*years?/i) || career.educationPath.match(/(\d+)\s*years?/i);
+          const eduForTimeline = lcEducation ?? "";
+          const yearMatch = eduForTimeline.match(/(\d+)\s*[–\-+]\s*(\d+)?\s*years?/i) || eduForTimeline.match(/(\d+)\s*years?/i);
           const years = yearMatch ? parseInt(yearMatch[2] || yearMatch[1]) : null;
           // Rule: study paths (uni / college / vocational) can't start
           // before upper secondary ends — i.e. age 18. So the earliest
@@ -816,7 +846,7 @@ function DiscoverTab({
                   <span className="text-muted-foreground/40"> — that&apos;s ~{yearsFromNow} years from now</span>
                 </p>
               ) : (
-                <p className="text-xs text-foreground/70 leading-relaxed">{career.educationPath}</p>
+                <p className="text-xs text-foreground/70 leading-relaxed">{lcEducation ?? notTailored}</p>
               )}
             </div>
           );
@@ -882,7 +912,7 @@ function DiscoverTab({
                 <X className="h-4 w-4 text-muted-foreground/60" />
               </button>
             </div>
-            <SalaryProgressionChart careerId={career?.id ?? null} />
+            {showsSalaryProgression(country) && <SalaryProgressionChart careerId={career?.id ?? null} />}
           </div>
         </div>
       )}
