@@ -12,11 +12,13 @@ function mockDetails(body: unknown) {
 }
 
 describe("CareerDepth", () => {
-  it("renders pay progression and the day snapshot when present", async () => {
+  it("renders the day, fit and pay snapshots when present", async () => {
     mockDetails({
       hasDetails: true,
       details: { typicalDay: { morning: [], midday: [], afternoon: [] },
-        whatYouActuallyDo: ["Write code", "Review PRs"], whoThisIsGoodFor: [], topSkills: [], entryPaths: [],
+        whatYouActuallyDo: ["Write code", "Review PRs"],
+        whoThisIsGoodFor: ["Curious problem-solvers"], topSkills: [],
+        entryPaths: ["Computer science degree"],
         realityCheck: "Lots of problem-solving and meetings." },
       progression: { careerId: "software-developer", levels: [
         { level: "entry", title: "Junior", yearsExperience: "0-2 years", salaryRange: "450-550k kr" },
@@ -28,6 +30,10 @@ describe("CareerDepth", () => {
     expect(screen.getByText("450-550k kr")).toBeTruthy();
     expect(screen.getByText(/Lots of problem-solving/)).toBeTruthy();
     expect(screen.getByText("A day in the life")).toBeTruthy();
+    expect(screen.getByText("Who tends to thrive here")).toBeTruthy();
+    expect(screen.getByText(/Curious problem-solvers/)).toBeTruthy();
+    expect(screen.getByText("Common ways in")).toBeTruthy();
+    expect(screen.getByText(/Computer science degree/)).toBeTruthy();
   });
 
   it("renders nothing when there is no curated day and no progression", async () => {

@@ -1,6 +1,6 @@
 // src/lib/career-depth/__tests__/snapshot.test.ts
 import { describe, it, expect } from "vitest";
-import { daySnapshot, salaryLevels } from "../snapshot";
+import { daySnapshot, salaryLevels, fitSnapshot } from "../snapshot";
 import type { CareerDetails } from "@/lib/career-typical-days";
 
 const details: CareerDetails = {
@@ -41,5 +41,25 @@ describe("salaryLevels", () => {
   it("returns [] for null or empty progression", () => {
     expect(salaryLevels(null)).toEqual([]);
     expect(salaryLevels({ careerId: "x", levels: [] } as never)).toEqual([]);
+  });
+});
+
+describe("fitSnapshot", () => {
+  it("returns null when content is not curated", () => {
+    expect(fitSnapshot(details, false)).toBeNull();
+  });
+  it("returns who + entry paths (capped at 3) when curated", () => {
+    const rich: CareerDetails = {
+      ...details,
+      whoThisIsGoodFor: ["empathetic", "calm", "detail-oriented", "extra"],
+      entryPaths: ["med school", "nursing degree"],
+    };
+    const s = fitSnapshot(rich, true);
+    expect(s?.whoThisIsGoodFor).toEqual(["empathetic", "calm", "detail-oriented"]);
+    expect(s?.entryPaths).toEqual(["med school", "nursing degree"]);
+  });
+  it("returns null when curated but both lists are empty", () => {
+    const empty: CareerDetails = { ...details, whoThisIsGoodFor: [], entryPaths: [] };
+    expect(fitSnapshot(empty, true)).toBeNull();
   });
 });
