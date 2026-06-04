@@ -807,8 +807,8 @@ function DiscoverTab({
           return (
             <div className="rounded-card border border-border bg-card/50 p-4">
               <div className="flex items-center gap-2 mb-2">
-                <Clock className="h-3.5 w-3.5 text-accent" />
-                <span className="text-xs font-semibold text-accent uppercase tracking-wider">Timeline</span>
+                <Clock className="h-3.5 w-3.5 text-warning" />
+                <span className="text-xs font-semibold text-warning uppercase tracking-wider">Timeline</span>
               </div>
               {qualifiedAge ? (
                 <p className="text-xs text-foreground/70 leading-relaxed">
