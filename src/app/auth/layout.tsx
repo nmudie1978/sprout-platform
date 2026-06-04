@@ -24,7 +24,7 @@ export default function AuthLayout({
           </span>
           <span className="text-sm font-semibold tracking-tight">Endeavrly</span>
         </Link>
-        <LanguageDropdown />
+        <LanguageDropdown iconOnly />
       </div>
       {children}
     </div>

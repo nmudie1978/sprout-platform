@@ -20,7 +20,7 @@ export default function AboutLayout({
             </span>
           </Link>
           <div className="flex items-center gap-2 sm:gap-3">
-            <LanguageDropdown />
+            <LanguageDropdown iconOnly />
             <Button variant="ghost" size="sm" asChild>
               <Link href="/">
                 <ArrowLeft className="mr-2 h-4 w-4" />
