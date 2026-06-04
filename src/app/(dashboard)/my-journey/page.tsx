@@ -779,7 +779,7 @@ function DiscoverTab({
                       {lcSalary ? (
                         <>
                           <button type="button" onClick={() => setShowSalaryPopup(true)} className="w-full text-left">
-                            <StatCard label="Annual Salary" value={formatSalaryShort(lcSalary)} icon={DollarSign} accent="text-success" tooltip={showsSalaryProgression(country) ? `Typical annual gross salary in Norway: ${lcSalary.replace('/year', '')}. Tap to see full progression.` : `Typical annual gross salary: ${lcSalary.replace('/year', '')}.`} />
+                            <StatCard label="Annual Salary" value={showsSalaryProgression(country) ? formatSalaryShort(lcSalary) : lcSalary} icon={DollarSign} accent="text-success" tooltip={showsSalaryProgression(country) ? `Typical annual gross salary in Norway: ${lcSalary.replace('/year', '')}. Tap to see full progression.` : `Typical annual gross salary: ${lcSalary.replace('/year', '')}.`} />
                           </button>
                           {showsSalaryProgression(country) && (
                             <button
