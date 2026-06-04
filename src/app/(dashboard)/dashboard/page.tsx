@@ -68,6 +68,8 @@ import {
   isCareerExplicitlyVerified,
   isCareerSalaryStale,
 } from "@/lib/career-data-recency";
+import { localizeCareer } from "@/lib/career-localization";
+import { displaySalary, showsSalaryProgression } from "@/lib/career-localization/display";
 import { useDiscoverRecommendations } from "@/hooks/use-discover-recommendations";
 import { WhatILikeTray } from "@/components/dashboard/what-i-like-tray";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -1184,13 +1186,20 @@ export default function DashboardPage() {
               const sector = getSectorForCareer(goalCareer.id);
               const sectorLabel = sector === 'public' ? 'Public' : sector === 'private' ? 'Private' : 'Mixed';
               const pensionLabel = sector === 'public' ? 'Strong' : sector === 'private' ? 'Varies' : 'Mixed';
-              const salary = goalCareer.avgSalary.replace(/\s*kr\/year.*/i, '').trim().replace(/[\d,]+/g, (m) => {
-                const n = parseInt(m.replace(/,/g, ''), 10);
-                if (isNaN(n)) return m;
-                if (n >= 1_000_000) { const v = n / 1_000_000; return v % 1 === 0 ? `${v}M` : `${v.toFixed(1).replace(/\.0$/, '')}M`; }
-                if (n >= 1_000) return `${Math.round(n / 1_000)}k`;
-                return String(n);
-              });
+              const lc = localizeCareer(goalCareer, profileData?.country ?? null);
+              const lcSalary = displaySalary(lc);
+              const isNok = showsSalaryProgression(profileData?.country ?? null);
+              const salaryDisplay = lcSalary == null
+                ? "Not tailored yet"
+                : isNok
+                  ? lcSalary.replace(/\s*kr\/year.*/i, '').trim().replace(/[\d,]+/g, (m) => {
+                      const n = parseInt(m.replace(/,/g, ''), 10);
+                      if (isNaN(n)) return m;
+                      if (n >= 1_000_000) { const v = n / 1_000_000; return v % 1 === 0 ? `${v}M` : `${v.toFixed(1).replace(/\.0$/, '')}M`; }
+                      if (n >= 1_000) return `${Math.round(n / 1_000)}k`;
+                      return String(n);
+                    }) + " kr"
+                  : lcSalary;
               const salaryStale = isCareerSalaryStale(goalCareer);
               const explicitlyVerified = isCareerExplicitlyVerified(goalCareer);
               return (
@@ -1217,7 +1226,7 @@ export default function DashboardPage() {
                       icon={TrendingUp}
                       iconColor="text-primary/80"
                       label="Salary"
-                      value={`${salary} kr`}
+                      value={salaryDisplay}
                       tooltip={
                         explicitlyVerified
                           ? `Verified against SSB labour stats — last checked ${goalCareer.lastVerifiedAt}.`
