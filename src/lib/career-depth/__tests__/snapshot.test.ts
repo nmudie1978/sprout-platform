@@ -1,15 +1,16 @@
 // src/lib/career-depth/__tests__/snapshot.test.ts
 import { describe, it, expect } from "vitest";
 import { daySnapshot, salaryLevels } from "../snapshot";
+import type { CareerDetails } from "@/lib/career-typical-days";
 
-const details = {
+const details: CareerDetails = {
   typicalDay: { morning: ["a"], midday: ["b"], afternoon: ["c"] },
   whatYouActuallyDo: ["diagnose", "treat", "chart", "consult"],
   whoThisIsGoodFor: ["empathetic"],
   topSkills: ["precision"],
   entryPaths: ["med school"],
   realityCheck: "Emotionally demanding but meaningful.",
-} as never;
+};
 
 describe("daySnapshot", () => {
   it("returns null when content is not curated (hasDetails=false)", () => {
@@ -21,7 +22,7 @@ describe("daySnapshot", () => {
     expect(s?.doing).toEqual(["diagnose", "treat", "chart"]);
   });
   it("returns null when curated but there is nothing meaningful", () => {
-    const empty = { ...details, whatYouActuallyDo: [], realityCheck: undefined } as never;
+    const empty: CareerDetails = { ...details, whatYouActuallyDo: [], realityCheck: undefined };
     expect(daySnapshot(empty, true)).toBeNull();
   });
 });
