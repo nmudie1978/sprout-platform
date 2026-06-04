@@ -1373,8 +1373,8 @@ function UnderstandTab({
                           {essentialSubjects.length > 0 && (
                             <div className="rounded-card border border-border/40 bg-card/40 p-4">
                               <div className="flex items-center gap-2 mb-3">
-                                <BookOpen className="h-3.5 w-3.5 text-primary" />
-                                <span className="text-xs font-bold uppercase tracking-wider text-primary">Subjects you&rsquo;ll need</span>
+                                <BookOpen className="h-3.5 w-3.5 text-muted-foreground/70" />
+                                <span className="text-xs font-bold uppercase tracking-wider text-foreground/70">Subjects you&rsquo;ll need</span>
                                 <span className="ml-auto text-xs text-muted-foreground/50 tabular-nums">
                                   {essentialSubjects.length} essential
                                 </span>
@@ -1383,9 +1383,9 @@ function UnderstandTab({
                                 {essentialSubjects.map((s) => (
                                   <span
                                     key={s.name}
-                                    className="inline-flex items-center gap-1.5 rounded-pill border border-primary/25 bg-primary/[0.08] px-2.5 py-1 text-xs font-medium text-primary"
+                                    className="inline-flex items-center gap-1.5 rounded-pill border border-border/60 bg-muted/30 px-2.5 py-1 text-xs font-medium text-foreground/80"
                                   >
-                                    <Check className="h-3 w-3 text-primary" />
+                                    <Check className="h-3 w-3 text-muted-foreground/50" />
                                     {s.name}
                                   </span>
                                 ))}
@@ -1398,29 +1398,28 @@ function UnderstandTab({
                             <div className="rounded-card border border-border/40 bg-card/40 p-4">
                               <div className="flex items-center justify-between mb-3">
                                 <div className="flex items-center gap-2">
-                                  <BarChart3 className="h-3.5 w-3.5 text-primary" />
-                                  <span className="text-xs font-bold uppercase tracking-wider text-primary">Typical grade range</span>
+                                  <BarChart3 className="h-3.5 w-3.5 text-muted-foreground/70" />
+                                  <span className="text-xs font-bold uppercase tracking-wider text-foreground/70">Typical grade range</span>
                                 </div>
                                 <span className="text-xs font-semibold text-foreground/85 tabular-nums">
                                   {ap.grade.gradeMin}&ndash;{ap.grade.gradeMax}
                                   <span className="text-muted-foreground/45 font-normal"> / 6</span>
                                 </span>
                               </div>
-                              {/* Scale bars — all teal, with opacity
-                                  ramping up across the scale. Positions
-                                  inside the required range get full
-                                  brightness (bg-teal-400); positions
-                                  below use progressive teal tints so
-                                  the whole bar reads as one palette
-                                  rather than a green-vs-grey split. */}
+                              {/* Scale bars — out-of-range positions are
+                                  neutral grey (ramping up slightly across
+                                  the scale); only positions inside the
+                                  required range light up teal, so the
+                                  colour is reserved for the meaningful part
+                                  of the scale. */}
                               <div className="flex gap-1.5">
                                 {[
-                                  'bg-primary/15',
-                                  'bg-primary/20',
-                                  'bg-primary/30',
-                                  'bg-primary/45',
-                                  'bg-primary/65',
-                                  'bg-primary/80',
+                                  'bg-muted-foreground/10',
+                                  'bg-muted-foreground/15',
+                                  'bg-muted-foreground/20',
+                                  'bg-muted-foreground/25',
+                                  'bg-muted-foreground/30',
+                                  'bg-muted-foreground/35',
                                 ].map((dimClass, i) => {
                                   const n = i + 1;
                                   const inRange = n >= (ap.grade.gradeMin ?? 0) && n <= (ap.grade.gradeMax ?? 0);
@@ -1437,12 +1436,12 @@ function UnderstandTab({
                               </div>
                               <div className="flex justify-between mt-1.5 px-[2px]">
                                 {[
-                                  'text-primary/35',
-                                  'text-primary/45',
-                                  'text-primary/55',
-                                  'text-primary/65',
-                                  'text-primary/80',
-                                  'text-primary/90',
+                                  'text-muted-foreground/40',
+                                  'text-muted-foreground/45',
+                                  'text-muted-foreground/50',
+                                  'text-muted-foreground/55',
+                                  'text-muted-foreground/60',
+                                  'text-muted-foreground/65',
                                 ].map((dimClass, i) => {
                                   const n = i + 1;
                                   const inRange = n >= (ap.grade.gradeMin ?? 0) && n <= (ap.grade.gradeMax ?? 0);
