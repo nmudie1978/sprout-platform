@@ -1,11 +1,11 @@
 'use client';
 
 /**
- * "Worth a look" — a compact dashboard card surfacing ONE fresh, verified
- * read from the world of work, gently leaned toward the sectors the user keeps
+ * "Worth a look" — a compact dashboard card surfacing TWO fresh, verified
+ * reads from the world of work, gently leaned toward the sectors the user keeps
  * exploring (their saved/rated careers — NOT the volatile primary goal).
  *
- * Replaces the old Reflections preview. Calm by design: one item, a quiet
+ * Calm by design: two items as neat rows (no long summaries), a quiet
  * "show another" shuffle, no feed, no infinite scroll. The full set lives on
  * the Insights page. Reuses the verified insights pool (source-enforced,
  * domain-allowlisted, anti-repeat) — the only personalisation is a soft tag
@@ -44,21 +44,25 @@ function relTime(iso?: string): string | null {
 
 export function WorthALook({ careerIds }: { careerIds: string[] }) {
   const tags = useMemo(() => deriveClusterTags(careerIds), [careerIds]);
-  // One item at a time; "show another" excludes what's been seen (anti-repeat).
-  const { currentBatch, isLoading, fetchMore } = useInsightsPool(1, tags);
-  const item = currentBatch[0];
+  // Always two items; "show another" swaps both for the next verified pair
+  // (anti-repeat). No long summaries — just a title and a quiet source line.
+  const { currentBatch, isLoading, fetchMore } = useInsightsPool(2, tags);
+  const items = currentBatch.slice(0, 2);
 
-  if (isLoading && !item) {
+  if (isLoading && items.length === 0) {
     return (
-      <div className="space-y-2 animate-pulse" aria-hidden>
-        <div className="h-3 w-3/4 rounded bg-muted/40" />
-        <div className="h-3 w-1/2 rounded bg-muted/30" />
-        <div className="h-2.5 w-1/3 rounded bg-muted/20 mt-3" />
+      <div className="space-y-3 animate-pulse" aria-hidden>
+        {[0, 1].map((i) => (
+          <div key={i} className="space-y-1.5">
+            <div className="h-3 w-3/4 rounded bg-muted/40" />
+            <div className="h-2.5 w-1/3 rounded bg-muted/20" />
+          </div>
+        ))}
       </div>
     );
   }
 
-  if (!item) {
+  if (items.length === 0) {
     return (
       <p className="text-xs text-muted-foreground/50">
         Fresh reads from the world of work will appear here.
@@ -66,12 +70,9 @@ export function WorthALook({ careerIds }: { careerIds: string[] }) {
     );
   }
 
-  const Icon = TYPE_ICON[item.contentType] ?? FileText;
-  const fresh = relTime(item.publishDate);
-
   return (
     <div className="relative h-full">
-      {/* Quiet "show another" — pulls the next verified item, never repeats. */}
+      {/* Quiet "show another" — pulls the next verified pair, never repeats. */}
       <button
         type="button"
         onClick={fetchMore}
@@ -82,30 +83,34 @@ export function WorthALook({ careerIds }: { careerIds: string[] }) {
         <RefreshCw className={cn('h-3.5 w-3.5', isLoading && 'animate-spin')} />
       </button>
 
-      <a
-        href={item.sourceUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="group block pr-7"
-      >
-        <div className="flex items-start gap-2">
-          <Icon className="h-3.5 w-3.5 text-violet-400/80 shrink-0 mt-0.5" />
-          <p className="text-xs font-medium text-foreground/90 leading-snug line-clamp-2 group-hover:text-primary transition-colors">
-            {item.title}
-          </p>
-        </div>
-        {item.summary && (
-          <p className="mt-1 text-[11px] text-muted-foreground/70 leading-snug line-clamp-2">
-            {item.summary}
-          </p>
-        )}
-        <p className="mt-1.5 flex items-center gap-1 text-[10px] text-muted-foreground/50">
-          <span className="truncate max-w-[150px]">{item.sourceName}</span>
-          {item.duration && <span>· {item.duration}</span>}
-          {fresh && <span>· {fresh}</span>}
-          <ExternalLink className="h-2.5 w-2.5 shrink-0 opacity-0 group-hover:opacity-60 transition-opacity" />
-        </p>
-      </a>
+      <ul className="divide-y divide-border/30 pr-7">
+        {items.map((item) => {
+          const Icon = TYPE_ICON[item.contentType] ?? FileText;
+          const fresh = relTime(item.publishDate);
+          return (
+            <li key={item.id}>
+              <a
+                href={item.sourceUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group flex items-start gap-2 py-2 first:pt-0"
+              >
+                <Icon className="h-3.5 w-3.5 text-violet-400/80 shrink-0 mt-0.5" />
+                <div className="min-w-0 flex-1">
+                  <p className="text-xs font-medium text-foreground/90 leading-snug line-clamp-2 group-hover:text-primary transition-colors">
+                    {item.title}
+                  </p>
+                  <p className="mt-0.5 truncate text-[10px] text-muted-foreground/50">
+                    {item.sourceName}
+                    {fresh && ` · ${fresh}`}
+                  </p>
+                </div>
+                <ExternalLink className="h-2.5 w-2.5 shrink-0 mt-1 opacity-0 group-hover:opacity-60 transition-opacity" />
+              </a>
+            </li>
+          );
+        })}
+      </ul>
     </div>
   );
 }

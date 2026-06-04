@@ -35,9 +35,7 @@ import {
   TrendingUp,
   BookmarkCheck,
   Pencil,
-  Search,
   CheckCircle2,
-  Rocket,
   FileText,
   Clock,
   Ban,
@@ -48,7 +46,6 @@ import {
   PlayCircle,
   Heart,
   X,
-  AlertTriangle,
 } from "lucide-react";
 import { useCuriositySaves } from "@/hooks/use-curiosity-saves";
 import { useAllInterestLevels } from "@/hooks/use-interest-level";
@@ -63,11 +60,7 @@ import { cn } from "@/lib/utils";
 import { OrientationWalkthrough } from "@/components/onboarding/orientation-walkthrough";
 import { LanguageDropdown } from "@/components/language-dropdown";
 import { CareerDetailSheet } from "@/components/career-detail-sheet";
-import { getAllCareers, getSectorForCareer } from "@/lib/career-pathways";
-import {
-  isCareerExplicitlyVerified,
-  isCareerSalaryStale,
-} from "@/lib/career-data-recency";
+import { getAllCareers } from "@/lib/career-pathways";
 import { useDiscoverRecommendations } from "@/hooks/use-discover-recommendations";
 import { WhatILikeTray } from "@/components/dashboard/what-i-like-tray";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -193,41 +186,6 @@ function StatCard({
       {sublabel && (
         <p className="text-xs text-muted-foreground/50 mt-0.5">{sublabel}</p>
       )}
-    </div>
-  );
-}
-
-/**
- * Compact horizontal stat — used inside the My Journey card so the
- * Career Snapshot shares a container with the journey progress.
- * Roughly half the height of the standalone StatCard above.
- */
-function CompactStat({
-  label,
-  value,
-  tooltip,
-}: {
-  label: string;
-  value: string;
-  /** Retained for callsite compat — no longer rendered. Layout mirrors the theme preview: plain stacked label/value, left-aligned, no icon. */
-  icon?: React.ComponentType<{ className?: string }>;
-  iconColor?: string;
-  tooltip?: string;
-}) {
-  return (
-    <div
-      className={cn(
-        "rounded-control border border-border/40 bg-card px-2 py-1.5",
-        tooltip && "cursor-help",
-      )}
-      title={tooltip}
-    >
-      <p className="text-xs uppercase tracking-wider text-muted-foreground/60 leading-none font-semibold">
-        {label}
-      </p>
-      <p className="text-xs font-semibold text-foreground/85 leading-tight mt-0.5 truncate">
-        {value}
-      </p>
     </div>
   );
 }
@@ -1176,65 +1134,7 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            {/* Career Snapshot — compact strip inside the same Journey
-                container so the user reads "this journey, this career,
-                these facts" as one block. Roughly half the height of
-                the previous standalone Career Snapshot card. */}
-            {goalCareer && (() => {
-              const sector = getSectorForCareer(goalCareer.id);
-              const sectorLabel = sector === 'public' ? 'Public' : sector === 'private' ? 'Private' : 'Mixed';
-              const pensionLabel = sector === 'public' ? 'Strong' : sector === 'private' ? 'Varies' : 'Mixed';
-              const salary = goalCareer.avgSalary.replace(/\s*kr\/year.*/i, '').trim().replace(/[\d,]+/g, (m) => {
-                const n = parseInt(m.replace(/,/g, ''), 10);
-                if (isNaN(n)) return m;
-                if (n >= 1_000_000) { const v = n / 1_000_000; return v % 1 === 0 ? `${v}M` : `${v.toFixed(1).replace(/\.0$/, '')}M`; }
-                if (n >= 1_000) return `${Math.round(n / 1_000)}k`;
-                return String(n);
-              });
-              const salaryStale = isCareerSalaryStale(goalCareer);
-              const explicitlyVerified = isCareerExplicitlyVerified(goalCareer);
-              return (
-                <div className="mt-5 pt-4 border-t border-border/30">
-                  <div className="flex items-center gap-1.5 mb-2">
-                    <Search className="h-3 w-3 text-primary/70" />
-                    {/* Match the other section headers (DashboardSection h3):
-                        same weight/tracking/colour, not a dimmer variant. */}
-                    <p className="text-xs font-bold uppercase tracking-wide text-foreground">
-                      Career snapshot
-                    </p>
-                    {salaryStale && (
-                      <span
-                        className="inline-flex items-center text-accent cursor-help"
-                        title="Salary & outlook figures may be out of date — check current SSB / NAV stats before deciding. Catalogue salaries are re-verified annually against SSB labour stats; this figure has not been refreshed in the last year, so treat as indicative."
-                        aria-label="Salary figures may be out of date"
-                      >
-                        <AlertTriangle className="h-3 w-3" />
-                      </span>
-                    )}
-                  </div>
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                    <CompactStat
-                      icon={TrendingUp}
-                      iconColor="text-primary/80"
-                      label="Salary"
-                      value={`${salary} kr`}
-                      tooltip={
-                        explicitlyVerified
-                          ? `Verified against SSB labour stats — last checked ${goalCareer.lastVerifiedAt}.`
-                          : salaryStale
-                            ? "Indicative range. Not re-verified against SSB labour stats in the last year — check current SSB / NAV data before deciding."
-                            : undefined
-                      }
-                    />
-                    <CompactStat icon={Rocket} iconColor="text-muted-foreground/80" label="Growth" value={goalCareer.growthOutlook.charAt(0).toUpperCase() + goalCareer.growthOutlook.slice(1)} />
-                    <CompactStat icon={Briefcase} iconColor="text-muted-foreground/80" label="Sector" value={sectorLabel} />
-                    <CompactStat icon={CheckCircle2} iconColor="text-muted-foreground/80" label="Pension" value={pensionLabel} />
-                  </div>
-                </div>
-              );
-            })()}
-
-          </GlassCard>
+            </GlassCard>
           );
           return goalTitle ? (
             <Link href="/my-journey" className="block mb-6 group">{journeyCard}</Link>
