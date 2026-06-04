@@ -38,8 +38,6 @@ import {
   Loader2,
   Compass,
   Radar,
-  Bookmark,
-  Check,
   ShieldAlert,
   Target,
   User as UserIcon,
@@ -84,7 +82,6 @@ export function CareerTwinView({
   const [messages, setMessages] = useState<TwinMessage[]>([]);
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
-  const [savedIds, setSavedIds] = useState<Set<string>>(new Set());
   const [currentPrimaryTitle, setCurrentPrimaryTitle] = useState<string | null>(null);
   const [primaryGoal, setPrimaryGoalState] = useState<CareerGoal | null>(null);
   const [showGoalModal, setShowGoalModal] = useState(false);
@@ -272,25 +269,6 @@ export function CareerTwinView({
     },
     [career, modeId, sending],
   );
-
-  const saveInsight = async (msg: TwinMessage) => {
-    if (!career || savedIds.has(msg.id)) return;
-    setSavedIds((prev) => new Set(prev).add(msg.id));
-    track("career_twin_insight_saved", { career: career.title });
-    try {
-      await fetch("/api/career-twin/save-insight", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          content: msg.content,
-          careerId: career.id,
-          careerTitle: career.title,
-        }),
-      });
-    } catch {
-      // Non-blocking: keep the optimistic "Saved" state.
-    }
-  };
 
   // ── Loading ──────────────────────────────────────────────────────────
   if (loading) {
@@ -526,25 +504,6 @@ export function CareerTwinView({
                     >
                       {m.content}
                     </div>
-                    {m.role === "assistant" && (
-                      <div className="flex gap-2 mt-1.5">
-                        <button
-                          onClick={() => saveInsight(m)}
-                          disabled={savedIds.has(m.id)}
-                          className={cn("inline-flex items-center gap-1 text-[11px] text-muted-foreground disabled:text-emerald-600 transition-colors", accentHoverText)}
-                        >
-                          {savedIds.has(m.id) ? (
-                            <>
-                              <Check className="h-3 w-3" /> {t("saved")}
-                            </>
-                          ) : (
-                            <>
-                              <Bookmark className="h-3 w-3" /> {t("saveToLibrary")}
-                            </>
-                          )}
-                        </button>
-                      </div>
-                    )}
                   </div>
                   {m.role === "user" && (
                     <div className="shrink-0 p-2 rounded-full bg-accent self-start">
