@@ -12,7 +12,7 @@ function mockDetails(body: unknown) {
 }
 
 describe("CareerDepth", () => {
-  it("renders the day, fit and pay snapshots when present", async () => {
+  it("renders the fit snapshots, but not day-in-life or pay (moved to My Journey)", async () => {
     mockDetails({
       hasDetails: true,
       details: { typicalDay: { morning: [], midday: [], afternoon: [] },
@@ -25,18 +25,18 @@ describe("CareerDepth", () => {
         { level: "senior", title: "Senior", yearsExperience: "5-8 years", salaryRange: "700-900k kr" },
       ] },
     });
-    render(<CareerDepth career={career} />);
-    await waitFor(() => expect(screen.getByText("How your pay grows")).toBeTruthy());
-    expect(screen.getByText("450-550k kr")).toBeTruthy();
-    expect(screen.getByText(/Lots of problem-solving/)).toBeTruthy();
-    expect(screen.getByText("A day in the life")).toBeTruthy();
-    expect(screen.getByText("Who tends to thrive here")).toBeTruthy();
+    const { container } = render(<CareerDepth career={career} />);
+    await waitFor(() => expect(screen.getByText("Who tends to thrive here")).toBeTruthy());
     expect(screen.getByText(/Curious problem-solvers/)).toBeTruthy();
     expect(screen.getByText("Common ways in")).toBeTruthy();
     expect(screen.getByText(/Computer science degree/)).toBeTruthy();
+    // Day-in-life and pay progression are intentionally NOT on the card now.
+    expect(container.textContent).not.toContain("How your pay grows");
+    expect(container.textContent).not.toContain("450-550k kr");
+    expect(container.textContent).not.toContain("A day in the life");
   });
 
-  it("renders nothing when there is no curated day and no progression", async () => {
+  it("renders nothing when there are no fit signals", async () => {
     mockDetails({
       hasDetails: false,
       details: { typicalDay: { morning: [], midday: [], afternoon: [] },
