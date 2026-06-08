@@ -53,9 +53,22 @@ export function JourneyCompaniesTray({
     staleTime: 5 * 60 * 1000,
   });
 
+  // The employer data is Norwegian, so the tab is suppressed for
+  // non-Norway users. Rides the shared ['profile-country'] cache the
+  // page already populates — no extra round-trip.
+  const { data: countryData } = useQuery<{ country?: string | null }>({
+    queryKey: ["profile-country"],
+    queryFn: async () => {
+      const res = await fetch("/api/profile");
+      if (!res.ok) return {};
+      return res.json();
+    },
+    staleTime: 60 * 1000,
+  });
+
   const employers = useMemo(
-    () => (careerId ? getCareerEmployers(careerId, detailsData?.category) : []),
-    [careerId, detailsData?.category],
+    () => (careerId ? getCareerEmployers(careerId, detailsData?.category, countryData?.country) : []),
+    [careerId, detailsData?.category, countryData?.country],
   );
 
   // Close on ESC

@@ -1001,7 +1001,9 @@ function UnderstandTab({
   // One or two realistic example employers for the Typical Day card, so
   // the day feels grounded in a real place (e.g. a telecoms engineer at
   // Telenor). Prefers curated employers, falls back to category-level.
-  const exampleEmployers = career?.id ? getRepresentativeEmployers(career.id, detailsData?.category) : [];
+  // Norwegian employer data only — suppressed for non-Norway users (e.g.
+  // a Spain user shouldn't be told they'd work at Telenor).
+  const exampleEmployers = career?.id ? getRepresentativeEmployers(career.id, detailsData?.category, educationCountry) : [];
   const toggle = (id: string) => setOpenSection(prev => prev === id ? null : id);
 
   const allCourses = [
@@ -1235,12 +1237,12 @@ function UnderstandTab({
           without a hand-curated list still show real, linked places to
           work. Hidden only when neither the career nor its category is
           known. ── */}
-      {career?.id && hasCareerEmployers(career.id, detailsData?.category) && (
+      {career?.id && hasCareerEmployers(career.id, detailsData?.category, educationCountry) && (
         <SectionCard>
           <SectionHeader icon={Building2} title="Where People Work" tooltip="Norwegian companies and institutions where this kind of role is common — with links to their careers pages." collapsed={uCollapsed('u-salary')} onToggle={() => uToggle('u-salary')} />
           {!uCollapsed('u-salary') && (
             <div className="p-4 sm:p-5">
-              <TopEmployers careerId={career.id} category={detailsData?.category} />
+              <TopEmployers careerId={career.id} category={detailsData?.category} country={educationCountry} />
             </div>
           )}
         </SectionCard>
