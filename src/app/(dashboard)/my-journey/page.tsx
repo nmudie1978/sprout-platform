@@ -984,7 +984,7 @@ function UnderstandTab({
   const [openSection, setOpenSection] = useState<string | null>(null);
   const [selectedRow, setSelectedRow] = useState<number | null>(null);
   const { isCollapsed: uCollapsed, toggle: uToggle } = useSectionCollapse(
-    ['u-tasks', 'u-reality', 'u-day', 'u-myths', 'u-salary', 'u-education-pathway', 'u-notes'],
+    ['u-role', 'u-day', 'u-myths', 'u-salary', 'u-education-pathway', 'u-notes'],
     ['u-myths'], // collapsed by default — supplementary sections
   );
 
@@ -1010,133 +1010,139 @@ function UnderstandTab({
         </p>
       </div>
 
-      {/* ── TOP: What You'll Do + Reality Videos — side by side ── */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        {/* Left: What You'll Actually Do + Tools of the Trade as two
-            tabs inside one card. The user reads these back-to-back
-            ("what I'd do" → "what I'd use to do it"), so keeping them
-            in a single surface reduces section count on the Understand
-            tab. Tabs follow the same styling as Education Pathway
-            (full-width, teal underline) for visual consistency. */}
-        <SectionCard accent="teal">
-          <SectionHeader
-            icon={Briefcase}
-            title="What You'll Do"
-            tooltip="The core responsibilities and daily tasks that define this role."
-            collapsed={uCollapsed('u-tasks')}
-            onToggle={() => uToggle('u-tasks')}
-          />
-          {!uCollapsed('u-tasks') && (
-            <div className="px-4 py-3 space-y-3">
-              {details && details.whatYouActuallyDo.length > 0 ? (
-                <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1">
-                  {details.whatYouActuallyDo.map((task, i) => (
-                    <li key={i} className="flex items-start gap-2 py-1">
-                      <span className="text-xs font-bold text-primary/70 mt-[3px] shrink-0">{i + 1}.</span>
-                      <span className="text-xs text-foreground/70 leading-snug">{task}</span>
-                    </li>
-                  ))}
-                </ul>
-              ) : detailsLoading ? (
-                <LoadingSkeleton />
-              ) : (
-                <p className="text-xs text-muted-foreground/40">Details not available for this career yet.</p>
-              )}
-              {details?.typicalDay.tools?.length ? (
-                <div className="flex flex-wrap items-center gap-1.5 pt-2 border-t border-border/15">
-                  <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground/40 mr-1">Tools:</span>
-                  {details.typicalDay.tools.map((tool, i) => {
-                    const info = getToolInfo(tool);
-                    return (
-                      <a
-                        key={i}
-                        href={info?.url || `https://www.google.com/search?q=${encodeURIComponent(tool)}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        title={info?.description || tool}
-                        className="inline-flex items-center gap-1 rounded-pill border border-border/25 bg-background/30 px-2 py-0.5 text-xs text-foreground/65 hover:text-foreground hover:border-border/50 transition-colors"
-                      >
-                        {tool}
-                        <ExternalLink className="h-2 w-2 text-muted-foreground/30" />
-                      </a>
-                    );
-                  })}
-                </div>
-              ) : null}
-            </div>
-          )}
-        </SectionCard>
+      {/* ── Inside the Role — What You'll Do · The Reality · Tools as one
+          tabbed card (was two side-by-side cards). Tabs use the same
+          teal-underline styling as Education Pathway for consistency. */}
+      <SectionCard accent="teal">
+        <SectionHeader
+          icon={Briefcase}
+          title="Inside the Role"
+          tooltip="What you'll actually do day to day, an honest look at the reality, and the tools of the trade."
+          collapsed={uCollapsed('u-role')}
+          onToggle={() => uToggle('u-role')}
+        />
+        {!uCollapsed('u-role') && (
+          <div className="p-4 sm:p-5">
+            <Tabs defaultValue="tasks" className="w-full">
+              <TabsList className="grid w-full grid-cols-3 h-auto p-0 bg-transparent gap-0 border-b border-border/40 rounded-none">
+                <TabsTrigger value="tasks" className="relative rounded-none border-0 bg-transparent px-4 py-3.5 text-sm font-semibold text-muted-foreground/65 hover:text-foreground/85 transition-colors data-[state=active]:bg-muted/20 data-[state=active]:text-foreground data-[state=active]:shadow-none after:content-[''] after:absolute after:left-0 after:right-0 after:-bottom-px after:h-0.5 after:bg-primary after:scale-x-0 after:transition-transform after:duration-200 data-[state=active]:after:scale-x-100">
+                  <span className="inline-flex items-center gap-2"><Briefcase className="h-4 w-4" />What You&apos;ll Do</span>
+                </TabsTrigger>
+                <TabsTrigger value="reality" className="relative rounded-none border-0 bg-transparent px-4 py-3.5 text-sm font-semibold text-muted-foreground/65 hover:text-foreground/85 transition-colors data-[state=active]:bg-muted/20 data-[state=active]:text-foreground data-[state=active]:shadow-none after:content-[''] after:absolute after:left-0 after:right-0 after:-bottom-px after:h-0.5 after:bg-primary after:scale-x-0 after:transition-transform after:duration-200 data-[state=active]:after:scale-x-100">
+                  <span className="inline-flex items-center gap-2"><Eye className="h-4 w-4" />The Reality</span>
+                </TabsTrigger>
+                <TabsTrigger value="tools" className="relative rounded-none border-0 bg-transparent px-4 py-3.5 text-sm font-semibold text-muted-foreground/65 hover:text-foreground/85 transition-colors data-[state=active]:bg-muted/20 data-[state=active]:text-foreground data-[state=active]:shadow-none after:content-[''] after:absolute after:left-0 after:right-0 after:-bottom-px after:h-0.5 after:bg-primary after:scale-x-0 after:transition-transform after:duration-200 data-[state=active]:after:scale-x-100">
+                  <span className="inline-flex items-center gap-2"><Wrench className="h-4 w-4" />Tools</span>
+                </TabsTrigger>
+              </TabsList>
 
-        {/* Right: The Reality — dynamic reality check */}
-        <SectionCard accent="amber">
-          <SectionHeader icon={Eye} title="The Reality" tooltip="An honest look at what this career is really like — the challenges, trade-offs, and what makes someone a good fit." collapsed={uCollapsed('u-reality')} onToggle={() => uToggle('u-reality')} />
-          {!uCollapsed('u-reality') && <div className="p-4 space-y-3">
-            {realityLoading ? (
-              <div className="space-y-2.5">
-                <div className="h-3 w-full rounded bg-muted-foreground/5 animate-pulse" />
-                <div className="h-3 w-4/5 rounded bg-muted-foreground/5 animate-pulse" />
-                <div className="h-3 w-3/5 rounded bg-muted-foreground/5 animate-pulse" />
-              </div>
-            ) : realityData ? (
-              <>
-                {/* Summary */}
-                <p className="text-xs text-foreground/60 leading-relaxed">{realityData.realitySummary}</p>
+              <TabsContent value="tasks" className="mt-6">
+                {details && details.whatYouActuallyDo.length > 0 ? (
+                  <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1">
+                    {details.whatYouActuallyDo.map((task, i) => (
+                      <li key={i} className="flex items-start gap-2 py-1">
+                        <span className="text-xs font-bold text-primary/70 mt-[3px] shrink-0">{i + 1}.</span>
+                        <span className="text-xs text-foreground/70 leading-snug">{task}</span>
+                      </li>
+                    ))}
+                  </ul>
+                ) : detailsLoading ? (
+                  <LoadingSkeleton />
+                ) : (
+                  <p className="text-xs text-muted-foreground/40">Details not available for this career yet.</p>
+                )}
+              </TabsContent>
 
-                {/* Reality points — only hardships/challenges, no education references */}
-                {(() => {
-                  const hardships = realityData.realityPoints.filter(
-                    (p) => !/\b(degree|training|qualification|certif|educat|university|college|school|study|course|licence|license)\b/i.test(p)
-                  );
-                  if (hardships.length === 0) return null;
-                  return (
-                    <div className="space-y-1">
-                      {hardships.map((point, i) => (
-                        <div key={i} className="flex items-start gap-2">
-                          <AlertCircle className="h-3 w-3 text-warning/70 shrink-0 mt-0.5" />
-                          <p className="text-xs text-foreground/50 leading-relaxed">{point}</p>
-                        </div>
-                      ))}
+              <TabsContent value="reality" className="mt-6">
+                <div className="space-y-3">
+                  {realityLoading ? (
+                    <div className="space-y-2.5">
+                      <div className="h-3 w-full rounded bg-muted-foreground/5 animate-pulse" />
+                      <div className="h-3 w-4/5 rounded bg-muted-foreground/5 animate-pulse" />
+                      <div className="h-3 w-3/5 rounded bg-muted-foreground/5 animate-pulse" />
                     </div>
-                  );
-                })()}
+                  ) : realityData ? (
+                    <>
+                      <p className="text-xs text-foreground/60 leading-relaxed">{realityData.realitySummary}</p>
+                      {(() => {
+                        const hardships = realityData.realityPoints.filter(
+                          (p) => !/\b(degree|training|qualification|certif|educat|university|college|school|study|course|licence|license)\b/i.test(p)
+                        );
+                        if (hardships.length === 0) return null;
+                        return (
+                          <div className="space-y-1">
+                            {hardships.map((point, i) => (
+                              <div key={i} className="flex items-start gap-2">
+                                <AlertCircle className="h-3 w-3 text-warning/70 shrink-0 mt-0.5" />
+                                <p className="text-xs text-foreground/50 leading-relaxed">{point}</p>
+                              </div>
+                            ))}
+                          </div>
+                        );
+                      })()}
+                      {realityData.videos.length > 0 && (
+                        <div className="pt-1">
+                          <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground/40 mb-1.5">Real voices</p>
+                          <div className="rounded-control border border-border/20 divide-y divide-border/15 overflow-hidden">
+                            {realityData.videos.map((video) => (
+                              <a
+                                key={video.videoId}
+                                href={`https://www.youtube.com/watch?v=${video.videoId}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="group flex items-center gap-2 px-2.5 py-1.5 hover:bg-muted/10 transition-colors"
+                              >
+                                <Play className="h-3 w-3 text-muted-foreground/40 group-hover:text-accent shrink-0" />
+                                <span className="text-xs text-foreground/70 group-hover:text-foreground truncate flex-1">{video.title.replace(/&amp;/g, '&')}</span>
+                                <span className="text-xs text-muted-foreground/40 shrink-0 hidden sm:inline">{video.channel}</span>
+                                <ExternalLink className="h-2.5 w-2.5 text-muted-foreground/25 group-hover:text-muted-foreground/50 shrink-0" />
+                              </a>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </>
+                  ) : details?.realityCheck ? (
+                    <div className="rounded-control border border-warning/15 bg-warning/5 p-3">
+                      <div className="flex items-start gap-2">
+                        <AlertCircle className="h-3.5 w-3.5 text-warning shrink-0 mt-0.5" />
+                        <p className="text-xs text-foreground/50 italic leading-relaxed">{details.realityCheck}</p>
+                      </div>
+                    </div>
+                  ) : (
+                    <p className="text-xs text-muted-foreground/40">Reality insights not available for this career yet.</p>
+                  )}
+                </div>
+              </TabsContent>
 
-                {/* Video links — compact list, no thumbnails */}
-                {realityData.videos.length > 0 && (
-                  <div className="pt-1">
-                    <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground/40 mb-1.5">Real voices</p>
-                    <div className="rounded-control border border-border/20 divide-y divide-border/15 overflow-hidden">
-                      {realityData.videos.map((video) => (
+              <TabsContent value="tools" className="mt-6">
+                {details?.typicalDay.tools?.length ? (
+                  <div className="flex flex-wrap items-center gap-1.5">
+                    {details.typicalDay.tools.map((tool, i) => {
+                      const info = getToolInfo(tool);
+                      return (
                         <a
-                          key={video.videoId}
-                          href={`https://www.youtube.com/watch?v=${video.videoId}`}
+                          key={i}
+                          href={info?.url || `https://www.google.com/search?q=${encodeURIComponent(tool)}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="group flex items-center gap-2 px-2.5 py-1.5 hover:bg-muted/10 transition-colors"
+                          title={info?.description || tool}
+                          className="inline-flex items-center gap-1 rounded-pill border border-border/25 bg-background/30 px-2 py-0.5 text-xs text-foreground/65 hover:text-foreground hover:border-border/50 transition-colors"
                         >
-                          <Play className="h-3 w-3 text-muted-foreground/40 group-hover:text-accent shrink-0" />
-                          <span className="text-xs text-foreground/70 group-hover:text-foreground truncate flex-1">{video.title.replace(/&amp;/g, '&')}</span>
-                          <span className="text-xs text-muted-foreground/40 shrink-0 hidden sm:inline">{video.channel}</span>
-                          <ExternalLink className="h-2.5 w-2.5 text-muted-foreground/25 group-hover:text-muted-foreground/50 shrink-0" />
+                          {tool}
+                          <ExternalLink className="h-2 w-2 text-muted-foreground/30" />
                         </a>
-                      ))}
-                    </div>
+                      );
+                    })}
                   </div>
+                ) : (
+                  <p className="text-xs text-muted-foreground/40">No specific tools listed for this career yet.</p>
                 )}
-              </>
-            ) : details?.realityCheck ? (
-              /* Fallback to static realityCheck if API fails */
-              <div className="rounded-control border border-warning/15 bg-warning/5 p-3">
-                <div className="flex items-start gap-2">
-                  <AlertCircle className="h-3.5 w-3.5 text-warning shrink-0 mt-0.5" />
-                  <p className="text-xs text-foreground/50 italic leading-relaxed">{details.realityCheck}</p>
-                </div>
-              </div>
-            ) : (
-              <p className="text-xs text-muted-foreground/40">Reality insights not available for this career yet.</p>
-            )}
-          </div>}
-        </SectionCard>
-      </div>
+              </TabsContent>
+            </Tabs>
+          </div>
+        )}
+      </SectionCard>
 
       {/* Career Presence was previously a standalone card here — it's
           now embedded inside the "Real Career Paths & Tools" section
