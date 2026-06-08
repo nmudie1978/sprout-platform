@@ -6,7 +6,7 @@
  */
 import type { ReflectionData } from "@/lib/journey/reflections-service";
 
-export type LibraryTab = "exploring" | "saved" | "compared" | "reflections";
+export type LibraryTab = "decision" | "exploring" | "saved" | "reflections";
 
 export interface LibraryTabDef {
   key: LibraryTab;
@@ -14,18 +14,18 @@ export interface LibraryTabDef {
 }
 
 export const LIBRARY_TABS: readonly LibraryTabDef[] = [
+  { key: "decision", label: "Decision Board" },
   { key: "exploring", label: "Exploring" },
   { key: "saved", label: "Saved careers" },
-  { key: "compared", label: "Compared" },
   { key: "reflections", label: "Reflections" },
 ] as const;
 
-const KNOWN = new Set<LibraryTab>(["exploring", "saved", "compared", "reflections"]);
+const KNOWN = new Set<LibraryTab>(["decision", "exploring", "saved", "reflections"]);
 
-/** Resolve the active tab from a `?tab=` query value, defaulting to "exploring". */
+/** Resolve the active tab from a `?tab=` query value, defaulting to "decision". */
 export function resolveLibraryTab(param: string | null | undefined): LibraryTab {
   const v = (param ?? "").toLowerCase() as LibraryTab;
-  return KNOWN.has(v) ? v : "exploring";
+  return KNOWN.has(v) ? v : "decision";
 }
 
 /** Keep only reflections the user actually answered (non-skipped, non-empty response). */
