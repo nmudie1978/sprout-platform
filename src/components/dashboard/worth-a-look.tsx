@@ -1,11 +1,11 @@
 'use client';
 
 /**
- * "Worth a look" — a compact dashboard card surfacing TWO fresh, verified
+ * "Worth a look" — a compact dashboard card surfacing THREE fresh, verified
  * reads from the world of work, gently leaned toward the sectors the user keeps
  * exploring (their saved/rated careers — NOT the volatile primary goal).
  *
- * Calm by design: two items as neat rows (no long summaries), a quiet
+ * Calm by design: three items as neat rows (no long summaries), a quiet
  * "show another" shuffle, no feed, no infinite scroll. The full set lives on
  * the Insights page. Reuses the verified insights pool (source-enforced,
  * domain-allowlisted, anti-repeat) — the only personalisation is a soft tag
@@ -44,15 +44,15 @@ function relTime(iso?: string): string | null {
 
 export function WorthALook({ careerIds }: { careerIds: string[] }) {
   const tags = useMemo(() => deriveClusterTags(careerIds), [careerIds]);
-  // Always two items; "show another" swaps both for the next verified pair
+  // Always three items; "show another" swaps them for the next verified set
   // (anti-repeat). No long summaries — just a title and a quiet source line.
-  const { currentBatch, isLoading, fetchMore } = useInsightsPool(2, tags);
-  const items = currentBatch.slice(0, 2);
+  const { currentBatch, isLoading, fetchMore } = useInsightsPool(3, tags);
+  const items = currentBatch.slice(0, 3);
 
   if (isLoading && items.length === 0) {
     return (
       <div className="space-y-3 animate-pulse" aria-hidden>
-        {[0, 1].map((i) => (
+        {[0, 1, 2].map((i) => (
           <div key={i} className="space-y-1.5">
             <div className="h-3 w-3/4 rounded bg-muted/40" />
             <div className="h-2.5 w-1/3 rounded bg-muted/20" />
@@ -72,7 +72,7 @@ export function WorthALook({ careerIds }: { careerIds: string[] }) {
 
   return (
     <div className="relative h-full">
-      {/* Quiet "show another" — pulls the next verified pair, never repeats. */}
+      {/* Quiet "show another" — pulls the next verified set, never repeats. */}
       <button
         type="button"
         onClick={fetchMore}
