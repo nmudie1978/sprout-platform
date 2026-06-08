@@ -75,6 +75,126 @@
     "kokki": "chef"
   },
   "advancedCareerMap": {
+    "mathematics-teacher": {
+      "baseCareerId": "teacher",
+      "specialisationNote": "Mathematics teachers qualify through Norway's teacher-education route — a Lektorutdanning (8–13) specialising in mathematics, or a mathematics bachelor/master plus PPU (praktisk-pedagogisk utdanning)."
+    },
+    "science-teacher": {
+      "baseCareerId": "teacher",
+      "specialisationNote": "Science teachers qualify through Norway's teacher-education route — a Lektorutdanning (8–13) specialising in science, or a science bachelor/master plus PPU (praktisk-pedagogisk utdanning)."
+    },
+    "physics-teacher": {
+      "baseCareerId": "teacher",
+      "specialisationNote": "Physics teachers qualify through Norway's teacher-education route — a Lektorutdanning (8–13) specialising in physics, or a physics bachelor/master plus PPU (praktisk-pedagogisk utdanning)."
+    },
+    "chemistry-teacher": {
+      "baseCareerId": "teacher",
+      "specialisationNote": "Chemistry teachers qualify through Norway's teacher-education route — a Lektorutdanning (8–13) specialising in chemistry, or a chemistry bachelor/master plus PPU (praktisk-pedagogisk utdanning)."
+    },
+    "history-teacher": {
+      "baseCareerId": "teacher",
+      "specialisationNote": "History teachers qualify through Norway's teacher-education route — a Lektorutdanning (8–13) specialising in history, or a history bachelor/master plus PPU (praktisk-pedagogisk utdanning)."
+    },
+    "geography-teacher": {
+      "baseCareerId": "teacher",
+      "specialisationNote": "Geography teachers qualify through Norway's teacher-education route — a Lektorutdanning (8–13) specialising in geography, or a geography bachelor/master plus PPU (praktisk-pedagogisk utdanning)."
+    },
+    "social-studies-teacher": {
+      "baseCareerId": "teacher",
+      "specialisationNote": "Social studies teachers qualify through Norway's teacher-education route — a Lektorutdanning (8–13) specialising in social studies, or a social studies bachelor/master plus PPU (praktisk-pedagogisk utdanning)."
+    },
+    "computer-science-teacher": {
+      "baseCareerId": "teacher",
+      "specialisationNote": "Computer science teachers qualify through Norway's teacher-education route — a Lektorutdanning (8–13) specialising in computer science, or a computer science bachelor/master plus PPU (praktisk-pedagogisk utdanning)."
+    },
+    "pe-teacher": {
+      "baseCareerId": "teacher",
+      "specialisationNote": "Physical education teachers qualify through Norway's teacher-education route — a Lektorutdanning (8–13) specialising in physical education, or a physical education bachelor/master plus PPU (praktisk-pedagogisk utdanning)."
+    },
+    "art-teacher": {
+      "baseCareerId": "teacher",
+      "specialisationNote": "Art teachers qualify through Norway's teacher-education route — a Lektorutdanning (8–13) specialising in art, or a art bachelor/master plus PPU (praktisk-pedagogisk utdanning)."
+    },
+    "drama-teacher": {
+      "baseCareerId": "teacher",
+      "specialisationNote": "Drama teachers qualify through Norway's teacher-education route — a Lektorutdanning (8–13) specialising in drama, or a drama bachelor/master plus PPU (praktisk-pedagogisk utdanning)."
+    },
+    "language-teacher": {
+      "baseCareerId": "teacher",
+      "specialisationNote": "Language teachers qualify through Norway's teacher-education route — a Lektorutdanning (8–13) specialising in language, or a language bachelor/master plus PPU (praktisk-pedagogisk utdanning)."
+    },
+    "esl-teacher": {
+      "baseCareerId": "teacher",
+      "specialisationNote": "English (ESL) teachers qualify through Norway's teacher-education route — a Lektorutdanning (8–13) in English, or an English bachelor/master plus PPU (praktisk-pedagogisk utdanning)."
+    },
+    "efl-teacher": {
+      "baseCareerId": "teacher",
+      "specialisationNote": "English (EFL) teachers qualify through Norway's teacher-education route — a Lektorutdanning (8–13) in English, or an English bachelor/master plus PPU (praktisk-pedagogisk utdanning)."
+    },
+    "vocational-education-teacher": {
+      "baseCareerId": "teacher",
+      "specialisationNote": "Vocational teachers (yrkesfaglærer) qualify via Yrkesfaglærerutdanning, or a relevant trade certificate (fagbrev) plus PPU-yrkesfag."
+    },
+    "special-education-teacher": {
+      "baseCareerId": "teacher",
+      "specialisationNote": "Special-education teachers (spesialpedagog) qualify via a teacher education plus a master/specialisation in spesialpedagogikk."
+    },
+    "dermatologist": {
+      "baseCareerId": "doctor",
+      "specialisationNote": "Dermatology is a medical specialisation — first complete medisin (profesjonsstudium), then LIS specialisation in hud- og veneriske sykdommer."
+    },
+    "physical-therapist": {
+      "baseCareerId": "physiotherapist",
+      "specialisationNote": "Physical therapist is the same profession as physiotherapist in Norway — qualify via Fysioterapi (bachelor) plus turnus and Helsedirektoratet authorisation."
+    },
+    "aeronautical-engineer": {
+      "baseCareerId": "mechanical-engineer",
+      "specialisationNote": "Norway has no dedicated aerospace degree, so aeronautical engineers build on a mechanical-engineering foundation — a sivilingeniør in maskinteknikk / produktutvikling og produksjon (or kybernetikk), then aerospace specialisation."
+    },
+    "astronautical-engineer": {
+      "baseCareerId": "mechanical-engineer",
+      "specialisationNote": "Norway has no dedicated aerospace degree, so astronautical engineers build on a mechanical-engineering foundation — a sivilingeniør in maskinteknikk / produktutvikling og produksjon (or kybernetikk), then aerospace specialisation."
+    },
+    "propulsion-engineer": {
+      "baseCareerId": "mechanical-engineer",
+      "specialisationNote": "Norway has no dedicated aerospace degree, so propulsion engineers build on a mechanical-engineering foundation — a sivilingeniør in maskinteknikk / produktutvikling og produksjon (or kybernetikk), then aerospace specialisation."
+    },
+    "flight-test-engineer": {
+      "baseCareerId": "mechanical-engineer",
+      "specialisationNote": "Norway has no dedicated aerospace degree, so flight-test engineers build on a mechanical-engineering foundation — a sivilingeniør in maskinteknikk / produktutvikling og produksjon (or kybernetikk), then aerospace specialisation."
+    },
+    "spacecraft-engineer": {
+      "baseCareerId": "mechanical-engineer",
+      "specialisationNote": "Norway has no dedicated aerospace degree, so spacecraft engineers build on a mechanical-engineering foundation — a sivilingeniør in maskinteknikk / produktutvikling og produksjon (or kybernetikk), then aerospace specialisation."
+    },
+    "orbital-analyst": {
+      "baseCareerId": "mechanical-engineer",
+      "specialisationNote": "Orbital analysts come from an engineering/applied-physics foundation — a sivilingeniør in mechanical/aerospace engineering or physics, then orbital-mechanics specialisation."
+    },
+    "aerospace-technician": {
+      "baseCareerId": "mechanical-engineer",
+      "specialisationNote": "Aerospace technicians build on a mechanical/industrial-engineering or technical foundation (ingeniør or relevant fagbrev plus type training)."
+    },
+    "materials-engineer": {
+      "baseCareerId": "mechanical-engineer",
+      "specialisationNote": "Materials engineers build on a mechanical/materials-engineering foundation — a sivilingeniør in materialteknologi or maskinteknikk."
+    },
+    "manufacturing-engineer": {
+      "baseCareerId": "mechanical-engineer",
+      "specialisationNote": "Manufacturing/production engineers come from a mechanical-engineering route — a sivilingeniør in produktutvikling og produksjon."
+    },
+    "quality-assurance-engineer": {
+      "baseCareerId": "mechanical-engineer",
+      "specialisationNote": "QA engineers typically come from a mechanical or industrial engineering route (sivilingeniør / ingeniør) with a focus on process and quality."
+    },
+    "avionics-engineer": {
+      "baseCareerId": "it-engineer",
+      "specialisationNote": "Avionics combines electronics and software — an informasjonsteknologi / elektronikk engineering degree is the typical base."
+    },
+    "aircraft-mechanic": {
+      "baseCareerId": "industrial-mechanic",
+      "specialisationNote": "Aircraft mechanics qualify through a mechanic trade (fagbrev) plus EASA Part-66 licensing; the industrial-mechanic route is the closest Norwegian base."
+    },
     "addiction-counsellor": {
       "baseCareerId": "social-worker",
       "specialisationNote": "Addiction counsellors support people through substance recovery. A bachelor in sosialt arbeid or vernepleie, often with additional courses in rusproblematikk (substance issues)."
@@ -1817,6 +1937,48 @@
     }
   },
   "programmes": [
+    {
+      "id": "no-oslomet-radiografi",
+      "careerId": "radiologic-technologist",
+      "institutionId": "oslomet",
+      "programme": "Radiografi (bachelor)",
+      "englishName": "Radiography (Bachelor)",
+      "url": "https://www.oslomet.no/studier/hv/radiografi",
+      "type": "bachelor",
+      "duration": "3 years",
+      "languageOfInstruction": "Norwegian",
+      "tuitionFee": "free",
+      "entryRequirements": "Generell studiekompetanse",
+      "careerOutcome": "Eligible for authorisation as a radiographer (radiograf) via Helsedirektoratet"
+    },
+    {
+      "id": "no-oslomet-bioingenior",
+      "careerId": "medical-laboratory-technician",
+      "institutionId": "oslomet",
+      "programme": "Bioingeniør (bachelor)",
+      "englishName": "Biomedical Laboratory Science (Bachelor)",
+      "url": "https://www.oslomet.no/studier/hv/bioingenior",
+      "type": "bachelor",
+      "duration": "3 years",
+      "languageOfInstruction": "Norwegian",
+      "tuitionFee": "free",
+      "entryRequirements": "Generell studiekompetanse med realfag (matematikk + kjemi)",
+      "careerOutcome": "Eligible for authorisation as a biomedical laboratory scientist (bioingeniør) via Helsedirektoratet"
+    },
+    {
+      "id": "no-oslomet-barnehagelarer",
+      "careerId": "preschool-teacher",
+      "institutionId": "oslomet",
+      "programme": "Barnehagelærer (bachelor)",
+      "englishName": "Early Childhood Teacher Education (Bachelor)",
+      "url": "https://www.oslomet.no/studier/lui/barnehagelerer",
+      "type": "bachelor",
+      "duration": "3 years",
+      "languageOfInstruction": "Norwegian",
+      "tuitionFee": "free",
+      "entryRequirements": "Generell studiekompetanse",
+      "careerOutcome": "Qualified barnehagelærer (preschool teacher)"
+    },
     {
       "id": "no-uio-medisin",
       "careerId": "doctor",
