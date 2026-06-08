@@ -48,7 +48,7 @@ import type { CareerDetails } from '@/lib/career-typical-days';
 import type { CareerProgression } from '@/lib/career-progressions';
 import type { RealityCheckResult } from '@/lib/career-reality-types';
 import type { NextStep } from '@/lib/reports/journey';
-import { getCertificationPath, getCareerRequirements, getNorwayProgrammes, getProgrammesForCareer, hasEducationData, type NordicCountry } from '@/lib/education';
+import { getCertificationPath, getCareerRequirements, getNorwayProgrammes, getProgrammesForCareer, hasEducationData, getSpanishReadiness, type NordicCountry } from '@/lib/education';
 import { countryToCode, DEFAULT_COUNTRY } from '@/lib/countries';
 import {
   parseGradeRequirement,
@@ -1279,21 +1279,55 @@ function UnderstandTab({
           // School Readiness stays gated until we have that country's
           // school-system data.
           if (countryProgs.length > 0) {
+            const esReadiness = career ? getSpanishReadiness(career.id) : null;
+            const SELECTIVITY_LABEL = { low: 'Open access', moderate: 'Moderately selective', high: 'Selective', 'very-high': 'Highly selective' } as const;
             return (
               <SectionCard>
                 <SectionHeader
                   icon={GraduationCap}
                   title="Education Pathway"
-                  tooltip="Real universities in your country that lead to this career. School-readiness scoring for your country is coming."
+                  tooltip="School readiness and the real universities in your country that lead to this career."
                   collapsed={uCollapsed('u-education-pathway')}
                   onToggle={() => uToggle('u-education-pathway')}
                 />
                 {!uCollapsed('u-education-pathway') && (
-                  <div className="p-4 sm:p-5 space-y-3">
-                    <p className="text-xs text-muted-foreground/60 leading-relaxed">
-                      Real {countryName} universities for this career. School-readiness scoring for {countryName} (subjects and grades) is coming — we don&apos;t apply another country&apos;s school system.
-                    </p>
-                    <EducationBrowser careerTitle={goalTitle} careerId={career?.id ?? null} country={educationCountry} programmesOnly />
+                  <div className="p-4 sm:p-5 space-y-4">
+                    {esReadiness ? (
+                      <div className="rounded-card border border-border/20 bg-muted/[0.03] p-4 space-y-3">
+                        <div className="flex items-center gap-2">
+                          <GraduationCap className="h-4 w-4 text-primary/70" />
+                          <span className="text-xs font-semibold text-foreground/85">School readiness — {countryName}</span>
+                        </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                          <div>
+                            <p className="text-[10px] uppercase tracking-wider text-muted-foreground/55 mb-1">Recommended Bachillerato</p>
+                            <p className="text-xs text-foreground/80 leading-snug">{esReadiness.modality}</p>
+                          </div>
+                          <div>
+                            <p className="text-[10px] uppercase tracking-wider text-muted-foreground/55 mb-1">Entry selectivity</p>
+                            <p className="text-xs text-foreground/80 leading-snug">{SELECTIVITY_LABEL[esReadiness.selectivity]}</p>
+                          </div>
+                        </div>
+                        <div>
+                          <p className="text-[10px] uppercase tracking-wider text-muted-foreground/55 mb-1.5">Key subjects (EvAU)</p>
+                          <div className="flex flex-wrap gap-1.5">
+                            {esReadiness.subjects.map((s) => (
+                              <span key={s} className="rounded-pill border border-border/25 bg-background/30 px-2 py-0.5 text-[11px] text-foreground/70">{s}</span>
+                            ))}
+                          </div>
+                        </div>
+                        {esReadiness.note && <p className="text-[11px] text-muted-foreground/60 leading-relaxed">{esReadiness.note}</p>}
+                        <p className="text-[10px] text-muted-foreground/45 leading-relaxed">Entry is via the EvAU (Selectividad). The exact nota de corte varies by university and year — check each programme.</p>
+                      </div>
+                    ) : (
+                      <p className="text-xs text-muted-foreground/60 leading-relaxed">
+                        School-readiness detail for {countryName} is coming for this career. Below are real {countryName} universities that lead to it.
+                      </p>
+                    )}
+                    <div className="space-y-2">
+                      <p className="text-xs text-muted-foreground/60 leading-relaxed">Real {countryName} universities for this career:</p>
+                      <EducationBrowser careerTitle={goalTitle} careerId={career?.id ?? null} country={educationCountry} programmesOnly />
+                    </div>
                   </div>
                 )}
               </SectionCard>

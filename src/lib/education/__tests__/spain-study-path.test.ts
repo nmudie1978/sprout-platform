@@ -42,3 +42,28 @@ describe("Spain Study Path data", () => {
     expect(new Set(ids).size).toBe(ids.length);
   });
 });
+
+import { getSpanishReadiness } from "../index";
+
+describe("Spanish School Readiness", () => {
+  it("returns readiness for high-value careers with the expected shape", () => {
+    for (const c of ["doctor", "lawyer", "software-developer", "architect"]) {
+      const r = getSpanishReadiness(c);
+      expect(r, `${c} readiness`).not.toBeNull();
+      expect(typeof r!.modality).toBe("string");
+      expect(r!.subjects.length).toBeGreaterThan(0);
+      expect(["low", "moderate", "high", "very-high"]).toContain(r!.selectivity);
+    }
+  });
+
+  it("resolves specialisations via advancedCareerMap (dermatologist → doctor)", () => {
+    const derm = getSpanishReadiness("dermatologist");
+    const doc = getSpanishReadiness("doctor");
+    expect(derm).not.toBeNull();
+    expect(derm!.modality).toBe(doc!.modality);
+  });
+
+  it("returns null for a career with no Spanish readiness data", () => {
+    expect(getSpanishReadiness("youtuber")).toBeNull();
+  });
+});

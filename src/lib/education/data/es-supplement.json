@@ -696,5 +696,182 @@
       "lastVerifiedAt": "2026-06-08",
       "verificationSource": "official:upc.edu"
     }
-  ]
+  ],
+  "readiness": {
+    "doctor": {
+      "modality": "Ciencias",
+      "subjects": [
+        "Biología",
+        "Química",
+        "Física"
+      ],
+      "selectivity": "very-high",
+      "note": "Medicine has among the highest nota de corte of any degree — near-top EvAU marks are needed."
+    },
+    "nurse": {
+      "modality": "Ciencias",
+      "subjects": [
+        "Biología",
+        "Química"
+      ],
+      "selectivity": "high",
+      "note": "A health-sciences Bachillerato; Biología weights well in the EvAU fase específica."
+    },
+    "dentist": {
+      "modality": "Ciencias",
+      "subjects": [
+        "Biología",
+        "Química"
+      ],
+      "selectivity": "very-high",
+      "note": "Very selective — a high nota de corte, similar to other health degrees."
+    },
+    "physiotherapist": {
+      "modality": "Ciencias",
+      "subjects": [
+        "Biología",
+        "Anatomía Aplicada"
+      ],
+      "selectivity": "high",
+      "note": "Health-sciences branch; Biología is the key weighting subject."
+    },
+    "pharmacist": {
+      "modality": "Ciencias",
+      "subjects": [
+        "Química",
+        "Biología",
+        "Matemáticas"
+      ],
+      "selectivity": "moderate",
+      "note": "Química is the core subject; entry is less selective than medicine."
+    },
+    "veterinarian": {
+      "modality": "Ciencias",
+      "subjects": [
+        "Biología",
+        "Química"
+      ],
+      "selectivity": "high",
+      "note": "Limited places nationally make veterinary fairly selective."
+    },
+    "psychologist": {
+      "modality": "Ciencias / Humanidades y CC. Sociales",
+      "subjects": [
+        "Biología",
+        "Matemáticas Aplicadas a las CC. Sociales"
+      ],
+      "selectivity": "moderate",
+      "note": "Sits across health and social sciences; both branches give access."
+    },
+    "lawyer": {
+      "modality": "Humanidades y CC. Sociales",
+      "subjects": [
+        "Latín / Historia",
+        "Economía"
+      ],
+      "selectivity": "moderate",
+      "note": "A social-sciences/humanities route; moderately competitive."
+    },
+    "teacher": {
+      "modality": "Cualquier modalidad (any branch)",
+      "subjects": [
+        "Lengua Castellana",
+        "Matemáticas"
+      ],
+      "selectivity": "moderate",
+      "note": "Open to any Bachillerato branch; public-school posts then require oposiciones."
+    },
+    "software-developer": {
+      "modality": "Ciencias",
+      "subjects": [
+        "Matemáticas II",
+        "Física"
+      ],
+      "selectivity": "high",
+      "note": "Matemáticas II is essential; computer-engineering nota de corte has risen sharply."
+    },
+    "civil-engineer": {
+      "modality": "Ciencias",
+      "subjects": [
+        "Matemáticas II",
+        "Física",
+        "Dibujo Técnico"
+      ],
+      "selectivity": "moderate",
+      "note": "A science/technology Bachillerato with strong maths and physics."
+    },
+    "mechanical-engineer": {
+      "modality": "Ciencias",
+      "subjects": [
+        "Matemáticas II",
+        "Física"
+      ],
+      "selectivity": "moderate",
+      "note": "Industrial-engineering branch; maths and physics are core."
+    },
+    "electrical-engineer": {
+      "modality": "Ciencias",
+      "subjects": [
+        "Matemáticas II",
+        "Física"
+      ],
+      "selectivity": "moderate",
+      "note": "Industrial-engineering branch; maths and physics are core."
+    },
+    "architect": {
+      "modality": "Ciencias",
+      "subjects": [
+        "Matemáticas II",
+        "Física",
+        "Dibujo Técnico"
+      ],
+      "selectivity": "high",
+      "note": "Dibujo Técnico matters; the degree is long (5 yr + máster to practise)."
+    },
+    "economist": {
+      "modality": "Humanidades y CC. Sociales",
+      "subjects": [
+        "Matemáticas Aplicadas a las CC. Sociales / Matemáticas II",
+        "Economía"
+      ],
+      "selectivity": "moderate",
+      "note": "Maths matters more than people expect; both social-science and science branches give access."
+    },
+    "accountant": {
+      "modality": "Humanidades y CC. Sociales",
+      "subjects": [
+        "Matemáticas Aplicadas a las CC. Sociales",
+        "Economía"
+      ],
+      "selectivity": "moderate",
+      "note": "ADE is a social-sciences route; the Contabilidad mención is the accounting track."
+    },
+    "biologist": {
+      "modality": "Ciencias",
+      "subjects": [
+        "Biología",
+        "Química"
+      ],
+      "selectivity": "moderate",
+      "note": "A pure-science Bachillerato; Biología and Química are the weighting subjects."
+    },
+    "journalist": {
+      "modality": "Humanidades y CC. Sociales",
+      "subjects": [
+        "Lengua Castellana",
+        "Historia"
+      ],
+      "selectivity": "moderate",
+      "note": "A humanities/social-sciences route centred on language and current affairs."
+    },
+    "data-analyst": {
+      "modality": "Ciencias",
+      "subjects": [
+        "Matemáticas II",
+        "Física / Informática"
+      ],
+      "selectivity": "high",
+      "note": "Heavily mathematical; data-science nota de corte is high and rising."
+    }
+  }
 }
