@@ -1,13 +1,13 @@
-// src/app/api/careers/[id]/voices/route.ts
+// src/app/api/careers/[slug]/voices/route.ts
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getCareerById } from "@/lib/career-pathways";
 import { buildVoicesResponse } from "@/lib/career-voices/public";
 
-/** GET /api/careers/[id]/voices — moderated real-human stories + contributions for a career. */
-export async function GET(_request: Request, props: { params: Promise<{ id: string }> }) {
-  const { id } = await props.params;
-  const career = getCareerById(id);
+/** GET /api/careers/[slug]/voices — moderated real-human stories + contributions for a career. */
+export async function GET(_request: Request, props: { params: Promise<{ slug: string }> }) {
+  const { slug } = await props.params;
+  const career = getCareerById(slug);
   if (!career) {
     return NextResponse.json({ stories: [], contributions: [] });
   }
