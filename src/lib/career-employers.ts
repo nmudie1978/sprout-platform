@@ -152,3 +152,60 @@ export function getTopEmployers(careerId: string): Employer[] {
 export function hasTopEmployers(careerId: string): boolean {
   return (CAREER_EMPLOYERS[careerId]?.length ?? 0) > 0;
 }
+
+/**
+ * Representative Norwegian employers per career *category* — a
+ * last-resort fallback so the "A Typical Day" card can name a real,
+ * realistic place to work even for careers that aren't in the
+ * hand-curated CAREER_EMPLOYERS list above.
+ *
+ * These are well-known, sector-emblematic Norwegian employers (a mix
+ * of private companies and public institutions). They're illustrative
+ * ("somewhere like X or Y"), not an exhaustive or ranked list — the
+ * full, linked list lives in the "Where People Work" section for the
+ * careers that have curated CAREER_EMPLOYERS data.
+ *
+ * Keyed by the CareerCategory string values from career-pathways.ts.
+ */
+const CATEGORY_REPRESENTATIVE_EMPLOYERS: Record<string, string[]> = {
+  HEALTHCARE_LIFE_SCIENCES: ["Oslo universitetssykehus", "Helse Bergen"],
+  EDUCATION_TRAINING: ["Oslo kommune", "Universitetet i Oslo"],
+  TECHNOLOGY_IT: ["Bekk", "Visma", "Schibsted"],
+  ARTIFICIAL_INTELLIGENCE: ["Cognite", "Telenor"],
+  BUSINESS_MANAGEMENT: ["DNB", "Equinor"],
+  FINANCE_BANKING: ["DNB", "Storebrand"],
+  SALES_MARKETING: ["Schibsted", "Orkla"],
+  MANUFACTURING_ENGINEERING: ["Equinor", "Aker Solutions", "Kongsberg Gruppen"],
+  LOGISTICS_TRANSPORT: ["Posten Bring", "DB Schenker"],
+  HOSPITALITY_TOURISM: ["Scandic Hotels", "Strawberry (Nordic Choice)"],
+  TELECOMMUNICATIONS: ["Telenor", "Telia"],
+  CREATIVE_MEDIA: ["NRK", "Schibsted"],
+  PUBLIC_SERVICE_SAFETY: ["NAV", "Politiet"],
+  MILITARY_DEFENCE: ["Forsvaret", "Kongsberg Defence & Aerospace"],
+  SPORT_FITNESS: ["SATS", "Olympiatoppen"],
+  REAL_ESTATE_PROPERTY: ["OBOS", "Olav Thon Gruppen"],
+  SOCIAL_CARE_COMMUNITY: ["NAV", "Røde Kors"],
+  CONSTRUCTION_TRADES: ["Veidekke", "Skanska"],
+};
+
+/**
+ * One or two realistic example employer *names* for a career, for the
+ * inline "Typically somewhere like X or Y" hint on the Typical Day card.
+ *
+ * Prefers the curated CAREER_EMPLOYERS list (most specific) and falls
+ * back to category-level representatives. Returns [] when neither the
+ * career nor its category is known, so the caller can hide the hint.
+ */
+export function getRepresentativeEmployers(
+  careerId: string,
+  category?: string | null,
+): string[] {
+  const curated = getTopEmployers(careerId);
+  if (curated.length > 0) {
+    return curated.slice(0, 2).map((e) => e.name);
+  }
+  if (category && CATEGORY_REPRESENTATIVE_EMPLOYERS[category]) {
+    return CATEGORY_REPRESENTATIVE_EMPLOYERS[category].slice(0, 2);
+  }
+  return [];
+}

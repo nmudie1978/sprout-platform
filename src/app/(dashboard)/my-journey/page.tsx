@@ -64,7 +64,7 @@ import { getRoutesForCareer } from '@/lib/education/routes';
 import { CareerMythBuster } from '@/components/journey/career-myth-buster';
 import { TopEmployers } from '@/components/journey/top-employers';
 import { SalaryProgressionChart } from '@/components/journey/salary-progression';
-import { hasTopEmployers } from '@/lib/career-employers';
+import { hasTopEmployers, getRepresentativeEmployers } from '@/lib/career-employers';
 import { hasMyths } from '@/lib/career-myths';
 import { ConfidenceTracker } from '@/components/journey/confidence-tracker';
 // Day simulation removed per user request
@@ -994,6 +994,10 @@ function UnderstandTab({
 
   const details = detailsData?.details ?? null;
   const progression = detailsData?.progression ?? null;
+  // One or two realistic example employers for the Typical Day card, so
+  // the day feels grounded in a real place (e.g. a telecoms engineer at
+  // Telenor). Prefers curated employers, falls back to category-level.
+  const exampleEmployers = career?.id ? getRepresentativeEmployers(career.id, detailsData?.category) : [];
   const toggle = (id: string) => setOpenSection(prev => prev === id ? null : id);
 
   const allCourses = [
@@ -1201,6 +1205,18 @@ function UnderstandTab({
               <div className="flex items-center gap-2.5 mt-3 px-3 py-2 rounded-control bg-muted/[0.06] border border-border/15">
                 <MapPin className="h-3 w-3 text-muted-foreground/40 shrink-0" />
                 <span className="text-xs text-muted-foreground/55 leading-relaxed">{details.typicalDay.environment}</span>
+              </div>
+            )}
+
+            {/* Example employer — grounds the day in a real Norwegian
+                place to work (e.g. a telecoms engineer at Telenor). */}
+            {exampleEmployers.length > 0 && (
+              <div className="flex items-center gap-2.5 mt-2 px-3 py-2 rounded-control bg-muted/[0.06] border border-border/15">
+                <Building2 className="h-3 w-3 text-muted-foreground/40 shrink-0" />
+                <span className="text-xs text-muted-foreground/55 leading-relaxed">
+                  Typically somewhere like{' '}
+                  <span className="text-foreground/70 font-medium">{exampleEmployers.join(' or ')}</span>
+                </span>
               </div>
             )}
           </div>
