@@ -14,11 +14,12 @@ const STAGE_LABEL = ["Not started", "Discover", "Understand", "Complete"];
  * full standings. Calm, no score — just a nudge towards a decision.
  */
 export function WhereYoureLeaning() {
-  const { inputs, userId } = useDecisionInputs();
+  const { inputs, userId, isLoading } = useDecisionInputs();
   const { board } = useDecisionBoard();
 
-  // Don't render for signed-out users or before any journeys load.
-  if (!userId || inputs.length === 0) return null;
+  // Don't render for signed-out users, while loading, or until there are at
+  // least 2 explored careers to weigh up (matches the board's own threshold).
+  if (!userId || isLoading || inputs.length < 2) return null;
 
   const { ranked, leader } = buildDecisionBoard(inputs, board);
 

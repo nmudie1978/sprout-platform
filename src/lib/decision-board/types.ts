@@ -14,7 +14,7 @@ export interface DecisionInput {
   title: string;
   emoji: string;
   interest: InterestLevel | null;
-  /** 0 Discover · 1 Understand · 2 Clarity · 3 Complete — highest reached. */
+  /** 0 none · 1 Discover · 2 Understand · 3 Complete — highest reached. */
   progress: number;
   /** ms epoch of the journey's last update; final tiebreak. */
   updatedAt: number;

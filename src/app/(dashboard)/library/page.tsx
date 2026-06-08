@@ -3,15 +3,18 @@
 /**
  * MY LIBRARY
  *
- * A calm, tabbed home for everything a user has saved or written:
+ * A calm, tabbed home for the careers a user is weighing up, plus everything
+ * they have saved or written:
+ *  - Decision Board  — ranked "league table" of explored careers (server-backed)
+ *  - Exploring       — explored journeys, grouped by sector (server-backed)
  *  - Saved careers   — hearted "curiosities" (localStorage, device-local)
- *  - Compared        — saved career comparisons (localStorage, device-local)
  *  - Reflections     — My Journey reflections (localStorage, device-local)
  *
  * This is the "See all →" destination behind the dashboard preview cards.
- * Tab state lives in `?tab=` so the dashboard can deep-link to a section.
- * All three tabs read localStorage, so the page is a client component
- * behind a `mounted` guard to avoid hydration mismatch.
+ * Tab state lives in `?tab=` so the dashboard can deep-link to a section
+ * (the Decision Board is the default tab). Some tabs read localStorage, so the
+ * page is a client component behind a `mounted` guard to avoid hydration
+ * mismatch.
  */
 
 import { useEffect, useState } from "react";

@@ -19,15 +19,16 @@ function leadReason(leader: DecisionRow): string {
 }
 
 export function DecisionBoardTab() {
-  const { inputs, reflections, userId } = useDecisionInputs();
+  const { inputs, reflections, userId, isLoading } = useDecisionInputs();
   const { board, save } = useDecisionBoard();
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
   const [dragId, setDragId] = useState<string | null>(null);
 
   const { ranked, ruledOut, leader } = buildDecisionBoard(inputs, board);
 
-  // Fewer than 2 explored careers — nothing to weigh up yet.
-  if (userId && inputs.length < 2) {
+  // Fewer than 2 explored careers — nothing to weigh up yet. Wait for the
+  // journeys to load first so we don't flash the empty state at returning users.
+  if (userId && !isLoading && inputs.length < 2) {
     return (
       <div className="rounded-card border border-border/60 bg-muted/10 px-4 py-8 text-center text-sm text-muted-foreground/70">
         Explore a couple of careers and they&apos;ll start stacking up here — ranked by how
@@ -73,6 +74,9 @@ export function DecisionBoardTab() {
       ruledOut: [...board.ruledOut, id],
     });
 
+  // Restoring re-adds the career to the standings; it returns via auto-rank
+  // (it isn't put back into the manual `order`), so a restored career lands
+  // wherever its interest/progress place it — a deliberate, simple choice.
   const restore = (id: string) =>
     save({ order: board.order, ruledOut: board.ruledOut.filter((x) => x !== id) });
 
@@ -84,7 +88,8 @@ export function DecisionBoardTab() {
       {leader && (
         <div className="rounded-card border border-primary/30 bg-primary/5 px-4 py-3">
           <p className="text-sm text-foreground/90">
-            You&apos;ve explored {inputs.length} careers — you&apos;re leaning{" "}
+            You&apos;ve explored {ranked.length} {ranked.length === 1 ? "career" : "careers"} —
+            you&apos;re leaning{" "}
             <span className="font-semibold">
               {leader.emoji} {leader.title}
             </span>

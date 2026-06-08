@@ -9,6 +9,7 @@ import {
   isClarityActive,
   isUnderstandConfirmed,
   isDiscoverConfirmed,
+  isJourneySnapshotWorthy,
 } from "@/lib/journey/lens-progress";
 import { readLocalJourneyReflections } from "@/lib/library/tabs";
 import type { DecisionInput } from "@/lib/decision-board/types";
@@ -54,7 +55,12 @@ export function useDecisionInputs() {
     },
   });
 
-  const goals = goalsData?.goals ?? [];
+  // Explored journeys only — the careers the user has actually engaged with
+  // (same gate the dashboard's "My Explored Journeys" uses). A goal the user
+  // merely set but never explored shouldn't appear on the board.
+  const goals = (goalsData?.goals ?? []).filter((g) =>
+    isJourneySnapshotWorthy(g.goalTitle),
+  );
   const serverInterest = interestData?.interests ?? {};
 
   // Local My Journey reflections, grouped by careerSlug → labelled lines.
