@@ -361,6 +361,11 @@ model YouthProfile {
   generatedTimeline  Json? // Cached AI-generated career timeline
   foundationCardData Json? // User-editable "Your Foundation" step — persists across goal changes
 
+  // Decision Board state: { order: string[], ruledOut: string[] } of career ids.
+  // order = the user's manual ranking (empty ⇒ use the auto rank); ruledOut =
+  // careers relegated to "Out of the running".
+  decisionBoard Json?
+
   // ============================================
   // JOURNEY STATE MACHINE FIELDS
   // ============================================
