@@ -61,6 +61,38 @@ export function hasEducationData(country?: string | null): boolean {
   return !!country && (COUNTRIES_WITH_EDUCATION_DATA as readonly string[]).includes(country);
 }
 
+/**
+ * Spain-specific school readiness for a career. Unlike the Norwegian
+ * model (subjects + 1–6 grade), the Spanish system is shaped by the
+ * Bachillerato modality (branch) and the EvAU (Selectividad) — so this
+ * is a small, hand-curated factual record, not a derived score. No
+ * nota de corte numbers (they change yearly); selectivity is qualitative.
+ */
+export interface SpanishReadiness {
+  /** Recommended Bachillerato modality (branch). */
+  modality: string;
+  /** Subjects that matter most for entry / EvAU weighting. */
+  subjects: string[];
+  /** Qualitative entry selectivity. */
+  selectivity: 'low' | 'moderate' | 'high' | 'very-high';
+  /** Honest one-line context. */
+  note?: string;
+}
+
+const esReadiness =
+  (esSupplement as { readiness?: Record<string, SpanishReadiness> }).readiness ?? {};
+
+/**
+ * Spanish readiness for a career, resolving aliases/specialisations the
+ * same way as programmes (e.g. dermatologist → doctor). Returns null
+ * when we have no Spanish readiness data for the career.
+ */
+export function getSpanishReadiness(careerIdOrTitle: string): SpanishReadiness | null {
+  if (esReadiness[careerIdOrTitle]) return esReadiness[careerIdOrTitle];
+  const id = resolveCareerId(careerIdOrTitle);
+  return (id && esReadiness[id]) || null;
+}
+
 export type ProgrammeType =
   | 'bachelor'
   | 'master'
