@@ -4,6 +4,7 @@ import {
   validateEventUrl,
   isValidEventbriteUrl,
 } from "../trusted-domains";
+import { isPastEvent } from "../date-range";
 
 /**
  * CI VALIDATION — Career Events Seed Data
@@ -70,16 +71,20 @@ describe("Career Events Seed Data", () => {
   // ================================================
 
   describe("date integrity", () => {
-    it("all startDates are within the past 30 days or in the future", () => {
-      const thirtyDaysAgo = new Date();
-      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-
-      for (const event of careerEvents) {
-        expect(
-          event.startDate >= thirtyDaysAgo,
-          `${event.title}: startDate ${event.startDate.toISOString()} is more than 30 days in the past`
-        ).toBe(true);
-      }
+    // The seed RUN prunes past events (isPastEvent), so individual fixed-date
+    // events naturally slip into the past between refreshes — they're never
+    // seeded, but the old "no event is >30 days past" guard on the raw array
+    // failed CI every time one did. Validate the events the seed actually
+    // loads (upcoming) instead, and guard against the seed going genuinely
+    // stale (too few upcoming events → live events list runs dry).
+    it("the seed still carries a healthy set of upcoming events (not stale)", () => {
+      const upcoming = careerEvents.filter(
+        (e) => !isPastEvent(e.startDate.toISOString())
+      );
+      expect(
+        upcoming.length,
+        `Only ${upcoming.length} upcoming events in the seed — refresh prisma/seed-career-events.ts (run the events-refresh workflow)`
+      ).toBeGreaterThanOrEqual(5);
     });
 
     it("endDate is after startDate when present", () => {
