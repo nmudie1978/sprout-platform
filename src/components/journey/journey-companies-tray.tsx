@@ -2,8 +2,8 @@
 
 /**
  * JourneyCompaniesTray — Right-edge slide-in panel listing real
- * Norwegian companies and institutions where this career is common,
- * each linking to its careers page (or main site).
+ * Companies and institutions where this career is common (localised to
+ * the viewer's country), each linking to its careers page (or main site).
  *
  * Mirrors JourneyReflectionsTray's vertical-tab + hover/click pattern
  * so the two trays feel like the same family of UI. Where Reflections
@@ -163,7 +163,7 @@ export function JourneyCompaniesTray({
               Where you could work
             </h3>
             <p className="text-[10px] text-muted-foreground/60 mt-0.5">
-              Norwegian companies and institutions
+              Companies and institutions
               {careerTitle ? ` for ${careerTitle}` : ""} — tap to open their
               careers page.
             </p>

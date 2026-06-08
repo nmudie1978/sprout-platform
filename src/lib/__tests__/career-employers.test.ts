@@ -6,26 +6,44 @@ import {
   employersApplyTo,
 } from "../career-employers";
 
-describe("country gate (employer data is Norwegian)", () => {
-  it("employersApplyTo: true for Norway / NO / unknown, false otherwise", () => {
-    for (const c of ["Norway", "NO", "no", "Norge"]) expect(employersApplyTo(c)).toBe(true);
+describe("country-localised employers", () => {
+  it("employersApplyTo: true for Norway/Spain/unknown, false for countries without data", () => {
+    for (const c of ["Norway", "NO", "no", "Norge", "Spain", "ES", "España"]) expect(employersApplyTo(c)).toBe(true);
     expect(employersApplyTo(undefined)).toBe(true); // app default is Norway
     expect(employersApplyTo(null)).toBe(true);
-    for (const c of ["Spain", "ES", "Sweden", "SE", "Italy"]) expect(employersApplyTo(c)).toBe(false);
+    for (const c of ["Sweden", "SE", "Italy", "IT"]) expect(employersApplyTo(c)).toBe(false);
   });
 
-  it("suppresses employers for a non-Norway country", () => {
-    // software-developer has a curated Norwegian list, but a Spain user
-    // must not see it.
-    expect(getCareerEmployers("software-developer", "TECHNOLOGY_IT", "Spain")).toEqual([]);
-    expect(hasCareerEmployers("software-developer", "TECHNOLOGY_IT", "ES")).toBe(false);
-    expect(getRepresentativeEmployers("software-developer", "TECHNOLOGY_IT", "Spain")).toEqual([]);
+  it("returns Spanish employers (not Norwegian) for a Spain user", () => {
+    const es = getCareerEmployers("software-developer", "TECHNOLOGY_IT", "Spain");
+    expect(es.length).toBeGreaterThan(0);
+    // must be Spanish companies, not the curated Norwegian list (Bekk/Visma)
+    const names = es.map((e) => e.name).join(" ");
+    expect(names).toMatch(/Indra|Telefónica|Amadeus|NTT/);
+    expect(names).not.toMatch(/Bekk|Visma|Telenor/);
+    expect(hasCareerEmployers("software-developer", "TECHNOLOGY_IT", "ES")).toBe(true);
   });
 
-  it("still shows employers for Norway and when country is unset", () => {
-    expect(getCareerEmployers("software-developer", "TECHNOLOGY_IT", "Norway").length).toBeGreaterThan(0);
+  it("returns Norwegian employers for Norway / unset country", () => {
+    expect(getCareerEmployers("software-developer", "TECHNOLOGY_IT", "Norway")[0].name).toBe("Bekk");
     expect(getCareerEmployers("software-developer", "TECHNOLOGY_IT").length).toBeGreaterThan(0);
     expect(hasCareerEmployers("software-developer", "TECHNOLOGY_IT", "NO")).toBe(true);
+  });
+
+  it("returns [] for a country we have no employer data for", () => {
+    expect(getCareerEmployers("software-developer", "TECHNOLOGY_IT", "Sweden")).toEqual([]);
+    expect(hasCareerEmployers("doctor", "HEALTHCARE_LIFE_SCIENCES", "Italy")).toBe(false);
+  });
+
+  it("every Spanish sector employer has a valid https link", () => {
+    for (const cat of ["HEALTHCARE_LIFE_SCIENCES", "FINANCE_BANKING", "CONSTRUCTION_TRADES", "TELECOMMUNICATIONS"]) {
+      const es = getCareerEmployers("x", cat, "ES");
+      expect(es.length).toBeGreaterThan(0);
+      for (const e of es) {
+        expect(() => new URL(e.careersUrl as string)).not.toThrow();
+        expect(e.careersUrl as string).toMatch(/^https:\/\//);
+      }
+    }
   });
 });
 

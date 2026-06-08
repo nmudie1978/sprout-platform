@@ -1241,7 +1241,7 @@ function UnderstandTab({
           known. ── */}
       {career?.id && hasCareerEmployers(career.id, detailsData?.category, educationCountry) && (
         <SectionCard>
-          <SectionHeader icon={Building2} title="Where People Work" tooltip="Norwegian companies and institutions where this kind of role is common — with links to their careers pages." collapsed={uCollapsed('u-salary')} onToggle={() => uToggle('u-salary')} />
+          <SectionHeader icon={Building2} title="Where People Work" tooltip="Companies and institutions in your country where this kind of role is common — with links to their careers pages." collapsed={uCollapsed('u-salary')} onToggle={() => uToggle('u-salary')} />
           {!uCollapsed('u-salary') && (
             <div className="p-4 sm:p-5">
               <TopEmployers careerId={career.id} category={detailsData?.category} country={educationCountry} />

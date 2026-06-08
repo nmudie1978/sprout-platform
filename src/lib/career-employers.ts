@@ -281,37 +281,164 @@ const CATEGORY_EMPLOYERS: Record<string, Employer[]> = {
 };
 
 /**
- * Whether the employer data applies to this viewer's country. ALL of
- * CAREER_EMPLOYERS and CATEGORY_EMPLOYERS are Norwegian companies, so we
- * only surface them to Norwegian users — a Spain user must not see
- * Telenor/DNB. Unknown country defaults to Norway (the app's default),
- * so existing behaviour is unchanged. Accepts the country name
- * ("Norway") or ISO code ("NO").
+ * Sector-level Spanish employers — major, well-known Spanish companies
+ * and institutions per CareerCategory. Mirrors CATEGORY_EMPLOYERS so a
+ * Spain user sees Santander / Telefónica / Inditex rather than Telenor.
+ * Links use each company's stable main site (no 404-prone career-page
+ * slugs). Keyed by the CareerCategory string values.
+ */
+const CATEGORY_EMPLOYERS_ES: Record<string, Employer[]> = {
+  HEALTHCARE_LIFE_SCIENCES: [
+    { name: 'Quirónsalud', industry: 'Private Healthcare', size: '40,000+', careersUrl: 'https://www.quironsalud.es' },
+    { name: 'Sanitas', industry: 'Healthcare / Insurance', size: '11,000+', careersUrl: 'https://www.sanitas.es' },
+    { name: 'HM Hospitales', industry: 'Private Healthcare', size: '6,000+', careersUrl: 'https://www.hmhospitales.com' },
+    { name: 'Servicio Madrileño de Salud (SERMAS)', industry: 'Public Health', size: '80,000+', careersUrl: 'https://www.comunidad.madrid/servicios/salud' },
+  ],
+  EDUCATION_TRAINING: [
+    { name: 'Comunidad de Madrid (Educación)', industry: 'Public Education', size: '100,000+', careersUrl: 'https://www.comunidad.madrid/servicios/educacion' },
+    { name: 'Universidad Complutense de Madrid', industry: 'Higher Education', size: '7,000+', careersUrl: 'https://www.ucm.es' },
+    { name: 'Grupo SM', industry: 'Education Publishing', size: '2,000+', careersUrl: 'https://www.grupo-sm.com' },
+    { name: 'Santillana', industry: 'Education Publishing', size: '2,000+', careersUrl: 'https://www.santillana.com' },
+  ],
+  TECHNOLOGY_IT: [
+    { name: 'Indra / Minsait', industry: 'IT Consulting', size: '57,000+', careersUrl: 'https://www.indracompany.com' },
+    { name: 'Telefónica Tech', industry: 'Technology', size: '6,000+', careersUrl: 'https://telefonicatech.com' },
+    { name: 'Amadeus', industry: 'Travel Technology', size: '19,000+', careersUrl: 'https://amadeus.com' },
+    { name: 'NTT Data Europe', industry: 'IT Services', size: '15,000+', careersUrl: 'https://es.nttdata.com' },
+  ],
+  ARTIFICIAL_INTELLIGENCE: [
+    { name: 'Telefónica Tech', industry: 'AI / Technology', size: '6,000+', careersUrl: 'https://telefonicatech.com' },
+    { name: 'Indra / Minsait', industry: 'AI / Consulting', size: '57,000+', careersUrl: 'https://www.indracompany.com' },
+    { name: 'BBVA', industry: 'Banking (AI Factory)', size: '120,000+', careersUrl: 'https://www.bbva.com' },
+    { name: 'Amadeus', industry: 'Travel Technology', size: '19,000+', careersUrl: 'https://amadeus.com' },
+  ],
+  BUSINESS_MANAGEMENT: [
+    { name: 'Inditex', industry: 'Retail', size: '160,000+', careersUrl: 'https://www.inditex.com' },
+    { name: 'BBVA', industry: 'Banking', size: '120,000+', careersUrl: 'https://www.bbva.com' },
+    { name: 'Iberdrola', industry: 'Energy', size: '40,000+', careersUrl: 'https://www.iberdrola.com' },
+    { name: 'Telefónica', industry: 'Telecom', size: '100,000+', careersUrl: 'https://www.telefonica.com' },
+  ],
+  FINANCE_BANKING: [
+    { name: 'Banco Santander', industry: 'Banking', size: '210,000+', careersUrl: 'https://www.santander.com' },
+    { name: 'BBVA', industry: 'Banking', size: '120,000+', careersUrl: 'https://www.bbva.com' },
+    { name: 'CaixaBank', industry: 'Banking', size: '45,000+', careersUrl: 'https://www.caixabank.com' },
+    { name: 'Mapfre', industry: 'Insurance', size: '30,000+', careersUrl: 'https://www.mapfre.com' },
+  ],
+  SALES_MARKETING: [
+    { name: 'Inditex', industry: 'Retail', size: '160,000+', careersUrl: 'https://www.inditex.com' },
+    { name: 'El Corte Inglés', industry: 'Retail', size: '80,000+', careersUrl: 'https://www.elcorteingles.es' },
+    { name: 'Telefónica', industry: 'Telecom', size: '100,000+', careersUrl: 'https://www.telefonica.com' },
+    { name: 'Mahou San Miguel', industry: 'Consumer Goods', size: '4,000+', careersUrl: 'https://www.mahou-sanmiguel.com' },
+  ],
+  MANUFACTURING_ENGINEERING: [
+    { name: 'Iberdrola', industry: 'Energy', size: '40,000+', careersUrl: 'https://www.iberdrola.com' },
+    { name: 'Repsol', industry: 'Energy', size: '24,000+', careersUrl: 'https://www.repsol.com' },
+    { name: 'Acciona', industry: 'Infrastructure / Energy', size: '40,000+', careersUrl: 'https://www.acciona.com' },
+    { name: 'Airbus España', industry: 'Aerospace', size: '12,000+', careersUrl: 'https://www.airbus.com' },
+  ],
+  LOGISTICS_TRANSPORT: [
+    { name: 'Renfe', industry: 'Rail', size: '15,000+', careersUrl: 'https://www.renfe.com' },
+    { name: 'Correos', industry: 'Postal / Logistics', size: '50,000+', careersUrl: 'https://www.correos.es' },
+    { name: 'SEUR', industry: 'Courier', size: '7,000+', careersUrl: 'https://www.seur.com' },
+    { name: 'DHL España', industry: 'Logistics', size: '5,000+', careersUrl: 'https://www.dhl.com/es-es' },
+  ],
+  HOSPITALITY_TOURISM: [
+    { name: 'Meliá Hotels International', industry: 'Hotels', size: '12,000+', careersUrl: 'https://www.melia.com' },
+    { name: 'NH Hotel Group', industry: 'Hotels', size: '14,000+', careersUrl: 'https://www.nh-hotels.com' },
+    { name: 'Iberia', industry: 'Aviation', size: '16,000+', careersUrl: 'https://www.iberia.com' },
+    { name: 'RIU Hotels & Resorts', industry: 'Hotels', size: '30,000+', careersUrl: 'https://www.riu.com' },
+  ],
+  TELECOMMUNICATIONS: [
+    { name: 'Telefónica / Movistar', industry: 'Telecom', size: '100,000+', careersUrl: 'https://www.telefonica.com' },
+    { name: 'Vodafone España', industry: 'Telecom', size: '4,000+', careersUrl: 'https://www.vodafone.es' },
+    { name: 'Orange España', industry: 'Telecom', size: '6,000+', careersUrl: 'https://www.orange.es' },
+    { name: 'MásMóvil', industry: 'Telecom', size: '2,000+', careersUrl: 'https://www.masmovil.es' },
+  ],
+  CREATIVE_MEDIA: [
+    { name: 'RTVE', industry: 'Public Broadcasting', size: '6,000+', careersUrl: 'https://www.rtve.es' },
+    { name: 'Atresmedia', industry: 'Media', size: '2,000+', careersUrl: 'https://www.atresmediacorporacion.com' },
+    { name: 'Mediaset España', industry: 'Media', size: '1,000+', careersUrl: 'https://www.mediaset.es' },
+    { name: 'Grupo PRISA', industry: 'Media / Publishing', size: '8,000+', careersUrl: 'https://www.prisa.com' },
+  ],
+  PUBLIC_SERVICE_SAFETY: [
+    { name: 'Administración General del Estado', industry: 'Public Sector', size: '500,000+', careersUrl: 'https://www.administracion.gob.es' },
+    { name: 'Policía Nacional', industry: 'Police', size: '65,000+', careersUrl: 'https://www.policia.es' },
+    { name: 'Guardia Civil', industry: 'Police', size: '75,000+', careersUrl: 'https://www.guardiacivil.es' },
+    { name: 'Ayuntamiento de Madrid', industry: 'Municipal', size: '30,000+', careersUrl: 'https://www.madrid.es' },
+  ],
+  MILITARY_DEFENCE: [
+    { name: 'Fuerzas Armadas (Min. de Defensa)', industry: 'Armed Forces', size: '120,000+', careersUrl: 'https://www.defensa.gob.es' },
+    { name: 'Navantia', industry: 'Naval Defence', size: '4,000+', careersUrl: 'https://www.navantia.es' },
+    { name: 'Indra (Defence)', industry: 'Defence Technology', size: '57,000+', careersUrl: 'https://www.indracompany.com' },
+    { name: 'Airbus Defence and Space', industry: 'Defence / Aerospace', size: '12,000+', careersUrl: 'https://www.airbus.com' },
+  ],
+  SPORT_FITNESS: [
+    { name: 'Consejo Superior de Deportes', industry: 'Public Sport', size: '500+', careersUrl: 'https://www.csd.gob.es' },
+    { name: 'Real Federación Española de Fútbol', industry: 'Football', size: '500+', careersUrl: 'https://www.rfef.es' },
+    { name: 'GO fit', industry: 'Fitness', size: '3,000+', careersUrl: 'https://www.go-fit.es' },
+    { name: 'VivaGym', industry: 'Fitness', size: '2,000+', careersUrl: 'https://www.vivagym.com/es-es/' },
+  ],
+  REAL_ESTATE_PROPERTY: [
+    { name: 'Neinor Homes', industry: 'Property Developer', size: '600+', careersUrl: 'https://www.neinorhomes.com' },
+    { name: 'Metrovacesa', industry: 'Property Developer', size: '300+', careersUrl: 'https://www.metrovacesa.com' },
+    { name: 'Aedas Homes', industry: 'Property Developer', size: '400+', careersUrl: 'https://www.aedashomes.com' },
+    { name: 'Solvia', industry: 'Real Estate Services', size: '1,000+', careersUrl: 'https://www.solvia.es' },
+  ],
+  SOCIAL_CARE_COMMUNITY: [
+    { name: 'Cruz Roja Española', industry: 'Humanitarian', size: '12,000+', careersUrl: 'https://www.cruzroja.es' },
+    { name: 'Cáritas', industry: 'Social Care', size: '4,000+', careersUrl: 'https://www.caritas.es' },
+    { name: 'Fundación ONCE', industry: 'Disability / Social', size: '1,400+', careersUrl: 'https://www.fundaciononce.es' },
+    { name: 'Ayuntamiento de Madrid (Servicios Sociales)', industry: 'Municipal Care', size: '30,000+', careersUrl: 'https://www.madrid.es' },
+  ],
+  CONSTRUCTION_TRADES: [
+    { name: 'ACS Group', industry: 'Construction', size: '120,000+', careersUrl: 'https://www.grupoacs.com' },
+    { name: 'Ferrovial', industry: 'Construction / Infrastructure', size: '24,000+', careersUrl: 'https://www.ferrovial.com' },
+    { name: 'Acciona', industry: 'Construction', size: '40,000+', careersUrl: 'https://www.acciona.com' },
+    { name: 'FCC', industry: 'Construction / Services', size: '60,000+', careersUrl: 'https://www.fcc.es' },
+  ],
+};
+
+/** Which curated employer dataset a country maps to: Norway (incl.
+ *  unknown → app default) or Spain. Others return null = no data. */
+function employerCountry(country?: string | null): 'NO' | 'ES' | null {
+  if (!country) return 'NO'; // unknown → app default is Norway
+  const c = country.trim().toLowerCase();
+  if (c === 'no' || c === 'norway' || c === 'norge') return 'NO';
+  if (c === 'es' || c === 'spain' || c === 'españa' || c === 'espana') return 'ES';
+  return null;
+}
+
+/**
+ * Whether we have employer data for this viewer's country (Norway or
+ * Spain; unknown defaults to Norway). False for e.g. Sweden/Italy until
+ * we curate them.
  */
 export function employersApplyTo(country?: string | null): boolean {
-  if (!country) return true; // unknown → app default is Norway
-  const c = country.trim().toLowerCase();
-  return c === 'no' || c === 'norway' || c === 'norge';
+  return employerCountry(country) !== null;
 }
 
 /**
  * Full list of realistic employers for a career, for the "Where People
- * Work" list and the "Companies" side tab. Prefers the hand-curated
- * CAREER_EMPLOYERS list (most specific, ranked), and falls back to the
- * career's *sector* employers so every career with a known category
- * gets a real, linked set of places to work. Returns [] when neither
- * the career nor its category is known, or when the viewer's country is
- * not one the (Norwegian) employer data applies to.
+ * Work" list and the "Companies" side tab — localised to the viewer's
+ * country. Norway: curated CAREER_EMPLOYERS → sector fallback. Spain:
+ * sector-level Spanish employers. Returns [] for countries without
+ * data, or when neither the career nor its category is known.
  */
 export function getCareerEmployers(
   careerId: string,
   category?: string | null,
   country?: string | null,
 ): Employer[] {
-  if (!employersApplyTo(country)) return [];
-  const curated = getTopEmployers(careerId);
-  if (curated.length > 0) return curated;
-  if (category && CATEGORY_EMPLOYERS[category]) return CATEGORY_EMPLOYERS[category];
+  const ec = employerCountry(country);
+  if (ec === 'ES') {
+    return (category && CATEGORY_EMPLOYERS_ES[category]) ? CATEGORY_EMPLOYERS_ES[category] : [];
+  }
+  if (ec === 'NO') {
+    const curated = getTopEmployers(careerId);
+    if (curated.length > 0) return curated;
+    if (category && CATEGORY_EMPLOYERS[category]) return CATEGORY_EMPLOYERS[category];
+    return [];
+  }
   return [];
 }
 
