@@ -8,10 +8,13 @@
 import { useMemo, useRef } from 'react';
 import { Building2, ExternalLink, ChevronLeft, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { getTopEmployers, type Employer } from '@/lib/career-employers';
+import { getCareerEmployers, type Employer } from '@/lib/career-employers';
 
 interface TopEmployersProps {
   careerId: string | null;
+  /** Career category — enables the sector-level employer fallback for
+   *  careers without a hand-curated list. */
+  category?: string | null;
 }
 
 function EmployerCard({ emp }: { emp: Employer }) {
@@ -58,8 +61,11 @@ function EmployerCard({ emp }: { emp: Employer }) {
   return content;
 }
 
-export function TopEmployers({ careerId }: TopEmployersProps) {
-  const employers = useMemo(() => (careerId ? getTopEmployers(careerId) : []), [careerId]);
+export function TopEmployers({ careerId, category }: TopEmployersProps) {
+  const employers = useMemo(
+    () => (careerId ? getCareerEmployers(careerId, category) : []),
+    [careerId, category],
+  );
   const scrollRef = useRef<HTMLDivElement>(null);
 
   if (employers.length === 0) return null;

@@ -155,57 +155,162 @@ export function hasTopEmployers(careerId: string): boolean {
 
 /**
  * Representative Norwegian employers per career *category* — a
- * last-resort fallback so the "A Typical Day" card can name a real,
- * realistic place to work even for careers that aren't in the
- * hand-curated CAREER_EMPLOYERS list above.
+ * sector-level fallback so careers without a hand-curated
+ * CAREER_EMPLOYERS list still get a realistic, linked set of places
+ * to work (used by both the "Where People Work" list and the
+ * "Companies" side tab, and the "A Typical Day" example line).
  *
  * These are well-known, sector-emblematic Norwegian employers (a mix
- * of private companies and public institutions). They're illustrative
- * ("somewhere like X or Y"), not an exhaustive or ranked list — the
- * full, linked list lives in the "Where People Work" section for the
- * careers that have curated CAREER_EMPLOYERS data.
- *
- * Keyed by the CareerCategory string values from career-pathways.ts.
+ * of private companies and public institutions). Each links to its
+ * careers page where we're confident of the exact path, otherwise to
+ * the company's main site (always a working link — never a guess that
+ * 404s). Keyed by the CareerCategory string values from career-pathways.ts.
  */
-const CATEGORY_REPRESENTATIVE_EMPLOYERS: Record<string, string[]> = {
-  HEALTHCARE_LIFE_SCIENCES: ["Oslo universitetssykehus", "Helse Bergen"],
-  EDUCATION_TRAINING: ["Oslo kommune", "Universitetet i Oslo"],
-  TECHNOLOGY_IT: ["Bekk", "Visma", "Schibsted"],
-  ARTIFICIAL_INTELLIGENCE: ["Cognite", "Telenor"],
-  BUSINESS_MANAGEMENT: ["DNB", "Equinor"],
-  FINANCE_BANKING: ["DNB", "Storebrand"],
-  SALES_MARKETING: ["Schibsted", "Orkla"],
-  MANUFACTURING_ENGINEERING: ["Equinor", "Aker Solutions", "Kongsberg Gruppen"],
-  LOGISTICS_TRANSPORT: ["Posten Bring", "DB Schenker"],
-  HOSPITALITY_TOURISM: ["Scandic Hotels", "Strawberry (Nordic Choice)"],
-  TELECOMMUNICATIONS: ["Telenor", "Telia"],
-  CREATIVE_MEDIA: ["NRK", "Schibsted"],
-  PUBLIC_SERVICE_SAFETY: ["NAV", "Politiet"],
-  MILITARY_DEFENCE: ["Forsvaret", "Kongsberg Defence & Aerospace"],
-  SPORT_FITNESS: ["SATS", "Olympiatoppen"],
-  REAL_ESTATE_PROPERTY: ["OBOS", "Olav Thon Gruppen"],
-  SOCIAL_CARE_COMMUNITY: ["NAV", "Røde Kors"],
-  CONSTRUCTION_TRADES: ["Veidekke", "Skanska"],
+const CATEGORY_EMPLOYERS: Record<string, Employer[]> = {
+  HEALTHCARE_LIFE_SCIENCES: [
+    { name: 'Oslo universitetssykehus', industry: 'Healthcare', size: '20,000+', careersUrl: 'https://oslo-universitetssykehus.no/jobb' },
+    { name: 'Helse Bergen / Haukeland', industry: 'Healthcare', size: '13,000+', careersUrl: 'https://helse-bergen.no/jobb' },
+    { name: 'St. Olavs hospital', industry: 'Healthcare', size: '11,000+', careersUrl: 'https://stolav.no/jobb' },
+    { name: 'Aleris', industry: 'Private Healthcare', size: '1,000+', careersUrl: 'https://www.aleris.no/karriere/' },
+    { name: 'Volvat Medisinske Senter', industry: 'Private Healthcare', size: '1,000+', careersUrl: 'https://www.volvat.no/om-oss/jobb/' },
+  ],
+  EDUCATION_TRAINING: [
+    { name: 'Oslo kommune (schools)', industry: 'Public Education', size: '50,000+', careersUrl: 'https://www.oslo.kommune.no/jobb/' },
+    { name: 'Universitetet i Oslo', industry: 'Higher Education', size: '7,000+', careersUrl: 'https://www.uio.no/om/jobb/' },
+    { name: 'NTNU', industry: 'Higher Education', size: '9,000+', careersUrl: 'https://www.ntnu.no/jobb' },
+    { name: 'Kristiania University College', industry: 'Higher Education', size: '1,000+', careersUrl: 'https://www.kristiania.no/om-kristiania/jobb-hos-oss/' },
+  ],
+  TECHNOLOGY_IT: [
+    { name: 'Bekk', industry: 'IT Consulting', size: '500+', careersUrl: 'https://www.bekk.no/jobb' },
+    { name: 'Visma', industry: 'Software / SaaS', size: '3,000+', careersUrl: 'https://www.visma.no/karriere/' },
+    { name: 'Schibsted', industry: 'Media / Tech', size: '5,000+', careersUrl: 'https://schibsted.com/careers/' },
+    { name: 'TietoEVRY', industry: 'IT Services', size: '3,000+', careersUrl: 'https://www.tietoevry.com/en/careers/' },
+    { name: 'Sopra Steria', industry: 'IT Consulting', size: '2,500+', careersUrl: 'https://www.soprasteria.no/karriere' },
+  ],
+  ARTIFICIAL_INTELLIGENCE: [
+    { name: 'Cognite', industry: 'Industrial AI / Software', size: '900+', careersUrl: 'https://www.cognite.com/careers' },
+    { name: 'Telenor', industry: 'Telecom / AI Research', size: '15,000+', careersUrl: 'https://www.telenor.com/career/open-positions/' },
+    { name: 'Visma', industry: 'Software / SaaS', size: '3,000+', careersUrl: 'https://www.visma.no/karriere/' },
+    { name: 'Schibsted', industry: 'Media / Tech', size: '5,000+', careersUrl: 'https://schibsted.com/careers/' },
+  ],
+  BUSINESS_MANAGEMENT: [
+    { name: 'DNB', industry: 'Banking / Finance', size: '9,000+', careersUrl: 'https://www.dnb.no/karriere' },
+    { name: 'Equinor', industry: 'Energy', size: '22,000+', careersUrl: 'https://www.equinor.com/careers' },
+    { name: 'Telenor', industry: 'Telecom', size: '15,000+', careersUrl: 'https://www.telenor.com/career/open-positions/' },
+    { name: 'Orkla', industry: 'Consumer Goods', size: '18,000+', careersUrl: 'https://www.orkla.com/careers/' },
+  ],
+  FINANCE_BANKING: [
+    { name: 'DNB', industry: 'Banking / Finance', size: '9,000+', careersUrl: 'https://www.dnb.no/karriere' },
+    { name: 'Storebrand', industry: 'Insurance / Pensions', size: '2,000+', careersUrl: 'https://www.storebrand.no' },
+    { name: 'Nordea', industry: 'Banking', size: '4,000+', careersUrl: 'https://www.nordea.com/en/careers' },
+    { name: 'Gjensidige', industry: 'Insurance', size: '4,000+', careersUrl: 'https://www.gjensidige.no' },
+  ],
+  SALES_MARKETING: [
+    { name: 'Schibsted', industry: 'Media / Marketplaces', size: '5,000+', careersUrl: 'https://schibsted.com/careers/' },
+    { name: 'Orkla', industry: 'Consumer Goods', size: '18,000+', careersUrl: 'https://www.orkla.com/careers/' },
+    { name: 'Telenor', industry: 'Telecom', size: '15,000+', careersUrl: 'https://www.telenor.com/career/open-positions/' },
+    { name: 'Finn.no', industry: 'Marketplace', size: '500+', careersUrl: 'https://hjemmehos.finn.no/jobb-i-finn/' },
+  ],
+  MANUFACTURING_ENGINEERING: [
+    { name: 'Equinor', industry: 'Energy', size: '22,000+', careersUrl: 'https://www.equinor.com/careers' },
+    { name: 'Aker Solutions', industry: 'Energy / Engineering', size: '5,000+', careersUrl: 'https://www.akersolutions.com/careers/' },
+    { name: 'Kongsberg Gruppen', industry: 'Defence / Maritime', size: '12,000+', careersUrl: 'https://www.kongsberg.com/careers/' },
+    { name: 'Norsk Hydro', industry: 'Aluminium / Energy', size: '30,000+', careersUrl: 'https://www.hydro.com/en/careers/' },
+    { name: 'Multiconsult', industry: 'Engineering Consulting', size: '3,000+', careersUrl: 'https://www.multiconsult.no/karriere/' },
+  ],
+  LOGISTICS_TRANSPORT: [
+    { name: 'Posten Bring', industry: 'Postal / Logistics', size: '17,000+', careersUrl: 'https://www.postennorge.no' },
+    { name: 'DB Schenker', industry: 'Freight / Logistics', size: '2,000+', careersUrl: 'https://www.dbschenker.com/no-no' },
+    { name: 'Wilh. Wilhelmsen', industry: 'Maritime / Logistics', size: '5,000+', careersUrl: 'https://www.wilhelmsen.com/careers/' },
+    { name: 'Vy', industry: 'Rail / Transport', size: '11,000+', careersUrl: 'https://www.vy.no/vygruppen/jobb-i-vy' },
+  ],
+  HOSPITALITY_TOURISM: [
+    { name: 'Scandic Hotels', industry: 'Hotels', size: '2,000+', careersUrl: 'https://www.scandichotels.com/career' },
+    { name: 'Strawberry (Nordic Choice)', industry: 'Hotels', size: '16,000+', careersUrl: 'https://strawberry.no' },
+    { name: 'SAS', industry: 'Aviation', size: '7,000+', careersUrl: 'https://www.sasgroup.net/career/' },
+    { name: 'Thon Hotels', industry: 'Hotels', size: '3,000+', careersUrl: 'https://www.thonhotels.no' },
+  ],
+  TELECOMMUNICATIONS: [
+    { name: 'Telenor', industry: 'Telecom', size: '15,000+', careersUrl: 'https://www.telenor.com/career/open-positions/' },
+    { name: 'Telia', industry: 'Telecom', size: '3,000+', careersUrl: 'https://www.telia.no/om-telia/karriere/' },
+    { name: 'ICE', industry: 'Telecom', size: '500+', careersUrl: 'https://www.ice.no/om-ice/jobb/' },
+    { name: 'Altibox', industry: 'Broadband / Telecom', size: '1,000+', careersUrl: 'https://www.altibox.no' },
+  ],
+  CREATIVE_MEDIA: [
+    { name: 'NRK', industry: 'Public Broadcasting', size: '3,000+', careersUrl: 'https://www.nrk.no' },
+    { name: 'Schibsted', industry: 'Media / Tech', size: '5,000+', careersUrl: 'https://schibsted.com/careers/' },
+    { name: 'TV 2', industry: 'Broadcasting', size: '1,000+', careersUrl: 'https://www.tv2.no' },
+    { name: 'Aller Media', industry: 'Publishing', size: '500+', careersUrl: 'https://aller.no' },
+  ],
+  PUBLIC_SERVICE_SAFETY: [
+    { name: 'NAV', industry: 'Government / Welfare', size: '20,000+', careersUrl: 'https://www.nav.no/jobb-i-nav' },
+    { name: 'Politiet', industry: 'Police', size: '17,000+', careersUrl: 'https://www.politiet.no/jobb' },
+    { name: 'Oslo kommune', industry: 'Municipal', size: '50,000+', careersUrl: 'https://www.oslo.kommune.no/jobb/' },
+    { name: 'Skatteetaten', industry: 'Tax Administration', size: '7,000+', careersUrl: 'https://www.skatteetaten.no/om-skatteetaten/jobb-hos-oss/' },
+  ],
+  MILITARY_DEFENCE: [
+    { name: 'Forsvaret', industry: 'Armed Forces', size: '23,000+', careersUrl: 'https://www.forsvaret.no/jobb' },
+    { name: 'Kongsberg Defence & Aerospace', industry: 'Defence', size: '4,000+', careersUrl: 'https://www.kongsberg.com/careers/' },
+    { name: 'Nammo', industry: 'Defence / Aerospace', size: '2,800+', careersUrl: 'https://www.nammo.com/careers/' },
+    { name: 'Forsvarets forskningsinstitutt (FFI)', industry: 'Defence Research', size: '800+', careersUrl: 'https://www.ffi.no/jobb' },
+  ],
+  SPORT_FITNESS: [
+    { name: 'SATS', industry: 'Fitness', size: '5,000+', careersUrl: 'https://www.sats.no' },
+    { name: 'Olympiatoppen', industry: 'Elite Sport', size: '200+', careersUrl: 'https://www.olympiatoppen.no' },
+    { name: 'Norges idrettsforbund', industry: 'Sport Federation', size: '1,000+', careersUrl: 'https://www.idrettsforbundet.no' },
+    { name: 'Norges Fotballforbund', industry: 'Football', size: '300+', careersUrl: 'https://www.fotball.no' },
+  ],
+  REAL_ESTATE_PROPERTY: [
+    { name: 'OBOS', industry: 'Housing / Property', size: '2,500+', careersUrl: 'https://www.obos.no' },
+    { name: 'Olav Thon Gruppen', industry: 'Property', size: '3,400+', careersUrl: 'https://www.olavthon.no' },
+    { name: 'DNB Eiendom', industry: 'Estate Agency', size: '1,000+', careersUrl: 'https://www.dnbeiendom.no' },
+    { name: 'Entra', industry: 'Commercial Property', size: '300+', careersUrl: 'https://entra.no' },
+  ],
+  SOCIAL_CARE_COMMUNITY: [
+    { name: 'NAV', industry: 'Government / Welfare', size: '20,000+', careersUrl: 'https://www.nav.no/jobb-i-nav' },
+    { name: 'Oslo kommune', industry: 'Municipal Care', size: '50,000+', careersUrl: 'https://www.oslo.kommune.no/jobb/' },
+    { name: 'Røde Kors', industry: 'Humanitarian', size: '2,000+', careersUrl: 'https://www.rodekors.no' },
+    { name: 'Frelsesarmeen', industry: 'Social Care', size: '2,000+', careersUrl: 'https://www.frelsesarmeen.no' },
+  ],
+  CONSTRUCTION_TRADES: [
+    { name: 'Veidekke', industry: 'Construction', size: '8,000+', careersUrl: 'https://www.veidekke.no' },
+    { name: 'Skanska Norge', industry: 'Construction', size: '4,000+', careersUrl: 'https://www.skanska.no' },
+    { name: 'AF Gruppen', industry: 'Construction', size: '5,000+', careersUrl: 'https://afgruppen.no' },
+    { name: 'Backe', industry: 'Construction', size: '1,500+', careersUrl: 'https://www.backe.no' },
+  ],
 };
+
+/**
+ * Full list of realistic employers for a career, for the "Where People
+ * Work" list and the "Companies" side tab. Prefers the hand-curated
+ * CAREER_EMPLOYERS list (most specific, ranked), and falls back to the
+ * career's *sector* employers so every career with a known category
+ * gets a real, linked set of places to work. Returns [] when neither
+ * the career nor its category is known.
+ */
+export function getCareerEmployers(careerId: string, category?: string | null): Employer[] {
+  const curated = getTopEmployers(careerId);
+  if (curated.length > 0) return curated;
+  if (category && CATEGORY_EMPLOYERS[category]) return CATEGORY_EMPLOYERS[category];
+  return [];
+}
+
+/**
+ * Whether we have any employers (curated or sector-level) to show for
+ * a career — gates the "Where People Work" section and "Companies" tab.
+ */
+export function hasCareerEmployers(careerId: string, category?: string | null): boolean {
+  return getCareerEmployers(careerId, category).length > 0;
+}
 
 /**
  * One or two realistic example employer *names* for a career, for the
  * inline "Typically somewhere like X or Y" hint on the Typical Day card.
- *
- * Prefers the curated CAREER_EMPLOYERS list (most specific) and falls
- * back to category-level representatives. Returns [] when neither the
- * career nor its category is known, so the caller can hide the hint.
+ * Shares its source with the full employer list (curated → sector).
  */
 export function getRepresentativeEmployers(
   careerId: string,
   category?: string | null,
 ): string[] {
-  const curated = getTopEmployers(careerId);
-  if (curated.length > 0) {
-    return curated.slice(0, 2).map((e) => e.name);
-  }
-  if (category && CATEGORY_REPRESENTATIVE_EMPLOYERS[category]) {
-    return CATEGORY_REPRESENTATIVE_EMPLOYERS[category].slice(0, 2);
-  }
-  return [];
+  return getCareerEmployers(careerId, category).slice(0, 2).map((e) => e.name);
 }
