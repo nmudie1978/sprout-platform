@@ -9089,7 +9089,10 @@ const SUBJECT_CAREER_BOOSTS: Record<string, string[]> = {
     "naval-officer",
   ],
   psychology: [
-    "psychologist", "clinical-psychologist", "counsellor", "therapist",
+    // "clinical-psychologist" / "therapist" are now specialism branches of
+    // "psychologist" (see career-specialisms.ts), not standalone careers — the
+    // base "psychologist" id already carries the boost.
+    "psychologist", "counsellor",
     "mental-health-nurse", "social-worker", "youth-worker",
     "special-needs-educator", "hr-specialist", "hr-manager",
     "sports-psychologist", "occupational-therapist",

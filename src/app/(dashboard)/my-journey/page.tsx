@@ -62,6 +62,8 @@ import { FundingSection } from '@/components/education-browser/funding-section';
 import { FreshnessPillAggregate } from '@/components/education-browser/freshness-pill';
 import { getRoutesForCareer } from '@/lib/education/routes';
 import { CareerMythBuster } from '@/components/journey/career-myth-buster';
+import { CareerSpecialisms } from '@/components/journey/career-specialisms';
+import { hasSpecialisms } from '@/lib/career-specialisms';
 import { TopEmployers } from '@/components/journey/top-employers';
 import { SalaryProgressionChart } from '@/components/journey/salary-progression';
 import { hasTopEmployers, getRepresentativeEmployers } from '@/lib/career-employers';
@@ -984,7 +986,7 @@ function UnderstandTab({
   const [openSection, setOpenSection] = useState<string | null>(null);
   const [selectedRow, setSelectedRow] = useState<number | null>(null);
   const { isCollapsed: uCollapsed, toggle: uToggle } = useSectionCollapse(
-    ['u-role', 'u-day', 'u-myths', 'u-salary', 'u-education-pathway', 'u-notes'],
+    ['u-role', 'u-day', 'u-myths', 'u-salary', 'u-education-pathway', 'u-specialisms', 'u-notes'],
     ['u-myths'], // collapsed by default — supplementary sections
   );
 
@@ -1636,6 +1638,21 @@ function UnderstandTab({
           </SectionCard>
         );
       })()}
+
+      {/* ── Where This Can Lead — specialism branches the career splits into
+          after the core training (e.g. psychologist → clinical / child /
+          forensic). Only rendered when curated branches exist, so most
+          careers show nothing here. ── */}
+      {career?.id && hasSpecialisms(career.id) && (
+        <SectionCard accent="teal">
+          <SectionHeader icon={Layers} title="Where This Can Lead" tooltip="The specialisms this career branches into after the core training — same foundation, different day-to-day and setting." collapsed={uCollapsed('u-specialisms')} onToggle={() => uToggle('u-specialisms')} />
+          {!uCollapsed('u-specialisms') && (
+            <div className="p-4 sm:p-5">
+              <CareerSpecialisms careerId={career.id} />
+            </div>
+          )}
+        </SectionCard>
+      )}
 
       <UnderstandConfirmCard careerTitle={goalTitle} onChange={onConfirmChange} />
 
