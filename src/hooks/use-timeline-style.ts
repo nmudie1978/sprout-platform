@@ -12,7 +12,11 @@ import { useState, useEffect, useCallback } from 'react';
 export type TimelineStyle = 'rail' | 'stepping';
 
 const STORAGE_KEY = 'endeavrly-timeline-style';
-const DEFAULT: TimelineStyle = 'stepping';
+// Hard rule: the roadmap always DEFAULTS to the rail view. (A user can still
+// switch to stepping via the toggle; that explicit choice is remembered. But
+// with no stored choice — new users, cleared storage, legacy 'zigzag' — the
+// roadmap opens on rail.)
+const DEFAULT: TimelineStyle = 'rail';
 const VALID: TimelineStyle[] = ['rail', 'stepping'];
 
 export function useTimelineStyle() {
