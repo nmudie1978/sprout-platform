@@ -31,9 +31,9 @@ export function WhereYoureLeaning() {
         </p>
         <Link
           href="/library?tab=decision"
-          className="inline-flex items-center gap-1 text-xs text-primary hover:underline"
+          className="inline-flex items-center gap-0.5 text-[10px] text-muted-foreground/45 transition-colors hover:text-muted-foreground/80"
         >
-          See the board <ArrowRight className="h-3 w-3" />
+          See the board <ArrowRight className="h-2.5 w-2.5" />
         </Link>
       </div>
 
