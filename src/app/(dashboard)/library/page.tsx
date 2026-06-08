@@ -27,10 +27,6 @@ import {
   InterestLevelPicker,
 } from "@/components/interest-level/interest-level-rating";
 import {
-  getSavedComparisons,
-  type SavedComparison,
-} from "@/components/career-radar/saved-comparisons-tray";
-import {
   getAllCareers,
   getCareerById,
   getCategoryForCareer,
@@ -43,7 +39,7 @@ import {
   isClarityActive,
 } from "@/lib/journey/lens-progress";
 import { buildExploringGroups, type ExploringEntry } from "@/lib/library/exploring";
-import { CompareModal } from "@/components/compare/compare-modal";
+import { DecisionBoardTab } from "@/components/decision-board/decision-board";
 import {
   resolveLibraryTab,
   readLocalJourneyReflections,
@@ -75,7 +71,7 @@ export default function LibraryPage() {
       <header className="mb-5">
         <h1 className="text-xl font-bold tracking-tight">My Library</h1>
         <p className="text-sm text-muted-foreground">
-          The possible futures you&apos;re considering — the careers you&apos;re exploring, plus everything you&apos;ve saved, compared and written, in one calm place.
+          The possible futures you&apos;re considering — ranked on your Decision Board, plus the careers you&apos;re exploring and everything you&apos;ve saved and written, in one calm place.
         </p>
       </header>
 
@@ -105,12 +101,12 @@ export default function LibraryPage() {
 
       {!mounted ? (
         <EmptyState>Loading…</EmptyState>
+      ) : active === "decision" ? (
+        <DecisionBoardTab />
       ) : active === "exploring" ? (
         <ExploringTab />
       ) : active === "saved" ? (
         <SavedCareersTab />
-      ) : active === "compared" ? (
-        <ComparedTab />
       ) : (
         <ReflectionsTab />
       )}
@@ -339,63 +335,6 @@ function SavedCareersTab() {
         </li>
       ))}
     </ul>
-  );
-}
-
-function ComparedTab() {
-  const [comparisons, setComparisons] = useState<SavedComparison[]>([]);
-  const [openCareers, setOpenCareers] = useState<Career[] | null>(null);
-  useEffect(() => setComparisons(getSavedComparisons()), []);
-
-  if (comparisons.length === 0) {
-    return (
-      <EmptyState>
-        No comparisons yet — compare careers on My Career Radar and save them to
-        revisit here.
-      </EmptyState>
-    );
-  }
-
-  // Resolve the saved career ids to full Career records, then open the
-  // side-by-side comparison modal.
-  const allCareers = getAllCareers();
-  const openComparison = (cmp: SavedComparison) => {
-    const resolved = cmp.careers
-      .map((c) => allCareers.find((x) => x.id === c.id))
-      .filter((x): x is Career => !!x);
-    if (resolved.length > 0) setOpenCareers(resolved);
-  };
-
-  return (
-    <>
-      <ul className="space-y-2">
-        {comparisons.map((cmp) => (
-          <li key={cmp.id}>
-            {/* One clickable row → opens the full side-by-side comparison. */}
-            <button
-              onClick={() => openComparison(cmp)}
-              className="w-full text-left rounded-control border border-border/60 bg-muted/10 px-3 py-2.5 hover:bg-muted/30 hover:border-border transition-colors"
-            >
-              <p className="text-sm flex flex-wrap items-center gap-x-1 gap-y-1">
-                {cmp.careers.map((c, i) => (
-                  <span key={c.id} className="inline-flex items-center">
-                    {i > 0 && <span className="text-muted-foreground/40 mx-1.5">vs</span>}
-                    <span>{c.emoji} {c.title}</span>
-                  </span>
-                ))}
-              </p>
-            </button>
-          </li>
-        ))}
-      </ul>
-      <CompareModal
-        open={!!openCareers}
-        careers={openCareers ?? []}
-        preferences={null}
-        onClose={() => setOpenCareers(null)}
-        onRemove={() => {}}
-      />
-    </>
   );
 }
 

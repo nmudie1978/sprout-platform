@@ -20,11 +20,11 @@ function fakeStorage(map: Record<string, string>): Pick<Storage, "length" | "key
 const PREFIX = "endeavrly-journey-reflections";
 
 describe("resolveLibraryTab", () => {
-  it("defaults to 'exploring' when param is null", () => {
-    expect(resolveLibraryTab(null)).toBe("exploring");
+  it("defaults to 'decision' when param is null", () => {
+    expect(resolveLibraryTab(null)).toBe("decision");
   });
-  it("defaults to 'exploring' for an unknown value", () => {
-    expect(resolveLibraryTab("bogus")).toBe("exploring");
+  it("defaults to 'decision' for an unknown value", () => {
+    expect(resolveLibraryTab("bogus")).toBe("decision");
   });
   it("accepts each known tab", () => {
     for (const tab of LIBRARY_TABS) {
