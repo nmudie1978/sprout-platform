@@ -48,7 +48,7 @@ import type { CareerDetails } from '@/lib/career-typical-days';
 import type { CareerProgression } from '@/lib/career-progressions';
 import type { RealityCheckResult } from '@/lib/career-reality-types';
 import type { NextStep } from '@/lib/reports/journey';
-import { getCertificationPath, getCareerRequirements, getNorwayProgrammes, getProgrammesForCareer, type NordicCountry } from '@/lib/education';
+import { getCertificationPath, getCareerRequirements, getNorwayProgrammes, getProgrammesForCareer, hasEducationData, type NordicCountry } from '@/lib/education';
 import { countryToCode, DEFAULT_COUNTRY } from '@/lib/countries';
 import {
   parseGradeRequirement,
@@ -1257,6 +1257,51 @@ function UnderstandTab({
       {(() => {
         const ap = getAcademicProfile(career);
         const essentialSubjects = ap.subjects.filter(s => s.importance === 'essential');
+
+        // Honest country gate: School Readiness (subjects/grades) and the
+        // Study Path programmes are Norway/Nordic-specific. For a country
+        // we have no education data for (e.g. Spain), applying Norwegian
+        // school subjects, grade thresholds and the Norwegian
+        // career-requirements fallback would be misinformation — different
+        // school system, different universities, different admission. So
+        // show an explicit "not tailored yet" state instead of the tabs.
+        if (!hasEducationData(educationCountry)) {
+          const countryName = countryData?.country ?? 'your country';
+          return (
+            <SectionCard>
+              <SectionHeader
+                icon={GraduationCap}
+                title="Education Pathway"
+                tooltip="School readiness and study options for this career, tailored to your country. We only show a country's real school system and universities — never another country's."
+                collapsed={uCollapsed('u-education-pathway')}
+                onToggle={() => uToggle('u-education-pathway')}
+              />
+              {!uCollapsed('u-education-pathway') && (
+                <div className="p-4 sm:p-5">
+                  <div className="rounded-card border border-border/20 bg-muted/[0.04] p-5 sm:p-6 text-center space-y-3">
+                    <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-muted/20">
+                      <GraduationCap className="h-5 w-5 text-muted-foreground/50" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-foreground/85">Not tailored for {countryName} yet</p>
+                      <p className="text-xs text-muted-foreground/60 mt-1.5 leading-relaxed max-w-md mx-auto">
+                        We&apos;re building {countryName} universities and entry requirements. We don&apos;t show another country&apos;s school system here, because subjects, grades and admission work differently.
+                      </p>
+                    </div>
+                    <div className="text-xs text-muted-foreground/70 leading-relaxed max-w-md mx-auto pt-1">
+                      <span className="text-foreground/60 font-medium">General route:</span>{' '}
+                      upper-secondary school{' '}
+                      <span className="text-muted-foreground/40">→</span>{' '}
+                      {ap.requiresDegree ? 'a university degree' : 'vocational training or a degree'}{' '}
+                      <span className="text-muted-foreground/40">→</span>{' '}
+                      entry-level role.
+                    </div>
+                  </div>
+                </div>
+              )}
+            </SectionCard>
+          );
+        }
 
         // Same three-source Study Path detection as before. See the old
         // inline comment (git history) for the reasoning — short

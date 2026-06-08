@@ -41,6 +41,26 @@ export type { Route, Stage, RouteTag, StageKind } from './route-types';
 // compatibility with existing imports.
 export type NordicCountry = 'NO' | 'SE' | 'DK' | 'FI' | 'IS' | 'ES';
 
+/**
+ * Countries we have curated education data for (institutions +
+ * programmes, and a school-system the readiness model fits). Spain (and
+ * other non-Nordic launched/selectable countries like Italy/Serbia)
+ * have NO programmes and a different school system — so the Education
+ * Pathway shows an honest "not tailored yet" state for them instead of
+ * applying Norwegian school subjects, grades and universities. Keep this
+ * in sync with the institutions actually present in institutions.json.
+ */
+export const COUNTRIES_WITH_EDUCATION_DATA: readonly NordicCountry[] = [
+  'NO', 'SE', 'DK', 'FI', 'IS',
+];
+
+/** Whether the Education Pathway (readiness + study path) has real,
+ *  country-appropriate data for this country. False → show the honest
+ *  "not tailored for <country> yet" state. */
+export function hasEducationData(country?: string | null): boolean {
+  return !!country && (COUNTRIES_WITH_EDUCATION_DATA as readonly string[]).includes(country);
+}
+
 export type ProgrammeType =
   | 'bachelor'
   | 'master'
