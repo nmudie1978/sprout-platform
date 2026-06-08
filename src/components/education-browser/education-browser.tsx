@@ -70,6 +70,11 @@ interface EducationBrowserProps {
   careerId?: string | null;
   /** The viewer's country — Study Path shows only this country's programmes. */
   country?: NordicCountry;
+  /** When true, render ONLY the country-filtered programme cards — no
+   *  career-pathway notes, alternative routes, or route picker. Used for
+   *  countries (e.g. Spain) where we have programme data but the
+   *  routes/specialisation notes are Norway-specific and would mislead. */
+  programmesOnly?: boolean;
 }
 
 function useFoundation() {
@@ -94,13 +99,16 @@ const COUNTRY_FLAGS: Record<string, string> = {
   ES: '🇪🇸',
 };
 
-export function EducationBrowser({ careerTitle, careerId, country }: EducationBrowserProps) {
+export function EducationBrowser({ careerTitle, careerId, country, programmesOnly = false }: EducationBrowserProps) {
   const { data: foundation } = useFoundation();
 
   const lookup = careerId || careerTitle || '';
   const resolvedId = useMemo(() => resolveCareer(lookup), [lookup]);
-  const advanced = useMemo(() => (lookup ? getAdvancedCareerMapping(lookup) : null), [lookup]);
-  const alternativePaths = useMemo(() => (resolvedId ? getAlternativePaths(resolvedId) : []), [resolvedId]);
+  // In programmesOnly mode the career-pathway note, alternative routes and
+  // route picker are all derived from Norway-specific data, so they're
+  // zeroed out — only the country-filtered programme cards remain.
+  const advanced = useMemo(() => (!programmesOnly && lookup ? getAdvancedCareerMapping(lookup) : null), [lookup, programmesOnly]);
+  const alternativePaths = useMemo(() => (!programmesOnly && resolvedId ? getAlternativePaths(resolvedId) : []), [resolvedId, programmesOnly]);
 
   // Spain users (es locale) see Spanish programmes only — Nordic listings
   // are irrelevant to them. Where we don't yet have Spanish data for a
@@ -138,7 +146,7 @@ export function EducationBrowser({ careerTitle, careerId, country }: EducationBr
   // returning to the page lands on their last-picked route. Filters
   // careerProgrammes to programmes referenced by the selected route's
   // stages.
-  const routes = useMemo(() => (resolvedId ? getRoutesForCareer(resolvedId) : []), [resolvedId]);
+  const routes = useMemo(() => (!programmesOnly && resolvedId ? getRoutesForCareer(resolvedId) : []), [resolvedId, programmesOnly]);
   const showRoutePicker = useMemo(() => (resolvedId ? hasMultipleRoutes(resolvedId) : false), [resolvedId]);
   const routeStorageKey = resolvedId ? `study-path-route--${resolvedId}` : null;
 

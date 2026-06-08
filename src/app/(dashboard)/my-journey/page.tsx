@@ -1267,6 +1267,36 @@ function UnderstandTab({
         // show an explicit "not tailored yet" state instead of the tabs.
         if (!hasEducationData(educationCountry)) {
           const countryName = countryData?.country ?? 'your country';
+          const countryProgs = career ? getProgrammesForCareer(career.id, educationCountry ? { country: educationCountry } : undefined) : [];
+
+          // We DO have real universities for this career in the user's
+          // country → show the Study Path (programme cards only, via
+          // programmesOnly so no Norway-specific routes/notes leak).
+          // School Readiness stays gated until we have that country's
+          // school-system data.
+          if (countryProgs.length > 0) {
+            return (
+              <SectionCard>
+                <SectionHeader
+                  icon={GraduationCap}
+                  title="Education Pathway"
+                  tooltip="Real universities in your country that lead to this career. School-readiness scoring for your country is coming."
+                  collapsed={uCollapsed('u-education-pathway')}
+                  onToggle={() => uToggle('u-education-pathway')}
+                />
+                {!uCollapsed('u-education-pathway') && (
+                  <div className="p-4 sm:p-5 space-y-3">
+                    <p className="text-xs text-muted-foreground/60 leading-relaxed">
+                      Real {countryName} universities for this career. School-readiness scoring for {countryName} (subjects and grades) is coming — we don&apos;t apply another country&apos;s school system.
+                    </p>
+                    <EducationBrowser careerTitle={goalTitle} careerId={career?.id ?? null} country={educationCountry} programmesOnly />
+                  </div>
+                )}
+              </SectionCard>
+            );
+          }
+
+          // No data for this specific career in this country → honest gate.
           return (
             <SectionCard>
               <SectionHeader
