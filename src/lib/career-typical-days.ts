@@ -14,6 +14,8 @@
 // "Loading…" trap.
 
 import { generatedCareerDetailsMap } from './career-typical-days.generated';
+import { getCategoryForCareer } from './career-pathways';
+import { defaultDetailsForCategory } from './career-typical-days-category-defaults';
 
 export interface TypicalDaySchedule {
   morning: string[];
@@ -13262,8 +13264,11 @@ export function getCareerDetails(careerId: string): CareerDetails {
   if (generatedCareerDetailsMap[careerId]) return generatedCareerDetailsMap[careerId];
   if (generatedCareerDetailsMap[normalizedId]) return generatedCareerDetailsMap[normalizedId];
 
-  // 3. Last-resort template
-  return defaultDetails;
+  // 3. Category-appropriate default (a teaching day for teachers, a clinical
+  //    day for healthcare, etc.) — far better than the single office/PM
+  //    template for the ~12% of careers without curated/generated content.
+  // 4. Global office default for categories without a tailored template.
+  return defaultDetailsForCategory(getCategoryForCareer(careerId), defaultDetails);
 }
 
 /**
