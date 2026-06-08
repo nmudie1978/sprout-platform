@@ -15,6 +15,9 @@ interface TopEmployersProps {
   /** Career category — enables the sector-level employer fallback for
    *  careers without a hand-curated list. */
   category?: string | null;
+  /** Viewer's country — the employer data is Norwegian, so it's
+   *  suppressed for non-Norway users. */
+  country?: string | null;
 }
 
 function EmployerCard({ emp }: { emp: Employer }) {
@@ -61,10 +64,10 @@ function EmployerCard({ emp }: { emp: Employer }) {
   return content;
 }
 
-export function TopEmployers({ careerId, category }: TopEmployersProps) {
+export function TopEmployers({ careerId, category, country }: TopEmployersProps) {
   const employers = useMemo(
-    () => (careerId ? getCareerEmployers(careerId, category) : []),
-    [careerId, category],
+    () => (careerId ? getCareerEmployers(careerId, category, country) : []),
+    [careerId, category, country],
   );
   const scrollRef = useRef<HTMLDivElement>(null);
 

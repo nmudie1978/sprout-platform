@@ -281,14 +281,34 @@ const CATEGORY_EMPLOYERS: Record<string, Employer[]> = {
 };
 
 /**
+ * Whether the employer data applies to this viewer's country. ALL of
+ * CAREER_EMPLOYERS and CATEGORY_EMPLOYERS are Norwegian companies, so we
+ * only surface them to Norwegian users — a Spain user must not see
+ * Telenor/DNB. Unknown country defaults to Norway (the app's default),
+ * so existing behaviour is unchanged. Accepts the country name
+ * ("Norway") or ISO code ("NO").
+ */
+export function employersApplyTo(country?: string | null): boolean {
+  if (!country) return true; // unknown → app default is Norway
+  const c = country.trim().toLowerCase();
+  return c === 'no' || c === 'norway' || c === 'norge';
+}
+
+/**
  * Full list of realistic employers for a career, for the "Where People
  * Work" list and the "Companies" side tab. Prefers the hand-curated
  * CAREER_EMPLOYERS list (most specific, ranked), and falls back to the
  * career's *sector* employers so every career with a known category
  * gets a real, linked set of places to work. Returns [] when neither
- * the career nor its category is known.
+ * the career nor its category is known, or when the viewer's country is
+ * not one the (Norwegian) employer data applies to.
  */
-export function getCareerEmployers(careerId: string, category?: string | null): Employer[] {
+export function getCareerEmployers(
+  careerId: string,
+  category?: string | null,
+  country?: string | null,
+): Employer[] {
+  if (!employersApplyTo(country)) return [];
   const curated = getTopEmployers(careerId);
   if (curated.length > 0) return curated;
   if (category && CATEGORY_EMPLOYERS[category]) return CATEGORY_EMPLOYERS[category];
@@ -299,8 +319,12 @@ export function getCareerEmployers(careerId: string, category?: string | null): 
  * Whether we have any employers (curated or sector-level) to show for
  * a career — gates the "Where People Work" section and "Companies" tab.
  */
-export function hasCareerEmployers(careerId: string, category?: string | null): boolean {
-  return getCareerEmployers(careerId, category).length > 0;
+export function hasCareerEmployers(
+  careerId: string,
+  category?: string | null,
+  country?: string | null,
+): boolean {
+  return getCareerEmployers(careerId, category, country).length > 0;
 }
 
 /**
@@ -311,6 +335,7 @@ export function hasCareerEmployers(careerId: string, category?: string | null): 
 export function getRepresentativeEmployers(
   careerId: string,
   category?: string | null,
+  country?: string | null,
 ): string[] {
-  return getCareerEmployers(careerId, category).slice(0, 2).map((e) => e.name);
+  return getCareerEmployers(careerId, category, country).slice(0, 2).map((e) => e.name);
 }

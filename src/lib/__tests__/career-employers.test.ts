@@ -3,7 +3,31 @@ import {
   getRepresentativeEmployers,
   getCareerEmployers,
   hasCareerEmployers,
+  employersApplyTo,
 } from "../career-employers";
+
+describe("country gate (employer data is Norwegian)", () => {
+  it("employersApplyTo: true for Norway / NO / unknown, false otherwise", () => {
+    for (const c of ["Norway", "NO", "no", "Norge"]) expect(employersApplyTo(c)).toBe(true);
+    expect(employersApplyTo(undefined)).toBe(true); // app default is Norway
+    expect(employersApplyTo(null)).toBe(true);
+    for (const c of ["Spain", "ES", "Sweden", "SE", "Italy"]) expect(employersApplyTo(c)).toBe(false);
+  });
+
+  it("suppresses employers for a non-Norway country", () => {
+    // software-developer has a curated Norwegian list, but a Spain user
+    // must not see it.
+    expect(getCareerEmployers("software-developer", "TECHNOLOGY_IT", "Spain")).toEqual([]);
+    expect(hasCareerEmployers("software-developer", "TECHNOLOGY_IT", "ES")).toBe(false);
+    expect(getRepresentativeEmployers("software-developer", "TECHNOLOGY_IT", "Spain")).toEqual([]);
+  });
+
+  it("still shows employers for Norway and when country is unset", () => {
+    expect(getCareerEmployers("software-developer", "TECHNOLOGY_IT", "Norway").length).toBeGreaterThan(0);
+    expect(getCareerEmployers("software-developer", "TECHNOLOGY_IT").length).toBeGreaterThan(0);
+    expect(hasCareerEmployers("software-developer", "TECHNOLOGY_IT", "NO")).toBe(true);
+  });
+});
 
 describe("getRepresentativeEmployers", () => {
   it("prefers curated employers (top 2) when the career has them", () => {
