@@ -64,7 +64,7 @@ import { getRoutesForCareer } from '@/lib/education/routes';
 import { CareerMythBuster } from '@/components/journey/career-myth-buster';
 import { TopEmployers } from '@/components/journey/top-employers';
 import { SalaryProgressionChart } from '@/components/journey/salary-progression';
-import { hasTopEmployers, getRepresentativeEmployers } from '@/lib/career-employers';
+import { hasCareerEmployers, getRepresentativeEmployers } from '@/lib/career-employers';
 import { hasMyths } from '@/lib/career-myths';
 import { ConfidenceTracker } from '@/components/journey/confidence-tracker';
 // Day simulation removed per user request
@@ -83,6 +83,10 @@ const GoalSelectionSheet = dynamic(
 );
 const JourneyReflectionsTray = dynamic(
   () => import('@/components/journey/journey-reflections-tray').then((m) => m.JourneyReflectionsTray),
+  { ssr: false }
+);
+const JourneyCompaniesTray = dynamic(
+  () => import('@/components/journey/journey-companies-tray').then((m) => m.JourneyCompaniesTray),
   { ssr: false }
 );
 // Career Twin — the first Clarity sub-tab. Opens inline within the tab so the
@@ -1226,15 +1230,17 @@ function UnderstandTab({
 
       </SectionCard>
 
-      {/* ── Where People Work — only shown when we have curated employer
-          data for this career, so careers without it don't render an
-          empty section. ── */}
-      {career?.id && hasTopEmployers(career.id) && (
+      {/* ── Where People Work — curated employer list where we have one,
+          otherwise the career's sector-level employers, so careers
+          without a hand-curated list still show real, linked places to
+          work. Hidden only when neither the career nor its category is
+          known. ── */}
+      {career?.id && hasCareerEmployers(career.id, detailsData?.category) && (
         <SectionCard>
-          <SectionHeader icon={Building2} title="Where People Work" tooltip="Norwegian companies where this role is most common — with links to their careers pages." collapsed={uCollapsed('u-salary')} onToggle={() => uToggle('u-salary')} />
+          <SectionHeader icon={Building2} title="Where People Work" tooltip="Norwegian companies and institutions where this kind of role is common — with links to their careers pages." collapsed={uCollapsed('u-salary')} onToggle={() => uToggle('u-salary')} />
           {!uCollapsed('u-salary') && (
             <div className="p-4 sm:p-5">
-              <TopEmployers careerId={career.id} />
+              <TopEmployers careerId={career.id} category={detailsData?.category} />
             </div>
           )}
         </SectionCard>
@@ -3383,6 +3389,15 @@ export default function MyJourneyPage() {
       <JourneyReflectionsTray
         careerSlug={career?.id ?? null}
         activeLens={activeTab}
+      />
+
+      {/* Companies tab — stacked above Reflections (which stays centred)
+          so the two right-edge trays don't overlap, mirroring the
+          SavedCareers/SavedComparisons tray pair on the Radar. */}
+      <JourneyCompaniesTray
+        careerId={career?.id ?? null}
+        careerTitle={goalTitle ?? career?.title ?? null}
+        topOffsetPx={-88}
       />
 
       <GoalSelectionSheet
