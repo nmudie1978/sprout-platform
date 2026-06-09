@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
@@ -21,6 +22,7 @@ import {
   Loader2,
   Star,
   ArrowLeftRight,
+  ArrowRight,
   Bookmark,
   BookmarkCheck,
   Sparkles,
@@ -70,8 +72,12 @@ export function CareerDetailSheet({
   notTailoredLabel,
 }: CareerDetailSheetProps) {
   const { data: session, update: refreshSession } = useSession();
+  const router = useRouter();
   const queryClient = useQueryClient();
   const [isPrimaryGoal, setIsPrimaryGoal] = useState(false);
+  // True only right after the user sets this career as their goal — drives the
+  // "explore it in My Journey now?" prompt (vs. just closing back to the radar).
+  const [justSetGoal, setJustSetGoal] = useState(false);
   const { saveCuriosity, removeCuriosity, isSaved: isCuriositySaved } = useCuriositySaves();
 
   const isYouth = session?.user?.role === "YOUTH";
@@ -96,6 +102,7 @@ export function CareerDetailSheet({
   useEffect(() => {
     if (career) {
       setIsPrimaryGoal(false);
+      setJustSetGoal(false);
     }
   }, [career?.id]);
 
@@ -147,9 +154,9 @@ export function CareerDetailSheet({
     },
     onSuccess: () => {
       setIsPrimaryGoal(true);
+      setJustSetGoal(true);
       toast({
         title: "Set as your career goal!",
-        description: "View and customise your goal on the Goals page.",
         variant: "success",
       });
       // Sync guidance dismissals when the career goal changes
@@ -189,6 +196,11 @@ export function CareerDetailSheet({
     // Replaces any existing career goal directly. The journey state for the
     // old goal is snapshotted server-side, so this is reversible.
     setGoalMutation.mutate({ title: career.title });
+  };
+
+  const goToJourney = () => {
+    onClose();
+    router.push("/my-journey");
   };
 
   // Get career details (use defaults if career is null)
@@ -306,14 +318,37 @@ export function CareerDetailSheet({
                 <div className="space-y-2">
                   {isYouth && (
                     <>
-                      {/* Already added indicator */}
-                      {isPrimaryGoal && (
-                        <div className="flex items-center justify-center gap-2 p-2 rounded-lg bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-900">
-                          <Check className="h-4 w-4 text-green-600" />
-                          <span className="text-sm font-medium text-green-700 dark:text-green-400">
-                            Your career goal
-                          </span>
+                      {/* Just set → prompt to start exploring in My Journey */}
+                      {isPrimaryGoal && justSetGoal ? (
+                        <div className="rounded-lg border border-teal-500/30 bg-teal-500/10 p-3 space-y-2.5 text-center">
+                          <div className="flex items-center justify-center gap-2">
+                            <Check className="h-4 w-4 text-teal-600 dark:text-teal-400" />
+                            <span className="text-sm font-medium text-teal-700 dark:text-teal-300">
+                              {career.title} is your career goal
+                            </span>
+                          </div>
+                          <p className="text-xs text-muted-foreground">
+                            Explore it now in My Journey — Discover, Understand, then build your Clarity.
+                          </p>
+                          <Button
+                            className="w-full bg-teal-600 hover:bg-teal-700"
+                            size="sm"
+                            onClick={goToJourney}
+                          >
+                            Go to My Journey
+                            <ArrowRight className="h-3.5 w-3.5 ml-1.5" />
+                          </Button>
                         </div>
+                      ) : (
+                        /* Already the goal (set earlier) — quiet indicator */
+                        isPrimaryGoal && (
+                          <div className="flex items-center justify-center gap-2 p-2 rounded-lg bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-900">
+                            <Check className="h-4 w-4 text-green-600" />
+                            <span className="text-sm font-medium text-green-700 dark:text-green-400">
+                              Your career goal
+                            </span>
+                          </div>
+                        )
                       )}
 
                       {/* Set as your career goal button */}
@@ -353,7 +388,7 @@ export function CareerDetailSheet({
                     </>
                   )}
                   <Button variant="ghost" className="w-full text-muted-foreground/50" size="sm" onClick={onClose}>
-                    Close
+                    {justSetGoal ? "Maybe later" : "Close"}
                   </Button>
                 </div>
 
