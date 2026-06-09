@@ -120,3 +120,33 @@ describe("hasCareerEmployers", () => {
     expect(hasCareerEmployers("unknown-career", undefined)).toBe(false);
   });
 });
+
+describe("consulting employers", () => {
+  it("a consultant sees consultancy firms (not sector clients), in NO and ES", () => {
+    for (const country of ["Norway", "Spain"]) {
+      const e = getCareerEmployers("management-consultant", "BUSINESS_MANAGEMENT", country);
+      const names = e.map((x) => x.name).join(" ");
+      expect(names).toMatch(/McKinsey|BCG|Bain|Accenture|Deloitte/);
+      expect(names).not.toMatch(/DNB|Equinor|Telefónica|Santander/);
+    }
+  });
+
+  it("telco-strategy careers are led by Analysys Mason", () => {
+    const e = getCareerEmployers("telco-strategy-manager", "TELECOMMUNICATIONS", "Norway");
+    expect(e[0].name).toBe("Analysys Mason");
+    expect(getCareerEmployers("telco-business-analyst", "TELECOMMUNICATIONS", "Spain")[0].name).toBe("Analysys Mason");
+  });
+
+  it("non-consultant careers are unaffected (software-developer still sector/curated)", () => {
+    expect(getCareerEmployers("software-developer", "TECHNOLOGY_IT", "Norway")[0].name).toBe("Bekk");
+  });
+
+  it("every consulting employer has a valid https link", () => {
+    const all = getCareerEmployers("strategy-consultant", "BUSINESS_MANAGEMENT", "Norway")
+      .concat(getCareerEmployers("telco-pricing-analyst", "TELECOMMUNICATIONS", "Norway"));
+    for (const e of all) {
+      expect(() => new URL(e.careersUrl as string)).not.toThrow();
+      expect(e.careersUrl as string).toMatch(/^https:\/\//);
+    }
+  });
+});
