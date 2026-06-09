@@ -413,7 +413,8 @@
         "accountant",
         "teacher",
         "social-worker",
-        "engineer"
+        "engineer",
+        "interpreter"
       ]
     },
     {
@@ -582,7 +583,9 @@
         "biologist",
         "chemist",
         "psychologist",
-        "data-analyst"
+        "data-analyst",
+        "speech-therapist",
+        "linguist"
       ]
     },
     {
@@ -616,10 +619,11 @@
       "shortName": "UNIVERSITETET-I-S-R-ST-NORGE",
       "country": "NO",
       "city": "Various",
-      "url": "https://universitetet-i-s-r-st-norge.no",
+      "url": "https://www.usn.no",
       "applicationVia": "Samordna opptak",
       "careerIds": [
-        "engineer"
+        "engineer",
+        "optometrist"
       ]
     },
     {
