@@ -205,16 +205,16 @@ describe('Study Path section wiring (Issue 4 — sibling context)', () => {
     expect(MY_JOURNEY_SOURCE).toMatch(/<EducationBrowser\s/);
   });
 
-  it('A Typical Day is a SEPARATE SectionCard sibling, not inside Education Pathway', () => {
-    // Both sections exist in the Understand tab. A Typical Day is
-    // still its own SectionCard; Education Pathway (Readiness +
-    // Study Path tabs) is a sibling, not a parent.
-    expect(MY_JOURNEY_SOURCE).toMatch(/title="A Typical Day"/);
-    const typicalDayIndex = MY_JOURNEY_SOURCE.indexOf('title="A Typical Day"');
+  it('A Typical Day lives in the "Day & Workplace" card, a sibling above Education Pathway', () => {
+    // #178 consolidated "A Typical Day" + "Where People Work" into one
+    // "Day & Workplace" SectionCard, where A Typical Day is a tab. It is
+    // still a sibling of Education Pathway (Readiness + Study Path), not
+    // nested inside it, and renders above it in the Understand tab.
+    expect(MY_JOURNEY_SOURCE).toMatch(/title="Day & Workplace"/);
+    expect(MY_JOURNEY_SOURCE).toMatch(/A Typical Day/);
+    const dayIndex = MY_JOURNEY_SOURCE.indexOf('title="Day & Workplace"');
     const educationPathwayIndex = MY_JOURNEY_SOURCE.indexOf('title="Education Pathway"');
-    // A Typical Day should appear ABOVE Education Pathway in source
-    // order (matches the Understand tab render order).
-    expect(typicalDayIndex).toBeGreaterThan(0);
-    expect(educationPathwayIndex).toBeGreaterThan(typicalDayIndex);
+    expect(dayIndex).toBeGreaterThan(0);
+    expect(educationPathwayIndex).toBeGreaterThan(dayIndex);
   });
 });
