@@ -46,8 +46,8 @@ const JobMarketStatsCarousel = dynamic(
   () => import("@/components/insights/job-market-stats-carousel").then((m) => m.JobMarketStatsCarousel),
   { ssr: false, loading: () => <div className="h-64 animate-pulse rounded-control bg-muted/50" /> }
 );
-const InsightSection = dynamic(
-  () => import("@/components/insights/insight-section").then((m) => m.InsightSection),
+const SkillsGallery = dynamic(
+  () => import("@/components/insights/skills-gallery").then((m) => m.SkillsGallery),
   { ssr: false, loading: () => <div className="h-48 animate-pulse rounded-control bg-muted/50" /> }
 );
 const WhyThisMatters = dynamic(
@@ -326,8 +326,8 @@ export default function IndustryInsightsPage() {
           <SectionHeader
             icon={Layers}
             label="Explore"
-            title="Dig Deeper"
-            subtitle="Curated videos, podcasts, and articles on growing careers and the skills behind them"
+            title="Skills That Matter"
+            subtitle="Articles, podcasts, and videos on the skills that matter most — drag the gallery to explore"
             gradient="bg-primary"
             iconBg="bg-primary/10 dark:bg-primary/20"
             iconColor="text-primary"
@@ -338,14 +338,10 @@ export default function IndustryInsightsPage() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.55 }}
-            className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8"
+            id="skills-that-matter"
+            className="scroll-mt-20"
           >
-            <div id="jobs-on-the-rise" className="lg:col-span-6 scroll-mt-20">
-              <InsightSection sectionKey="jobs-on-the-rise" delay={0.25} compact contained defaultViewMode="list" />
-            </div>
-            <div id="skills-that-matter" className="lg:col-span-6 scroll-mt-20">
-              <InsightSection sectionKey="skills-that-matter" delay={0.3} compact contained defaultViewMode="list" />
-            </div>
+            <SkillsGallery />
           </motion.div>
         </div>
       </motion.section>
