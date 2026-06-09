@@ -6,14 +6,19 @@
 
 ## Problem
 
-The Discover-tab salary card shows a single range ("560k – 760k NOK") with a
-"See full progression →" link that **navigates to the Understand tab**. There,
-`SalaryProgressionChart` renders a recharts bar chart — but only for the **~14
-careers** with hand-curated data in `salary-progression.ts`. For every other
-career (~98%) it renders nothing, so the link dead-ends.
+The Discover-tab salary card + "See full progression →" link **already open a
+popup** (`showSalaryPopup`). Inside, `SalaryProgressionChart` renders a recharts
+**bar** chart — but only for the **~14 careers** with hand-curated data in
+`salary-progression.ts`. For every other career (~98%) it returns `null`, so the
+popup opens **essentially empty**. That is why progression feels absent for most
+careers (including the one in the owner's screenshot).
 
-Owner wants: a **popup modal** showing salary growth (entry → senior → lead) as
-a **line graph**, available for **all careers**.
+Owner wants: salary growth (entry → senior → lead) shown as a **line graph** in
+that popup, available for **all careers**.
+
+(NOTE: there is no separate inline chart in the Understand tab —
+`SalaryProgressionChart` is used *only* inside this popup. The fix is to upgrade
+the popup's contents + make the data universal.)
 
 ## Decisions (from brainstorm)
 
@@ -21,7 +26,7 @@ a **line graph**, available for **all careers**.
 |----------|----------|
 | Coverage | **Synthesize** a progression from each career's typical range, labelled "Estimated"; curated data wins where it exists |
 | Chart | **Line + shaded range band** (avg line, min–max band per level) |
-| Trigger / surface | **Modal replaces the Understand inline chart** — the salary card + link open the modal; the inline `SalaryProgressionChart` is removed |
+| Trigger / surface | **Upgrade the existing popup** — the salary card + link already open it; swap its bar chart for the new line+band chart fed by universal data |
 | Country | Keep the existing `showsSalaryProgression(country)` gate (Norway today) |
 
 ## Section 1 — Synthesis model
@@ -77,12 +82,15 @@ Treat each career's typical `avgSalary` range as the **mid-career
 
 ## Section 4 — Wiring (`src/app/(dashboard)/my-journey/page.tsx`)
 
-- Discover salary `StatCard` + "See full progression →" link → open the modal
-  (local `useState` for open/close), replacing `onGoToUnderstand`.
-- **Remove** the inline `<SalaryProgressionChart>` from the Understand tab
-  (line ~921) and its now-unused import. `onGoToUnderstand` plumbing for salary
-  is removed if no longer used elsewhere.
-- Modal gated by the same `showsSalaryProgression(country)` check.
+- The popup already exists (`showSalaryPopup`, opened by the salary card + the
+  "See full progression →" link). Swap its body: replace
+  `<SalaryProgressionChart careerId=… />` (line ~921) with the new line+band
+  chart fed by `buildSalaryProgression(career)` (passes the career object so
+  synthesis can read `avgSalary`).
+- Keep the existing `showsSalaryProgression(country)` gate.
+- The old `SalaryProgressionChart`/`SalaryChart` bar component is left in place
+  (still exports the shared `formatSalary`); remove its import from page.tsx if
+  it becomes unused.
 
 ## Section 5 — Testing
 
