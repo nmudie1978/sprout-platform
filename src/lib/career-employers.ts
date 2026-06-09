@@ -400,6 +400,55 @@ const CATEGORY_EMPLOYERS_ES: Record<string, Employer[]> = {
 
 /** Which curated employer dataset a country maps to: Norway (incl.
  *  unknown → app default) or Spain. Others return null = no data. */
+/**
+ * Consultancy firms — these are GLOBAL employers (Oslo *and* Madrid
+ * offices), so the same set serves both Norway and Spain. They get their
+ * own list because the sector fallback would otherwise show a consultant
+ * the companies that *hire* consultants (DNB, Telefónica…) rather than
+ * the firms they'd actually work for. Stable main-site links.
+ */
+const CONSULTING_EMPLOYERS: Employer[] = [
+  { name: 'McKinsey & Company', industry: 'Strategy Consulting', size: '45,000+', careersUrl: 'https://www.mckinsey.com/careers' },
+  { name: 'Boston Consulting Group (BCG)', industry: 'Strategy Consulting', size: '32,000+', careersUrl: 'https://careers.bcg.com' },
+  { name: 'Bain & Company', industry: 'Strategy Consulting', size: '19,000+', careersUrl: 'https://www.bain.com/careers/' },
+  { name: 'Accenture', industry: 'Technology & Consulting', size: '740,000+', careersUrl: 'https://www.accenture.com' },
+  { name: 'Capgemini', industry: 'Technology Consulting', size: '340,000+', careersUrl: 'https://www.capgemini.com' },
+  { name: 'Deloitte', industry: 'Audit / Consulting', size: '450,000+', careersUrl: 'https://www.deloitte.com' },
+  { name: 'EY', industry: 'Audit / Advisory', size: '390,000+', careersUrl: 'https://www.ey.com' },
+  { name: 'KPMG', industry: 'Audit / Advisory', size: '270,000+', careersUrl: 'https://kpmg.com' },
+  { name: 'PwC', industry: 'Audit / Advisory', size: '360,000+', careersUrl: 'https://www.pwc.com' },
+  { name: 'BearingPoint', industry: 'Management & Tech Consulting', size: '5,000+', careersUrl: 'https://www.bearingpoint.com/en/careers/' },
+];
+
+/**
+ * Telecoms / TMT strategy consultancies — for the telco strategy & analyst
+ * careers, led by the sector specialists (Analysys Mason, Arthur D. Little)
+ * plus the big firms' TMT practices.
+ */
+const TELCO_CONSULTING_EMPLOYERS: Employer[] = [
+  { name: 'Analysys Mason', industry: 'Telecoms / TMT Strategy Consulting', size: '1,000+', careersUrl: 'https://www.analysysmason.com' },
+  { name: 'Arthur D. Little', industry: 'Technology & Strategy Consulting', size: '2,500+', careersUrl: 'https://www.adlittle.com' },
+  { name: 'Accenture (Communications & Media)', industry: 'Technology Consulting', size: '740,000+', careersUrl: 'https://www.accenture.com' },
+  { name: 'Capgemini Invent', industry: 'Technology Consulting', size: '340,000+', careersUrl: 'https://www.capgemini.com' },
+  { name: 'McKinsey & Company (TMT)', industry: 'Strategy Consulting', size: '45,000+', careersUrl: 'https://www.mckinsey.com/careers' },
+  { name: 'Boston Consulting Group (TMT)', industry: 'Strategy Consulting', size: '32,000+', careersUrl: 'https://careers.bcg.com' },
+];
+
+/** Careers that are primarily about *working at a consultancy* — they get
+ *  the consulting-firm list instead of the sector fallback. */
+const CONSULTING_CAREERS = new Set([
+  'management-consultant', 'senior-management-consultant', 'strategy-consultant',
+  'principal-consultant', 'consulting-partner', 'independent-consultant',
+  'transformation-consultant', 'technology-strategy-consultant',
+  'enterprise-systems-consultant', 'ai-consultant',
+]);
+
+/** Telecoms-strategy careers — the Analysys-Mason-led specialist list. */
+const TELCO_CONSULTING_CAREERS = new Set([
+  'telco-strategy-manager', 'telco-business-analyst', 'telco-pricing-analyst',
+  'telco-pmo-analyst',
+]);
+
 function employerCountry(country?: string | null): 'NO' | 'ES' | null {
   if (!country) return 'NO'; // unknown → app default is Norway
   const c = country.trim().toLowerCase();
@@ -430,15 +479,21 @@ export function getCareerEmployers(
   country?: string | null,
 ): Employer[] {
   const ec = employerCountry(country);
+  if (!ec) return [];
+
+  // Consultancies are global firms (offices in both markets), so the same
+  // list serves NO and ES. Checked before the sector fallback so a
+  // consultant sees the firms they'd work *for*, not their clients.
+  if (TELCO_CONSULTING_CAREERS.has(careerId)) return TELCO_CONSULTING_EMPLOYERS;
+  if (CONSULTING_CAREERS.has(careerId)) return CONSULTING_EMPLOYERS;
+
   if (ec === 'ES') {
     return (category && CATEGORY_EMPLOYERS_ES[category]) ? CATEGORY_EMPLOYERS_ES[category] : [];
   }
-  if (ec === 'NO') {
-    const curated = getTopEmployers(careerId);
-    if (curated.length > 0) return curated;
-    if (category && CATEGORY_EMPLOYERS[category]) return CATEGORY_EMPLOYERS[category];
-    return [];
-  }
+  // ec === 'NO'
+  const curated = getTopEmployers(careerId);
+  if (curated.length > 0) return curated;
+  if (category && CATEGORY_EMPLOYERS[category]) return CATEGORY_EMPLOYERS[category];
   return [];
 }
 
