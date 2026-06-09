@@ -90,7 +90,7 @@ export function CareerTwinView({
   const [returningDays, setReturningDays] = useState<number | null>(null);
 
   const queryClient = useQueryClient();
-  const endRef = useRef<HTMLDivElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   // Load persona + modes for the resolved career.
   useEffect(() => {
@@ -207,8 +207,12 @@ export function CareerTwinView({
   );
   const suggested = activeMode?.starterQuestions ?? [];
 
+  // Keep the latest message in view by scrolling the chat's OWN container —
+  // not scrollIntoView, which scrolls every ancestor (including the page) and
+  // yanked the whole Clarity tab to the bottom when a question was asked.
   useEffect(() => {
-    endRef.current?.scrollIntoView({ behavior: "smooth" });
+    const el = scrollRef.current;
+    if (el) el.scrollTop = el.scrollHeight;
   }, [messages, sending]);
 
   const selectMode = (id: string) => {
@@ -453,7 +457,7 @@ export function CareerTwinView({
 
         {/* Chat area — height trimmed ~20% (420→336px) when embedded in
             Clarity so the tab reads more compact; standalone keeps 420px. */}
-        <div className={cn(
+        <div ref={scrollRef} className={cn(
           "overflow-y-auto px-4 sm:px-6 py-4 space-y-4 bg-gradient-to-b from-background to-muted/20",
           embedded ? "h-[336px]" : "h-[420px]",
         )}>
@@ -525,7 +529,6 @@ export function CareerTwinView({
               )}
             </AnimatePresence>
           )}
-          <div ref={endRef} />
         </div>
 
         {/* Active-mode starter questions — keep mode chips actionable once a
