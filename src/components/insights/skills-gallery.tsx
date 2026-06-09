@@ -66,7 +66,7 @@ export function SkillsGallery() {
 
   if (isLoading) {
     return (
-      <div className="flex h-[420px] items-center justify-center text-muted-foreground/60">
+      <div className="flex h-[260px] items-center justify-center text-muted-foreground/60">
         <Loader2 className="h-5 w-5 animate-spin" />
       </div>
     );
@@ -82,7 +82,7 @@ export function SkillsGallery() {
 
   return (
     <div className="space-y-2">
-      <div className="h-[520px] w-full overflow-hidden">
+      <div className="h-[300px] w-full overflow-hidden">
         <CircularGallery items={items} />
       </div>
       <p className="text-center text-[11px] text-muted-foreground/45">
