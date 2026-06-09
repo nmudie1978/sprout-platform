@@ -702,16 +702,15 @@ function PathwayFallbackView({
           Layout mirrors the university-browser's card grid so users
           perceive Study Paths as one feature, not two. */}
       {schools.length > 0 && (
-        <div className="rounded-xl border border-border/40 bg-card/40 overflow-hidden">
-          <div className="px-4 py-2.5 border-b border-border/30 bg-muted/[0.04] flex items-center justify-between gap-2">
-            <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/60">
-              Schools offering {programmeName || 'this programme'}
-            </p>
-            <span className="text-[10px] text-muted-foreground/45 tabular-nums shrink-0">
-              {schools.length} institution{schools.length !== 1 ? 's' : ''}
-            </span>
+        <div>
+          {/* Simple table — same style as the Explore Careers list. */}
+          <div className="grid grid-cols-[1fr_6.5rem_4.5rem_5rem] items-center gap-x-4 px-3 py-1.5 border border-border/40 border-b-0 rounded-t-control bg-muted/30 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/65">
+            <span>Institution</span>
+            <span className="hidden sm:block">Location</span>
+            <span>Duration</span>
+            <span />
           </div>
-          <div className="border-t border-border/20">
+          <div className="border border-border/40 rounded-b-control overflow-hidden">
             {schools.map((school, idx) => {
               const searchQuery = programmeName ? `${school} ${programmeName}` : school;
               const url = `https://utdanning.no/sok?q=${encodeURIComponent(searchQuery)}`;
@@ -728,22 +727,22 @@ function PathwayFallbackView({
                   target="_blank"
                   rel="noopener noreferrer"
                   className={cn(
-                    'grid grid-cols-[auto_1fr_auto_auto_auto] items-center gap-x-3 px-4 py-2.5 text-[11px] hover:bg-muted/20 transition-colors',
-                    idx > 0 && 'border-t border-border/15',
+                    'grid grid-cols-[1fr_6.5rem_4.5rem_5rem] items-center gap-x-4 px-3 py-2 text-[11px] hover:bg-muted/50 transition-colors group',
+                    idx > 0 && 'border-t border-border/20',
                   )}
                 >
-                  {/* Flag */}
-                  <span className="text-sm shrink-0">{flag}</span>
-                  {/* Institution */}
-                  <span className="font-medium text-foreground/85 truncate">{school}</span>
-                  {/* City */}
-                  <span className="text-muted-foreground/60 text-[10px] hidden sm:block">{city}</span>
+                  {/* Institution (flag + name) */}
+                  <span className="flex items-center gap-2 min-w-0">
+                    <span className="text-sm shrink-0 leading-none">{flag}</span>
+                    <span className="font-medium text-foreground/85 truncate">{school}</span>
+                  </span>
+                  {/* Location */}
+                  <span className="text-muted-foreground/55 text-[10px] truncate hidden sm:block">{city || '—'}</span>
                   {/* Duration */}
-                  <span className="text-muted-foreground/60 text-[10px]">{programmeDuration}</span>
+                  <span className="text-muted-foreground/55 text-[10px] tabular-nums">{programmeDuration || '—'}</span>
                   {/* Link */}
-                  <span className="text-primary/80 text-[10px] font-medium flex items-center gap-0.5">
-                    Visit page
-                    <ChevronRight className="h-3 w-3" />
+                  <span className="text-primary/80 group-hover:text-primary text-[10px] font-medium flex items-center gap-0.5 justify-end">
+                    Visit <ChevronRight className="h-3 w-3" />
                   </span>
                 </a>
               );
