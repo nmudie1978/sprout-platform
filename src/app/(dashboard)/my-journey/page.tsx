@@ -65,7 +65,7 @@ import { CareerMythBuster } from '@/components/journey/career-myth-buster';
 import { CareerSpecialisms } from '@/components/journey/career-specialisms';
 import { hasSpecialisms } from '@/lib/career-specialisms';
 import { TopEmployers } from '@/components/journey/top-employers';
-import { SalaryProgressionChart } from '@/components/journey/salary-progression';
+import { SalaryProgressionLine } from '@/components/journey/salary-progression-line';
 import { hasCareerEmployers, getRepresentativeEmployers } from '@/lib/career-employers';
 import { hasMyths } from '@/lib/career-myths';
 import { ConfidenceTracker } from '@/components/journey/confidence-tracker';
@@ -918,7 +918,7 @@ function DiscoverTab({
                 <X className="h-4 w-4 text-muted-foreground/60" />
               </button>
             </div>
-            {showsSalaryProgression(country) && <SalaryProgressionChart careerId={career?.id ?? null} />}
+            {showsSalaryProgression(country) && <SalaryProgressionLine career={career} />}
           </div>
         </div>
       )}
