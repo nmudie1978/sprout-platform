@@ -73,6 +73,8 @@ import { ConfidenceTracker } from '@/components/journey/confidence-tracker';
 // AI Impact section removed per user request
 import type { Journey } from '@/lib/journey/career-journey-types';
 import { setUnderstandConfirmed, isUnderstandConfirmed, setDiscoverConfirmed, isDiscoverConfirmed, markClarityActive } from '@/lib/journey/lens-progress';
+import { hasCelebratedJourney, markJourneyCelebrated } from '@/lib/journey/celebration';
+import { JourneyCompleteCelebration } from '@/components/journey/journey-complete-celebration';
 import { hasAskedTwin, TWIN_ASKED_EVENT } from '@/lib/career-twin/asked-signal';
 
 const PersonalCareerTimeline = dynamic(
@@ -2935,6 +2937,17 @@ function ClarityCompletionCard({
     }
   }, [clarityComplete, careerTitle]);
 
+  // One-time "moment of arrival": when the journey completes, show the
+  // celebration once per career per device (guarded in localStorage so it
+  // never re-pops on revisit).
+  const [showCelebration, setShowCelebration] = useState(false);
+  useEffect(() => {
+    if (clarityComplete && careerId && !hasCelebratedJourney(careerId)) {
+      markJourneyCelebrated(careerId);
+      setShowCelebration(true);
+    }
+  }, [clarityComplete, careerId]);
+
   const handleDownloadReport = useCallback(async () => {
     setReportError(null);
     setIsGeneratingReport(true);
@@ -3141,6 +3154,14 @@ function ClarityCompletionCard({
         </Link>
         </div>
       )}
+
+      <JourneyCompleteCelebration
+        open={showCelebration}
+        onClose={() => setShowCelebration(false)}
+        careerTitle={careerTitle}
+        onDownload={handleDownloadReport}
+        isDownloading={isGeneratingReport}
+      />
     </div>
   );
 }
