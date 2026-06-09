@@ -787,18 +787,22 @@ function DiscoverTab({
                     <div>
                       {lcSalary ? (
                         <>
-                          <button type="button" onClick={() => setShowSalaryPopup(true)} className="w-full text-left">
-                            <StatCard label="Annual Salary" value={showsSalaryProgression(country) ? formatSalaryShort(lcSalary) : lcSalary} icon={DollarSign} accent="text-success" tooltip={showsSalaryProgression(country) ? `Typical annual gross salary in Norway: ${lcSalary.replace('/year', '')}. Tap to see full progression.` : `Typical annual gross salary: ${lcSalary.replace('/year', '')}.`} />
+                          <button
+                            type="button"
+                            onClick={() => setShowSalaryPopup(true)}
+                            aria-label={showsSalaryProgression(country) ? 'See full salary progression' : undefined}
+                            className="relative w-full text-left"
+                          >
+                            <StatCard label="Annual Salary" value={showsSalaryProgression(country) ? formatSalaryShort(lcSalary) : lcSalary} icon={DollarSign} accent="text-success" tooltip={showsSalaryProgression(country) ? `Typical annual gross salary in Norway: ${lcSalary.replace('/year', '')}. Tap to see how pay grows.` : `Typical annual gross salary: ${lcSalary.replace('/year', '')}.`} />
+                            {/* Glowing affordance — tapping the box opens the
+                                salary-progression popup (replaces the old
+                                "See full progression →" link). */}
+                            {showsSalaryProgression(country) && (
+                              <span className="absolute right-2 top-2 inline-flex h-5 w-5 items-center justify-center rounded-full bg-amber-400/15 ring-1 ring-amber-400/40 shadow-[0_0_10px_2px_rgba(251,191,36,0.45)] animate-pulse">
+                                <TrendingUp className="h-3 w-3 text-amber-300" />
+                              </span>
+                            )}
                           </button>
-                          {showsSalaryProgression(country) && (
-                            <button
-                              type="button"
-                              onClick={() => setShowSalaryPopup(true)}
-                              className="text-xs text-warning/70 hover:text-warning font-medium mt-1.5 flex items-center gap-0.5 transition-colors w-full justify-center"
-                            >
-                              See full progression →
-                            </button>
-                          )}
                         </>
                       ) : (
                         <StatCard label="Annual Salary" value={notTailored} icon={DollarSign} accent="text-muted-foreground/60" />

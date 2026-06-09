@@ -12,9 +12,11 @@
  * Fires once per career per device — see src/lib/journey/celebration.ts.
  */
 
+import { useEffect } from 'react';
 import Link from 'next/link';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { CheckCircle2, Download, Compass, ArrowRight, Loader2, X } from 'lucide-react';
+import { playCompletionChime } from '@/lib/journey/completion-chime';
 
 interface JourneyCompleteCelebrationProps {
   open: boolean;
@@ -48,6 +50,11 @@ export function JourneyCompleteCelebration({
   isDownloading,
 }: JourneyCompleteCelebrationProps) {
   const reduce = useReducedMotion();
+
+  // Play the celebratory chime once, when the modal opens.
+  useEffect(() => {
+    if (open) playCompletionChime();
+  }, [open]);
 
   return (
     <AnimatePresence>
