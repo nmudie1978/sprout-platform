@@ -6,7 +6,6 @@
  * A calm, tabbed home for the careers a user is weighing up, plus everything
  * they have saved or written:
  *  - Decision Board  — ranked "league table" of explored careers (server-backed)
- *  - Exploring       — explored journeys, grouped by sector (server-backed)
  *  - Saved careers   — hearted "curiosities" (localStorage, device-local)
  *  - Reflections     — My Journey reflections (localStorage, device-local)
  *
@@ -20,28 +19,17 @@
 import { useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { useQuery } from "@tanstack/react-query";
-import { Check, X, Star } from "lucide-react";
+import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useCuriositySaves } from "@/hooks/use-curiosity-saves";
 import { useAllInterestLevels, useInterestLevel } from "@/hooks/use-interest-level";
 import {
   InterestLevelStars,
-  InterestLevelPicker,
 } from "@/components/interest-level/interest-level-rating";
 import {
   getAllCareers,
-  getCareerById,
-  getCategoryForCareer,
   type Career,
 } from "@/lib/career-pathways";
-import { clampInterestLevel, readAllInterestLevels } from "@/lib/interest-level/types";
-import {
-  isDiscoverConfirmed,
-  isUnderstandConfirmed,
-  isClarityActive,
-} from "@/lib/journey/lens-progress";
-import { buildExploringGroups, type ExploringEntry } from "@/lib/library/exploring";
 import { DecisionBoardTab } from "@/components/decision-board/decision-board";
 import {
   resolveLibraryTab,
@@ -74,7 +62,7 @@ export default function LibraryPage() {
       <header className="mb-5">
         <h1 className="text-xl font-bold tracking-tight">My Library</h1>
         <p className="text-sm text-muted-foreground">
-          The possible futures you&apos;re considering — ranked on your Decision Board, plus the careers you&apos;re exploring and everything you&apos;ve saved and written, in one calm place.
+          The possible futures you&apos;re considering — ranked on your Decision Board, plus everything you&apos;ve saved and written, in one calm place.
         </p>
       </header>
 
@@ -106,8 +94,6 @@ export default function LibraryPage() {
         <EmptyState>Loading…</EmptyState>
       ) : active === "decision" ? (
         <DecisionBoardTab />
-      ) : active === "exploring" ? (
-        <ExploringTab />
       ) : active === "saved" ? (
         <SavedCareersTab />
       ) : (
@@ -120,177 +106,6 @@ export default function LibraryPage() {
 function EmptyState({ children }: { children: React.ReactNode }) {
   return (
     <p className="text-sm text-muted-foreground/60 py-10 text-center">{children}</p>
-  );
-}
-
-interface ExploredGoal {
-  goalId: string;
-  goalTitle: string;
-  journeyCompletedSteps: string[];
-  isActive: boolean;
-}
-
-/** Inline interest rating for an Exploring row — relocated here from the
- *  career detail sheet so users still set the ★ that powers the ranking.
- *  Writes server + localStorage and fires the sync event the parent's
- *  useAllInterestLevels listens to, so the list re-ranks on the spot. */
-function ExploringRowRating({ careerId }: { careerId: string }) {
-  const { level, setLevel, enabled } = useInterestLevel(careerId);
-  if (!enabled) return null;
-  return (
-    <InterestLevelPicker
-      value={level}
-      onChange={setLevel}
-      size="sm"
-      showLabel={false}
-      className="shrink-0"
-    />
-  );
-}
-
-/**
- * EXPLORING — the careers a user has explored in My Journey, as one ranked
- * list grouped by category. Server-authoritative: the journey list and the
- * ★ interest ratings come from the DB so they survive logout and follow the
- * user across devices. On mount it also backfills any device-local interest
- * and lens-completion the server doesn't have yet (idempotent endpoints).
- */
-function ExploringTab() {
-  const { data: session } = useSession();
-  const userId = session?.user?.id;
-  const localInterest = useAllInterestLevels();
-
-  const { data: goalsData } = useQuery({
-    queryKey: ["exploring-goals", userId],
-    enabled: !!userId,
-    queryFn: async () => {
-      const res = await fetch("/api/journey/goal-data/list");
-      if (!res.ok) throw new Error("Failed to load journeys");
-      return (await res.json()) as { goals: ExploredGoal[] };
-    },
-  });
-
-  const { data: interestData } = useQuery({
-    queryKey: ["career-interest", userId],
-    enabled: !!userId,
-    queryFn: async () => {
-      const res = await fetch("/api/career-interest");
-      if (!res.ok) throw new Error("Failed to load interest");
-      return (await res.json()) as { interests: Record<string, number> };
-    },
-  });
-
-  const goals = goalsData?.goals ?? [];
-  const serverInterest = interestData?.interests ?? {};
-  const goalsLoaded = goals.length;
-
-  // Backfill device-local signals the server hasn't captured yet. Both
-  // endpoints are idempotent (create-if-missing / union), so running on
-  // mount is safe and self-healing.
-  useEffect(() => {
-    if (!userId || typeof window === "undefined" || goalsLoaded === 0) return;
-
-    const localLevels = readAllInterestLevels(userId, window.localStorage);
-    if (Object.keys(localLevels).length > 0) {
-      void fetch("/api/career-interest/sync", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ interests: localLevels }),
-      }).catch(() => {});
-    }
-
-    const completions: Record<string, string[]> = {};
-    for (const g of goals) {
-      const steps: string[] = [];
-      if (isDiscoverConfirmed(g.goalTitle)) steps.push("discover");
-      if (isUnderstandConfirmed(g.goalTitle)) steps.push("understand");
-      if (isClarityActive(g.goalTitle)) steps.push("clarity");
-      if (steps.length > 0) completions[g.goalId] = steps;
-    }
-    if (Object.keys(completions).length > 0) {
-      void fetch("/api/journey/completion/sync", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ completions }),
-      }).catch(() => {});
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userId, goalsLoaded]);
-
-  if (userId && goalsLoaded === 0) {
-    return (
-      <EmptyState>
-        Careers you explore will show up here, ranked by how interested you are.
-      </EmptyState>
-    );
-  }
-
-  const entries: ExploringEntry[] = goals.map((g) => {
-    const career = getCareerById(g.goalId);
-    // Prefer the live local map (updates instantly when a row is rated below,
-    // and is itself server-reconciled) so the ranking re-sorts on the spot.
-    const interest = clampInterestLevel(localInterest[g.goalId] ?? serverInterest[g.goalId]);
-    const completed =
-      (g.journeyCompletedSteps ?? []).includes("clarity") || isClarityActive(g.goalTitle);
-    return {
-      careerId: g.goalId,
-      title: career?.title ?? g.goalTitle,
-      emoji: career?.emoji ?? "🧭",
-      category: getCategoryForCareer(g.goalId) ?? null,
-      interest,
-      completed,
-      isActive: g.isActive ?? false,
-    };
-  });
-
-  const groups = buildExploringGroups(entries);
-
-  const open = (careerId: string) => {
-    const career = getAllCareers().find((c) => c.id === careerId);
-    if (career)
-      window.dispatchEvent(new CustomEvent("open-career-detail", { detail: career }));
-  };
-
-  return (
-    <div className="space-y-6">
-      {groups.map((group) => (
-        <section key={group.category}>
-          <h2 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground/70 mb-2">
-            {group.label}
-          </h2>
-          <ul className="divide-y divide-border/60 rounded-control border border-border/60 overflow-hidden bg-muted/10">
-            {group.entries.map((e) => (
-              <li
-                key={e.careerId}
-                className="flex items-center gap-2 px-3 py-2.5 text-sm hover:bg-muted/40 transition-colors"
-              >
-                <button
-                  type="button"
-                  onClick={() => open(e.careerId)}
-                  className="flex items-center gap-2 flex-1 min-w-0 text-left"
-                >
-                  <span className="shrink-0">{e.emoji}</span>
-                  <span className="truncate">{e.title}</span>
-                  {e.isActive && (
-                    <span className="shrink-0 inline-flex items-center gap-1 text-xs font-medium text-amber-600 dark:text-amber-400">
-                      <Star className="h-3.5 w-3.5 fill-current" />
-                      Current goal
-                    </span>
-                  )}
-                  {e.completed && (
-                    <span className="shrink-0 inline-flex items-center gap-1 text-xs text-primary">
-                      <Check className="h-3.5 w-3.5" />
-                      Explored
-                    </span>
-                  )}
-                </button>
-                <ExploringRowRating careerId={e.careerId} />
-              </li>
-            ))}
-          </ul>
-        </section>
-      ))}
-    </div>
   );
 }
 
