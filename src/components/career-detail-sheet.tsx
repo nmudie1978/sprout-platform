@@ -26,9 +26,11 @@ import {
   Bookmark,
   BookmarkCheck,
   Sparkles,
+  Building2,
 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import type { Career } from "@/lib/career-pathways";
+import { getCategoryForCareer } from "@/lib/career-pathways";
 import type { LocalizedCareerView } from "@/lib/career-localization/types";
 import type { CareerGoal } from "@/lib/goals/types";
 import { createEmptyGoal } from "@/lib/goals/types";
@@ -36,6 +38,8 @@ import { syncGuidanceGoal } from "@/lib/guidance/rules";
 import { useCuriositySaves } from "@/hooks/use-curiosity-saves";
 import { RealVoices } from "@/components/career-voices/real-voices";
 import { CareerDepth } from "@/components/career-depth/career-depth";
+import { hasCareerEmployers } from "@/lib/career-employers";
+import { TopEmployers } from "@/components/journey/top-employers";
 
 interface CareerDetailSheetProps {
   career: Career | LocalizedCareerView | null;
@@ -94,6 +98,19 @@ export function CareerDetailSheet({
       return response.json();
     },
     enabled: !!session?.user?.id && isYouth,
+  });
+
+  // Viewer's country — drives which companies we show (NO vs ES). Rides the
+  // shared ['profile-country'] cache used across the journey, so no extra
+  // round-trip if it's already loaded.
+  const { data: countryData } = useQuery<{ country?: string | null }>({
+    queryKey: ["profile-country"],
+    queryFn: async () => {
+      const res = await fetch("/api/profile");
+      if (!res.ok) return {};
+      return res.json();
+    },
+    staleTime: 60 * 1000,
   });
 
   const primaryGoal: CareerGoal | null = goalsData?.primaryGoal || null;
@@ -313,6 +330,27 @@ export function CareerDetailSheet({
 
                 {/* Career depth — day-in-life + pay progression snapshot */}
                 <CareerDepth career={career} />
+
+                {/* Where you could work — real companies/institutions in the
+                    viewer's country (NO/ES) for this career. Links careers to
+                    actual employers right here in the radar. */}
+                {(() => {
+                  const category = getCategoryForCareer(career.id);
+                  const country = countryData?.country;
+                  if (!hasCareerEmployers(career.id, category, country)) return null;
+                  return (
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-1.5">
+                        <Building2 className="h-3.5 w-3.5 text-muted-foreground/60" />
+                        <span className="text-xs font-semibold text-foreground/80">Where you could work</span>
+                      </div>
+                      <p className="text-[10px] text-muted-foreground/55 leading-relaxed">
+                        Companies and institutions in your country where this role is common — tap for their careers page.
+                      </p>
+                      <TopEmployers careerId={career.id} category={category} country={country} />
+                    </div>
+                  );
+                })()}
 
                 {/* Actions */}
                 <div className="space-y-2">
