@@ -43,7 +43,7 @@ type SalaryChartProps = {
 
 // ── Formatter ──────────────────────────────────────────────────────
 
-function formatSalary(k: number): string {
+export function formatSalary(k: number): string {
   if (k >= 1000) {
     const m = k / 1000;
     return m % 1 === 0 ? `${m}M` : `${m.toFixed(1)}M`;

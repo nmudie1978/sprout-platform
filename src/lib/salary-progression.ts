@@ -21,6 +21,11 @@ export interface SalaryProgression {
   /** Norwegian median for context (~570k as of 2025). */
   nationalMedianK: number;
   note?: string;
+  /**
+   * True when the steps were synthesized from a career's typical salary range
+   * rather than hand-curated. Drives the "Estimated" label in the UI.
+   */
+  estimated?: boolean;
 }
 
 const NATIONAL_MEDIAN_K = 570;
@@ -170,4 +175,79 @@ export function getSalaryProgression(careerId: string): SalaryProgression | null
   return SALARY_PROGRESSIONS[careerId]
     ?? SALARY_PROGRESSIONS[ALIASES[careerId] ?? '']
     ?? null;
+}
+
+// ── Synthesis: give EVERY career a progression ─────────────────────
+//
+// Curated data exists for only ~14 archetypes. For the rest we synthesize an
+// honest, clearly-labelled "Estimated" curve from the career's typical salary
+// range (the value shown on the salary card). The range is treated as the
+// mid-career ("Established") band and scaled to four levels. Curated data
+// always wins; synthesis is the fallback. See
+// docs/superpowers/specs/2026-06-09-salary-progression-modal-design.md.
+
+/** Generic growth curve: multiplier applied to BOTH ends of the typical range. */
+const SYNTH_LEVELS: ReadonlyArray<{ label: string; years: string; mult: number }> = [
+  { label: 'Entry level', years: '0-2', mult: 0.8 },
+  { label: 'Established', years: '3-6', mult: 1.0 },
+  { label: 'Senior', years: '7-12', mult: 1.28 },
+  { label: 'Lead / Principal', years: '12+', mult: 1.55 },
+];
+
+/** Round a thousands-of-NOK value to the nearest 10k for calm, non-fake-precise numbers. */
+function round10k(k: number): number {
+  return Math.round(k / 10) * 10;
+}
+
+/**
+ * Parse a typical-salary string into a { minK, maxK } band in thousands of NOK.
+ * Handles "560,000 - 760,000 kr/year", en-dash ranges, and single values
+ * ("X kr/year" → a ±10% band around X). Returns null if no number is found.
+ */
+export function parseSalaryRangeK(salary: string | null | undefined): { minK: number; maxK: number } | null {
+  if (!salary) return null;
+  // Grab all plain numbers (strip thousands separators first).
+  const nums = salary.replace(/[,\s](?=\d)/g, '').match(/\d+(?:\.\d+)?/g);
+  if (!nums || nums.length === 0) return null;
+
+  // Normalize to thousands: a value ≥ 10000 is in kroner (→ /1000); otherwise
+  // it's already in thousands (e.g. "560k").
+  const toK = (n: number) => (n >= 10000 ? n / 1000 : n);
+  const values = nums.map((n) => toK(parseFloat(n))).filter((n) => n > 0);
+  if (values.length === 0) return null;
+
+  if (values.length === 1) {
+    const mid = values[0];
+    return { minK: round10k(mid * 0.9), maxK: round10k(mid * 1.1) };
+  }
+  const minK = Math.min(values[0], values[1]);
+  const maxK = Math.max(values[0], values[1]);
+  return { minK, maxK };
+}
+
+/** Build a 4-level estimated progression from a typical mid-career band. */
+export function synthesizeProgression(band: { minK: number; maxK: number }): SalaryProgression {
+  const steps: SalaryStep[] = SYNTH_LEVELS.map(({ label, years, mult }) => ({
+    label,
+    years,
+    minK: round10k(band.minK * mult),
+    maxK: round10k(band.maxK * mult),
+  }));
+  return { steps, nationalMedianK: NATIONAL_MEDIAN_K, estimated: true };
+}
+
+/**
+ * Salary progression for any career: curated when available (estimated: false),
+ * otherwise synthesized from the career's typical avgSalary (estimated: true).
+ * Returns null only when there is no curated data AND avgSalary is unparseable.
+ */
+export function buildSalaryProgression(
+  career: { id: string; avgSalary?: string | null },
+): SalaryProgression | null {
+  const curated = getSalaryProgression(career.id);
+  if (curated) return { ...curated, estimated: false };
+
+  const band = parseSalaryRangeK(career.avgSalary);
+  if (!band) return null;
+  return synthesizeProgression(band);
 }
