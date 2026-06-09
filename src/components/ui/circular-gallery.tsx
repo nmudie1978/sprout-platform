@@ -29,11 +29,11 @@ interface CircularGalleryProps extends HTMLAttributes<HTMLDivElement> {
  * Designed to live inside a fixed-height container (no page-scroll coupling).
  */
 const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
-  ({ items, className, radius = 460, autoRotateSpeed = 0.03, ...props }, ref) => {
+  ({ items, className, radius = 230, autoRotateSpeed = 0.03, ...props }, ref) => {
     const [rotation, setRotation] = useState(0);
     const [hovered, setHovered] = useState(false);
     const rafRef = useRef<number | null>(null);
-    const drag = useRef({ active: false, startX: 0, startRot: 0, moved: false });
+    const drag = useRef({ active: false, startX: 0, startRot: 0, moved: false, captured: false });
 
     // Auto-rotate while neither hovered nor being dragged.
     useEffect(() => {
@@ -50,26 +50,39 @@ const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
     }, [hovered, autoRotateSpeed]);
 
     const onPointerDown = (e: React.PointerEvent) => {
-      drag.current = { active: true, startX: e.clientX, startRot: rotation, moved: false };
-      try {
-        (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
-      } catch {
-        /* unsupported — drag still works without capture */
-      }
+      // Do NOT capture the pointer on a plain press: capturing makes the
+      // browser dispatch the follow-up `click` to THIS container instead of
+      // the card's <a>, so a tap never opened the link. Capture only once a
+      // real drag begins (see onPointerMove).
+      drag.current = { active: true, startX: e.clientX, startRot: rotation, moved: false, captured: false };
     };
     const onPointerMove = (e: React.PointerEvent) => {
       if (!drag.current.active) return;
       const dx = e.clientX - drag.current.startX;
-      if (Math.abs(dx) > 4) drag.current.moved = true;
+      if (Math.abs(dx) > 4) {
+        drag.current.moved = true;
+        // Start capturing now so the drag keeps tracking outside the element.
+        if (!drag.current.captured) {
+          try {
+            (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+            drag.current.captured = true;
+          } catch {
+            /* unsupported — drag still works without capture */
+          }
+        }
+      }
       setRotation(drag.current.startRot + dx * 0.3);
     };
     const endDrag = (e: React.PointerEvent) => {
       if (!drag.current.active) return;
       drag.current.active = false;
-      try {
-        (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
-      } catch {
-        /* no-op */
+      if (drag.current.captured) {
+        try {
+          (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
+        } catch {
+          /* no-op */
+        }
+        drag.current.captured = false;
       }
     };
 
@@ -84,7 +97,7 @@ const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
           "relative flex h-full w-full select-none items-center justify-center touch-pan-y",
           className,
         )}
-        style={{ perspective: "2000px" }}
+        style={{ perspective: "1200px" }}
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={endDrag}
@@ -113,14 +126,14 @@ const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
                   className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
                 />
                 {item.badge && (
-                  <span className="absolute left-2 top-2 rounded-full bg-black/55 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-white backdrop-blur-sm">
+                  <span className="absolute left-1.5 top-1.5 rounded-full bg-black/55 px-1.5 py-0.5 text-[8px] font-semibold uppercase tracking-wide text-white backdrop-blur-sm">
                     {item.badge}
                   </span>
                 )}
-                <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/85 via-black/45 to-transparent p-4 text-white">
-                  <h3 className="line-clamp-3 text-sm font-semibold leading-snug">{item.title}</h3>
+                <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/85 via-black/45 to-transparent p-2.5 text-white">
+                  <h3 className="line-clamp-2 text-[11px] font-semibold leading-snug">{item.title}</h3>
                   {item.subtitle && (
-                    <p className="mt-1 line-clamp-1 text-[11px] opacity-75">{item.subtitle}</p>
+                    <p className="mt-0.5 line-clamp-1 text-[9px] opacity-75">{item.subtitle}</p>
                   )}
                 </div>
               </div>
@@ -131,13 +144,13 @@ const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
                 key={item.id}
                 role="group"
                 aria-label={item.title}
-                className="absolute h-[300px] w-[220px]"
+                className="absolute h-[150px] w-[110px]"
                 style={{
                   transform: `rotateY(${itemAngle}deg) translateZ(${radius}px)`,
                   left: "50%",
                   top: "50%",
-                  marginLeft: "-110px",
-                  marginTop: "-150px",
+                  marginLeft: "-55px",
+                  marginTop: "-75px",
                   opacity,
                   transition: "opacity 0.3s linear",
                 }}
