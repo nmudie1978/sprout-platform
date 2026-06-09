@@ -78,14 +78,14 @@ export function BeyondBordersCarousel() {
 
   return (
     <div role="region" aria-label="Working Beyond Borders" className="space-y-3">
-      {/* Header */}
-      <div className="flex items-center justify-between">
+      {/* Header — title centred, scroll arrows pinned to the right */}
+      <div className="relative flex items-center justify-center">
         <div className="flex items-center gap-2">
           <Globe className="h-4 w-4 text-teal-500" />
           <h3 className="text-sm font-semibold">Beyond Borders</h3>
           <span className="text-[10px] text-muted-foreground/50">Global perspectives</span>
         </div>
-        <div className="flex items-center gap-1">
+        <div className="absolute right-0 flex items-center gap-1">
           <button
             onClick={() => scroll("left")}
             disabled={!canScrollLeft}
@@ -108,7 +108,7 @@ export function BeyondBordersCarousel() {
       {/* Cards */}
       <div
         ref={scrollRef}
-        className="flex gap-3 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-1"
+        className="flex gap-3 md:justify-center overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-1"
         style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
       >
         {BEYOND_BORDERS_ARTICLES.map((article) => {
@@ -117,12 +117,12 @@ export function BeyondBordersCarousel() {
             <div
               key={article.id}
               data-card
-              className="flex-shrink-0 w-[260px] snap-start rounded-xl border border-border/40 bg-card p-3 space-y-2"
+              className="flex-shrink-0 w-[260px] snap-start rounded-xl border border-border/40 bg-card p-3 space-y-2 text-center"
             >
               <h4 className="text-xs font-semibold text-foreground/85 leading-snug line-clamp-2">
                 {article.title}
               </h4>
-              <div className="flex items-start gap-2 rounded-lg bg-teal-500/5 px-2.5 py-2">
+              <div className="flex items-start justify-center gap-2 rounded-lg bg-teal-500/5 px-2.5 py-2 text-left">
                 <Lightbulb className="h-3 w-3 text-teal-500 mt-0.5 shrink-0" />
                 <p className="text-[10px] text-foreground/60 leading-relaxed line-clamp-3">
                   {article.takeaway}
