@@ -114,11 +114,12 @@ describe('EducationBrowser content (Issue 4 — positive tests)', () => {
     expect(EDUCATION_BROWSER_SOURCE).toMatch(/<StatDetail[\s\S]+?\/>/);
   });
 
-  it('renders institution cards in the fallback mode', () => {
+  it('renders the schools table in the fallback mode', () => {
     // The fallback mode builds a schools array from
-    // universityPath.examples and renders them as cards.
+    // universityPath.examples and renders them as a simple table
+    // (Institution / Location / Duration columns, Explore-Careers style).
     expect(EDUCATION_BROWSER_SOURCE).toMatch(/schools\.map/);
-    expect(EDUCATION_BROWSER_SOURCE).toMatch(/Schools offering/);
+    expect(EDUCATION_BROWSER_SOURCE).toMatch(/>Institution</);
   });
 
   it('renders filters for the main university-browser mode', () => {
