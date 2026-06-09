@@ -75,7 +75,8 @@ import type { Journey } from '@/lib/journey/career-journey-types';
 import { setUnderstandConfirmed, isUnderstandConfirmed, setDiscoverConfirmed, isDiscoverConfirmed, markClarityActive } from '@/lib/journey/lens-progress';
 import { hasCelebratedJourney, markJourneyCelebrated } from '@/lib/journey/celebration';
 import { JourneyCompleteCelebration } from '@/components/journey/journey-complete-celebration';
-import { hasAskedTwin, TWIN_ASKED_EVENT } from '@/lib/career-twin/asked-signal';
+import { useInterestLevel } from '@/hooks/use-interest-level';
+import { InterestLevelPicker } from '@/components/interest-level/interest-level-rating';
 
 const PersonalCareerTimeline = dynamic(
   () => import('@/components/journey').then((m) => m.PersonalCareerTimeline),
@@ -2876,23 +2877,15 @@ function ClarityCompletionCard({
   careerId: string | null;
   hasFoundation: boolean;
 }) {
-  // "Asked Future Me ≥1 question" — seeded from the device flag, kept live via
-  // the asked-signal event (the Twin tab is mounted in the same document).
-  const [hasAskedFutureMe, setHasAskedFutureMe] = useState(false);
+  // Interest level is the deliberate "verdict" that completes Clarity: the
+  // user decides how they feel about this path. Using Future Me no longer
+  // auto-completes the journey — it's freely available without ever
+  // triggering the celebration.
+  const { level: interestLevel, setLevel: setInterestLevel } = useInterestLevel(careerId);
+  const hasSetInterest = interestLevel != null;
   // Timed hints: nudge the user if they stall on a required step.
   const [foundationHint, setFoundationHint] = useState(false);
-  const [futureMeHint, setFutureMeHint] = useState(false);
-
-  useEffect(() => {
-    setHasAskedFutureMe(hasAskedTwin(careerId));
-    if (!careerId) return;
-    const onAsked = (e: Event) => {
-      const detail = (e as CustomEvent).detail as { careerId?: string } | undefined;
-      if (detail?.careerId === careerId) setHasAskedFutureMe(true);
-    };
-    window.addEventListener(TWIN_ASKED_EVENT, onAsked);
-    return () => window.removeEventListener(TWIN_ASKED_EVENT, onAsked);
-  }, [careerId]);
+  const [interestHint, setInterestHint] = useState(false);
 
   // Raise the foundation hint if it isn't set within 15s.
   useEffect(() => {
@@ -2904,17 +2897,17 @@ function ClarityCompletionCard({
     return () => clearTimeout(id);
   }, [hasFoundation]);
 
-  // Raise the Future Me hint if no question is asked within 20s.
+  // Raise the interest-level hint if it isn't set within 20s.
   useEffect(() => {
-    if (hasAskedFutureMe) {
-      setFutureMeHint(false);
+    if (hasSetInterest) {
+      setInterestHint(false);
       return;
     }
-    const id = setTimeout(() => setFutureMeHint(true), 20_000);
+    const id = setTimeout(() => setInterestHint(true), 20_000);
     return () => clearTimeout(id);
-  }, [hasAskedFutureMe]);
+  }, [hasSetInterest]);
 
-  const clarityComplete = hasFoundation && hasAskedFutureMe;
+  const clarityComplete = hasFoundation && hasSetInterest;
   const [isGeneratingReport, setIsGeneratingReport] = useState(false);
   const [reportError, setReportError] = useState<string | null>(null);
 
@@ -3027,27 +3020,30 @@ function ClarityCompletionCard({
         <div className="flex items-start gap-2.5">
           <span className={cn(
             'inline-flex items-center justify-center h-5 w-5 rounded-full border text-[10px] shrink-0 mt-0.5',
-            hasAskedFutureMe
+            hasSetInterest
               ? 'bg-emerald-500 border-emerald-500 text-white'
               : 'border-border/50 text-muted-foreground/40',
           )}>
-            {hasAskedFutureMe ? '✓' : '2'}
+            {hasSetInterest ? '✓' : '2'}
           </span>
           <div>
             <p className={cn(
               'text-xs font-medium',
-              hasAskedFutureMe ? 'text-foreground/70 line-through decoration-emerald-500/40' : 'text-foreground/85',
+              hasSetInterest ? 'text-foreground/70 line-through decoration-emerald-500/40' : 'text-foreground/85',
             )}>
-              Ask Future Me a question
+              Set your interest level
             </p>
             <p className="text-[10px] text-muted-foreground/50">
-              {hasAskedFutureMe
-                ? 'You\'ve spoken with Future You — that\'s what Clarity is about.'
-                : 'Open the "Ask Future Me" tab above and ask one question about this path.'}
+              {hasSetInterest
+                ? 'You\'ve rated how this path feels for you — that\'s your Clarity verdict.'
+                : 'How do you feel about this path now? Rate your interest to finish Clarity.'}
             </p>
-            {!hasAskedFutureMe && futureMeHint && (
+            <div className="mt-2">
+              <InterestLevelPicker value={interestLevel} onChange={setInterestLevel} size="sm" />
+            </div>
+            {!hasSetInterest && interestHint && (
               <p className="mt-1 text-[10px] font-medium text-amber-400/90">
-                ↑ Ask Future Me one question in the tab above — even a small one — to finish Clarity.
+                ↑ Tap a star to rate your interest in this career — that completes Clarity.
               </p>
             )}
           </div>
