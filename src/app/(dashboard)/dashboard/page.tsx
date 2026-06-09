@@ -578,18 +578,15 @@ export default function DashboardPage() {
       return response.json();
     },
     enabled: session?.user.role === "YOUTH",
-    // Fresh-enough for the dashboard view. Previously this had
-    // staleTime: 0 + refetchOnMount: "always" + refetchOnWindowFocus:
-    // true — that combination hammered the API every tab switch.
-    // Cross-page mutations that actually change the explored-goals
-    // set (remove journey, switch goal) already invalidate this key
-    // explicitly via queryClient.invalidateQueries, so a 2-minute
-    // stale window doesn't hide real updates — it only suppresses
-    // the spurious refetches on passive tab switches. Default
-    // refetchOnMount (true) means mount triggers a refetch only
-    // when data is stale, which is what we want.
-    staleTime: 2 * 60 * 1000,
-    refetchOnWindowFocus: false,
+    // Near-real-time, matching the saved-content query above. Exploring a NEW
+    // journey in My Journey doesn't invalidate this key (it's a different
+    // route), so the old 2-minute stale window meant returning to the
+    // dashboard showed stale data until a full page reload. A 10s stale window
+    // + refetch-on-focus means returning to the dashboard or refocusing the
+    // tab refetches immediately, while still ignoring rapid (<10s) tab flips.
+    staleTime: 10 * 1000,
+    refetchOnMount: "always",
+    refetchOnWindowFocus: true,
   });
 
   const queryClient = useQueryClient();
