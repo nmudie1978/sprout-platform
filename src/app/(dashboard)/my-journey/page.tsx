@@ -992,8 +992,8 @@ function UnderstandTab({
   const [openSection, setOpenSection] = useState<string | null>(null);
   const [selectedRow, setSelectedRow] = useState<number | null>(null);
   const { isCollapsed: uCollapsed, toggle: uToggle } = useSectionCollapse(
-    ['u-role', 'u-day', 'u-myths', 'u-salary', 'u-education-pathway', 'u-specialisms', 'u-notes'],
-    ['u-myths'], // collapsed by default — supplementary sections
+    ['u-role', 'u-day', 'u-education-pathway', 'u-specialisms', 'u-notes'],
+    [], // none collapsed by default (Misconceptions + employers are now tabs)
   );
 
   if (!career || !goalTitle) {
@@ -1038,7 +1038,7 @@ function UnderstandTab({
         {!uCollapsed('u-role') && (
           <div className="p-4 sm:p-5">
             <Tabs defaultValue="tasks" className="w-full">
-              <TabsList className="grid w-full grid-cols-3 h-auto p-0 bg-transparent gap-0 border-b border-border/40 rounded-none">
+              <TabsList className={cn('grid w-full h-auto p-0 bg-transparent gap-0 border-b border-border/40 rounded-none', career?.id && hasMyths(career.id) ? 'grid-cols-4' : 'grid-cols-3')}>
                 <TabsTrigger value="tasks" className="relative rounded-none border-0 bg-transparent px-4 py-3.5 text-sm font-semibold text-muted-foreground/65 hover:text-foreground/85 transition-colors data-[state=active]:bg-muted/20 data-[state=active]:text-foreground data-[state=active]:shadow-none after:content-[''] after:absolute after:left-0 after:right-0 after:-bottom-px after:h-0.5 after:bg-primary after:scale-x-0 after:transition-transform after:duration-200 data-[state=active]:after:scale-x-100">
                   <span className="inline-flex items-center gap-2"><Briefcase className="h-4 w-4" />What You&apos;ll Do</span>
                 </TabsTrigger>
@@ -1048,6 +1048,11 @@ function UnderstandTab({
                 <TabsTrigger value="tools" className="relative rounded-none border-0 bg-transparent px-4 py-3.5 text-sm font-semibold text-muted-foreground/65 hover:text-foreground/85 transition-colors data-[state=active]:bg-muted/20 data-[state=active]:text-foreground data-[state=active]:shadow-none after:content-[''] after:absolute after:left-0 after:right-0 after:-bottom-px after:h-0.5 after:bg-primary after:scale-x-0 after:transition-transform after:duration-200 data-[state=active]:after:scale-x-100">
                   <span className="inline-flex items-center gap-2"><Wrench className="h-4 w-4" />Tools</span>
                 </TabsTrigger>
+                {career?.id && hasMyths(career.id) && (
+                  <TabsTrigger value="myths" className="relative rounded-none border-0 bg-transparent px-4 py-3.5 text-sm font-semibold text-muted-foreground/65 hover:text-foreground/85 transition-colors data-[state=active]:bg-muted/20 data-[state=active]:text-foreground data-[state=active]:shadow-none after:content-[''] after:absolute after:left-0 after:right-0 after:-bottom-px after:h-0.5 after:bg-primary after:scale-x-0 after:transition-transform after:duration-200 data-[state=active]:after:scale-x-100">
+                    <span className="inline-flex items-center gap-2"><Shield className="h-4 w-4" />Misconceptions</span>
+                  </TabsTrigger>
+                )}
               </TabsList>
 
               <TabsContent value="tasks" className="mt-6">
@@ -1153,6 +1158,12 @@ function UnderstandTab({
                   <p className="text-xs text-muted-foreground/40">No specific tools listed for this career yet.</p>
                 )}
               </TabsContent>
+
+              {career?.id && hasMyths(career.id) && (
+                <TabsContent value="myths" className="mt-6">
+                  <CareerMythBuster careerId={career.id} />
+                </TabsContent>
+              )}
             </Tabs>
           </div>
         )}
@@ -1165,92 +1176,110 @@ function UnderstandTab({
           geography signal lives next to the Real Career Paths content
           it contextualises. */}
 
-      {/* ── MIDDLE: A Typical Day — horizontal timeline ── */}
+      {/* ── A Typical Day + Where People Work as one tabbed card. The day
+          timeline and the real places people work read back-to-back ("what's
+          the day like?" → "where would I do it?"), so they share a card. The
+          "Where People Work" tab only appears when we have employer data;
+          otherwise the card is just the day timeline (no tabs). ── */}
       <SectionCard accent="blue">
-        <SectionHeader icon={Clock} title="A Typical Day" tooltip="What a real working day looks like in this role — morning, midday, and afternoon — so you can picture yourself in it." collapsed={uCollapsed('u-day')} onToggle={() => uToggle('u-day')} />
-        {uCollapsed('u-day') ? null : detailsLoading ? <div className="p-4"><LoadingSkeleton /></div> : details && details.typicalDay.morning.length > 0 ? (
-          <div className="p-4 sm:p-5">
-            <div className="relative">
-              {/* Horizontal connector line */}
-              <div className="absolute top-[14px] left-0 right-0 h-px bg-accent/40 hidden sm:block" />
+        <SectionHeader icon={Clock} title="Day & Workplace" tooltip="What a real working day looks like in this role — and the kinds of places people do this job." collapsed={uCollapsed('u-day')} onToggle={() => uToggle('u-day')} />
+        {!uCollapsed('u-day') && (() => {
+          const showEmployers = !!career?.id && hasCareerEmployers(career.id, detailsData?.category, educationCountry);
 
-              {/* Three columns */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-3">
-                {([
-                  { label: 'Morning', time: '08:00 – 12:00', items: details.typicalDay.morning, icon: '🌅', dotClass: 'bg-warning', bgClass: 'bg-warning/[0.06]', borderClass: 'border-warning/15' },
-                  { label: 'Midday', time: '12:00 – 14:00', items: details.typicalDay.midday, icon: '☀️', dotClass: 'bg-info', bgClass: 'bg-info/[0.06]', borderClass: 'border-info/15' },
-                  { label: 'Afternoon', time: '14:00 – 17:00', items: details.typicalDay.afternoon, icon: '🌆', dotClass: 'bg-accent', bgClass: 'bg-accent/[0.06]', borderClass: 'border-accent/15' },
-                ] as const).map(({ label, time, items, icon, dotClass, bgClass, borderClass }) => (
-                  <div key={label} className="flex flex-col items-center">
-                    {/* Timeline node */}
-                    <div className="hidden sm:flex items-center justify-center mb-3 z-10">
-                      <div className={cn('h-[10px] w-[10px] rounded-full ring-2 ring-background', dotClass)} />
-                    </div>
+          const dayContent = detailsLoading ? (
+            <LoadingSkeleton />
+          ) : details && details.typicalDay.morning.length > 0 ? (
+            <>
+              <div className="relative">
+                {/* Horizontal connector line */}
+                <div className="absolute top-[14px] left-0 right-0 h-px bg-accent/40 hidden sm:block" />
 
-                    {/* Card */}
-                    <div className={cn('w-full rounded-card border p-3.5', bgClass, borderClass)}>
-                      <div className="flex items-center justify-between mb-2.5">
-                        <div className="flex items-center gap-2">
-                          <span className="text-base leading-none">{icon}</span>
-                          <span className="text-xs font-semibold text-foreground/85">{label}</span>
-                        </div>
-                        <span className="text-xs text-muted-foreground/45 tabular-nums font-medium">{time}</span>
+                {/* Three columns */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-3">
+                  {([
+                    { label: 'Morning', time: '08:00 – 12:00', items: details.typicalDay.morning, icon: '🌅', dotClass: 'bg-warning', bgClass: 'bg-warning/[0.06]', borderClass: 'border-warning/15' },
+                    { label: 'Midday', time: '12:00 – 14:00', items: details.typicalDay.midday, icon: '☀️', dotClass: 'bg-info', bgClass: 'bg-info/[0.06]', borderClass: 'border-info/15' },
+                    { label: 'Afternoon', time: '14:00 – 17:00', items: details.typicalDay.afternoon, icon: '🌆', dotClass: 'bg-accent', bgClass: 'bg-accent/[0.06]', borderClass: 'border-accent/15' },
+                  ] as const).map(({ label, time, items, icon, dotClass, bgClass, borderClass }) => (
+                    <div key={label} className="flex flex-col items-center">
+                      {/* Timeline node */}
+                      <div className="hidden sm:flex items-center justify-center mb-3 z-10">
+                        <div className={cn('h-[10px] w-[10px] rounded-full ring-2 ring-background', dotClass)} />
                       </div>
-                      <div className="space-y-1.5">
-                        {items.map((item, i) => (
-                          <div key={i} className="flex items-start gap-2.5">
-                            <div className={cn('h-1.5 w-1.5 rounded-pill mt-[5px] shrink-0 opacity-60', dotClass)} />
-                            <span className="text-xs text-foreground/65 leading-relaxed">{item}</span>
+
+                      {/* Card */}
+                      <div className={cn('w-full rounded-card border p-3.5', bgClass, borderClass)}>
+                        <div className="flex items-center justify-between mb-2.5">
+                          <div className="flex items-center gap-2">
+                            <span className="text-base leading-none">{icon}</span>
+                            <span className="text-xs font-semibold text-foreground/85">{label}</span>
                           </div>
-                        ))}
+                          <span className="text-xs text-muted-foreground/45 tabular-nums font-medium">{time}</span>
+                        </div>
+                        <div className="space-y-1.5">
+                          {items.map((item, i) => (
+                            <div key={i} className="flex items-start gap-2.5">
+                              <div className={cn('h-1.5 w-1.5 rounded-pill mt-[5px] shrink-0 opacity-60', dotClass)} />
+                              <span className="text-xs text-foreground/65 leading-relaxed">{item}</span>
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
-            </div>
 
-            {/* Environment footer */}
-            {details.typicalDay.environment && (
-              <div className="flex items-center gap-2.5 mt-3 px-3 py-2 rounded-control bg-muted/[0.06] border border-border/15">
-                <MapPin className="h-3 w-3 text-muted-foreground/40 shrink-0" />
-                <span className="text-xs text-muted-foreground/55 leading-relaxed">{details.typicalDay.environment}</span>
-              </div>
-            )}
+              {/* Environment footer */}
+              {details.typicalDay.environment && (
+                <div className="flex items-center gap-2.5 mt-3 px-3 py-2 rounded-control bg-muted/[0.06] border border-border/15">
+                  <MapPin className="h-3 w-3 text-muted-foreground/40 shrink-0" />
+                  <span className="text-xs text-muted-foreground/55 leading-relaxed">{details.typicalDay.environment}</span>
+                </div>
+              )}
 
-            {/* Example employer — grounds the day in a real Norwegian
-                place to work (e.g. a telecoms engineer at Telenor). */}
-            {exampleEmployers.length > 0 && (
-              <div className="flex items-center gap-2.5 mt-2 px-3 py-2 rounded-control bg-muted/[0.06] border border-border/15">
-                <Building2 className="h-3 w-3 text-muted-foreground/40 shrink-0" />
-                <span className="text-xs text-muted-foreground/55 leading-relaxed">
-                  Typically somewhere like{' '}
-                  <span className="text-foreground/70 font-medium">{exampleEmployers.join(' or ')}</span>
-                </span>
-              </div>
-            )}
-          </div>
-        ) : (
-          <div className="p-4"><p className="text-xs text-muted-foreground/40">Daily schedule details not available for this career yet.</p></div>
-        )}
+              {/* Example employer — grounds the day in a real place to work. */}
+              {exampleEmployers.length > 0 && (
+                <div className="flex items-center gap-2.5 mt-2 px-3 py-2 rounded-control bg-muted/[0.06] border border-border/15">
+                  <Building2 className="h-3 w-3 text-muted-foreground/40 shrink-0" />
+                  <span className="text-xs text-muted-foreground/55 leading-relaxed">
+                    Typically somewhere like{' '}
+                    <span className="text-foreground/70 font-medium">{exampleEmployers.join(' or ')}</span>
+                  </span>
+                </div>
+              )}
+            </>
+          ) : (
+            <p className="text-xs text-muted-foreground/40">Daily schedule details not available for this career yet.</p>
+          );
 
-      </SectionCard>
+          // No employer data → just the day timeline, no tabs.
+          if (!showEmployers) {
+            return <div className="p-4 sm:p-5">{dayContent}</div>;
+          }
 
-      {/* ── Where People Work — curated employer list where we have one,
-          otherwise the career's sector-level employers, so careers
-          without a hand-curated list still show real, linked places to
-          work. Hidden only when neither the career nor its category is
-          known. ── */}
-      {career?.id && hasCareerEmployers(career.id, detailsData?.category, educationCountry) && (
-        <SectionCard>
-          <SectionHeader icon={Building2} title="Where People Work" tooltip="Companies and institutions in your country where this kind of role is common — with links to their careers pages." collapsed={uCollapsed('u-salary')} onToggle={() => uToggle('u-salary')} />
-          {!uCollapsed('u-salary') && (
+          return (
             <div className="p-4 sm:p-5">
-              <TopEmployers careerId={career.id} category={detailsData?.category} country={educationCountry} />
+              <Tabs defaultValue="day" className="w-full">
+                <TabsList className="grid w-full grid-cols-2 h-auto p-0 bg-transparent gap-0 border-b border-border/40 rounded-none">
+                  <TabsTrigger value="day" className="relative rounded-none border-0 bg-transparent px-4 py-3.5 text-sm font-semibold text-muted-foreground/65 hover:text-foreground/85 transition-colors data-[state=active]:bg-muted/20 data-[state=active]:text-foreground data-[state=active]:shadow-none after:content-[''] after:absolute after:left-0 after:right-0 after:-bottom-px after:h-0.5 after:bg-primary after:scale-x-0 after:transition-transform after:duration-200 data-[state=active]:after:scale-x-100">
+                    <span className="inline-flex items-center gap-2"><Clock className="h-4 w-4" />A Typical Day</span>
+                  </TabsTrigger>
+                  <TabsTrigger value="employers" className="relative rounded-none border-0 bg-transparent px-4 py-3.5 text-sm font-semibold text-muted-foreground/65 hover:text-foreground/85 transition-colors data-[state=active]:bg-muted/20 data-[state=active]:text-foreground data-[state=active]:shadow-none after:content-[''] after:absolute after:left-0 after:right-0 after:-bottom-px after:h-0.5 after:bg-primary after:scale-x-0 after:transition-transform after:duration-200 data-[state=active]:after:scale-x-100">
+                    <span className="inline-flex items-center gap-2"><Building2 className="h-4 w-4" />Where People Work</span>
+                  </TabsTrigger>
+                </TabsList>
+
+                <TabsContent value="day" className="mt-6">{dayContent}</TabsContent>
+
+                <TabsContent value="employers" className="mt-6">
+                  <TopEmployers careerId={career!.id} category={detailsData?.category} country={educationCountry} />
+                </TabsContent>
+              </Tabs>
             </div>
-          )}
-        </SectionCard>
-      )}
+          );
+        })()}
+      </SectionCard>
 
       {/* ── Education Pathway — School Readiness + Study Path as tabs
           inside a single card. The two sections used to live as two
@@ -1739,24 +1768,8 @@ function UnderstandTab({
         );
       })()}
 
-      {/* ── Common Misconceptions — only rendered when we have curated myths
-          for this career, so careers without them don't show an empty
-          section. ── */}
-      {(() => {
-        const cid = career?.id ?? null;
-        const showMyths = cid ? hasMyths(cid) : false;
-        if (!showMyths) return null;
-        return (
-          <SectionCard>
-            <SectionHeader icon={Shield} title="Common Misconceptions" collapsed={uCollapsed('u-myths')} onToggle={() => uToggle('u-myths')} />
-            {!uCollapsed('u-myths') && (
-              <div className="p-4 sm:p-5">
-                <CareerMythBuster careerId={cid} />
-              </div>
-            )}
-          </SectionCard>
-        );
-      })()}
+      {/* Common Misconceptions now lives as the "Misconceptions" tab inside
+          the "Inside the Role" card above (alongside "What You'll Do"). */}
 
       {/* ── Where This Can Lead — specialism branches the career splits into
           after the core training (e.g. psychologist → clinical / child /
