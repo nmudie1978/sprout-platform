@@ -370,14 +370,16 @@ export default function IndustryInsightsPage() {
         transition={{ duration: 0.5, delay: 0.8 }}
         className="mt-8 p-5 rounded-control bg-muted/20 border"
       >
-        <div className="flex items-start gap-3">
-          <Calendar className="h-4 w-4 text-muted-foreground mt-0.5 flex-shrink-0" />
+        <div className="flex flex-col items-center text-center gap-2">
+          <div className="flex items-center gap-2">
+            <Calendar className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+            <p className="font-medium text-sm">{t("aboutData")}</p>
+          </div>
           <div>
-            <p className="font-medium text-sm mb-1">{t("aboutData")}</p>
-            <p className="text-xs text-muted-foreground mb-2">
+            <p className="text-xs text-muted-foreground mb-2 max-w-xl">
               {t("aboutDataDesc")}
             </p>
-            <div className="flex flex-wrap gap-2 text-xs">
+            <div className="flex flex-wrap justify-center gap-2 text-xs">
               {[
                 { name: "WEF", url: "https://www.weforum.org" },
                 { name: "ILO", url: "https://www.ilo.org" },
