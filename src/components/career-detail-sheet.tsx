@@ -36,7 +36,6 @@ import type { CareerGoal } from "@/lib/goals/types";
 import { createEmptyGoal } from "@/lib/goals/types";
 import { syncGuidanceGoal } from "@/lib/guidance/rules";
 import { useCuriositySaves } from "@/hooks/use-curiosity-saves";
-import { RealVoices } from "@/components/career-voices/real-voices";
 import { CareerDepth } from "@/components/career-depth/career-depth";
 import { hasCareerEmployers } from "@/lib/career-employers";
 import { TopEmployers } from "@/components/journey/top-employers";
@@ -429,9 +428,6 @@ export function CareerDetailSheet({
                     {justSetGoal ? "Maybe later" : "Close"}
                   </Button>
                 </div>
-
-                {/* Real voices — moderated real-human stories + contributions */}
-                <RealVoices career={career} />
               </div>
             </div>
           )}
