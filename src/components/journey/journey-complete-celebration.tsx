@@ -24,13 +24,20 @@ interface JourneyCompleteCelebrationProps {
   isDownloading?: boolean;
 }
 
-// Sparse, gentle sparkles — a handful, not a burst. [x%, y%, delay].
-const SPARKS: ReadonlyArray<[number, number, number]> = [
-  [12, 24, 0.15],
-  [86, 30, 0.28],
-  [22, 74, 0.34],
-  [78, 70, 0.2],
-  [50, 8, 0.4],
+// Sparkles fanning out around the checkmark. [x%, y%, delay, driftX, driftY].
+// Positions can exceed 0–100% so they spread beyond the icon box into the
+// upper card. driftX/driftY (px) push each one outward as it fades.
+const SPARKS: ReadonlyArray<[number, number, number, number, number]> = [
+  [10, 18, 0.05, -22, -14],
+  [90, 22, 0.12, 22, -12],
+  [-8, 50, 0.18, -26, 2],
+  [108, 48, 0.1, 26, 4],
+  [20, 86, 0.24, -18, 18],
+  [80, 82, 0.16, 18, 18],
+  [48, -10, 0.3, 0, -22],
+  [50, 108, 0.28, 0, 22],
+  [30, 4, 0.2, -12, -18],
+  [70, 6, 0.08, 12, -18],
 ];
 
 export function JourneyCompleteCelebration({
@@ -92,14 +99,14 @@ export function JourneyCompleteCelebration({
               </motion.div>
 
               {!reduce &&
-                SPARKS.map(([left, top, delay], i) => (
+                SPARKS.map(([left, top, delay, dx, dy], i) => (
                   <motion.span
                     key={i}
-                    className="absolute h-1.5 w-1.5 rounded-full bg-emerald-300"
+                    className="absolute h-2.5 w-2.5 rounded-full bg-emerald-200 shadow-[0_0_8px_2px_rgba(52,211,153,0.7)]"
                     style={{ left: `${left}%`, top: `${top}%` }}
-                    initial={{ scale: 0, opacity: 0 }}
-                    animate={{ scale: [0, 1, 0], opacity: [0, 1, 0], y: [-2, -10] }}
-                    transition={{ duration: 1, delay, ease: 'easeOut' }}
+                    initial={{ scale: 0, opacity: 0, x: 0, y: 0 }}
+                    animate={{ scale: [0, 1.4, 1, 0], opacity: [0, 1, 1, 0], x: [0, dx], y: [0, dy] }}
+                    transition={{ duration: 1.5, delay, ease: 'easeOut' }}
                   />
                 ))}
             </div>
