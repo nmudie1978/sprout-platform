@@ -473,6 +473,72 @@ export function employersApplyTo(country?: string | null): boolean {
  * sector-level Spanish employers. Returns [] for countries without
  * data, or when neither the career nor its category is known.
  */
+/**
+ * Emergency / law-enforcement careers have *specific* employers (a police
+ * officer works at Politiet, not NAV or Skatteetaten), but they all sit in
+ * the broad PUBLIC_SERVICE_SAFETY category — so without an override they
+ * inherit the generic public-sector list. These are country-specific
+ * institutions, so each career has a NO and an ES list. Checked before the
+ * sector fallback. Stable main-site links.
+ */
+const SAFETY_EMPLOYERS: Record<string, { NO: Employer[]; ES: Employer[] }> = {
+  'police-officer': {
+    NO: [
+      { name: 'Politiet', industry: 'Police', size: '17,000+', careersUrl: 'https://www.politiet.no/jobb' },
+      { name: 'Politiets sikkerhetstjeneste (PST)', industry: 'Security Police', size: '900+', careersUrl: 'https://www.pst.no' },
+      { name: 'Politihøgskolen', industry: 'Police Education', size: '400+', careersUrl: 'https://www.politihogskolen.no' },
+    ],
+    ES: [
+      { name: 'Policía Nacional', industry: 'National Police', size: '65,000+', careersUrl: 'https://www.policia.es' },
+      { name: 'Guardia Civil', industry: 'Gendarmerie', size: '75,000+', careersUrl: 'https://www.guardiacivil.es' },
+      { name: "Mossos d'Esquadra", industry: 'Regional Police (Catalonia)', size: '17,000+', careersUrl: 'https://mossos.gencat.cat' },
+      { name: 'Ertzaintza', industry: 'Regional Police (Basque Country)', size: '8,000+', careersUrl: 'https://www.ertzaintza.euskadi.eus' },
+    ],
+  },
+  firefighter: {
+    NO: [
+      { name: 'Oslo brann- og redningsetat', industry: 'Fire & Rescue', size: '600+', careersUrl: 'https://www.oslo.kommune.no' },
+      { name: 'Bergen brannvesen', industry: 'Fire & Rescue', size: '400+', careersUrl: 'https://www.bergen.kommune.no' },
+      { name: 'DSB (samfunnssikkerhet og beredskap)', industry: 'Civil Protection', size: '700+', careersUrl: 'https://www.dsb.no' },
+    ],
+    ES: [
+      { name: 'Bomberos de Madrid', industry: 'Fire & Rescue', size: '1,500+', careersUrl: 'https://www.madrid.es' },
+      { name: 'Bombers de Barcelona', industry: 'Fire & Rescue', size: '700+', careersUrl: 'https://www.barcelona.cat' },
+      { name: 'Protección Civil', industry: 'Civil Protection', size: '2,000+', careersUrl: 'https://www.proteccioncivil.es' },
+    ],
+  },
+  'customs-officer': {
+    NO: [{ name: 'Tolletaten', industry: 'Customs', size: '1,900+', careersUrl: 'https://www.toll.no' }],
+    ES: [{ name: 'Agencia Tributaria (Aduanas)', industry: 'Customs / Tax', size: '25,000+', careersUrl: 'https://www.agenciatributaria.es' }],
+  },
+  'corrections-officer': {
+    NO: [{ name: 'Kriminalomsorgen', industry: 'Correctional Service', size: '4,500+', careersUrl: 'https://www.kriminalomsorgen.no' }],
+    ES: [{ name: 'Instituciones Penitenciarias', industry: 'Prison Service', size: '24,000+', careersUrl: 'https://www.institucionpenitenciaria.es' }],
+  },
+  'probation-officer': {
+    NO: [{ name: 'Kriminalomsorgen', industry: 'Correctional Service', size: '4,500+', careersUrl: 'https://www.kriminalomsorgen.no' }],
+    ES: [{ name: 'Instituciones Penitenciarias', industry: 'Prison Service', size: '24,000+', careersUrl: 'https://www.institucionpenitenciaria.es' }],
+  },
+  'coast-guard-officer': {
+    NO: [{ name: 'Kystvakten (Forsvaret)', industry: 'Coast Guard / Armed Forces', size: '23,000+', careersUrl: 'https://www.forsvaret.no/jobb' }],
+    ES: [
+      { name: 'Salvamento Marítimo', industry: 'Maritime Rescue', size: '1,500+', careersUrl: 'https://www.salvamentomaritimo.es' },
+      { name: 'Guardia Civil (Servicio Marítimo)', industry: 'Maritime Police', size: '75,000+', careersUrl: 'https://www.guardiacivil.es' },
+    ],
+  },
+  'immigration-officer': {
+    NO: [
+      { name: 'UDI (Utlendingsdirektoratet)', industry: 'Immigration', size: '1,200+', careersUrl: 'https://www.udi.no' },
+      { name: 'Politiet', industry: 'Police (border control)', size: '17,000+', careersUrl: 'https://www.politiet.no/jobb' },
+    ],
+    ES: [{ name: 'Policía Nacional (Extranjería)', industry: 'Immigration Police', size: '65,000+', careersUrl: 'https://www.policia.es' }],
+  },
+  'civil-defence-officer': {
+    NO: [{ name: 'DSB / Sivilforsvaret', industry: 'Civil Protection', size: '700+', careersUrl: 'https://www.dsb.no' }],
+    ES: [{ name: 'Protección Civil', industry: 'Civil Protection', size: '2,000+', careersUrl: 'https://www.proteccioncivil.es' }],
+  },
+};
+
 export function getCareerEmployers(
   careerId: string,
   category?: string | null,
@@ -486,6 +552,10 @@ export function getCareerEmployers(
   // consultant sees the firms they'd work *for*, not their clients.
   if (TELCO_CONSULTING_CAREERS.has(careerId)) return TELCO_CONSULTING_EMPLOYERS;
   if (CONSULTING_CAREERS.has(careerId)) return CONSULTING_EMPLOYERS;
+
+  // Emergency / law-enforcement careers → their real institutions (per
+  // country), not the generic public-sector list (NAV/Skatteetaten…).
+  if (SAFETY_EMPLOYERS[careerId]) return SAFETY_EMPLOYERS[careerId][ec];
 
   if (ec === 'ES') {
     return (category && CATEGORY_EMPLOYERS_ES[category]) ? CATEGORY_EMPLOYERS_ES[category] : [];

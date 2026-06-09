@@ -150,3 +150,35 @@ describe("consulting employers", () => {
     }
   });
 });
+
+describe("emergency / law-enforcement employers", () => {
+  it("a police officer sees Politiet — NOT NAV/Skatteetaten — in Norway", () => {
+    const e = getCareerEmployers("police-officer", "PUBLIC_SERVICE_SAFETY", "Norway");
+    const names = e.map((x) => x.name).join(" ");
+    expect(names).toMatch(/Politiet/);
+    expect(names).not.toMatch(/NAV|Skatteetaten|Oslo kommune/);
+  });
+
+  it("a police officer sees the national/regional forces in Spain", () => {
+    const e = getCareerEmployers("police-officer", "PUBLIC_SERVICE_SAFETY", "Spain");
+    const names = e.map((x) => x.name).join(" ");
+    expect(names).toMatch(/Policía Nacional|Guardia Civil|Mossos/);
+    expect(names).not.toMatch(/Administración General|Ayuntamiento/);
+  });
+
+  it("firefighter / customs / corrections get their own institutions (NO + ES)", () => {
+    expect(getCareerEmployers("firefighter", "PUBLIC_SERVICE_SAFETY", "Norway").map(e=>e.name).join(" ")).toMatch(/brann|DSB/i);
+    expect(getCareerEmployers("customs-officer", "PUBLIC_SERVICE_SAFETY", "Norway")[0].name).toBe("Tolletaten");
+    expect(getCareerEmployers("corrections-officer", "PUBLIC_SERVICE_SAFETY", "Spain")[0].name).toMatch(/Penitenciarias/);
+  });
+
+  it("every safety employer has a valid https link, both countries", () => {
+    for (const c of ["police-officer", "firefighter", "coast-guard-officer", "immigration-officer"]) {
+      for (const country of ["Norway", "Spain"]) {
+        const e = getCareerEmployers(c, "PUBLIC_SERVICE_SAFETY", country);
+        expect(e.length).toBeGreaterThan(0);
+        for (const emp of e) expect(emp.careersUrl as string).toMatch(/^https:\/\//);
+      }
+    }
+  });
+});
