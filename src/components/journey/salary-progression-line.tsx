@@ -40,6 +40,20 @@ type Row = {
   range: [number, number];
 };
 
+/**
+ * X-axis tick that anchors the first label to the start and the last to the
+ * end, so long end-labels ("Lead / Principal", "Senior / Overlege") don't clip
+ * at the chart edges. Middle labels stay centred.
+ */
+function XTick({ x, y, payload, index, count }: any) {
+  const anchor = index === 0 ? 'start' : index === count - 1 ? 'end' : 'middle';
+  return (
+    <text x={x} y={y + 10} textAnchor={anchor} fill="hsl(215, 10%, 55%)" fontSize={9}>
+      {payload.value}
+    </text>
+  );
+}
+
 function LineTooltip({ active, payload }: any) {
   if (!active || !payload?.length) return null;
   const d = payload[0].payload as Row;
@@ -111,7 +125,7 @@ export function SalaryProgressionLine({ career }: SalaryProgressionLineProps) {
             <CartesianGrid strokeDasharray="3 3" stroke="hsl(220, 15%, 18%)" vertical={false} />
             <XAxis
               dataKey="level"
-              tick={{ fontSize: 9, fill: 'hsl(215, 10%, 55%)' }}
+              tick={<XTick count={rows.length} />}
               tickLine={false}
               axisLine={false}
               interval={0}
