@@ -73,6 +73,8 @@ import type { Journey } from '@/lib/journey/career-journey-types';
 import { setUnderstandConfirmed, isUnderstandConfirmed, setDiscoverConfirmed, isDiscoverConfirmed, markClarityActive } from '@/lib/journey/lens-progress';
 import { hasCelebratedJourney, markJourneyCelebrated } from '@/lib/journey/celebration';
 import { JourneyCompleteCelebration } from '@/components/journey/journey-complete-celebration';
+import { useInterestLevel } from '@/hooks/use-interest-level';
+import { InterestLevelPicker } from '@/components/interest-level/interest-level-rating';
 
 const PersonalCareerTimeline = dynamic(
   () => import('@/components/journey').then((m) => m.PersonalCareerTimeline),
@@ -2890,11 +2892,14 @@ function ClarityCompletionCard({
   careerId: string | null;
   hasFoundation: boolean;
 }) {
-  // Filling in the foundation (starting point) is the single step that
-  // completes Clarity — once it's set, the roadmap personalises and the
-  // journey is done. (The interest-level "verdict" step was removed; interest
-  // is set elsewhere, e.g. the dashboard.)
+  // Setting an interest level is the deliberate "verdict" that completes
+  // Clarity and fires the celebration. Filling in the foundation alone does
+  // NOT complete Clarity — otherwise the modal would pop just for opening the
+  // roadmap. The celebration only triggers once the interest level is chosen.
+  const { level: interestLevel, setLevel: setInterestLevel } = useInterestLevel(careerId);
+  const hasSetInterest = interestLevel != null;
   const [foundationHint, setFoundationHint] = useState(false);
+  const [interestHint, setInterestHint] = useState(false);
 
   // Raise the foundation hint if it isn't set within 15s.
   useEffect(() => {
@@ -2906,7 +2911,17 @@ function ClarityCompletionCard({
     return () => clearTimeout(id);
   }, [hasFoundation]);
 
-  const clarityComplete = hasFoundation;
+  // Raise the interest-level hint if it isn't set within 20s.
+  useEffect(() => {
+    if (hasSetInterest) {
+      setInterestHint(false);
+      return;
+    }
+    const id = setTimeout(() => setInterestHint(true), 20_000);
+    return () => clearTimeout(id);
+  }, [hasSetInterest]);
+
+  const clarityComplete = hasFoundation && hasSetInterest;
   const [isGeneratingReport, setIsGeneratingReport] = useState(false);
   const [reportError, setReportError] = useState<string | null>(null);
 
@@ -3000,6 +3015,37 @@ function ClarityCompletionCard({
             {!hasFoundation && foundationHint && (
               <p className="mt-1 text-[10px] font-medium text-amber-400/90">
                 ↑ Open “Your Foundation” on the roadmap above and add your school, subjects and finish year to personalise everything.
+              </p>
+            )}
+          </div>
+        </div>
+        <div className="flex items-start gap-2.5">
+          <span className={cn(
+            'inline-flex items-center justify-center h-5 w-5 rounded-full border text-[10px] shrink-0 mt-0.5',
+            hasSetInterest
+              ? 'bg-emerald-500 border-emerald-500 text-white'
+              : 'border-border/50 text-muted-foreground/40',
+          )}>
+            {hasSetInterest ? '✓' : '2'}
+          </span>
+          <div>
+            <p className={cn(
+              'text-xs font-medium',
+              hasSetInterest ? 'text-foreground/70 line-through decoration-emerald-500/40' : 'text-foreground/85',
+            )}>
+              Set your interest level
+            </p>
+            <p className="text-[10px] text-muted-foreground/50">
+              {hasSetInterest
+                ? 'You\'ve rated how this path feels for you — that\'s your Clarity verdict.'
+                : 'How do you feel about this path now? Rate your interest to finish Clarity.'}
+            </p>
+            <div className="mt-2">
+              <InterestLevelPicker value={interestLevel} onChange={setInterestLevel} size="sm" />
+            </div>
+            {!hasSetInterest && interestHint && (
+              <p className="mt-1 text-[10px] font-medium text-amber-400/90">
+                ↑ Tap a star to rate your interest in this career — that completes Clarity.
               </p>
             )}
           </div>
