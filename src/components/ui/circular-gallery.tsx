@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef, type HTMLAttributes } from "react";
+import { ChevronLeft, ChevronRight, MousePointer2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 /** A single card in the circular gallery. */
@@ -29,9 +30,11 @@ interface CircularGalleryProps extends HTMLAttributes<HTMLDivElement> {
  * Designed to live inside a fixed-height container (no page-scroll coupling).
  */
 const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
-  ({ items, className, radius = 299, autoRotateSpeed = 0.036, ...props }, ref) => {
+  ({ items, className, radius = 440, autoRotateSpeed = 0.036, ...props }, ref) => {
     const [rotation, setRotation] = useState(0);
     const [hovered, setHovered] = useState(false);
+    // Drag affordance: fades out once the user actually spins the ring.
+    const [hasDragged, setHasDragged] = useState(false);
     const rafRef = useRef<number | null>(null);
     const drag = useRef({ active: false, startX: 0, startRot: 0, moved: false, captured: false });
 
@@ -61,6 +64,7 @@ const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
       const dx = e.clientX - drag.current.startX;
       if (Math.abs(dx) > 4) {
         drag.current.moved = true;
+        if (!hasDragged) setHasDragged(true);
         // Start capturing now so the drag keeps tracking outside the element.
         if (!drag.current.captured) {
           try {
@@ -94,7 +98,7 @@ const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
         role="region"
         aria-label="Content gallery"
         className={cn(
-          "relative flex h-full w-full select-none items-center justify-center touch-pan-y",
+          "relative flex h-full w-full cursor-grab select-none items-center justify-center touch-pan-y active:cursor-grabbing",
           className,
         )}
         style={{ perspective: "1200px" }}
@@ -174,6 +178,24 @@ const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
               </div>
             );
           })}
+        </div>
+
+        {/* Drag affordance — pulsing side chevrons + a grab hint that fade once
+            the user actually spins the ring. pointer-events-none so it never
+            blocks the drag itself. */}
+        <div
+          aria-hidden
+          className={cn(
+            "pointer-events-none absolute inset-0 z-10 flex items-center justify-between px-1 transition-opacity duration-700 sm:px-3",
+            hasDragged ? "opacity-0" : "opacity-100",
+          )}
+        >
+          <ChevronLeft className="h-8 w-8 animate-pulse text-white/55 drop-shadow-lg" />
+          <span className="flex animate-pulse items-center gap-1.5 rounded-full bg-black/55 px-3 py-1.5 text-[11px] font-medium text-white/85 shadow-lg backdrop-blur-sm">
+            <MousePointer2 className="h-3.5 w-3.5" />
+            Drag to spin
+          </span>
+          <ChevronRight className="h-8 w-8 animate-pulse text-white/55 drop-shadow-lg" />
         </div>
       </div>
     );
