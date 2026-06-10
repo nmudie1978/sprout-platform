@@ -3,27 +3,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { checkRateLimitAsync, RateLimits } from "@/lib/rate-limit";
 import { z } from "zod";
-
-// Simple in-memory rate limiting (use Redis in production)
-const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
-
-function checkRateLimit(userId: string, maxQuestions = 3, windowMs = 24 * 60 * 60 * 1000): boolean {
-  const now = Date.now();
-  const userLimit = rateLimitMap.get(userId);
-
-  if (!userLimit || now > userLimit.resetAt) {
-    rateLimitMap.set(userId, { count: 1, resetAt: now + windowMs });
-    return true;
-  }
-
-  if (userLimit.count >= maxQuestions) {
-    return false;
-  }
-
-  userLimit.count++;
-  return true;
-}
 
 const createQuestionSchema = z.object({
   question: z.string().min(10, "Question must be at least 10 characters").max(500, "Question too long"),
@@ -44,8 +25,14 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Only youth can submit questions" }, { status: 403 });
     }
 
-    // Rate limiting: 3 questions per 24 hours
-    if (!checkRateLimit(session.user.id, 3)) {
+    // Rate limiting: 3 questions per 24 hours, Redis-backed so the cap
+    // holds across serverless instances (the old in-memory Map was
+    // per-instance and trivially bypassable).
+    const rateLimit = await checkRateLimitAsync(
+      `questions:${session.user.id}`,
+      RateLimits.QUESTIONS,
+    );
+    if (!rateLimit.success) {
       return NextResponse.json(
         { error: "Rate limit exceeded. You can submit 3 questions per day." },
         { status: 429 }
