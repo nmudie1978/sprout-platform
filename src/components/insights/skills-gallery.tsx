@@ -82,7 +82,7 @@ export function SkillsGallery() {
 
   return (
     <div className="space-y-2">
-      <div className="h-[300px] w-full overflow-hidden">
+      <div className="h-[390px] w-full overflow-hidden">
         <CircularGallery items={items} />
       </div>
       <p className="text-center text-[11px] text-muted-foreground/45">
