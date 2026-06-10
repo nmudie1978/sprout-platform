@@ -6,7 +6,7 @@
  */
 import type { ReflectionData } from "@/lib/journey/reflections-service";
 
-export type LibraryTab = "decision" | "saved" | "reflections";
+export type LibraryTab = "decision" | "saved" | "content" | "reflections";
 
 export interface LibraryTabDef {
   key: LibraryTab;
@@ -16,10 +16,11 @@ export interface LibraryTabDef {
 export const LIBRARY_TABS: readonly LibraryTabDef[] = [
   { key: "decision", label: "Decision Board" },
   { key: "saved", label: "Saved careers" },
+  { key: "content", label: "My Content" },
   { key: "reflections", label: "Reflections" },
 ] as const;
 
-const KNOWN = new Set<LibraryTab>(["decision", "saved", "reflections"]);
+const KNOWN = new Set<LibraryTab>(["decision", "saved", "content", "reflections"]);
 
 /** Resolve the active tab from a `?tab=` query value, defaulting to "decision". */
 export function resolveLibraryTab(param: string | null | undefined): LibraryTab {

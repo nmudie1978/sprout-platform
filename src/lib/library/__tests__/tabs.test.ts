@@ -34,6 +34,14 @@ describe("resolveLibraryTab", () => {
   it("is case-insensitive", () => {
     expect(resolveLibraryTab("Reflections")).toBe("reflections");
   });
+  it("resolves the new 'content' tab", () => {
+    expect(resolveLibraryTab("content")).toBe("content");
+  });
+  it("includes a 'My Content' tab in LIBRARY_TABS", () => {
+    expect(
+      LIBRARY_TABS.some((t) => t.key === "content" && t.label === "My Content"),
+    ).toBe(true);
+  });
 });
 
 describe("filterAnsweredReflections", () => {
