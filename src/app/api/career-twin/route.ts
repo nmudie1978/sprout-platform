@@ -17,7 +17,7 @@ import {
   detectNonEnglishResponse,
   localeToLanguage,
 } from "@/lib/ai-guardrails";
-import { checkRateLimit, RateLimits } from "@/lib/rate-limit";
+import { checkRateLimitAsync, RateLimits } from "@/lib/rate-limit";
 import { logAndSwallow } from "@/lib/observability";
 import { loadTwinHistory, appendTwinTurns, toPromptHistory, TWIN_CONTEXT_TURNS } from "@/lib/career-twin/history";
 import { loadTwinMemory, isReturningAfterGap } from "@/lib/career-twin/memory";
@@ -119,7 +119,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Rate limit (shares the AI chat budget: 20/hour)
-    const rl = checkRateLimit(`career-twin:${session.user.id}`, RateLimits.AI_CHAT);
+    const rl = await checkRateLimitAsync(`career-twin:${session.user.id}`, RateLimits.AI_CHAT);
     if (!rl.success) {
       return NextResponse.json({
         message:

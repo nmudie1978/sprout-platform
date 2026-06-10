@@ -1,12 +1,20 @@
 /**
  * Rate Limiting Utility
  *
- * Production-ready rate limiting with Upstash Redis support.
- * Falls back to in-memory for development or when Redis is not configured.
+ * Production-ready rate limiting backed by Redis over TCP (node-redis),
+ * configured via a single REDIS_URL connection string (e.g. the Vercel
+ * Redis / Redis Cloud integration). Falls back to in-memory for local
+ * development or when REDIS_URL is not set.
  *
  * CRITICAL: For multi-instance deployments, Redis MUST be configured.
  * In-memory rate limiting does NOT work across multiple server instances.
+ *
+ * Runtime note: this module opens a TCP connection and therefore must only
+ * be imported from Node.js-runtime code (API route handlers), never from
+ * Edge middleware.
  */
+
+import { createClient, type RedisClientType } from "redis";
 
 interface RateLimitConfig {
   interval: number; // Time window in milliseconds
@@ -26,32 +34,25 @@ interface RateLimitResult {
 }
 
 // ============================================
-// REDIS CLIENT (Upstash)
+// REDIS CLIENT (node-redis over REDIS_URL)
 // ============================================
-
-// Lazy-loaded Redis client
-let redisClient: {
-  incr: (key: string) => Promise<number>;
-  expire: (key: string, seconds: number) => Promise<number>;
-  ttl: (key: string) => Promise<number>;
-} | null = null;
 
 let redisConfigured: boolean | null = null;
 
 /**
- * Check if Redis is configured
+ * Check if Redis is configured. Hard-fails in production so a misconfigured
+ * deploy can't silently run on bypassable in-memory limits.
  */
 function isRedisConfigured(): boolean {
   if (redisConfigured !== null) return redisConfigured;
 
-  const url = process.env.UPSTASH_REDIS_REST_URL;
-  const token = process.env.UPSTASH_REDIS_REST_TOKEN;
-  redisConfigured = !!(url && token && url.length > 0 && token.length > 0);
+  const url = process.env.REDIS_URL;
+  redisConfigured = !!(url && url.length > 0);
 
   // Hard-fail in production. In-memory rate limiting does NOT survive
   // Vercel's multi-instance runtime — rate limits on signup, reports,
   // AI endpoints etc. become bypassable at scale. If this assertion
-  // fires in production, stop the deploy and set the Redis env vars
+  // fires in production, stop the deploy and set REDIS_URL
   // (RATE_LIMIT_ALLOW_IN_MEMORY=true is the explicit escape hatch for
   // a one-off test deploy only). Previews/dev stay on in-memory.
   if (!redisConfigured && process.env.NODE_ENV === "production") {
@@ -62,8 +63,7 @@ function isRedisConfigured(): boolean {
     if (isProdDeploy && !escapeHatch) {
       throw new Error(
         "[Rate Limit] Redis is not configured in production. " +
-        "Set UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN, or set " +
-        "RATE_LIMIT_ALLOW_IN_MEMORY=true to acknowledge the risk."
+        "Set REDIS_URL, or set RATE_LIMIT_ALLOW_IN_MEMORY=true to acknowledge the risk."
       );
     }
 
@@ -76,45 +76,49 @@ function isRedisConfigured(): boolean {
   return redisConfigured;
 }
 
+// Module-scoped singleton. On Vercel this is reused across warm invocations,
+// so we open at most one TCP+TLS connection per running instance.
+let redisClient: RedisClientType | null = null;
+let connectPromise: Promise<RedisClientType | null> | null = null;
+
 /**
- * Get or create Redis client.
- *
- * NOTE: @upstash/redis must be installed for Redis support.
- * Run: npm install @upstash/redis
- *
- * When Redis is not installed, falls back to in-memory rate limiting.
+ * Get or lazily create a connected node-redis client.
+ * Returns null when Redis is unconfigured or the connection fails (the
+ * caller then falls back to in-memory).
  */
-async function getRedisClient() {
+async function getRedisClient(): Promise<RedisClientType | null> {
   if (!isRedisConfigured()) return null;
-  if (redisClient) return redisClient;
+  if (redisClient?.isOpen) return redisClient;
+  if (connectPromise) return connectPromise;
 
-  try {
-    // Use require() wrapped in a function to bypass Next.js/webpack static analysis
-    // This allows the build to succeed without @upstash/redis installed
-    // eslint-disable-next-line @typescript-eslint/no-implied-eval
-    const dynamicRequire = new Function("moduleName", "return require(moduleName)");
-    const upstashModule = dynamicRequire("@upstash/redis");
-    const Redis = upstashModule.Redis;
-
-    redisClient = new Redis({
-      url: process.env.UPSTASH_REDIS_REST_URL!,
-      token: process.env.UPSTASH_REDIS_REST_TOKEN!,
-    });
-    return redisClient;
-  } catch (error: unknown) {
-    // Handle case where @upstash/redis is not installed
-    const errorMessage = error instanceof Error ? error.message : String(error);
-    if (errorMessage.includes("Cannot find module") || errorMessage.includes("MODULE_NOT_FOUND")) {
-      console.warn(
-        "[Rate Limit] @upstash/redis not installed. Using in-memory rate limiting. " +
-        "Run 'npm install @upstash/redis' for Redis support."
-      );
-    } else {
-      console.error("[Rate Limit] Failed to initialize Redis client:", error);
+  connectPromise = (async () => {
+    try {
+      const client: RedisClientType = createClient({
+        url: process.env.REDIS_URL!,
+        socket: {
+          // Bounded backoff so a flaky connection can't spin forever.
+          reconnectStrategy: (retries) => Math.min(retries * 50, 1000),
+          connectTimeout: 5000,
+        },
+      });
+      // Swallow async errors so an unhandled 'error' event can't crash the
+      // function; ops below already fall back to in-memory on failure.
+      client.on("error", (err) => {
+        console.error("[Rate Limit] Redis client error:", err);
+      });
+      await client.connect();
+      redisClient = client;
+      return client;
+    } catch (error) {
+      console.error("[Rate Limit] Failed to connect to Redis:", error);
+      redisClient = null;
+      return null;
+    } finally {
+      connectPromise = null;
     }
-    redisConfigured = false;
-    return null;
-  }
+  })();
+
+  return connectPromise;
 }
 
 // ============================================
@@ -187,7 +191,7 @@ function checkRateLimitInMemory(
  * Redis-based rate limit check
  */
 async function checkRateLimitRedis(
-  redis: NonNullable<typeof redisClient>,
+  redis: RedisClientType,
   identifier: string,
   config: RateLimitConfig
 ): Promise<RateLimitResult> {

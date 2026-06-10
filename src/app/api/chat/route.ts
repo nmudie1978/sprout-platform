@@ -23,7 +23,7 @@ import {
   localeToLanguage,
   type IntentType,
 } from "@/lib/ai-guardrails";
-import { checkRateLimit, getRateLimitHeaders, RateLimits } from "@/lib/rate-limit";
+import { checkRateLimitAsync, getRateLimitHeaders, RateLimits } from "@/lib/rate-limit";
 import { aiRecommendCard } from "@/lib/life-skills";
 
 // Valid Life Skills card keys the AI can recommend
@@ -125,7 +125,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Rate limiting: 20 messages per hour
-    const rateLimit = checkRateLimit(`chat:${session.user.id}`, RateLimits.AI_CHAT);
+    const rateLimit = await checkRateLimitAsync(`chat:${session.user.id}`, RateLimits.AI_CHAT);
     if (!rateLimit.success) {
       return NextResponse.json({
         message: "You've sent a lot of messages! Take a short break and try again soon. In the meantime, browse careers or check the Q&A section.",
