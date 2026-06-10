@@ -15,7 +15,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { ExternalLink, Lightbulb, ChevronLeft, ChevronRight } from "lucide-react";
 import { getRotatingStats, type ResearchStatWithYear } from "@/lib/researchEvidence";
 
-const ROTATION_INTERVAL = 10000; // 10 seconds
+const ROTATION_INTERVAL = 5000; // 5 seconds
 
 export function DidYouKnowBanner() {
   const stats = getRotatingStats();
