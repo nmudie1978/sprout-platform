@@ -265,6 +265,17 @@ export default function AdminDashboardPage() {
               ))}
             </div>
 
+            {/* Safeguarding reports queue */}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => router.push("/admin/reports")}
+              className="border-slate-600"
+            >
+              <Shield className="h-4 w-4 mr-2" />
+              Reports
+            </Button>
+
             {/* Feedback */}
             <Button
               variant="outline"

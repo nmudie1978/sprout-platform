@@ -17,7 +17,7 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
-import { CheckCircle2, XCircle, AlertTriangle, Shield, Loader2, MessageSquare, Pause } from "lucide-react";
+import { CheckCircle2, XCircle, AlertTriangle, Shield, Loader2, MessageSquare, Pause, EraserIcon } from "lucide-react";
 import type { CommunityReportStatus, CommunityReportTargetType } from "@prisma/client";
 
 interface Props {
@@ -90,6 +90,31 @@ export function ReportActions({ reportId, currentStatus, targetType, targetAlrea
               <Pause className="h-3.5 w-3.5 mr-1.5" />
             )}
             Pause user
+          </Button>
+        )}
+
+        {targetType === "USER" && (
+          <Button
+            size="sm"
+            variant="outline"
+            disabled={pending || busyAction !== null || isTerminal}
+            onClick={() => {
+              if (
+                !window.confirm(
+                  "Remove the reported user's profile bio and interest/skill tags? The account stays active; the user is notified. This is logged.",
+                )
+              )
+                return;
+              runAction("redactContent", {}, "Profile content removed");
+            }}
+            className="border-orange-500/40 text-orange-700 dark:text-orange-300 hover:bg-orange-500/10"
+          >
+            {busyAction === "redactContent" ? (
+              <Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" />
+            ) : (
+              <EraserIcon className="h-3.5 w-3.5 mr-1.5" />
+            )}
+            Remove content
           </Button>
         )}
 
