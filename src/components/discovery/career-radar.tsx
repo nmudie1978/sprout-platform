@@ -493,6 +493,20 @@ const PRESET_HIGHLY_COMPETITIVE = new Set<string>([
   "addiction-counsellor",
 ]);
 
+// A career's catalogue `entryLevel` flag is set loosely — it marks "a
+// junior role exists" rather than "no degree required", so many roles that
+// plainly need a Bachelor's (Open RAN Engineer, Software Developer, the
+// whole telco family) carry entryLevel=true. The Vocational (non-degree)
+// preset must not surface those. This guard reads the career's own
+// education signals to decide whether a degree is on the required path.
+const DEGREE_PATH_RE =
+  /\b(bachelor|master|doctorate|ph\.?\s?d|mba|m\.sc|b\.sc|profesjon|postgraduate)\b|\bdegree in\b|\b(medical|law) school\b/i;
+
+function careerNeedsDegree(career: Career): boolean {
+  if (career.educationRoute === "university") return true;
+  return DEGREE_PATH_RE.test(career.educationPath ?? "");
+}
+
 /** Return true if the career satisfies the chosen preset filter. */
 function matchesPreset(career: Career, preset: PresetFilterKey): boolean {
   switch (preset) {
@@ -513,11 +527,16 @@ function matchesPreset(career: Career, preset: PresetFilterKey): boolean {
     case "fast-growing":
       return PRESET_FAST_GROWING.has(career.id);
     case "vocational":
-      // Union of the curated "no-degree" hand-list and every career
-      // flagged entryLevel=true in the catalogue — broadest honest
-      // coverage of non-degree paths (apprenticeships, trades, service
-      // academies, direct entry).
-      return PRESET_VOCATIONAL.has(career.id) || career.entryLevel === true;
+      // Curated "no-degree" hand-list (always trusted) ∪ catalogue careers
+      // flagged entryLevel=true — but the entryLevel net is filtered through
+      // careerNeedsDegree() so genuinely degree-requiring roles wrongly
+      // tagged entryLevel (Open RAN Engineer, Software Developer, etc.)
+      // don't leak into a non-degree filter. Trades, drivers, retail,
+      // warehouse, care and similar direct-entry paths stay.
+      return (
+        PRESET_VOCATIONAL.has(career.id) ||
+        (career.entryLevel === true && !careerNeedsDegree(career))
+      );
   }
 }
 
