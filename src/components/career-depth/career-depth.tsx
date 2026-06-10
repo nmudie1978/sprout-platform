@@ -3,8 +3,13 @@
 
 import { useEffect, useState } from "react";
 import { Users, Compass } from "lucide-react";
-import type { CareerLike } from "@/lib/career-voices/match";
 import { fitSnapshot, type FitSnapshot } from "@/lib/career-depth/snapshot";
+
+/** Minimal career shape this card needs (id + title). */
+interface CareerLike {
+  id: string;
+  title: string;
+}
 
 export function CareerDepth({ career }: { career: CareerLike }) {
   const [fit, setFit] = useState<FitSnapshot | null>(null);
