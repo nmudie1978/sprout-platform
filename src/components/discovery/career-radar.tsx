@@ -336,10 +336,26 @@ const PRESET_VOCATIONAL = new Set<string>([
 // Healthcare Administrator), logistics-coordinator (for Logistics
 // Analyst), digital-marketer (for Digital Marketing Specialist).
 const PRESET_FAST_GROWING = new Set<string>([
-  // AI / data / cloud / software
+  // AI — the fastest-growing specialism of the decade. Mirrors the 2026
+  // "highest demand + pay + future prospects" AI shortlist (owner ref):
+  // AI/ML/Generative/LLM engineering, MLOps, AI architecture, AI product,
+  // AI research, AI governance/ethics, applied/NLP/vision/infra roles.
   "ai-engineer",
+  "applied-ai-engineer",
   "machine-learning-engineer",
+  "generative-ai-engineer",
+  "nlp-engineer",
+  "computer-vision-engineer",
+  "mlops-engineer",
+  "ai-solutions-architect",
+  "ai-network-engineer",
+  "ai-product-manager",
+  "ai-consultant",
   "ai-researcher",
+  "ai-research-scientist",
+  "ai-ethics-specialist",
+  "ai-safety-researcher",
+  // Data / cloud / software
   "data-scientist",
   "data-engineer",
   "cybersecurity-analyst",
