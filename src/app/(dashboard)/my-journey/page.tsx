@@ -2928,16 +2928,27 @@ function ClarityCompletionCard({
     }
   }, [clarityComplete, careerTitle]);
 
-  // One-time "moment of arrival": when the journey completes, show the
-  // celebration once per career per device (guarded in localStorage so it
-  // never re-pops on revisit).
+  // One-time "moment of arrival": fire the celebration only when the user
+  // ACTIVELY rates their interest (the deliberate verdict that completes
+  // Clarity) — see handleRateInterest. We must NOT trigger reactively on
+  // `clarityComplete`, because the interest level is persisted (localStorage
+  // + server) and re-loads as "set" on every visit; a reactive trigger would
+  // re-pop the modal each time an already-complete journey is opened, on any
+  // session/device where the device-local guard key is absent. Still guarded
+  // once-per-career as a backstop.
   const [showCelebration, setShowCelebration] = useState(false);
-  useEffect(() => {
-    if (clarityComplete && careerId && !hasCelebratedJourney(careerId)) {
-      markJourneyCelebrated(careerId);
-      setShowCelebration(true);
-    }
-  }, [clarityComplete, careerId]);
+  const handleRateInterest = useCallback(
+    (next: Parameters<typeof setInterestLevel>[0]) => {
+      setInterestLevel(next);
+      // hasFoundation is the other half of completion; if it's already in
+      // place, rating interest is the action that finishes Clarity.
+      if (hasFoundation && careerId && !hasCelebratedJourney(careerId)) {
+        markJourneyCelebrated(careerId);
+        setShowCelebration(true);
+      }
+    },
+    [setInterestLevel, hasFoundation, careerId],
+  );
 
   const handleDownloadReport = useCallback(async () => {
     setReportError(null);
@@ -2989,7 +3000,7 @@ function ClarityCompletionCard({
           <p className="text-[11px] text-muted-foreground/50 mb-3">
             Rate your interest to capture where you&apos;ve landed — that completes Clarity.
           </p>
-          <InterestLevelPicker value={interestLevel} onChange={setInterestLevel} size="sm" />
+          <InterestLevelPicker value={interestLevel} onChange={handleRateInterest} size="sm" />
           {!hasFoundation && (
             <p className="mt-2.5 text-[10px] font-medium text-amber-400/90">
               ↑ Add “Your Foundation” on the roadmap above (school, subjects, finish year) to personalise everything and finish Clarity.
