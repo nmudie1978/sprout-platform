@@ -13,6 +13,8 @@ import { Loader2, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CircularGallery, type GalleryItem } from "@/components/ui/circular-gallery";
 import type { SectionContent } from "@/lib/industry-insights/insights-service";
+import { toast } from "sonner";
+import { badgeToSavedItemType, SKILLS_CONTENT_TAG } from "@/lib/insights/saved-content";
 
 const SECTION = "skills-that-matter";
 const MAX_ITEMS = 12;
@@ -46,6 +48,35 @@ export function SkillsGallery() {
   const [pool, setPool] = useState<GalleryItem[]>([]);
   const [batch, setBatch] = useState(0);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
+
+  // In-session "saved" fill state, keyed by gallery item id. Best-effort only
+  // (the pool reshuffles per visit); the server dedupes by URL regardless.
+  const [savedIds, setSavedIds] = useState<Set<string>>(new Set());
+
+  const handleSave = useCallback(async (item: GalleryItem) => {
+    if (!item.href) return;
+    try {
+      const res = await fetch("/api/journey/saved-items", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          type: badgeToSavedItemType(item.badge),
+          title: item.title,
+          url: item.href,
+          source: item.subtitle,
+          thumbnail: item.image,
+          tags: [SKILLS_CONTENT_TAG],
+        }),
+      });
+      if (!res.ok) throw new Error("save failed");
+      setSavedIds((prev) => new Set(prev).add(item.id));
+      toast.success("Saved to My Library");
+    } catch {
+      toast.error("Couldn't save — please try again.");
+    }
+  }, []);
+
+  const isSaved = useCallback((id: string) => savedIds.has(id), [savedIds]);
   useEffect(() => {
     if (!data) return;
     const all: GalleryItem[] = [];
@@ -104,10 +135,10 @@ export function SkillsGallery() {
   return (
     <div className="space-y-2">
       <div className="h-[430px] w-full overflow-hidden">
-        <CircularGallery items={items} />
+        <CircularGallery items={items} onSave={handleSave} isSaved={isSaved} />
       </div>
       <p className="text-center text-[11px] text-muted-foreground/45">
-        Drag to explore · tap a card to open it
+        Drag to explore · tap a card to open it · bookmark to save
       </p>
       {totalBatches > 1 && (
         <div className="flex flex-col items-center gap-1.5 pt-1">
