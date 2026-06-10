@@ -23,7 +23,9 @@ const DATA_DIR = path.join(process.cwd(), "data", "career-events");
 const LOCK_FILE = path.join(DATA_DIR, ".refresh-lock");
 const EVENTS_FILE = path.join(DATA_DIR, "verified-events.json");
 const METADATA_FILE = path.join(DATA_DIR, "refresh-metadata.json");
-const ADMIN_KEY = process.env.ADMIN_API_KEY || "dev-admin-key";
+// No fallback: unset ADMIN_API_KEY locks the route rather than accepting a
+// well-known default key.
+const ADMIN_KEY = process.env.ADMIN_API_KEY;
 
 // ============================================
 // LOCK MANAGEMENT
@@ -96,7 +98,7 @@ function saveMetadata(metadata: RefreshMetadata): void {
 export async function POST(request: NextRequest) {
   // Verify admin key
   const adminKey = request.headers.get("x-admin-key");
-  if (adminKey !== ADMIN_KEY) {
+  if (!ADMIN_KEY || adminKey !== ADMIN_KEY) {
     return NextResponse.json(
       { error: "Unauthorized" },
       { status: 401 }
