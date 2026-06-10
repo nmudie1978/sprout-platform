@@ -98,7 +98,7 @@ export const SUGGESTED_ACTIONS_BY_CAREER: Record<string, SuggestedAction[]> = {
   ],
   healthcare: [
     { id: "1", text: "Research educational paths in Norway", icon: "graduation-cap" },
-    { id: "2", text: "Shadow a healthcare professional", icon: "users" },
+    { id: "2", text: "Volunteer or sit in at a healthcare setting", icon: "users" },
     { id: "3", text: "Learn basic first aid or CPR", icon: "heart" },
     { id: "4", text: "Explore volunteer opportunities", icon: "hand-heart" },
     { id: "5", text: "Understand certification requirements", icon: "award" },

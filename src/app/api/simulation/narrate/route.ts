@@ -16,7 +16,7 @@ export const dynamic = 'force-dynamic';
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
-import { checkRateLimit, checkRateLimitAsync, getRateLimitHeaders, RateLimits } from '@/lib/rate-limit';
+import { checkRateLimitAsync, getRateLimitHeaders, RateLimits } from '@/lib/rate-limit';
 import OpenAI from 'openai';
 
 let _openai: OpenAI | null | undefined;
@@ -59,7 +59,7 @@ export async function POST(req: NextRequest) {
     return res;
   }
 
-  const rl = checkRateLimit(`sim-narrate:${session.user.id}`, {
+  const rl = await checkRateLimitAsync(`sim-narrate:${session.user.id}`, {
     interval: 3600000,
     maxRequests: 30,
   });

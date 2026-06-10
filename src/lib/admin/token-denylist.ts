@@ -16,44 +16,13 @@
  * If Redis isn't configured the denylist is a no-op — the rate-limit
  * library now hard-fails in production without Redis, so this branch
  * only matters in local dev and previews.
+ *
+ * Shares the single node-redis connection (REDIS_URL) owned by the
+ * rate-limit module rather than opening its own.
  */
 
 import { createHash } from "crypto";
-
-type RedisLike = {
-  set: (key: string, value: string, opts?: { ex?: number; EX?: number }) => Promise<unknown>;
-  get: (key: string) => Promise<string | null>;
-};
-
-let _client: RedisLike | null | undefined;
-
-function isRedisConfigured(): boolean {
-  const url = process.env.UPSTASH_REDIS_REST_URL;
-  const token = process.env.UPSTASH_REDIS_REST_TOKEN;
-  return !!(url && token && url.length > 0 && token.length > 0);
-}
-
-async function getClient(): Promise<RedisLike | null> {
-  if (_client !== undefined) return _client;
-  if (!isRedisConfigured()) {
-    _client = null;
-    return null;
-  }
-  try {
-    // eslint-disable-next-line @typescript-eslint/no-implied-eval
-    const dynamicRequire = new Function("m", "return require(m)");
-    const upstash = dynamicRequire("@upstash/redis");
-    _client = new upstash.Redis({
-      url: process.env.UPSTASH_REDIS_REST_URL!,
-      token: process.env.UPSTASH_REDIS_REST_TOKEN!,
-    }) as RedisLike;
-    return _client;
-  } catch (err) {
-    console.warn("[admin-denylist] Redis unavailable, denylist disabled:", err);
-    _client = null;
-    return null;
-  }
-}
+import { getRedisClient } from "@/lib/rate-limit";
 
 function key(token: string): string {
   const h = createHash("sha256").update(token).digest("hex");
@@ -69,13 +38,13 @@ export async function revokeAdminToken(
   token: string,
   expEpochSeconds: number,
 ): Promise<void> {
-  const client = await getClient();
+  const client = await getRedisClient();
   if (!client) return;
 
   const nowSeconds = Math.floor(Date.now() / 1000);
   const ttl = Math.max(60, expEpochSeconds - nowSeconds);
   try {
-    await client.set(key(token), "1", { ex: ttl });
+    await client.set(key(token), "1", { EX: ttl });
   } catch (err) {
     console.error("[admin-denylist] revoke failed:", err);
   }
@@ -86,7 +55,7 @@ export async function revokeAdminToken(
  * denylisted (and must therefore be rejected).
  */
 export async function isAdminTokenRevoked(token: string): Promise<boolean> {
-  const client = await getClient();
+  const client = await getRedisClient();
   if (!client) return false;
   try {
     const hit = await client.get(key(token));

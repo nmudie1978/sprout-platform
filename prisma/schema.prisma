@@ -58,7 +58,6 @@ enum EligibilityAgeBracket {
 // AGE SAFETY SYSTEM ENUMS (Centralized)
 // ============================================
 
-
 enum AgePolicyStatus {
   ACTIVE
   ARCHIVED
@@ -82,12 +81,6 @@ enum GuardianLinkStatus {
   ACTIVE
   REVOKED
 }
-
-
-
-
-
-
 
 enum SwipeDirection {
   LEFT
@@ -151,6 +144,7 @@ model User {
   location         String?
   doNotDisturb     Boolean       @default(false) // Prevents new conversations
   accountStatus    AccountStatus @default(ONBOARDING) // Safety status
+  deletedAt        DateTime? // GDPR soft-delete: set on deletion request; hard-purged after 30 days. Signing back in within the window restores the account.
   suspendedAt      DateTime? // When account was suspended/banned
   suspensionReason String?       @db.Text // Why account was suspended/banned
 
@@ -181,18 +175,18 @@ model User {
   updatedAt DateTime @updatedAt
 
   // Relations
-  youthProfile               YouthProfile?
-  swipes                     Swipe[]
-  questions                  ProQuestion[]
-  answers                    ProAnswer[]
-  reports                    Report[]
-  aiIntentLogs               AiIntentLog[]
-  aiChatMessages             AiChatMessage[]
-  careerTwinMessages         CareerTwinMessage[]
-  accounts                   Account[]
-  sessions                   Session[]
-  notifications              Notification[]
-  badges                     Badge[]
+  youthProfile       YouthProfile?
+  swipes             Swipe[]
+  questions          ProQuestion[]
+  answers            ProAnswer[]
+  reports            Report[]
+  aiIntentLogs       AiIntentLog[]
+  aiChatMessages     AiChatMessage[]
+  careerTwinMessages CareerTwinMessage[]
+  accounts           Account[]
+  sessions           Session[]
+  notifications      Notification[]
+  badges             Badge[]
 
   // Messaging (universal - any user can message any user)
 
@@ -206,8 +200,8 @@ model User {
   assignedReports  CommunityReport[] @relation("AssignedGuardian")
 
   // Safety messaging (Phase 1)
-  blocksMade                  UserBlock[]          @relation("BlocksMade")
-  blocksReceived              UserBlock[]          @relation("BlocksReceived")
+  blocksMade     UserBlock[] @relation("BlocksMade")
+  blocksReceived UserBlock[] @relation("BlocksReceived")
 
   // Payment agreements (informational only - NO transactions)
 
@@ -218,7 +212,7 @@ model User {
   preferences              UserPreferences?
 
   // Growth & Skills Tracking (Features 4 & 5)
-  trustSignals           TrustSignal[]
+  trustSignals TrustSignal[]
 
   // Industry Insights features
   savedIndustries         SavedIndustry[]
@@ -245,11 +239,6 @@ model User {
   // Beta Feedback
   feedbackSubmissions Feedback[]
 
-  // Career Shadowing
-  shadowRequestsAsYouth ShadowRequest[]    @relation("YouthShadowRequests")
-  shadowRequestsAsHost  ShadowRequest[]    @relation("HostShadowRequests")
-  shadowReflections     ShadowReflection[] @relation("YouthShadowReflections")
-
   // Journey timeline
   timelineEvents TimelineEvent[]
 
@@ -263,12 +252,13 @@ model User {
 
   // School mode — a TEACHER owns Cohorts; a YOUTH has CohortMemberships.
   // Never combined: role gating at the API layer.
-  taughtCohorts    Cohort[]           @relation("TeacherCohorts")
+  taughtCohorts     Cohort[]           @relation("TeacherCohorts")
   cohortMemberships CohortMembership[] @relation("YouthCohortMemberships")
 
   @@index([email])
   @@index([role])
   @@index([accountStatus])
+  @@index([deletedAt])
   @@index([isPaused])
   @@index([isVerifiedAdult])
   @@index([authProvider])
@@ -316,7 +306,7 @@ model YouthProfile {
   id                 String             @id @default(cuid())
   userId             String             @unique
   displayName        String
-  surname            String?            // Family name — stored but never shown publicly
+  surname            String? // Family name — stored but never shown publicly
   avatarId           String?            @default("kawaii-star") // Fun avatar identifier
   avatarUpdatedAt    DateTime? // When avatar was last changed
   phoneNumber        String? // Contact number for employers
@@ -394,10 +384,10 @@ model YouthProfile {
   availabilityLevel     String? // "busy", "some", "plenty"
 
   // Guardian consent (required for under-18)
-  guardianEmail     String?
-  guardianConsent   Boolean   @default(false)
-  guardianConsentAt DateTime? // When consent was given
-  guardianToken     String?   @unique // Token for guardian consent link
+  guardianEmail          String?
+  guardianConsent        Boolean   @default(false)
+  guardianConsentAt      DateTime? // When consent was given
+  guardianToken          String?   @unique // Token for guardian consent link
   guardianTokenExpiresAt DateTime? // Token expiry (14 days after issue; cleared after consent grant)
 
   // Phone verification
@@ -431,11 +421,6 @@ model UserNote {
   @@index([profileId])
   @@index([createdAt])
 }
-
-
-
-
-
 
 model CareerCard {
   id             String   @id @default(cuid())
@@ -590,13 +575,6 @@ enum NotificationType {
   GUARDIAN_LINK_ACCEPTED // Link request accepted
   GUARDIAN_LINK_REJECTED // Link request rejected
   GUARDIAN_LINK_REVOKED // Link was revoked
-  // Career Shadowing
-  NEW_SHADOW_REQUEST // Host receives new shadow request
-  SHADOW_APPROVED // Youth's shadow request approved
-  SHADOW_DECLINED // Youth's shadow request declined
-  SHADOW_COMPLETED // Shadow experience completed
-  SHADOW_CANCELLED // Shadow request cancelled
-  SHADOW_REPORT // Admin notified of shadow issue report
 }
 
 enum RecommendationStatus {
@@ -623,8 +601,6 @@ model Notification {
   @@index([read])
   @@index([createdAt])
 }
-
-
 
 // Achievement badges for youth workers
 enum BadgeType {
@@ -660,9 +636,6 @@ model Badge {
   @@index([earnedAt])
 }
 
-
-
-
 // ============================================
 // PAYMENT AGREEMENT (INFORMATIONAL ONLY - NO TRANSACTIONS)
 // ============================================
@@ -670,11 +643,6 @@ model Badge {
 // NO money moves through the platform.
 // Payments happen externally (Vipps, cash, bank transfer).
 // This is for transparency and dispute prevention only.
-
-
-
-
-
 
 // User blocks - prevents messaging and conversation creation
 model UserBlock {
@@ -691,12 +659,6 @@ model UserBlock {
   @@index([blockerId])
   @@index([blockedId])
 }
-
-
-
-
-
-
 
 // Audit log for safety-critical actions (GDPR compliance)
 enum AuditAction {
@@ -725,6 +687,7 @@ enum AuditAction {
   DATA_EXPORT_COMPLETED
   DATA_DELETION_REQUESTED
   DATA_DELETION_COMPLETED
+  DATA_DELETION_CANCELLED
   // Safety actions
   USER_REPORTED
   CONTENT_MODERATED
@@ -833,7 +796,6 @@ model Community {
   @@index([name])
   @@index([isActive])
 }
-
 
 // CommunityReport - reports submitted for community guardian review
 // Reports work even if no guardian exists (visible to admins)
@@ -1048,11 +1010,6 @@ model UserSkillSignal {
   @@index([source])
 }
 
-
-
-
-
-
 // Trust signal types (internal, non-public)
 enum TrustSignalType {
   ON_TIME // Consistently on time
@@ -1195,8 +1152,6 @@ model NewsletterSubscription {
 // Standardized job categories and templates for quick job posting
 // ============================================
 
-
-
 // ============================================
 // MY PATH - PERSONALIZED JOURNEY HUB
 // ============================================
@@ -1214,7 +1169,7 @@ model VaultItem {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  user User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId, createdAt])
   @@index([userId, type])
@@ -1578,9 +1533,6 @@ model UserLearningProgress {
 // PARENT/GUARDIAN VISIBILITY LAYER
 // ============================================
 
-
-
-
 // ============================================
 // AGE ELIGIBILITY POLICY SYSTEM
 // Versioned, auditable age requirements for jobs
@@ -1871,169 +1823,6 @@ model Feedback {
   @@index([role])
   @@index([kind])
   @@index([area])
-}
-
-// ============================================
-// CAREER SHADOW REQUESTS
-// Observation-only workplace experiences
-// ============================================
-
-enum ShadowRequestStatus {
-  DRAFT // Youth is building the request
-  PENDING // Submitted, awaiting host response
-  APPROVED // Host approved, preparing for shadow
-  DECLINED // Host declined
-  COMPLETED // Shadow completed
-  CANCELLED // Cancelled by either party
-  NO_SHOW // Youth did not attend
-}
-
-enum ShadowFormat {
-  WALKTHROUGH // 2-hour workplace walkthrough
-  HALF_DAY // Half-day observation (3-4 hours)
-  FULL_DAY // Full day "day in the life" (6-8 hours)
-}
-
-enum ShadowLearningGoal {
-  DAILY_WORK // What does a typical day look like?
-  SKILLS_USED // What skills are needed?
-  WORK_ENVIRONMENT // What's the workplace culture like?
-  CAREER_PATH // How do people get into this role?
-  EDUCATION_REQUIRED // What education or training is needed?
-  CHALLENGES // What are the hard parts of the job?
-}
-
-// Career Shadow Request
-model ShadowRequest {
-  id        String              @id @default(cuid())
-  createdAt DateTime            @default(now())
-  updatedAt DateTime            @updatedAt
-  status    ShadowRequestStatus @default(DRAFT)
-
-  // Youth making the request
-  youthId String
-  youth   User   @relation("YouthShadowRequests", fields: [youthId], references: [id], onDelete: Cascade)
-
-  // Host (employer/professional) receiving the request
-  hostId String?
-  host   User?   @relation("HostShadowRequests", fields: [hostId], references: [id], onDelete: SetNull)
-
-  // STEP 1: Learning Goals (max 2)
-  learningGoals ShadowLearningGoal[]
-
-  // STEP 2: Role Focus (single role)
-  roleTitle    String  @db.VarChar(100) // e.g., "Software Developer", "Veterinarian"
-  roleCategory String? @db.VarChar(50) // Optional category grouping
-
-  // STEP 3: Observation Scope (always observation-only, stored for clarity)
-  isObservationOnly Boolean @default(true) // Always true, non-editable
-
-  // STEP 4: Format Preference
-  format ShadowFormat @default(WALKTHROUGH)
-
-  // STEP 5: Availability (date windows, not exact dates)
-  availabilityStart DateTime? // Earliest available date
-  availabilityEnd   DateTime? // Latest available date
-  preferredDays     String[] // e.g., ["Monday", "Tuesday", "Friday"]
-  flexibleSchedule  Boolean   @default(true) // Youth is flexible on timing
-
-  // STEP 6: What Youth Brings (commitments)
-  commitsPunctuality  Boolean @default(true)
-  commitsCuriosity    Boolean @default(true)
-  commitsRespect      Boolean @default(true)
-  commitsFollowRules  Boolean @default(true)
-  acceptsNda          Boolean @default(false) // Optional NDA acceptance
-  acceptsSafeguarding Boolean @default(false) // Accepted safeguarding rules
-
-  // STEP 7: Request Message
-  message         String  @db.Text // Youth's message to host
-  aiAssistedDraft Boolean @default(false) // Was AI used to help draft?
-
-  // Scheduled details (set after approval)
-  scheduledDate      DateTime? // Confirmed shadow date
-  scheduledStartTime String? // e.g., "09:00"
-  scheduledEndTime   String? // e.g., "12:00"
-  locationName       String? // Workplace name
-  locationAddress    String? // Workplace address
-
-  // Host response
-  hostResponseAt DateTime?
-  hostMessage    String?   @db.Text // Optional message from host
-  declineReason  String?   @db.VarChar(200) // If declined
-
-  // Guardian consent (required for under 16)
-  requiresGuardianConsent Boolean   @default(false)
-  guardianNotified        Boolean   @default(false)
-  guardianConsentAt       DateTime?
-
-  // Safety & Trust
-  hostVerified          Boolean @default(false) // Host has verification badge
-  publicWorkplace       Boolean @default(true) // Workplace is public/registered
-  noPrivateTransport    Boolean @default(true) // No private transport offered
-  noIsolatedScenarios   Boolean @default(true) // Avoids 1:1 isolated scenarios
-  emergencyContact      String? @db.VarChar(100) // Youth's emergency contact
-  emergencyContactPhone String? @db.VarChar(20)
-
-  // Completion tracking
-  completedAt     DateTime?
-  youthAttended   Boolean?
-  durationMinutes Int? // Actual duration
-
-  // Reports
-  reportedIssue    Boolean   @default(false)
-  reportedAt       DateTime?
-  reportDetails    String?   @db.Text
-  reportResolvedAt DateTime?
-
-  // Relation to reflection
-  reflection ShadowReflection?
-
-  @@index([youthId])
-  @@index([hostId])
-  @@index([status])
-  @@index([createdAt])
-  @@index([scheduledDate])
-  @@index([roleTitle])
-}
-
-// Post-Shadow Reflection
-model ShadowReflection {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  // Link to shadow request
-  shadowRequestId String        @unique
-  shadowRequest   ShadowRequest @relation(fields: [shadowRequestId], references: [id], onDelete: Cascade)
-
-  // Youth who completed the reflection
-  youthId String
-  youth   User   @relation("YouthShadowReflections", fields: [youthId], references: [id], onDelete: Cascade)
-
-  // Reflection questions
-  whatSurprised      String?  @db.Text // What surprised you?
-  whatLiked          String?  @db.Text // What did you like?
-  whatDisliked       String?  @db.Text // What didn't you like?
-  skillsNoticed      String[] // Skills you noticed being used
-  wouldExplore       Boolean? // Would you want to explore this further?
-  wouldExploreReason String?  @db.Text // Why or why not?
-
-  // Additional insights
-  keyTakeaways    String[] // Up to 3 key takeaways
-  questionsAsked  String[] // Questions youth asked during shadow
-  followUpActions String[] // What they want to do next
-
-  // Ratings (optional, simple scale)
-  overallExperience Int? // 1-5 scale
-  hostHelpfulness   Int? // 1-5 scale
-
-  // Journey integration flags
-  addedToTimeline  Boolean @default(false)
-  strengthsUpdated Boolean @default(false)
-  goalStackUpdated Boolean @default(false)
-
-  @@index([youthId])
-  @@index([createdAt])
 }
 
 // ============================================
@@ -2475,12 +2264,12 @@ model CareerPathContribution {
   city         String? // optional, e.g. "Oslo"
 
   // The story — prose prompts the contributor answers
-  howIGotHere     String // narrative of the path
-  whatIStudied    String // education / training (or none)
-  firstSalary     String // free-text so contributors can give context (e.g. "£18k", "minimum wage", "unpaid internship")
-  hardestPart     String // hardest part of the journey
+  howIGotHere       String // narrative of the path
+  whatIStudied      String // education / training (or none)
+  firstSalary       String // free-text so contributors can give context (e.g. "£18k", "minimum wage", "unpaid internship")
+  hardestPart       String // hardest part of the journey
   adviceToSeventeen String // what they'd tell their 17-year-old self
-  realityOfJob    String // what the job is actually like day-to-day
+  realityOfJob      String // what the job is actually like day-to-day
 
   // Tagging — links path to careers in the platform
   careerTags String[] // e.g. ["it-project-manager", "programme-manager"]
@@ -2511,23 +2300,23 @@ model CareerPathContribution {
 // ============================================
 
 model Cohort {
-  id           String    @id @default(cuid())
+  id          String    @id @default(cuid())
   // 6-char human-shareable code. Uppercase alphanumeric, confusable
   // chars (0, O, 1, I, L) excluded. Indexed + unique so teachers can
   // quickly look up their own cohort by code and youth can join.
-  code         String    @unique
-  teacherId    String
-  name         String    @db.VarChar(120)
+  code        String    @unique
+  teacherId   String
+  name        String    @db.VarChar(120)
   // Optional career focus — "this class is exploring psychology".
   // Plain-text for MVP; can FK into Career later.
-  careerFocus  String?   @db.VarChar(80)
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  careerFocus String?   @db.VarChar(80)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
   // Soft delete so old memberships don't orphan on archive.
-  deletedAt    DateTime?
+  deletedAt   DateTime?
 
-  teacher      User               @relation("TeacherCohorts", fields: [teacherId], references: [id], onDelete: Cascade)
-  memberships  CohortMembership[]
+  teacher     User               @relation("TeacherCohorts", fields: [teacherId], references: [id], onDelete: Cascade)
+  memberships CohortMembership[]
 
   @@index([teacherId])
   @@index([code])
@@ -2540,10 +2329,10 @@ model Cohort {
 }
 
 model CohortMembership {
-  id        String   @id @default(cuid())
-  cohortId  String
-  youthId   String
-  joinedAt  DateTime @default(now())
+  id       String   @id @default(cuid())
+  cohortId String
+  youthId  String
+  joinedAt DateTime @default(now())
 
   cohort Cohort @relation(fields: [cohortId], references: [id], onDelete: Cascade)
   youth  User   @relation("YouthCohortMemberships", fields: [youthId], references: [id], onDelete: Cascade)

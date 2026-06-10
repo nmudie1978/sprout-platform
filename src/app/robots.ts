@@ -70,8 +70,6 @@ export default function robots(): MetadataRoute.Robots {
           "/guardian/",
           "/messages/",
           "/applications",
-          "/shadows",
-          "/shadows/",
           "/dev/",
           "/test/",
           "/explore",
