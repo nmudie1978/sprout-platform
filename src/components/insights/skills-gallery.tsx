@@ -55,6 +55,13 @@ export function SkillsGallery() {
 
   const handleSave = useCallback(async (item: GalleryItem) => {
     if (!item.href) return;
+
+    // Optimistic UI: reflect the save instantly so the bookmark never feels
+    // "stuck" while the (sometimes cold-start) POST is in flight. We reconcile
+    // with the server below and roll back if it actually fails.
+    setSavedIds((prev) => new Set(prev).add(item.id));
+    toast({ title: "Saved to My Library" });
+
     try {
       const res = await fetch("/api/journey/saved-items", {
         method: "POST",
@@ -69,9 +76,13 @@ export function SkillsGallery() {
         }),
       });
       if (!res.ok) throw new Error("save failed");
-      setSavedIds((prev) => new Set(prev).add(item.id));
-      toast({ title: "Saved to My Library" });
     } catch {
+      // Roll back the optimistic state and let the user know.
+      setSavedIds((prev) => {
+        const next = new Set(prev);
+        next.delete(item.id);
+        return next;
+      });
       toast({
         title: "Couldn't save",
         description: "Please try again.",

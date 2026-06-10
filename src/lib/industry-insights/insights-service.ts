@@ -418,7 +418,7 @@ export async function fetchVideosBySection(
       searchUrl.searchParams.set("safeSearch", "strict");
       searchUrl.searchParams.set("key", YOUTUBE_API_KEY);
 
-      const searchRes = await fetch(searchUrl.toString());
+      const searchRes = await fetch(searchUrl.toString(), { signal: AbortSignal.timeout(4000) });
       if (!searchRes.ok) continue;
 
       const searchData: YouTubeSearchResponse = await searchRes.json();
@@ -436,7 +436,7 @@ export async function fetchVideosBySection(
       detailsUrl.searchParams.set("id", videoIds);
       detailsUrl.searchParams.set("key", YOUTUBE_API_KEY);
 
-      const detailsRes = await fetch(detailsUrl.toString());
+      const detailsRes = await fetch(detailsUrl.toString(), { signal: AbortSignal.timeout(4000) });
       const detailsData: YouTubeVideosResponse = detailsRes.ok
         ? await detailsRes.json()
         : { items: [] };
