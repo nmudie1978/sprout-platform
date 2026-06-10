@@ -85,8 +85,17 @@ export async function GET(req: NextRequest) {
       }).catch(() => {});
     }
     if (usersToPurge.length > 0) {
+      const purgeIds = usersToPurge.map((u) => u.id);
+      const purgeEmails = usersToPurge.map((u) => u.email).filter(Boolean);
+      // Right-to-erasure: NewsletterSubscription.userId is onDelete:SetNull,
+      // so the email row would otherwise survive the account purge. Delete
+      // by userId OR email so no marketing email lingers after erasure.
+      const newsletters = await prisma.newsletterSubscription.deleteMany({
+        where: { OR: [{ userId: { in: purgeIds } }, { email: { in: purgeEmails } }] },
+      });
+      results.newsletterSubscriptions = newsletters.count;
       const purged = await prisma.user.deleteMany({
-        where: { id: { in: usersToPurge.map((u) => u.id) } },
+        where: { id: { in: purgeIds } },
       });
       results.users = purged.count;
     } else {

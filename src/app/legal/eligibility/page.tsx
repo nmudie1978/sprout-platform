@@ -30,7 +30,7 @@ export default function EligibilityPage() {
             <h2>Who Can Use Endeavrly</h2>
             <p>
               Endeavrly is a career-exploration platform built for young people aged
-              <strong> 15&ndash;23</strong>. It is not a jobs marketplace and does not offer paid
+              <strong> 15&ndash;30</strong>. It is not a jobs marketplace and does not offer paid
               work &mdash; so there are no job-poster or employer accounts.
             </p>
           </section>
@@ -45,7 +45,7 @@ export default function EligibilityPage() {
               <li>Provide an accurate date of birth at sign-up</li>
             </ul>
             <p>
-              Everyone aged 15&ndash;23 gets the <strong>same full access</strong> to the platform
+              Everyone aged 15&ndash;30 gets the <strong>same full access</strong> to the platform
               &mdash; career exploration, My Journey, Career Radar, the AI Advisor and Career Twin,
               and your Library. Age is used to tailor your roadmap (for example, education routes),
               not to lock features.
@@ -56,7 +56,7 @@ export default function EligibilityPage() {
             <h2>Age Verification</h2>
             <p>
               We verify age at sign-up via your date of birth (and, where available, Vipps). This is
-              a one-time eligibility check so the platform stays a space for 15&ndash;23 year olds.
+              a one-time eligibility check so the platform stays a space for 15&ndash;30 year olds.
               We collect minimal information and do not require identity documents.
             </p>
           </section>
@@ -68,7 +68,7 @@ export default function EligibilityPage() {
             </p>
             <ul>
               <li>False age information was provided during registration</li>
-              <li>A user no longer meets the 15&ndash;23 eligibility requirement</li>
+              <li>A user no longer meets the 15&ndash;30 eligibility requirement</li>
               <li>Our <Link href="/legal/safety" className="text-primary hover:underline">Safety &amp; Community Guidelines</Link> are violated</li>
             </ul>
           </section>

@@ -30,7 +30,7 @@ export default function SafetyGuidelinesPage() {
             <h2>Our Commitment to Safety</h2>
             <p>
               Endeavrly is a career-exploration platform built safety-first for young people aged
-              15&ndash;23. Safety isn&apos;t a feature bolted on &mdash; it shapes what the platform
+              15&ndash;30. Safety isn&apos;t a feature bolted on &mdash; it shapes what the platform
               deliberately does <em>not</em> do. These guidelines explain how we keep it a calm,
               protected space.
             </p>
@@ -53,7 +53,7 @@ export default function SafetyGuidelinesPage() {
           <section className="mb-8">
             <h2>Age-Appropriate Content & AI</h2>
             <p>
-              Content is written for a 15&ndash;23 audience. Our AI features (the Career Advisor and
+              Content is written for a 15&ndash;30 audience. Our AI features (the Career Advisor and
               Career Twin) operate within strict guardrails: they stay on careers and education, never
               provide therapy or medical advice, and, if someone seems distressed, gently point to a
               trusted adult or a support line rather than trying to counsel. AI responses are guidance,

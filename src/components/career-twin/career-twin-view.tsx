@@ -13,8 +13,10 @@
 import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { track } from "@vercel/analytics";
 import { useQueryClient } from "@tanstack/react-query";
+// Analytics removed — no third-party tracking (see Cookie Policy). This
+// local no-op keeps the former call sites compiling while emitting nothing.
+const track = (..._args: unknown[]): void => {};
 import { toast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { createEmptyGoal, type CareerGoal } from "@/lib/goals/types";
