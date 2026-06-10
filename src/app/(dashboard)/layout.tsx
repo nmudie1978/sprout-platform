@@ -108,7 +108,7 @@ export default async function DashboardLayout({
         {/* Main content with bottom padding for mobile nav. The language
             switcher now lives as an icon in the dashboard header (next to the
             walkthrough control) rather than a persistent top bar. */}
-        <main className="flex-1 pb-16 lg:pb-0">{children}</main>
+        <main id="main-content" className="flex-1 pb-16 lg:pb-0">{children}</main>
 
         {/* Footer with legal links — hidden on mobile.
             Transparent in light mode so the canvas gradient shows

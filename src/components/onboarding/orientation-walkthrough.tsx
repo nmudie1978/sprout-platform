@@ -210,7 +210,7 @@ export function OrientationWalkthrough({
               className={cn(
                 "relative p-1 rounded-md transition-colors",
                 narration.isMuted
-                  ? "text-white/50 hover:text-white/80 dark:text-muted-foreground/40 dark:hover:text-muted-foreground/70"
+                  ? "text-white/50 hover:text-white/80 dark:text-muted-foreground/65 dark:hover:text-muted-foreground/70"
                   : "text-teal-300 hover:text-teal-200 dark:text-teal-500 dark:hover:text-teal-400"
               )}
               title={narration.isMuted ? "Turn on narration" : "Mute narration"}
@@ -244,7 +244,7 @@ export function OrientationWalkthrough({
               <button
                 type="button"
                 onClick={skip}
-                className="text-[11px] text-white/60 hover:text-white dark:text-muted-foreground/50 dark:hover:text-muted-foreground transition-colors"
+                className="text-[11px] text-white/60 hover:text-white dark:text-muted-foreground/70 dark:hover:text-muted-foreground transition-colors"
               >
                 Skip
               </button>

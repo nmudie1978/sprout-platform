@@ -105,7 +105,7 @@ export default function GrowTimelinePage() {
               Milestone timeline layout
             </p>
           </div>
-          <Sparkles className="h-4 w-4 text-muted-foreground/50" />
+          <Sparkles className="h-4 w-4 text-muted-foreground/70" />
         </div>
       </header>
 
@@ -187,7 +187,7 @@ export default function GrowTimelinePage() {
                               'h-6 w-6',
                               isNextUp
                                 ? 'text-emerald-500/60'
-                                : 'text-muted-foreground/30',
+                                : 'text-muted-foreground/60',
                             )}
                           />
                           <div
@@ -238,7 +238,7 @@ export default function GrowTimelinePage() {
                         <Icon
                           className={cn(
                             'h-4 w-4',
-                            isDone ? 'text-muted-foreground/50' : config.color,
+                            isDone ? 'text-muted-foreground/70' : config.color,
                           )}
                         />
                       </div>
@@ -249,7 +249,7 @@ export default function GrowTimelinePage() {
                           className={cn(
                             'text-sm font-medium leading-tight transition-all',
                             isDone
-                              ? 'text-muted-foreground/50 line-through decoration-muted-foreground/30'
+                              ? 'text-muted-foreground/70 line-through decoration-muted-foreground/30'
                               : 'text-foreground/90',
                           )}
                         >
@@ -259,7 +259,7 @@ export default function GrowTimelinePage() {
                           className={cn(
                             'mt-0.5 text-xs leading-relaxed',
                             isDone
-                              ? 'text-muted-foreground/30'
+                              ? 'text-muted-foreground/60'
                               : 'text-muted-foreground/70',
                           )}
                         >
@@ -271,7 +271,7 @@ export default function GrowTimelinePage() {
                           className={cn(
                             'mt-2 inline-block rounded-full px-2 py-0.5 text-[10px] font-medium',
                             isDone
-                              ? 'bg-muted/30 text-muted-foreground/30'
+                              ? 'bg-muted/30 text-muted-foreground/60'
                               : 'bg-muted/50 text-muted-foreground/60',
                           )}
                         >
@@ -284,7 +284,7 @@ export default function GrowTimelinePage() {
                         {action.id.startsWith('custom-') && (
                           <button
                             onClick={() => removeAction(action.id)}
-                            className="rounded-md p-1.5 text-muted-foreground/40 opacity-0 transition-all hover:bg-destructive/10 hover:text-destructive/70 group-hover:opacity-100"
+                            className="rounded-md p-1.5 text-muted-foreground/65 opacity-0 transition-all hover:bg-destructive/10 hover:text-destructive/70 group-hover:opacity-100"
                             aria-label="Remove action"
                           >
                             <Trash2 className="h-3.5 w-3.5" />
@@ -295,10 +295,10 @@ export default function GrowTimelinePage() {
                           className={cn(
                             'rounded-lg px-3 py-1.5 text-xs font-medium transition-all',
                             isDone
-                              ? 'text-muted-foreground/50 hover:bg-muted/40 hover:text-muted-foreground/70'
+                              ? 'text-muted-foreground/70 hover:bg-muted/40 hover:text-muted-foreground/70'
                               : isNextUp
                                 ? 'bg-emerald-500/10 text-emerald-400/80 hover:bg-emerald-500/20'
-                                : 'text-muted-foreground/50 hover:bg-muted/40 hover:text-muted-foreground/70',
+                                : 'text-muted-foreground/70 hover:bg-muted/40 hover:text-muted-foreground/70',
                           )}
                         >
                           {isDone ? 'Undo' : 'Mark done'}
@@ -316,7 +316,7 @@ export default function GrowTimelinePage() {
             {/* Timeline column: end node */}
             <div className="flex flex-col items-center">
               <div className="flex h-8 w-8 shrink-0 items-center justify-center">
-                <Plus className="h-4 w-4 text-muted-foreground/30" />
+                <Plus className="h-4 w-4 text-muted-foreground/60" />
               </div>
             </div>
 
@@ -343,7 +343,7 @@ export default function GrowTimelinePage() {
                         }
                       }}
                       placeholder="What do you want to do next?"
-                      className="w-full rounded-lg border border-border/40 bg-background/50 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground/40 focus:border-muted-foreground/30 focus:outline-none focus:ring-1 focus:ring-muted-foreground/20"
+                      className="w-full rounded-lg border border-border/40 bg-background/50 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground/65 focus:border-muted-foreground/30 focus:outline-none focus:ring-1 focus:ring-muted-foreground/20"
                       autoFocus
                     />
                     <div className="mt-3 flex items-center gap-2">
@@ -359,7 +359,7 @@ export default function GrowTimelinePage() {
                           setAddingCustom(false);
                           setCustomTitle('');
                         }}
-                        className="rounded-lg px-3 py-1.5 text-xs text-muted-foreground/50 transition-colors hover:text-muted-foreground/70"
+                        className="rounded-lg px-3 py-1.5 text-xs text-muted-foreground/70 transition-colors hover:text-muted-foreground/70"
                       >
                         Cancel
                       </button>
@@ -372,7 +372,7 @@ export default function GrowTimelinePage() {
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     onClick={() => setAddingCustom(true)}
-                    className="flex w-full items-center gap-2 rounded-xl border border-dashed border-border/30 px-4 py-3 text-sm text-muted-foreground/40 transition-colors hover:border-border/50 hover:text-muted-foreground/60"
+                    className="flex w-full items-center gap-2 rounded-xl border border-dashed border-border/30 px-4 py-3 text-sm text-muted-foreground/65 transition-colors hover:border-border/50 hover:text-muted-foreground/60"
                   >
                     <Plus className="h-4 w-4" />
                     Add your own step
@@ -385,7 +385,7 @@ export default function GrowTimelinePage() {
 
         {/* Footer */}
         <div className="mt-8 border-t border-border/20 pt-6 text-center">
-          <p className="text-xs text-muted-foreground/40">
+          <p className="text-xs text-muted-foreground/65">
             Move at your own pace — there&apos;s no deadline.
           </p>
         </div>

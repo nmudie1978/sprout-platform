@@ -843,7 +843,7 @@ function RadarCoachTip({
           setDismissed(true);
           try { localStorage.setItem(COACH_DISMISS_KEY, "1"); } catch { /* noop */ }
         }}
-        className="shrink-0 p-0.5 text-muted-foreground/30 hover:text-muted-foreground/50 transition-colors"
+        className="shrink-0 p-0.5 text-muted-foreground/60 hover:text-muted-foreground/70 transition-colors"
         aria-label="Dismiss tip"
       >
         <X className="h-2.5 w-2.5" />
@@ -1340,7 +1340,7 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
           </span>
           <span className="text-[11px] text-amber-700 dark:text-amber-400/80">Career goal:</span>
           <span className="text-[11px] font-medium text-teal-700 dark:text-teal-300">{goalsData.primaryGoal.title}</span>
-          <ArrowRight className="h-3 w-3 text-muted-foreground/30 group-hover:text-amber-400 transition-colors ml-auto shrink-0" />
+          <ArrowRight className="h-3 w-3 text-muted-foreground/60 group-hover:text-amber-400 transition-colors ml-auto shrink-0" />
         </Link>
       )}
 
@@ -2137,7 +2137,7 @@ function CompareVault({
           </span>
           <span className={cn(
             "text-[10px] font-medium leading-tight mt-0.5 tabular-nums",
-            isEmpty ? "text-muted-foreground/50" : "text-foreground/85"
+            isEmpty ? "text-muted-foreground/70" : "text-foreground/85"
           )}>
             {shortlist.length} of {max}
           </span>
@@ -2173,7 +2173,7 @@ function CompareVault({
                 className="h-8 w-8 rounded-full border-2 border-dashed border-border/50 flex items-center justify-center"
                 title="Empty slot"
               >
-                <Plus className="h-3 w-3 text-muted-foreground/40" />
+                <Plus className="h-3 w-3 text-muted-foreground/65" />
               </span>
             );
           })}
@@ -2189,7 +2189,7 @@ function CompareVault({
               "inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-[11px] font-bold transition-colors",
               canCompare
                 ? "bg-teal-500 text-white hover:bg-teal-400"
-                : "bg-muted/30 text-muted-foreground/50 cursor-not-allowed"
+                : "bg-muted/30 text-muted-foreground/70 cursor-not-allowed"
             )}
             title={
               canCompare
@@ -2206,7 +2206,7 @@ function CompareVault({
             <button
               type="button"
               onClick={onClear}
-              className="h-6 w-6 rounded-full flex items-center justify-center text-muted-foreground/40 hover:text-foreground hover:bg-muted/30 transition-colors"
+              className="h-6 w-6 rounded-full flex items-center justify-center text-muted-foreground/65 hover:text-foreground hover:bg-muted/30 transition-colors"
               aria-label="Clear all"
               title="Clear all"
             >

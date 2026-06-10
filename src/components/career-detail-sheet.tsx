@@ -424,7 +424,7 @@ export function CareerDetailSheet({
                       </Button>
                     </>
                   )}
-                  <Button variant="ghost" className="w-full text-muted-foreground/50" size="sm" onClick={onClose}>
+                  <Button variant="ghost" className="w-full text-muted-foreground/70" size="sm" onClick={onClose}>
                     {justSetGoal ? "Maybe later" : "Close"}
                   </Button>
                 </div>

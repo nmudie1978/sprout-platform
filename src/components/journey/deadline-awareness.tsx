@@ -54,7 +54,7 @@ export function DeadlineAwareness({ careerId }: DeadlineAwarenessProps) {
       <div className="overflow-hidden rounded-lg border border-border/40">
         <table className="w-full border-collapse text-left">
           <thead>
-            <tr className="border-b border-border/40 bg-card/40 text-[9px] font-medium uppercase tracking-wide text-muted-foreground/50">
+            <tr className="border-b border-border/40 bg-card/40 text-[9px] font-medium uppercase tracking-wide text-muted-foreground/70">
               <th className="px-3 py-1.5 font-medium">Date</th>
               <th className="px-3 py-1.5 font-medium">Event</th>
               <th className="px-3 py-1.5 font-medium whitespace-nowrap">When</th>
@@ -92,7 +92,7 @@ export function DeadlineAwareness({ careerId }: DeadlineAwarenessProps) {
                         href={d.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-0.5 text-[10px] text-muted-foreground/40 hover:text-primary transition-colors"
+                        className="inline-flex items-center gap-0.5 text-[10px] text-muted-foreground/65 hover:text-primary transition-colors"
                       >
                         <ExternalLink className="h-2.5 w-2.5" />
                         <span>Details</span>

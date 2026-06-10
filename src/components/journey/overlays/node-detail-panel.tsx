@@ -150,7 +150,7 @@ export function NodeDetailPanel({
                       <span className="flex-1 truncate text-muted-foreground">{res}</span>
                       <button
                         onClick={() => removeResource(i)}
-                        className="flex-shrink-0 text-muted-foreground/50 hover:text-destructive transition-colors"
+                        className="flex-shrink-0 text-muted-foreground/70 hover:text-destructive transition-colors"
                       >
                         <X className="h-3 w-3" />
                       </button>

@@ -164,7 +164,7 @@ function TableOfContents() {
               </span>
               <span
                 aria-hidden
-                className="text-muted-foreground/30 group-hover:text-teal-600 dark:group-hover:text-teal-400 group-hover:translate-x-0.5 transition-all"
+                className="text-muted-foreground/60 group-hover:text-teal-600 dark:group-hover:text-teal-400 group-hover:translate-x-0.5 transition-all"
               >
                 →
               </span>

@@ -18,7 +18,7 @@ export function JobCourseLinks({ category }: JobCourseLinksProps) {
       <span className="shrink-0">Build skills:</span>
       {links.map((link, i) => (
         <span key={link.platform} className="inline-flex items-center gap-1">
-          {i > 0 && <span className="text-muted-foreground/40">·</span>}
+          {i > 0 && <span className="text-muted-foreground/65">·</span>}
           <a
             href={link.url}
             target="_blank"

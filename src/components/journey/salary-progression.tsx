@@ -166,10 +166,10 @@ export function SalaryChart({
         <div className="flex-1 min-w-0">
           <h3 className="text-[12px] font-semibold text-foreground/85">{title}</h3>
           {subtitle && (
-            <p className="text-[9px] text-muted-foreground/50">{subtitle}</p>
+            <p className="text-[9px] text-muted-foreground/70">{subtitle}</p>
           )}
         </div>
-        <span className="text-[9px] text-muted-foreground/40 shrink-0">
+        <span className="text-[9px] text-muted-foreground/65 shrink-0">
           NOK/year · Norway
         </span>
       </div>
@@ -250,7 +250,7 @@ export function SalaryChart({
       </div>
 
       {/* Legend */}
-      <div className="flex items-center gap-4 text-[9px] text-muted-foreground/50">
+      <div className="flex items-center gap-4 text-[9px] text-muted-foreground/70">
         <span className="flex items-center gap-1.5 group relative cursor-default">
           <span className="h-2 w-4 rounded-sm bg-[hsl(166,72%,45%)] opacity-85" />
           Average

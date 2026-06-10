@@ -166,7 +166,7 @@ export function AiChatWidget() {
         <button
           type="button"
           onClick={hideWidget}
-          className="h-5 w-5 flex items-center justify-center rounded-full bg-muted/80 border border-border/40 text-muted-foreground/50 hover:text-foreground hover:bg-muted transition-colors -mr-2 -mt-1 z-10"
+          className="h-5 w-5 flex items-center justify-center rounded-full bg-muted/80 border border-border/40 text-muted-foreground/70 hover:text-foreground hover:bg-muted transition-colors -mr-2 -mt-1 z-10"
           title="Hide assistant — re-enable in Profile"
         >
           <X className="h-3 w-3" />

@@ -56,7 +56,7 @@ export function CareerPathExamplesPanel({ careerId, careerTitle }: CareerPathExa
   }
 
   if (tried && paths.length === 0) {
-    return <p className="text-xs text-muted-foreground/40">Career path examples coming soon for this role.</p>;
+    return <p className="text-xs text-muted-foreground/65">Career path examples coming soon for this role.</p>;
   }
 
   return (
@@ -64,7 +64,7 @@ export function CareerPathExamplesPanel({ careerId, careerTitle }: CareerPathExa
       {paths.slice(0, 2).map((path, pi) => (
         <div key={pi} className="rounded-lg border border-border/20 bg-background/20 p-3.5">
           <p className="text-xs font-semibold text-foreground/75">{path.name}</p>
-          <p className="text-[10px] text-muted-foreground/40 mb-3">{path.title} · Age {path.currentAge}</p>
+          <p className="text-[10px] text-muted-foreground/65 mb-3">{path.title} · Age {path.currentAge}</p>
           <div className="relative">
             <div className="absolute left-[5px] top-2 bottom-2 w-px bg-gradient-to-b from-emerald-500/30 via-emerald-500/15 to-transparent" />
             <div className="space-y-1.5">

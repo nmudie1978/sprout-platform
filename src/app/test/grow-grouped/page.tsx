@@ -263,7 +263,7 @@ export default function GrowGroupedPage() {
                         {/* Add action row */}
                         {addingToGroup === type ? (
                           <div className="flex items-center gap-3 px-3 py-2.5">
-                            <Plus className="h-5 w-5 shrink-0 text-muted-foreground/50" />
+                            <Plus className="h-5 w-5 shrink-0 text-muted-foreground/70" />
                             <input
                               type="text"
                               autoFocus
@@ -283,7 +283,7 @@ export default function GrowGroupedPage() {
                                 }
                               }}
                               placeholder="Add an action..."
-                              className="flex-1 bg-transparent text-sm placeholder:text-muted-foreground/50 focus:outline-none"
+                              className="flex-1 bg-transparent text-sm placeholder:text-muted-foreground/70 focus:outline-none"
                             />
                             {newActionTitle.trim() && (
                               <button
@@ -300,7 +300,7 @@ export default function GrowGroupedPage() {
                               setAddingToGroup(type);
                               setNewActionTitle('');
                             }}
-                            className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-muted-foreground/50 hover:text-muted-foreground transition-colors"
+                            className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-muted-foreground/70 hover:text-muted-foreground transition-colors"
                           >
                             <Plus className="h-5 w-5 shrink-0" />
                             <span className="text-sm">Add action</span>

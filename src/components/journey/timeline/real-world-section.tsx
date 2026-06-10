@@ -61,7 +61,7 @@ export function RealWorldSection({ item, career }: RealWorldSectionProps) {
 
   return (
     <div>
-      <p className="text-[10px] font-medium text-muted-foreground/50 uppercase tracking-wider mb-1.5">
+      <p className="text-[10px] font-medium text-muted-foreground/70 uppercase tracking-wider mb-1.5">
         Where to go next
       </p>
       <ul className="divide-y divide-border/10 rounded-lg border border-border/15 bg-muted/[0.04]">
@@ -79,7 +79,7 @@ export function RealWorldSection({ item, career }: RealWorldSectionProps) {
               {isInternal ? (
                 <ArrowRight className="h-2.5 w-2.5 text-teal-400/50 group-hover:text-teal-400 shrink-0" />
               ) : (
-                <ExternalLink className="h-2.5 w-2.5 text-muted-foreground/30 group-hover:text-muted-foreground/60 shrink-0" />
+                <ExternalLink className="h-2.5 w-2.5 text-muted-foreground/60 group-hover:text-muted-foreground/60 shrink-0" />
               )}
             </>
           );

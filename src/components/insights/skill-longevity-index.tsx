@@ -301,7 +301,7 @@ export function SkillLongevityIndex({
         )}
 
         {/* Source note */}
-        <p className="text-[9px] text-muted-foreground/50 text-center pt-1 border-t">
+        <p className="text-[9px] text-muted-foreground/70 text-center pt-1 border-t">
           Based on WEF Future of Jobs Report
         </p>
       </CardContent>

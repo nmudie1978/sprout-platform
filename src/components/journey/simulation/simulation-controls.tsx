@@ -110,7 +110,7 @@ export function SimulationControls({ state, controls }: SimulationControlsProps)
           <button
             type="button"
             onClick={controls.exit}
-            className="p-1.5 rounded-full text-muted-foreground/50 hover:text-rose-400 hover:bg-rose-500/10 transition-colors"
+            className="p-1.5 rounded-full text-muted-foreground/70 hover:text-rose-400 hover:bg-rose-500/10 transition-colors"
             aria-label="Exit simulation"
           >
             <X className="h-4 w-4" />

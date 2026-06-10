@@ -26,8 +26,8 @@ export function RecentInsightUpdates({ updates }: RecentInsightUpdatesProps) {
       className="mt-3 mb-1"
     >
       <div className="flex items-center gap-1.5 mb-2">
-        <Clock className="h-3 w-3 text-muted-foreground/50" />
-        <span className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground/50">
+        <Clock className="h-3 w-3 text-muted-foreground/70" />
+        <span className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground/70">
           Latest detected updates
         </span>
       </div>
@@ -52,7 +52,7 @@ export function RecentInsightUpdates({ updates }: RecentInsightUpdatesProps) {
                 href={update.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex-shrink-0 p-1 rounded-md text-muted-foreground/40 hover:text-teal-500 transition-colors"
+                className="flex-shrink-0 p-1 rounded-md text-muted-foreground/65 hover:text-teal-500 transition-colors"
                 aria-label={`View ${update.title}`}
               >
                 <ArrowUpRight className="h-3 w-3" />

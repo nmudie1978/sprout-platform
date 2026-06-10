@@ -1067,7 +1067,7 @@ export function JobMarketStatsCarousel({
                 </>
               )}
             </Button>
-            <p className="text-[10px] text-muted-foreground/50">
+            <p className="text-[10px] text-muted-foreground/70">
               Set {batchSeed + 1} of {batch.totalBatches} ({batch.totalAvailable} stats total)
             </p>
           </div>
@@ -1075,7 +1075,7 @@ export function JobMarketStatsCarousel({
 
         {/* Dataset versioning footer */}
         <div className="flex items-center justify-center gap-2 mt-3">
-          <p className="text-[9px] text-muted-foreground/50">
+          <p className="text-[9px] text-muted-foreground/70">
             Last updated {lastUpdated} · v{DATASET_VERSION}
           </p>
         </div>

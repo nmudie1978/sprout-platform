@@ -54,7 +54,7 @@ export default async function TeacherDashboardPage() {
 
       {cohorts.length === 0 ? (
         <div className="rounded-2xl border border-dashed border-border/60 p-10 text-center">
-          <Users className="h-10 w-10 text-muted-foreground/40 mx-auto mb-4" />
+          <Users className="h-10 w-10 text-muted-foreground/65 mx-auto mb-4" />
           <h2 className="text-base font-semibold text-foreground/90">
             No classes yet
           </h2>
@@ -84,7 +84,7 @@ export default async function TeacherDashboardPage() {
                     </p>
                   )}
                 </div>
-                <ChevronRight className="h-4 w-4 text-muted-foreground/40 group-hover:text-primary transition-colors shrink-0" />
+                <ChevronRight className="h-4 w-4 text-muted-foreground/65 group-hover:text-primary transition-colors shrink-0" />
               </div>
 
               <div className="mt-3 flex items-center justify-between">

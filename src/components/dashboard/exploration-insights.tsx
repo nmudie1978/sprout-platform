@@ -146,7 +146,7 @@ export function ExplorationInsights({ savedCareers, primaryGoal, radarPreference
             </span>
           ))}
           {savedCareers.length > 8 && (
-            <span className="text-[10px] text-muted-foreground/50 self-center">
+            <span className="text-[10px] text-muted-foreground/70 self-center">
               +{savedCareers.length - 8} more
             </span>
           )}

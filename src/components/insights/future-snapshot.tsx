@@ -159,7 +159,7 @@ export function FutureSnapshot() {
                   {FEATURED_ARTICLE.source}
                 </p>
               </div>
-              <ArrowUpRight className="h-4 w-4 text-muted-foreground/40 group-hover:text-blue-500 transition-colors shrink-0 mt-0.5" />
+              <ArrowUpRight className="h-4 w-4 text-muted-foreground/65 group-hover:text-blue-500 transition-colors shrink-0 mt-0.5" />
             </div>
 
             {/* Description */}

@@ -142,7 +142,7 @@ function ListRow({ stat }: { stat: ResearchStatWithYear }) {
       <p className="text-[11px] font-medium text-foreground flex-1 min-w-0 truncate">
         {stat.headline}
       </p>
-      <span className="text-[9px] text-muted-foreground/50 flex-shrink-0">
+      <span className="text-[9px] text-muted-foreground/70 flex-shrink-0">
         {stat.sourceName} &bull; {stat.sourceYear}
       </span>
       <a
@@ -151,7 +151,7 @@ function ListRow({ stat }: { stat: ResearchStatWithYear }) {
         rel="noopener noreferrer"
         className="opacity-0 group-hover/row:opacity-100 transition-opacity flex-shrink-0"
       >
-        <ExternalLink className="h-2.5 w-2.5 text-muted-foreground/40 hover:text-primary" />
+        <ExternalLink className="h-2.5 w-2.5 text-muted-foreground/65 hover:text-primary" />
       </a>
     </div>
   );
@@ -178,7 +178,7 @@ function ViewToggle({
             className={`p-1.5 rounded-md transition-colors ${
               active
                 ? "bg-white/10 text-foreground"
-                : "text-muted-foreground/50 hover:text-muted-foreground"
+                : "text-muted-foreground/70 hover:text-muted-foreground"
             }`}
           >
             <Icon className="h-3 w-3" />

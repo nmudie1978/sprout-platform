@@ -117,7 +117,7 @@ export function ReflectionPanel({
         <div className="flex items-center gap-1.5">
           {/* Save status */}
           {status === "saving" && (
-            <span className="text-[9px] text-muted-foreground/50">
+            <span className="text-[9px] text-muted-foreground/70">
               Saving...
             </span>
           )}
@@ -149,7 +149,7 @@ export function ReflectionPanel({
           placeholder={PLACEHOLDERS[phase]}
           rows={3}
           className={cn(
-            "w-full resize-none bg-transparent text-xs leading-relaxed text-foreground placeholder:text-muted-foreground/40",
+            "w-full resize-none bg-transparent text-xs leading-relaxed text-foreground placeholder:text-muted-foreground/65",
             "outline-none border-0 p-0 focus:ring-0"
           )}
           maxLength={2000}
@@ -158,7 +158,7 @@ export function ReflectionPanel({
 
       {/* Footer — subtle character hint */}
       {content.length > 1500 && (
-        <div className="px-3 pb-2 text-[9px] text-muted-foreground/40 text-right">
+        <div className="px-3 pb-2 text-[9px] text-muted-foreground/65 text-right">
           {content.length}/2000
         </div>
       )}

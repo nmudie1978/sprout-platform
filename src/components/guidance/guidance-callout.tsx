@@ -85,14 +85,14 @@ export function GuidanceCallout({
           <p className="text-xs text-muted-foreground/70 leading-relaxed">
             {message}
             {submessage && (
-              <span className="text-muted-foreground/50"> {submessage}</span>
+              <span className="text-muted-foreground/70"> {submessage}</span>
             )}
           </p>
         </div>
         {dismissible && onDismiss && (
           <button
             onClick={() => onDismiss(id)}
-            className="p-0.5 rounded text-muted-foreground/30 hover:text-muted-foreground/60 transition-colors shrink-0"
+            className="p-0.5 rounded text-muted-foreground/60 hover:text-muted-foreground/60 transition-colors shrink-0"
             aria-label="Dismiss"
           >
             <X className="h-3 w-3" />
@@ -118,13 +118,13 @@ export function GuidanceCallout({
         <div className="flex-1 min-w-0">
           <p className="text-xs font-medium text-foreground/70">{message}</p>
           {submessage && (
-            <p className="text-[11px] text-muted-foreground/50 mt-0.5">{submessage}</p>
+            <p className="text-[11px] text-muted-foreground/70 mt-0.5">{submessage}</p>
           )}
         </div>
         {dismissible && onDismiss && (
           <button
             onClick={() => onDismiss(id)}
-            className="p-0.5 rounded text-muted-foreground/30 hover:text-muted-foreground/60 transition-colors shrink-0"
+            className="p-0.5 rounded text-muted-foreground/60 hover:text-muted-foreground/60 transition-colors shrink-0"
             aria-label="Dismiss"
           >
             <X className="h-3 w-3" />
@@ -157,7 +157,7 @@ export function GuidanceCallout({
           {dismissible && onDismiss && (
             <button
               onClick={() => onDismiss(id)}
-              className="p-1 rounded text-muted-foreground/30 hover:text-muted-foreground/60 transition-colors shrink-0"
+              className="p-1 rounded text-muted-foreground/60 hover:text-muted-foreground/60 transition-colors shrink-0"
               aria-label="Dismiss"
             >
               <X className="h-3.5 w-3.5" />
@@ -185,13 +185,13 @@ export function GuidanceCallout({
         <div className="flex-1 min-w-0">
           <p className="text-xs font-medium text-foreground/80 leading-relaxed">{message}</p>
           {submessage && (
-            <p className="text-[11px] text-muted-foreground/50 mt-1 leading-relaxed">{submessage}</p>
+            <p className="text-[11px] text-muted-foreground/70 mt-1 leading-relaxed">{submessage}</p>
           )}
         </div>
         {dismissible && onDismiss && (
           <button
             onClick={() => onDismiss(id)}
-            className="p-1 rounded text-muted-foreground/30 hover:text-muted-foreground/60 transition-colors shrink-0"
+            className="p-1 rounded text-muted-foreground/60 hover:text-muted-foreground/60 transition-colors shrink-0"
             aria-label="Dismiss"
           >
             <X className="h-3.5 w-3.5" />

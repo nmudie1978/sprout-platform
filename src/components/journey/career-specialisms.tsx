@@ -89,7 +89,7 @@ export function CareerSpecialisms({ careerId }: CareerSpecialismsProps) {
                 </div>
                 <ChevronDown
                   className={cn(
-                    'h-4 w-4 shrink-0 text-muted-foreground/50 transition-transform',
+                    'h-4 w-4 shrink-0 text-muted-foreground/70 transition-transform',
                     isOpen && 'rotate-180',
                   )}
                 />

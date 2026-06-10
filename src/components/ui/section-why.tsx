@@ -27,7 +27,7 @@ export function SectionWhy({ why, align = "center" }: SectionWhyProps) {
             // Some parent navigations fire on mousedown — kill it here too
             e.stopPropagation();
           }}
-          className="inline-flex items-center justify-center rounded-full p-0.5 text-muted-foreground/30 hover:text-muted-foreground/60 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+          className="inline-flex items-center justify-center rounded-full p-0.5 text-muted-foreground/60 hover:text-muted-foreground/60 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
           aria-label="Why this matters"
         >
           <HelpCircle className="h-3.5 w-3.5" />

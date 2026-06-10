@@ -107,12 +107,12 @@ export function CareerPresenceCard({ careerId, careerTitle }: CareerPresenceCard
     return (
       <div className="rounded-lg border border-border/20 bg-muted/5 px-4 py-3">
         <div className="flex items-center gap-2">
-          <Globe className="h-3.5 w-3.5 text-muted-foreground/40" />
+          <Globe className="h-3.5 w-3.5 text-muted-foreground/65" />
           <span className="text-[10px] font-medium text-emerald-400/60 uppercase tracking-wider">
             Career Presence
           </span>
         </div>
-        <p className="text-xs text-muted-foreground/50 mt-1">
+        <p className="text-xs text-muted-foreground/70 mt-1">
           Not yet available for this career.
         </p>
       </div>
@@ -200,7 +200,7 @@ export function CareerPresenceCard({ careerId, careerTitle }: CareerPresenceCard
                 >
                   <span className="text-xs">{FLAGS[c.countryCode] ?? ''}</span>
                   <span className="text-foreground/70 font-medium">{c.countryName}</span>
-                  <span className="text-muted-foreground/40">—</span>
+                  <span className="text-muted-foreground/65">—</span>
                   <span className={cn('font-medium', level.text)}>{level.label}</span>
                 </div>
               );

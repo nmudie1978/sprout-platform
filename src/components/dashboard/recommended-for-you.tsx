@@ -50,7 +50,7 @@ export function RecommendedForYou({
             <span className="block truncate text-muted-foreground/80">
               {career.title}
             </span>
-            <span className="block truncate text-[10px] text-muted-foreground/40">
+            <span className="block truncate text-[10px] text-muted-foreground/65">
               {reason}
             </span>
           </span>

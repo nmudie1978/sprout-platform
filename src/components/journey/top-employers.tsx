@@ -37,7 +37,7 @@ function EmployerCard({ emp }: { emp: Employer }) {
             className="rounded shrink-0"
           />
         ) : (
-          <Building2 className="h-4 w-4 text-muted-foreground/40 shrink-0" />
+          <Building2 className="h-4 w-4 text-muted-foreground/65 shrink-0" />
         )}
         <span className="text-[11px] font-medium text-foreground/90 truncate">
           {emp.name}
@@ -83,10 +83,10 @@ export function TopEmployers({ careerId, category, country }: TopEmployersProps)
       {/* Scroll arrows */}
       {employers.length > 3 && (
         <div className="flex justify-end gap-1">
-          <button type="button" onClick={() => scroll('left')} className="p-1 rounded hover:bg-muted/40 text-muted-foreground/50 hover:text-foreground transition-colors" aria-label="Scroll left">
+          <button type="button" onClick={() => scroll('left')} className="p-1 rounded hover:bg-muted/40 text-muted-foreground/70 hover:text-foreground transition-colors" aria-label="Scroll left">
             <ChevronLeft className="h-3.5 w-3.5" />
           </button>
-          <button type="button" onClick={() => scroll('right')} className="p-1 rounded hover:bg-muted/40 text-muted-foreground/50 hover:text-foreground transition-colors" aria-label="Scroll right">
+          <button type="button" onClick={() => scroll('right')} className="p-1 rounded hover:bg-muted/40 text-muted-foreground/70 hover:text-foreground transition-colors" aria-label="Scroll right">
             <ChevronRight className="h-3.5 w-3.5" />
           </button>
         </div>

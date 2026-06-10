@@ -208,7 +208,7 @@ export function RadarOnboardingWizard({ open, onComplete }: RadarOnboardingWizar
                           selected
                             ? "bg-teal-500 border-teal-500 text-white scale-[1.03]"
                             : disabled
-                            ? "border-border text-muted-foreground/40 cursor-not-allowed"
+                            ? "border-border text-muted-foreground/65 cursor-not-allowed"
                             : "border-border hover:border-teal-500/50 hover:bg-teal-500/5"
                         )}
                       >

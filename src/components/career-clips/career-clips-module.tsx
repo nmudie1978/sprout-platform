@@ -114,7 +114,7 @@ export function CareerClipsModule({
           </div>
 
           <div className="text-center py-8 px-4">
-            <Sparkles className="h-8 w-8 mx-auto text-muted-foreground/50 mb-3" />
+            <Sparkles className="h-8 w-8 mx-auto text-muted-foreground/70 mb-3" />
             <p className="text-sm font-medium">No verified clips right now</p>
             <p className="text-xs text-muted-foreground mt-1 mb-4">
               We'll add more soon — continue your journey to build a real plan.

@@ -105,7 +105,7 @@ export function ConfidenceTracker({ careerId, careerTitle }: ConfidenceTrackerPr
         </h3>
         {trend === 'up' && <TrendingUp className="h-3 w-3 text-emerald-400" />}
         {trend === 'down' && <TrendingDown className="h-3 w-3 text-red-400" />}
-        {trend === 'same' && history.length > 1 && <Minus className="h-3 w-3 text-muted-foreground/40" />}
+        {trend === 'same' && history.length > 1 && <Minus className="h-3 w-3 text-muted-foreground/65" />}
       </div>
 
       {/* 5-point scale */}
@@ -122,7 +122,7 @@ export function ConfidenceTracker({ careerId, careerTitle }: ConfidenceTrackerPr
                 'flex-1 rounded-lg border py-2.5 text-center transition-all',
                 isActive
                   ? `${COLORS[i]} border-transparent text-white`
-                  : 'border-border/30 bg-card/30 text-muted-foreground/50 hover:bg-muted/20 hover:text-foreground/70',
+                  : 'border-border/30 bg-card/30 text-muted-foreground/70 hover:bg-muted/20 hover:text-foreground/70',
               )}
             >
               <span className="text-[10px] font-medium block">{score}</span>
@@ -143,14 +143,14 @@ export function ConfidenceTracker({ careerId, careerTitle }: ConfidenceTrackerPr
               title={`${LABELS[entry.score - 1]} — ${new Date(entry.timestamp).toLocaleDateString()}`}
             />
           ))}
-          <span className="text-[8px] text-muted-foreground/40 ml-1.5 self-end">
+          <span className="text-[8px] text-muted-foreground/65 ml-1.5 self-end">
             last {Math.min(history.length, 10)} ratings
           </span>
         </div>
       )}
 
       {currentScore === 0 && (
-        <p className="text-[9px] text-muted-foreground/50 text-center">
+        <p className="text-[9px] text-muted-foreground/70 text-center">
           Tell us how interested you are in {careerTitle} — it shapes your dashboard and grows over time
         </p>
       )}

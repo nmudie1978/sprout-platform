@@ -59,7 +59,7 @@ export function CareerRealityCheck({ roleSlug }: CareerRealityCheckProps) {
           </CardTitle>
         </CardHeader>
         <CardContent className="text-center py-8">
-          <Clock className="h-12 w-12 mx-auto text-muted-foreground/50 mb-3" />
+          <Clock className="h-12 w-12 mx-auto text-muted-foreground/70 mb-3" />
           <p className="text-muted-foreground">
             Reality check coming soon for this career.
           </p>

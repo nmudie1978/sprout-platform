@@ -150,7 +150,7 @@ export function SavedCareersTray({ topOffsetPx = 80, className }: SavedCareersTr
           </div>
           <button
             onClick={() => setOpen(false)}
-            className="p-1.5 rounded-md hover:bg-muted/40 text-muted-foreground/50 hover:text-foreground transition-colors"
+            className="p-1.5 rounded-md hover:bg-muted/40 text-muted-foreground/70 hover:text-foreground transition-colors"
             aria-label="Close saved careers"
           >
             <X className="h-3.5 w-3.5" />
@@ -162,7 +162,7 @@ export function SavedCareersTray({ topOffsetPx = 80, className }: SavedCareersTr
           {count === 0 ? (
             <div className="flex flex-col items-center justify-center h-full text-center px-4">
               <Heart className="h-8 w-8 text-muted-foreground/20 mb-3" />
-              <p className="text-xs text-muted-foreground/50 leading-relaxed">
+              <p className="text-xs text-muted-foreground/70 leading-relaxed">
                 Open any career on the radar or under Explore Careers and tap the heart to keep it here for later.
               </p>
             </div>
@@ -189,14 +189,14 @@ export function SavedCareersTray({ topOffsetPx = 80, className }: SavedCareersTr
                       <p className="text-[11px] font-medium text-foreground/85 truncate leading-tight">
                         {c.careerTitle}
                       </p>
-                      <p className="text-[9px] text-muted-foreground/40 mt-0.5">
+                      <p className="text-[9px] text-muted-foreground/65 mt-0.5">
                         Saved {formatTimeAgo(new Date(c.savedAt).getTime())}
                       </p>
                     </div>
                   </div>
                   <button
                     onClick={(e) => handleRemove(e, c.careerId)}
-                    className="p-1 rounded opacity-0 group-hover:opacity-100 hover:bg-red-500/10 text-muted-foreground/30 hover:text-red-400 transition-all shrink-0"
+                    className="p-1 rounded opacity-0 group-hover:opacity-100 hover:bg-red-500/10 text-muted-foreground/60 hover:text-red-400 transition-all shrink-0"
                     aria-label={`Remove ${c.careerTitle}`}
                     title="Remove"
                   >
@@ -210,7 +210,7 @@ export function SavedCareersTray({ topOffsetPx = 80, className }: SavedCareersTr
 
         {count > 0 && (
           <div className="px-4 py-2 border-t border-border/20 shrink-0">
-            <p className="text-[9px] text-muted-foreground/40 text-center">
+            <p className="text-[9px] text-muted-foreground/65 text-center">
               Click to reopen · also visible on dashboard
             </p>
           </div>

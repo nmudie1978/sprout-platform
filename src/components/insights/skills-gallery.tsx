@@ -141,7 +141,7 @@ export function SkillsGallery() {
 
   if (items.length === 0) {
     return (
-      <div className="flex h-[160px] items-center justify-center text-xs text-muted-foreground/50">
+      <div className="flex h-[160px] items-center justify-center text-xs text-muted-foreground/70">
         Skills content is coming soon.
       </div>
     );
@@ -176,7 +176,7 @@ export function SkillsGallery() {
               </>
             )}
           </Button>
-          <p className="text-[10px] text-muted-foreground/50">
+          <p className="text-[10px] text-muted-foreground/70">
             Set {(batch % totalBatches) + 1} of {totalBatches} · {pool.length} pieces total
           </p>
         </div>

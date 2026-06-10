@@ -128,7 +128,7 @@ export function DecisionBoardTab() {
       {/* Out of the running */}
       {ruledOut.length > 0 && (
         <div className="space-y-1.5">
-          <p className="text-center text-[10px] uppercase tracking-wide text-muted-foreground/50">
+          <p className="text-center text-[10px] uppercase tracking-wide text-muted-foreground/70">
             Out of the running
           </p>
           {ruledOut.map((row) => (

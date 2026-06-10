@@ -561,7 +561,7 @@ export default function ProfilePage() {
               </p>
               <span className={cn(
                 "text-xs font-semibold tabular-nums",
-                isComplete ? "text-success" : "text-muted-foreground/50"
+                isComplete ? "text-success" : "text-muted-foreground/70"
               )}>
                 {percent}%
               </span>
@@ -582,7 +582,7 @@ export default function ProfilePage() {
                     "inline-flex items-center rounded-pill px-2.5 py-0.5 text-xs font-medium",
                     required
                       ? "bg-warning/10 text-warning"
-                      : "bg-muted/50 text-muted-foreground/50"
+                      : "bg-muted/50 text-muted-foreground/70"
                   )}
                 >
                   {field}
@@ -607,7 +607,7 @@ export default function ProfilePage() {
                 <TooltipProvider delayDuration={200}>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Info className="h-3.5 w-3.5 text-muted-foreground/40 cursor-help" />
+                      <Info className="h-3.5 w-3.5 text-muted-foreground/65 cursor-help" />
                     </TooltipTrigger>
                     <TooltipContent side="right" className="max-w-[260px] text-xs p-3">
                       <p className="font-medium mb-1">Why this matters</p>
@@ -680,7 +680,7 @@ export default function ProfilePage() {
                 <TooltipProvider delayDuration={150}>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Info className="h-3.5 w-3.5 text-muted-foreground/40 cursor-help" />
+                      <Info className="h-3.5 w-3.5 text-muted-foreground/65 cursor-help" />
                     </TooltipTrigger>
                     <TooltipContent side="right" className="max-w-[240px] text-xs p-3">
                       Your name, location, and about section make up your profile. Only what you fill in is visible.
@@ -713,7 +713,7 @@ export default function ProfilePage() {
                           onChange={(e) => setFormData({ ...formData, displayName: e.target.value })}
                           className="h-9 text-sm"
                         />
-                        <p className="mt-1 text-xs text-muted-foreground/40">
+                        <p className="mt-1 text-xs text-muted-foreground/65">
                           First name <span className="text-warning">*</span>
                         </p>
                       </div>
@@ -725,7 +725,7 @@ export default function ProfilePage() {
                           onChange={(e) => setFormData({ ...formData, surname: e.target.value })}
                           className="h-9 text-sm"
                         />
-                        <p className="mt-1 text-xs text-muted-foreground/40">
+                        <p className="mt-1 text-xs text-muted-foreground/65">
                           Surname
                         </p>
                       </div>
@@ -796,7 +796,7 @@ export default function ProfilePage() {
                   rows={2}
                   className="mt-1 text-sm"
                 />
-                <p className="mt-0.5 text-xs text-muted-foreground/30">{formData.bio.length}/500</p>
+                <p className="mt-0.5 text-xs text-muted-foreground/60">{formData.bio.length}/500</p>
               </div>
 
               {/* Phone + City side by side */}

@@ -58,7 +58,7 @@ function StatCard({ stat }: { stat: ResearchStatWithYear }) {
           className="inline-flex items-center gap-1 text-[10px] text-muted-foreground hover:text-primary transition-colors group"
         >
           <span className="font-medium">{stat.sourceName}</span>
-          <span className="text-muted-foreground/50">({stat.sourceYear})</span>
+          <span className="text-muted-foreground/70">({stat.sourceYear})</span>
           <ExternalLink className="h-2.5 w-2.5 opacity-60 group-hover:opacity-100" />
         </a>
       </div>
@@ -244,7 +244,7 @@ export default function ResearchPage() {
                   <span className="text-muted-foreground/80 italic">
                     &ldquo;{stat.headline}&rdquo;
                   </span>
-                  <ExternalLink className="inline h-2.5 w-2.5 ml-1 text-muted-foreground/50 group-hover:text-primary transition-colors" />
+                  <ExternalLink className="inline h-2.5 w-2.5 ml-1 text-muted-foreground/70 group-hover:text-primary transition-colors" />
                 </a>
               </li>
             ))}

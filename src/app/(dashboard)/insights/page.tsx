@@ -200,7 +200,7 @@ export default function IndustryInsightsPage() {
           {t("trustLine")}
         </p>
         <div className="flex flex-wrap items-center justify-center gap-2 mt-3">
-          <span className="text-xs text-muted-foreground/40">Jump to:</span>
+          <span className="text-xs text-muted-foreground/65">Jump to:</span>
           <a href="#global-lens" className="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-pill bg-info/10 text-info hover:bg-info/20 transition-colors">
             <Globe2 className="h-3 w-3" /> Global Lens
           </a>
@@ -393,7 +393,7 @@ export default function IndustryInsightsPage() {
                   <a href={source.url} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary">
                     {source.name}
                   </a>
-                  {idx < arr.length - 1 && <span className="text-muted-foreground/50">·</span>}
+                  {idx < arr.length - 1 && <span className="text-muted-foreground/70">·</span>}
                 </span>
               ))}
             </div>

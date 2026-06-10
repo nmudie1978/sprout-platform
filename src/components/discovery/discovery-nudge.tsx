@@ -249,7 +249,7 @@ export function DiscoveryNudge({
         {/* Dismiss */}
         <button
           onClick={handleDismiss}
-          className="shrink-0 p-1 rounded-md hover:bg-muted/30 text-muted-foreground/40 hover:text-muted-foreground/60 transition-colors"
+          className="shrink-0 p-1 rounded-md hover:bg-muted/30 text-muted-foreground/65 hover:text-muted-foreground/60 transition-colors"
           aria-label="Dismiss suggestion"
         >
           <X className="h-3 w-3" />

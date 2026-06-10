@@ -159,7 +159,7 @@ export default async function AdminReportsPage(props: PageProps) {
                       <span className="inline-flex items-center gap-1.5 text-xs text-foreground/80">
                         <TargetIcon className="h-3.5 w-3.5 text-muted-foreground/60" />
                         {r.targetType === "JOB_POST" ? "Job" : "User"}
-                        <code className="text-[10px] text-muted-foreground/50 ml-1">{r.targetId.slice(0, 8)}</code>
+                        <code className="text-[10px] text-muted-foreground/70 ml-1">{r.targetId.slice(0, 8)}</code>
                       </span>
                     </td>
                     <td className="px-4 py-3 text-xs text-foreground/80">

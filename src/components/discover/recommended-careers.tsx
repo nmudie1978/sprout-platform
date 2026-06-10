@@ -53,7 +53,7 @@ export function RecommendedCareers({ className, limit = 4 }: { className?: strin
           <Sparkles className="h-4 w-4 text-teal-500" />
           <h3 className="text-sm font-semibold">Recommended for you</h3>
         </div>
-        <Link href="/my-journey/discover" className="text-[11px] text-muted-foreground/50 hover:text-muted-foreground transition-colors">
+        <Link href="/my-journey/discover" className="text-[11px] text-muted-foreground/70 hover:text-muted-foreground transition-colors">
           Update profile
         </Link>
       </div>

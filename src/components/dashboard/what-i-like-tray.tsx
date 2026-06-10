@@ -130,7 +130,7 @@ export function WhatILikeTray({ topOffsetPx = 0, className }: WhatILikeTrayProps
           </div>
           <button
             onClick={() => setOpen(false)}
-            className="p-1.5 rounded-md hover:bg-muted/40 text-muted-foreground/50 hover:text-foreground transition-colors"
+            className="p-1.5 rounded-md hover:bg-muted/40 text-muted-foreground/70 hover:text-foreground transition-colors"
             aria-label="Close What I Like"
           >
             <X className="h-3.5 w-3.5" />

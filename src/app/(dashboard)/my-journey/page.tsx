@@ -308,7 +308,7 @@ function FullscreenRoadmap({ goalTitle, onClose }: { goalTitle: string; onClose:
           <Rocket className="h-5 w-5 text-warning" />
           <div>
             <h2 className="text-base font-semibold">Career Roadmap</h2>
-            <p className="text-xs text-muted-foreground/50">Your path to {goalTitle}</p>
+            <p className="text-xs text-muted-foreground/70">Your path to {goalTitle}</p>
           </div>
         </div>
         <button onClick={onClose} className="inline-flex items-center gap-1.5 px-3 py-1 rounded-control text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 border border-border/30 transition-colors">
@@ -424,7 +424,7 @@ function EmptyState({ icon: Icon, message }: { icon: typeof Target; message: str
   return (
     <div className="rounded-card border border-dashed border-border/30 p-12 text-center">
       <Icon className="h-10 w-10 mx-auto text-muted-foreground/20 mb-3" />
-      <p className="text-sm text-muted-foreground/50">{message}</p>
+      <p className="text-sm text-muted-foreground/70">{message}</p>
     </div>
   );
 }
@@ -433,7 +433,7 @@ function StatCard({ label, value, icon: Icon, accent, tooltip }: { label: string
   const card = (
     <div className={cn('rounded-control border border-border bg-background/50 p-3.5 flex flex-col items-center text-center', tooltip && 'cursor-help')}>
       <div className="flex items-center justify-center gap-2 mb-1.5">
-        <Icon className={cn('h-3.5 w-3.5', accent || 'text-muted-foreground/50')} />
+        <Icon className={cn('h-3.5 w-3.5', accent || 'text-muted-foreground/70')} />
         <span className="text-xs font-medium text-success/60 uppercase tracking-wider">{label}</span>
       </div>
       <p className="text-xs font-semibold text-foreground/90">{value}</p>
@@ -673,14 +673,14 @@ function DiscoverTab({
                 <div key={tile.label} className="rounded-control border border-border bg-card/30 px-3 py-2.5">
                   <div className="flex items-center gap-2 mb-1.5">
                     <Icon className="h-3 w-3 text-muted-foreground/55 shrink-0" />
-                    <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground/50">
+                    <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground/70">
                       {tile.label}
                     </span>
                   </div>
                   <p className="text-xs font-semibold text-foreground/90">
                     {tile.value}
                   </p>
-                  <p className="text-xs text-muted-foreground/50 mt-0.5 leading-snug">
+                  <p className="text-xs text-muted-foreground/70 mt-0.5 leading-snug">
                     {tile.hint}
                   </p>
                 </div>
@@ -713,7 +713,7 @@ function DiscoverTab({
                     wraps so the user can keep tapping for variety. */}
                 {hasMoreVideos && (
                   <div className="flex items-center justify-between gap-2 pt-1">
-                    <span className="text-xs text-muted-foreground/50 truncate flex-1">
+                    <span className="text-xs text-muted-foreground/70 truncate flex-1">
                       {currentVideo?.title ?? ''}
                     </span>
                     <button
@@ -766,7 +766,7 @@ function DiscoverTab({
                 const sector = getSectorForCareer(career.id);
                 const pensionNote = getPensionNote(sector);
                 const sectorLabel = sector === 'public' ? 'Public' : sector === 'private' ? 'Private' : 'Public & Private';
-                const sectorAccent = sector === 'public' ? 'text-info' : sector === 'private' ? 'text-accent' : 'text-muted-foreground/50';
+                const sectorAccent = sector === 'public' ? 'text-info' : sector === 'private' ? 'text-accent' : 'text-muted-foreground/70';
                 return (
                   <div className="grid grid-cols-2 gap-3 w-full max-w-md">
                     <div>
@@ -797,7 +797,7 @@ function DiscoverTab({
                       label="Growth"
                       value={career.growthOutlook === 'high' ? 'High Demand' : career.growthOutlook === 'medium' ? 'Growing' : 'Stable'}
                       icon={TrendingUp}
-                      accent={career.growthOutlook === 'high' ? 'text-success' : career.growthOutlook === 'medium' ? 'text-warning' : 'text-muted-foreground/50'}
+                      accent={career.growthOutlook === 'high' ? 'text-success' : career.growthOutlook === 'medium' ? 'text-warning' : 'text-muted-foreground/70'}
                     />
                     <StatCard label="Sector" value={sectorLabel} icon={Building2} accent={sectorAccent} tooltip={showsSalaryProgression(country) ? `Most ${career.title} roles in Norway are in the ${sector} sector.` : `Most ${career.title} roles are in the ${sector} sector.`} />
                     <StatCard label="Pension" value={sector === 'public' ? 'Strong' : sector === 'private' ? 'Varies' : 'Mixed'} icon={Shield} accent={sector === 'public' ? 'text-success' : 'text-muted-foreground/60'} tooltip={pensionNote} />
@@ -841,7 +841,7 @@ function DiscoverTab({
               {qualifiedAge ? (
                 <p className="text-xs text-foreground/70 leading-relaxed">
                   You could be qualified by <span className="font-semibold text-foreground/90">age {qualifiedAge}</span>
-                  <span className="text-muted-foreground/40"> — that&apos;s ~{yearsFromNow} years from now</span>
+                  <span className="text-muted-foreground/65"> — that&apos;s ~{yearsFromNow} years from now</span>
                 </p>
               ) : (
                 <p className="text-xs text-foreground/70 leading-relaxed">{lcEducation ?? notTailored}</p>
@@ -859,7 +859,7 @@ function DiscoverTab({
           {dDetails?.typicalDay.environment ? (
             <p className="text-xs text-foreground/70 leading-relaxed">{dDetails.typicalDay.environment}</p>
           ) : (
-            <p className="text-xs text-muted-foreground/40">Details not available for this career yet.</p>
+            <p className="text-xs text-muted-foreground/65">Details not available for this career yet.</p>
           )}
         </div>
 
@@ -930,8 +930,8 @@ function CollapsibleSection({
       <button onClick={onToggle} className="w-full flex items-center gap-2.5 px-5 py-3.5 text-left hover:bg-muted/5 transition-colors">
         <Icon className={cn('h-4 w-4', accent || 'text-muted-foreground/60')} />
         <h3 className="text-sm font-semibold text-foreground/90 flex-1">{title}</h3>
-        {count !== undefined && <span className="text-xs text-muted-foreground/40">{count}</span>}
-        <ChevronDown className={cn('h-4 w-4 text-muted-foreground/30 transition-transform', isOpen && 'rotate-180')} />
+        {count !== undefined && <span className="text-xs text-muted-foreground/65">{count}</span>}
+        <ChevronDown className={cn('h-4 w-4 text-muted-foreground/60 transition-transform', isOpen && 'rotate-180')} />
       </button>
       <AnimatePresence initial={false}>
         {isOpen && (
@@ -1062,7 +1062,7 @@ function UnderstandTab({
                 ) : detailsLoading ? (
                   <LoadingSkeleton />
                 ) : (
-                  <p className="text-xs text-muted-foreground/40">Details not available for this career yet.</p>
+                  <p className="text-xs text-muted-foreground/65">Details not available for this career yet.</p>
                 )}
               </TabsContent>
 
@@ -1087,7 +1087,7 @@ function UnderstandTab({
                             {hardships.map((point, i) => (
                               <div key={i} className="flex items-start gap-2">
                                 <AlertCircle className="h-3 w-3 text-warning/70 shrink-0 mt-0.5" />
-                                <p className="text-xs text-foreground/50 leading-relaxed">{point}</p>
+                                <p className="text-xs text-foreground/70 leading-relaxed">{point}</p>
                               </div>
                             ))}
                           </div>
@@ -1095,7 +1095,7 @@ function UnderstandTab({
                       })()}
                       {realityData.videos.length > 0 && (
                         <div className="pt-1">
-                          <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground/40 mb-1.5">Real voices</p>
+                          <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground/65 mb-1.5">Real voices</p>
                           <div className="rounded-control border border-border/20 divide-y divide-border/15 overflow-hidden">
                             {realityData.videos.map((video) => (
                               <a
@@ -1105,10 +1105,10 @@ function UnderstandTab({
                                 rel="noopener noreferrer"
                                 className="group flex items-center gap-2 px-2.5 py-1.5 hover:bg-muted/10 transition-colors"
                               >
-                                <Play className="h-3 w-3 text-muted-foreground/40 group-hover:text-accent shrink-0" />
+                                <Play className="h-3 w-3 text-muted-foreground/65 group-hover:text-accent shrink-0" />
                                 <span className="text-xs text-foreground/70 group-hover:text-foreground truncate flex-1">{video.title.replace(/&amp;/g, '&')}</span>
-                                <span className="text-xs text-muted-foreground/40 shrink-0 hidden sm:inline">{video.channel}</span>
-                                <ExternalLink className="h-2.5 w-2.5 text-muted-foreground/25 group-hover:text-muted-foreground/50 shrink-0" />
+                                <span className="text-xs text-muted-foreground/65 shrink-0 hidden sm:inline">{video.channel}</span>
+                                <ExternalLink className="h-2.5 w-2.5 text-muted-foreground/25 group-hover:text-muted-foreground/70 shrink-0" />
                               </a>
                             ))}
                           </div>
@@ -1119,11 +1119,11 @@ function UnderstandTab({
                     <div className="rounded-control border border-warning/15 bg-warning/5 p-3">
                       <div className="flex items-start gap-2">
                         <AlertCircle className="h-3.5 w-3.5 text-warning shrink-0 mt-0.5" />
-                        <p className="text-xs text-foreground/50 italic leading-relaxed">{details.realityCheck}</p>
+                        <p className="text-xs text-foreground/70 italic leading-relaxed">{details.realityCheck}</p>
                       </div>
                     </div>
                   ) : (
-                    <p className="text-xs text-muted-foreground/40">Reality insights not available for this career yet.</p>
+                    <p className="text-xs text-muted-foreground/65">Reality insights not available for this career yet.</p>
                   )}
                 </div>
               </TabsContent>
@@ -1143,13 +1143,13 @@ function UnderstandTab({
                           className="inline-flex items-center gap-1 rounded-pill border border-border/25 bg-background/30 px-2 py-0.5 text-xs text-foreground/65 hover:text-foreground hover:border-border/50 transition-colors"
                         >
                           {tool}
-                          <ExternalLink className="h-2 w-2 text-muted-foreground/30" />
+                          <ExternalLink className="h-2 w-2 text-muted-foreground/60" />
                         </a>
                       );
                     })}
                   </div>
                 ) : (
-                  <p className="text-xs text-muted-foreground/40">No specific tools listed for this career yet.</p>
+                  <p className="text-xs text-muted-foreground/65">No specific tools listed for this career yet.</p>
                 )}
               </TabsContent>
 
@@ -1227,7 +1227,7 @@ function UnderstandTab({
               {/* Environment footer */}
               {details.typicalDay.environment && (
                 <div className="flex items-center gap-2.5 mt-3 px-3 py-2 rounded-control bg-muted/[0.06] border border-border/15">
-                  <MapPin className="h-3 w-3 text-muted-foreground/40 shrink-0" />
+                  <MapPin className="h-3 w-3 text-muted-foreground/65 shrink-0" />
                   <span className="text-xs text-muted-foreground/55 leading-relaxed">{details.typicalDay.environment}</span>
                 </div>
               )}
@@ -1235,7 +1235,7 @@ function UnderstandTab({
               {/* Example employer — grounds the day in a real place to work. */}
               {exampleEmployers.length > 0 && (
                 <div className="flex items-center gap-2.5 mt-2 px-3 py-2 rounded-control bg-muted/[0.06] border border-border/15">
-                  <Building2 className="h-3 w-3 text-muted-foreground/40 shrink-0" />
+                  <Building2 className="h-3 w-3 text-muted-foreground/65 shrink-0" />
                   <span className="text-xs text-muted-foreground/55 leading-relaxed">
                     Typically somewhere like{' '}
                     <span className="text-foreground/70 font-medium">{exampleEmployers.join(' or ')}</span>
@@ -1244,7 +1244,7 @@ function UnderstandTab({
               )}
             </>
           ) : (
-            <p className="text-xs text-muted-foreground/40">Daily schedule details not available for this career yet.</p>
+            <p className="text-xs text-muted-foreground/65">Daily schedule details not available for this career yet.</p>
           );
 
           // No employer data → just the day timeline, no tabs.
@@ -1373,7 +1373,7 @@ function UnderstandTab({
                 <div className="p-4 sm:p-5">
                   <div className="rounded-card border border-border/20 bg-muted/[0.04] p-5 sm:p-6 text-center space-y-3">
                     <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-muted/20">
-                      <GraduationCap className="h-5 w-5 text-muted-foreground/50" />
+                      <GraduationCap className="h-5 w-5 text-muted-foreground/70" />
                     </div>
                     <div>
                       <p className="text-sm font-medium text-foreground/85">Not tailored for {countryName} yet</p>
@@ -1384,9 +1384,9 @@ function UnderstandTab({
                     <div className="text-xs text-muted-foreground/70 leading-relaxed max-w-md mx-auto pt-1">
                       <span className="text-foreground/60 font-medium">General route:</span>{' '}
                       upper-secondary school{' '}
-                      <span className="text-muted-foreground/40">→</span>{' '}
+                      <span className="text-muted-foreground/65">→</span>{' '}
                       {ap.requiresDegree ? 'a university degree' : 'vocational training or a degree'}{' '}
-                      <span className="text-muted-foreground/40">→</span>{' '}
+                      <span className="text-muted-foreground/65">→</span>{' '}
                       entry-level role.
                     </div>
                   </div>
@@ -1571,7 +1571,7 @@ function UnderstandTab({
                               <div className="flex items-center gap-2 mb-3">
                                 <BookOpen className="h-3.5 w-3.5 text-muted-foreground/70" />
                                 <span className="text-xs font-bold uppercase tracking-wider text-foreground/70">Subjects you&rsquo;ll need</span>
-                                <span className="ml-auto text-xs text-muted-foreground/50 tabular-nums">
+                                <span className="ml-auto text-xs text-muted-foreground/70 tabular-nums">
                                   {essentialSubjects.length} essential
                                 </span>
                               </div>
@@ -1581,7 +1581,7 @@ function UnderstandTab({
                                     key={s.name}
                                     className="inline-flex items-center gap-1.5 rounded-pill border border-border/60 bg-muted/30 px-2.5 py-1 text-xs font-medium text-foreground/80"
                                   >
-                                    <Check className="h-3 w-3 text-muted-foreground/50" />
+                                    <Check className="h-3 w-3 text-muted-foreground/70" />
                                     {s.name}
                                   </span>
                                 ))}
@@ -1632,9 +1632,9 @@ function UnderstandTab({
                               </div>
                               <div className="flex justify-between mt-1.5 px-[2px]">
                                 {[
-                                  'text-muted-foreground/40',
+                                  'text-muted-foreground/65',
                                   'text-muted-foreground/45',
-                                  'text-muted-foreground/50',
+                                  'text-muted-foreground/70',
                                   'text-muted-foreground/55',
                                   'text-muted-foreground/60',
                                   'text-muted-foreground/65',
@@ -1654,7 +1654,7 @@ function UnderstandTab({
                                   );
                                 })}
                               </div>
-                              <p className="text-xs text-muted-foreground/50 mt-3 leading-snug">
+                              <p className="text-xs text-muted-foreground/70 mt-3 leading-snug">
                                 Indicative only &mdash; actual cut-offs vary by institution and year.
                               </p>
                             </div>
@@ -1731,8 +1731,8 @@ function UnderstandTab({
                               >
                                 <td className="px-3 py-2.5">
                                   <p className="text-xs font-medium text-foreground/90 leading-snug">{cert.name}</p>
-                                  <p className="text-xs text-muted-foreground/50 mt-0.5 line-clamp-1 sm:hidden">{cert.provider} · {cert.duration}</p>
-                                  <p className="text-xs text-muted-foreground/50 mt-0.5 line-clamp-1">{cert.recognised}</p>
+                                  <p className="text-xs text-muted-foreground/70 mt-0.5 line-clamp-1 sm:hidden">{cert.provider} · {cert.duration}</p>
+                                  <p className="text-xs text-muted-foreground/70 mt-0.5 line-clamp-1">{cert.recognised}</p>
                                 </td>
                                 <td className="px-3 py-2.5 hidden sm:table-cell">
                                   <span className="text-xs text-muted-foreground/60 whitespace-nowrap">{cert.provider}</span>
@@ -1903,28 +1903,28 @@ function CourseCard({ course }: { course: LearningResource }) {
         <div className="flex items-start justify-between gap-3">
           <div className="flex-1 min-w-0">
             <p className="text-[13px] font-semibold text-foreground/85 group-hover:text-foreground transition-colors leading-snug">{course.title}</p>
-            <p className="text-xs text-muted-foreground/50 mt-1">{course.provider}</p>
+            <p className="text-xs text-muted-foreground/70 mt-1">{course.provider}</p>
           </div>
-          <ExternalLink className="h-3.5 w-3.5 text-muted-foreground/20 group-hover:text-muted-foreground/50 transition-colors shrink-0 mt-0.5" />
+          <ExternalLink className="h-3.5 w-3.5 text-muted-foreground/20 group-hover:text-muted-foreground/70 transition-colors shrink-0 mt-0.5" />
         </div>
 
         {course.description && (
-          <p className="text-xs text-muted-foreground/40 mt-2 leading-relaxed line-clamp-2">{course.description}</p>
+          <p className="text-xs text-muted-foreground/65 mt-2 leading-relaxed line-clamp-2">{course.description}</p>
         )}
 
         {/* Metadata row */}
         <div className="flex flex-wrap items-center gap-2 mt-3">
-          <span className="inline-flex items-center gap-1 rounded-md bg-muted/20 px-2 py-0.5 text-[10px] text-muted-foreground/50">
+          <span className="inline-flex items-center gap-1 rounded-md bg-muted/20 px-2 py-0.5 text-[10px] text-muted-foreground/70">
             <Clock className="h-2.5 w-2.5" /> {course.duration}
           </span>
           <span className={cn(
             'inline-flex items-center rounded-md px-2 py-0.5 text-[10px] font-medium',
-            course.cost === 'Free' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-muted/20 text-muted-foreground/50',
+            course.cost === 'Free' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-muted/20 text-muted-foreground/70',
           )}>
             {course.cost}
           </span>
           {course.regionDetails && (
-            <span className="inline-flex items-center gap-1 rounded-md bg-muted/20 px-2 py-0.5 text-[10px] text-muted-foreground/40">
+            <span className="inline-flex items-center gap-1 rounded-md bg-muted/20 px-2 py-0.5 text-[10px] text-muted-foreground/65">
               <MapPin className="h-2.5 w-2.5" /> {course.regionDetails}
             </span>
           )}
@@ -1938,7 +1938,7 @@ function CourseCard({ course }: { course: LearningResource }) {
         {course.highlights.length > 0 && (
           <div className="flex flex-wrap gap-1.5 mt-2.5">
             {course.highlights.slice(0, 3).map((h, i) => (
-              <span key={i} className="inline-flex rounded-full border border-border/15 px-2 py-0.5 text-[10px] text-muted-foreground/40">{h}</span>
+              <span key={i} className="inline-flex rounded-full border border-border/15 px-2 py-0.5 text-[10px] text-muted-foreground/65">{h}</span>
             ))}
           </div>
         )}
@@ -2024,7 +2024,7 @@ function CareerNotes({ careerTitle, collapsed, onToggle }: { careerTitle: string
 
   return (
     <SectionCard>
-      <SectionHeader icon={Pencil} title="Your Notes" badge={notes.length > 0 ? <span className="text-[10px] text-muted-foreground/40">{notes.length}</span> : undefined} collapsed={collapsed} onToggle={onToggle} />
+      <SectionHeader icon={Pencil} title="Your Notes" badge={notes.length > 0 ? <span className="text-[10px] text-muted-foreground/65">{notes.length}</span> : undefined} collapsed={collapsed} onToggle={onToggle} />
       {!collapsed && <div className="px-4 pb-3">
         {/* Notes list — compact rows */}
         {notes.length > 0 && (
@@ -2041,15 +2041,15 @@ function CareerNotes({ careerTitle, collapsed, onToggle }: { careerTitle: string
                         autoFocus
                       />
                       <button onClick={() => saveEdit(note.id)} className="px-2 py-1 rounded text-[10px] font-medium bg-foreground text-background">Save</button>
-                      <button onClick={() => setEditingId(null)} className="px-2 py-1 rounded text-[10px] text-muted-foreground/40">Cancel</button>
+                      <button onClick={() => setEditingId(null)} className="px-2 py-1 rounded text-[10px] text-muted-foreground/65">Cancel</button>
                     </div>
                   ) : (
                     <div className="flex items-center gap-2">
                       <span className={cn('shrink-0 rounded px-1.5 py-0.5 text-[9px] font-medium', cat.color)}>{cat.label}</span>
                       <p className="text-xs text-foreground/65 flex-1 truncate">{note.text}</p>
                       <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
-                        <button onClick={() => startEdit(note)} className="p-1 rounded text-muted-foreground/30 hover:text-foreground/60"><Pencil className="h-2.5 w-2.5" /></button>
-                        <button onClick={() => deleteNote(note.id)} className="p-1 rounded text-muted-foreground/30 hover:text-red-400"><Trash2 className="h-2.5 w-2.5" /></button>
+                        <button onClick={() => startEdit(note)} className="p-1 rounded text-muted-foreground/60 hover:text-foreground/60"><Pencil className="h-2.5 w-2.5" /></button>
+                        <button onClick={() => deleteNote(note.id)} className="p-1 rounded text-muted-foreground/60 hover:text-red-400"><Trash2 className="h-2.5 w-2.5" /></button>
                       </div>
                     </div>
                   )}
@@ -2074,7 +2074,7 @@ function CareerNotes({ careerTitle, collapsed, onToggle }: { careerTitle: string
           <select
             value={newCategory}
             onChange={(e) => setNewCategory(e.target.value as NoteCategory)}
-            className="rounded-md border border-border/20 bg-background/30 px-1.5 py-1.5 text-[10px] text-muted-foreground/50 focus:outline-none shrink-0"
+            className="rounded-md border border-border/20 bg-background/30 px-1.5 py-1.5 text-[10px] text-muted-foreground/70 focus:outline-none shrink-0"
           >
             {NOTE_CATEGORIES.map((cat) => (
               <option key={cat.id} value={cat.id}>{cat.label}</option>
@@ -2591,7 +2591,7 @@ function ClarityTab({ goalTitle, career }: { goalTitle: string | null; career: C
               "flex-1 flex items-center justify-center gap-2 px-4 py-3 text-xs font-medium transition-colors",
               claritySubTab === 'ask-future-me'
                 ? "text-amber-400 border-b-2 border-amber-400 -mb-px"
-                : "text-muted-foreground/50 hover:text-muted-foreground"
+                : "text-muted-foreground/70 hover:text-muted-foreground"
             )}
           >
             <Sparkles className="h-3.5 w-3.5" />
@@ -2604,7 +2604,7 @@ function ClarityTab({ goalTitle, career }: { goalTitle: string | null; career: C
               "flex-1 flex items-center justify-center gap-2 px-4 py-3 text-xs font-medium transition-colors",
               claritySubTab === 'momentum'
                 ? "text-amber-400 border-b-2 border-amber-400 -mb-px"
-                : "text-muted-foreground/50 hover:text-muted-foreground"
+                : "text-muted-foreground/70 hover:text-muted-foreground"
             )}
           >
             <Zap className="h-3.5 w-3.5" />
@@ -2635,7 +2635,7 @@ function ClarityTab({ goalTitle, career }: { goalTitle: string | null; career: C
         {!gCollapsed('g-future') && claritySubTab === 'momentum' && (
         <div>
         <div className="p-4 space-y-5">
-          <p className="text-xs text-muted-foreground/50 leading-relaxed -mt-1">
+          <p className="text-xs text-muted-foreground/70 leading-relaxed -mt-1">
             Small, concrete steps you can take right now. Pick a suggestion or add your own — even one action builds real momentum toward your goal.
           </p>
           {/* Suggested momentum — concrete starting points pulled
@@ -2690,7 +2690,7 @@ function ClarityTab({ goalTitle, career }: { goalTitle: string | null; career: C
               if (visibleSuggestions.length === 0) return null;
               return (
             <div>
-              <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/40 mb-2">
+              <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/65 mb-2">
                 Suggested next moves
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -2773,7 +2773,7 @@ function ClarityTab({ goalTitle, career }: { goalTitle: string | null; career: C
                         {/* Delete — top-right, appears on hover */}
                         <button
                           onClick={() => deleteAction(a.id)}
-                          className="absolute top-1.5 right-1.5 opacity-0 group-hover:opacity-100 text-muted-foreground/40 hover:text-rose-400 transition-all"
+                          className="absolute top-1.5 right-1.5 opacity-0 group-hover:opacity-100 text-muted-foreground/65 hover:text-rose-400 transition-all"
                           aria-label="Delete step"
                         >
                           <X className="h-2.5 w-2.5" />
@@ -2824,7 +2824,7 @@ function ClarityTab({ goalTitle, career }: { goalTitle: string | null; career: C
                         }
                       }}
                       placeholder="Add a step…"
-                      className="w-full rounded-md border border-border/25 bg-background/40 px-2 py-1 text-[10px] text-foreground/80 placeholder:text-muted-foreground/40 focus:outline-none focus:border-amber-500/40 mb-1.5"
+                      className="w-full rounded-md border border-border/25 bg-background/40 px-2 py-1 text-[10px] text-foreground/80 placeholder:text-muted-foreground/65 focus:outline-none focus:border-amber-500/40 mb-1.5"
                     />
                     <button
                       onClick={addAction}
@@ -2850,7 +2850,7 @@ function ClarityTab({ goalTitle, career }: { goalTitle: string | null; career: C
                     }
                   }}
                   placeholder="Add your first step…"
-                  className="flex-1 rounded-lg border border-border/30 bg-background/40 px-3 py-1.5 text-xs text-foreground/85 placeholder:text-muted-foreground/40 focus:outline-none focus:border-amber-500/40"
+                  className="flex-1 rounded-lg border border-border/30 bg-background/40 px-3 py-1.5 text-xs text-foreground/85 placeholder:text-muted-foreground/65 focus:outline-none focus:border-amber-500/40"
                 />
                 <button
                   onClick={addAction}
@@ -3000,7 +3000,7 @@ function ClarityCompletionCard({
           <p className="text-sm font-semibold mb-1 text-foreground/85">
             How do you feel about this path now?
           </p>
-          <p className="text-[11px] text-muted-foreground/50 mb-3">
+          <p className="text-[11px] text-muted-foreground/70 mb-3">
             Rate your interest to capture where you&apos;ve landed — that completes Clarity.
           </p>
           <InterestLevelPicker value={interestLevel} onChange={setInterestLevel} size="sm" />
@@ -3022,7 +3022,7 @@ function ClarityCompletionCard({
               <span className="text-xs font-semibold text-emerald-300 tracking-tight">Journey complete</span>
               {careerTitle && (
                 <>
-                  <span className="text-[10px] text-muted-foreground/40" aria-hidden>·</span>
+                  <span className="text-[10px] text-muted-foreground/65" aria-hidden>·</span>
                   <span className="text-xs font-medium text-foreground/80">{careerTitle}</span>
                 </>
               )}
@@ -3093,13 +3093,13 @@ function ActionRow({
         : 'border-border/20 bg-background/30 hover:border-border/40 hover:bg-background/50',
     )}>
       <div className="h-9 w-9 rounded-lg bg-muted/20 flex items-center justify-center shrink-0 group-hover:bg-muted/30 transition-colors">
-        <Icon className="h-4 w-4 text-muted-foreground/50 group-hover:text-foreground/60 transition-colors" />
+        <Icon className="h-4 w-4 text-muted-foreground/70 group-hover:text-foreground/60 transition-colors" />
       </div>
       <div className="flex-1 min-w-0">
         <p className="text-sm font-medium text-foreground/80 leading-tight">{title}</p>
         <p className="text-xs text-muted-foreground/45 mt-0.5 leading-relaxed">{subtitle}</p>
       </div>
-      {href && <ExternalLink className="h-3.5 w-3.5 text-muted-foreground/20 group-hover:text-muted-foreground/50 shrink-0" />}
+      {href && <ExternalLink className="h-3.5 w-3.5 text-muted-foreground/20 group-hover:text-muted-foreground/70 shrink-0" />}
     </div>
   );
 
@@ -3328,10 +3328,10 @@ export default function MyJourneyPage() {
         <div className="mb-6">
           <div className="flex items-center gap-2">
             <h1 className="text-lg font-semibold text-foreground">
-              <span className="text-muted-foreground/50">My Journey to </span>
+              <span className="text-muted-foreground/70">My Journey to </span>
               {goalTitle}
             </h1>
-            <button onClick={() => setGoalSheetOpen(true)} className="p-1 rounded-md text-muted-foreground/40 hover:text-muted-foreground hover:bg-muted/50 transition-colors" title="Change career goal">
+            <button onClick={() => setGoalSheetOpen(true)} className="p-1 rounded-md text-muted-foreground/65 hover:text-muted-foreground hover:bg-muted/50 transition-colors" title="Change career goal">
               <Pencil className="h-3.5 w-3.5" />
             </button>
           </div>
@@ -3369,9 +3369,9 @@ export default function MyJourneyPage() {
               >
                 <div className="flex items-center gap-2 mb-0.5">
                   {locked ? (
-                    <Lock className="h-3.5 w-3.5 text-muted-foreground/40" />
+                    <Lock className="h-3.5 w-3.5 text-muted-foreground/65" />
                   ) : (
-                    <TabIcon className={cn('h-3.5 w-3.5', isActive ? tab.color : 'text-muted-foreground/50')} />
+                    <TabIcon className={cn('h-3.5 w-3.5', isActive ? tab.color : 'text-muted-foreground/70')} />
                   )}
                   <span
                     className={cn(
@@ -3392,8 +3392,8 @@ export default function MyJourneyPage() {
                     locked
                       ? 'text-muted-foreground/25'
                       : isActive
-                        ? 'text-foreground/50'
-                        : 'text-muted-foreground/30',
+                        ? 'text-foreground/70'
+                        : 'text-muted-foreground/60',
                   )}
                 >
                   {locked

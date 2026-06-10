@@ -44,24 +44,24 @@ export function DecisionRowView(props: {
           {stageLabel}
         </span>
         {career?.avgSalary && (
-          <span className="hidden text-[10px] text-muted-foreground/50 md:inline">
+          <span className="hidden text-[10px] text-muted-foreground/70 md:inline">
             {career.avgSalary}
           </span>
         )}
-        {reflectionsCount > 0 && <FileText className="h-3 w-3 text-muted-foreground/40" />}
+        {reflectionsCount > 0 && <FileText className="h-3 w-3 text-muted-foreground/65" />}
         {!row.ruledOut && (
           <span className="flex shrink-0 items-center gap-0.5">
             <button
               onClick={props.onUp}
               aria-label="Move up"
-              className="p-0.5 text-muted-foreground/40 hover:text-foreground"
+              className="p-0.5 text-muted-foreground/65 hover:text-foreground"
             >
               <ChevronUp className="h-3.5 w-3.5" />
             </button>
             <button
               onClick={props.onDown}
               aria-label="Move down"
-              className="p-0.5 text-muted-foreground/40 hover:text-foreground"
+              className="p-0.5 text-muted-foreground/65 hover:text-foreground"
             >
               <ChevronDown className="h-3.5 w-3.5" />
             </button>
@@ -69,7 +69,7 @@ export function DecisionRowView(props: {
             <button
               onClick={props.onRelegate}
               aria-label="Out of the running"
-              className="p-0.5 text-muted-foreground/30 hover:text-destructive"
+              className="p-0.5 text-muted-foreground/60 hover:text-destructive"
             >
               <X className="h-3 w-3" />
             </button>
@@ -79,7 +79,7 @@ export function DecisionRowView(props: {
           <button
             onClick={props.onRestore}
             aria-label="Back into the running"
-            className="p-0.5 text-muted-foreground/40 hover:text-foreground"
+            className="p-0.5 text-muted-foreground/65 hover:text-foreground"
           >
             <Undo2 className="h-3.5 w-3.5" />
           </button>

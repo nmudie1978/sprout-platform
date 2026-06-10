@@ -42,7 +42,7 @@ export function PageHeader({
             <Tooltip>
               <TooltipTrigger asChild>
                 <button className="h-8 w-8 rounded-full border border-border/50 bg-card/80 flex items-center justify-center hover:bg-card transition-colors cursor-help">
-                  <Info className="h-4 w-4 text-muted-foreground/50 hover:text-muted-foreground/80 transition-colors" />
+                  <Info className="h-4 w-4 text-muted-foreground/70 hover:text-muted-foreground/80 transition-colors" />
                 </button>
               </TooltipTrigger>
               <TooltipContent side="bottom" align="end" className="max-w-[280px] text-xs leading-snug">

@@ -52,7 +52,7 @@ const CATEGORY_LABELS: Record<string, string> = {
 function Section({ label, body }: { label: string; body: string }) {
   return (
     <div>
-      <p className="text-[10px] text-muted-foreground/50 uppercase tracking-wider mb-1">{label}</p>
+      <p className="text-[10px] text-muted-foreground/70 uppercase tracking-wider mb-1">{label}</p>
       <p className="text-xs text-foreground/80 whitespace-pre-line leading-relaxed">{body}</p>
     </div>
   );
@@ -158,7 +158,7 @@ export default function ParentsPathsPage() {
         {/* Filter */}
         {categories.length > 1 && (
           <div className="flex items-center gap-2 mb-6">
-            <Filter className="h-3.5 w-3.5 text-muted-foreground/50" />
+            <Filter className="h-3.5 w-3.5 text-muted-foreground/70" />
             <div className="relative">
               <select
                 value={filterCategory}
@@ -170,7 +170,7 @@ export default function ParentsPathsPage() {
                   <option key={cat.value} value={cat.value}>{cat.label}</option>
                 ))}
               </select>
-              <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 h-3 w-3 text-muted-foreground/50 pointer-events-none" />
+              <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 h-3 w-3 text-muted-foreground/70 pointer-events-none" />
             </div>
           </div>
         )}
@@ -235,7 +235,7 @@ export default function ParentsPathsPage() {
                         </div>
                       </div>
                       <div className="flex items-center gap-2 shrink-0">
-                        <div className="flex items-center gap-1 text-[10px] text-muted-foreground/50">
+                        <div className="flex items-center gap-1 text-[10px] text-muted-foreground/70">
                           <MapPin className="h-2.5 w-2.5" />
                           {path.country}
                         </div>
@@ -255,7 +255,7 @@ export default function ParentsPathsPage() {
                         </span>
                       ))}
                       {careerInfos.map((info) => (
-                        <span key={info.title} className="text-[9px] text-muted-foreground/50 bg-muted/40 px-2 py-0.5 rounded-full">
+                        <span key={info.title} className="text-[9px] text-muted-foreground/70 bg-muted/40 px-2 py-0.5 rounded-full">
                           {info.emoji} {info.title}
                         </span>
                       ))}
@@ -263,7 +263,7 @@ export default function ParentsPathsPage() {
 
                     {/* Expand hint */}
                     <div className="flex justify-center mt-3">
-                      <ChevronDown className={cn("h-3.5 w-3.5 text-muted-foreground/30 transition-transform", isExpanded && "rotate-180")} />
+                      <ChevronDown className={cn("h-3.5 w-3.5 text-muted-foreground/60 transition-transform", isExpanded && "rotate-180")} />
                     </div>
                   </button>
 
@@ -289,7 +289,7 @@ export default function ParentsPathsPage() {
                       </div>
 
                       {path.city && (
-                        <p className="text-[10px] text-muted-foreground/40 flex items-center gap-1">
+                        <p className="text-[10px] text-muted-foreground/65 flex items-center gap-1">
                           <MapPin className="h-2.5 w-2.5" />
                           {path.city}, {path.country}
                         </p>

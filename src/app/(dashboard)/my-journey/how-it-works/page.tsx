@@ -132,7 +132,7 @@ export default function HowItWorksPage() {
 
               {/* Steps */}
               <div className="space-y-2 mb-2">
-                <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground/50">
+                <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground/70">
                   Steps
                 </p>
                 {stage.steps.map((step, si) => (
@@ -151,7 +151,7 @@ export default function HowItWorksPage() {
               {/* Extras */}
               {stage.extras.length > 0 && (
                 <div className="mt-3 pt-3 border-t border-border/30 space-y-2">
-                  <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground/50">
+                  <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground/70">
                     Also in this stage
                   </p>
                   {stage.extras.map((extra) => (

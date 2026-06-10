@@ -64,7 +64,7 @@ export function WorthALook({ careerIds }: { careerIds: string[] }) {
 
   if (items.length === 0) {
     return (
-      <p className="text-xs text-muted-foreground/50">
+      <p className="text-xs text-muted-foreground/70">
         Fresh reads from the world of work will appear here.
       </p>
     );
@@ -78,7 +78,7 @@ export function WorthALook({ careerIds }: { careerIds: string[] }) {
         onClick={fetchMore}
         title="Show another"
         aria-label="Show another"
-        className="absolute -top-1 right-0 inline-flex h-6 w-6 items-center justify-center rounded-md text-muted-foreground/40 hover:text-foreground hover:bg-muted/40 transition-colors"
+        className="absolute -top-1 right-0 inline-flex h-6 w-6 items-center justify-center rounded-md text-muted-foreground/65 hover:text-foreground hover:bg-muted/40 transition-colors"
       >
         <RefreshCw className={cn('h-3.5 w-3.5', isLoading && 'animate-spin')} />
       </button>
@@ -100,7 +100,7 @@ export function WorthALook({ careerIds }: { careerIds: string[] }) {
                   <p className="text-xs font-medium text-foreground/90 leading-snug line-clamp-2 group-hover:text-primary transition-colors">
                     {item.title}
                   </p>
-                  <p className="mt-0.5 truncate text-[10px] text-muted-foreground/50">
+                  <p className="mt-0.5 truncate text-[10px] text-muted-foreground/70">
                     {item.sourceName}
                     {fresh && ` · ${fresh}`}
                   </p>
