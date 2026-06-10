@@ -3452,11 +3452,14 @@ export default function MyJourneyPage() {
 
       {/* Companies tab — stacked above Reflections (which stays centred)
           so the two right-edge trays don't overlap, mirroring the
-          SavedCareers/SavedComparisons tray pair on the Radar. */}
+          SavedCareers/SavedComparisons tray pair on the Radar. Offset is
+          half the Companies tab height (~116px) + half Reflections
+          (~99px) + a small gap, measured; -88 left the longer labels
+          overlapping by ~20px. */}
       <JourneyCompaniesTray
         careerId={career?.id ?? null}
         careerTitle={goalTitle ?? career?.title ?? null}
-        topOffsetPx={-88}
+        topOffsetPx={-120}
       />
 
       <GoalSelectionSheet
