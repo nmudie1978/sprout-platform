@@ -4,28 +4,25 @@
 
 @layer base {
   :root {
-    /* ── Light mode theme tokens — Warm Paper (Endeavrly DS exact) ──
-       "A premium notebook on a warm desk." Values are the exact
-       Endeavrly Design System light-mode palette:
-         Background        #F8F5EF   Primary Surface  #FCFAF6
-         Secondary Surface #F5F1EA   Borders          #E7E0D7
-         Primary Accent    #177D7A   Achievement Gold #D4A84F
-         Primary Text      #2E2A25   Secondary Text   #6B655E
-       No pure-white surfaces, no cold greys, no harsh contrast, no neon.
+    /* ── Light mode theme tokens — Cool Stone (variant 4) ──
+       A calmer, ~20% darker blue-grey paper that no longer reads
+       washed-out / near-white. Surfaces went cool (hue ~210); the teal
+       brand, achievement gold and semantic hues are retained.
+       No pure-white surfaces, no harsh contrast, no neon.
        Dark mode (.dark) is the app DEFAULT and is left untouched. */
-    --background: 40 39% 95%;           /* #F8F5EF — warm paper page canvas */
-    --foreground: 33 11% 16%;           /* #2E2A25 — warm primary ink, never harsh black */
-    --card: 40 50% 98%;                 /* #FCFAF6 — primary surface, a tonal step up from canvas, NOT pure white */
-    --card-foreground: 33 11% 16%;
-    --popover: 40 50% 98%;
-    --popover-foreground: 33 11% 16%;
-    --primary: 178 69% 29%;             /* #177D7A — grounded teal brand */
+    --background: 210 12% 87%;          /* Cool Stone — toned blue-grey paper canvas */
+    --foreground: 215 24% 15%;          /* cool primary ink, never harsh black */
+    --card: 210 16% 93%;                /* primary surface, a tonal step up from canvas, NOT pure white */
+    --card-foreground: 215 24% 15%;
+    --popover: 210 16% 93%;
+    --popover-foreground: 215 24% 15%;
+    --primary: 178 69% 29%;             /* #177D7A — grounded teal brand (retained) */
     --primary-foreground: 0 0% 100%;
-    --secondary: 38 35% 94%;            /* #F5F1EA — secondary warm-paper surface */
-    --secondary-foreground: 33 11% 16%;
-    --muted: 38 35% 94%;                /* #F5F1EA — muted warm surface */
-    --muted-foreground: 32 6% 39%;      /* #6B655E — calm secondary text; faint /50–/40 variants stay legible */
-    --accent: 40 61% 57%;               /* #D4A84F — soft achievement gold highlight */
+    --secondary: 210 13% 90%;           /* secondary cool-stone surface */
+    --secondary-foreground: 215 24% 15%;
+    --muted: 210 13% 90%;               /* muted cool-stone surface */
+    --muted-foreground: 210 9% 35%;     /* calm secondary text; faint /50–/40 variants stay legible */
+    --accent: 40 61% 57%;               /* #D4A84F — soft achievement gold highlight (retained) */
     --accent-foreground: 30 30% 18%;    /* warm ink — reads on the gold accent */
     /* Restrained semantic palette — the ONLY non-teal/gold hues allowed.
        Use these for category colour-coding instead of raw Tailwind blues/
@@ -35,13 +32,13 @@
     --info: 205 21% 37%;                /* #4A6172 — warm slate (DS "secondary") */
     --destructive: 0 72% 50%;           /* calm danger */
     --destructive-foreground: 0 0% 100%;
-    --border: 34 25% 87%;               /* #E7E0D7 — soft warm border */
-    --input: 34 25% 87%;
+    --border: 210 10% 79%;              /* soft cool-stone border */
+    --input: 210 10% 79%;
     --ring: 178 69% 29%;
     --radius: 0.75rem;
-    --sidebar: 38 33% 93%;              /* warm paper sidebar — tuned to the #F8F5EF canvas */
-    --sidebar-foreground: 33 11% 16%;
-    --sidebar-border: 34 25% 84%;
+    --sidebar: 210 11% 85%;             /* cool-stone sidebar — tuned to the canvas */
+    --sidebar-foreground: 215 24% 15%;
+    --sidebar-border: 210 10% 78%;
     /* Glow brand — teal, used by the Glow component in light mode */
     --brand: 178 69% 32%;
     --brand-foreground: 178 60% 38%;
