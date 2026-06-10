@@ -1,0 +1,34 @@
+name: Salary catalogue freshness
+
+# Runs monthly (1st, 07:00 UTC) and on demand. Reports salary source /
+# verification coverage and how long until the hardcoded catalogue baseline
+# (CATALOGUE_BASELINE_VERIFIED_AT) expires. The script exits 1 when expiry is
+# within 90 days, so this run goes RED as an early warning — refresh the
+# salary data (SSB StatBank table 11418) and bump the baseline BEFORE every
+# figure flips to "may be out of date".
+#
+# Read-only: never edits data, never deploys. A red run here is the signal,
+# not a regression.
+
+on:
+  schedule:
+    - cron: '0 7 1 * *'
+  workflow_dispatch: {}
+
+jobs:
+  freshness:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Check salary catalogue freshness
+        run: npx tsx scripts/salary-freshness-check.ts
