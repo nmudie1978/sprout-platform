@@ -411,17 +411,20 @@ const LENS_LABELS = [
 
 // ── Main Page ────────────────────────────────────────────────────────
 // ── Did You Know Card ───────────────────────────────────────────────
+const DID_YOU_KNOW_FACTS = [
+  { text: '39% of teenagers cannot name a career they expect to pursue.', source: 'OECD', href: '/about/research#oecd-career-uncertainty' },
+  { text: '41% of young people are unsure how to choose their career path.', source: 'Gallup', href: '/about/research#gallup-path-uncertainty' },
+  { text: '43% of students don\'t feel prepared for their future.', source: 'Gallup', href: '/about/research#gallup-preparedness' },
+  { text: 'Only 45% of students have any real-world career exposure before leaving school.', source: 'OECD', href: '/about/research#oecd-job-shadowing' },
+  { text: 'Career exploration leads to better employment outcomes later in life.', source: 'OECD', href: '/about/research#oecd-career-outcomes' },
+  { text: 'Healthcare is one of the fastest-growing sectors in Norway.', source: 'SSB', href: '/insights#dig-deeper' },
+  { text: 'Over half of students plan to work in just 10 occupations.', source: 'OECD', href: '/about/research#oecd-top-ten-jobs' },
+  { text: 'Only 35% of students have undertaken an internship before finishing education.', source: 'OECD', href: '/about/research#oecd-internships' },
+];
+const DID_YOU_KNOW_INTERVAL = 10000; // 10s, matching the insights Did-You-Know banner
+
 function DidYouKnowCard() {
-  const FACTS = [
-    { text: '39% of teenagers cannot name a career they expect to pursue.', source: 'OECD', href: '/about/research#oecd-career-uncertainty' },
-    { text: '41% of young people are unsure how to choose their career path.', source: 'Gallup', href: '/about/research#gallup-path-uncertainty' },
-    { text: '43% of students don\'t feel prepared for their future.', source: 'Gallup', href: '/about/research#gallup-preparedness' },
-    { text: 'Only 45% of students have any real-world career exposure before leaving school.', source: 'OECD', href: '/about/research#oecd-job-shadowing' },
-    { text: 'Career exploration leads to better employment outcomes later in life.', source: 'OECD', href: '/about/research#oecd-career-outcomes' },
-    { text: 'Healthcare is one of the fastest-growing sectors in Norway.', source: 'SSB', href: '/insights#dig-deeper' },
-    { text: 'Over half of students plan to work in just 10 occupations.', source: 'OECD', href: '/about/research#oecd-top-ten-jobs' },
-    { text: 'Only 35% of students have undertaken an internship before finishing education.', source: 'OECD', href: '/about/research#oecd-internships' },
-  ];
+  const FACTS = DID_YOU_KNOW_FACTS;
 
   const [index, setIndex] = useState(() => Math.floor(Date.now() / (24 * 60 * 60 * 1000)) % FACTS.length);
   const fact = FACTS[index];
@@ -431,6 +434,21 @@ function DidYouKnowCard() {
     e.stopPropagation();
     setIndex((prev) => (prev + 1) % FACTS.length);
   };
+
+  // Auto-rotate to the next fact on a calm interval. Respect reduced-motion:
+  // users who opt out of motion keep the daily fact and the manual refresh.
+  useEffect(() => {
+    if (
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ) {
+      return;
+    }
+    const id = setInterval(() => {
+      setIndex((prev) => (prev + 1) % DID_YOU_KNOW_FACTS.length);
+    }, DID_YOU_KNOW_INTERVAL);
+    return () => clearInterval(id);
+  }, []);
 
   return (
     <div className="mt-6 max-w-4xl mx-auto px-3 sm:px-6">
