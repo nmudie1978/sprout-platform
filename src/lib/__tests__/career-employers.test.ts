@@ -151,6 +151,72 @@ describe("consulting employers", () => {
   });
 });
 
+describe("AI / ML / data role employers", () => {
+  it("AI Infrastructure Network Engineer sees AI-infra firms, NOT IT consultancies", () => {
+    const e = getCareerEmployers("ai-network-engineer", "TECHNOLOGY_IT", "Norway");
+    const names = e.map((x) => x.name).join(" ");
+    expect(names).toMatch(/nscale|NVIDIA|TikTok/);
+    // the exact firms the user flagged as wrong must not appear
+    expect(names).not.toMatch(/Bekk|TietoEVRY|Sopra Steria/);
+  });
+
+  it("AI roles get the global list in both Norway and Spain", () => {
+    for (const country of ["Norway", "Spain"]) {
+      const e = getCareerEmployers("machine-learning-engineer", "ARTIFICIAL_INTELLIGENCE", country);
+      const names = e.map((x) => x.name).join(" ");
+      expect(names).toMatch(/Google DeepMind|NVIDIA|Meta/);
+      expect(names).not.toMatch(/Bekk|Indra|Telefónica/);
+    }
+  });
+
+  it("ai-engineer ignores its legacy software-developer alias in favour of AI firms", () => {
+    // CAREER_ID_ALIASES maps ai-engineer → software-developer (Bekk…); the AI
+    // override must win so an AI engineer doesn't see consultancies.
+    const names = getCareerEmployers("ai-engineer", "ARTIFICIAL_INTELLIGENCE").map((e) => e.name).join(" ");
+    expect(names).toMatch(/OpenAI|Anthropic/);
+    expect(names).not.toMatch(/Bekk|Visma/);
+  });
+
+  it("seniority/variant ids fold onto the canonical AI role", () => {
+    const applied = getCareerEmployers("applied-ai-engineer", "TECHNOLOGY_IT").map((e) => e.name);
+    expect(applied).toEqual(getCareerEmployers("ai-engineer", "ARTIFICIAL_INTELLIGENCE").map((e) => e.name));
+    const seniorDS = getCareerEmployers("senior-data-scientist", "TECHNOLOGY_IT").map((e) => e.name);
+    expect(seniorDS).toEqual(getCareerEmployers("data-scientist", "ARTIFICIAL_INTELLIGENCE").map((e) => e.name));
+  });
+
+  it("research/ethics roles surface labs + institutions, not consultancies", () => {
+    expect(getCareerEmployers("ai-research-scientist", "TECHNOLOGY_IT").map((e) => e.name).join(" ")).toMatch(/OpenAI|DeepMind|NTNU|Simula/);
+    expect(getCareerEmployers("ai-ethics-specialist", "ARTIFICIAL_INTELLIGENCE").map((e) => e.name).join(" ")).toMatch(/Anthropic|Datatilsynet/);
+  });
+
+  it("robotics / computer-vision lean on Norway's robotics & vision cluster", () => {
+    expect(getCareerEmployers("robotics-engineer", "ARTIFICIAL_INTELLIGENCE").map((e) => e.name).join(" ")).toMatch(/1X Technologies|AutoStore/);
+    expect(getCareerEmployers("computer-vision-engineer", "ARTIFICIAL_INTELLIGENCE").map((e) => e.name).join(" ")).toMatch(/Zivid|Huddly/);
+  });
+
+  it("ai-consultant stays in the consulting list (it is about consulting)", () => {
+    const names = getCareerEmployers("ai-consultant", "ARTIFICIAL_INTELLIGENCE").map((e) => e.name).join(" ");
+    expect(names).toMatch(/McKinsey|Accenture|Deloitte/);
+  });
+
+  it("every AI-role employer has a valid https link", () => {
+    const ids = [
+      "ai-network-engineer", "mlops-engineer", "machine-learning-engineer", "ai-engineer",
+      "ai-research-scientist", "ai-safety-researcher", "ai-ethics-specialist", "nlp-engineer",
+      "computer-vision-engineer", "robotics-engineer", "ai-solutions-architect", "prompt-engineer",
+      "ai-product-manager", "data-scientist", "data-engineer",
+    ];
+    for (const id of ids) {
+      const e = getCareerEmployers(id, "ARTIFICIAL_INTELLIGENCE", "Norway");
+      expect(e.length).toBeGreaterThan(0);
+      for (const emp of e) {
+        expect(() => new URL(emp.careersUrl as string)).not.toThrow();
+        expect(emp.careersUrl as string).toMatch(/^https:\/\//);
+      }
+    }
+  });
+});
+
 describe("emergency / law-enforcement employers", () => {
   it("a police officer sees Politiet — NOT NAV/Skatteetaten — in Norway", () => {
     const e = getCareerEmployers("police-officer", "PUBLIC_SERVICE_SAFETY", "Norway");

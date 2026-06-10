@@ -539,6 +539,259 @@ const SAFETY_EMPLOYERS: Record<string, { NO: Employer[]; ES: Employer[] }> = {
   },
 };
 
+/**
+ * AI / ML / data roles are a global talent market — the people who do this
+ * work are hired by the firms that actually *build and run* AI: the frontier
+ * labs (OpenAI, Anthropic, Google DeepMind), the hyperscalers and chip/cloud
+ * infrastructure players (NVIDIA, Microsoft, Google, Meta, AWS, nscale,
+ * TikTok), plus a layer of Nordic companies with real AI/ML teams (Cognite,
+ * Schibsted, Telenor, Equinor) and, for research/governance roles, the
+ * universities and the data-protection authority.
+ *
+ * Without this override an AI role falls through to the generic TECHNOLOGY_IT
+ * sector list (Bekk, TietoEVRY, Sopra Steria) — Norwegian IT *consultancies*,
+ * which is who you'd join to consult, NOT who designs GPU-cluster fabrics or
+ * trains frontier models. These are global firms (Oslo, Madrid, and remote),
+ * so — like CONSULTING_EMPLOYERS — the same list serves every country we show.
+ *
+ * Keyed by career id, with AI_ROLE_ALIASES folding seniority/variant ids onto
+ * the canonical role. Links are stable careers/main-site URLs (never a guessed
+ * slug that 404s).
+ */
+const AI_ROLE_EMPLOYERS: Record<string, Employer[]> = {
+  // AI Infrastructure Network Engineer — GPU clusters, InfiniBand, datacentre
+  // fabrics. Hired by GPU clouds, hyperscalers, chip & networking vendors and
+  // DC operators — emphatically not IT consultancies. Broad list so a young
+  // person sees the full landscape of where this work actually happens.
+  'ai-network-engineer': [
+    { name: 'nscale', industry: 'GPU Cloud / AI Infrastructure', size: '200+', careersUrl: 'https://www.nscale.com' },
+    { name: 'CoreWeave', industry: 'GPU Cloud', size: '1,000+', careersUrl: 'https://www.coreweave.com' },
+    { name: 'Nebius', industry: 'AI Cloud / GPU', size: '1,000+', careersUrl: 'https://nebius.com' },
+    { name: 'Crusoe', industry: 'AI Cloud / Energy', size: '500+', careersUrl: 'https://www.crusoe.ai' },
+    { name: 'Lambda', industry: 'GPU Cloud', size: '500+', careersUrl: 'https://lambdalabs.com' },
+    { name: 'Together AI', industry: 'GPU Cloud / Inference', size: '250+', careersUrl: 'https://www.together.ai' },
+    { name: 'Core42 (G42)', industry: 'AI Cloud Infrastructure', size: '1,500+', careersUrl: 'https://core42.ai' },
+    { name: 'Oracle Cloud (OCI)', industry: 'Cloud AI Infrastructure', size: '160,000+', careersUrl: 'https://www.oracle.com/careers/' },
+    { name: 'NVIDIA', industry: 'GPU & Datacentre Networking', size: '29,000+', careersUrl: 'https://www.nvidia.com/en-us/about-nvidia/careers/' },
+    { name: 'Arista Networks', industry: 'AI Datacentre Networking', size: '4,000+', careersUrl: 'https://www.arista.com' },
+    { name: 'Cisco', industry: 'Datacentre Networking', size: '90,000+', careersUrl: 'https://jobs.cisco.com' },
+    { name: 'Juniper Networks', industry: 'AI Datacentre Networking', size: '11,000+', careersUrl: 'https://www.juniper.net' },
+    { name: 'Microsoft', industry: 'Azure AI Infrastructure', size: '220,000+', careersUrl: 'https://careers.microsoft.com' },
+    { name: 'Google', industry: 'Cloud AI Infrastructure', size: '180,000+', careersUrl: 'https://careers.google.com' },
+    { name: 'Meta', industry: 'AI Infrastructure', size: '70,000+', careersUrl: 'https://www.metacareers.com' },
+    { name: 'TikTok / ByteDance', industry: 'AI Datacentres (Hamar, NO)', size: '150,000+', careersUrl: 'https://careers.tiktok.com' },
+    { name: 'Bulk Infrastructure', industry: 'Nordic AI Datacentres', size: '300+', careersUrl: 'https://www.bulkinfrastructure.com' },
+    { name: 'Telenor', industry: 'Network Infrastructure', size: '15,000+', careersUrl: 'https://www.telenor.com/career/open-positions/' },
+  ],
+  // MLOps Engineer — ML platform, training/inference infra, model deployment.
+  'mlops-engineer': [
+    { name: 'NVIDIA', industry: 'AI Computing Platform', size: '29,000+', careersUrl: 'https://www.nvidia.com/en-us/about-nvidia/careers/' },
+    { name: 'nscale', industry: 'GPU Cloud / AI Infrastructure', size: '200+', careersUrl: 'https://www.nscale.com' },
+    { name: 'CoreWeave', industry: 'GPU Cloud', size: '1,000+', careersUrl: 'https://www.coreweave.com' },
+    { name: 'Hugging Face', industry: 'ML Platform / Open Source', size: '250+', careersUrl: 'https://huggingface.co/jobs' },
+    { name: 'Databricks', industry: 'Data & ML Platform', size: '7,000+', careersUrl: 'https://www.databricks.com/company/careers' },
+    { name: 'Snowflake', industry: 'Data Cloud / ML', size: '7,000+', careersUrl: 'https://careers.snowflake.com' },
+    { name: 'Microsoft', industry: 'Azure Machine Learning', size: '220,000+', careersUrl: 'https://careers.microsoft.com' },
+    { name: 'Google', industry: 'Cloud / Vertex AI', size: '180,000+', careersUrl: 'https://careers.google.com' },
+    { name: 'Amazon Web Services', industry: 'AWS / SageMaker', size: '1,500,000+', careersUrl: 'https://www.amazon.jobs' },
+    { name: 'Cognite', industry: 'Industrial AI / Software', size: '900+', careersUrl: 'https://www.cognite.com/careers' },
+    { name: 'Schibsted', industry: 'Media / Tech (ML platform)', size: '5,000+', careersUrl: 'https://schibsted.com/careers/' },
+    { name: 'Telenor', industry: 'Telecom / AI', size: '15,000+', careersUrl: 'https://www.telenor.com/career/open-positions/' },
+  ],
+  // Machine Learning Engineer — product ML at scale.
+  'machine-learning-engineer': [
+    { name: 'Google DeepMind', industry: 'AI Research & Products', size: '180,000+', careersUrl: 'https://deepmind.google' },
+    { name: 'Meta', industry: 'AI / Social Technology', size: '70,000+', careersUrl: 'https://www.metacareers.com' },
+    { name: 'NVIDIA', industry: 'AI Computing', size: '29,000+', careersUrl: 'https://www.nvidia.com/en-us/about-nvidia/careers/' },
+    { name: 'Microsoft', industry: 'AI / Cloud', size: '220,000+', careersUrl: 'https://careers.microsoft.com' },
+    { name: 'OpenAI', industry: 'Frontier AI Research', size: '2,000+', careersUrl: 'https://openai.com/careers/' },
+    { name: 'Anthropic', industry: 'Frontier AI Research', size: '1,000+', careersUrl: 'https://www.anthropic.com/careers' },
+    { name: 'Apple', industry: 'AI / Consumer Technology', size: '160,000+', careersUrl: 'https://www.apple.com/careers/' },
+    { name: 'Amazon', industry: 'AI / Cloud', size: '1,500,000+', careersUrl: 'https://www.amazon.jobs' },
+    { name: 'Cognite', industry: 'Industrial AI / Software', size: '900+', careersUrl: 'https://www.cognite.com/careers' },
+    { name: 'Schibsted', industry: 'Media / Tech', size: '5,000+', careersUrl: 'https://schibsted.com/careers/' },
+    { name: 'Telenor', industry: 'Telecom / AI Research', size: '15,000+', careersUrl: 'https://www.telenor.com/career/open-positions/' },
+    { name: 'DNB', industry: 'Banking / ML', size: '9,000+', careersUrl: 'https://www.dnb.no/karriere' },
+  ],
+  // AI Engineer / Applied AI / Generative AI — building LLM-powered products.
+  'ai-engineer': [
+    { name: 'OpenAI', industry: 'Frontier AI Research', size: '2,000+', careersUrl: 'https://openai.com/careers/' },
+    { name: 'Anthropic', industry: 'Frontier AI Research', size: '1,000+', careersUrl: 'https://www.anthropic.com/careers' },
+    { name: 'Google', industry: 'AI / Cloud', size: '180,000+', careersUrl: 'https://careers.google.com' },
+    { name: 'Microsoft', industry: 'AI / Cloud', size: '220,000+', careersUrl: 'https://careers.microsoft.com' },
+    { name: 'Meta', industry: 'AI / Social Technology', size: '70,000+', careersUrl: 'https://www.metacareers.com' },
+    { name: 'Mistral AI', industry: 'European AI Lab', size: '250+', careersUrl: 'https://mistral.ai/careers/' },
+    { name: 'Cohere', industry: 'Enterprise AI Lab', size: '500+', careersUrl: 'https://cohere.com' },
+    { name: 'Scale AI', industry: 'AI Data / Tooling', size: '900+', careersUrl: 'https://scale.com' },
+    { name: 'Databricks', industry: 'Data & ML Platform', size: '7,000+', careersUrl: 'https://www.databricks.com/company/careers' },
+    { name: 'Cognite', industry: 'Industrial AI / Software', size: '900+', careersUrl: 'https://www.cognite.com/careers' },
+    { name: 'Schibsted', industry: 'Media / Tech', size: '5,000+', careersUrl: 'https://schibsted.com/careers/' },
+    { name: 'Telenor', industry: 'Telecom / AI', size: '15,000+', careersUrl: 'https://www.telenor.com/career/open-positions/' },
+  ],
+  // AI Research Scientist — frontier labs + research institutions.
+  'ai-research-scientist': [
+    { name: 'OpenAI', industry: 'Frontier AI Research', size: '2,000+', careersUrl: 'https://openai.com/careers/' },
+    { name: 'Anthropic', industry: 'Frontier AI Research', size: '1,000+', careersUrl: 'https://www.anthropic.com/careers' },
+    { name: 'Google DeepMind', industry: 'AI Research', size: '180,000+', careersUrl: 'https://deepmind.google' },
+    { name: 'Meta AI (FAIR)', industry: 'AI Research', size: '70,000+', careersUrl: 'https://www.metacareers.com' },
+    { name: 'Microsoft Research', industry: 'AI Research', size: '220,000+', careersUrl: 'https://careers.microsoft.com' },
+    { name: 'NVIDIA Research', industry: 'AI Computing Research', size: '29,000+', careersUrl: 'https://www.nvidia.com/en-us/about-nvidia/careers/' },
+    { name: 'Mistral AI', industry: 'European AI Lab', size: '250+', careersUrl: 'https://mistral.ai/careers/' },
+    { name: 'Cohere', industry: 'Enterprise AI Lab', size: '500+', careersUrl: 'https://cohere.com' },
+    { name: 'NTNU', industry: 'University AI Research', size: '9,000+', careersUrl: 'https://www.ntnu.no/jobb' },
+    { name: 'University of Oslo', industry: 'University AI Research', size: '7,000+', careersUrl: 'https://www.uio.no/om/jobb/' },
+    { name: 'Simula Research Laboratory', industry: 'Research Institute', size: '200+', careersUrl: 'https://www.simula.no' },
+    { name: 'SINTEF', industry: 'Applied Research Institute', size: '2,000+', careersUrl: 'https://www.sintef.no' },
+  ],
+  // AI Safety & Ethics Researcher — alignment, evaluation, responsible AI.
+  'ai-safety-researcher': [
+    { name: 'Anthropic', industry: 'AI Safety Research', size: '1,000+', careersUrl: 'https://www.anthropic.com/careers' },
+    { name: 'OpenAI', industry: 'Frontier AI Research', size: '2,000+', careersUrl: 'https://openai.com/careers/' },
+    { name: 'Google DeepMind', industry: 'AI Research & Safety', size: '180,000+', careersUrl: 'https://deepmind.google' },
+    { name: 'Microsoft', industry: 'Responsible AI', size: '220,000+', careersUrl: 'https://careers.microsoft.com' },
+    { name: 'Meta', industry: 'AI Research & Safety', size: '70,000+', careersUrl: 'https://www.metacareers.com' },
+    { name: 'NVIDIA', industry: 'Trustworthy AI', size: '29,000+', careersUrl: 'https://www.nvidia.com/en-us/about-nvidia/careers/' },
+    { name: 'University of Oslo', industry: 'Academic Research', size: '7,000+', careersUrl: 'https://www.uio.no/om/jobb/' },
+    { name: 'NTNU', industry: 'University AI Research', size: '9,000+', careersUrl: 'https://www.ntnu.no/jobb' },
+    { name: 'Simula Research Laboratory', industry: 'Research Institute', size: '200+', careersUrl: 'https://www.simula.no' },
+  ],
+  // AI Ethics Specialist — governance, policy, compliance leaning.
+  'ai-ethics-specialist': [
+    { name: 'Anthropic', industry: 'AI Safety / Policy', size: '1,000+', careersUrl: 'https://www.anthropic.com/careers' },
+    { name: 'Google DeepMind', industry: 'AI Research & Governance', size: '180,000+', careersUrl: 'https://deepmind.google' },
+    { name: 'Microsoft', industry: 'Responsible AI', size: '220,000+', careersUrl: 'https://careers.microsoft.com' },
+    { name: 'OpenAI', industry: 'AI Policy', size: '2,000+', careersUrl: 'https://openai.com/careers/' },
+    { name: 'Datatilsynet', industry: 'Data Protection Authority', size: '60+', careersUrl: 'https://www.datatilsynet.no' },
+    { name: 'University of Oslo', industry: 'Academic Research', size: '7,000+', careersUrl: 'https://www.uio.no/om/jobb/' },
+    { name: 'NTNU', industry: 'University AI Research', size: '9,000+', careersUrl: 'https://www.ntnu.no/jobb' },
+    { name: 'Accenture', industry: 'Responsible AI Advisory', size: '740,000+', careersUrl: 'https://www.accenture.com' },
+    { name: 'Deloitte', industry: 'AI Governance Advisory', size: '450,000+', careersUrl: 'https://www.deloitte.com' },
+    { name: 'PwC', industry: 'AI Governance Advisory', size: '360,000+', careersUrl: 'https://www.pwc.com' },
+  ],
+  // NLP Engineer — language models, including Norwegian-language work.
+  'nlp-engineer': [
+    { name: 'OpenAI', industry: 'Frontier AI Research', size: '2,000+', careersUrl: 'https://openai.com/careers/' },
+    { name: 'Anthropic', industry: 'Frontier AI Research', size: '1,000+', careersUrl: 'https://www.anthropic.com/careers' },
+    { name: 'Google', industry: 'AI / Language', size: '180,000+', careersUrl: 'https://careers.google.com' },
+    { name: 'Meta', industry: 'AI / Language', size: '70,000+', careersUrl: 'https://www.metacareers.com' },
+    { name: 'Microsoft', industry: 'AI / Language', size: '220,000+', careersUrl: 'https://careers.microsoft.com' },
+    { name: 'Mistral AI', industry: 'European AI Lab', size: '250+', careersUrl: 'https://mistral.ai/careers/' },
+    { name: 'Cohere', industry: 'Enterprise NLP Lab', size: '500+', careersUrl: 'https://cohere.com' },
+    { name: 'Hugging Face', industry: 'NLP / Open Source', size: '250+', careersUrl: 'https://huggingface.co/jobs' },
+    { name: 'Nasjonalbiblioteket (NB AI Lab)', industry: 'Norwegian Language Models', size: '450+', careersUrl: 'https://www.nb.no' },
+    { name: 'Schibsted', industry: 'Media / Tech', size: '5,000+', careersUrl: 'https://schibsted.com/careers/' },
+    { name: 'Telenor', industry: 'Telecom / AI', size: '15,000+', careersUrl: 'https://www.telenor.com/career/open-positions/' },
+  ],
+  // Computer Vision Engineer — incl. Norway's strong machine-vision cluster.
+  'computer-vision-engineer': [
+    { name: 'NVIDIA', industry: 'AI Computing / Vision', size: '29,000+', careersUrl: 'https://www.nvidia.com/en-us/about-nvidia/careers/' },
+    { name: 'Google', industry: 'AI / Vision', size: '180,000+', careersUrl: 'https://careers.google.com' },
+    { name: 'Meta', industry: 'AI / Reality Labs', size: '70,000+', careersUrl: 'https://www.metacareers.com' },
+    { name: 'Apple', industry: 'AI / Vision', size: '160,000+', careersUrl: 'https://www.apple.com/careers/' },
+    { name: 'Microsoft', industry: 'AI / Vision', size: '220,000+', careersUrl: 'https://careers.microsoft.com' },
+    { name: 'Tesla', industry: 'Autonomy / Vision', size: '140,000+', careersUrl: 'https://www.tesla.com/careers' },
+    { name: 'Zivid', industry: '3D Machine Vision (Oslo)', size: '100+', careersUrl: 'https://www.zivid.com' },
+    { name: 'Huddly', industry: 'AI Video / Cameras (Oslo)', size: '150+', careersUrl: 'https://www.huddly.com' },
+    { name: 'Cognite', industry: 'Industrial AI / Vision', size: '900+', careersUrl: 'https://www.cognite.com/careers' },
+    { name: 'Kongsberg Gruppen', industry: 'Defence / Maritime Vision', size: '12,000+', careersUrl: 'https://www.kongsberg.com/careers/' },
+  ],
+  // Robotics Engineer — robotics-first firms, incl. Norway's robotics scene.
+  'robotics-engineer': [
+    { name: 'NVIDIA', industry: 'Robotics / Isaac Platform', size: '29,000+', careersUrl: 'https://www.nvidia.com/en-us/about-nvidia/careers/' },
+    { name: 'Boston Dynamics', industry: 'Robotics', size: '1,000+', careersUrl: 'https://bostondynamics.com' },
+    { name: 'Tesla', industry: 'Humanoid Robotics (Optimus)', size: '140,000+', careersUrl: 'https://www.tesla.com/careers' },
+    { name: 'Figure', industry: 'Humanoid Robotics', size: '200+', careersUrl: 'https://www.figure.ai' },
+    { name: '1X Technologies', industry: 'Humanoid Robotics (Norway)', size: '200+', careersUrl: 'https://www.1x.tech' },
+    { name: 'AutoStore', industry: 'Warehouse Robotics (Norway)', size: '1,000+', careersUrl: 'https://www.autostoresystem.com' },
+    { name: 'Universal Robots', industry: 'Collaborative Robots (Denmark)', size: '1,000+', careersUrl: 'https://www.universal-robots.com' },
+    { name: 'ABB', industry: 'Industrial Robotics', size: '110,000+', careersUrl: 'https://global.abb' },
+    { name: 'Kongsberg Gruppen', industry: 'Defence / Maritime Robotics', size: '12,000+', careersUrl: 'https://www.kongsberg.com/careers/' },
+  ],
+  // AI Solutions Architect — cloud AI architecture across the big platforms.
+  'ai-solutions-architect': [
+    { name: 'Microsoft', industry: 'Azure AI', size: '220,000+', careersUrl: 'https://careers.microsoft.com' },
+    { name: 'Google', industry: 'Google Cloud AI', size: '180,000+', careersUrl: 'https://careers.google.com' },
+    { name: 'Amazon Web Services', industry: 'AWS AI / Cloud', size: '1,500,000+', careersUrl: 'https://www.amazon.jobs' },
+    { name: 'NVIDIA', industry: 'AI Computing', size: '29,000+', careersUrl: 'https://www.nvidia.com/en-us/about-nvidia/careers/' },
+    { name: 'Oracle Cloud (OCI)', industry: 'Cloud AI', size: '160,000+', careersUrl: 'https://www.oracle.com/careers/' },
+    { name: 'IBM', industry: 'Enterprise AI / Cloud', size: '290,000+', careersUrl: 'https://www.ibm.com/careers' },
+    { name: 'Databricks', industry: 'Data & ML Platform', size: '7,000+', careersUrl: 'https://www.databricks.com/company/careers' },
+    { name: 'Cognite', industry: 'Industrial AI / Software', size: '900+', careersUrl: 'https://www.cognite.com/careers' },
+    { name: 'Accenture', industry: 'AI Solutions / Consulting', size: '740,000+', careersUrl: 'https://www.accenture.com' },
+    { name: 'Capgemini', industry: 'AI Solutions / Consulting', size: '340,000+', careersUrl: 'https://www.capgemini.com' },
+  ],
+  // Prompt Engineer — LLM product companies.
+  'prompt-engineer': [
+    { name: 'OpenAI', industry: 'Frontier AI Research', size: '2,000+', careersUrl: 'https://openai.com/careers/' },
+    { name: 'Anthropic', industry: 'Frontier AI Research', size: '1,000+', careersUrl: 'https://www.anthropic.com/careers' },
+    { name: 'Google', industry: 'AI / Cloud', size: '180,000+', careersUrl: 'https://careers.google.com' },
+    { name: 'Microsoft', industry: 'AI / Cloud', size: '220,000+', careersUrl: 'https://careers.microsoft.com' },
+    { name: 'Meta', industry: 'AI / Social Technology', size: '70,000+', careersUrl: 'https://www.metacareers.com' },
+    { name: 'Scale AI', industry: 'AI Data / Tooling', size: '900+', careersUrl: 'https://scale.com' },
+    { name: 'Cognite', industry: 'Industrial AI / Software', size: '900+', careersUrl: 'https://www.cognite.com/careers' },
+    { name: 'Schibsted', industry: 'Media / Tech', size: '5,000+', careersUrl: 'https://schibsted.com/careers/' },
+  ],
+  // AI Product Manager — product orgs at the AI/big-tech firms + Nordic AI.
+  'ai-product-manager': [
+    { name: 'Google', industry: 'AI / Cloud', size: '180,000+', careersUrl: 'https://careers.google.com' },
+    { name: 'Microsoft', industry: 'AI / Cloud', size: '220,000+', careersUrl: 'https://careers.microsoft.com' },
+    { name: 'Meta', industry: 'AI / Social Technology', size: '70,000+', careersUrl: 'https://www.metacareers.com' },
+    { name: 'OpenAI', industry: 'Frontier AI Research', size: '2,000+', careersUrl: 'https://openai.com/careers/' },
+    { name: 'Anthropic', industry: 'Frontier AI Research', size: '1,000+', careersUrl: 'https://www.anthropic.com/careers' },
+    { name: 'Amazon', industry: 'AI / Cloud', size: '1,500,000+', careersUrl: 'https://www.amazon.jobs' },
+    { name: 'NVIDIA', industry: 'AI Computing', size: '29,000+', careersUrl: 'https://www.nvidia.com/en-us/about-nvidia/careers/' },
+    { name: 'Cognite', industry: 'Industrial AI / Software', size: '900+', careersUrl: 'https://www.cognite.com/careers' },
+    { name: 'Schibsted', industry: 'Media / Tech', size: '5,000+', careersUrl: 'https://schibsted.com/careers/' },
+    { name: 'Telenor', industry: 'Telecom / AI', size: '15,000+', careersUrl: 'https://www.telenor.com/career/open-positions/' },
+  ],
+  // Data Scientist — Nordic-leaning (these companies genuinely run DS teams),
+  // with the global platforms alongside.
+  'data-scientist': [
+    { name: 'Cognite', industry: 'Industrial AI / Software', size: '900+', careersUrl: 'https://www.cognite.com/careers' },
+    { name: 'DNB', industry: 'Banking / Fintech', size: '9,000+', careersUrl: 'https://www.dnb.no/karriere' },
+    { name: 'Telenor', industry: 'Telecom / AI Research', size: '15,000+', careersUrl: 'https://www.telenor.com/career/open-positions/' },
+    { name: 'Schibsted', industry: 'Media / Tech', size: '5,000+', careersUrl: 'https://schibsted.com/careers/' },
+    { name: 'Equinor', industry: 'Energy / Data', size: '22,000+', careersUrl: 'https://www.equinor.com/careers' },
+    { name: 'NAV', industry: 'Government / Analytics', size: '20,000+', careersUrl: 'https://www.nav.no/jobb-i-nav' },
+    { name: 'SSB (Statistics Norway)', industry: 'Government / Statistics', size: '1,000+', careersUrl: 'https://www.ssb.no/jobb-i-ssb' },
+    { name: 'Google', industry: 'AI / Cloud', size: '180,000+', careersUrl: 'https://careers.google.com' },
+    { name: 'Microsoft', industry: 'AI / Cloud', size: '220,000+', careersUrl: 'https://careers.microsoft.com' },
+    { name: 'Meta', industry: 'AI / Social Technology', size: '70,000+', careersUrl: 'https://www.metacareers.com' },
+  ],
+  // Data Engineer — data platforms / pipelines at scale.
+  'data-engineer': [
+    { name: 'Cognite', industry: 'Industrial AI / Software', size: '900+', careersUrl: 'https://www.cognite.com/careers' },
+    { name: 'Schibsted', industry: 'Media / Tech', size: '5,000+', careersUrl: 'https://schibsted.com/careers/' },
+    { name: 'DNB', industry: 'Banking / Fintech', size: '9,000+', careersUrl: 'https://www.dnb.no/karriere' },
+    { name: 'Telenor', industry: 'Telecom', size: '15,000+', careersUrl: 'https://www.telenor.com/career/open-positions/' },
+    { name: 'Equinor', industry: 'Energy / Data', size: '22,000+', careersUrl: 'https://www.equinor.com/careers' },
+    { name: 'Databricks', industry: 'Data & ML Platform', size: '7,000+', careersUrl: 'https://www.databricks.com/company/careers' },
+    { name: 'Snowflake', industry: 'Data Cloud', size: '7,000+', careersUrl: 'https://careers.snowflake.com' },
+    { name: 'Microsoft', industry: 'Azure Data', size: '220,000+', careersUrl: 'https://careers.microsoft.com' },
+    { name: 'Google', industry: 'Cloud Data', size: '180,000+', careersUrl: 'https://careers.google.com' },
+    { name: 'Amazon Web Services', industry: 'AWS Data', size: '1,500,000+', careersUrl: 'https://www.amazon.jobs' },
+  ],
+};
+
+/** Seniority/variant ids that share another AI role's employer pool. */
+const AI_ROLE_ALIASES: Record<string, string> = {
+  'applied-ai-engineer': 'ai-engineer',
+  'generative-ai-engineer': 'ai-engineer',
+  'ai-researcher': 'ai-research-scientist',
+  'senior-data-scientist': 'data-scientist',
+  'principal-data-scientist': 'data-scientist',
+  'senior-data-engineer': 'data-engineer',
+};
+
+/** AI/ML/data role → global employer list (null if not an AI role). */
+function getAiRoleEmployers(careerId: string): Employer[] | null {
+  return (
+    AI_ROLE_EMPLOYERS[careerId] ??
+    AI_ROLE_EMPLOYERS[AI_ROLE_ALIASES[careerId] ?? ''] ??
+    null
+  );
+}
+
 export function getCareerEmployers(
   careerId: string,
   category?: string | null,
@@ -552,6 +805,13 @@ export function getCareerEmployers(
   // consultant sees the firms they'd work *for*, not their clients.
   if (TELCO_CONSULTING_CAREERS.has(careerId)) return TELCO_CONSULTING_EMPLOYERS;
   if (CONSULTING_CAREERS.has(careerId)) return CONSULTING_EMPLOYERS;
+
+  // AI / ML / data roles are a global talent market — show the labs,
+  // hyperscalers and AI-infra firms that actually do this work (plus Nordic
+  // AI employers), NOT the generic IT-consultancy sector list. Same global
+  // list for every country. Checked before the country branch below.
+  const aiRole = getAiRoleEmployers(careerId);
+  if (aiRole) return aiRole;
 
   // Emergency / law-enforcement careers → their real institutions (per
   // country), not the generic public-sector list (NAV/Skatteetaten…).
