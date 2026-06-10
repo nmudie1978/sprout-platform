@@ -13,7 +13,7 @@ import { Loader2, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CircularGallery, type GalleryItem } from "@/components/ui/circular-gallery";
 import type { SectionContent } from "@/lib/industry-insights/insights-service";
-import { toast } from "sonner";
+import { toast } from "@/hooks/use-toast";
 import { badgeToSavedItemType, SKILLS_CONTENT_TAG } from "@/lib/insights/saved-content";
 
 const SECTION = "skills-that-matter";
@@ -70,9 +70,13 @@ export function SkillsGallery() {
       });
       if (!res.ok) throw new Error("save failed");
       setSavedIds((prev) => new Set(prev).add(item.id));
-      toast.success("Saved to My Library");
+      toast({ title: "Saved to My Library" });
     } catch {
-      toast.error("Couldn't save — please try again.");
+      toast({
+        title: "Couldn't save",
+        description: "Please try again.",
+        variant: "destructive",
+      });
     }
   }, []);
 
