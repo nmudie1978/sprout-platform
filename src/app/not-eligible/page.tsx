@@ -7,7 +7,7 @@ import { Star, ArrowLeft, Clock, Heart } from "lucide-react";
  * Not Eligible Page
  *
  * Shown to users who are under 15 years old.
- * This is part of the CORE SAFETY INVARIANT - platform is for ages 15-23.
+ * This is part of the CORE SAFETY INVARIANT - platform is for ages 15-30.
  */
 export default function NotEligiblePage() {
   return (
@@ -26,7 +26,7 @@ export default function NotEligiblePage() {
             Thanks for Your Interest!
           </CardTitle>
           <CardDescription className="text-base">
-            Endeavrly is designed for young people aged 15-23
+            Endeavrly is designed for young people aged 15-30
           </CardDescription>
         </CardHeader>
 
@@ -34,7 +34,7 @@ export default function NotEligiblePage() {
           <div className="text-center space-y-4">
             <p className="text-muted-foreground">
               We appreciate your interest in Endeavrly! Our platform is specifically designed
-              for young people between 15 and 23 years old to find safe, age-appropriate
+              for young people between 15 and 30 years old to find safe, age-appropriate
               work opportunities.
             </p>
 

@@ -23,8 +23,8 @@ import { Sparkles, Loader2, ArrowLeft, ArrowRight } from "lucide-react";
 /**
  * Sign-up — DOB-first stepped flow.
  *
- * Step 1: ask for date of birth ONLY, to enforce the 15–23 eligibility
- * floor. Under-15 and over-23 hit a calm rejection; everyone 15–23
+ * Step 1: ask for date of birth ONLY, to enforce the 15–30 eligibility
+ * floor. Under-15 and over-30 hit a calm rejection; everyone 15–30
  * continues the same way (no guardian step — age is a roadmap signal,
  * not a gate; see CLAUDE.md <age_policy>).
  *
@@ -40,12 +40,12 @@ function SignUpForm() {
   const isAdultSignup = isTeacher;
 
   // ── Step state ────────────────────────────────────────────────────
-  // Teachers skip the DOB-age-gate step because the 15–23 eligibility
+  // Teachers skip the DOB-age-gate step because the 15–30 eligibility
   // logic only applies to youth; they prove 18+ via DOB in the details step.
   type Step = "dob" | "details";
   const [step, setStep] = useState<Step>(isAdultSignup ? "details" : "dob");
 
-  // If the user lands on /auth/signup as a youth, enters an over-23 DOB,
+  // If the user lands on /auth/signup as a youth, enters an over-30 DOB,
   // and clicks the "sign up as a teacher" link, Next.js soft-navigates.
   // The component re-renders but useState is preserved, so step would
   // still be "dob" and the user would stay stuck. Flip to details as soon
@@ -115,7 +115,7 @@ function SignUpForm() {
       }
       if (role === "YOUTH") {
         if (!isEligible) {
-          throw new Error("Endeavrly is for ages 15–23.");
+          throw new Error("Endeavrly is for ages 15–30.");
         }
       }
       if (role === "TEACHER") {

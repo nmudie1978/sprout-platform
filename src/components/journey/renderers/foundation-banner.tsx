@@ -21,6 +21,35 @@ import type { JourneyItem } from '@/lib/journey/career-journey-types';
 /** Stable ID — must match the id other surfaces check against. */
 export const FOUNDATION_ITEM_ID = 'my-foundation';
 
+/**
+ * "What this involves" suggestions, tailored to the user's current stage.
+ * Previously hardcoded to school language ("school subjects", "your
+ * teachers"), which read wrong for university, college, and older users
+ * who are out of formal education. Keyed by the Foundation stage.
+ */
+const FOUNDATION_MICRO_ACTIONS: Record<EducationContext['stage'], string[]> = {
+  school: [
+    'Identify which school subjects are most relevant to your goal',
+    'Talk to your teachers about this career direction',
+    'Research what grades are needed for the next step',
+  ],
+  university: [
+    'Map which modules and projects connect to your goal',
+    'Talk to a lecturer or the careers service about this direction',
+    'Look for internships or placements that fit the next step',
+  ],
+  college: [
+    'Identify which parts of your programme matter most for this goal',
+    'Talk to your instructor or apprenticeship coordinator',
+    'Research the qualification or fagbrev the next step needs',
+  ],
+  other: [
+    'Identify what employers actually require to get in',
+    'Build evidence of relevant skills — a portfolio or short courses',
+    'Research the qualification or experience the next step needs',
+  ],
+};
+
 interface UseFoundationDataOptions {
   careerTitle?: string;
   userAge?: number;
@@ -85,11 +114,7 @@ export function useFoundationData({
     description: eduContext
       ? `Your current education: ${EDUCATION_STAGE_CONFIG[eduContext.stage].label}.${eduContext.studyProgram ? ` Studying ${eduContext.studyProgram}.` : ''}${eduContext.expectedCompletion ? ` Finishing ${eduContext.expectedCompletion}.` : ''} This is your starting point — everything builds from here.`
       : 'Where you are today. Tap to add details about your current situation.',
-    microActions: [
-      'Identify which school subjects are most relevant to your goal',
-      'Talk to your teachers about this career direction',
-      'Research what grades are needed for the next step',
-    ],
+    microActions: FOUNDATION_MICRO_ACTIONS[eduContext?.stage ?? 'school'],
   }), [eduContext, userAge, journeyStartAge]);
 
   return { eduContext, subjectHint, foundationItem };

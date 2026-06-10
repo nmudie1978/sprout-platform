@@ -40,7 +40,7 @@ export default function TermsOfServicePage() {
           <section className="mb-8">
             <h2>2. Description of Service</h2>
             <p>
-              Endeavrly is a career-exploration platform for young people aged 15 to 23. The Platform helps you explore careers, understand realistic education pathways, reflect on your direction, and build clarity about your future.
+              Endeavrly is a career-exploration platform for young people aged 15 to 30. The Platform helps you explore careers, understand realistic education pathways, reflect on your direction, and build clarity about your future.
             </p>
             <p>
               Endeavrly is <strong>not</strong> a jobs marketplace, recruiter, employer, or staffing agency. It does not connect you with paid work and does not process payments. The career information it provides is general guidance, not professional careers advice (see our <Link href="/legal/disclaimer" className="text-primary hover:underline">Disclaimer</Link>).
@@ -51,7 +51,7 @@ export default function TermsOfServicePage() {
             <h2>3. User Eligibility</h2>
             <p>To register on Endeavrly, you must:</p>
             <ul>
-              <li>Be between 15 and 23 years old</li>
+              <li>Be between 15 and 30 years old</li>
               <li>Provide a truthful and accurate date of birth during registration</li>
             </ul>
             <p>

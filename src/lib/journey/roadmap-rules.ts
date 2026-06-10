@@ -183,12 +183,16 @@ export const HIGHER_EDUCATION_RE =
 // Age bands per stage (rule: realistic-age-bands)
 // ────────────────────────────────────────────────────────────────────
 
+// Maxes are generous so the platform's full 15-30 audience (mature
+// students, career-changers, late starters) isn't clamped into a teenage
+// timeline. The mins still catch genuinely-impossible early ages. Youth
+// roadmaps are unaffected — their steps sit well below these maxes.
 export const STAGE_AGE_BANDS: Record<JourneyStage, { min: number; max: number }> = {
-  foundation: { min: 14, max: 19 },
-  education: { min: 17, max: 25 },
-  certification: { min: 20, max: 35 },
-  experience: { min: 21, max: 30 },
-  career: { min: 27, max: 65 },
+  foundation: { min: 14, max: 30 },
+  education: { min: 17, max: 40 },
+  certification: { min: 20, max: 55 },
+  experience: { min: 21, max: 50 },
+  career: { min: 25, max: 67 },
 };
 
 // ────────────────────────────────────────────────────────────────────

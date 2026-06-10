@@ -32,7 +32,7 @@ function getOpenAIClient(): OpenAI | null {
 
 // Rules section is built from the shared rules engine so the prompt and
 // the client sanitiser stay in sync. See src/lib/journey/roadmap-rules.ts.
-const SYSTEM_PROMPT = `Career timeline generator for youth (15-23). Output ONLY valid JSON.
+const SYSTEM_PROMPT = `Career timeline generator for ages 15-30 (teenagers in school through to career-changers in their late twenties). Anchor every roadmap to the user's CURRENT age and stage — never assume they are still a teenager in school. Output ONLY valid JSON.
 
 ROADMAP RULES (all mandatory):
 ${buildPromptRules()}
@@ -121,6 +121,14 @@ export async function POST(req: NextRequest) {
           ? (ctx.stage as EducationStage)
           : undefined;
 
+    // Effective stage for users who never filled in the Foundation card.
+    // A 24+ user with no declared stage is not in school — assume 'other'
+    // (working / self-taught / between things) so the roadmap doesn't open
+    // with "Complete Videregående". Under-24 undeclared users keep the
+    // existing implicit-school behaviour.
+    const effectiveStage: EducationStage | undefined =
+      educationStage ?? (userAge >= 24 ? 'other' : undefined);
+
     // Foundation completion drives whether we drop the leading
     // education steps. Body wins over DB so toggling Complete in the
     // UI gives an instant fresh roadmap.
@@ -132,7 +140,7 @@ export async function POST(req: NextRequest) {
 
     // The strings we use to namespace caches — undefined stage falls
     // back to "default" so legacy users keep their existing cache key.
-    const stageKey = educationStage ?? 'default';
+    const stageKey = effectiveStage ?? "default";
     const completeKey = foundationComplete ? 'done' : 'open';
 
     // Extract the 4-digit year from expectedCompletion (accepts "2034",
@@ -225,12 +233,12 @@ export async function POST(req: NextRequest) {
     // Stage-specific instruction we append to the user prompt so the AI
     // knows where the user is starting from. The system prompt covers
     // the school case implicitly; these notes correct it for everyone else.
-    const stageInstruction = educationStage === 'university'
+    const stageInstruction = effectiveStage === 'university'
       ? ' The user is ALREADY at university — DO NOT include "Complete Videregående". Start the timeline at their current university studies and graduate roughly 3 years from their current age.'
-      : educationStage === 'college'
+      : effectiveStage === 'college'
         ? ' The user is ALREADY in vocational/college (fagskole) training — DO NOT include "Complete Videregående". Start at their current programme. Use vocational language (fagbrev, apprenticeship) rather than degree language.'
-        : educationStage === 'other'
-          ? ' The user is NOT currently in formal education (gap year, self-taught, working, or undeclared). DO NOT include school or university completion steps. Start the timeline at the experience phase — entry-level work, portfolio building, and any qualifications they\'ll pick up along the way.'
+        : effectiveStage === 'other'
+          ? ' The user is NOT currently in formal education (gap year, self-taught, working, career-changer, or undeclared). DO NOT include school or university completion steps. Start the timeline at the experience phase, anchored to their CURRENT age — entry-level or transferable-skill roles, portfolio building, and any qualifications they\'ll pick up along the way.'
           : '';
 
     // Career-route instruction — tells the AI whether this career is
@@ -312,10 +320,10 @@ export async function POST(req: NextRequest) {
         journey = enrichFirstRoleStep(journey);
       } catch (aiError) {
         console.error('[Timeline] OpenAI failed, using fallback:', aiError);
-        journey = generateFallbackTimeline(career, userAge, educationStage, foundationComplete, expectedCompletion, careerRoute);
+        journey = generateFallbackTimeline(career, userAge, effectiveStage, foundationComplete, expectedCompletion, careerRoute);
       }
     } else {
-      journey = generateFallbackTimeline(career, userAge, educationStage, foundationComplete, expectedCompletion);
+      journey = generateFallbackTimeline(career, userAge, effectiveStage, foundationComplete, expectedCompletion);
     }
 
     // Cache result (non-blocking) — stamp the version, stage,

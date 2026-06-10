@@ -36,12 +36,12 @@ export default function EligibilityPage() {
           </section>
 
           <section className="mb-8">
-            <h2>Youth Users (Ages 15–23)</h2>
+            <h2>Youth Users (Ages 15–30)</h2>
             <p>
               To register on Endeavrly, you must:
             </p>
             <ul>
-              <li>Be between <strong>15 and 23 years old</strong></li>
+              <li>Be between <strong>15 and 30 years old</strong></li>
               <li>Provide an accurate date of birth at sign-up</li>
             </ul>
             <p>

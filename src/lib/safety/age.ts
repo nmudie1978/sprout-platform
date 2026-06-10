@@ -5,7 +5,7 @@
  * All age gating decisions MUST use this module.
  *
  * PLATFORM AGE POLICY (v1.0):
- * - Target audience: 15-23 years old
+ * - Target audience: 15-30 years old
  * - Under 15: HARD BLOCKED from platform (MVP)
  * - 15-17: Minor-safe defaults, guardian consent required for sensitive actions
  * - 18-23: Standard flow
@@ -25,7 +25,7 @@ import type { YouthAgeBand, AccountStatus } from "@prisma/client";
 export const PLATFORM_MIN_AGE = 15;
 
 /** Platform maximum target age */
-export const PLATFORM_MAX_AGE = 23;
+export const PLATFORM_MAX_AGE = 30;
 
 /** Adult age threshold - no guardian consent needed */
 export const ADULT_AGE = 18;
@@ -145,7 +145,7 @@ export function isAllowedToUsePlatform(
       return {
         allowed: false,
         ageBand,
-        reason: "Endeavrly is for users aged 15-23. You must be at least 15 to use this platform.",
+        reason: "Endeavrly is for ages 15-30. You must be at least 15 to use this platform.",
         requiresGuardianConsent: false,
       };
 
@@ -339,16 +339,16 @@ export function validateSignupAge(dateOfBirth: string | Date): { valid: boolean;
   if (ageBand === "UNDER_15") {
     return {
       valid: false,
-      error: "Endeavrly is for users aged 15-23. You must be at least 15 to create an account.",
+      error: "Endeavrly is for ages 15-30. You must be at least 15 to create an account.",
       ageBand,
     };
   }
 
-  if (age > 28) {
-    // Soft limit for youth platform
+  if (age > 30) {
+    // Eligibility ceiling — platform is for ages 15-30.
     return {
       valid: false,
-      error: "This platform is designed for young people aged 15-23.",
+      error: "This platform is designed for people aged 15-30.",
       ageBand: "OVER_23",
     };
   }

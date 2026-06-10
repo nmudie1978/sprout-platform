@@ -118,7 +118,12 @@ export function generateFallbackTimeline(
 ): Journey {
   const currentYear = new Date().getFullYear();
   const a = Math.max(userAge, 16);
-  const stage: EducationStage = educationStage ?? 'school';
+  // Default stage: a teenager who hasn't filled in the Foundation card is
+  // almost certainly still in school, but a 24+ user is not — defaulting
+  // them to 'school' produces a nonsensical "Complete Videregående"
+  // roadmap. For older users with no declared stage, assume they're past
+  // formal education ('other' = working / self-taught / between things).
+  const stage: EducationStage = educationStage ?? (userAge >= 24 ? 'other' : 'school');
 
   // If the user is still in upper secondary and the career is a
   // vocational one (hairdresser, beauty therapist, electrician, chef,
