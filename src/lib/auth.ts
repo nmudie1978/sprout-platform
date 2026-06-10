@@ -4,6 +4,8 @@ import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import type { Adapter } from "next-auth/adapters";
+import { logAuditAction } from "@/lib/safety";
+import { AuditAction } from "@prisma/client";
 
 // Helper to calculate age from birthdate
 function calculateAge(birthDate: Date): number {
@@ -94,6 +96,20 @@ export const authOptions: NextAuthOptions = {
 
         if (!isPasswordValid) {
           throw new Error("Invalid credentials");
+        }
+
+        // Soft-deleted account: signing back in within the 30-day grace
+        // window cancels the pending deletion and restores the account.
+        if (user.deletedAt) {
+          await prisma.user.update({
+            where: { id: user.id },
+            data: { deletedAt: null },
+          });
+          await logAuditAction({
+            userId: user.id,
+            action: AuditAction.DATA_DELETION_CANCELLED,
+            metadata: { email: user.email, restoredAt: new Date().toISOString() },
+          }).catch(() => {});
         }
 
         return {
@@ -274,6 +290,7 @@ export const authOptions: NextAuthOptions = {
             ageBracket: true,
             accountStatus: true,
             isVerifiedAdult: true,
+            deletedAt: true,
             youthProfile: {
               select: {
                 displayName: true,
@@ -285,7 +302,14 @@ export const authOptions: NextAuthOptions = {
           },
         });
 
-        if (dbUser) {
+        // Reject sessions for accounts that are soft-deleted (deletion
+        // pending) or already purged (no row). Blanking the id makes every
+        // `!session.user.id` guard treat the request as unauthenticated, so
+        // a lingering JWT can't keep a deleted account alive. Signing in
+        // again restores a soft-deleted account (see authorize()).
+        if (!dbUser || dbUser.deletedAt) {
+          session.user.id = "";
+        } else {
           session.user.role = dbUser.role;
           session.user.ageBracket = dbUser.ageBracket;
           session.user.accountStatus = dbUser.accountStatus;

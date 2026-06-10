@@ -184,11 +184,6 @@ export function getEventTitle(type: TimelineEventTypeId, metadata?: Record<strin
     REQUIREMENTS_REVIEWED: metadata?.role ? `Requirements: ${metadata.role}` : 'Requirements Reviewed',
     PLAN_CREATED: metadata?.role ? `Plan Created: ${metadata.role}` : 'Action Plan Created',
     PLAN_UPDATED: 'Plan Updated',
-    SHADOW_REQUESTED: metadata?.host ? `Shadow Requested: ${metadata.host}` : 'Career Shadow Requested',
-    SHADOW_APPROVED: 'Shadow Request Approved',
-    SHADOW_DECLINED: 'Shadow Request Declined',
-    SHADOW_COMPLETED: 'Career Shadow Completed',
-    SHADOW_SKIPPED: 'Career Shadow Step Skipped',
     ALIGNED_ACTION_COMPLETED: metadata?.actionType ? `Completed: ${metadata.actionType}` : 'Aligned Action Completed',
     ACTION_REFLECTION_SUBMITTED: 'Action Reflection Submitted',
     EXTERNAL_FEEDBACK_RECEIVED: metadata?.source ? `Feedback from: ${metadata.source}` : 'External Feedback Received',
@@ -213,11 +208,6 @@ export function getEventIcon(type: TimelineEventTypeId): string {
     REQUIREMENTS_REVIEWED: 'clipboard-list',
     PLAN_CREATED: 'map',
     PLAN_UPDATED: 'map-pin',
-    SHADOW_REQUESTED: 'eye',
-    SHADOW_APPROVED: 'check-circle',
-    SHADOW_DECLINED: 'x-circle',
-    SHADOW_COMPLETED: 'award',
-    SHADOW_SKIPPED: 'skip-forward',
     ALIGNED_ACTION_COMPLETED: 'briefcase',
     ACTION_REFLECTION_SUBMITTED: 'message-circle',
     EXTERNAL_FEEDBACK_RECEIVED: 'award',
@@ -242,11 +232,6 @@ export function getEventCategory(type: TimelineEventTypeId): 'profile' | 'experi
     REQUIREMENTS_REVIEWED: 'learning',
     PLAN_CREATED: 'career',
     PLAN_UPDATED: 'career',
-    SHADOW_REQUESTED: 'experience',
-    SHADOW_APPROVED: 'experience',
-    SHADOW_DECLINED: 'experience',
-    SHADOW_COMPLETED: 'experience',
-    SHADOW_SKIPPED: 'experience',
     ALIGNED_ACTION_COMPLETED: 'experience',
     ACTION_REFLECTION_SUBMITTED: 'reflection',
     EXTERNAL_FEEDBACK_RECEIVED: 'experience',
@@ -346,41 +331,6 @@ export const TimelineEvents = {
     createTimelineEvent({
       userId,
       type: 'PLAN_UPDATED',
-    }),
-
-  shadowRequested: (userId: string, requestId: string, hostName?: string) =>
-    createTimelineEvent({
-      userId,
-      type: 'SHADOW_REQUESTED',
-      metadata: { requestId, host: hostName },
-    }),
-
-  shadowApproved: (userId: string, requestId: string) =>
-    createTimelineEvent({
-      userId,
-      type: 'SHADOW_APPROVED',
-      metadata: { requestId },
-    }),
-
-  shadowDeclined: (userId: string, requestId: string) =>
-    createTimelineEvent({
-      userId,
-      type: 'SHADOW_DECLINED',
-      metadata: { requestId },
-    }),
-
-  shadowCompleted: (userId: string, requestId: string) =>
-    createTimelineEvent({
-      userId,
-      type: 'SHADOW_COMPLETED',
-      metadata: { requestId },
-    }),
-
-  shadowSkipped: (userId: string, reason: string) =>
-    createTimelineEvent({
-      userId,
-      type: 'SHADOW_SKIPPED',
-      metadata: { reason },
     }),
 
   alignedActionCompleted: (userId: string, actionType: string, details?: Record<string, unknown>) =>

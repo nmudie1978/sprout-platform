@@ -129,7 +129,7 @@ export const DEFAULT_TASKS: DefaultTaskDefinition[] = [
     mode: 'discover',
     title: 'Identify 3 types of experience relevant to your goal',
     tooltipTitle: 'Think broadly',
-    tooltipBody: 'Experience isn\'t just jobs. Volunteering, projects, and shadowing all count.',
+    tooltipBody: 'Experience isn\'t just jobs. Volunteering, projects, and sitting in on real work all count.',
   },
   {
     stageId: 'experience',
@@ -173,7 +173,7 @@ export const DEFAULT_TASKS: DefaultTaskDefinition[] = [
   {
     stageId: 'experience',
     mode: 'act',
-    title: 'Request a career shadow or informational interview',
+    title: 'Request an informational interview or to sit in for a day',
     tooltipTitle: 'See the work firsthand',
     tooltipBody: 'Nothing beats seeing a role in action. It confirms or redirects your interest.',
   },

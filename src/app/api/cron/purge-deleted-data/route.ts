@@ -20,6 +20,8 @@ export const runtime = "nodejs";
 
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { logAuditAction } from "@/lib/safety";
+import { AuditAction } from "@prisma/client";
 
 const RETENTION_DAYS_SOFT_DELETED = 30;
 const RETENTION_DAYS_AUDIT_LOG = 365 * 3; // 3 years
@@ -67,6 +69,29 @@ export async function GET(req: NextRequest) {
       where: { deletedAt: { not: null, lt: softDeleteCutoff } },
     });
     results.traitObservations = traitObservations.count;
+
+    // Hard-delete accounts whose 30-day deletion grace window has elapsed.
+    // Cascades remove all related rows. We log a completion record (with
+    // actorId, since the User row is about to disappear) before deleting.
+    const usersToPurge = await prisma.user.findMany({
+      where: { deletedAt: { not: null, lt: softDeleteCutoff } },
+      select: { id: true, email: true },
+    });
+    for (const u of usersToPurge) {
+      await logAuditAction({
+        actorId: u.id,
+        action: AuditAction.DATA_DELETION_COMPLETED,
+        metadata: { deletedUserId: u.id, email: u.email },
+      }).catch(() => {});
+    }
+    if (usersToPurge.length > 0) {
+      const purged = await prisma.user.deleteMany({
+        where: { id: { in: usersToPurge.map((u) => u.id) } },
+      });
+      results.users = purged.count;
+    } else {
+      results.users = 0;
+    }
 
     const auditLogs = await prisma.auditLog.deleteMany({
       where: { createdAt: { lt: auditLogCutoff } },

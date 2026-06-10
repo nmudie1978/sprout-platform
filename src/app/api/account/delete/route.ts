@@ -17,7 +17,7 @@ export async function DELETE(req: NextRequest) {
     const userId = session.user.id;
     const userEmail = session.user.email;
 
-    // Log the deletion request first (before user is deleted)
+    // Log the deletion request
     await logAuditAction({
       userId,
       action: AuditAction.DATA_DELETION_REQUESTED,
@@ -26,23 +26,22 @@ export async function DELETE(req: NextRequest) {
       userAgent: req.headers.get("user-agent") || undefined,
     });
 
-    // Delete the user account (cascades will handle related records)
-    await prisma.user.delete({
+    // GDPR Art. 17 with a 30-day grace period: soft-delete now, then the
+    // purge cron (/api/cron/purge-deleted-data) hard-deletes the account
+    // — cascading all related rows — once the window elapses. Signing back
+    // in within 30 days clears `deletedAt` and restores the account, which
+    // protects against accidental or hijacked-account deletions.
+    await prisma.user.update({
       where: { id: userId },
-    });
-
-    // Log successful deletion (userId will be null since user is deleted)
-    await logAuditAction({
-      actorId: userId, // Use actorId since userId record is gone
-      action: AuditAction.DATA_DELETION_COMPLETED,
-      metadata: { email: userEmail || null, deletedUserId: userId },
-      ipAddress: req.headers.get("x-forwarded-for") || undefined,
-      userAgent: req.headers.get("user-agent") || undefined,
+      data: { deletedAt: new Date() },
     });
 
     return NextResponse.json({
       success: true,
-      message: "Account deleted successfully. All your data has been removed.",
+      message:
+        "Your account is scheduled for deletion and you have been signed out. " +
+        "It will be permanently removed after 30 days. Sign in again within " +
+        "that time to cancel and restore your account.",
     });
   } catch (error) {
     console.error("Error deleting account:", error);

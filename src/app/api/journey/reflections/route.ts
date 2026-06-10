@@ -120,7 +120,6 @@ export async function POST(req: NextRequest) {
         'ALIGNED_ACTION',
         'ROLE_DEEP_DIVE',
         'INDUSTRY_INSIGHTS',
-        'SHADOW_COMPLETED',
         'CAREER_DISCOVERY',
         'PLAN_BUILD',
         'STRENGTHS_REFLECTION',

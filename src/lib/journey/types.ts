@@ -49,7 +49,7 @@ export const JOURNEY_STATES = [
   'ROLE_DEEP_DIVE',            // Step 3: Complete 1 role deep dive (MANDATORY)
   // UNDERSTAND lens
   'REVIEW_INDUSTRY_OUTLOOK',   // Step 1: Review industry outlook (MANDATORY)
-  'CAREER_SHADOW',             // Step 2: Career shadow (MANDATORY)
+  'CAREER_SHADOW',             // Legacy state id, repurposed as "Path, Skills & Requirements" step. Inert: not rendered in the live lens-based journey. Do not reuse for shadowing.
   'CREATE_ACTION_PLAN',        // Step 3: Create draft action plan (MANDATORY)
   // ACT lens
   'COMPLETE_ALIGNED_ACTION',   // Step 1: Complete 1 aligned action (MANDATORY)
@@ -371,18 +371,6 @@ export interface JourneySummary {
   };
   lastTimelineEventAt: string | null;
 
-  // Shadowing summary
-  shadowSummary: {
-    total: number;
-    accepted: number;
-    skipped: boolean;
-    skipReason: string | null;
-    pending: number;
-    completed: number;
-    declined: number;
-    lastUpdatedAt: string | null;
-  };
-
   // Reflections summary
   reflectionSummary: {
     total: number;
@@ -506,9 +494,6 @@ export interface JourneyStateContext {
   industryOutlookReviewed: boolean;
   requirementsReviewed: boolean;
   planCreated: boolean;
-  shadowsRequested: number;
-  shadowsCompleted: number;
-  shadowsSkipped: boolean;
   pathDataSaved: boolean;
   savedItemsCount: number;
   // ACT lens data
@@ -646,7 +631,6 @@ export type StepCompletionData =
   | RoleDeepDiveData
   | ReviewIndustryOutlookData
   | CreateActionPlanData
-  | CareerShadowData
   | CompleteAlignedActionData
   | SubmitActionReflectionData
   | UpdatePlanData
@@ -692,17 +676,6 @@ export interface ReviewRequirementsData {
 export interface CreateActionPlanData {
   type: 'CREATE_ACTION_PLAN';
   plan: RolePlan;
-}
-
-export interface CareerShadowData {
-  type: 'CAREER_SHADOW';
-  shadowRequestId?: string;
-  skipped?: boolean;
-  skipReason?: string;
-  qualifications?: string[];
-  keySkills?: string[];
-  courses?: string[];
-  requirements?: string[];
 }
 
 export interface SaveInsightsData {
@@ -801,17 +774,6 @@ export const DEFAULT_JOURNEY_SUMMARY: JourneySummary = {
     thisMonth: 0,
   },
   lastTimelineEventAt: null,
-  // Shadows
-  shadowSummary: {
-    total: 0,
-    accepted: 0,
-    skipped: false,
-    skipReason: null,
-    pending: 0,
-    completed: 0,
-    declined: 0,
-    lastUpdatedAt: null,
-  },
   // Reflections
   reflectionSummary: {
     total: 0,
@@ -841,7 +803,6 @@ export type ReflectionContextType =
   | 'ALIGNED_ACTION'
   | 'ROLE_DEEP_DIVE'
   | 'INDUSTRY_INSIGHTS'
-  | 'SHADOW_COMPLETED'
   | 'CAREER_DISCOVERY'
   | 'PLAN_BUILD'
   | 'STRENGTHS_REFLECTION';
@@ -867,11 +828,6 @@ export const REFLECTION_PROMPTS: Record<ReflectionContextType, string[]> = {
     'Which trend do you find most interesting?',
     'How might this affect your career plans?',
     'Did anything surprise you about the industry outlook?',
-  ],
-  SHADOW_COMPLETED: [
-    'What was the most valuable thing you learned?',
-    'Would you want to work in this field?',
-    'What questions do you still have?',
   ],
   CAREER_DISCOVERY: [
     'What draws you to this career area?',
@@ -904,11 +860,6 @@ export type TimelineEventTypeId =
   | 'REQUIREMENTS_REVIEWED'
   | 'PLAN_CREATED'
   | 'PLAN_UPDATED'
-  | 'SHADOW_REQUESTED'
-  | 'SHADOW_APPROVED'
-  | 'SHADOW_DECLINED'
-  | 'SHADOW_COMPLETED'
-  | 'SHADOW_SKIPPED'
   | 'ALIGNED_ACTION_COMPLETED'
   | 'ACTION_REFLECTION_SUBMITTED'
   | 'EXTERNAL_FEEDBACK_RECEIVED'
