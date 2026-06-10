@@ -424,33 +424,73 @@ const PRESET_PHYSICALLY_DEMANDING = new Set<string>([
   "professional-athlete",
 ]);
 
+// Curated set of genuinely high-applicant-ratio / very-selective careers.
+// Grouped by the career-radar *display* category (after CATEGORY_ALIAS) so we
+// can keep every wheel slice populated — no honest category should come back
+// empty when selective roles plainly exist in it. Aim: 2–3 per category.
 const PRESET_HIGHLY_COMPETITIVE = new Set<string>([
+  // Health
   "surgeon",
   "neurosurgeon",
   "cardiothoracic-surgeon",
   "anesthesiologist",
   "radiologist",
   "psychiatrist",
-  "investment-banker",
+  // Tech
   "quantitative-analyst",
-  "airline-pilot",
-  "managing-director",
   "cto",
-  "chief-financial-officer",
-  "consulting-partner",
-  "senior-management-consultant",
-  "corporate-lawyer",
   "vp-engineering",
   "principal-engineer",
   "ai-researcher",
-  "professional-athlete",
-  "musician",
-  "architect",
-  "film-director",
   "senior-data-scientist",
   "principal-data-scientist",
+  // Business
+  "managing-director",
+  "consulting-partner",
+  "senior-management-consultant",
+  "corporate-lawyer",
+  // Finance
+  "investment-banker",
+  "chief-financial-officer",
+  // Creative
+  "musician",
+  "film-director",
   "fashion-designer",
+  // Education — academia is famously oversubscribed (huge applicant ratios
+  // for tenure-track posts).
+  "professor",
+  "university-lecturer",
+  "associate-professor",
+  // Public Service — judiciary + elite military selection.
   "diplomat",
+  "judge",
+  "special-forces-operator",
+  "military-pilot",
+  // Trades — elite/selective skilled paths (astronaut selection, saturation
+  // diving, petroleum engineering).
+  "astronaut",
+  "saturation-diver",
+  "petroleum-engineer",
+  // Marketing — top of the commercial ladder.
+  "chief-marketing-officer",
+  "vp-marketing",
+  "global-brand-director",
+  // Sport — making it as a professional is one of the longest odds anywhere.
+  "professional-athlete",
+  "footballer",
+  "tennis-player",
+  // Logistics / Transport — selective aviation + air-traffic control.
+  "airline-pilot",
+  "air-traffic-controller",
+  "helicopter-pilot",
+  // Hospitality — Master Sommelier is one of the hardest exams in the world;
+  // top kitchens are fiercely contested. (architect sits in this slice.)
+  "architect",
+  "sommelier",
+  "chef",
+  // Social Care — selective, credential-gated specialist routes.
+  "child-protection-officer",
+  "addiction-counsellor",
 ]);
 
 /** Return true if the career satisfies the chosen preset filter. */
