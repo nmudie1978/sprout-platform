@@ -43,7 +43,6 @@ import { useGoals } from '@/hooks/use-goals';
 import { getAllCareers, getSectorForCareer, getPensionNote, type Career } from '@/lib/career-pathways';
 import { localizeCareer } from '@/lib/career-localization';
 import { displaySalary, displayEducation, showsSalaryProgression } from '@/lib/career-localization/display';
-import { isCareerExplicitlyVerified } from '@/lib/career-data-recency';
 import type { CareerDetails } from '@/lib/career-typical-days';
 import type { CareerProgression } from '@/lib/career-progressions';
 import type { RealityCheckResult } from '@/lib/career-reality-types';
@@ -72,7 +71,7 @@ import { ConfidenceTracker } from '@/components/journey/confidence-tracker';
 // AI Impact section removed per user request
 import type { Journey } from '@/lib/journey/career-journey-types';
 import { setUnderstandConfirmed, isUnderstandConfirmed, setDiscoverConfirmed, isDiscoverConfirmed, markClarityActive } from '@/lib/journey/lens-progress';
-import { hasCelebratedJourney, markJourneyCelebrated } from '@/lib/journey/celebration';
+import { nextCelebrationState, type CelebrationBaseline } from '@/lib/journey/celebration';
 import { JourneyCompleteCelebration } from '@/components/journey/journey-complete-celebration';
 import { useInterestLevel } from '@/hooks/use-interest-level';
 import { InterestLevelPicker } from '@/components/interest-level/interest-level-rating';
@@ -925,12 +924,6 @@ function DiscoverTab({
               </button>
             </div>
             {showsSalaryProgression(country) && <SalaryProgressionLine career={career} />}
-            {!isCareerExplicitlyVerified(career) && (
-              <p className="mt-3 text-[11px] leading-relaxed text-muted-foreground/60">
-                These figures are an estimate based on typical pay for this kind of role. They haven&rsquo;t yet been
-                verified against official salary statistics, so treat them as a rough guide rather than exact numbers.
-              </p>
-            )}
           </div>
         </div>
       )}
@@ -2129,6 +2122,9 @@ function ClarityTab({ goalTitle, career }: { goalTitle: string | null; career: C
     staleTime: 5 * 60 * 1000,
   });
   const hasFoundation = !!eduCtxData?.educationContext?.stage;
+  // The education-context query is undefined until it resolves; the
+  // celebration must not treat that async settle as a completion event.
+  const foundationReady = eduCtxData !== undefined;
 
   // Roadmap and Momentum headers are intentionally name-neutral —
   // always "Your Roadmap" / "Your Momentum" regardless of whether the
@@ -2901,6 +2897,7 @@ function ClarityTab({ goalTitle, career }: { goalTitle: string | null; career: C
         careerTitle={goalTitle}
         careerId={career?.id ?? null}
         hasFoundation={hasFoundation}
+        foundationReady={foundationReady}
       />
 
     </div>
@@ -2912,16 +2909,18 @@ function ClarityCompletionCard({
   careerTitle,
   careerId,
   hasFoundation,
+  foundationReady,
 }: {
   careerTitle: string | null;
   careerId: string | null;
   hasFoundation: boolean;
+  foundationReady: boolean;
 }) {
   // Setting an interest level is the deliberate "verdict" that completes
   // Clarity and fires the celebration. Filling in the foundation alone does
   // NOT complete Clarity — otherwise the modal would pop just for opening the
   // roadmap. The celebration only triggers once the interest level is chosen.
-  const { level: interestLevel, setLevel: setInterestLevel } = useInterestLevel(careerId);
+  const { level: interestLevel, setLevel: setInterestLevel, hydrated: interestHydrated } = useInterestLevel(careerId);
   const hasSetInterest = interestLevel != null;
 
   const clarityComplete = hasFoundation && hasSetInterest;
@@ -2935,27 +2934,35 @@ function ClarityCompletionCard({
     }
   }, [clarityComplete, careerTitle]);
 
-  // One-time "moment of arrival": fire the celebration only when the user
-  // ACTIVELY rates their interest (the deliberate verdict that completes
-  // Clarity) — see handleRateInterest. We must NOT trigger reactively on
-  // `clarityComplete`, because the interest level is persisted (localStorage
-  // + server) and re-loads as "set" on every visit; a reactive trigger would
-  // re-pop the modal each time an already-complete journey is opened, on any
-  // session/device where the device-local guard key is absent. Still guarded
-  // once-per-career as a backstop.
+  // One-time "moment of arrival": fire the celebration each time THIS career
+  // actually crosses incomplete → complete during the session. We keep a
+  // per-career completeness baseline (seeded on first observation) and only
+  // pop on a genuine transition — see nextCelebrationState. This means:
+  //   • re-opening an already-complete journey never re-pops ("not randomly"),
+  //   • completing a career — via interest OR the Foundation — always pops,
+  //   • completing a different career later pops for that one too.
+  // We gate on `interestHydrated` so the initial async null → loaded-level
+  // flip (which happens on every visit to a completed journey) does NOT look
+  // like a completion: the baseline is only seeded once the persisted level
+  // has settled. Triggering reactively on the transition — rather than a
+  // single input's onChange — makes it robust to whichever half of Clarity
+  // finishes last (the user rates interest in the ConfidenceTracker, not the
+  // in-card picker, which is exactly why the onChange approach never fired).
   const [showCelebration, setShowCelebration] = useState(false);
-  const handleRateInterest = useCallback(
-    (next: Parameters<typeof setInterestLevel>[0]) => {
-      setInterestLevel(next);
-      // hasFoundation is the other half of completion; if it's already in
-      // place, rating interest is the action that finishes Clarity.
-      if (hasFoundation && careerId && !hasCelebratedJourney(careerId)) {
-        markJourneyCelebrated(careerId);
-        setShowCelebration(true);
-      }
-    },
-    [setInterestLevel, hasFoundation, careerId],
-  );
+  const celebrationBaseline = useRef<CelebrationBaseline | null>(null);
+  useEffect(() => {
+    // Both halves of completion load async (interest from storage, foundation
+    // from a query). Only arm the detector once BOTH have settled, so neither
+    // settle is mistaken for a completion on an already-complete journey.
+    if (!interestHydrated || !foundationReady) return;
+    const { baseline, celebrate } = nextCelebrationState(
+      celebrationBaseline.current,
+      careerId,
+      clarityComplete,
+    );
+    celebrationBaseline.current = baseline;
+    if (celebrate) setShowCelebration(true);
+  }, [interestHydrated, foundationReady, careerId, clarityComplete]);
 
   const handleDownloadReport = useCallback(async () => {
     setReportError(null);
@@ -3007,7 +3014,7 @@ function ClarityCompletionCard({
           <p className="text-[11px] text-muted-foreground/50 mb-3">
             Rate your interest to capture where you&apos;ve landed — that completes Clarity.
           </p>
-          <InterestLevelPicker value={interestLevel} onChange={handleRateInterest} size="sm" />
+          <InterestLevelPicker value={interestLevel} onChange={setInterestLevel} size="sm" />
           {!hasFoundation && (
             <p className="mt-2.5 text-[10px] font-medium text-amber-400/90">
               ↑ Add “Your Foundation” on the roadmap above (school, subjects, finish year) to personalise everything and finish Clarity.

@@ -12,7 +12,7 @@
  */
 
 import { useMemo } from 'react';
-import { TrendingUp, Sparkles } from 'lucide-react';
+import { TrendingUp, Sparkles, ShieldCheck, ExternalLink } from 'lucide-react';
 import {
   ComposedChart,
   Area,
@@ -25,10 +25,18 @@ import {
   ReferenceLine,
 } from 'recharts';
 import { buildSalaryProgression } from '@/lib/salary-progression';
+import { getSalaryProvenance } from '@/lib/career-data-recency';
 import { formatSalary } from '@/components/journey/salary-progression';
 
 interface SalaryProgressionLineProps {
-  career: { id: string; title?: string; avgSalary?: string | null } | null;
+  career: {
+    id: string;
+    title?: string;
+    avgSalary?: string | null;
+    /** Provenance — drives the verified/indicative trust chip + footnote. */
+    sourceUrl?: string | null;
+    lastVerifiedAt?: string | null;
+  } | null;
 }
 
 type Row = {
@@ -77,6 +85,20 @@ export function SalaryProgressionLine({ career }: SalaryProgressionLineProps) {
     [career],
   );
 
+  const provenance = useMemo(
+    () =>
+      career
+        ? getSalaryProvenance(
+            {
+              sourceUrl: career.sourceUrl ?? undefined,
+              lastVerifiedAt: career.lastVerifiedAt ?? undefined,
+            },
+            { estimated: progression?.estimated },
+          )
+        : null,
+    [career, progression?.estimated],
+  );
+
   const rows = useMemo<Row[]>(() => {
     if (!progression) return [];
     return progression.steps.map((s) => ({
@@ -107,15 +129,44 @@ export function SalaryProgressionLine({ career }: SalaryProgressionLineProps) {
           <h3 className="text-[12px] font-semibold text-foreground/85">How pay grows with experience</h3>
           <p className="text-[9px] text-muted-foreground/50">Typical salary with market range · NOK/year · Norway</p>
         </div>
-        {progression.estimated && (
+        {provenance?.tier === 'verified' ? (
+          provenance.sourceUrl ? (
+            <a
+              href={provenance.sourceUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 rounded-pill border border-emerald-500/30 bg-emerald-500/10 px-2 py-0.5 text-[9px] font-medium text-emerald-400 hover:bg-emerald-500/20 transition-colors"
+              title={provenance.note}
+            >
+              <ShieldCheck className="h-2.5 w-2.5" />
+              {provenance.label}
+              <ExternalLink className="h-2 w-2 opacity-60" />
+            </a>
+          ) : (
+            <span
+              className="inline-flex items-center gap-1 rounded-pill border border-emerald-500/30 bg-emerald-500/10 px-2 py-0.5 text-[9px] font-medium text-emerald-400"
+              title={provenance.note}
+            >
+              <ShieldCheck className="h-2.5 w-2.5" />
+              {provenance.label}
+            </span>
+          )
+        ) : provenance?.tier === 'estimated' ? (
           <span
             className="inline-flex items-center gap-1 rounded-pill border border-amber-500/30 bg-amber-500/10 px-2 py-0.5 text-[9px] font-medium text-amber-500"
-            title="Estimated from this career's typical salary range — indicative only."
+            title={provenance.note}
           >
             <Sparkles className="h-2.5 w-2.5" />
-            Estimated
+            {provenance.label}
           </span>
-        )}
+        ) : provenance ? (
+          <span
+            className="inline-flex items-center gap-1 rounded-pill border border-muted-foreground/20 bg-muted-foreground/5 px-2 py-0.5 text-[9px] font-medium text-muted-foreground/60"
+            title={provenance.note}
+          >
+            {provenance.label}
+          </span>
+        ) : null}
       </div>
 
       {/* Chart */}
@@ -178,11 +229,12 @@ export function SalaryProgressionLine({ career }: SalaryProgressionLineProps) {
         </ResponsiveContainer>
       </div>
 
-      {/* Note */}
+      {/* Note — provenance-aware. A curated career may carry an editorial
+          note (e.g. "Partner earnings vary…"); append it after the
+          provenance line so we never drop that context. */}
       <p className="text-[9px] text-muted-foreground/45 italic">
-        {progression.estimated
-          ? 'Estimated from this career’s typical salary range — a guide, not a guarantee. Actual pay varies by employer, region and specialism.'
-          : progression.note ?? 'Indicative ranges from public salary data — actual pay varies by employer and region.'}
+        {provenance?.note ?? 'Actual pay varies by employer, region and specialism.'}
+        {progression.note && !progression.estimated ? ` ${progression.note}` : ''}
       </p>
     </div>
   );

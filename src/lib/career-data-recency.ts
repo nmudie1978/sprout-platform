@@ -67,6 +67,96 @@ export function isCareerExplicitlyVerified(
   return ageDays <= CAREER_DATA_MAX_AGE_DAYS;
 }
 
+// ── Salary provenance (UI-facing) ──────────────────────────────────
+//
+// A single descriptor the salary UI can render without re-deriving the
+// verified/sourced logic. Three honest tiers:
+//   - verified  : explicit, fresh per-career lastVerifiedAt (optionally
+//                 with a public sourceUrl) → positive "✓ Verified" signal.
+//   - estimated : the progression curve was synthesized from the typical
+//                 range rather than hand-curated (caller passes this in).
+//   - indicative: hand-curated or baseline-inherited figure with no named
+//                 public source → must NOT be presented as source-backed.
+
+export type SalaryProvenanceTier = "verified" | "estimated" | "indicative";
+
+export interface SalaryProvenance {
+  tier: SalaryProvenanceTier;
+  /** Public source URL, when recorded. */
+  sourceUrl?: string;
+  /** Bare hostname for display, e.g. "ssb.no". */
+  sourceHost?: string;
+  /** Short status-chip label, e.g. "Verified Apr 2026". */
+  label: string;
+  /** Longer footnote shown beneath the chart. */
+  note: string;
+}
+
+const MONTHS = [
+  "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+];
+
+function hostOf(url: string | undefined): string | undefined {
+  if (!url) return undefined;
+  try {
+    return new URL(url).hostname.replace(/^www\./, "");
+  } catch {
+    return undefined;
+  }
+}
+
+/**
+ * Resolve how a career's salary figure should be presented for trust.
+ * Pure + deterministic (pass `now` in tests).
+ *
+ * `estimated` should be true when the displayed progression was
+ * synthesized from the typical range (see buildSalaryProgression). A
+ * verified underlying figure still wins the chip — a sourced anchor is
+ * more reassuring than the "synthesized shape" caveat, which the chart's
+ * own labelling already conveys.
+ */
+export function getSalaryProvenance(
+  career: Pick<Career, "lastVerifiedAt" | "sourceUrl">,
+  opts: { estimated?: boolean; now?: Date } = {},
+): SalaryProvenance {
+  const now = opts.now ?? new Date();
+  const sourceUrl = career.sourceUrl || undefined;
+  const sourceHost = hostOf(sourceUrl);
+
+  if (isCareerExplicitlyVerified(career, now) && career.lastVerifiedAt) {
+    const d = new Date(career.lastVerifiedAt);
+    const stamp = `${MONTHS[d.getUTCMonth()]} ${d.getUTCFullYear()}`;
+    return {
+      tier: "verified",
+      sourceUrl,
+      sourceHost,
+      label: `Verified ${stamp}`,
+      note: sourceHost
+        ? `Source: ${sourceHost} · verified ${stamp}. Ranges are indicative — actual pay varies by employer, region and specialism.`
+        : `Verified ${stamp}. Ranges are indicative — actual pay varies by employer, region and specialism.`,
+    };
+  }
+
+  if (opts.estimated) {
+    return {
+      tier: "estimated",
+      sourceUrl,
+      sourceHost,
+      label: "Estimated",
+      note: "Estimated from this career’s typical salary range — a guide, not a guarantee. Actual pay varies by employer, region and specialism.",
+    };
+  }
+
+  return {
+    tier: "indicative",
+    sourceUrl,
+    sourceHost,
+    label: "Indicative",
+    note: "Indicative range — not yet verified against a named public source. Actual pay varies by employer, region and specialism.",
+  };
+}
+
 /** Roll-up over the whole catalogue. Use in scripts / admin views. */
 export function catalogueRecencySummary(
   careers: Pick<Career, "lastVerifiedAt">[],

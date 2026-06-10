@@ -120,6 +120,46 @@ export interface Career {
  * the university shape but treats the vocational step as an
  * alternative worth surfacing.
  */
+/**
+ * Default education route for a whole category, used when a career's
+ * `educationPath` text carries no degree/vocational keyword. Without this,
+ * keyword-less careers (e.g. "Self-taught", "Youth academy → senior
+ * contract", "Class B licence") fell through to a blanket "university"
+ * default — which rendered a wrong, degree-shaped roadmap for trades,
+ * creative, sport and hands-on careers.
+ *
+ * Only categories that genuinely lean away from a pure degree route are
+ * listed. Predominantly degree-based categories (healthcare, education,
+ * tech, finance, business, …) are intentionally absent so they keep the
+ * "university" default — this map can only make a keyword-less career
+ * *less* university-shaped, never wrongly downgrade a degree career.
+ *
+ * "mixed" means the timeline generator still defaults to the university
+ * shape but surfaces the vocational alternative — a safe, strictly-more-
+ * accurate result than hard "university".
+ */
+const CATEGORY_ROUTE_DEFAULTS: Partial<Record<CareerCategory, EducationRoute>> = {
+  CONSTRUCTION_TRADES: "vocational",
+  MANUFACTURING_ENGINEERING: "mixed",
+  HOSPITALITY_TOURISM: "mixed",
+  SPORT_FITNESS: "mixed",
+  CREATIVE_MEDIA: "mixed",
+  LOGISTICS_TRANSPORT: "mixed",
+  SOCIAL_CARE_COMMUNITY: "mixed",
+  PUBLIC_SERVICE_SAFETY: "mixed",
+};
+
+/**
+ * The default education route for a category, or "university" when the
+ * category is unknown or predominantly degree-based. Pure + side-effect
+ * free so it can be unit-tested directly.
+ */
+export function categoryRouteDefault(
+  category: CareerCategory | undefined,
+): EducationRoute {
+  return (category && CATEGORY_ROUTE_DEFAULTS[category]) || "university";
+}
+
 export function inferEducationRoute(career: Career): EducationRoute {
   if (career.educationRoute) return career.educationRoute;
 
@@ -136,10 +176,13 @@ export function inferEducationRoute(career: Career): EducationRoute {
   if (hasUniversity) return "university";
   if (hasOnTheJob) return "on-the-job";
 
-  // No strong signal — default to university because the majority of
-  // careers in the catalogue are degree-based. The generator still
-  // respects the user's current educationStage context.
-  return "university";
+  // No keyword signal in the freeform path — fall back to the category's
+  // default route rather than blanket "university". This stops trades /
+  // creative / hands-on careers from rendering a degree-shaped roadmap.
+  // Predominantly degree-based categories aren't in the map, so they keep
+  // the "university" default. The generator still respects the user's
+  // current educationStage context.
+  return categoryRouteDefault(getCategoryForCareer(career.id));
 }
 
 export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
