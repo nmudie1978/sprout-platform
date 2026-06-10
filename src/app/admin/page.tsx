@@ -265,6 +265,17 @@ export default function AdminDashboardPage() {
               ))}
             </div>
 
+            {/* Feedback */}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => router.push("/admin/feedback")}
+              className="border-slate-600"
+            >
+              <MessageSquare className="h-4 w-4 mr-2" />
+              Feedback
+            </Button>
+
             {/* Career Paths Review */}
             <Button
               variant="outline"
