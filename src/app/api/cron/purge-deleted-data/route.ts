@@ -19,6 +19,7 @@ export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
 import { NextRequest, NextResponse } from "next/server";
+import * as Sentry from "@sentry/nextjs";
 import { prisma } from "@/lib/prisma";
 import { logAuditAction } from "@/lib/safety";
 import { AuditAction } from "@prisma/client";
@@ -141,6 +142,12 @@ export async function GET(req: NextRequest) {
     });
   } catch (error) {
     console.error("[cron/purge-deleted-data] failed:", error);
+    // Escalate: a silently-failing GDPR-retention purge is a compliance
+    // exposure with no other tripwire.
+    Sentry.captureException(error, {
+      level: "error",
+      tags: { cron: "purge-deleted-data" },
+    });
     return NextResponse.json(
       { error: "Purge failed", message: String(error) },
       { status: 500 },

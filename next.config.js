@@ -98,6 +98,33 @@ const nextConfig = {
             key: 'Permissions-Policy',
             value: 'camera=(), microphone=(), geolocation=()',
           },
+          // Content-Security-Policy — baseline XSS/clickjacking defence for a
+          // minors' platform. Shipped REPORT-ONLY first: it surfaces what a
+          // strict policy would block (Next inline hydration, Sentry, YouTube
+          // embeds, Tailwind inline styles) WITHOUT breaking the app. Once the
+          // browser console / report endpoint shows no legitimate violations,
+          // flip this key to 'Content-Security-Policy' to enforce.
+          {
+            key: 'Content-Security-Policy-Report-Only',
+            value: [
+              "default-src 'self'",
+              // Next.js hydration + framer-motion need inline/eval; tighten to
+              // nonces when moving to enforce.
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+              // Tailwind / styled-jsx inject inline styles.
+              "style-src 'self' 'unsafe-inline'",
+              "img-src 'self' data: blob: https:",
+              "font-src 'self' data:",
+              // YouTube "day in the life" embeds.
+              "frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com",
+              // Sentry ingest, Supabase, same-origin APIs.
+              "connect-src 'self' https:",
+              "object-src 'none'",
+              "base-uri 'self'",
+              "form-action 'self'",
+              "frame-ancestors 'self'",
+            ].join('; '),
+          },
         ],
       },
       // Cache static assets aggressively

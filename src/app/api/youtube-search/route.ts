@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
 import { Prisma } from '@prisma/client';
 import { prisma } from '@/lib/prisma';
+import { checkRateLimitAsync, RateLimits } from '@/lib/rate-limit';
 import { logAndSwallow } from '@/lib/observability';
 import {
   videoSearchLocale,
@@ -122,6 +125,19 @@ function applyRelevanceFilter(videos: YouTubeVideo[], career: string): YouTubeVi
 }
 
 export async function GET(req: NextRequest) {
+  // Auth + rate limit: this endpoint triggers paid YouTube Data API calls, so
+  // it must not be anonymously reachable. The DB cache only protects *repeated*
+  // queries — an attacker rotating `?career=`/`?q=` values busts the cache on
+  // every request and runs up an unbounded bill. Mirrors /api/career-reality.
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
+  }
+  const rl = await checkRateLimitAsync(`youtube-search:${session.user.id}`, RateLimits.AI_CHAT);
+  if (!rl.success) {
+    return NextResponse.json({ error: 'Rate limit exceeded. Please try again later.' }, { status: 429 });
+  }
+
   const { searchParams } = new URL(req.url);
   const careerParam = searchParams.get('career');
   const country = searchParams.get('country');

@@ -8,7 +8,7 @@
 // Age is used only to:
 //   (a) personalise the Clarity-tab roadmap (e.g. no university step
 //       before 18, professional certs spaced to post-experience), and
-//   (b) enforce the one-time signup eligibility floor (15–23), which
+//   (b) enforce the one-time signup eligibility floor (15–30), which
 //       lives in /api/auth/signup — NOT here.
 // See CLAUDE.md <age_policy>.
 //
