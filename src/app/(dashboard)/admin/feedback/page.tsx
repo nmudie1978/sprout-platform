@@ -1,6 +1,5 @@
 import { redirect } from "next/navigation";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
+import { getAdminSession } from "@/lib/admin/auth";
 import { prisma } from "@/lib/prisma";
 import { Download, MessageSquare } from "lucide-react";
 import {
@@ -16,9 +15,12 @@ import {
 export const dynamic = "force-dynamic";
 
 export default async function AdminFeedbackPage() {
-  const session = await getServerSession(authOptions);
-  if (!session?.user || session.user.role !== "ADMIN") {
-    redirect("/dashboard");
+  // Gated by the env-var Admin Portal (same as /admin dashboard + career-paths).
+  // Middleware already requires a valid Portal cookie for every /admin/* route;
+  // this re-verifies it server-side and redirects to the Portal login if missing.
+  const admin = await getAdminSession();
+  if (!admin) {
+    redirect("/admin/login");
   }
 
   const rows = await prisma.feedback.findMany({ orderBy: { createdAt: "desc" } });

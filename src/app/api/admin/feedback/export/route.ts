@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
+import { getAdminSession } from "@/lib/admin/auth";
 import { prisma } from "@/lib/prisma";
 import { feedbackToCsv } from "@/lib/feedback-stats";
 import type { FeedbackRole } from "@prisma/client";
@@ -12,8 +11,9 @@ import type { FeedbackRole } from "@prisma/client";
  * Accepts optional ?role= filter (TEEN_16_20 | PARENT_GUARDIAN | ADULT_OTHER).
  */
 export async function GET(request: Request) {
-  const session = await getServerSession(authOptions);
-  if (!session?.user || session.user.role !== "ADMIN") {
+  // Gated by the env-var Admin Portal session (matches the feedback page).
+  const admin = await getAdminSession();
+  if (!admin) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
