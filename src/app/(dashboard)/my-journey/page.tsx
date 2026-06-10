@@ -2916,28 +2916,6 @@ function ClarityCompletionCard({
   // roadmap. The celebration only triggers once the interest level is chosen.
   const { level: interestLevel, setLevel: setInterestLevel } = useInterestLevel(careerId);
   const hasSetInterest = interestLevel != null;
-  const [foundationHint, setFoundationHint] = useState(false);
-  const [interestHint, setInterestHint] = useState(false);
-
-  // Raise the foundation hint if it isn't set within 15s.
-  useEffect(() => {
-    if (hasFoundation) {
-      setFoundationHint(false);
-      return;
-    }
-    const id = setTimeout(() => setFoundationHint(true), 15_000);
-    return () => clearTimeout(id);
-  }, [hasFoundation]);
-
-  // Raise the interest-level hint if it isn't set within 20s.
-  useEffect(() => {
-    if (hasSetInterest) {
-      setInterestHint(false);
-      return;
-    }
-    const id = setTimeout(() => setInterestHint(true), 20_000);
-    return () => clearTimeout(id);
-  }, [hasSetInterest]);
 
   const clarityComplete = hasFoundation && hasSetInterest;
   const [isGeneratingReport, setIsGeneratingReport] = useState(false);
@@ -2990,11 +2968,11 @@ function ClarityCompletionCard({
     }
   }, [careerTitle]);
 
-  // When Clarity is complete, drop the heading + checklist — the
-  // celebration box below is the full story at that point and the
-  // "✓ Fill in your starting point / ✓ Add your first action" list
-  // becomes redundant noise. The outer wrapper's padding + muted
-  // card background also go away so the celebration stands alone.
+  // Before completion we show a single calm interest-rating prompt
+  // ("How do you feel about this path now?"). Once Clarity is complete the
+  // prompt gives way to the celebration box, which is the full story at that
+  // point. The outer wrapper's padding + muted card background also go away
+  // so the celebration stands alone.
   return (
     <div
       className={cn(
@@ -3005,70 +2983,18 @@ function ClarityCompletionCard({
     >
       {!clarityComplete && (
         <>
-      <p className="text-sm font-semibold mb-3 text-foreground/85">
-        Complete Clarity
-      </p>
-      <div className="space-y-2.5">
-        <div className="flex items-start gap-2.5">
-          <span className={cn(
-            'inline-flex items-center justify-center h-5 w-5 rounded-full border text-[10px] shrink-0 mt-0.5',
-            hasFoundation
-              ? 'bg-emerald-500 border-emerald-500 text-white'
-              : 'border-border/50 text-muted-foreground/40',
-          )}>
-            {hasFoundation ? '✓' : '1'}
-          </span>
-          <div>
-            <p className={cn(
-              'text-xs font-medium',
-              hasFoundation ? 'text-foreground/70 line-through decoration-emerald-500/40' : 'text-foreground/85',
-            )}>
-              Fill in your starting point
+          <p className="text-sm font-semibold mb-1 text-foreground/85">
+            How do you feel about this path now?
+          </p>
+          <p className="text-[11px] text-muted-foreground/50 mb-3">
+            Rate your interest to capture where you&apos;ve landed — that completes Clarity.
+          </p>
+          <InterestLevelPicker value={interestLevel} onChange={setInterestLevel} size="sm" />
+          {!hasFoundation && (
+            <p className="mt-2.5 text-[10px] font-medium text-amber-400/90">
+              ↑ Add “Your Foundation” on the roadmap above (school, subjects, finish year) to personalise everything and finish Clarity.
             </p>
-            <p className="text-[10px] text-muted-foreground/50">
-              {hasFoundation
-                ? 'Your foundation is set — the roadmap and narration are personalised to you.'
-                : 'Tap "Your Foundation" on the roadmap to add your school, subjects, and finish year.'}
-            </p>
-            {!hasFoundation && foundationHint && (
-              <p className="mt-1 text-[10px] font-medium text-amber-400/90">
-                ↑ Open “Your Foundation” on the roadmap above and add your school, subjects and finish year to personalise everything.
-              </p>
-            )}
-          </div>
-        </div>
-        <div className="flex items-start gap-2.5">
-          <span className={cn(
-            'inline-flex items-center justify-center h-5 w-5 rounded-full border text-[10px] shrink-0 mt-0.5',
-            hasSetInterest
-              ? 'bg-emerald-500 border-emerald-500 text-white'
-              : 'border-border/50 text-muted-foreground/40',
-          )}>
-            {hasSetInterest ? '✓' : '2'}
-          </span>
-          <div>
-            <p className={cn(
-              'text-xs font-medium',
-              hasSetInterest ? 'text-foreground/70 line-through decoration-emerald-500/40' : 'text-foreground/85',
-            )}>
-              Set your interest level
-            </p>
-            <p className="text-[10px] text-muted-foreground/50">
-              {hasSetInterest
-                ? 'You\'ve rated how this path feels for you — that\'s your Clarity verdict.'
-                : 'How do you feel about this path now? Rate your interest to finish Clarity.'}
-            </p>
-            <div className="mt-2">
-              <InterestLevelPicker value={interestLevel} onChange={setInterestLevel} size="sm" />
-            </div>
-            {!hasSetInterest && interestHint && (
-              <p className="mt-1 text-[10px] font-medium text-amber-400/90">
-                ↑ Tap a star to rate your interest in this career — that completes Clarity.
-              </p>
-            )}
-          </div>
-        </div>
-      </div>
+          )}
         </>
       )}
       {clarityComplete && (
