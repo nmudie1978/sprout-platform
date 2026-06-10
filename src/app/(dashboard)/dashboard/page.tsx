@@ -34,6 +34,7 @@ import {
   Briefcase,
   TrendingUp,
   BookmarkCheck,
+  Lightbulb,
   Pencil,
   CheckCircle2,
   FileText,
@@ -64,6 +65,8 @@ import { CareerDetailSheet } from "@/components/career-detail-sheet";
 import { getAllCareers } from "@/lib/career-pathways";
 import { useDiscoverRecommendations } from "@/hooks/use-discover-recommendations";
 import { WhatILikeTray } from "@/components/dashboard/what-i-like-tray";
+import { RecommendedForYou } from "@/components/dashboard/recommended-for-you";
+import type { RecommendationSignal } from "@/lib/discover/explored-recommendations";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import { Target } from "lucide-react";
@@ -804,6 +807,39 @@ export default function DashboardPage() {
     [savedCareers, interestLevels],
   );
 
+  // Seeds for the "Recommended for you" panel: every career the user has
+  // engaged with, weighted so a highly-rated career pulls harder than a
+  // paused/unrated one. Resolved to career ids (explored journeys come back
+  // as titles, so we look them up).
+  const recommendationSignals = useMemo<RecommendationSignal[]>(() => {
+    const all = getAllCareers();
+    const idByTitle = new Map(all.map((c) => [c.title.toLowerCase(), c.id]));
+    const titleById = new Map(all.map((c) => [c.id, c.title]));
+    const seeds = new Map<string, RecommendationSignal>();
+    const bump = (s: RecommendationSignal) => {
+      const prev = seeds.get(s.careerId);
+      // Keep the strongest weight; prefer a 'rated' kind for its attribution.
+      if (!prev || s.weight > prev.weight) seeds.set(s.careerId, s);
+    };
+    for (const g of exploredGoalsData?.goals ?? []) {
+      const id = idByTitle.get(g.goalTitle.toLowerCase());
+      if (id) bump({ careerId: id, weight: 2, kind: "explored", title: g.goalTitle });
+    }
+    for (const c of savedCareers) {
+      bump({ careerId: c.careerId, weight: 2, kind: "saved", title: c.careerTitle });
+    }
+    for (const [careerId, rating] of Object.entries(interestLevels)) {
+      if (!rating) continue;
+      bump({
+        careerId,
+        weight: 2 + rating,
+        kind: "rated",
+        title: titleById.get(careerId) ?? seeds.get(careerId)?.title ?? careerId,
+      });
+    }
+    return [...seeds.values()];
+  }, [exploredGoalsData, savedCareers, interestLevels]);
+
   const [savedCareersPage, setSavedCareersPage] = useState(0);
   const [savedCareerDetail, setSavedCareerDetail] = useState<ReturnType<typeof getAllCareers>[number] | null>(null);
   const savedCareersPerPage = 4;
@@ -1433,20 +1469,24 @@ export default function DashboardPage() {
 
         {/* ── 5. Saved Resources + Reflections (Row B — 2-col grid) ── */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4 items-stretch">
-          {/* Saved Resources (renamed from "My Library" — the new
-              /library page now owns that name; this is saved articles/videos). */}
+          {/* Recommended for you — careers adjacent to what the user has
+              explored/saved/rated. Replaces the old "Saved Resources" panel,
+              which sat empty for almost everyone (saved resources still live
+              in My Library). Always personalised once a journey is started. */}
           <DashboardSection
-            title="Saved Resources"
-            icon={BookmarkCheck}
-            iconColor="text-muted-foreground"
-            tooltip="Articles, videos, and resources you've saved from Industry Insights."
+            title="Recommended for you"
+            icon={Lightbulb}
+            iconColor="text-amber-400"
+            tooltip="Careers we think you'll like, based on the ones you've explored, saved, and rated."
             className="mb-0"
             fixedHeight="h-[180px] overflow-y-auto"
-            action={savedSummary.total > 0 ? (
-              <span className="text-xs text-muted-foreground/40">{savedSummary.total}</span>
-            ) : undefined}
+            action={
+              <Link href="/careers" className="text-xs text-primary/70 hover:text-primary transition-colors">
+                See all →
+              </Link>
+            }
           >
-            <LibraryCard items={savedItemsList} total={savedSummary.total} onRemove={removeLibraryItem} />
+            <RecommendedForYou signals={recommendationSignals} onSelect={setSavedCareerDetail} />
           </DashboardSection>
 
           {/* ── Worth a look — fresh, verified world-of-work reads, gently
