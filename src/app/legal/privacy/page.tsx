@@ -124,7 +124,7 @@ export default function PrivacyPolicyPage() {
             <ul>
               <li><strong>Hosting:</strong> Vercel Inc. — application hosting, EU/US regions. DPA in force; EU Standard Contractual Clauses apply to any US transfer.</li>
               <li><strong>Database:</strong> Supabase Inc. — PostgreSQL database hosting, EU region (Frankfurt). DPA in force.</li>
-              <li><strong>Transactional email:</strong> Resend (Resend Inc.) — used for account verification, guardian-consent emails, and safety notifications. No marketing email.</li>
+              <li><strong>Transactional email:</strong> Resend (Resend Inc.) — used for account verification and safety notifications. No marketing email.</li>
               <li><strong>Error monitoring:</strong> Sentry (Functional Software Inc.) — captures anonymised error traces. Personal data is scrubbed at source.</li>
               <li><strong>Product analytics:</strong> Vercel Analytics and Speed Insights — collects anonymised page views, device type and performance metrics. No cookies, no cross-site tracking, no behavioural profiling, and no personal data.</li>
               <li><strong>Authentication:</strong> NextAuth.js — open-source, self-hosted; sessions are stored in our own database, not a third party.</li>
