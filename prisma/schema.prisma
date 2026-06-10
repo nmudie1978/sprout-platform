@@ -2344,3 +2344,19 @@ model CohortMembership {
   // by youthId and orders by joinedAt DESC.
   @@index([youthId, joinedAt])
 }
+
+// ─────────────────────────────────────────────────────────────────────────
+// ThemeTally — anonymous aggregate dark/light usage counters.
+//
+// Privacy-by-design: this stores ONLY two running totals (one row per theme),
+// with NO user id, session id, timestamp-per-event, or any other identifier.
+// It cannot be tied back to any individual. Incremented at most once per
+// browser session, and ONLY for signed-in users (who accepted the Privacy
+// Policy at signup) via /api/theme-ping — never on public/marketing pages.
+// Used by the admin dashboard to show the dark-vs-light split.
+// ─────────────────────────────────────────────────────────────────────────
+model ThemeTally {
+  theme     String   @id // "dark" | "light"
+  count     Int      @default(0)
+  updatedAt DateTime @updatedAt
+}
