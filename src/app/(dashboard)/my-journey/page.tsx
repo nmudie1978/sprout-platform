@@ -261,32 +261,6 @@ function useCareerReality(careerTitle: string | null) {
   });
 }
 
-interface CareerStoryData {
-  id: string;
-  videoId: string;
-  name: string;
-  jobTitle: string;
-  company: string | null;
-  location: string | null;
-  yearsInRole: number | null;
-  headline: string;
-  takeaways: string[];
-  duration: string | null;
-}
-
-function useCareerStories(careerId: string | null) {
-  return useQuery<{ stories: CareerStoryData[]; count: number }>({
-    queryKey: ['career-stories', careerId],
-    queryFn: async () => {
-      const res = await fetch(`/api/career-stories?career=${encodeURIComponent(careerId!)}`);
-      if (!res.ok) return { stories: [], count: 0 };
-      return res.json();
-    },
-    enabled: !!careerId,
-    staleTime: 5 * 60 * 1000,
-  });
-}
-
 interface ContributedPath {
   id: string;
   displayName: string;
