@@ -39,6 +39,21 @@ export const SSB_OCCUPATION_MAP: SsbOccupationMapping[] = [
   { careerId: "midwife", styrkCode: "2222", styrkLabel: "Midwifery professionals" },
   { careerId: "dental-hygienist", styrkCode: "3251", styrkLabel: "Dental assistants and therapists" },
 
+  // Health — 2026 additions (clean STYRK-08 matches only; specialties without
+  // a distinct SSB occupation code are intentionally left unmapped).
+  { careerId: "general-practitioner", styrkCode: "2211", styrkLabel: "Generalist medical practitioners" },
+  { careerId: "pediatrician", styrkCode: "2212", styrkLabel: "Specialist medical practitioners" },
+  { careerId: "emergency-medicine-physician", styrkCode: "2212", styrkLabel: "Specialist medical practitioners" },
+  { careerId: "cardiologist", styrkCode: "2212", styrkLabel: "Specialist medical practitioners" },
+  { careerId: "neurologist", styrkCode: "2212", styrkLabel: "Specialist medical practitioners" },
+  { careerId: "obstetrician-gynaecologist", styrkCode: "2212", styrkLabel: "Specialist medical practitioners" },
+  { careerId: "medical-assistant", styrkCode: "3344", styrkLabel: "Medical secretaries" },
+  { careerId: "dental-technician", styrkCode: "3214", styrkLabel: "Medical and dental prosthetic technicians" },
+  { careerId: "phlebotomist", styrkCode: "3212", styrkLabel: "Medical and pathology laboratory technicians" },
+  { careerId: "audiologist", styrkCode: "2269", styrkLabel: "Health professionals not elsewhere classified" },
+  { careerId: "mental-health-counsellor", styrkCode: "2635", styrkLabel: "Social work and counselling professionals" },
+  { careerId: "biomedical-engineer", styrkCode: "2149", styrkLabel: "Engineering professionals not elsewhere classified" },
+
   // Education
   { careerId: "primary-teacher", styrkCode: "2341", styrkLabel: "Primary school teachers" },
   { careerId: "secondary-teacher", styrkCode: "2330", styrkLabel: "Secondary education teachers" },
