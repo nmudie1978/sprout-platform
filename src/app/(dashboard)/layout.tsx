@@ -5,6 +5,7 @@ import { SidebarNav } from "@/components/sidebar-nav";
 import { MobileBottomNav } from "@/components/mobile-bottom-nav";
 import { AmbientLightBackground } from "@/components/ui/ambient-light-background";
 import { ThemeTallyPing } from "@/components/theme-tally-ping";
+import { ReportModal } from "@/components/report-modal";
 import { prisma } from "@/lib/prisma";
 import { isAcceptanceCurrent } from "@/lib/legal/versions";
 import { headers } from "next/headers";
@@ -124,6 +125,17 @@ export default async function DashboardLayout({
               <Link href="/legal/safety" className="hover:text-foreground dark:hover:text-white transition-colors">
                 Safety
               </Link>
+              <ReportModal
+                targetType="PLATFORM"
+                trigger={
+                  <button
+                    type="button"
+                    className="hover:text-foreground dark:hover:text-white transition-colors"
+                  >
+                    Report a concern
+                  </button>
+                }
+              />
               <Link href="/legal/eligibility" className="hover:text-foreground dark:hover:text-white transition-colors">
                 Eligibility
               </Link>

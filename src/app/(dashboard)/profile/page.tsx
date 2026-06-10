@@ -11,7 +11,8 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
-import { Trash2, AlertTriangle, Target, AlertCircle, User, ExternalLink, MessageSquare, Info, Sparkles, Compass } from "lucide-react";
+import { Trash2, AlertTriangle, Target, AlertCircle, User, ExternalLink, MessageSquare, Info, Sparkles, Compass, ShieldAlert, Flag } from "lucide-react";
+import { ReportModal } from "@/components/report-modal";
 import { DiscoveryQuizDialog } from "@/components/discovery/discovery-quiz-dialog";
 import type { DiscoveryPreferences } from "@/lib/career-pathways";
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
@@ -884,6 +885,35 @@ export default function ProfilePage() {
                   Give Feedback (Beta)
                 </Button>
               </Link>
+            </CardContent>
+          </Card>
+
+          {/* Safety — always-reachable safeguarding report. */}
+          <Card className="border-2 border-amber-500/20 shadow-sm hover-lift overflow-hidden relative">
+            <div className="absolute inset-0 bg-amber-500/5 opacity-50 pointer-events-none" />
+            <CardHeader className="relative">
+              <CardTitle className="text-xl flex items-center gap-2">
+                <ShieldAlert className="h-5 w-5 text-amber-500" />
+                Safety
+              </CardTitle>
+              <CardDescription>
+                Seen something that doesn&apos;t feel right, or have a safety
+                worry? Tell us and our team will review it.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="relative">
+              <ReportModal
+                targetType="PLATFORM"
+                trigger={
+                  <Button
+                    variant="outline"
+                    className="w-full h-11 sm:h-10 border-amber-500/30 hover:bg-amber-500/10"
+                  >
+                    <Flag className="mr-2 h-4 w-4" />
+                    Report a concern
+                  </Button>
+                }
+              />
             </CardContent>
           </Card>
 
