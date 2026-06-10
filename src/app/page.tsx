@@ -50,9 +50,9 @@ const FEATURES = [
     accentText: "text-blue-400",
   },
   {
-    title: "Real stories, not algorithms",
+    title: "Honest, not hyped",
     description:
-      "Real career timelines from real people \u2014 not AI-generated examples or motivational fluff.",
+      "Straight information about what careers actually involve \u2014 no recommendation feeds, no AI-generated hype, no motivational fluff.",
     icon: Users,
     accentBg: "bg-amber-500/15",
     accentText: "text-amber-400",

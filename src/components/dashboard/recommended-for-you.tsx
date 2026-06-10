@@ -1,7 +1,6 @@
 "use client";
 
 import { useMemo } from "react";
-import Link from "next/link";
 import {
   getExploredRecommendations,
   type RecommendationSignal,
@@ -33,12 +32,6 @@ export function RecommendedForYou({
           Explore a career and we&apos;ll suggest others that fit what you&apos;re
           drawn to.
         </p>
-        <Link
-          href="/careers"
-          className="font-medium text-primary/80 transition-colors hover:text-primary"
-        >
-          Explore careers →
-        </Link>
       </div>
     );
   }
