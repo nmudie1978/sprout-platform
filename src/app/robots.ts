@@ -88,7 +88,6 @@ export default function robots(): MetadataRoute.Robots {
           "/ask-a-pro",
           "/legal/accept",
           "/not-eligible",
-          "/guardian-consent/",
         ],
       },
     ],

@@ -13,7 +13,6 @@ const PUBLIC_ROUTES = [
   "/legal",
   "/api/auth",
   "/not-eligible",
-  "/guardian-consent",
 ];
 
 // Routes that require guardian consent for minors (16-17)
