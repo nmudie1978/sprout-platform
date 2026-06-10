@@ -507,6 +507,12 @@ function careerNeedsDegree(career: Career): boolean {
   return DEGREE_PATH_RE.test(career.educationPath ?? "");
 }
 
+// Explicit owner overrides for the Vocational (non-degree) preset — careers
+// whose catalogue text reads as vocational but which the owner judges should
+// not appear in a non-degree filter. Pharmacy Technician (owner call,
+// 2026-06-10): widely read as a clinical/degree-adjacent role.
+const VOCATIONAL_EXCLUDE = new Set<string>(["pharmacy-technician"]);
+
 /** Return true if the career satisfies the chosen preset filter. */
 function matchesPreset(career: Career, preset: PresetFilterKey): boolean {
   switch (preset) {
@@ -533,6 +539,7 @@ function matchesPreset(career: Career, preset: PresetFilterKey): boolean {
       // tagged entryLevel (Open RAN Engineer, Software Developer, etc.)
       // don't leak into a non-degree filter. Trades, drivers, retail,
       // warehouse, care and similar direct-entry paths stay.
+      if (VOCATIONAL_EXCLUDE.has(career.id)) return false;
       return (
         PRESET_VOCATIONAL.has(career.id) ||
         (career.entryLevel === true && !careerNeedsDegree(career))
