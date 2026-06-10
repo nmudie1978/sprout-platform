@@ -35,6 +35,12 @@ const requiredSchema = z.object({
   // NEVER RUNS — a data-retention compliance hole. Fail the deploy loudly
   // instead of discovering it weeks later.
   CRON_SECRET: z.string().min(16, "must be a real secret (>=16 chars)"),
+  // Required in production: the Admin Portal session is signed/verified with
+  // this. If it's unset, `verifyAdminToken` returns false for everyone — the
+  // Portal (and the safeguarding reports queue behind it) silently locks out
+  // ALL admins. Fail-closed is safe, but fail the deploy loudly instead of
+  // discovering admin access is bricked.
+  ADMIN_SESSION_SECRET: z.string().min(16, "must be a real secret (>=16 chars)"),
 });
 
 // Should be present in production, but their own modules already guard
@@ -45,7 +51,6 @@ const RECOMMENDED = [
   "DIRECT_URL",
   "OPENAI_API_KEY",
   "RESEND_API_KEY",
-  "ADMIN_SESSION_SECRET",
 ] as const;
 
 /**
