@@ -67,6 +67,7 @@ import {
   type RegionFilter,
 } from "@/lib/industry-insights/job-market-stats";
 import type { StatDatum } from "@/lib/industry-insights/stat-types";
+import { resolveBarColor } from "@/lib/industry-insights/bar-color";
 import { SourceDrawer } from "./source-drawer";
 
 // ============================================
@@ -197,19 +198,6 @@ function getIconForCard(cardId: string) {
 // ============================================
 // BAR LIST RENDERER
 // ============================================
-
-/**
- * Bar colours in the data come in two flavours: Tailwind classes
- * ("bg-blue-500") and raw colour values ("#8b5cf6"). A raw value dropped into
- * className is invalid CSS, leaving the bar with no fill — it reads as a black
- * bar against the dark track. Route Tailwind classes to className and
- * everything else to an inline background, falling back to a visible colour.
- */
-function resolveBarColor(color?: string): { className: string; style?: React.CSSProperties } {
-  if (!color) return { className: "bg-primary" };
-  if (color.startsWith("bg-")) return { className: color };
-  return { className: "", style: { backgroundColor: color } };
-}
 
 function BarListRenderer({ items }: { items: BarItem[] }) {
   const maxValue = Math.max(...items.map((item) => item.value));

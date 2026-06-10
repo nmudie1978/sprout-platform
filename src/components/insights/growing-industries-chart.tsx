@@ -17,6 +17,7 @@ import {
   GROWING_INDUSTRIES_DATA,
   type GrowthCategory,
 } from "@/lib/industry-insights/world-lens-data";
+import { resolveBarColor } from "@/lib/industry-insights/bar-color";
 
 // ============================================
 // TYPES
@@ -49,8 +50,8 @@ function GrowthBar({
       <div className="flex-1 flex items-center gap-2">
         <div className="flex-1 h-4 bg-foreground/10 rounded-sm overflow-hidden">
           <div
-            className={`h-full rounded-sm ${category.color || "bg-primary"}`}
-            style={{ width: `${widthPercent}%` }}
+            className="h-full rounded-sm"
+            style={{ width: `${widthPercent}%`, ...resolveBarColor(category.color).style }}
             role="progressbar"
             aria-valuenow={category.growthPercent}
             aria-valuemin={0}

@@ -25,6 +25,7 @@ import {
   TOP_INDUSTRIES_DATASET,
   type IndustryCategory,
 } from "@/lib/industry-insights/topIndustriesDataset";
+import { resolveBarColor } from "@/lib/industry-insights/bar-color";
 
 // ============================================
 // TYPES
@@ -61,8 +62,8 @@ function IndustryBar({
       <div className="flex-1 flex items-center gap-2">
         <div className="flex-1 h-5 bg-foreground/10 rounded-sm overflow-hidden">
           <div
-            className={`h-full rounded-sm ${category.color || "bg-primary"}`}
-            style={{ width: `${widthPercent}%` }}
+            className="h-full rounded-sm"
+            style={{ width: `${widthPercent}%`, ...resolveBarColor(category.color).style }}
             role="progressbar"
             aria-valuenow={category.sharePercent}
             aria-valuemin={0}
