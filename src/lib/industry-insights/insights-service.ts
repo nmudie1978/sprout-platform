@@ -594,7 +594,7 @@ const CURATED_ARTICLES: InsightArticle[] = [
     title: "Fastest-Growing Jobs: A Global Perspective",
     description:
       "Which roles are seeing the highest demand across industries and regions.",
-    url: "https://www.weforum.org/reports/future-of-jobs-2025",
+    url: "https://www.weforum.org/publications/the-future-of-jobs-report-2025/",
     source: "World Economic Forum",
     publishedAt: "2025-01-10",
     thumbnail:
@@ -606,7 +606,7 @@ const CURATED_ARTICLES: InsightArticle[] = [
     title: "Green Jobs: Opportunities in the Clean Energy Transition",
     description:
       "The rise of sustainability-focused roles and the skills they require.",
-    url: "https://www.ilo.org/green-jobs",
+    url: "https://www.ilo.org/topics-and-sectors/just-transition-towards-environmentally-sustainable-economies-and-societies",
     source: "International Labour Organization",
     publishedAt: "2024-10-05",
     thumbnail:
@@ -617,7 +617,7 @@ const CURATED_ARTICLES: InsightArticle[] = [
     id: "art-jr-3",
     title: "Healthcare Workforce Projections",
     description: "Growing demand for healthcare professionals worldwide.",
-    url: "https://www.who.int/health-workforce",
+    url: "https://www.who.int/health-topics/health-workforce",
     source: "World Health Organization",
     publishedAt: "2024-08-22",
     thumbnail:
@@ -641,7 +641,7 @@ const CURATED_ARTICLES: InsightArticle[] = [
     title: "Cybersecurity Workforce Gap Reaches 4 Million",
     description:
       "The global cybersecurity workforce shortage and what it means for young professionals entering the field.",
-    url: "https://www.weforum.org/agenda/cybersecurity-workforce-gap",
+    url: "https://www.weforum.org/stories/",
     source: "World Economic Forum",
     publishedAt: "2025-01-12",
     thumbnail:
@@ -665,7 +665,7 @@ const CURATED_ARTICLES: InsightArticle[] = [
     title: "Renewable Energy Jobs Hit Record 16.2 Million",
     description:
       "Global renewable energy employment surges as countries accelerate their clean energy transitions.",
-    url: "https://www.ilo.org/resource/news/renewable-energy-jobs",
+    url: "https://www.ilo.org/topics-and-sectors/just-transition-towards-environmentally-sustainable-economies-and-societies",
     source: "International Labour Organization",
     publishedAt: "2024-12-05",
     thumbnail:
@@ -677,7 +677,7 @@ const CURATED_ARTICLES: InsightArticle[] = [
     title: "Cloud Computing Careers: The Infrastructure Behind Everything",
     description:
       "Why cloud engineering, DevOps, and platform roles are among the fastest-growing career paths.",
-    url: "https://www2.deloitte.com/insights/cloud-computing-trends",
+    url: "https://www.deloitte.com/global/en/our-thinking.html",
     source: "Deloitte",
     publishedAt: "2024-11-25",
     thumbnail:
@@ -701,7 +701,7 @@ const CURATED_ARTICLES: InsightArticle[] = [
     title: "The Rise of the UX Career Path",
     description:
       "User experience design is now one of the most in-demand skill sets across technology and beyond.",
-    url: "https://www.bcg.com/publications/digital-design-careers",
+    url: "https://www.bcg.com/capabilities/people-strategy/overview",
     source: "Boston Consulting Group",
     publishedAt: "2024-11-01",
     thumbnail:
@@ -713,7 +713,7 @@ const CURATED_ARTICLES: InsightArticle[] = [
     title: "Fintech Is Reshaping Financial Services Careers",
     description:
       "New roles in digital banking, payments technology, and regulatory tech for early-career professionals.",
-    url: "https://www.weforum.org/agenda/fintech-careers",
+    url: "https://www.weforum.org/stories/",
     source: "World Economic Forum",
     publishedAt: "2024-10-22",
     thumbnail:
@@ -737,7 +737,7 @@ const CURATED_ARTICLES: InsightArticle[] = [
     title: "Biotech Careers: Where Biology Meets Technology",
     description:
       "The biotech sector is booming, creating roles in genomics, bioinformatics, and pharmaceutical development.",
-    url: "https://www2.deloitte.com/insights/life-sciences-outlook",
+    url: "https://www.deloitte.com/global/en/our-thinking.html",
     source: "Deloitte",
     publishedAt: "2024-09-28",
     thumbnail:
@@ -761,7 +761,7 @@ const CURATED_ARTICLES: InsightArticle[] = [
     title: "Robotics and Automation: New Roles for a New Era",
     description:
       "As automation expands, so does the need for robotics engineers, technicians, and AI trainers.",
-    url: "https://www.weforum.org/agenda/robotics-jobs-future",
+    url: "https://www.weforum.org/stories/",
     source: "World Economic Forum",
     publishedAt: "2024-09-01",
     thumbnail:
@@ -809,7 +809,7 @@ const CURATED_ARTICLES: InsightArticle[] = [
     title: "Mental Health Careers Are Expanding Rapidly",
     description:
       "Growing awareness of mental health is driving demand for counsellors, therapists, and wellness professionals.",
-    url: "https://www.who.int/news-room/mental-health-workforce",
+    url: "https://www.who.int/health-topics/mental-health",
     source: "World Health Organization",
     publishedAt: "2024-07-10",
     thumbnail:
@@ -821,7 +821,7 @@ const CURATED_ARTICLES: InsightArticle[] = [
     title: "The Emerging Field of AI Ethics and Governance",
     description:
       "As AI scales, so does the need for professionals who can ensure it is developed responsibly.",
-    url: "https://www.bcg.com/publications/responsible-ai",
+    url: "https://www.bcg.com/capabilities/artificial-intelligence",
     source: "Boston Consulting Group",
     publishedAt: "2024-06-28",
     thumbnail:
@@ -833,7 +833,7 @@ const CURATED_ARTICLES: InsightArticle[] = [
     title: "DevOps and Site Reliability: Careers That Keep the Internet Running",
     description:
       "The growing demand for DevOps engineers and SREs as companies shift to cloud-native infrastructure.",
-    url: "https://www2.deloitte.com/insights/devops-talent-demand",
+    url: "https://www.deloitte.com/global/en/our-thinking.html",
     source: "Deloitte",
     publishedAt: "2024-06-15",
     thumbnail:
@@ -845,7 +845,7 @@ const CURATED_ARTICLES: InsightArticle[] = [
     title: "Electric Vehicle Industry Creates Thousands of New Roles",
     description:
       "From battery engineers to charging network planners, the EV transition is opening up new career paths.",
-    url: "https://www.ilo.org/resource/green-transition-employment",
+    url: "https://www.ilo.org/topics-and-sectors/just-transition-towards-environmentally-sustainable-economies-and-societies",
     source: "International Labour Organization",
     publishedAt: "2024-06-02",
     thumbnail:
@@ -857,7 +857,7 @@ const CURATED_ARTICLES: InsightArticle[] = [
     title: "Careers in the Creator Economy",
     description:
       "How content creation, community management, and creator tools are becoming legitimate career paths.",
-    url: "https://hbr.org/topic/subject/creative-economy",
+    url: "https://hbr.org/topic/subject/creativity",
     source: "Harvard Business Review",
     publishedAt: "2024-05-20",
     thumbnail:
@@ -1149,7 +1149,7 @@ const CURATED_ARTICLES: InsightArticle[] = [
     title: "Technology Sector Outlook",
     description:
       "Trends and opportunities in the tech industry for early-career professionals.",
-    url: "https://www2.deloitte.com/technology-industry-outlook",
+    url: "https://www.deloitte.com/global/en/our-thinking.html",
     source: "Deloitte",
     publishedAt: "2024-12-01",
     thumbnail:
@@ -1173,7 +1173,7 @@ const CURATED_ARTICLES: InsightArticle[] = [
     title: "The Future of Finance",
     description:
       "Digital transformation in financial services and emerging career paths.",
-    url: "https://www.weforum.org/agenda/finance-future",
+    url: "https://www.weforum.org/stories/",
     source: "World Economic Forum",
     publishedAt: "2024-09-25",
     thumbnail:
@@ -1187,7 +1187,7 @@ const CURATED_ARTICLES: InsightArticle[] = [
     title: "Youth Employment: Challenges and Opportunities",
     description:
       "Understanding the real landscape for young people entering the workforce.",
-    url: "https://www.ilo.org/youth-employment",
+    url: "https://www.ilo.org/topics-and-sectors/youth-employment",
     source: "International Labour Organization",
     publishedAt: "2024-11-28",
     thumbnail:
@@ -1211,7 +1211,7 @@ const CURATED_ARTICLES: InsightArticle[] = [
     title: "Workplace Expectations: What Employers Really Want",
     description:
       "Bridging the gap between academic preparation and workplace reality.",
-    url: "https://www.bcg.com/publications/workplace-readiness",
+    url: "https://www.bcg.com/capabilities/people-strategy/overview",
     source: "Boston Consulting Group",
     publishedAt: "2024-10-10",
     thumbnail:
