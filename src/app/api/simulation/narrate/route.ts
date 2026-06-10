@@ -12,6 +12,8 @@
  */
 
 export const dynamic = 'force-dynamic';
+// AI/OpenAI calls can be slow; raise above Vercel's short default.
+export const maxDuration = 60;
 
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';

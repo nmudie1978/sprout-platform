@@ -1,52 +1,51 @@
 export const dynamic = "force-dynamic";
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { checkRateLimitAsync, RateLimits } from "@/lib/rate-limit";
 
-// POST - Subscribe to newsletter
-export async function POST(request: NextRequest) {
+// Security/legal: every action is scoped to the signed-in user's OWN account
+// email. The endpoint never trusts a client-supplied address, so nobody can
+// subscribe / unsubscribe / enumerate a third party's email, and writes are
+// rate-limited. (Double opt-in is a separate follow-up; the address used is
+// already the verified account email.)
+
+// POST - Subscribe the current user
+export async function POST(request: Request) {
   try {
     const session = await getServerSession(authOptions);
-    const body = await request.json();
-    const { email, industries, frequency } = body;
-
-    if (!email) {
-      return NextResponse.json({ error: "Email required" }, { status: 400 });
+    if (!session?.user?.id || !session.user.email) {
+      return NextResponse.json({ error: "Please sign in to subscribe." }, { status: 401 });
     }
 
-    if (!industries || industries.length === 0) {
+    const rl = await checkRateLimitAsync(`newsletter:${session.user.id}`, RateLimits.STRICT);
+    if (!rl.success) {
+      return NextResponse.json({ error: "Too many requests. Please try again shortly." }, { status: 429 });
+    }
+
+    const body = await request.json();
+    const { industries, frequency } = body;
+    if (!Array.isArray(industries) || industries.length === 0) {
       return NextResponse.json({ error: "Select at least one industry" }, { status: 400 });
     }
 
-    // Check if already subscribed
-    const existing = await prisma.newsletterSubscription.findUnique({
+    const email = session.user.email;
+    const subscription = await prisma.newsletterSubscription.upsert({
       where: { email },
-    });
-
-    if (existing) {
-      // Update existing subscription
-      const updated = await prisma.newsletterSubscription.update({
-        where: { email },
-        data: {
-          industries,
-          frequency: frequency || "weekly",
-          isActive: true,
-          unsubscribedAt: null,
-          userId: session?.user?.id || existing.userId,
-        },
-      });
-      return NextResponse.json({ success: true, subscription: updated, updated: true });
-    }
-
-    // Create new subscription
-    const subscription = await prisma.newsletterSubscription.create({
-      data: {
+      update: {
+        industries,
+        frequency: frequency || "weekly",
+        isActive: true,
+        unsubscribedAt: null,
+        userId: session.user.id,
+      },
+      create: {
         email,
         industries,
         frequency: frequency || "weekly",
-        userId: session?.user?.id,
-        confirmedAt: new Date(), // Auto-confirm for now
+        userId: session.user.id,
+        confirmedAt: new Date(),
       },
     });
 
@@ -57,56 +56,42 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// DELETE - Unsubscribe from newsletter
-export async function DELETE(request: NextRequest) {
+// DELETE - Unsubscribe the current user
+export async function DELETE() {
   try {
-    const body = await request.json();
-    const { email } = body;
-
-    if (!email) {
-      return NextResponse.json({ error: "Email required" }, { status: 400 });
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.email) {
+      return NextResponse.json({ error: "Please sign in." }, { status: 401 });
     }
 
-    await prisma.newsletterSubscription.update({
-      where: { email },
-      data: {
-        isActive: false,
-        unsubscribedAt: new Date(),
-      },
+    await prisma.newsletterSubscription.updateMany({
+      where: { email: session.user.email },
+      data: { isActive: false, unsubscribedAt: new Date() },
     });
 
     return NextResponse.json({ success: true });
-  } catch (error: any) {
-    if (error.code === "P2025") {
-      return NextResponse.json({ error: "Not subscribed" }, { status: 404 });
-    }
+  } catch (error) {
     console.error("Error unsubscribing:", error);
     return NextResponse.json({ error: "Failed to unsubscribe" }, { status: 500 });
   }
 }
 
-// GET - Check subscription status
-export async function GET(request: NextRequest) {
+// GET - Current user's own subscription status (no arbitrary email lookup)
+export async function GET() {
   try {
     const session = await getServerSession(authOptions);
-    const { searchParams } = new URL(request.url);
-    const email = searchParams.get("email") || session?.user?.email;
-
-    if (!email) {
+    if (!session?.user?.email) {
       return NextResponse.json({ isSubscribed: false });
     }
 
     const subscription = await prisma.newsletterSubscription.findUnique({
-      where: { email },
+      where: { email: session.user.email },
     });
 
     return NextResponse.json({
       isSubscribed: !!subscription?.isActive,
       subscription: subscription
-        ? {
-            industries: subscription.industries,
-            frequency: subscription.frequency,
-          }
+        ? { industries: subscription.industries, frequency: subscription.frequency }
         : null,
     });
   } catch (error) {
