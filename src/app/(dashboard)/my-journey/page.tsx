@@ -43,6 +43,7 @@ import { useGoals } from '@/hooks/use-goals';
 import { getAllCareers, getSectorForCareer, getPensionNote, type Career } from '@/lib/career-pathways';
 import { localizeCareer } from '@/lib/career-localization';
 import { displaySalary, displayEducation, showsSalaryProgression } from '@/lib/career-localization/display';
+import { isCareerExplicitlyVerified } from '@/lib/career-data-recency';
 import type { CareerDetails } from '@/lib/career-typical-days';
 import type { CareerProgression } from '@/lib/career-progressions';
 import type { RealityCheckResult } from '@/lib/career-reality-types';
@@ -924,6 +925,12 @@ function DiscoverTab({
               </button>
             </div>
             {showsSalaryProgression(country) && <SalaryProgressionLine career={career} />}
+            {!isCareerExplicitlyVerified(career) && (
+              <p className="mt-3 text-[11px] leading-relaxed text-muted-foreground/60">
+                These figures are an estimate based on typical pay for this kind of role. They haven&rsquo;t yet been
+                verified against official salary statistics, so treat them as a rough guide rather than exact numbers.
+              </p>
+            )}
           </div>
         </div>
       )}
