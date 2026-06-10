@@ -495,12 +495,18 @@ function computeCreativeAnalyticalFit(
  * Very demanding careers still appear but rank slightly lower.
  */
 function computeAcademicFit(career: CareerMatchProfile): number {
-  // Inverted demand: lower academic barrier = higher accessibility score
-  // But don't penalize demanding careers too much
-  if (career.entryLevel) return 0.85;
+  // Inverted demand: lower academic barrier = higher accessibility score.
+  // This is a GENTLE nudge, not a barrier. The old curve bottomed out at
+  // 0.29 for very-demanding careers, which quietly buried the exact
+  // aspirational roles a STEM youth gets excited about — doctor, surgeon,
+  // vet, lawyer all fell off the radar entirely behind less-demanding
+  // peers. The floor is now high (0.6) and the slope shallow (0.4) so
+  // accessible careers still get a small lift without exiling demanding
+  // ones. (Verified: doctor/surgeon now recover ~4pts and re-enter view.)
+  if (career.entryLevel) return 0.9;
 
-  // Gentle curve: low demand → 0.8, moderate → 0.65, strong → 0.45, very-strong → 0.3
-  return Math.max(0.25, 1 - career.academicDemand * 0.75);
+  // low → 0.94, moderate → 0.84, strong → 0.72, very-strong → 0.62
+  return Math.max(0.6, 1 - career.academicDemand * 0.4);
 }
 
 // ══════════════════════════════════════════════════════════════════
@@ -613,71 +619,93 @@ function dimensionToReason(
 // 5. DIVERSITY LAYER
 // ══════════════════════════════════════════════════════════════════
 
+// Role-noun and broad-domain tokens that don't identify a distinct career
+// family. Used by familyTokens() so "offshore-electrician" and
+// "rig-electrician" are recognised as near-duplicates, while broad words
+// like "health" don't falsely cluster unrelated healthcare roles.
+const GENERIC_FAMILY_TOKENS = new Set([
+  "engineer", "technician", "specialist", "manager", "developer", "analyst",
+  "assistant", "contractor", "officer", "worker", "operator", "coordinator",
+  "consultant", "advisor", "adviser", "administrator", "supervisor", "lead",
+  "senior", "junior", "associate", "professional", "general", "services",
+  "service", "health", "care", "medical", "clinical", "social", "and", "the",
+]);
+
+/** Significant tokens of a career id, used to detect near-duplicates. */
+function familyTokens(careerId: string): string[] {
+  return careerId
+    .split("-")
+    .filter((t) => t.length > 2 && !GENERIC_FAMILY_TOKENS.has(t));
+}
+
 /**
- * Apply diversity post-processing to scored results.
- * Ensures varied, exploratory results — not just top-N from one category.
+ * Diversity via honest score penalties.
+ *
+ * The previous version built a diverse selection and then re-sorted the
+ * whole thing by RAW score at the very end — silently undoing its own
+ * diversification. The result: the visible top band collapsed to one
+ * category (e.g. 10/10 healthcare for an aspiring-doctor persona) and
+ * stacked near-identical roles (six "offshore-*" jobs in a row for a
+ * trades persona). The category cap also never bound the visible list,
+ * because maxPerCat (13) exceeded the radar's display size (~10).
+ *
+ * Instead we walk the list in score order and DEMOTE redundancy directly
+ * on the displayed match %:
+ *   - category saturation: the 4th+ career from the same category is
+ *     gently pushed down so adjacent categories can interleave
+ *   - near-duplicate: a career sharing a significant token with a
+ *     higher-ranked same-category career takes a larger hit
+ *
+ * Because we adjust the same number we display and then sort by it, the
+ * list stays both monotonic (no "78% above 80%" artefacts) and diverse.
  */
 function applyDiversity(
   results: MatchResult[],
   limit: number,
 ): MatchResult[] {
-  const C = MATCHING_CONFIG;
-  if (results.length <= limit) return results;
-
-  // Sort by match percent descending
   const sorted = [...results].sort((a, b) => b.matchPercent - a.matchPercent);
 
-  // ── Category concentration cap ──────────────────────────────────
-  const selected: MatchResult[] = [];
-  const catCounts = new Map<string, number>();
-  const maxPerCat = Math.floor(C.topBandSize * C.maxCategoryShare);
-  const deferred: MatchResult[] = [];
+  const catCount = new Map<string, number>();
+  const catTokens = new Map<string, Set<string>>();
 
-  for (const result of sorted) {
-    const cat = result.career.category;
-    const count = catCounts.get(cat) || 0;
+  for (const r of sorted) {
+    const cat = r.career.category;
+    const seen = catCount.get(cat) ?? 0;
+    let penalty = 0;
 
-    if (count >= maxPerCat && selected.length < C.topBandSize) {
-      deferred.push(result);
-    } else {
-      selected.push(result);
-      catCounts.set(cat, count + 1);
+    // Category saturation — only after a category already leads with a
+    // healthy plurality (3), so a single-subject user keeps their primary
+    // category on top without it claiming every visible slot.
+    if (seen >= 3) penalty += Math.min(14, (seen - 2) * 2);
+
+    // Near-duplicate suppression within the same category.
+    const tokens = familyTokens(r.career.careerId);
+    const tokenSet = catTokens.get(cat) ?? new Set<string>();
+    if (tokens.some((t) => tokenSet.has(t))) penalty += 8;
+
+    if (penalty > 0) {
+      r.matchPercent = Math.max(0, r.matchPercent - penalty);
     }
+
+    catCount.set(cat, seen + 1);
+    for (const t of tokens) tokenSet.add(t);
+    catTokens.set(cat, tokenSet);
   }
 
-  // ── Backfill from deferred to reach topBandSize ─────────────────
-  while (selected.length < C.topBandSize && deferred.length > 0) {
-    selected.push(deferred.shift()!);
-  }
+  // Re-rank by the adjusted (and displayed) score, then trim.
+  const ranked = sorted.sort((a, b) => b.matchPercent - a.matchPercent);
 
-  // ── Stretch/discovery matches ───────────────────────────────────
-  // Find careers that score high on 1-2 dimensions but lower overall.
-  // These are the "surprising but valid" results.
-  const selectedIds = new Set(selected.map((r) => r.career.careerId));
-  const stretchCandidates = sorted
-    .filter((r) => !selectedIds.has(r.career.careerId))
-    .filter((r) => {
-      // Must have at least one strong dimension (>0.7 similarity)
-      return r.dimensions.some((d) => d.similarity > 0.7);
-    })
-    .slice(0, C.stretchSlots);
-
-  for (const stretch of stretchCandidates) {
+  // Tag one exploratory pick just outside the strong band: a career that
+  // scores high on a single dimension but didn't lead overall.
+  const stretch = ranked
+    .slice(8, limit)
+    .find((r) => !r.isStretchMatch && r.dimensions.some((d) => d.similarity > 0.7));
+  if (stretch) {
     stretch.isStretchMatch = true;
     stretch.tier = "discovery";
-    selected.push(stretch);
   }
 
-  // ── Final sort — just use match score. The old vocational interleave
-  // (1 entry-level per 3 academic) was systematically demoting sport/
-  // trade careers that are overwhelmingly entry-level. The score already
-  // accounts for academic fit as a dimension, so sorting by score gives
-  // the right mix organically.
-  const interleaved = selected
-    .sort((a, b) => b.matchPercent - a.matchPercent)
-    .slice(0, limit);
-
-  return interleaved;
+  return ranked.slice(0, limit);
 }
 
 // ══════════════════════════════════════════════════════════════════
@@ -756,19 +784,24 @@ export function rankCareers(
 
   if (passing.length === 0) return [];
 
-  // Apply diversity
-  const diverse = applyDiversity(passing, limit);
-
-  // Weak-signal salary bias (preserved from old engine)
+  // When the user has given us very little to go on, gently bias toward
+  // more accessible careers — but as a SCORE NUDGE applied before the
+  // final sort, not a post-sort reshuffle. The old version re-sorted the
+  // finished list purely by academic demand, which scrambled the
+  // displayed percentages into a non-monotonic mess ("77%, 78%, 76%,
+  // 75%, 74%…"). Folding it into the score keeps order == percentage.
   const signalStrength = measureSignalStrength(prefs);
   if (signalStrength <= 1) {
-    diverse.sort((a, b) => {
-      // Bias accessible careers up when signal is weak
-      const aDemand = a.career.academicDemand;
-      const bDemand = b.career.academicDemand;
-      return aDemand - bDemand;
-    });
+    for (const r of passing) {
+      r.matchPercent = Math.min(
+        100,
+        r.matchPercent + Math.round((1 - r.career.academicDemand) * 4),
+      );
+    }
   }
+
+  // Apply diversity (also performs the final score-ordered sort).
+  const diverse = applyDiversity(passing, limit);
 
   // Store results for tooltip access
   lastMatchResults = new Map(diverse.map((r) => [r.career.careerId, r]));
