@@ -12,6 +12,11 @@
  * - Up to 30 videos per section
  */
 
+import {
+  validateInsightItems,
+  validateExternalUrl,
+  validateYouTubeVideo,
+} from "./validate-insight-url";
 
 // ============================================
 // SECTION DEFINITIONS
@@ -385,8 +390,14 @@ export async function fetchVideosBySection(
     const fallbackVideos = sortByRecency(
       CURATED_VIDEOS.filter((v) => v.section === sectionKey)
     ).slice(0, maxResults);
-    setCache(cacheKey, fallbackVideos);
-    return fallbackVideos;
+    // Drop curated videos that have been removed/made private (oEmbed, 24h cache).
+    const liveFallback = await validateInsightItems(
+      fallbackVideos,
+      (v) => v.videoId,
+      validateYouTubeVideo
+    );
+    setCache(cacheKey, liveFallback);
+    return liveFallback;
   }
 
   const allVideos: InsightVideo[] = [];
@@ -521,8 +532,17 @@ export async function fetchArticlesBySection(
     (a) => a.section === sectionKey
   ).slice(0, maxResults);
 
-  setCache(cacheKey, articles);
-  return articles;
+  // Self-heal link rot: drop any article whose URL is definitively gone
+  // (404/410). Validation is cached 24h, so only the first request after
+  // expiry pays the network cost; live-but-bot-blocked (403) pages are kept.
+  const liveArticles = await validateInsightItems(
+    articles,
+    (a) => a.url,
+    validateExternalUrl
+  );
+
+  setCache(cacheKey, liveArticles);
+  return liveArticles;
 }
 
 // ============================================
@@ -2011,8 +2031,15 @@ export async function fetchPodcastsBySection(
     CURATED_PODCASTS.filter((p) => p.section === sectionKey)
   );
 
-  setCache(cacheKey, podcasts);
-  return podcasts;
+  // Self-heal link rot on the episode/show links (cached 24h).
+  const livePodcasts = await validateInsightItems(
+    podcasts,
+    (p) => p.externalUrl,
+    validateExternalUrl
+  );
+
+  setCache(cacheKey, livePodcasts);
+  return livePodcasts;
 }
 
 // ============================================

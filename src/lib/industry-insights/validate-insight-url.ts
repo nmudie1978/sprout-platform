@@ -82,6 +82,12 @@ export async function validateExternalUrl(url: string): Promise<boolean> {
   const cached = getCachedResult(cacheKey);
   if (cached !== null) return cached;
 
+  // Only a definitive "gone" response filters a link out. Many LIVE pages
+  // behind WAFs/anti-bot (WEF, BCG, OECD, McKinsey, …) answer 403/401/429
+  // to automated clients — treating those as dead would wrongly hide real
+  // content, so we only ever filter on 404/410.
+  const isDead = (status: number) => status === 404 || status === 410;
+
   try {
     // Try HEAD first
     const headRes = await fetch(url, {
@@ -93,22 +99,31 @@ export async function validateExternalUrl(url: string): Promise<boolean> {
       setCachedResult(cacheKey, true);
       return true;
     }
-
-    // Some servers reject HEAD — fallback to ranged GET
-    if (headRes.status === 405 || headRes.status === 403) {
-      const getRes = await fetch(url, {
-        method: "GET",
-        headers: { Range: "bytes=0-0" },
-        redirect: "follow",
-        signal: AbortSignal.timeout(5000),
-      });
-      const valid = getRes.ok || getRes.status === 206 || getRes.status === 304;
-      setCachedResult(cacheKey, valid);
-      return valid;
+    if (isDead(headRes.status)) {
+      setCachedResult(cacheKey, false);
+      return false;
     }
 
-    setCachedResult(cacheKey, false);
-    return false;
+    // Ambiguous (403/405/429/5xx, or a server that rejects HEAD) — confirm
+    // with a ranged GET before deciding.
+    const getRes = await fetch(url, {
+      method: "GET",
+      headers: { Range: "bytes=0-0" },
+      redirect: "follow",
+      signal: AbortSignal.timeout(5000),
+    });
+    if (getRes.ok || getRes.status === 206 || getRes.status === 304) {
+      setCachedResult(cacheKey, true);
+      return true;
+    }
+    if (isDead(getRes.status)) {
+      setCachedResult(cacheKey, false);
+      return false;
+    }
+
+    // Still ambiguous (e.g. persistent 403 anti-bot) — assume live.
+    setCachedResult(cacheKey, true);
+    return true;
   } catch {
     // Network error or timeout — assume valid to avoid false negatives
     setCachedResult(cacheKey, true);
