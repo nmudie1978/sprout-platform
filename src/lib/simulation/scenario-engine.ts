@@ -20,6 +20,7 @@ import {
   type ProgrammeWithInstitution,
   type CareerRequirements,
 } from '@/lib/education';
+import { getCategoryForCareer, type CareerCategory } from '@/lib/career-pathways';
 import type { JourneyItem } from '@/lib/journey/career-journey-types';
 
 // ── Types ───────────────────────────────────────────────────────────
@@ -85,22 +86,121 @@ const SECTOR_EMPLOYERS: Record<string, { name: string; role: string; city: strin
     { name: 'Bleed Design', role: 'Designer', city: 'Oslo' },
     { name: 'Bekk', role: 'UX Designer', city: 'Oslo' },
   ],
+  military: [
+    { name: 'Forsvaret', role: 'Officer Cadet', city: 'Oslo' },
+    { name: 'Hæren (Norwegian Army)', role: 'Soldier', city: 'Bardufoss' },
+    { name: 'Sjøforsvaret (Royal Norwegian Navy)', role: 'Naval Rating', city: 'Bergen' },
+    { name: 'Heimevernet (Home Guard)', role: 'Guard', city: 'Oslo' },
+  ],
+  public_safety: [
+    { name: 'Politiet (Norwegian Police)', role: 'Police Officer', city: 'Oslo' },
+    { name: 'Brann- og redningsetaten', role: 'Firefighter', city: 'Oslo' },
+    { name: 'Sivilforsvaret', role: 'Civil Defence Officer', city: 'Oslo' },
+    { name: 'Kriminalomsorgen', role: 'Correctional Officer', city: 'Oslo' },
+  ],
+  social_care: [
+    { name: 'Oslo Kommune', role: 'Social Worker', city: 'Oslo' },
+    { name: 'Bufetat', role: 'Child Welfare Worker', city: 'Oslo' },
+    { name: 'Frelsesarmeen (Salvation Army)', role: 'Support Worker', city: 'Oslo' },
+    { name: 'Bergen Kommune', role: 'Care Worker', city: 'Bergen' },
+  ],
+  sport: [
+    { name: 'Olympiatoppen', role: 'Coach', city: 'Oslo' },
+    { name: 'Norges idrettsforbund', role: 'Sport Officer', city: 'Oslo' },
+    { name: 'SATS', role: 'Personal Trainer', city: 'Oslo' },
+    { name: 'Rosenborg BK', role: 'Sport Staff', city: 'Trondheim' },
+  ],
+  hospitality: [
+    { name: 'Strawberry (Nordic Choice Hotels)', role: 'Hotel Trainee', city: 'Oslo' },
+    { name: 'Scandic Hotels', role: 'Hospitality Associate', city: 'Oslo' },
+    { name: 'Color Line', role: 'Hospitality Crew', city: 'Oslo' },
+    { name: 'Maaemo', role: 'Commis Chef', city: 'Oslo' },
+  ],
+  logistics: [
+    { name: 'Posten Bring', role: 'Logistics Trainee', city: 'Oslo' },
+    { name: 'DB Schenker', role: 'Operations Coordinator', city: 'Oslo' },
+    { name: 'PostNord', role: 'Logistics Associate', city: 'Oslo' },
+    { name: 'DHL', role: 'Supply Chain Trainee', city: 'Oslo' },
+  ],
+  trades: [
+    { name: 'Veidekke', role: 'Apprentice', city: 'Oslo' },
+    { name: 'AF Gruppen', role: 'Trade Apprentice', city: 'Oslo' },
+    { name: 'Skanska', role: 'Construction Trainee', city: 'Oslo' },
+    { name: 'GK Gruppen', role: 'Technical Apprentice', city: 'Oslo' },
+  ],
+  real_estate: [
+    { name: 'OBOS', role: 'Property Trainee', city: 'Oslo' },
+    { name: 'DNB Eiendom', role: 'Estate Agent', city: 'Oslo' },
+    { name: 'Olav Thon Gruppen', role: 'Property Associate', city: 'Oslo' },
+  ],
+  finance: [
+    { name: 'DNB', role: 'Graduate Analyst', city: 'Oslo' },
+    { name: 'Nordea', role: 'Financial Analyst', city: 'Oslo' },
+    { name: 'Storebrand', role: 'Finance Trainee', city: 'Oslo' },
+    { name: 'KLP', role: 'Investment Analyst', city: 'Oslo' },
+  ],
+  // Sector-neutral fallback — broad public/private employers that don't
+  // imply a specific industry, so an unclassified career never lands on an
+  // obviously-wrong company (this list is rarely hit now that the category
+  // map covers every catalogue category).
   general: [
-    { name: 'Norsk Hydro', role: 'Graduate', city: 'Oslo' },
-    { name: 'Yara International', role: 'Trainee', city: 'Oslo' },
+    { name: 'Oslo Kommune', role: 'Graduate Trainee', city: 'Oslo' },
     { name: 'Telenor', role: 'Graduate', city: 'Oslo' },
     { name: 'DNB', role: 'Trainee', city: 'Oslo' },
+    { name: 'NAV', role: 'Adviser', city: 'Oslo' },
   ],
 };
 
+/**
+ * Authoritative career-category → employer-sector map. Preferred over the
+ * keyword heuristic because it's complete and deterministic — every category
+ * in the catalogue resolves to a sensible employer list (e.g. a Soldier maps
+ * to MILITARY_DEFENCE → Forsvaret, not the industrial general fallback).
+ */
+const CATEGORY_SECTOR: Partial<Record<CareerCategory, string>> = {
+  HEALTHCARE_LIFE_SCIENCES: 'healthcare',
+  EDUCATION_TRAINING: 'education',
+  TECHNOLOGY_IT: 'technology',
+  ARTIFICIAL_INTELLIGENCE: 'technology',
+  TELECOMMUNICATIONS: 'technology',
+  BUSINESS_MANAGEMENT: 'business',
+  FINANCE_BANKING: 'finance',
+  SALES_MARKETING: 'business',
+  MANUFACTURING_ENGINEERING: 'engineering',
+  LOGISTICS_TRANSPORT: 'logistics',
+  HOSPITALITY_TOURISM: 'hospitality',
+  CREATIVE_MEDIA: 'creative',
+  PUBLIC_SERVICE_SAFETY: 'public_safety',
+  MILITARY_DEFENCE: 'military',
+  SPORT_FITNESS: 'sport',
+  REAL_ESTATE_PROPERTY: 'real_estate',
+  SOCIAL_CARE_COMMUNITY: 'social_care',
+  CONSTRUCTION_TRADES: 'trades',
+};
+
 function getSector(careerId: string): string {
+  // Prefer the authoritative career category — complete and deterministic.
+  const category = getCategoryForCareer(careerId);
+  if (category && CATEGORY_SECTOR[category]) return CATEGORY_SECTOR[category]!;
+
+  // Fallback heuristic for ids not found in the catalogue (e.g. when called
+  // with a free-text title rather than a slug).
   const id = careerId.toLowerCase();
   if (/doctor|nurse|surgeon|dentist|physio|vet|health|medic|pharma/.test(id)) return 'healthcare';
   if (/software|developer|data|it-|cyber|cloud|qa|devops|frontend|backend/.test(id)) return 'technology';
   if (/engineer|mechanical|civil|electrical|chemical/.test(id)) return 'engineering';
-  if (/accountant|economist|finance|business|analyst|project|product/.test(id)) return 'business';
+  if (/soldier|military|army|navy|defence|defense|forsvar/.test(id)) return 'military';
+  if (/police|firefighter|fire-|paramedic|security|rescue|prison/.test(id)) return 'public_safety';
+  if (/social-worker|care-worker|youth-worker|counsellor|support-worker/.test(id)) return 'social_care';
+  if (/coach|athlete|fitness|sport|trainer/.test(id)) return 'sport';
+  if (/chef|hotel|hospitality|tourism|waiter|barista/.test(id)) return 'hospitality';
+  if (/driver|logistics|warehouse|courier|transport|pilot/.test(id)) return 'logistics';
+  if (/carpenter|electrician|plumber|builder|welder|mason|trade/.test(id)) return 'trades';
+  if (/accountant|economist|finance|banking|invest/.test(id)) return 'finance';
+  if (/business|analyst|project|product|consultant|marketing|sales/.test(id)) return 'business';
   if (/lawyer|legal|jurist/.test(id)) return 'law';
   if (/teacher|lecturer|professor/.test(id)) return 'education';
+  if (/estate|property|realtor/.test(id)) return 'real_estate';
   if (/architect|designer|creative|artist|graphic/.test(id)) return 'creative';
   return 'general';
 }
