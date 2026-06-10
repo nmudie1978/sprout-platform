@@ -4,6 +4,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { AccountStatus, AgeBracket, YouthAgeBand } from "@prisma/client";
+import { CURRENT_TERMS_VERSION, CURRENT_PRIVACY_VERSION } from "@/lib/legal/versions";
 
 // Helper to calculate age from birthdate
 function calculateAge(birthDate: Date): number {
@@ -153,8 +154,8 @@ export async function POST(request: NextRequest) {
           userId: user.id,
           acceptedTermsAt: new Date(),
           acceptedPrivacyAt: new Date(),
-          termsVersion: "v1",
-          privacyVersion: "v1",
+          termsVersion: CURRENT_TERMS_VERSION,
+          privacyVersion: CURRENT_PRIVACY_VERSION,
         },
       });
 
