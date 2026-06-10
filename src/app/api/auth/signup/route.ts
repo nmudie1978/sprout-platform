@@ -69,7 +69,22 @@ export async function POST(req: NextRequest) {
       return response;
     }
 
-    const { firstName, lastName, surname, email: rawEmail, password, role, ageBracket, dateOfBirth, country: rawCountry, acceptedTerms, acceptedPrivacy } = await req.json();
+    const { firstName, lastName, surname, email: rawEmail, password, role: requestedRole, ageBracket, dateOfBirth, country: rawCountry, acceptedTerms, acceptedPrivacy } = await req.json();
+
+    // SECURITY: never trust a client-supplied role. Public self-service
+    // signup may only create the self-service roles — an attacker must not
+    // be able to provision an ADMIN (or any other elevated) account by
+    // posting `{ "role": "ADMIN" }`. Anything missing/unrecognised falls
+    // back to YOUTH; anything outside the allowlist is rejected outright.
+    const ALLOWED_SIGNUP_ROLES = new Set(["YOUTH", "TEACHER"]);
+    const role =
+      typeof requestedRole === "string" && requestedRole ? requestedRole : "YOUTH";
+    if (!ALLOWED_SIGNUP_ROLES.has(role)) {
+      return NextResponse.json(
+        { error: "Invalid account type." },
+        { status: 400 }
+      );
+    }
 
     // Normalise emails: trim + lowercase so the account is stored in a
     // canonical form. Without this, signing up as "Foo@Bar.com" and later

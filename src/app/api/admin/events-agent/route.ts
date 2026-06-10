@@ -45,7 +45,9 @@ const DATA_DIR = path.join(process.cwd(), "data", "career-events");
 const LOCK_FILE = path.join(DATA_DIR, ".agent-lock");
 const EVENTS_FILE = path.join(DATA_DIR, "verified-events.json");
 const METADATA_FILE = path.join(DATA_DIR, "refresh-metadata.json");
-const ADMIN_KEY = process.env.ADMIN_API_KEY || "dev-admin-key";
+// No fallback: unset ADMIN_API_KEY locks the x-admin-key path (CRON_SECRET
+// Bearer remains the other route in) rather than accepting a default key.
+const ADMIN_KEY = process.env.ADMIN_API_KEY;
 
 // ============================================
 // AUTH
@@ -54,7 +56,7 @@ const ADMIN_KEY = process.env.ADMIN_API_KEY || "dev-admin-key";
 function isAuthorized(request: NextRequest): boolean {
   // x-admin-key header
   const adminKey = request.headers.get("x-admin-key");
-  if (adminKey === ADMIN_KEY) return true;
+  if (ADMIN_KEY && adminKey === ADMIN_KEY) return true;
 
   // CRON_SECRET Bearer token
   const cronSecret = process.env.CRON_SECRET;

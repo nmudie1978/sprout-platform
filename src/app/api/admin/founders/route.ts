@@ -18,14 +18,16 @@ import {
 } from "@/lib/founders/store";
 import { FounderSpotlightInput } from "@/lib/founders/types";
 
-const ADMIN_API_KEY = process.env.ADMIN_API_KEY || "dev-admin-key";
+// No fallback: if ADMIN_API_KEY is unset the route is locked rather than
+// silently accepting a well-known default key.
+const ADMIN_API_KEY = process.env.ADMIN_API_KEY;
 
 /**
  * Verify admin authorization
  */
 function verifyAdmin(request: Request): boolean {
   const apiKey = request.headers.get("x-admin-api-key");
-  return apiKey === ADMIN_API_KEY;
+  return Boolean(ADMIN_API_KEY) && apiKey === ADMIN_API_KEY;
 }
 
 /**
