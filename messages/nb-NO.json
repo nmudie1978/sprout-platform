@@ -338,7 +338,8 @@
     "youthSubtitle": "Hvordan det globale bildet kobles til dine valg — varmt, handlingsrettet, jordnært",
     "aboutData": "Om dataene",
     "aboutDataDesc": "All innsikt er hentet fra Tier-1-kilder og gjennomgås kvartalsvis. Innhold er oppsummert for klarhet.",
-    "refreshed": "Oppdatert Q1 2025",
+    "refreshed": "Oppdatert {quarter}",
+    "reviewedRegularly": "Gjennomgås jevnlig",
     "verified": "Verifisert"
   },
   "userMenu": {

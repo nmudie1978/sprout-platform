@@ -145,6 +145,22 @@ export default function IndustryInsightsPage() {
     staleTime: 1000 * 60 * 5, // 5 minutes
   });
 
+  // "Refreshed" label — derived from the freshest real verification timestamp
+  // across the insight modules (meta.lastVerification, set whenever the
+  // content is seeded or re-verified by the refresh pipeline), NOT a hardcoded
+  // date. So it stays honest and self-updates instead of drifting stale.
+  const lastVerification = modulesData?.meta?.lastVerification as
+    | string
+    | undefined;
+  const refreshedLabel = lastVerification
+    ? t("refreshed", {
+        quarter: (() => {
+          const d = new Date(lastVerification);
+          return `Q${Math.floor(d.getUTCMonth() / 3) + 1} ${d.getUTCFullYear()}`;
+        })(),
+      })
+    : t("reviewedRegularly");
+
   return (
     <div className="container mx-auto px-3 py-4 sm:px-4 sm:py-8 relative">
       {/* Background gradient */}
@@ -392,7 +408,7 @@ export default function IndustryInsightsPage() {
       <div className="mt-4 flex items-center justify-center gap-3 text-xs text-muted-foreground">
         <div className="flex items-center gap-1.5">
           <div className="w-1.5 h-1.5 rounded-pill bg-success" />
-          <span>{t("refreshed")}</span>
+          <span>{refreshedLabel}</span>
         </div>
         {modulesData?.meta?.allVerifiedThisQuarter && (
           <div className="flex items-center gap-1.5">

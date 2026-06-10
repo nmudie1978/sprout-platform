@@ -338,7 +338,8 @@
     "youthSubtitle": "How the global landscape connects to your choices — warm, actionable, grounded",
     "aboutData": "About the Data",
     "aboutDataDesc": "All insights are derived from Tier-1 sources and reviewed quarterly. Content is summarised for clarity.",
-    "refreshed": "Refreshed Q1 2025",
+    "refreshed": "Refreshed {quarter}",
+    "reviewedRegularly": "Reviewed regularly",
     "verified": "Verified"
   },
   "userMenu": {
