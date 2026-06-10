@@ -34,4 +34,13 @@ describe("FeedbackPage", () => {
     });
     expect(submit).not.toBeDisabled();
   });
+
+  it("lets a star rating alone enable submit (no written feedback needed)", () => {
+    render(<FeedbackPage />);
+    const submit = screen.getByRole("button", { name: /send feedback/i });
+    expect(submit).toBeDisabled();
+
+    fireEvent.click(screen.getByLabelText(/5 stars/i));
+    expect(submit).not.toBeDisabled();
+  });
 });

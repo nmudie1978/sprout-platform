@@ -13,7 +13,16 @@ import {
   Bug,
   Lightbulb,
   Heart,
+  Star,
 } from "lucide-react";
+
+const RATING_LABELS: Record<number, string> = {
+  1: "Highly disappointing",
+  2: "Disappointing",
+  3: "Okay",
+  4: "Good",
+  5: "Amazing",
+};
 
 type Kind = "CONFUSED" | "PROBLEM" | "IDEA" | "PRAISE";
 type Area = "JOURNEY" | "CAREER_RADAR" | "EXPLORE_CAREERS" | "LIBRARY" | "CAREER_TWIN" | "OTHER";
@@ -47,6 +56,7 @@ export default function FeedbackPage() {
   const searchParams = useSearchParams();
   const source = searchParams.get("source") || undefined;
 
+  const [rating, setRating] = useState<number | null>(null);
   const [kind, setKind] = useState<Kind | null>(null);
   const [area, setArea] = useState<Area | null>(null);
   const [role, setRole] = useState<Role | null>(null);
@@ -56,7 +66,8 @@ export default function FeedbackPage() {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const isValid = kind !== null && message.trim().length > 0;
+  // A rating alone is enough to submit; written feedback needs a kind + message.
+  const isValid = rating !== null || (kind !== null && message.trim().length > 0);
   const placeholder =
     KIND_OPTIONS.find((k) => k.value === kind)?.placeholder ?? "Tell us what's on your mind.";
 
@@ -68,7 +79,14 @@ export default function FeedbackPage() {
       const res = await fetch("/api/feedback", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ kind, area, message: message.trim(), role, source }),
+        body: JSON.stringify({
+          rating,
+          kind,
+          area,
+          message: message.trim() || null,
+          role,
+          source,
+        }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -118,7 +136,42 @@ export default function FeedbackPage() {
       </div>
 
       <div className="space-y-6">
-        {/* Kind (required) */}
+        {/* Overall rating (optional, can be submitted on its own) */}
+        <section>
+          <h2 className="text-sm font-semibold mb-1">
+            How would you rate Endeavrly?
+            <span className="text-muted-foreground font-normal ml-2">(optional)</span>
+          </h2>
+          <div className="flex items-center gap-1 mt-2">
+            {[1, 2, 3, 4, 5].map((n) => {
+              const filled = (rating ?? 0) >= n;
+              return (
+                <button
+                  key={n}
+                  type="button"
+                  onClick={() => setRating(rating === n ? null : n)}
+                  aria-label={`${n} star${n > 1 ? "s" : ""} — ${RATING_LABELS[n]}`}
+                  aria-pressed={rating === n}
+                  className="rounded-control p-1 transition-transform hover:scale-110"
+                >
+                  <Star
+                    className={cn(
+                      "h-7 w-7 transition-colors",
+                      filled
+                        ? "fill-amber-400 text-amber-400"
+                        : "text-muted-foreground/35 hover:text-amber-400/50",
+                    )}
+                  />
+                </button>
+              );
+            })}
+            <span className="ml-2 text-xs text-muted-foreground min-w-[7rem]">
+              {rating != null ? RATING_LABELS[rating] : "1 = poor · 5 = amazing"}
+            </span>
+          </div>
+        </section>
+
+        {/* Kind (required for written feedback) */}
         <section>
           <h2 className="text-sm font-semibold mb-3">What kind of feedback is this?</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">

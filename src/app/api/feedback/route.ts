@@ -17,8 +17,10 @@ export async function POST(request: Request) {
     const body = await request.json();
     const data = feedbackSchema.parse(body);
 
-    const message = sanitizeMessage(data.message);
-    if (containsContactInfo(message)) {
+    // Message is optional now (a rating can be submitted alone). Only sanitise
+    // + screen for contact details when the user actually wrote something.
+    const message = data.message ? sanitizeMessage(data.message) : null;
+    if (message && containsContactInfo(message)) {
       return NextResponse.json(
         {
           error: "Please don't include contact details. Share only general feedback.",
@@ -33,7 +35,8 @@ export async function POST(request: Request) {
     await prisma.feedback.create({
       data: {
         createdByUserId: session?.user?.id || null,
-        kind: data.kind,
+        rating: data.rating ?? null,
+        kind: data.kind ?? null,
         area: data.area ?? null,
         message,
         role: data.role ?? null,
