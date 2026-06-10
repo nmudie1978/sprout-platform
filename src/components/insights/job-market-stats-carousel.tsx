@@ -198,6 +198,19 @@ function getIconForCard(cardId: string) {
 // BAR LIST RENDERER
 // ============================================
 
+/**
+ * Bar colours in the data come in two flavours: Tailwind classes
+ * ("bg-blue-500") and raw colour values ("#8b5cf6"). A raw value dropped into
+ * className is invalid CSS, leaving the bar with no fill — it reads as a black
+ * bar against the dark track. Route Tailwind classes to className and
+ * everything else to an inline background, falling back to a visible colour.
+ */
+function resolveBarColor(color?: string): { className: string; style?: React.CSSProperties } {
+  if (!color) return { className: "bg-primary" };
+  if (color.startsWith("bg-")) return { className: color };
+  return { className: "", style: { backgroundColor: color } };
+}
+
 function BarListRenderer({ items }: { items: BarItem[] }) {
   const maxValue = Math.max(...items.map((item) => item.value));
 
@@ -205,6 +218,7 @@ function BarListRenderer({ items }: { items: BarItem[] }) {
     <div className="space-y-1.5" role="img" aria-label="Statistics bar chart">
       {items.map((item) => {
         const widthPercent = (item.value / maxValue) * 100;
+        const barColor = resolveBarColor(item.color);
         return (
           <div key={item.label} className="flex items-center gap-2">
             <div className="w-24 sm:w-32 flex-shrink-0">
@@ -215,8 +229,8 @@ function BarListRenderer({ items }: { items: BarItem[] }) {
             <div className="flex-1 flex items-center gap-1.5">
               <div className="flex-1 h-3.5 bg-foreground/10 rounded-sm overflow-hidden">
                 <div
-                  className={`h-full rounded-sm transition-all duration-300 ${item.color || "bg-primary"}`}
-                  style={{ width: `${widthPercent}%` }}
+                  className={`h-full rounded-sm transition-all duration-300 ${barColor.className}`}
+                  style={{ width: `${widthPercent}%`, ...barColor.style }}
                   role="progressbar"
                   aria-valuenow={item.value}
                   aria-valuemin={0}
@@ -511,7 +525,9 @@ function RankingBarsRenderer({ items }: { items: RankingItem[] }) {
 
   return (
     <div className="space-y-1.5">
-      {items.map((item) => (
+      {items.map((item) => {
+        const barColor = resolveBarColor(item.color);
+        return (
         <div key={item.rank} className="flex items-center gap-2">
           <div className="w-5 h-5 rounded-full bg-muted/60 flex items-center justify-center flex-shrink-0">
             <span className="text-[10px] font-bold text-muted-foreground">
@@ -521,8 +537,8 @@ function RankingBarsRenderer({ items }: { items: RankingItem[] }) {
 
           <div className="flex-1 flex items-center gap-1.5">
             <div
-              className={`h-4 rounded-sm transition-all duration-300 ${item.color || "bg-primary"}`}
-              style={{ width: `${100 - (item.rank - 1) * 15}%` }}
+              className={`h-4 rounded-sm transition-all duration-300 ${barColor.className}`}
+              style={{ width: `${100 - (item.rank - 1) * 15}%`, ...barColor.style }}
             />
           </div>
 
@@ -533,7 +549,8 @@ function RankingBarsRenderer({ items }: { items: RankingItem[] }) {
             <TrendIcon trend={item.trend} />
           </div>
         </div>
-      ))}
+        );
+      })}
     </div>
   );
 }
