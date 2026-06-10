@@ -253,6 +253,84 @@ export const defaultDetailsByCategory: Partial<Record<CareerCategory, CareerDeta
     realityCheck:
       "Good pay and real, visible results, but it's physical, often outdoors or early-starting, and standards/safety matter.",
   },
+  LOGISTICS_TRANSPORT: {
+    typicalDay: {
+      morning: [
+        "Check the route, schedule, vehicle or shift plan",
+        "Safety and equipment checks before starting",
+        "Load, dispatch or begin driving / moving goods",
+      ],
+      midday: [
+        "Drive, deliver, pick, pack or move goods on schedule",
+        "Handle paperwork, scans and delivery confirmations",
+        "Break, then re-plan around delays or new jobs",
+      ],
+      afternoon: [
+        "Continue deliveries, transport or warehouse tasks",
+        "Resolve hold-ups and keep things moving on time",
+        "Unload, log the day and hand over or secure the vehicle",
+      ],
+      environment: "On the road, in a warehouse, depot or transport hub",
+    },
+    whatYouActuallyDo: [
+      "Move goods or people safely and on time",
+      "Keep to schedules and plan around delays",
+      "Handle loading, tracking and delivery records",
+      "Operate vehicles or equipment to standard",
+    ],
+    whoThisIsGoodFor: [
+      "People who like being active and on the move, not at a desk",
+      "Reliable, organised people who keep their word on timing",
+      "Those who stay calm under time pressure",
+    ],
+    topSkills: ["Reliability", "Time management", "Spatial awareness", "Safety awareness", "Problem-solving"],
+    entryPaths: [
+      "Relevant licence or certificate (e.g. driving class, forklift)",
+      "On-the-job training with an employer",
+      "Vocational route for transport and logistics",
+    ],
+    realityCheck:
+      "Steady demand and independence, but it can mean early starts, long shifts, time pressure and physical work.",
+  },
+  MILITARY_DEFENCE: {
+    typicalDay: {
+      morning: [
+        "Muster, physical training and briefing",
+        "Equipment, kit and readiness checks",
+        "Training, drills or assigned duties for the day",
+      ],
+      midday: [
+        "Exercises, operations or specialist role tasks",
+        "Teamwork under instruction and clear procedures",
+        "Maintenance of equipment, vehicles or systems",
+      ],
+      afternoon: [
+        "Continue training, watch-keeping or operational tasks",
+        "Debrief, report and review what was learned",
+        "Personal admin, fitness and prepare for the next day",
+      ],
+      environment: "Base, field, sea or air — often structured and physical",
+    },
+    whatYouActuallyDo: [
+      "Train for and carry out a defined military role",
+      "Work as part of a disciplined team and chain of command",
+      "Maintain equipment, fitness and readiness",
+      "Follow strict procedures and standards",
+    ],
+    whoThisIsGoodFor: [
+      "People who want structure, teamwork and a sense of purpose",
+      "Those who are physically fit and handle discipline well",
+      "People who can stay calm and act under pressure",
+    ],
+    topSkills: ["Discipline", "Teamwork", "Physical fitness", "Resilience", "Following procedure"],
+    entryPaths: [
+      "Conscription / first-time service (førstegangstjeneste)",
+      "Officer or specialist training routes",
+      "Trade and technical roles within the forces",
+    ],
+    realityCheck:
+      "Strong training, camaraderie and purpose, but it means discipline, time away from home, physical demands and real risk in some roles.",
+  },
 
   HOSPITALITY_TOURISM: {
     typicalDay: {

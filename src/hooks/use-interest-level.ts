@@ -31,6 +31,13 @@ export function useInterestLevel(careerId: string | null | undefined) {
   const { data: session } = useSession();
   const userId = session?.user?.id;
   const [level, setLevelState] = useState<InterestLevel | null>(null);
+  // `hydrated` is false until the persisted level for the current
+  // (user, career) has actually been read from storage. Consumers that
+  // react to level *transitions* (e.g. the journey-complete celebration)
+  // must wait for this, otherwise the initial null → loaded-value flip
+  // looks like a fresh change on every visit. Resets when the career or
+  // user changes so each career re-hydrates.
+  const [hydrated, setHydrated] = useState(false);
   const externalUpdateRef = useRef(false);
 
   const load = useCallback(() => {
@@ -40,8 +47,10 @@ export function useInterestLevel(careerId: string | null | undefined) {
 
   // Load whenever the user or career changes.
   useEffect(() => {
+    setHydrated(false);
     setLevelState(load());
-  }, [load]);
+    if (userId && careerId) setHydrated(true);
+  }, [load, userId, careerId]);
 
   // One-time server reconciliation, then re-read the (now server-synced) cache.
   useEffect(() => {
@@ -116,6 +125,8 @@ export function useInterestLevel(careerId: string | null | undefined) {
   return {
     level,
     setLevel,
+    /** True once the persisted level for this career has been read. */
+    hydrated,
     /** True iff a careerId is provided and the user is signed in. */
     enabled: Boolean(userId && careerId),
   };

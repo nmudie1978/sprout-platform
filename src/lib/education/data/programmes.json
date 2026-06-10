@@ -75,6 +75,86 @@
     "kokki": "chef"
   },
   "advancedCareerMap": {
+    "aerospace-structural-engineer": {
+      "baseCareerId": "engineer",
+      "specialisationNote": "Designs aircraft and spacecraft structures. Base is a master's in mechanical or aerospace engineering (sivilingeniør), then aerospace specialisation."
+    },
+    "flight-dynamics-engineer": {
+      "baseCareerId": "engineer",
+      "specialisationNote": "Models flight and orbital dynamics. Base is a master's in aerospace, mechanical or control engineering (sivilingeniør)."
+    },
+    "biomedical-engineer": {
+      "baseCareerId": "engineer",
+      "specialisationNote": "Applies engineering to medicine and medical devices. Base is a bachelor's/master's in biomedical or electronic engineering."
+    },
+    "cardiologist": {
+      "baseCareerId": "doctor",
+      "specialisationNote": "Cardiology is a medical specialisation. Complete the 6-year medical degree + LIS1, then LIS2/3 in hjertesykdommer (cardiology)."
+    },
+    "neurologist": {
+      "baseCareerId": "doctor",
+      "specialisationNote": "Neurology is a medical specialisation. Medical degree + LIS1, then LIS2/3 in nevrologi."
+    },
+    "emergency-medicine-physician": {
+      "baseCareerId": "doctor",
+      "specialisationNote": "Emergency medicine (akutt- og mottaksmedisin) is a medical specialisation after the medical degree + LIS1."
+    },
+    "obstetrician-gynaecologist": {
+      "baseCareerId": "doctor",
+      "specialisationNote": "Obstetrics & gynaecology (fødselshjelp og kvinnesykdommer) is a medical specialisation after the medical degree + LIS1."
+    },
+    "psychotherapist": {
+      "baseCareerId": "psychologist",
+      "specialisationNote": "Psychotherapy is delivered by psychologists and psychiatrists. The 6-year profesjonsstudium psykologi gives full authorisation; therapy roles can also follow a related master's plus clinical training."
+    },
+    "mental-health-counsellor": {
+      "baseCareerId": "psychologist",
+      "specialisationNote": "Mental-health counselling draws on psychology or social work. Full clinical authorisation comes from the profesjonsstudium psykologi; counsellor roles can also be entered via a bachelor + master."
+    },
+    "medical-assistant": {
+      "baseCareerId": "healthcare-worker",
+      "specialisationNote": "Supports clinicians with basic care and admin. In Norway this maps most closely to the helsefagarbeider (health-care worker) vocational route."
+    },
+    "phlebotomist": {
+      "baseCareerId": "healthcare-worker",
+      "specialisationNote": "Takes blood samples. Entry is typically via the helsefagarbeider route or a laboratory-assistant pathway."
+    },
+    "patient-navigator": {
+      "baseCareerId": "healthcare-worker",
+      "specialisationNote": "Guides patients through the health system. Entry is via a health-care worker or nursing-adjacent background."
+    },
+    "dental-technician": {
+      "baseCareerId": "dental-assistant",
+      "specialisationNote": "Makes dental prostheses and appliances — a protected health title (tanntekniker). The dedicated route is the tannteknikk bachelor (OsloMet); the dental-assistant programmes are the closest listed dental pathway."
+    },
+    "high-school-teacher": {
+      "baseCareerId": "teacher",
+      "specialisationNote": "Teaches in upper-secondary school. Route is a lektor (master) teacher-education degree, or a subject master plus PPU."
+    },
+    "teacher-generalist": {
+      "baseCareerId": "teacher",
+      "specialisationNote": "A general primary-school teacher. Route is the grunnskolelærerutdanning (5-year integrated teacher's master)."
+    },
+    "translator": {
+      "baseCareerId": "linguist",
+      "specialisationNote": "Translates written text between languages. Base is a bachelor's/master's in languages, translation or linguistics."
+    },
+    "lexicographer": {
+      "baseCareerId": "linguist",
+      "specialisationNote": "Compiles and edits dictionaries. Base is a degree in linguistics or a specific language."
+    },
+    "terminologist": {
+      "baseCareerId": "linguist",
+      "specialisationNote": "Manages specialist terminology. Base is a degree in linguistics, translation or a domain language."
+    },
+    "computational-linguist": {
+      "baseCareerId": "linguist",
+      "specialisationNote": "Builds language technology (NLP). Base combines linguistics with informatics/computer science."
+    },
+    "localization-specialist": {
+      "baseCareerId": "linguist",
+      "specialisationNote": "Adapts products and content across languages and locales. Base is a degree in languages, translation or linguistics."
+    },
     "mathematics-teacher": {
       "baseCareerId": "teacher",
       "specialisationNote": "Mathematics teachers qualify through Norway's teacher-education route — a Lektorutdanning (8–13) specialising in mathematics, or a mathematics bachelor/master plus PPU (praktisk-pedagogisk utdanning)."
@@ -3843,6 +3923,239 @@
     }
   ],
   "certificationPaths": {
+    "health-authorisation": {
+      "summary": "Most health and social-care roles in Norway are protected titles: you cannot use the title or work in the health service without an authorisation (autorisasjon) from the Norwegian Directorate of Health (Helsedirektoratet). The authorisation is granted on completion of an approved education — it is the credential that matters, far more than any optional course.",
+      "certifications": [
+        {
+          "name": "Norwegian health-personnel authorisation (autorisasjon)",
+          "provider": "Helsedirektoratet (Norwegian Directorate of Health)",
+          "duration": "Granted on completion of an approved education",
+          "cost": "Statutory application fee",
+          "url": "https://www.helsedirektoratet.no/english/authorisation-and-license-for-health-personnel",
+          "recognised": "Mandatory — 29 protected health titles (nurse, doctor, physiotherapist, radiographer, pharmacist, dentist, psychologist, etc.) require it to practise in Norway"
+        },
+        {
+          "name": "Authorisation for social-care professions",
+          "provider": "Helsedirektoratet",
+          "duration": "Granted on completion of an approved bachelor's",
+          "cost": "Statutory application fee",
+          "url": "https://www.helsedirektoratet.no/english/authorisation-and-license-for-health-personnel",
+          "recognised": "Required since 2020 for sosionom (social worker), barnevernspedagog and vernepleier"
+        }
+      ],
+      "recommendedDegrees": [
+        "Bachelor's or Master's in the relevant health field from an approved institution",
+        "Foreign-trained: apply to Helsedirektoratet for recognition before working"
+      ],
+      "matchTerms": [
+        "nurse",
+        "midwif",
+        "physiotherap",
+        "radiograph",
+        "pharmacist",
+        "pharmacy",
+        "dentist",
+        "dental",
+        "psycholog",
+        "paramedic",
+        "ambulance",
+        "optometr",
+        "occupational-therap",
+        "dietitian",
+        "clinical-nutrition",
+        "bioengineer",
+        "chiropract",
+        "audiolog",
+        "prosthet",
+        "orthopt",
+        "social-worker",
+        "child-protection",
+        "vernepleier",
+        "barnevern"
+      ]
+    },
+    "accounting-authorisation": {
+      "summary": "To run an external accounting practice in Norway you must be a statsautorisert regnskapsfører (state-authorised accountant), approved and supervised by Finanstilsynet. The credential combines a relevant degree, supervised practice and ongoing continuing-professional-development hours.",
+      "certifications": [
+        {
+          "name": "Statsautorisert regnskapsfører (state-authorised accountant)",
+          "provider": "Finanstilsynet (Financial Supervisory Authority of Norway)",
+          "duration": "Degree + 2 years' relevant practice",
+          "cost": "Application to Finanstilsynet",
+          "url": "https://www.finanstilsynet.no/en/licensing/",
+          "recognised": "Required to deliver external accounting services for clients in Norway; 80h CPD per 3 years to retain it"
+        }
+      ],
+      "recommendedDegrees": [
+        "Bachelor's in Economics & Administration (with accounting specialisation, 60+ credits)",
+        "Master's in Economics & Administration"
+      ],
+      "matchTerms": [
+        "accountant",
+        "accounting",
+        "regnskap",
+        "bookkeep"
+      ]
+    },
+    "auditing-authorisation": {
+      "summary": "Auditors who sign statutory audits in Norway must be a statsautorisert revisor (state-authorised auditor), approved by Finanstilsynet. It requires a master's in accounting & auditing, supervised practice and a practical exam.",
+      "certifications": [
+        {
+          "name": "Statsautorisert revisor (state-authorised auditor)",
+          "provider": "Finanstilsynet (Financial Supervisory Authority of Norway)",
+          "duration": "Master's + 2 years' practice + practical exam",
+          "cost": "Application to Finanstilsynet",
+          "url": "https://www.finanstilsynet.no/en/licensing/auditing/",
+          "recognised": "Required to be responsible for statutory audit engagements in Norway"
+        }
+      ],
+      "recommendedDegrees": [
+        "Master's in Accounting & Auditing (master i regnskap og revisjon)"
+      ],
+      "matchTerms": [
+        "auditor",
+        "revisor"
+      ]
+    },
+    "finance-credentials": {
+      "summary": "Investment and analysis roles are not licensed in the same way, but a globally-recognised professional credential is the strongest signal beyond a degree. The CFA charter is the international standard for investment analysis and portfolio management.",
+      "certifications": [
+        {
+          "name": "CFA (Chartered Financial Analyst)",
+          "provider": "CFA Institute",
+          "duration": "3 exam levels, typically 2–4 years",
+          "cost": "~10,000–20,000 NOK (enrolment + exams)",
+          "url": "https://www.cfainstitute.org/en/programs/cfa",
+          "recognised": "Global gold standard for investment analysis and asset management"
+        }
+      ],
+      "recommendedDegrees": [
+        "Bachelor's or Master's in Finance, Economics or Business",
+        "Master's in Financial Economics"
+      ],
+      "matchTerms": [
+        "financial-analyst",
+        "equity-analyst",
+        "investment-analyst",
+        "investment-banker",
+        "investment-manager",
+        "portfolio-manager",
+        "wealth-manager",
+        "hedge-fund",
+        "private-equity",
+        "venture-capital"
+      ]
+    },
+    "real-estate-authorisation": {
+      "summary": "To use the protected title eiendomsmegler (estate agent) in Norway you need a three-year bachelor's in real-estate brokerage plus supervised practice and personal authorisation from Finanstilsynet.",
+      "certifications": [
+        {
+          "name": "Eiendomsmegler authorisation",
+          "provider": "Finanstilsynet (Financial Supervisory Authority of Norway)",
+          "duration": "3-year bachelor's + 2 years' practice",
+          "cost": "Application to Finanstilsynet (via Altinn)",
+          "url": "https://www.finanstilsynet.no/en/laws-and-regulations/estate-agents",
+          "recognised": "Required to use the title eiendomsmegler and act as a responsible broker"
+        }
+      ],
+      "recommendedDegrees": [
+        "Bachelor's in Real-Estate Brokerage (eiendomsmegling)"
+      ],
+      "matchTerms": [
+        "real-estate-agent",
+        "estate-agent",
+        "lettings-agent",
+        "eiendomsmegl",
+        "realtor"
+      ]
+    },
+    "law-authorisation": {
+      "summary": "In Norway, 'advokat' is a protected title. To practise independently as an advocate you need an advokatbevilling (advocate licence) from Advokattilsynet — a law master's plus two years of approved trainee practice with court experience, and the advocate course and exam.",
+      "certifications": [
+        {
+          "name": "Advokatbevilling (advocate licence)",
+          "provider": "Advokattilsynet (Supervisory Authority for Legal Services)",
+          "duration": "Master's in law + 2 years' approved practice + advocate course/exam",
+          "cost": "Application to Advokattilsynet",
+          "url": "https://tilsynet.no/information",
+          "recognised": "Required to use the protected title 'advokat' and give independent legal assistance"
+        }
+      ],
+      "recommendedDegrees": [
+        "Master's in Law (master i rettsvitenskap / cand. jur.)"
+      ],
+      "matchTerms": [
+        "lawyer",
+        "advokat",
+        "attorney",
+        "solicitor",
+        "barrister"
+      ]
+    },
+    "teaching-qualification": {
+      "summary": "To hold a permanent teaching post in Norwegian schools you must be a qualified teacher: an approved teacher-education degree, or a subject degree plus a Postgraduate Certificate in Education (PPU). The Directorate for Education and Training (Udir) sets the competence requirements.",
+      "certifications": [
+        {
+          "name": "Approved teacher qualification (lærerutdanning / PPU)",
+          "provider": "Utdanningsdirektoratet (Udir) — competence requirements",
+          "duration": "Teacher-education degree, or subject degree + 1-year PPU",
+          "cost": "Ordinary university tuition (state institutions are free)",
+          "url": "https://www.udir.no/regelverk-og-tilsyn/skole-og-opplaring/krav-til-kompetanse-for-larere-ansettelse-og-undervisning/",
+          "recognised": "Required to be permanently employed and to teach in Norwegian primary/secondary schools"
+        }
+      ],
+      "recommendedDegrees": [
+        "Integrated teacher-education degree (grunnskolelærerutdanning / lektorutdanning)",
+        "Subject Bachelor's/Master's + Postgraduate Certificate in Education (PPU)"
+      ],
+      "matchTerms": [
+        "teacher",
+        "lærer",
+        "lektor"
+      ]
+    },
+    "trade-certificate": {
+      "summary": "Skilled trades in Norway are certified by a fagbrev (trade certificate) or svennebrev (journeyman's certificate) — an EQF level-4 qualification earned by passing the trade exam (fag-/svenneprøve) after upper-secondary VET and an apprenticeship. Experienced adults can qualify via the practice-candidate or 'fagbrev på jobb' routes.",
+      "certifications": [
+        {
+          "name": "Fagbrev / svennebrev (trade or journeyman's certificate)",
+          "provider": "County vocational-training office (fylkeskommune), under Udir",
+          "duration": "2 years VET + 2-year apprenticeship, then the trade exam",
+          "cost": "Free via the public upper-secondary route",
+          "url": "https://www.vilbli.no/en/en/no",
+          "recognised": "Standard qualification for skilled-trade roles; required by many employers and for a master craftsman (mesterbrev)"
+        }
+      ],
+      "recommendedDegrees": [
+        "Upper-secondary vocational programme (yrkesfag) + apprenticeship",
+        "Experience route: 5 years' documented practice + trade exam"
+      ],
+      "matchTerms": [
+        "electrician",
+        "plumber",
+        "carpenter",
+        "welder",
+        "bricklayer",
+        "mason",
+        "scaffolder",
+        "painter-decorator",
+        "pipefitter",
+        "industrial-fitter",
+        "cnc-machinist",
+        "precision-machinist",
+        "auto-mechanic",
+        "aircraft-mechanic",
+        "industrial-mechanic",
+        "heavy-equipment-mechanic",
+        "process-operator",
+        "crane-operator",
+        "metal-fabricator",
+        "plasterer",
+        "roofer",
+        "glazier",
+        "tiler"
+      ]
+    },
     "project": {
       "summary": "Project management is a skills-based career. While a degree helps, industry certifications are what employers look for. Most project managers start in technical or business roles and transition into management.",
       "certifications": [
