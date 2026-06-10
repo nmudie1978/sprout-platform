@@ -57,7 +57,7 @@ export async function validateYouTubeVideo(videoId: string): Promise<boolean> {
     const url = `https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${videoId}&format=json`;
     const res = await fetch(url, {
       method: "GET",
-      signal: AbortSignal.timeout(5000),
+      signal: AbortSignal.timeout(2000),
     });
     const valid = res.ok;
     setCachedResult(cacheKey, valid);
@@ -93,7 +93,7 @@ export async function validateExternalUrl(url: string): Promise<boolean> {
     const headRes = await fetch(url, {
       method: "HEAD",
       redirect: "follow",
-      signal: AbortSignal.timeout(5000),
+      signal: AbortSignal.timeout(2000),
     });
     if (headRes.ok || headRes.status === 304) {
       setCachedResult(cacheKey, true);
@@ -110,7 +110,7 @@ export async function validateExternalUrl(url: string): Promise<boolean> {
       method: "GET",
       headers: { Range: "bytes=0-0" },
       redirect: "follow",
-      signal: AbortSignal.timeout(5000),
+      signal: AbortSignal.timeout(2000),
     });
     if (getRes.ok || getRes.status === 206 || getRes.status === 304) {
       setCachedResult(cacheKey, true);
@@ -135,7 +135,11 @@ export async function validateExternalUrl(url: string): Promise<boolean> {
 // BATCH VALIDATION
 // ============================================
 
-const CONCURRENCY = 5;
+const CONCURRENCY = 24;
+// Hard ceiling on total time spent validating a section's links on a cold
+// cache, so the first request can never stall on slow hosts. Anything not
+// reached within the budget is kept (matches the assume-valid-on-error rule).
+const VALIDATION_BUDGET_MS = 3000;
 
 /**
  * Validate items in parallel (batched, max CONCURRENCY concurrent).
@@ -144,15 +148,25 @@ const CONCURRENCY = 5;
 export async function validateInsightItems<T>(
   items: T[],
   getKey: (item: T) => string,
-  validator: (key: string) => Promise<boolean>
+  validator: (key: string) => Promise<boolean>,
+  opts: { budgetMs?: number; concurrency?: number } = {}
 ): Promise<T[]> {
   if (items.length === 0) return [];
 
-  const results: boolean[] = new Array(items.length);
+  const budgetMs = opts.budgetMs ?? VALIDATION_BUDGET_MS;
+  const concurrency = opts.concurrency ?? CONCURRENCY;
+  const deadline = Date.now() + budgetMs;
 
-  // Process in batches of CONCURRENCY
-  for (let i = 0; i < items.length; i += CONCURRENCY) {
-    const batch = items.slice(i, i + CONCURRENCY);
+  // Default every item to "keep" (true). Anything we never get to validate —
+  // because the budget ran out — is therefore kept, matching the
+  // assume-valid-on-error policy and ensuring a cold cache never blocks the
+  // request waiting on slow/WAF hosts (which we'd keep anyway).
+  const results: boolean[] = new Array(items.length).fill(true);
+
+  // Process in batches, stopping once the overall time budget is spent.
+  for (let i = 0; i < items.length; i += concurrency) {
+    if (Date.now() >= deadline) break;
+    const batch = items.slice(i, i + concurrency);
     const settled = await Promise.allSettled(
       batch.map((item) => validator(getKey(item)))
     );
