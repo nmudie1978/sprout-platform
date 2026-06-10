@@ -35,9 +35,15 @@ export function useDecisionInputs() {
   const userId = session?.user?.id;
   const localInterest = useAllInterestLevels();
 
+  // Always refetch on mount: the global QueryClient caches for 3 min and does
+  // not refetch on focus, so without this the board showed a stale goal list
+  // and missed a journey the user had just explored. Re-opening the board (or
+  // the dashboard teaser) now reflects the latest server state.
   const { data: goalsData, isLoading: goalsLoading } = useQuery({
     queryKey: ["exploring-goals", userId],
     enabled: !!userId,
+    staleTime: 0,
+    refetchOnMount: "always",
     queryFn: async () => {
       const res = await fetch("/api/journey/goal-data/list");
       if (!res.ok) throw new Error("Failed to load journeys");
@@ -48,6 +54,8 @@ export function useDecisionInputs() {
   const { data: interestData } = useQuery({
     queryKey: ["career-interest", userId],
     enabled: !!userId,
+    staleTime: 0,
+    refetchOnMount: "always",
     queryFn: async () => {
       const res = await fetch("/api/career-interest");
       if (!res.ok) throw new Error("Failed to load interest");
@@ -58,8 +66,15 @@ export function useDecisionInputs() {
   // Explored journeys only — the careers the user has actually engaged with
   // (same gate the dashboard's "My Explored Journeys" uses). A goal the user
   // merely set but never explored shouldn't appear on the board.
-  const goals = (goalsData?.goals ?? []).filter((g) =>
-    isJourneySnapshotWorthy(g.goalTitle),
+  //
+  // Honour BOTH the server-recorded progress (journeyCompletedSteps) and the
+  // device-local lens flags. Relying on localStorage alone dropped journeys
+  // that were explored on another device / after a storage clear — and the
+  // server is the source of truth for "has this been explored".
+  const goals = (goalsData?.goals ?? []).filter(
+    (g) =>
+      (g.journeyCompletedSteps?.length ?? 0) > 0 ||
+      isJourneySnapshotWorthy(g.goalTitle),
   );
   const serverInterest = interestData?.interests ?? {};
 
