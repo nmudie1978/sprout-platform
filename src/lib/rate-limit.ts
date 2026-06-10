@@ -85,8 +85,11 @@ let connectPromise: Promise<RedisClientType | null> | null = null;
  * Get or lazily create a connected node-redis client.
  * Returns null when Redis is unconfigured or the connection fails (the
  * caller then falls back to in-memory).
+ *
+ * Exported so other server-only modules (e.g. the admin token denylist)
+ * share this single connection rather than opening their own.
  */
-async function getRedisClient(): Promise<RedisClientType | null> {
+export async function getRedisClient(): Promise<RedisClientType | null> {
   if (!isRedisConfigured()) return null;
   if (redisClient?.isOpen) return redisClient;
   if (connectPromise) return connectPromise;
