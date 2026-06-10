@@ -1032,7 +1032,7 @@ function UnderstandTab({
       {/* ── Inside the Role — What You'll Do · The Reality · Tools as one
           tabbed card (was two side-by-side cards). Tabs use the same
           teal-underline styling as Education Pathway for consistency. */}
-      <SectionCard accent="teal">
+      <SectionCard accent="blue">
         <SectionHeader
           icon={Briefcase}
           title="Inside the Role"
@@ -1318,7 +1318,7 @@ function UnderstandTab({
             const esReadiness = career ? getSpanishReadiness(career.id) : null;
             const SELECTIVITY_LABEL = { low: 'Open access', moderate: 'Moderately selective', high: 'Selective', 'very-high': 'Highly selective' } as const;
             return (
-              <SectionCard>
+              <SectionCard accent="blue">
                 <SectionHeader
                   icon={GraduationCap}
                   title="Education Pathway"
@@ -1372,7 +1372,7 @@ function UnderstandTab({
 
           // No data for this specific career in this country → honest gate.
           return (
-            <SectionCard>
+            <SectionCard accent="blue">
               <SectionHeader
                 icon={GraduationCap}
                 title="Education Pathway"
@@ -1443,7 +1443,7 @@ function UnderstandTab({
           : [];
 
         return (
-          <SectionCard>
+          <SectionCard accent="blue">
             <SectionHeader
               icon={GraduationCap}
               title="Education Pathway"
