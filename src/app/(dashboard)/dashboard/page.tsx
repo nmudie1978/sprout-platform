@@ -33,7 +33,6 @@ import {
   Compass,
   Briefcase,
   TrendingUp,
-  BookmarkCheck,
   Lightbulb,
   Pencil,
   CheckCircle2,
@@ -76,15 +75,6 @@ import { GoalSelectionSheet } from "@/components/goals/GoalSelectionSheet";
 import { useSubtleHint } from "@/hooks/use-subtle-hint";
 import { SpotlightHint } from "@/components/ui/spotlight-hint";
 import { DiscoveryNudge } from "@/components/discovery/discovery-nudge";
-
-/** Sanitise user-provided URLs — only allow http/https to prevent javascript: XSS */
-function safeHref(url: string): string {
-  try {
-    const parsed = new URL(url);
-    if (parsed.protocol === 'http:' || parsed.protocol === 'https:') return url;
-  } catch { /* invalid URL */ }
-  return '#';
-}
 
 // ── Glass Card ───────────────────────────────────────────────────────
 function GlassCard({
@@ -229,119 +219,6 @@ function countryFlagEmoji(countryName?: string | null): string | null {
   return String.fromCodePoint(
     iso.charCodeAt(0) - 65 + 0x1F1E6,
     iso.charCodeAt(1) - 65 + 0x1F1E6,
-  );
-}
-
-// ── Library Card with View Toggle ────────────────────────────────────
-function LibraryCard({
-  items,
-  total,
-  onRemove,
-}: {
-  items: { id: string; title: string; type: string; url: string; thumbnail: string | null; source: string | null }[];
-  total: number;
-  onRemove?: (id: string) => void;
-}) {
-  const t = useTranslations();
-  const [view, setView] = useState<'list' | 'grid'>('list');
-  const [libPage, setLibPage] = useState(0);
-  const PAGE_SIZE = 6;
-  const totalPages = Math.max(1, Math.ceil(items.length / PAGE_SIZE));
-  const page = Math.min(libPage, totalPages - 1);
-  const pageItems = items.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
-
-  return (
-    <div>
-      {items.length > 0 ? (
-        view === 'list' ? (
-          <div className="space-y-1.5">
-            {pageItems.map((item) => (
-              <div key={item.id} className="flex items-center gap-2 text-xs text-muted-foreground group/row">
-                <a
-                  href={safeHref(item.url)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 flex-1 min-w-0 hover:text-foreground transition-colors"
-                >
-                  <span className="text-xs font-medium uppercase px-1.5 py-0.5 rounded-control shrink-0 bg-muted/20 text-muted-foreground/60">
-                    {item.type === 'VIDEO' ? '▶' : item.type === 'ARTICLE' ? '📄' : '🎙'}
-                  </span>
-                  <span className="truncate">{item.title}</span>
-                </a>
-                {onRemove && (
-                  <button
-                    type="button"
-                    onClick={() => onRemove(item.id)}
-                    className="p-0.5 rounded-control hit-44 text-muted-foreground/0 group-hover/row:text-muted-foreground/30 hover:!text-destructive hover:!bg-destructive/10 transition-colors shrink-0"
-                    title="Remove"
-                    aria-label={`Remove ${item.title}`}
-                  >
-                    <X className="h-3 w-3" />
-                  </button>
-                )}
-              </div>
-            ))}
-          </div>
-        ) : (
-          /* Grid view — compact thumbnails */
-          <div className="grid grid-cols-3 gap-1.5">
-            {pageItems.map((item, i) => (
-              <a
-                key={i}
-                href={safeHref(item.url)}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group rounded-control border border-border/20 overflow-hidden hover:border-border/50 transition-all"
-              >
-                {item.thumbnail ? (
-                  <div className="aspect-video bg-muted/30 relative overflow-hidden">
-                    {/* eslint-disable-next-line @next/next/no-img-element --
-                        Saved library items come from arbitrary external
-                        hosts (article/podcast CDNs, etc.) that aren't in
-                        next.config.js images.remotePatterns. A raw <img>
-                        is the safest option until the allowlist is
-                        widened or items are pre-proxied through our own
-                        CDN. */}
-                    <img
-                      src={item.thumbnail}
-                      alt=""
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
-                    {item.type === 'VIDEO' && (
-                      <div className="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/10 transition-colors">
-                        <div className="h-4 w-4 rounded-pill bg-white/80 flex items-center justify-center">
-                          <span className="text-xs ml-px">▶</span>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                ) : (
-                  <div className="aspect-video bg-muted/20 flex items-center justify-center">
-                    <span className="text-xs opacity-30">
-                      {item.type === 'VIDEO' ? '▶' : item.type === 'ARTICLE' ? '📄' : '🎙'}
-                    </span>
-                  </div>
-                )}
-                <div className="px-1.5 py-1">
-                  <p className="text-xs font-medium text-foreground/70 line-clamp-1 leading-snug">
-                    {item.title}
-                  </p>
-                </div>
-              </a>
-            ))}
-          </div>
-        )
-      ) : (
-        <p className="text-xs text-muted-foreground/50">{t('library.emptyState')}</p>
-      )}
-      {totalPages > 1 && (
-        <div className="flex items-center justify-center gap-1 mt-2">
-          <button onClick={() => setLibPage((p) => Math.max(0, p - 1))} disabled={page === 0} className="p-0.5 rounded-control hit-44 text-muted-foreground/30 hover:text-muted-foreground/60 disabled:opacity-30 transition-colors"><ChevronLeft className="h-3 w-3" /></button>
-          <span className="text-xs text-muted-foreground/30 tabular-nums">{page + 1}/{totalPages}</span>
-          <button onClick={() => setLibPage((p) => Math.min(totalPages - 1, p + 1))} disabled={page >= totalPages - 1} className="p-0.5 rounded-control hit-44 text-muted-foreground/30 hover:text-muted-foreground/60 disabled:opacity-30 transition-colors"><ChevronRight className="h-3 w-3" /></button>
-        </div>
-      )}
-    </div>
   );
 }
 
@@ -613,11 +490,6 @@ export default function DashboardPage() {
   const queryClient = useQueryClient();
 
   // ── Delete handlers ──────────────────────────────────────────────
-  const removeLibraryItem = useCallback(async (itemId: string) => {
-    await fetch(`/api/journey/saved-items?id=${itemId}`, { method: 'DELETE' });
-    queryClient.invalidateQueries({ queryKey: ["dashboard-stats"] });
-  }, [queryClient]);
-
   const removeExploredJourney = useCallback(async (goalId: string) => {
     const res = await fetch(`/api/journey/goal-data?goalId=${goalId}`, { method: 'DELETE' });
     if (res.ok) {
@@ -806,11 +678,6 @@ export default function DashboardPage() {
   // Real-time stats from DB
   const exploredCareers = dashboardStats?.exploredCareers ?? [];
   const careerInterests = dashboardStats?.careerInterests ?? [];
-  const savedSummary = dashboardStats?.savedSummary ?? {
-    total: 0,
-    byType: { articles: 0, videos: 0, podcasts: 0, shorts: 0 },
-  };
-  const savedItemsList = dashboardStats?.savedItemsList ?? [];
   const recentActivity = dashboardStats?.recentActivity ?? [];
   const { curiosities: savedCareers, removeCuriosity } = useCuriositySaves();
 
