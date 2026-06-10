@@ -46,22 +46,99 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    // Fetch consent records
-    const consents = await prisma.consentRecord.findMany({
-      where: { userId },
-      orderBy: { grantedAt: "desc" },
-    });
+    const profileId = user.youthProfile?.id;
 
-    // Fetch Career Twin conversation messages
-    const twinMessages = await prisma.careerTwinMessage.findMany({
-      where: { userId },
-      orderBy: { createdAt: "asc" },
-      select: { careerId: true, role: true, content: true, mode: true, createdAt: true },
-    });
+    // Resilient fetch: a single empty/edge table must never sink the whole
+    // export. Each user-owned model is queried independently; on error we
+    // record the failure rather than 500 the request.
+    const fetchWarnings: string[] = [];
+    const safe = async <T>(label: string, fn: () => Promise<T>): Promise<T | []> => {
+      try {
+        return await fn();
+      } catch (e) {
+        console.error(`[GDPR export] failed to fetch ${label}:`, e);
+        fetchWarnings.push(label);
+        return [];
+      }
+    };
+    const byUser = { where: { userId } } as const;
+    const byProfile = profileId ? { where: { profileId } } : null;
+    const ofProfile = async <T>(label: string, fn: (args: { where: { profileId: string } }) => Promise<T>) =>
+      byProfile ? safe(label, () => fn(byProfile)) : [];
+
+    // Fetch the full user-owned tree in parallel.
+    const [
+      consents,
+      twinMessages,
+      aiChatMessages,
+      swipes,
+      careerInterests,
+      careerQuizResults,
+      journeyGoalData,
+      timelineEvents,
+      generatedQuestionSets,
+      questionStates,
+      savedIndustries,
+      industryProgress,
+      learningProgress,
+      userSkillSignals,
+      pathSnapshots,
+      vaultItems,
+      lifeSkillEvents,
+      feedbackSubmissions,
+      communityReportsFiled,
+      proQuestions,
+      proAnswers,
+      userPreferences,
+      // profile-owned
+      savedCareers,
+      savedItems,
+      journeyReflections,
+      journeyNotes,
+      journeyNotebooks,
+      journeySnapshots,
+      traitObservations,
+      userNotes,
+      contentInteractions,
+    ] = await Promise.all([
+      safe("consents", () => prisma.consentRecord.findMany({ ...byUser, orderBy: { grantedAt: "desc" } })),
+      safe("careerTwinMessages", () => prisma.careerTwinMessage.findMany({ ...byUser, orderBy: { createdAt: "asc" }, select: { careerId: true, role: true, content: true, mode: true, createdAt: true } })),
+      safe("aiChatMessages", () => prisma.aiChatMessage.findMany({ ...byUser, orderBy: { createdAt: "asc" } })),
+      safe("swipes", () => prisma.swipe.findMany({ where: { youthId: userId } })),
+      safe("careerInterests", () => prisma.careerInterest.findMany(byUser)),
+      safe("careerQuizResults", () => prisma.careerQuizResult.findMany(byUser)),
+      safe("journeyGoalData", () => prisma.journeyGoalData.findMany(byUser)),
+      safe("timelineEvents", () => prisma.timelineEvent.findMany({ ...byUser, orderBy: { createdAt: "asc" } })),
+      safe("generatedQuestionSets", () => prisma.generatedQuestionSet.findMany(byUser)),
+      safe("questionStates", () => prisma.userQuestionState.findMany(byUser)),
+      safe("savedIndustries", () => prisma.savedIndustry.findMany(byUser)),
+      safe("industryProgress", () => prisma.industryProgress.findMany(byUser)),
+      safe("learningProgress", () => prisma.userLearningProgress.findMany(byUser)),
+      safe("userSkillSignals", () => prisma.userSkillSignal.findMany(byUser)),
+      safe("pathSnapshots", () => prisma.pathSnapshot.findMany(byUser)),
+      safe("vaultItems", () => prisma.vaultItem.findMany(byUser)),
+      safe("lifeSkillEvents", () => prisma.lifeSkillEvent.findMany(byUser)),
+      safe("feedbackSubmissions", () => prisma.feedback.findMany({ where: { createdByUserId: userId } })),
+      safe("communityReportsFiled", () => prisma.communityReport.findMany({ where: { reporterUserId: userId } })),
+      safe("proQuestions", () => prisma.proQuestion.findMany({ where: { youthId: userId } })),
+      safe("proAnswers", () => prisma.proAnswer.findMany({ where: { answeredBy: userId } })),
+      safe("userPreferences", () => prisma.userPreferences.findUnique(byUser)),
+      ofProfile("savedCareers", (a) => prisma.savedCareer.findMany(a)),
+      ofProfile("savedItems", (a) => prisma.savedItem.findMany(a)),
+      ofProfile("journeyReflections", (a) => prisma.journeyReflection.findMany(a)),
+      ofProfile("journeyNotes", (a) => prisma.journeyNote.findMany(a)),
+      ofProfile("journeyNotebooks", (a) => prisma.journeyNotebook.findMany(a)),
+      ofProfile("journeySnapshots", (a) => prisma.journeySnapshot.findMany(a)),
+      ofProfile("traitObservations", (a) => prisma.traitObservation.findMany(a)),
+      ofProfile("userNotes", (a) => prisma.userNote.findMany(a)),
+      ofProfile("contentInteractions", (a) => prisma.contentInteraction.findMany(a)),
+    ]);
 
     // Structure the export data
     const exportData = {
       exportDate: new Date().toISOString(),
+      // Models that could not be read at export time (should be empty).
+      incompleteSections: fetchWarnings,
       dataSubject: {
         id: user.id,
         email: user.email,
@@ -83,6 +160,7 @@ export async function GET(req: NextRequest) {
               userId: undefined,
             }
           : null,
+      preferences: userPreferences ?? null,
       badges: user.badges.map((b) => ({
         type: b.type,
         earnedAt: b.earnedAt,
@@ -94,13 +172,45 @@ export async function GET(req: NextRequest) {
         read: n.read,
         createdAt: n.createdAt,
       })),
-      consents: consents.map((c) => ({
+      consents: (consents as Array<{ consentType: unknown; version: unknown; granted: unknown; grantedAt: unknown; revokedAt: unknown }>).map((c) => ({
         type: c.consentType,
         version: c.version,
         granted: c.granted,
         grantedAt: c.grantedAt,
         revokedAt: c.revokedAt,
       })),
+      // Career discovery & matching
+      savedCareers,
+      savedItems,
+      careerInterests,
+      swipes,
+      careerQuizResults,
+      savedIndustries,
+      industryProgress,
+      // My Journey
+      journeyGoalData,
+      journeyReflections,
+      journeyNotes,
+      journeyNotebooks,
+      journeySnapshots,
+      traitObservations,
+      userNotes,
+      pathSnapshots,
+      timelineEvents,
+      contentInteractions,
+      learningProgress,
+      userSkillSignals,
+      vaultItems,
+      lifeSkillEvents,
+      // Q&A, questions and feedback the user authored
+      proQuestions,
+      proAnswers,
+      generatedQuestionSets,
+      questionStates,
+      feedbackSubmissions,
+      communityReportsFiled,
+      // AI conversations
+      aiChatMessages,
       careerTwinConversations: twinMessages,
     };
 
@@ -111,6 +221,7 @@ export async function GET(req: NextRequest) {
       metadata: {
         badgeCount: user.badges.length,
         notificationCount: user.notifications.length,
+        incompleteSections: fetchWarnings.join(",") || "none",
       },
       ipAddress: req.headers.get("x-forwarded-for") || undefined,
       userAgent: req.headers.get("user-agent") || undefined,
