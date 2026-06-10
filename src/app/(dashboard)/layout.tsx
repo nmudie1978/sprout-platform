@@ -4,6 +4,7 @@ import { authOptions } from "@/lib/auth";
 import { SidebarNav } from "@/components/sidebar-nav";
 import { MobileBottomNav } from "@/components/mobile-bottom-nav";
 import { AmbientLightBackground } from "@/components/ui/ambient-light-background";
+import { ThemeTallyPing } from "@/components/theme-tally-ping";
 import { prisma } from "@/lib/prisma";
 import { isAcceptanceCurrent } from "@/lib/legal/versions";
 import { headers } from "next/headers";
@@ -139,6 +140,9 @@ export default async function DashboardLayout({
 
       {/* Mobile bottom nav — visible on mobile only */}
       <MobileBottomNav />
+
+      {/* Anonymous dark/light tally — once per session, signed-in only. */}
+      <ThemeTallyPing />
     </div>
   );
 }

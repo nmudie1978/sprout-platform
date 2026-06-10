@@ -100,31 +100,68 @@ export async function GET(request: NextRequest) {
     const [
       journeysTotal,
       journeysNew,
+      journeysCompleted,
+      usersWithJourney,
       journeyDates,
       savedCareersTotal,
       savedCareersNew,
+      savedInsightsTotal,
+      savedInsightsNew,
       careerInterestsTotal,
       careerInterestsNew,
       reflectionsTotal,
       reflectionsNew,
       twinChatsTotal,
       twinChatsNew,
+      themeRows,
+      returningRows,
     ] = await Promise.all([
       prisma.journeyGoalData.count(),
       prisma.journeyGoalData.count({ where: { createdAt: { gte: startDate } } }),
+      // A journey is "completed" once it reaches Clarity — the final lens
+      // checkpoint stored in journeyCompletedSteps (values: discover|understand|
+      // clarity). See /api/journey/completion/sync.
+      prisma.journeyGoalData.count({ where: { journeyCompletedSteps: { has: "clarity" } } }),
+      // Distinct users who have started at least one journey (for the average).
+      prisma.journeyGoalData.findMany({ distinct: ["userId"], select: { userId: true } }),
       prisma.journeyGoalData.findMany({
         where: { createdAt: { gte: startDate } },
         select: { createdAt: true },
       }),
       prisma.savedCareer.count(),
       prisma.savedCareer.count({ where: { savedAt: { gte: startDate } } }),
+      // Saved Industry Insights = SavedItem tagged "skills-that-matter".
+      prisma.savedItem.count({ where: { deletedAt: null, tags: { has: "skills-that-matter" } } }),
+      prisma.savedItem.count({
+        where: { deletedAt: null, tags: { has: "skills-that-matter" }, savedAt: { gte: startDate } },
+      }),
       prisma.careerInterest.count(),
       prisma.careerInterest.count({ where: { createdAt: { gte: startDate } } }),
       prisma.journeyReflection.count({ where: { skipped: false } }),
       prisma.journeyReflection.count({ where: { skipped: false, createdAt: { gte: startDate } } }),
       prisma.careerTwinMessage.count(),
       prisma.careerTwinMessage.count({ where: { createdAt: { gte: startDate } } }),
+      // Anonymous dark/light tally (two rows max).
+      prisma.themeTally.findMany({ select: { theme: true, count: true } }),
+      // Returning users — signed up, then came back and did something on a
+      // LATER day. Approximated as: an activity row (journey / interest / twin
+      // chat) created more than 24h after the account. No login tracking exists.
+      prisma.$queryRaw<{ count: number }[]>`
+        SELECT COUNT(*)::int AS count FROM "User" u
+        WHERE EXISTS (SELECT 1 FROM "JourneyGoalData" j
+                      WHERE j."userId" = u.id AND j."createdAt" > u."createdAt" + INTERVAL '1 day')
+           OR EXISTS (SELECT 1 FROM "CareerInterest" c
+                      WHERE c."userId" = u.id AND c."createdAt" > u."createdAt" + INTERVAL '1 day')
+           OR EXISTS (SELECT 1 FROM "CareerTwinMessage" m
+                      WHERE m."userId" = u.id AND m."createdAt" > u."createdAt" + INTERVAL '1 day')
+      `,
     ]);
+
+    const exploringUsers = usersWithJourney.length;
+    const avgJourneysPerUser = exploringUsers > 0 ? journeysTotal / exploringUsers : 0;
+    const themeDark = themeRows.find((t) => t.theme === "dark")?.count ?? 0;
+    const themeLight = themeRows.find((t) => t.theme === "light")?.count ?? 0;
+    const returningUsers = returningRows[0]?.count ?? 0;
 
     // ============================================
     // RESPONSE
@@ -138,6 +175,7 @@ export async function GET(request: NextRequest) {
       users: {
         total: totalUsers,
         new: newUsers,
+        returning: returningUsers,
         averageAge: averageAge ? Math.round(averageAge * 10) / 10 : null,
         ageCoverage,
         ageDistribution,
@@ -148,13 +186,18 @@ export async function GET(request: NextRequest) {
         journeys: {
           total: journeysTotal,
           new: journeysNew,
+          completed: journeysCompleted,
+          avgPerUser: Math.round(avgJourneysPerUser * 10) / 10,
+          exploringUsers,
           perDay: bucketPerDay(journeyDates.map((j) => j.createdAt), validDays),
         },
         savedCareers: { total: savedCareersTotal, new: savedCareersNew },
+        savedInsights: { total: savedInsightsTotal, new: savedInsightsNew },
         careerInterests: { total: careerInterestsTotal, new: careerInterestsNew },
         reflections: { total: reflectionsTotal, new: reflectionsNew },
         twinChats: { total: twinChatsTotal, new: twinChatsNew },
       },
+      theme: { dark: themeDark, light: themeLight },
     });
     // Admin metrics are expensive; cache for 5 min
     response.headers.set("Cache-Control", "private, max-age=300, stale-while-revalidate=120");

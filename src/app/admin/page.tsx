@@ -21,6 +21,12 @@ import {
   Bookmark,
   Star,
   BookOpen,
+  CheckCircle2,
+  Repeat,
+  Lightbulb,
+  Moon,
+  Sun,
+  BarChart3,
 } from "lucide-react";
 import {
   LineChart,
@@ -48,6 +54,7 @@ interface Metrics {
   users: {
     total: number;
     new: number;
+    returning: number;
     averageAge: number | null;
     ageCoverage: number;
     ageDistribution: Record<string, number>;
@@ -55,12 +62,21 @@ interface Metrics {
     perDay: { date: string; count: number }[];
   };
   activity: {
-    journeys: { total: number; new: number; perDay: { date: string; count: number }[] };
+    journeys: {
+      total: number;
+      new: number;
+      completed: number;
+      avgPerUser: number;
+      exploringUsers: number;
+      perDay: { date: string; count: number }[];
+    };
     savedCareers: { total: number; new: number };
+    savedInsights: { total: number; new: number };
     careerInterests: { total: number; new: number };
     reflections: { total: number; new: number };
     twinChats: { total: number; new: number };
   };
+  theme: { dark: number; light: number };
 }
 
 // Chart colors
@@ -200,6 +216,24 @@ export default function AdminDashboardPage() {
     value: r.count,
   }));
 
+  // Feature engagement — compares features by the real artifacts users create,
+  // since the app has no page-view tracking by design. Career Radar and raw
+  // Dashboard visits are intentionally absent (no server-side signal exists).
+  const featureEngagementData = [
+    { name: "Career Twin", value: metrics.activity.twinChats.total },
+    { name: "Journeys", value: metrics.activity.journeys.total },
+    { name: "Saved Careers", value: metrics.activity.savedCareers.total },
+    { name: "Saved Insights", value: metrics.activity.savedInsights.total },
+    { name: "Reflections", value: metrics.activity.reflections.total },
+  ].sort((a, b) => b.value - a.value);
+
+  const themeTotal = metrics.theme.dark + metrics.theme.light;
+  const themeData = [
+    { name: "Dark", value: metrics.theme.dark },
+    { name: "Light", value: metrics.theme.light },
+  ];
+  const THEME_COLORS = ["#6366f1", "#f59e0b"]; // dark = indigo, light = amber
+
   return (
     <div className="min-h-screen bg-slate-900">
       {/* Header */}
@@ -273,7 +307,7 @@ export default function AdminDashboardPage() {
           </span>
         </div>
 
-        {/* Primary KPI Cards */}
+        {/* KPI Row 1 — users */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <StatCard
             icon={Users}
@@ -282,6 +316,19 @@ export default function AdminDashboardPage() {
             sub={`+${metrics.users.new} new in ${selectedDays}d`}
             subColor="text-emerald-400"
             subIcon={TrendingUp}
+          />
+
+          <StatCard
+            icon={Repeat}
+            label="Returning Users"
+            value={metrics.users.returning.toLocaleString()}
+            sub={
+              metrics.users.total > 0
+                ? `${Math.round((metrics.users.returning / metrics.users.total) * 100)}% came back after day one`
+                : "active after signup day"
+            }
+            subColor="text-sky-400"
+            subIcon={Repeat}
           />
 
           <Card className="bg-slate-800/50 border-slate-700">
@@ -309,6 +356,18 @@ export default function AdminDashboardPage() {
           </Card>
 
           <StatCard
+            icon={BarChart3}
+            label="Avg Journeys / User"
+            value={metrics.activity.journeys.avgPerUser.toFixed(1)}
+            sub={`across ${metrics.activity.journeys.exploringUsers.toLocaleString()} exploring users`}
+            subColor="text-slate-400"
+            subIcon={Users}
+          />
+        </div>
+
+        {/* KPI Row 2 — journeys & engagement */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <StatCard
             icon={Compass}
             label="Journeys Started"
             value={metrics.activity.journeys.total.toLocaleString()}
@@ -316,7 +375,18 @@ export default function AdminDashboardPage() {
             subColor="text-blue-400"
             subIcon={TrendingUp}
           />
-
+          <StatCard
+            icon={CheckCircle2}
+            label="Journeys Completed"
+            value={metrics.activity.journeys.completed.toLocaleString()}
+            sub={
+              metrics.activity.journeys.total > 0
+                ? `${Math.round((metrics.activity.journeys.completed / metrics.activity.journeys.total) * 100)}% reached Clarity`
+                : "reached Clarity"
+            }
+            subColor="text-emerald-400"
+            subIcon={CheckCircle2}
+          />
           <StatCard
             icon={MessageSquare}
             label="Career Twin Chats"
@@ -325,9 +395,17 @@ export default function AdminDashboardPage() {
             subColor="text-violet-400"
             subIcon={TrendingUp}
           />
+          <StatCard
+            icon={BookOpen}
+            label="Reflections"
+            value={metrics.activity.reflections.total.toLocaleString()}
+            sub={`+${metrics.activity.reflections.new} in ${selectedDays}d`}
+            subColor="text-teal-400"
+            subIcon={TrendingUp}
+          />
         </div>
 
-        {/* Secondary KPI Cards */}
+        {/* KPI Row 3 — library & roles */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <StatCard
             icon={Bookmark}
@@ -338,19 +416,19 @@ export default function AdminDashboardPage() {
             subIcon={TrendingUp}
           />
           <StatCard
+            icon={Lightbulb}
+            label="Saved Insights"
+            value={metrics.activity.savedInsights.total.toLocaleString()}
+            sub={`+${metrics.activity.savedInsights.new} in ${selectedDays}d`}
+            subColor="text-amber-400"
+            subIcon={TrendingUp}
+          />
+          <StatCard
             icon={Star}
             label="Careers of Interest"
             value={metrics.activity.careerInterests.total.toLocaleString()}
             sub={`+${metrics.activity.careerInterests.new} in ${selectedDays}d`}
             subColor="text-amber-400"
-            subIcon={TrendingUp}
-          />
-          <StatCard
-            icon={BookOpen}
-            label="Reflections"
-            value={metrics.activity.reflections.total.toLocaleString()}
-            sub={`+${metrics.activity.reflections.new} in ${selectedDays}d`}
-            subColor="text-teal-400"
             subIcon={TrendingUp}
           />
 
@@ -376,6 +454,129 @@ export default function AdminDashboardPage() {
 
         {/* Charts Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Feature Engagement — one chart comparing features by real artifacts */}
+          <Card className="bg-slate-800/50 border-slate-700 lg:col-span-2">
+            <CardHeader>
+              <CardTitle className="text-white flex items-center gap-2">
+                <BarChart3 className="h-5 w-5 text-teal-400" />
+                Feature Engagement
+              </CardTitle>
+              <CardDescription className="text-slate-400">
+                How much each feature is used, measured by what users actually create or
+                save (the app has no page-view tracking). Career Radar &amp; raw Dashboard
+                visits aren&apos;t counted — there&apos;s no server-side signal for them.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="h-72">
+                {featureEngagementData.some((d) => d.value > 0) ? (
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={featureEngagementData} layout="vertical">
+                      <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
+                      <XAxis type="number" stroke="#94a3b8" tick={AXIS_TICK} allowDecimals={false} />
+                      <YAxis type="category" dataKey="name" stroke="#94a3b8" tick={AXIS_TICK} width={110} />
+                      <Tooltip {...TOOLTIP_STYLE} />
+                      <Bar dataKey="value" name="Total" radius={[0, 4, 4, 0]}>
+                        {featureEngagementData.map((_, index) => (
+                          <Cell key={`fe-${index}`} fill={COLORS[index % COLORS.length]} />
+                        ))}
+                      </Bar>
+                    </BarChart>
+                  </ResponsiveContainer>
+                ) : (
+                  <div className="h-full flex items-center justify-center text-slate-400">
+                    Not enough data yet
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Appearance — dark vs light split */}
+          <Card className="bg-slate-800/50 border-slate-700">
+            <CardHeader>
+              <CardTitle className="text-white flex items-center gap-2">
+                <Moon className="h-5 w-5 text-indigo-400" />
+                Appearance: Dark vs Light
+              </CardTitle>
+              <CardDescription className="text-slate-400">
+                Anonymous tally of signed-in app sessions (one per session). Starts from
+                zero — no historical data.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="h-64">
+                {themeTotal > 0 ? (
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={themeData}
+                        dataKey="value"
+                        nameKey="name"
+                        cx="50%"
+                        cy="50%"
+                        innerRadius={50}
+                        outerRadius={80}
+                        label={({ name, percent }) =>
+                          (percent ?? 0) > 0 ? `${name ?? ""}: ${((percent ?? 0) * 100).toFixed(0)}%` : ""
+                        }
+                        labelLine={false}
+                      >
+                        {themeData.map((_, index) => (
+                          <Cell key={`theme-${index}`} fill={THEME_COLORS[index % THEME_COLORS.length]} />
+                        ))}
+                      </Pie>
+                      <Tooltip {...TOOLTIP_STYLE} />
+                      <Legend />
+                    </PieChart>
+                  </ResponsiveContainer>
+                ) : (
+                  <div className="h-full flex flex-col items-center justify-center gap-2 text-slate-400">
+                    <div className="flex items-center gap-3">
+                      <Moon className="h-5 w-5 text-indigo-400" />
+                      <Sun className="h-5 w-5 text-amber-400" />
+                    </div>
+                    <span>No sessions tallied yet — collecting from now on.</span>
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Spacer card keeps the 2-col rhythm next to the theme donut */}
+          <Card className="bg-slate-800/50 border-slate-700">
+            <CardHeader>
+              <CardTitle className="text-white flex items-center gap-2">
+                <Compass className="h-5 w-5 text-blue-400" />
+                Journey Funnel
+              </CardTitle>
+              <CardDescription className="text-slate-400">
+                Started → Completed (reached Clarity)
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="h-64">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart
+                    data={[
+                      { name: "Started", value: metrics.activity.journeys.total },
+                      { name: "Completed", value: metrics.activity.journeys.completed },
+                    ]}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
+                    <XAxis dataKey="name" stroke="#94a3b8" tick={AXIS_TICK} />
+                    <YAxis stroke="#94a3b8" tick={AXIS_TICK} allowDecimals={false} />
+                    <Tooltip {...TOOLTIP_STYLE} />
+                    <Bar dataKey="value" name="Journeys" radius={[4, 4, 0, 0]}>
+                      <Cell fill="#3b82f6" />
+                      <Cell fill="#10b981" />
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </CardContent>
+          </Card>
+
           {/* New Users Per Day */}
           <Card className="bg-slate-800/50 border-slate-700">
             <CardHeader>
