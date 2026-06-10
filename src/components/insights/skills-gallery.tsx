@@ -7,9 +7,10 @@
  * to the skills section only (not "jobs / roles on the rise").
  */
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Loader2 } from "lucide-react";
+import { Loader2, Sparkles } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { CircularGallery, type GalleryItem } from "@/components/ui/circular-gallery";
 import type { SectionContent } from "@/lib/industry-insights/insights-service";
 
@@ -36,9 +37,15 @@ export function SkillsGallery() {
     staleTime: 10 * 60 * 1000,
   });
 
-  // Build + shuffle in an effect (not during render) so the selection is
-  // random per visit without tripping render-purity rules.
-  const [items, setItems] = useState<GalleryItem[]>([]);
+  // Build + shuffle the full pool in an effect (not during render) so the
+  // ordering is random per visit without tripping render-purity rules. We keep
+  // the whole shuffled pool and page through it in MAX_ITEMS-sized batches —
+  // "Generate more" surfaces the next fresh batch (wrapping when exhausted),
+  // mirroring the "Give me more" pattern in the stats carousel. Content is the
+  // existing curated articles/podcasts/videos; nothing is fabricated.
+  const [pool, setPool] = useState<GalleryItem[]>([]);
+  const [batch, setBatch] = useState(0);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
   useEffect(() => {
     if (!data) return;
     const all: GalleryItem[] = [];
@@ -61,8 +68,22 @@ export function SkillsGallery() {
         href: `https://www.youtube.com/watch?v=${v.videoId}`,
       });
     }
-    setItems(shuffle(all).slice(0, MAX_ITEMS));
+    setPool(shuffle(all));
+    setBatch(0);
   }, [data]);
+
+  const totalBatches = Math.max(1, Math.ceil(pool.length / MAX_ITEMS));
+  const start = (batch % totalBatches) * MAX_ITEMS;
+  const items = pool.slice(start, start + MAX_ITEMS);
+
+  const handleGenerateMore = useCallback(async () => {
+    setIsLoadingMore(true);
+    // Brief pause so the refresh reads as a deliberate action, matching the
+    // stats carousel's "Give me more".
+    await new Promise((r) => setTimeout(r, 400));
+    setBatch((prev) => (prev + 1) % totalBatches);
+    setIsLoadingMore(false);
+  }, [totalBatches]);
 
   if (isLoading) {
     return (
@@ -88,6 +109,32 @@ export function SkillsGallery() {
       <p className="text-center text-[11px] text-muted-foreground/45">
         Drag to explore · tap a card to open it
       </p>
+      {totalBatches > 1 && (
+        <div className="flex flex-col items-center gap-1.5 pt-1">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleGenerateMore}
+            disabled={isLoadingMore}
+            className="text-xs gap-1.5"
+          >
+            {isLoadingMore ? (
+              <>
+                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                Loading…
+              </>
+            ) : (
+              <>
+                <Sparkles className="h-3.5 w-3.5" />
+                Generate more content
+              </>
+            )}
+          </Button>
+          <p className="text-[10px] text-muted-foreground/50">
+            Set {(batch % totalBatches) + 1} of {totalBatches} · {pool.length} pieces total
+          </p>
+        </div>
+      )}
     </div>
   );
 }
