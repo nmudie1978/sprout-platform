@@ -31,6 +31,7 @@ import {
   type Career,
 } from "@/lib/career-pathways";
 import { DecisionBoardTab } from "@/components/decision-board/decision-board";
+import { MyContentTab } from "@/components/library/my-content-tab";
 import {
   resolveLibraryTab,
   readLocalJourneyReflections,
@@ -96,6 +97,8 @@ export default function LibraryPage() {
         <DecisionBoardTab />
       ) : active === "saved" ? (
         <SavedCareersTab />
+      ) : active === "content" ? (
+        <MyContentTab />
       ) : (
         <ReflectionsTab />
       )}
