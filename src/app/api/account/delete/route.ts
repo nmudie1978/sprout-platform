@@ -5,6 +5,7 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { logAuditAction } from "@/lib/safety";
 import { AuditAction } from "@prisma/client";
+import { anonymiseIp } from "@/lib/legal/versions";
 
 export async function DELETE(req: NextRequest) {
   try {
@@ -22,7 +23,7 @@ export async function DELETE(req: NextRequest) {
       userId,
       action: AuditAction.DATA_DELETION_REQUESTED,
       metadata: { email: userEmail || null },
-      ipAddress: req.headers.get("x-forwarded-for") || undefined,
+      ipAddress: anonymiseIp(req.headers.get("x-forwarded-for")),
       userAgent: req.headers.get("user-agent") || undefined,
     });
 

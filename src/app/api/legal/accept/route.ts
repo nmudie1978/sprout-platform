@@ -4,6 +4,11 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { AuditAction } from "@prisma/client";
+import {
+  CURRENT_TERMS_VERSION,
+  CURRENT_PRIVACY_VERSION,
+  anonymiseIp,
+} from "@/lib/legal/versions";
 
 export async function POST(req: NextRequest) {
   try {
@@ -31,9 +36,9 @@ export async function POST(req: NextRequest) {
         data: {
           acceptedTermsAt: acceptanceTimestamp,
           acceptedPrivacyAt: acceptanceTimestamp,
-          termsVersion: "v1",
-          privacyVersion: "v1",
-          ipAddress: req.headers.get("x-forwarded-for") || undefined,
+          termsVersion: CURRENT_TERMS_VERSION,
+          privacyVersion: CURRENT_PRIVACY_VERSION,
+          ipAddress: anonymiseIp(req.headers.get("x-forwarded-for")),
           userAgent: req.headers.get("user-agent") || undefined,
         },
       });
@@ -44,9 +49,9 @@ export async function POST(req: NextRequest) {
           userId,
           acceptedTermsAt: acceptanceTimestamp,
           acceptedPrivacyAt: acceptanceTimestamp,
-          termsVersion: "v1",
-          privacyVersion: "v1",
-          ipAddress: req.headers.get("x-forwarded-for") || undefined,
+          termsVersion: CURRENT_TERMS_VERSION,
+          privacyVersion: CURRENT_PRIVACY_VERSION,
+          ipAddress: anonymiseIp(req.headers.get("x-forwarded-for")),
           userAgent: req.headers.get("user-agent") || undefined,
         },
       });
@@ -58,11 +63,11 @@ export async function POST(req: NextRequest) {
         userId,
         action: AuditAction.TERMS_ACCEPTED,
         metadata: {
-          termsVersion: "v1",
-          privacyVersion: "v1",
+          termsVersion: CURRENT_TERMS_VERSION,
+          privacyVersion: CURRENT_PRIVACY_VERSION,
           acceptedAt: acceptanceTimestamp.toISOString(),
         },
-        ipAddress: req.headers.get("x-forwarded-for") || undefined,
+        ipAddress: anonymiseIp(req.headers.get("x-forwarded-for")),
         userAgent: req.headers.get("user-agent") || undefined,
       },
     });

@@ -10,6 +10,7 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { logAuditAction } from "@/lib/safety";
 import { AuditAction } from "@prisma/client";
+import { anonymiseIp } from "@/lib/legal/versions";
 
 export async function GET(req: NextRequest) {
   try {
@@ -25,7 +26,7 @@ export async function GET(req: NextRequest) {
     await logAuditAction({
       userId,
       action: AuditAction.DATA_EXPORT_REQUESTED,
-      ipAddress: req.headers.get("x-forwarded-for") || undefined,
+      ipAddress: anonymiseIp(req.headers.get("x-forwarded-for")),
       userAgent: req.headers.get("user-agent") || undefined,
     });
 
@@ -227,7 +228,7 @@ export async function GET(req: NextRequest) {
         notificationCount: user.notifications.length,
         incompleteSections: fetchWarnings.join(",") || "none",
       },
-      ipAddress: req.headers.get("x-forwarded-for") || undefined,
+      ipAddress: anonymiseIp(req.headers.get("x-forwarded-for")),
       userAgent: req.headers.get("user-agent") || undefined,
     });
 

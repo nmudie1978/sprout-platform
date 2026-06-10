@@ -4,6 +4,11 @@ import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import { AccountStatus, AuditAction, UserRole } from "@prisma/client";
 import {
+  CURRENT_TERMS_VERSION,
+  CURRENT_PRIVACY_VERSION,
+  anonymiseIp,
+} from "@/lib/legal/versions";
+import {
   logAuditAction,
   validateAgeBracket,
 } from "@/lib/safety";
@@ -250,7 +255,7 @@ export async function POST(req: NextRequest) {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const acceptanceTimestamp = new Date();
-    const ipAddress = req.headers.get("x-forwarded-for") || undefined;
+    const ipAddress = anonymiseIp(req.headers.get("x-forwarded-for"));
     const userAgent = req.headers.get("user-agent") || undefined;
 
     // Create the account atomically. Wrapping the user + profile + legal
@@ -294,8 +299,8 @@ export async function POST(req: NextRequest) {
           userId: createdUser.id,
           acceptedTermsAt: acceptanceTimestamp,
           acceptedPrivacyAt: acceptanceTimestamp,
-          termsVersion: "v1",
-          privacyVersion: "v1",
+          termsVersion: CURRENT_TERMS_VERSION,
+          privacyVersion: CURRENT_PRIVACY_VERSION,
           ipAddress,
           userAgent,
         },

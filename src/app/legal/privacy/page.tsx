@@ -126,9 +126,8 @@ export default function PrivacyPolicyPage() {
               <li><strong>Database:</strong> Supabase Inc. — PostgreSQL database hosting, EU region (Frankfurt). DPA in force.</li>
               <li><strong>Transactional email:</strong> Resend (Resend Inc.) — used for account verification and safety notifications. No marketing email.</li>
               <li><strong>Error monitoring:</strong> Sentry (Functional Software Inc.) — captures anonymised error traces. Personal data is scrubbed at source.</li>
-              <li><strong>Product analytics:</strong> Vercel Analytics and Speed Insights — collects anonymised page views, device type and performance metrics. No cookies, no cross-site tracking, no behavioural profiling, and no personal data.</li>
               <li><strong>Authentication:</strong> NextAuth.js — open-source, self-hosted; sessions are stored in our own database, not a third party.</li>
-              <li><strong>AI content generation (optional features):</strong> OpenAI — used only to generate personalised career roadmaps and narration when you request them. Prompts exclude direct identifiers (name, email).</li>
+              <li><strong>AI features (optional):</strong> OpenAI, L.L.C. (United States) — powers the Career Twin chat, personalised career roadmaps and narration when you request them. The messages you send to these AI features (and your approximate age) are processed by OpenAI to generate a response; prompts exclude direct identifiers such as your name and email. EU Standard Contractual Clauses cover this US transfer. Please don&apos;t share sensitive personal information in AI chats.</li>
             </ul>
             <p>
               We do not use advertising, retargeting, social-media pixels, or behavioural-profiling processors.

@@ -83,6 +83,11 @@ export default function CookiePolicyPage() {
                     <td>Admin panel authentication (admin users only)</td>
                     <td>7 days</td>
                   </tr>
+                  <tr>
+                    <td>NEXT_LOCALE</td>
+                    <td>Remembers your chosen language so pages load in it</td>
+                    <td>1 year</td>
+                  </tr>
                 </tbody>
               </table>
             </div>

@@ -5,6 +5,7 @@ import { SidebarNav } from "@/components/sidebar-nav";
 import { MobileBottomNav } from "@/components/mobile-bottom-nav";
 import { AmbientLightBackground } from "@/components/ui/ambient-light-background";
 import { prisma } from "@/lib/prisma";
+import { isAcceptanceCurrent } from "@/lib/legal/versions";
 import { headers } from "next/headers";
 import Link from "next/link";
 
@@ -51,7 +52,7 @@ export default async function DashboardLayout({
   const [legalAcceptance, profileData] = await Promise.all([
     prisma.legalAcceptance.findUnique({
       where: { userId: session.user.id },
-      select: { id: true },
+      select: { termsVersion: true, privacyVersion: true },
     }),
     session.user.role === "YOUTH"
       ? prisma.youthProfile.findUnique({
@@ -61,7 +62,9 @@ export default async function DashboardLayout({
       : Promise.resolve(null),
   ]);
 
-  if (!legalAcceptance) {
+  // Re-prompt for consent when there's no acceptance OR the stored versions
+  // are behind the current Terms/Privacy versions (GDPR Art. 7).
+  if (!isAcceptanceCurrent(legalAcceptance)) {
     redirect("/legal/accept");
   }
 

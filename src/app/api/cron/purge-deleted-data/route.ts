@@ -25,6 +25,10 @@ import { AuditAction } from "@prisma/client";
 
 const RETENTION_DAYS_SOFT_DELETED = 30;
 const RETENTION_DAYS_AUDIT_LOG = 365 * 3; // 3 years
+// AI conversation history (Career Twin + AI chat) is data-minimised: even on
+// active accounts it isn't kept indefinitely. 2 years balances continuity of
+// the assistant's memory against GDPR storage-limitation.
+const RETENTION_DAYS_AI_MESSAGES = 365 * 2;
 
 function authorise(req: NextRequest): boolean {
   const expected = process.env.CRON_SECRET;
@@ -51,6 +55,9 @@ export async function GET(req: NextRequest) {
   const auditLogCutoff = new Date(
     startedAt.getTime() - RETENTION_DAYS_AUDIT_LOG * 24 * 60 * 60 * 1000,
   );
+  const aiMessageCutoff = new Date(
+    startedAt.getTime() - RETENTION_DAYS_AI_MESSAGES * 24 * 60 * 60 * 1000,
+  );
 
   const results: Record<string, number> = {};
 
@@ -59,6 +66,17 @@ export async function GET(req: NextRequest) {
       where: { deletedAt: { not: null, lt: softDeleteCutoff } },
     });
     results.savedItems = savedItems.count;
+
+    // Data-minimise AI conversation history older than the retention window.
+    const aiChatMessages = await prisma.aiChatMessage.deleteMany({
+      where: { createdAt: { lt: aiMessageCutoff } },
+    });
+    results.aiChatMessages = aiChatMessages.count;
+
+    const careerTwinMessages = await prisma.careerTwinMessage.deleteMany({
+      where: { createdAt: { lt: aiMessageCutoff } },
+    });
+    results.careerTwinMessages = careerTwinMessages.count;
 
     const journeyNotes = await prisma.journeyNote.deleteMany({
       where: { deletedAt: { not: null, lt: softDeleteCutoff } },
