@@ -26,7 +26,7 @@ export default function AuthLayout({
         </Link>
         <LanguageDropdown iconOnly />
       </div>
-      {children}
+      <div id="main-content">{children}</div>
     </div>
   );
 }

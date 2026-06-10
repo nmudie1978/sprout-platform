@@ -27,11 +27,9 @@ import {
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { useQuery } from "@tanstack/react-query";
-import { SMALL_JOBS_ENABLED } from "@/lib/feature-flags";
 import {
   ArrowRight,
   Compass,
-  Briefcase,
   TrendingUp,
   Lightbulb,
   Pencil,
@@ -734,14 +732,6 @@ export default function DashboardPage() {
     savedCareersPage * savedCareersPerPage + savedCareersPerPage
   );
 
-  // Application stats
-  const appStats = dashboardStats?.appStats ?? {
-    applied: 0,
-    waiting: 0,
-    accepted: 0,
-    done: 0,
-  };
-
   // Date & greeting
   const today = new Date();
   const dateStr = today.toLocaleDateString("en-GB", {
@@ -1395,49 +1385,9 @@ export default function DashboardPage() {
           </DashboardSection>
         </div>
 
-        {/* Small Jobs — compact. Hidden until the marketplace
-            re-opens; gated by NEXT_PUBLIC_SMALL_JOBS_ENABLED. */}
-        {SMALL_JOBS_ENABLED && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-          <DashboardSection
-            title={t('smallJobs.title')}
-            icon={Briefcase}
-            iconColor="text-muted-foreground"
-            tooltip={t('smallJobs.tooltip')}
-            className="mb-0"
-          >
-            <div className="flex gap-2">
-              {[
-                { label: t('smallJobs.applied'), value: appStats.applied },
-                { label: t('smallJobs.waiting'), value: appStats.waiting },
-                { label: t('smallJobs.accepted'), value: appStats.accepted },
-                { label: t('smallJobs.done'), value: appStats.done },
-              ].map((stat) => (
-                <div key={stat.label} className="flex-1 text-center py-1.5">
-                  <p className="text-xs font-bold text-foreground/75 tabular-nums">{stat.value}</p>
-                  <p className="text-xs text-muted-foreground/65 uppercase tracking-wider">{stat.label}</p>
-                </div>
-              ))}
-            </div>
-            {/* Last completed job — row with date + location */}
-            <div className="mt-1.5 pt-1.5 border-t border-border/15">
-              <div className="flex items-center gap-1.5 text-xs uppercase tracking-wider text-muted-foreground/65 mb-1">
-                <CheckCircle2 className="h-2.5 w-2.5 text-muted-foreground/70 shrink-0" />
-                <span>Last completed</span>
-              </div>
-              {dashboardStats?.lastCompletedJob ? (
-                <div className="flex items-center gap-3 text-xs">
-                  <span className="text-foreground/70 font-medium truncate flex-1">{dashboardStats.lastCompletedJob.title}</span>
-                  <span className="text-muted-foreground/65 shrink-0">{new Date(dashboardStats.lastCompletedJob.completedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
-                  <span className="text-muted-foreground/65 shrink-0 truncate max-w-[100px]">{dashboardStats.lastCompletedJob.location}</span>
-                </div>
-              ) : (
-                <span className="text-xs text-muted-foreground/60">None yet</span>
-              )}
-            </div>
-          </DashboardSection>
-        </div>
-        )}
+        {/* The Small Jobs marketplace tile was removed — the jobs marketplace
+            is permanently discontinued (see CLAUDE.md <removed_features_strict>),
+            so it must not be re-enableable via an env flag. */}
 
       </div>
 

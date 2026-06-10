@@ -32,7 +32,7 @@ export default function AboutLayout({
       </header>
 
       {/* Content */}
-      <main className="container mx-auto px-4 py-12 max-w-4xl">
+      <main id="main-content" className="container mx-auto px-4 py-12 max-w-4xl">
         {children}
       </main>
 
