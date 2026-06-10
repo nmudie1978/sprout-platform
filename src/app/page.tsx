@@ -60,7 +60,7 @@ const FEATURES = [
   {
     title: "Meet your Career Twin",
     description:
-      "Talk to one possible future version of yourself, already living a career you’re curious about. Ask what a normal day feels like, how they got there, or whether it was worth it.",
+      "Talk to one possible future version of yourself, already living a career you’re curious about — and ask what it’s really like.",
     icon: MessageCircleHeart,
     accentBg: "bg-violet-500/15",
     accentText: "text-violet-400",
