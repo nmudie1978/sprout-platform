@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef, type HTMLAttributes } from "react";
-import { ChevronLeft, ChevronRight, MousePointer2 } from "lucide-react";
+import { ChevronLeft, ChevronRight, MousePointer2, Bookmark } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 /** A single card in the circular gallery. */
@@ -23,6 +23,10 @@ interface CircularGalleryProps extends HTMLAttributes<HTMLDivElement> {
   radius?: number;
   /** Degrees added per animation frame while idle. */
   autoRotateSpeed?: number;
+  /** When provided, each card shows a bookmark button that calls this. */
+  onSave?: (item: GalleryItem) => void;
+  /** Reports whether a card id is already saved (drives the filled icon). */
+  isSaved?: (id: string) => boolean;
 }
 
 /**
@@ -30,7 +34,7 @@ interface CircularGalleryProps extends HTMLAttributes<HTMLDivElement> {
  * Designed to live inside a fixed-height container (no page-scroll coupling).
  */
 const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
-  ({ items, className, radius = 440, autoRotateSpeed = 0.036, ...props }, ref) => {
+  ({ items, className, radius = 440, autoRotateSpeed = 0.036, onSave, isSaved, ...props }, ref) => {
     const [rotation, setRotation] = useState(0);
     const [hovered, setHovered] = useState(false);
     // Drag affordance: fades out once the user actually spins the ring.
@@ -174,6 +178,28 @@ const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
                   </a>
                 ) : (
                   inner
+                )}
+                {onSave && (
+                  <button
+                    type="button"
+                    // stopPropagation on pointer-down so pressing the bookmark
+                    // never starts a ring drag; preventDefault on click so it
+                    // never opens the card's link.
+                    onPointerDown={(e) => e.stopPropagation()}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      onSave(item);
+                    }}
+                    aria-label={
+                      isSaved?.(item.id) ? `Saved: ${item.title}` : `Save ${item.title}`
+                    }
+                    className="absolute right-1.5 top-1.5 z-20 rounded-full bg-black/55 p-1 text-white backdrop-blur-sm transition-colors hover:bg-black/80"
+                  >
+                    <Bookmark
+                      className={cn("h-3 w-3", isSaved?.(item.id) && "fill-current")}
+                    />
+                  </button>
                 )}
               </div>
             );
