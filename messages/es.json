@@ -338,7 +338,8 @@
     "youthSubtitle": "Cómo se conecta el panorama global con tus decisiones — cercano, accionable y con los pies en la tierra",
     "aboutData": "Sobre los datos",
     "aboutDataDesc": "Todos los análisis proceden de fuentes de primer nivel y se revisan trimestralmente. El contenido se resume para mayor claridad.",
-    "refreshed": "Actualizado en el 1.er trimestre de 2025",
+    "refreshed": "Actualizado {quarter}",
+    "reviewedRegularly": "Revisado periódicamente",
     "verified": "Verificado"
   },
   "userMenu": {
