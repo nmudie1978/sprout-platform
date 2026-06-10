@@ -2,7 +2,7 @@ export const dynamic = "force-dynamic";
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
-import { AccountStatus, AuditAction } from "@prisma/client";
+import { AccountStatus, AuditAction, UserRole } from "@prisma/client";
 import {
   logAuditAction,
   validateAgeBracket,
@@ -263,7 +263,9 @@ export async function POST(req: NextRequest) {
         data: {
           email,
           password: hashedPassword,
-          role,
+          // Runtime-validated against ALLOWED_SIGNUP_ROLES above; the cast
+          // narrows the post-validation string to the Prisma enum.
+          role: role as UserRole,
           fullName,
           ageBracket: ageBracket || null,
           dateOfBirth: birthDate,
