@@ -1,4 +1,6 @@
 export const dynamic = "force-dynamic";
+// AI/OpenAI calls can be slow; raise above Vercel's short default.
+export const maxDuration = 60;
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
@@ -106,6 +108,15 @@ export async function POST(req: NextRequest) {
     if (!message || message.length < 1) {
       return NextResponse.json(
         { error: "Message is required" },
+        { status: 400 }
+      );
+    }
+
+    // Cap input size so a single message can't blow the OpenAI token budget
+    // even within the 20/hr rate limit (cost-amplification guard).
+    if (message.length > 2000) {
+      return NextResponse.json(
+        { error: "Message is too long. Please keep it under 2000 characters." },
         { status: 400 }
       );
     }

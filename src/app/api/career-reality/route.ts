@@ -1,8 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import OpenAI from 'openai';
 import type { RealityCheckResult, RealityVideo, RealityVideoType } from '@/lib/career-reality-types';
+import { getAllCareers } from '@/lib/career-pathways';
+import { checkRateLimitAsync, RateLimits } from '@/lib/rate-limit';
 import { logAndSwallow } from '@/lib/observability';
+
+// OpenAI + YouTube calls can be slow; raise above Vercel's short default.
+export const maxDuration = 60;
+
+// Known career titles (lowercased) — only these may trigger an OpenAI /
+// YouTube generation. An attacker rotating arbitrary `?career=` values then
+// just gets the static fallback, never a paid call. Built once at module load.
+const KNOWN_CAREER_TITLES = new Set(
+  getAllCareers().map((c) => c.title.toLowerCase().trim()),
+);
 
 /**
  * GET /api/career-reality?career=Network+Engineer
@@ -380,6 +394,18 @@ function fallbackSummary(career: string): AiReality {
 // ── Route handler ──
 
 export async function GET(req: NextRequest) {
+  // Auth + rate limit: this endpoint can trigger paid OpenAI + YouTube calls,
+  // so it must not be anonymously reachable. Without these, an attacker could
+  // rotate `?career=` values to bypass the cache and run up an unbounded bill.
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
+  }
+  const rl = await checkRateLimitAsync(`career-reality:${session.user.id}`, RateLimits.AI_CHAT);
+  if (!rl.success) {
+    return NextResponse.json({ error: 'Rate limit exceeded. Please try again later.' }, { status: 429 });
+  }
+
   const career = new URL(req.url).searchParams.get('career');
   if (!career) return NextResponse.json({ error: 'Missing career parameter' }, { status: 400 });
 
@@ -398,6 +424,20 @@ export async function GET(req: NextRequest) {
       });
     }
   } catch { /* cache miss */ }
+
+  // Only spend on OpenAI/YouTube for careers that exist in the catalogue.
+  // Unknown labels get the free static fallback (and are not cached, so they
+  // can't be used to poison the cache table either).
+  if (!KNOWN_CAREER_TITLES.has(career.toLowerCase().trim())) {
+    return NextResponse.json(
+      {
+        career,
+        ...fallbackSummary(career),
+        videos: [],
+      } satisfies RealityCheckResult,
+      { headers: { 'Cache-Control': 'no-store' } },
+    );
+  }
 
   // Generate summary + find videos in parallel
   const [aiResult, videos] = await Promise.all([

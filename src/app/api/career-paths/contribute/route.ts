@@ -1,5 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { checkRateLimitAsync, RateLimits } from "@/lib/rate-limit";
+
+// Upper bound on any single submitted field — prose prompts are long-form but
+// not unbounded; caps the DB-flood / huge-payload abuse surface.
+const MAX_FIELD_LEN = 4000;
 
 /**
  * POST /api/career-paths/contribute
@@ -10,6 +15,17 @@ import { prisma } from "@/lib/prisma";
  */
 export async function POST(req: NextRequest) {
   try {
+    // IP rate limit: this is a public, unauthenticated write — throttle so it
+    // can't be used to flood the admin-review queue / the DB.
+    const ip = req.headers.get("x-forwarded-for")?.split(",")[0].trim() || "unknown";
+    const rl = await checkRateLimitAsync(`contribute:${ip}`, RateLimits.STRICT);
+    if (!rl.success) {
+      return NextResponse.json(
+        { error: "Too many submissions from this network. Please try again later." },
+        { status: 429 },
+      );
+    }
+
     const body = await req.json();
 
     const {
@@ -30,6 +46,9 @@ export async function POST(req: NextRequest) {
     const requireString = (value: unknown, label: string, min = 2) => {
       if (typeof value !== "string" || value.trim().length < min) {
         return `${label} is required (min ${min} characters)`;
+      }
+      if (value.length > MAX_FIELD_LEN) {
+        return `${label} is too long (max ${MAX_FIELD_LEN} characters)`;
       }
       return null;
     };
@@ -52,6 +71,12 @@ export async function POST(req: NextRequest) {
 
     if (!Array.isArray(careerTags) || careerTags.length === 0) {
       return NextResponse.json({ error: "At least 1 career tag is required" }, { status: 400 });
+    }
+    if (careerTags.length > 20) {
+      return NextResponse.json({ error: "Too many career tags (max 20)" }, { status: 400 });
+    }
+    if (typeof submittedByEmail === "string" && submittedByEmail.length > 200) {
+      return NextResponse.json({ error: "Email is too long" }, { status: 400 });
     }
 
     const contribution = await prisma.careerPathContribution.create({
