@@ -51,20 +51,29 @@ export interface FeedbackMessage {
 export interface FeedbackAggregate {
   /** Count of new-model rows (those with a `kind`). */
   total: number;
-  /** Count of legacy Likert rows (no `kind`). */
+  /** Count of legacy Likert rows (no `kind`, no `rating`). */
   legacyCount: number;
   byKind: Record<FeedbackKind, number>;
   byArea: Record<FeedbackArea, number>;
   byRole: Record<FeedbackRole, number>;
   /** New-model rows with a non-empty message, newest first. */
   messages: FeedbackMessage[];
+  // ── Platform rating (1-5) rollup ──
+  /** Number of submissions that include a 1-5 rating. */
+  ratingCount: number;
+  /** Mean rating across rated submissions (1 dp), or null if none. */
+  ratingAvg: number | null;
+  /** Count of ratings at each star value 1…5. */
+  ratingDistribution: Record<1 | 2 | 3 | 4 | 5, number>;
 }
 
 /**
  * Roll a set of feedback rows up into everything the admin page needs.
  * Pre-filter rows by kind/area/date at the call site; this just rolls up
- * whatever it receives. Legacy Likert rows (no `kind`) are counted only
- * in `legacyCount` and excluded from every other breakdown.
+ * whatever it receives. Legacy Likert rows (no `kind`, no `rating`) are
+ * counted only in `legacyCount` and excluded from every other breakdown.
+ * The 1-5 rating rollup spans ALL rated rows, whether or not they also
+ * carry written feedback (a `kind`).
  */
 export function aggregateFeedback(rows: Feedback[]): FeedbackAggregate {
   const byKind: Record<FeedbackKind, number> = { CONFUSED: 0, PROBLEM: 0, IDEA: 0, PRAISE: 0 };
@@ -81,14 +90,25 @@ export function aggregateFeedback(rows: Feedback[]): FeedbackAggregate {
     PARENT_GUARDIAN: 0,
     ADULT_OTHER: 0,
   };
+  const ratingDistribution: Record<1 | 2 | 3 | 4 | 5, number> = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
 
   let total = 0;
   let legacyCount = 0;
+  let ratingCount = 0;
+  let ratingSum = 0;
   const messages: FeedbackMessage[] = [];
 
   for (const r of rows) {
+    // Rating rollup spans every rated row, independent of kind.
+    if (r.rating != null && r.rating >= 1 && r.rating <= 5) {
+      ratingCount += 1;
+      ratingSum += r.rating;
+      ratingDistribution[r.rating as 1 | 2 | 3 | 4 | 5] += 1;
+    }
+
     if (!r.kind) {
-      legacyCount += 1;
+      // True legacy Likert rows only — a rating-only submission is NOT legacy.
+      if (r.rating == null) legacyCount += 1;
       continue;
     }
     total += 1;
@@ -109,7 +129,19 @@ export function aggregateFeedback(rows: Feedback[]): FeedbackAggregate {
 
   messages.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
 
-  return { total, legacyCount, byKind, byArea, byRole, messages };
+  const ratingAvg = ratingCount > 0 ? Math.round((ratingSum / ratingCount) * 10) / 10 : null;
+
+  return {
+    total,
+    legacyCount,
+    byKind,
+    byArea,
+    byRole,
+    messages,
+    ratingCount,
+    ratingAvg,
+    ratingDistribution,
+  };
 }
 
 /** CSV-encode a single value — wraps in quotes and escapes internal quotes. */
@@ -125,6 +157,7 @@ export function feedbackToCsv(rows: Feedback[]): string {
   const header = [
     "id",
     "createdAt",
+    "rating",
     "kind",
     "area",
     "role",
@@ -141,6 +174,7 @@ export function feedbackToCsv(rows: Feedback[]): string {
       [
         r.id,
         r.createdAt,
+        r.rating ?? "",
         r.kind ?? "",
         r.area ?? "",
         r.role ?? "",

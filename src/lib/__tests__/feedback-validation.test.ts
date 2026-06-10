@@ -28,6 +28,28 @@ describe("feedbackSchema", () => {
     expect(() => feedbackSchema.parse({ message: "hi" })).toThrow();
   });
 
+  it("accepts a rating on its own (no kind / message)", () => {
+    const parsed = feedbackSchema.parse({ rating: 5 });
+    expect(parsed.rating).toBe(5);
+  });
+
+  it("accepts a rating alongside written feedback", () => {
+    const parsed = feedbackSchema.parse({ rating: 4, kind: "PRAISE", message: "love it" });
+    expect(parsed.rating).toBe(4);
+    expect(parsed.kind).toBe("PRAISE");
+  });
+
+  it("rejects a rating outside 1-5", () => {
+    expect(() => feedbackSchema.parse({ rating: 0 })).toThrow();
+    expect(() => feedbackSchema.parse({ rating: 6 })).toThrow();
+    expect(() => feedbackSchema.parse({ rating: 3.5 })).toThrow();
+  });
+
+  it("rejects an empty submission (no rating, no written feedback)", () => {
+    expect(() => feedbackSchema.parse({})).toThrow();
+    expect(() => feedbackSchema.parse({ area: "JOURNEY" })).toThrow();
+  });
+
   it("rejects an empty message", () => {
     expect(() => feedbackSchema.parse({ kind: "PRAISE", message: "" })).toThrow();
   });

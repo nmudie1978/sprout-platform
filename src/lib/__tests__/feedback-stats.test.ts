@@ -14,6 +14,7 @@ function row(overrides: Partial<Feedback> = {}): Feedback {
     id: "r1",
     createdAt: new Date("2026-04-10T12:00:00Z"),
     createdByUserId: null,
+    rating: null,
     kind: "CONFUSED",
     area: "JOURNEY",
     message: null,
@@ -67,6 +68,32 @@ describe("aggregateFeedback", () => {
     expect(agg.messages.map((m) => m.id)).toEqual(["1", "2"]);
     expect(agg.messages[0].kind).toBe("CONFUSED");
   });
+
+  it("rolls up the 1-5 rating: average, distribution, and rating-only rows are not legacy", () => {
+    const rows: Feedback[] = [
+      row({ id: "1", rating: 5, kind: "PRAISE", message: "great" }), // rated + written
+      row({ id: "2", rating: 4, kind: null, message: null }),        // rating-only
+      row({ id: "3", rating: 4, kind: null, message: null }),        // rating-only
+      row({ id: "4", rating: 1, kind: "PROBLEM", message: "broke" }),
+      row({ id: "5", rating: null, kind: null, q1: 3, message: null }), // true legacy
+    ];
+    const agg = aggregateFeedback(rows);
+
+    expect(agg.ratingCount).toBe(4);
+    expect(agg.ratingAvg).toBe(3.5); // (5+4+4+1)/4
+    expect(agg.ratingDistribution[4]).toBe(2);
+    expect(agg.ratingDistribution[5]).toBe(1);
+    expect(agg.ratingDistribution[1]).toBe(1);
+    expect(agg.ratingDistribution[3]).toBe(0);
+    expect(agg.legacyCount).toBe(1); // only row 5 (no kind, no rating)
+    expect(agg.total).toBe(2);       // rows 1 and 4 have a kind
+  });
+
+  it("returns ratingAvg null when there are no ratings", () => {
+    const agg = aggregateFeedback([row({ kind: "IDEA", message: "hi" })]);
+    expect(agg.ratingCount).toBe(0);
+    expect(agg.ratingAvg).toBeNull();
+  });
 });
 
 describe("csvCell", () => {
@@ -85,7 +112,7 @@ describe("feedbackToCsv", () => {
     const csv = feedbackToCsv(rows);
     const lines = csv.split("\n");
     expect(lines[0]).toBe(
-      "id,createdAt,kind,area,role,message,legacyText,source,userAgent,appVersion,createdByUserId",
+      "id,createdAt,rating,kind,area,role,message,legacyText,source,userAgent,appVersion,createdByUserId",
     );
     expect(lines).toHaveLength(2);
     expect(lines[1]).toContain("PROBLEM");

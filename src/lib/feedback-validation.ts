@@ -1,16 +1,30 @@
 import { z } from "zod";
 
-/** Zod contract for the POST /api/feedback body (typed feedback model). */
-export const feedbackSchema = z.object({
-  kind: z.enum(["CONFUSED", "PROBLEM", "IDEA", "PRAISE"]),
-  area: z
-    .enum(["JOURNEY", "CAREER_RADAR", "EXPLORE_CAREERS", "LIBRARY", "CAREER_TWIN", "OTHER"])
-    .optional()
-    .nullable(),
-  message: z.string().max(1000).refine((s) => s.trim().length > 0, "Message cannot be empty."),
-  role: z.enum(["TEEN_16_20", "PARENT_GUARDIAN", "ADULT_OTHER"]).optional().nullable(),
-  source: z.string().max(50).optional().nullable(),
-});
+/** Zod contract for the POST /api/feedback body (typed feedback model).
+ *
+ * A submission needs EITHER a star rating OR written feedback (a kind + a
+ * non-empty message), or both — so a user can leave a quick 1-5 rating on its
+ * own, or detailed feedback, without being forced into both. */
+export const feedbackSchema = z
+  .object({
+    rating: z.number().int().min(1).max(5).optional().nullable(),
+    kind: z.enum(["CONFUSED", "PROBLEM", "IDEA", "PRAISE"]).optional().nullable(),
+    area: z
+      .enum(["JOURNEY", "CAREER_RADAR", "EXPLORE_CAREERS", "LIBRARY", "CAREER_TWIN", "OTHER"])
+      .optional()
+      .nullable(),
+    message: z.string().max(1000).optional().nullable(),
+    role: z.enum(["TEEN_16_20", "PARENT_GUARDIAN", "ADULT_OTHER"]).optional().nullable(),
+    source: z.string().max(50).optional().nullable(),
+  })
+  .refine(
+    (d) =>
+      d.rating != null ||
+      (d.kind != null &&
+        typeof d.message === "string" &&
+        d.message.trim().length > 0),
+    { message: "Add a rating or written feedback." },
+  );
 
 export type FeedbackInput = z.infer<typeof feedbackSchema>;
 

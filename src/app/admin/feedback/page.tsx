@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { getAdminSession } from "@/lib/admin/auth";
 import { prisma } from "@/lib/prisma";
-import { Download, MessageSquare } from "lucide-react";
+import { Download, MessageSquare, Star } from "lucide-react";
 import {
   aggregateFeedback,
   KIND_LABEL,
@@ -10,7 +10,9 @@ import {
   KIND_VALUES,
   AREA_VALUES,
   ROLE_VALUES,
+  type FeedbackAggregate,
 } from "@/lib/feedback-stats";
+import { cn } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
@@ -50,6 +52,10 @@ export default async function AdminFeedbackPage() {
           Export CSV
         </a>
       </div>
+
+      {/* Platform rating summary — shown whenever any ratings exist, even
+          if there's no written feedback yet. */}
+      {agg.ratingCount > 0 && <RatingPanel agg={agg} />}
 
       {/* Headline counters */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
@@ -114,6 +120,56 @@ function Counter({ label, value }: { label: string; value: number }) {
         {label}
       </div>
       <div className="text-2xl font-bold tabular-nums mt-1">{value}</div>
+    </div>
+  );
+}
+
+function RatingPanel({ agg }: { agg: FeedbackAggregate }) {
+  const stars: (1 | 2 | 3 | 4 | 5)[] = [5, 4, 3, 2, 1];
+  const max = Math.max(1, ...stars.map((s) => agg.ratingDistribution[s]));
+  return (
+    <div className="rounded-card border border-border/60 bg-card/50 p-5 mb-6 flex flex-col gap-5 sm:flex-row sm:items-center">
+      {/* Average */}
+      <div className="flex items-center gap-4 sm:border-r sm:border-border/60 sm:pr-6">
+        <div className="text-4xl font-bold tabular-nums">{agg.ratingAvg?.toFixed(1)}</div>
+        <div>
+          <div className="flex items-center gap-0.5">
+            {[1, 2, 3, 4, 5].map((n) => (
+              <Star
+                key={n}
+                className={cn(
+                  "h-4 w-4",
+                  (agg.ratingAvg ?? 0) >= n - 0.25
+                    ? "fill-amber-400 text-amber-400"
+                    : "text-muted-foreground/30",
+                )}
+              />
+            ))}
+          </div>
+          <div className="text-[11px] text-muted-foreground mt-1">
+            average of {agg.ratingCount} rating{agg.ratingCount === 1 ? "" : "s"}
+          </div>
+        </div>
+      </div>
+      {/* Distribution */}
+      <div className="flex-1 space-y-1.5">
+        {stars.map((s) => {
+          const c = agg.ratingDistribution[s];
+          return (
+            <div key={s} className="flex items-center gap-2 text-xs">
+              <span className="w-3 text-right tabular-nums text-muted-foreground">{s}</span>
+              <Star className="h-3 w-3 text-amber-400/70" />
+              <div className="h-2 flex-1 overflow-hidden rounded-full bg-muted/40">
+                <div
+                  className="h-full rounded-full bg-amber-400/70"
+                  style={{ width: `${(c / max) * 100}%` }}
+                />
+              </div>
+              <span className="w-6 text-right tabular-nums text-muted-foreground">{c}</span>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }

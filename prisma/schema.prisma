@@ -1803,6 +1803,11 @@ model Feedback {
   // Who is giving feedback (optional)
   role FeedbackRole?
 
+  // Overall platform rating, 1 (highly disappointing) … 5 (amazing).
+  // Optional — a user can submit a rating alone, written feedback alone,
+  // or both. Aggregated into the average shown on the admin dashboard.
+  rating Int?
+
   // Legacy Likert pilot fields (no longer collected; kept for old rows)
   q1 Int?
   q2 Int?
