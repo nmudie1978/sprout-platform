@@ -13,43 +13,42 @@ import {
 } from "@/lib/content-refresh";
 
 /**
- * POST /api/revalidate
+ * Revalidate cached content. Supports BOTH:
+ *   - GET  — how Vercel Cron invokes it (Authorization: Bearer $CRON_SECRET)
+ *   - POST — manual / admin triggers (x-cron-secret header or admin session)
  *
- * Triggers on-demand revalidation of cached content.
+ * Targets via ?target= (did-you-know | insights | content-all | all | ...).
  *
- * Supported targets (via ?target= query param):
- *   - "did-you-know"     : Revalidates the facts pool + insights page
- *   - "insights"         : Revalidates the full insights page
- *   - "content-all"      : Revalidates ALL content sections (videos, articles, stats, etc.)
- *   - "content-stats"    : Revalidates job market statistics
- *   - "content-videos"   : Revalidates video pool
- *   - "content-podcasts" : Revalidates podcast data
- *   - "content-articles" : Revalidates world lens articles
- *   - "content-insights-pool" : Revalidates insights pool
- *   - "content-beyond-borders" : Revalidates beyond borders content
- *   - "content-facts"    : Revalidates research evidence / facts
- *   - "all"              : Revalidates everything (pages + content)
- *
- * Auth: Admin session OR x-cron-secret header matching CRON_SECRET env var.
- *
- * Usage:
- *   curl -X POST https://your-domain/api/revalidate?target=content-all \
- *     -H "x-cron-secret: YOUR_SECRET"
+ * Previously only POST existed and only read the x-cron-secret header, so the
+ * Vercel cron jobs (which send GET + Bearer) silently 405'd and content never
+ * auto-refreshed in production. Both methods now share one handler.
  */
-export async function POST(req: NextRequest) {
+
+async function authorize(
+  req: NextRequest,
+): Promise<{ ok: boolean; isAdmin: boolean }> {
+  const session = await getServerSession(authOptions);
+  if (session?.user?.role === "ADMIN") return { ok: true, isAdmin: true };
+
+  const expected = process.env.CRON_SECRET;
+  if (expected) {
+    const headerSecret = req.headers.get("x-cron-secret");
+    const authz = req.headers.get("authorization");
+    const bearerSecret = authz?.startsWith("Bearer ") ? authz.slice(7) : null;
+    if (headerSecret === expected || bearerSecret === expected) {
+      return { ok: true, isAdmin: false };
+    }
+  }
+  return { ok: false, isAdmin: false };
+}
+
+async function handleRevalidate(req: NextRequest) {
   try {
-    // ── Auth ──────────────────────────────────────────────────────
-    const session = await getServerSession(authOptions);
-    const cronSecret = req.headers.get("x-cron-secret");
-    const expectedSecret = process.env.CRON_SECRET;
-
-    const isAdmin = session?.user?.role === "ADMIN";
-    const isValidCron = !!(cronSecret && expectedSecret && cronSecret === expectedSecret);
-
-    if (!isAdmin && !isValidCron) {
+    const { ok, isAdmin } = await authorize(req);
+    if (!ok) {
       return NextResponse.json(
         { error: "Unauthorized. Admin access or valid cron secret required." },
-        { status: 403 }
+        { status: 403 },
       );
     }
 
@@ -117,9 +116,13 @@ export async function POST(req: NextRequest) {
       revalidated.push("/ (layout)");
     }
 
-    const metadata = target === "did-you-know" || target === "all" || target === "content-facts" || target === "content-all"
-      ? getFactsMetadata()
-      : null;
+    const metadata =
+      target === "did-you-know" ||
+      target === "all" ||
+      target === "content-facts" ||
+      target === "content-all"
+        ? getFactsMetadata()
+        : null;
 
     const durationMs = Date.now() - startTime;
     const dedupedPaths = [...new Set(revalidated)];
@@ -145,7 +148,17 @@ export async function POST(req: NextRequest) {
     console.error("[Revalidate] Error:", error);
     return NextResponse.json(
       { error: "Revalidation failed", details: String(error) },
-      { status: 500 }
+      { status: 500 },
     );
   }
+}
+
+// Vercel Cron sends GET + Authorization: Bearer $CRON_SECRET.
+export async function GET(req: NextRequest) {
+  return handleRevalidate(req);
+}
+
+// Manual / admin triggers (x-cron-secret header or admin session).
+export async function POST(req: NextRequest) {
+  return handleRevalidate(req);
 }
