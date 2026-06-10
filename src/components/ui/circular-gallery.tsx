@@ -29,7 +29,7 @@ interface CircularGalleryProps extends HTMLAttributes<HTMLDivElement> {
  * Designed to live inside a fixed-height container (no page-scroll coupling).
  */
 const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
-  ({ items, className, radius = 230, autoRotateSpeed = 0.03, ...props }, ref) => {
+  ({ items, className, radius = 230, autoRotateSpeed = 0.036, ...props }, ref) => {
     const [rotation, setRotation] = useState(0);
     const [hovered, setHovered] = useState(false);
     const rafRef = useRef<number | null>(null);
@@ -144,13 +144,13 @@ const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
                 key={item.id}
                 role="group"
                 aria-label={item.title}
-                className="absolute h-[150px] w-[110px]"
+                className="absolute h-[180px] w-[132px]"
                 style={{
                   transform: `rotateY(${itemAngle}deg) translateZ(${radius}px)`,
                   left: "50%",
                   top: "50%",
-                  marginLeft: "-55px",
-                  marginTop: "-75px",
+                  marginLeft: "-66px",
+                  marginTop: "-90px",
                   opacity,
                   transition: "opacity 0.3s linear",
                 }}
