@@ -1,0 +1,30 @@
+/**
+ * Shared contract between saving a Skills That Matter card (the gallery) and
+ * listing saved Insights content (the My Library "My Content" tab). Both sides
+ * MUST use SKILLS_CONTENT_TAG so the tab can filter to insights-origin items
+ * without a schema change.
+ */
+
+/** Tag applied to SavedItems created from the Skills That Matter gallery. */
+export const SKILLS_CONTENT_TAG = "skills-that-matter";
+
+/** SavedItem types the gallery can produce (mirrors the Prisma SavedItemType). */
+export type SaveableType = "ARTICLE" | "VIDEO" | "PODCAST" | "SHORT";
+
+/**
+ * Map a gallery card's display badge ("Article" | "Podcast" | "Video") to a
+ * SavedItemType. Unknown/missing badges default to ARTICLE (the safest, most
+ * common type) rather than throwing.
+ */
+export function badgeToSavedItemType(badge: string | undefined): SaveableType {
+  switch ((badge ?? "").toLowerCase()) {
+    case "video":
+      return "VIDEO";
+    case "podcast":
+      return "PODCAST";
+    case "article":
+      return "ARTICLE";
+    default:
+      return "ARTICLE";
+  }
+}
