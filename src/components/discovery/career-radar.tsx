@@ -1075,16 +1075,34 @@ function placeDots(
         ? RING_RADII[0] - 22
         : RING_RADII[1] - 22;
 
+    // Lay the cell out as a bounded grid: even angular COLUMNS across the
+    // usable slice, and radial ROWS growing inward from baseR. A sparse cell
+    // (<=2) stays single-row (original behaviour); a crowded cell (e.g. the
+    // ~14 AI/Tech dots from the Fastest-Growing filter, which all share one
+    // slice) fans into 2–3 rows so the dots are individually legible instead
+    // of piling on top of each other. ROW_STEP * (maxRows-1) stays well
+    // inside the ring band, so dots never cross into the adjacent ring or
+    // spill past the slice edges.
+    const ROW_STEP = 14;
+    const rows =
+      group.length <= 2
+        ? 1
+        : group.length <= 4
+          ? 2
+          : group.length <= 9
+            ? 3
+            : 4;
+    const colCount = Math.ceil(group.length / rows);
+
     group.forEach((p, i) => {
-      // Even distribution: single dot sits dead-centre; multiple dots span
-      // the usable slice from start to end.
-      const t = group.length === 1 ? 0.5 : i / (group.length - 1);
+      const row = i % rows;
+      const col = Math.floor(i / rows);
+      // Column → angle across the usable slice (single column sits centre).
+      const t = colCount === 1 ? 0.5 : col / (colCount - 1);
       const angleDeg = sliceStart + sliceUsable * t - 90;
       const angleRad = angleDeg * (Math.PI / 180);
-      // For crowded slices, alternate a small radial offset so dots don't
-      // collide visually even when angular spacing is tight. Threshold lowered
-      // from 4 to 3 because thinner slices crowd faster.
-      const r = group.length > 3 ? baseR + (i % 2 === 0 ? -5 : 5) : baseR;
+      // Row → radius, stepping inward from the outer edge of the ring band.
+      const r = baseR - row * ROW_STEP;
       placed.push({
         career: p.career,
         ring,
