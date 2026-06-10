@@ -1,11 +1,10 @@
 /**
  * INDUSTRY INSIGHTS PAGE
  *
- * Four-section architecture:
+ * Three-section architecture:
  * 1) Global Lens — macro job market data + featured reports/podcasts
  * 2) Youth Lens (15-23) — interpretation of global data for young people
  * 3) Dig Deeper — trending roles and in-demand skills
- * 4) Go Further — global perspectives, beyond borders, events
  *
  * Features:
  * - Clear section dividers
@@ -58,11 +57,6 @@ const DidYouKnowCard = dynamic(
   () => import("@/components/insights/did-you-know-card").then((m) => m.DidYouKnowCard),
   { ssr: false, loading: () => <div className="h-32 animate-pulse rounded-control bg-muted/50" /> }
 );
-const GoFurtherTabs = dynamic(
-  () => import("@/components/insights/go-further-tabs").then((m) => m.GoFurtherTabs),
-  { ssr: false, loading: () => <div className="h-48 animate-pulse rounded-control bg-muted/50" /> }
-);
-
 const CONTEXT_HINTS_KEY = "insights_contextHints";
 
 
@@ -343,21 +337,6 @@ export default function IndustryInsightsPage() {
           >
             <SkillsGallery />
           </motion.div>
-        </div>
-      </motion.section>
-
-      {/* ============================================ */}
-      {/* SECTION 4: GO FURTHER */}
-      {/* ============================================ */}
-      <motion.section
-        id="go-further"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.65 }}
-        className="mb-4 scroll-mt-20"
-      >
-        <div className="rounded-card border border-border/40 bg-card p-3 sm:p-4">
-          <GoFurtherTabs />
         </div>
       </motion.section>
 

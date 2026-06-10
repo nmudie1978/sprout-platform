@@ -996,7 +996,9 @@ function UnderstandTab({
   const [selectedRow, setSelectedRow] = useState<number | null>(null);
   const { isCollapsed: uCollapsed, toggle: uToggle } = useSectionCollapse(
     ['u-role', 'u-day', 'u-education-pathway', 'u-specialisms', 'u-notes'],
-    [], // none collapsed by default (Misconceptions + employers are now tabs)
+    // Day & Workplace and Education Pathway start minimised so the tab opens
+    // focused on "Inside the Role"; user can expand them and the choice sticks.
+    ['u-day', 'u-education-pathway'],
   );
 
   if (!career || !goalTitle) {
@@ -2134,10 +2136,15 @@ function ClarityTab({ goalTitle, career }: { goalTitle: string | null; career: C
   const [roadmapCollapsed, setRoadmapCollapsed] = useState(false);
   const [momentumCollapsed, setMomentumCollapsed] = useState(false);
   const [claritySubTab, setClaritySubTab] = useState<'ask-future-me' | 'momentum'>('ask-future-me');
-  const { isCollapsed: gCollapsed, toggle: gToggle } = useSectionCollapse(['g-field']);
+  // g-future (Ask Future Me / Momentum) starts minimised so Clarity opens
+  // calm; the user's expand choice is remembered after that.
+  const { isCollapsed: gCollapsed, toggle: gToggle } = useSectionCollapse(['g-field', 'g-future'], ['g-future']);
   useEffect(() => {
     try {
-      setRoadmapCollapsed(window.localStorage.getItem('grow-roadmap-collapsed') === '1');
+      // Roadmap starts minimised by default (no stored pref → collapsed) so
+      // the Clarity tab opens calm; the user's choice is remembered after.
+      const storedRoadmap = window.localStorage.getItem('grow-roadmap-collapsed');
+      setRoadmapCollapsed(storedRoadmap === null ? true : storedRoadmap === '1');
       setMomentumCollapsed(window.localStorage.getItem('grow-momentum-collapsed') === '1');
     } catch { /* ignore */ }
   }, []);
@@ -2526,7 +2533,7 @@ function ClarityTab({ goalTitle, career }: { goalTitle: string | null; career: C
       {/* 1. Roadmap — collapsible. The timeline component owns its
           own header ("Henry's Roadmap to Surgeon · …") so the
           collapse toggle is a small chevron above it. */}
-      <SectionCard className="border-amber-500/20" style={{ boxShadow: '0 0 20px rgba(245,158,11,0.06)' }}>
+      <SectionCard className="border-amber-500/30" style={{ boxShadow: '0 0 20px rgba(245,158,11,0.06)' }}>
         {/* Header row — collapse toggle owns the row, a separate
             full-screen button sits on the right so it's always
             reachable without triggering collapse. */}
@@ -2611,18 +2618,29 @@ function ClarityTab({ goalTitle, career }: { goalTitle: string | null; career: C
             <Zap className="h-3.5 w-3.5" />
             Momentum
           </button>
+          {/* Minimise the whole Ask Future Me / Momentum container. Choice
+              persists via localStorage so it survives reloads. */}
+          <button
+            type="button"
+            onClick={() => gToggle('g-future')}
+            aria-label={gCollapsed('g-future') ? 'Expand this section' : 'Minimise this section'}
+            aria-expanded={!gCollapsed('g-future')}
+            className="flex items-center justify-center px-3 text-muted-foreground/55 hover:text-foreground transition-colors"
+          >
+            <ChevronDown className={cn('h-4 w-4 transition-transform duration-200', gCollapsed('g-future') && '-rotate-90')} />
+          </button>
         </div>
 
         {/* Tab content: Ask Future Me — the Career Twin, inline. Opening it
             here never navigates away, so the user keeps their place in Clarity. */}
-        {claritySubTab === 'ask-future-me' && (
+        {!gCollapsed('g-future') && claritySubTab === 'ask-future-me' && (
           <div className="p-4">
             <CareerTwinView initialCareerId={career?.id ?? null} embedded />
           </div>
         )}
 
         {/* Tab content: Momentum */}
-        {claritySubTab === 'momentum' && (
+        {!gCollapsed('g-future') && claritySubTab === 'momentum' && (
         <div>
         <div className="p-4 space-y-5">
           <p className="text-xs text-muted-foreground/50 leading-relaxed -mt-1">

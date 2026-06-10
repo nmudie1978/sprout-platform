@@ -851,7 +851,7 @@ const CURATED_ARTICLES: InsightArticle[] = [
     title: "Top Skills Employers Want in 2025",
     description:
       "Research on the most in-demand skills across industries.",
-    url: "https://www.weforum.org/agenda/skills-for-the-future",
+    url: "https://www.weforum.org/stories/2025/01/future-of-jobs-report-2025-jobs-of-the-future-and-the-skills-you-need-to-get-them/",
     source: "World Economic Forum",
     publishedAt: "2025-01-08",
     thumbnail:
@@ -863,7 +863,7 @@ const CURATED_ARTICLES: InsightArticle[] = [
     title: "The Skills Revolution",
     description:
       "How reskilling and upskilling are becoming essential for career longevity.",
-    url: "https://www.bcg.com/publications/skills-revolution",
+    url: "https://www.bcg.com/publications/2023/reskilling-workforce-for-future",
     source: "Boston Consulting Group",
     publishedAt: "2024-11-15",
     thumbnail:
@@ -875,7 +875,7 @@ const CURATED_ARTICLES: InsightArticle[] = [
     title: "Digital Skills for All",
     description:
       "The growing importance of digital literacy across all career paths.",
-    url: "https://www.oecd.org/digital/skills/",
+    url: "https://www.oecd.org/en/topics/digital-skills.html",
     source: "OECD",
     publishedAt: "2024-07-20",
     thumbnail:
@@ -887,7 +887,7 @@ const CURATED_ARTICLES: InsightArticle[] = [
     title: "The Most In-Demand Soft Skills for 2025",
     description:
       "Research reveals communication, adaptability, and problem-solving top employer wishlists worldwide.",
-    url: "https://www.mckinsey.com/capabilities/people-and-organizational-performance/our-insights",
+    url: "https://www.mckinsey.com/featured-insights/future-of-work/five-fifty-soft-skills-for-a-hard-world",
     source: "McKinsey & Company",
     publishedAt: "2025-01-18",
     thumbnail:
@@ -899,7 +899,7 @@ const CURATED_ARTICLES: InsightArticle[] = [
     title: "Why Emotional Intelligence Matters More Than IQ at Work",
     description:
       "How emotional intelligence drives team performance, leadership effectiveness, and career advancement.",
-    url: "https://hbr.org/topic/subject/emotional-intelligence",
+    url: "https://hbr.org/2004/01/what-makes-a-leader",
     source: "Harvard Business Review",
     publishedAt: "2025-01-05",
     thumbnail:
@@ -911,7 +911,7 @@ const CURATED_ARTICLES: InsightArticle[] = [
     title: "Critical Thinking: The Skill Employers Can't Find Enough Of",
     description:
       "Survey data showing critical thinking as the most cited skill gap across industries.",
-    url: "https://www.weforum.org/agenda/critical-thinking-skills-gap",
+    url: "https://www.weforum.org/publications/the-future-of-jobs-report-2025/in-full/3-skills-outlook/",
     source: "World Economic Forum",
     publishedAt: "2024-12-20",
     thumbnail:
@@ -923,7 +923,7 @@ const CURATED_ARTICLES: InsightArticle[] = [
     title: "The Reskilling Revolution: 1 Billion People by 2030",
     description:
       "Global initiative to provide better education, skills, and economic opportunity to one billion people.",
-    url: "https://www.weforum.org/projects/reskilling-revolution",
+    url: "https://www.weforum.org/impact/reskilling-revolution-preparing-1-billion-people-for-tomorrows-economy/",
     source: "World Economic Forum",
     publishedAt: "2024-12-08",
     thumbnail:
@@ -935,7 +935,7 @@ const CURATED_ARTICLES: InsightArticle[] = [
     title: "Leadership Skills for Early-Career Professionals",
     description:
       "How young professionals can develop leadership capabilities from day one in their careers.",
-    url: "https://www.bcg.com/publications/leadership-development",
+    url: "https://careers.bcg.com/global/en/early-careers",
     source: "Boston Consulting Group",
     publishedAt: "2024-11-28",
     thumbnail:
@@ -947,7 +947,7 @@ const CURATED_ARTICLES: InsightArticle[] = [
     title: "AI Literacy: The New Must-Have Skill",
     description:
       "Why understanding AI tools and concepts is becoming essential across every profession.",
-    url: "https://www.oecd.org/digital/artificial-intelligence-skills",
+    url: "https://www.oecd.org/en/publications/bridging-the-ai-skills-gap_66d0702e-en.html",
     source: "OECD",
     publishedAt: "2024-11-15",
     thumbnail:
@@ -959,7 +959,7 @@ const CURATED_ARTICLES: InsightArticle[] = [
     title: "Collaboration in the Remote Work Era",
     description:
       "How teamwork and collaboration skills are evolving for hybrid and distributed workplaces.",
-    url: "https://www.mckinsey.com/capabilities/people-and-organizational-performance/collaboration",
+    url: "https://www.mckinsey.com/capabilities/people-and-organizational-performance/our-insights/what-executives-are-saying-about-the-future-of-hybrid-work",
     source: "McKinsey & Company",
     publishedAt: "2024-11-02",
     thumbnail:
@@ -971,7 +971,7 @@ const CURATED_ARTICLES: InsightArticle[] = [
     title: "The Growing Importance of Data Literacy",
     description:
       "Data literacy is no longer just for analysts — every role now requires understanding data.",
-    url: "https://hbr.org/topic/subject/data-literacy",
+    url: "https://hbr.org/2020/02/boost-your-teams-data-literacy",
     source: "Harvard Business Review",
     publishedAt: "2024-10-20",
     thumbnail:
@@ -983,7 +983,7 @@ const CURATED_ARTICLES: InsightArticle[] = [
     title: "Adaptability: The Meta-Skill for an Uncertain World",
     description:
       "Research on why adaptability is the foundation skill that enables all other skills to remain relevant.",
-    url: "https://www2.deloitte.com/insights/adaptability-workforce",
+    url: "https://www.deloitte.com/us/en/insights/topics/talent/future-of-work-research-workplace-adaptability.html",
     source: "Deloitte",
     publishedAt: "2024-10-08",
     thumbnail:
@@ -995,8 +995,8 @@ const CURATED_ARTICLES: InsightArticle[] = [
     title: "Communication Skills Drive Career Progression",
     description:
       "Studies show that strong communicators earn more and advance faster across all industries.",
-    url: "https://www.bcg.com/publications/communication-career-impact",
-    source: "Boston Consulting Group",
+    url: "https://www.linkedin.com/business/talent/blog/talent-strategy/linkedin-most-in-demand-hard-and-soft-skills",
+    source: "LinkedIn",
     publishedAt: "2024-09-25",
     thumbnail:
       "https://images.unsplash.com/photo-1543269865-cbf427effbad?w=600&h=400&fit=crop",
@@ -1007,7 +1007,7 @@ const CURATED_ARTICLES: InsightArticle[] = [
     title: "Creative Problem-Solving: Why It's a Top Employer Priority",
     description:
       "How creative thinking and innovative problem-solving have become critical differentiators in hiring.",
-    url: "https://www.weforum.org/agenda/creative-problem-solving",
+    url: "https://www.weforum.org/publications/the-future-of-jobs-report-2025/in-full/3-skills-outlook/",
     source: "World Economic Forum",
     publishedAt: "2024-09-12",
     thumbnail:
@@ -1019,7 +1019,7 @@ const CURATED_ARTICLES: InsightArticle[] = [
     title: "Time Management in the Age of Distraction",
     description:
       "Strategies for managing focus and productivity in a world of constant digital interruptions.",
-    url: "https://hbr.org/topic/subject/time-management",
+    url: "https://hbr.org/2018/08/4-strategies-for-overcoming-distraction",
     source: "Harvard Business Review",
     publishedAt: "2024-08-30",
     thumbnail:
@@ -1031,7 +1031,7 @@ const CURATED_ARTICLES: InsightArticle[] = [
     title: "Youth Skills Development: What Works",
     description:
       "Evidence-based approaches to building employability skills in young people aged 15–24.",
-    url: "https://www.ilo.org/resource/youth-skills-development",
+    url: "https://www.ilo.org/skills-youth-employment",
     source: "International Labour Organization",
     publishedAt: "2024-08-15",
     thumbnail:
@@ -1043,7 +1043,7 @@ const CURATED_ARTICLES: InsightArticle[] = [
     title: "Negotiation Skills Every Young Professional Needs",
     description:
       "From salary discussions to project scope, negotiation is a career-defining skill at every level.",
-    url: "https://www.mckinsey.com/featured-insights/negotiation-skills",
+    url: "https://www.mckinsey.com/capabilities/operations/our-insights/managing-conflict-effectively-in-negotiations",
     source: "McKinsey & Company",
     publishedAt: "2024-08-01",
     thumbnail:
@@ -1055,7 +1055,7 @@ const CURATED_ARTICLES: InsightArticle[] = [
     title: "Building Resilience in Early Careers",
     description:
       "How to develop resilience and cope with setbacks during the critical first years of work.",
-    url: "https://www2.deloitte.com/insights/resilience-workforce",
+    url: "https://www.deloitte.com/global/en/issues/work/genz-millennial-survey.html",
     source: "Deloitte",
     publishedAt: "2024-07-18",
     thumbnail:
@@ -1067,7 +1067,7 @@ const CURATED_ARTICLES: InsightArticle[] = [
     title: "Green Skills for the Sustainability Transition",
     description:
       "The specific skills needed to participate in the green economy and sustainability-focused careers.",
-    url: "https://www.oecd.org/environment/green-skills",
+    url: "https://www.oecd.org/en/publications/assessing-and-anticipating-skills-for-the-green-transition_28fa0bb5-en.html",
     source: "OECD",
     publishedAt: "2024-07-05",
     thumbnail:
@@ -1079,7 +1079,7 @@ const CURATED_ARTICLES: InsightArticle[] = [
     title: "Cross-Cultural Communication in a Global Workplace",
     description:
       "Essential skills for working effectively across cultures and geographies in today's connected world.",
-    url: "https://www.bcg.com/publications/cross-cultural-skills",
+    url: "https://careers.bcg.com/global/en/blogarticle/using-cross-cultural-communication-in-workplace",
     source: "Boston Consulting Group",
     publishedAt: "2024-06-22",
     thumbnail:
@@ -1091,7 +1091,7 @@ const CURATED_ARTICLES: InsightArticle[] = [
     title: "Writing Skills Still Matter in the Digital Age",
     description:
       "Clear writing remains one of the most valued skills — and one of the hardest to find in new hires.",
-    url: "https://hbr.org/topic/subject/business-writing",
+    url: "https://hbr.org/2021/07/the-science-of-strong-business-writing",
     source: "Harvard Business Review",
     publishedAt: "2024-06-10",
     thumbnail:
@@ -1103,7 +1103,7 @@ const CURATED_ARTICLES: InsightArticle[] = [
     title: "Learning Agility: The Skill Behind All Other Skills",
     description:
       "Research on why the ability to learn quickly and continuously is the key predictor of career success.",
-    url: "https://www.weforum.org/agenda/learning-agility",
+    url: "https://www.weforum.org/stories/2019/09/3-vital-skills-for-the-age-of-disruption/",
     source: "World Economic Forum",
     publishedAt: "2024-05-28",
     thumbnail:
@@ -1115,7 +1115,7 @@ const CURATED_ARTICLES: InsightArticle[] = [
     title: "Personal Branding and Networking for Young Professionals",
     description:
       "Building a professional reputation and network in the early stages of your career.",
-    url: "https://www.mckinsey.com/featured-insights/professional-development",
+    url: "https://www.mckinsey.com/about-us/new-at-mckinsey-blog/four-mckinsey-leaders-share-their-advice-for-early-career-women",
     source: "McKinsey & Company",
     publishedAt: "2024-05-15",
     thumbnail:
