@@ -15,7 +15,7 @@ import type { MetadataRoute } from "next";
 
 const PUBLIC_HOST =
   process.env.NEXT_PUBLIC_SITE_URL ||
-  (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "https://endeavrly.no");
+  (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "https://endeavrly.com");
 
 export default function robots(): MetadataRoute.Robots {
   // Non-production (preview / development on Vercel) — keep the staging

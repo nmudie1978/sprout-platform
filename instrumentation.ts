@@ -7,6 +7,10 @@ import * as Sentry from "@sentry/nextjs";
 
 export async function register() {
   if (process.env.NEXT_RUNTIME === "nodejs") {
+    // Fail the boot loudly in production if required env vars are missing
+    // or placeholders, instead of surfacing as user-facing 500s later.
+    const { validateEnv } = await import("@/lib/env");
+    validateEnv();
     await import("./sentry.server.config");
   }
   if (process.env.NEXT_RUNTIME === "edge") {
