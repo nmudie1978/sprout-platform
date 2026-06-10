@@ -17,6 +17,7 @@ import {
   validateExternalUrl,
   validateYouTubeVideo,
 } from "./validate-insight-url";
+import { getRedisClient } from "@/lib/rate-limit";
 
 // ============================================
 // SECTION DEFINITIONS
@@ -281,7 +282,16 @@ interface CacheEntry<T> {
   timestamp: number;
 }
 
+// Two-layer cache:
+//   L1 — per-instance in-memory Map (fast, but empty on every cold serverless
+//        instance, which is what made the first request re-validate every URL).
+//   L2 — shared Redis (REDIS_URL), so a warm cache is visible to ALL instances:
+//        a cold instance gets the already-validated section content from Redis
+//        and skips the network validation entirely. Falls back gracefully to
+//        L1-only when Redis isn't configured (local dev / no REDIS_URL).
 const cache = new Map<string, CacheEntry<unknown>>();
+const REDIS_KEY_PREFIX = "insights:cache:";
+const CACHE_TTL_SECONDS = Math.floor(CACHE_DURATION_MS / 1000);
 
 function isCacheValid(key: string): boolean {
   const entry = cache.get(key);
@@ -289,13 +299,38 @@ function isCacheValid(key: string): boolean {
   return Date.now() - entry.timestamp < CACHE_DURATION_MS;
 }
 
-function getFromCache<T>(key: string): T | null {
+async function getFromCache<T>(key: string): Promise<T | null> {
+  // L2 first — shared across instances, survives cold starts.
+  try {
+    const redis = await getRedisClient();
+    if (redis) {
+      const raw = await redis.get(REDIS_KEY_PREFIX + key);
+      if (raw) {
+        const data = JSON.parse(raw) as T;
+        cache.set(key, { data, timestamp: Date.now() }); // warm L1
+        return data;
+      }
+    }
+  } catch {
+    // Redis hiccup — fall through to the in-memory layer.
+  }
+  // L1 fallback.
   if (!isCacheValid(key)) return null;
   return cache.get(key)?.data as T;
 }
 
-function setCache<T>(key: string, data: T): void {
+async function setCache<T>(key: string, data: T): Promise<void> {
   cache.set(key, { data, timestamp: Date.now() });
+  try {
+    const redis = await getRedisClient();
+    if (redis) {
+      await redis.set(REDIS_KEY_PREFIX + key, JSON.stringify(data), {
+        EX: CACHE_TTL_SECONDS,
+      });
+    }
+  } catch {
+    // Best-effort — the in-memory entry still serves this instance.
+  }
 }
 
 // ============================================
@@ -379,7 +414,7 @@ export async function fetchVideosBySection(
   maxResults: number = MAX_VIDEOS_PER_SECTION
 ): Promise<InsightVideo[]> {
   const cacheKey = `videos-${sectionKey}-${maxResults}`;
-  const cached = getFromCache<InsightVideo[]>(cacheKey);
+  const cached = await getFromCache<InsightVideo[]>(cacheKey);
   if (cached) return cached;
 
   const section = INSIGHT_SECTIONS.find((s) => s.key === sectionKey);
@@ -396,7 +431,7 @@ export async function fetchVideosBySection(
       (v) => v.videoId,
       validateYouTubeVideo
     );
-    setCache(cacheKey, liveFallback);
+    await setCache(cacheKey, liveFallback);
     return liveFallback;
   }
 
@@ -490,7 +525,7 @@ export async function fetchVideosBySection(
   const deduped = sortByRecency(deduplicateVideos(allVideos));
   const result = deduped.slice(0, maxResults);
 
-  setCache(cacheKey, result);
+  await setCache(cacheKey, result);
   return result;
 }
 
@@ -522,7 +557,7 @@ export async function fetchArticlesBySection(
   maxResults: number = 30
 ): Promise<InsightArticle[]> {
   const cacheKey = `articles-${sectionKey}`;
-  const cached = getFromCache<InsightArticle[]>(cacheKey);
+  const cached = await getFromCache<InsightArticle[]>(cacheKey);
   if (cached) return cached;
 
   const section = INSIGHT_SECTIONS.find((s) => s.key === sectionKey);
@@ -541,7 +576,7 @@ export async function fetchArticlesBySection(
     validateExternalUrl
   );
 
-  setCache(cacheKey, liveArticles);
+  await setCache(cacheKey, liveArticles);
   return liveArticles;
 }
 
@@ -2024,7 +2059,7 @@ export async function fetchPodcastsBySection(
   sectionKey: InsightSectionKey
 ): Promise<InsightPodcast[]> {
   const cacheKey = `podcasts-${sectionKey}`;
-  const cached = getFromCache<InsightPodcast[]>(cacheKey);
+  const cached = await getFromCache<InsightPodcast[]>(cacheKey);
   if (cached) return cached;
 
   const podcasts = sortByRecency(
@@ -2038,7 +2073,7 @@ export async function fetchPodcastsBySection(
     validateExternalUrl
   );
 
-  setCache(cacheKey, livePodcasts);
+  await setCache(cacheKey, livePodcasts);
   return livePodcasts;
 }
 
