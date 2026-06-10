@@ -293,7 +293,7 @@ export default function WhitePaperPage() {
         <div className="space-y-4 text-foreground/85 leading-relaxed">
           <p>
             A career exploration platform built specifically for young people
-            aged <strong>15 to 23</strong>. It helps students understand who
+            aged <strong>15 to 30</strong>. It helps students understand who
             they are, explore careers that genuinely fit them, discover real
             education pathways and employers, and build a realistic roadmap
             toward a fulfilling career — without exposing them to the risks
@@ -562,7 +562,7 @@ export default function WhitePaperPage() {
           <Bullets
             items={[
               "Global Lens — macroeconomic stats, featured reports, podcasts.",
-              "Youth Lens — trends re-interpreted for the 15–23 demographic.",
+              "Youth Lens — trends re-interpreted for the 15–30 demographic.",
               "Dig Deeper — trending roles and in-demand skills.",
               "Go Further — international context and verified events worth attending.",
             ]}
@@ -892,7 +892,7 @@ export default function WhitePaperPage() {
                   <div className="text-[11px] text-muted-foreground/70">endeavrly.no</div>
                 </td>
                 <td className="px-3 py-3 align-top">Norway-first, Nordics-next</td>
-                <td className="px-3 py-3 align-top">15–23 youth career discovery + first-job marketplace + safety-by-design messaging + transparent matching</td>
+                <td className="px-3 py-3 align-top">15–30 youth career discovery + first-job marketplace + safety-by-design messaging + transparent matching</td>
                 <td className="px-3 py-3 align-top">Direct-to-youth and family (no school licence required)</td>
                 <td className="px-3 py-3 align-top">Free for youth; commercial model in development</td>
               </tr>

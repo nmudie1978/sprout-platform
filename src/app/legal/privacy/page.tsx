@@ -79,7 +79,7 @@ export default function PrivacyPolicyPage() {
             <ul>
               <li>Provide and operate the Platform, including account management and authentication</li>
               <li>Enable the My Journey feature, including career exploration and skill development tracking</li>
-              <li>Verify user age (a one-time 15&ndash;23 eligibility check at sign-up)</li>
+              <li>Verify user age (a one-time 15&ndash;30 eligibility check at sign-up)</li>
               <li>Moderate content and enforce our Safety Guidelines</li>
               <li>Respond to reports and safeguarding concerns</li>
               <li>Send essential service communications (e.g., account verification, safety alerts)</li>
@@ -102,7 +102,7 @@ export default function PrivacyPolicyPage() {
 
             <h3>5.1 Processing Data of Minors</h3>
             <p>
-              Endeavrly is for young people aged 15&ndash;23 and is privacy-by-design: we collect only
+              Endeavrly is for young people aged 15&ndash;30 and is privacy-by-design: we collect only
               the minimal personal data needed to operate a career-exploration service, do not run
               tracking ads or behavioural profiling, and have no messaging or marketplace features.
               We process minors&apos; data on this minimised basis and apply GDPR safeguards (data

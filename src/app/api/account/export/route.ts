@@ -90,6 +90,7 @@ export async function GET(req: NextRequest) {
       proQuestions,
       proAnswers,
       userPreferences,
+      newsletterSubscriptions,
       // profile-owned
       savedCareers,
       savedItems,
@@ -123,6 +124,7 @@ export async function GET(req: NextRequest) {
       safe("proQuestions", () => prisma.proQuestion.findMany({ where: { youthId: userId } })),
       safe("proAnswers", () => prisma.proAnswer.findMany({ where: { answeredBy: userId } })),
       safe("userPreferences", () => prisma.userPreferences.findUnique(byUser)),
+      safe("newsletterSubscriptions", () => prisma.newsletterSubscription.findMany({ where: { OR: [{ userId }, { email: user.email }] } })),
       ofProfile("savedCareers", (a) => prisma.savedCareer.findMany(a)),
       ofProfile("savedItems", (a) => prisma.savedItem.findMany(a)),
       ofProfile("journeyReflections", (a) => prisma.journeyReflection.findMany(a)),
@@ -212,6 +214,8 @@ export async function GET(req: NextRequest) {
       // AI conversations
       aiChatMessages,
       careerTwinConversations: twinMessages,
+      // Marketing
+      newsletterSubscriptions,
     };
 
     // Log successful export

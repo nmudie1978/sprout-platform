@@ -15,8 +15,10 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { track } from "@vercel/analytics";
 import { Card, CardContent } from "@/components/ui/card";
+// Analytics removed — no third-party tracking (see Cookie Policy). This
+// local no-op keeps the former call sites compiling while emitting nothing.
+const track = (..._args: unknown[]): void => {};
 import { Button } from "@/components/ui/button";
 import { Sparkles, ArrowRight, X, CheckCircle2 } from "lucide-react";
 

@@ -105,7 +105,7 @@ export default function ResearchPage() {
         </div>
         <p className="text-xs text-muted-foreground mb-4">
           Research from leading organizations highlights the gap in career clarity and
-          real-world exposure among youth aged 15–23.
+          real-world exposure among youth aged 15–30.
         </p>
 
         <div className="grid gap-3 sm:grid-cols-2">
