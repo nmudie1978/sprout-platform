@@ -505,13 +505,26 @@ function LoadingSkeleton() {
 /** Manages collapse state for multiple sections, persisted in localStorage.
  *  `defaultCollapsed` lists keys that start collapsed unless the user has
  *  explicitly opened them (localStorage stores '0' for open). */
-function useSectionCollapse(keys: string[], defaultCollapsed: string[] = []) {
+function useSectionCollapse(
+  keys: string[],
+  defaultCollapsed: string[] = [],
+  // Keys here ALWAYS start collapsed on load, ignoring any stored preference.
+  // The user can still expand them in-session, but every fresh load minimises
+  // them again. Use for sections that should open minimised every time.
+  forceCollapsedOnLoad: string[] = [],
+) {
   const [state, setState] = useState<Record<string, boolean>>({});
   useEffect(() => {
     try {
       const defaults = new Set(defaultCollapsed);
+      const forced = new Set(forceCollapsedOnLoad);
       const loaded: Record<string, boolean> = {};
       for (const k of keys) {
+        if (forced.has(k)) {
+          // Always minimised on first load, regardless of stored choice.
+          loaded[k] = true;
+          continue;
+        }
         const stored = window.localStorage.getItem(`section-${k}`);
         if (stored !== null) {
           loaded[k] = stored === '1';
@@ -996,8 +1009,10 @@ function UnderstandTab({
   const [selectedRow, setSelectedRow] = useState<number | null>(null);
   const { isCollapsed: uCollapsed, toggle: uToggle } = useSectionCollapse(
     ['u-role', 'u-day', 'u-education-pathway', 'u-specialisms', 'u-notes'],
-    // Day & Workplace and Education Pathway start minimised so the tab opens
-    // focused on "Inside the Role"; user can expand them and the choice sticks.
+    [],
+    // Day & Workplace and Education Pathway ALWAYS open minimised so the tab
+    // opens focused on "Inside the Role". The user can expand them in-session,
+    // but every fresh load resets them to minimised (no sticky-open).
     ['u-day', 'u-education-pathway'],
   );
 
