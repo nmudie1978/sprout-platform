@@ -4,7 +4,7 @@ import { useSession } from "next-auth/react";
 import { useQuery } from "@tanstack/react-query";
 import { useAllInterestLevels } from "@/hooks/use-interest-level";
 import { clampInterestLevel } from "@/lib/interest-level/types";
-import { getCareerById } from "@/lib/career-pathways";
+import { useCareerCatalog } from "@/hooks/use-career-catalog";
 import {
   isClarityActive,
   isUnderstandConfirmed,
@@ -34,6 +34,7 @@ export function useDecisionInputs() {
   const { data: session } = useSession();
   const userId = session?.user?.id;
   const localInterest = useAllInterestLevels();
+  const { getCareerById } = useCareerCatalog();
 
   // Always refetch on mount: the global QueryClient caches for 3 min and does
   // not refetch on focus, so without this the board showed a stale goal list

@@ -19,7 +19,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
-import { searchCareers, type Career } from "@/lib/career-pathways";
+import type { Career } from "@/lib/career-pathways";
+import { useCareerCatalog } from "@/hooks/use-career-catalog";
 import { useDebounce } from "@/hooks/use-debounce";
 import Link from "next/link";
 
@@ -78,6 +79,7 @@ function CareerSearch({
 }) {
   const [query, setQuery] = useState("");
   const debouncedQuery = useDebounce(query, 250);
+  const { searchCareers } = useCareerCatalog();
   const results =
     debouncedQuery.length >= 2
       ? searchCareers(debouncedQuery).slice(0, 6)
@@ -176,15 +178,16 @@ function ContributeForm() {
   const [step, setStep] = useState(0);
   const [form, setForm] = useState<FormData>(INITIAL_FORM);
   const searchParams = useSearchParams();
+  const { getCareerById } = useCareerCatalog();
   useEffect(() => {
-    const preset = careerTagFromParam(searchParams.get("career"));
+    const preset = careerTagFromParam(searchParams.get("career"), getCareerById);
     if (!preset) return;
     setForm((prev) =>
       prev.careerTags.some((t) => t.id === preset.id)
         ? prev
         : { ...prev, careerTags: [...prev.careerTags, preset] },
     );
-  }, [searchParams]);
+  }, [searchParams, getCareerById]);
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState<string | null>(null);

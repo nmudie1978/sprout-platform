@@ -4,7 +4,13 @@ import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { Star, ArrowRight, MapPin, Filter, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { getAllCareers, getCategoryForCareer } from "@/lib/career-pathways";
+import type { Career, CareerCategory } from "@/lib/career-pathways";
+import { useCareerCatalog } from "@/hooks/use-career-catalog";
+
+type CareerLookup = {
+  getCareerById: (id: string) => Career | undefined;
+  getCategoryForCareer: (id: string) => CareerCategory | undefined;
+};
 
 // ── Types ─────────────────────────────────────────────────────────
 
@@ -58,10 +64,9 @@ function Section({ label, body }: { label: string; body: string }) {
   );
 }
 
-function getCareerInfo(careerTag: string) {
-  const allCareers = getAllCareers();
-  const career = allCareers.find((c) => c.id === careerTag);
-  const category = getCategoryForCareer(careerTag);
+function getCareerInfo(careerTag: string, lookup: CareerLookup) {
+  const career = lookup.getCareerById(careerTag);
+  const category = lookup.getCategoryForCareer(careerTag);
   return {
     title: career?.title ?? careerTag,
     emoji: career?.emoji ?? "💼",
@@ -70,11 +75,11 @@ function getCareerInfo(careerTag: string) {
   };
 }
 
-function getCategoriesForPath(path: CareerPath): { category: string; label: string }[] {
+function getCategoriesForPath(path: CareerPath, lookup: CareerLookup): { category: string; label: string }[] {
   const seen = new Set<string>();
   const result: { category: string; label: string }[] = [];
   for (const tag of path.careerTags) {
-    const info = getCareerInfo(tag);
+    const info = getCareerInfo(tag, lookup);
     if (info.category && !seen.has(info.category)) {
       seen.add(info.category);
       result.push({ category: info.category, label: info.categoryLabel });
@@ -91,6 +96,11 @@ export default function ParentsPathsPage() {
   const [loading, setLoading] = useState(true);
   const [filterCategory, setFilterCategory] = useState<string>("ALL");
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const { getCareerById, getCategoryForCareer } = useCareerCatalog();
+  const lookup = useMemo<CareerLookup>(
+    () => ({ getCareerById, getCategoryForCareer }),
+    [getCareerById, getCategoryForCareer],
+  );
 
   useEffect(() => {
     fetch("/api/career-paths?all=1")
@@ -104,21 +114,21 @@ export default function ParentsPathsPage() {
   const categories = useMemo(() => {
     const catSet = new Map<string, string>();
     for (const path of paths) {
-      for (const cat of getCategoriesForPath(path)) {
+      for (const cat of getCategoriesForPath(path, lookup)) {
         if (!catSet.has(cat.category)) catSet.set(cat.category, cat.label);
       }
     }
     return Array.from(catSet.entries())
       .map(([value, label]) => ({ value, label }))
       .sort((a, b) => a.label.localeCompare(b.label));
-  }, [paths]);
+  }, [paths, lookup]);
 
   const filteredPaths = useMemo(() => {
     if (filterCategory === "ALL") return paths;
     return paths.filter((p) =>
-      getCategoriesForPath(p).some((c) => c.category === filterCategory),
+      getCategoriesForPath(p, lookup).some((c) => c.category === filterCategory),
     );
-  }, [paths, filterCategory]);
+  }, [paths, filterCategory, lookup]);
 
   return (
     <div className="min-h-screen bg-background">
@@ -209,8 +219,8 @@ export default function ParentsPathsPage() {
         {!loading && filteredPaths.length > 0 && (
           <div className="space-y-4">
             {filteredPaths.map((path) => {
-              const pathCategories = getCategoriesForPath(path);
-              const careerInfos = path.careerTags.map(getCareerInfo);
+              const pathCategories = getCategoriesForPath(path, lookup);
+              const careerInfos = path.careerTags.map((tag) => getCareerInfo(tag, lookup));
               const isExpanded = expandedId === path.id;
 
               return (

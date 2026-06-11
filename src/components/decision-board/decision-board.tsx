@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { getCareerById } from "@/lib/career-pathways";
+import { useCareerCatalog } from "@/hooks/use-career-catalog";
 import { buildDecisionBoard } from "@/lib/decision-board/build";
 import type { DecisionRow } from "@/lib/decision-board/types";
 import { useDecisionInputs } from "@/hooks/use-decision-inputs";
@@ -21,6 +21,7 @@ function leadReason(leader: DecisionRow): string {
 export function DecisionBoardTab() {
   const { inputs, reflections, userId, isLoading } = useDecisionInputs();
   const { board, save } = useDecisionBoard();
+  const { getCareerById } = useCareerCatalog();
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
   const [dragId, setDragId] = useState<string | null>(null);
 

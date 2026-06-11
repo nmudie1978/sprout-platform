@@ -26,10 +26,8 @@ import { useAllInterestLevels, useInterestLevel } from "@/hooks/use-interest-lev
 import {
   InterestLevelStars,
 } from "@/components/interest-level/interest-level-rating";
-import {
-  getAllCareers,
-  type Career,
-} from "@/lib/career-pathways";
+import type { Career } from "@/lib/career-pathways";
+import { useCareerCatalog } from "@/hooks/use-career-catalog";
 import { DecisionBoardTab } from "@/components/decision-board/decision-board";
 import { MyContentTab } from "@/components/library/my-content-tab";
 import {
@@ -115,6 +113,7 @@ function EmptyState({ children }: { children: React.ReactNode }) {
 function SavedCareersTab() {
   const { curiosities, removeCuriosity } = useCuriositySaves();
   const interestLevels = useAllInterestLevels();
+  const { getAllCareers } = useCareerCatalog();
   if (curiosities.length === 0) {
     return (
       <EmptyState>
@@ -164,6 +163,7 @@ function ReflectionsTab() {
   const userId = session?.user?.id;
   const router = useRouter();
   const [entries, setEntries] = useState<LocalReflectionEntry[]>([]);
+  const { getAllCareers } = useCareerCatalog();
 
   // Reflections persist to the JourneyNotebook table; localStorage is the
   // device cache the JourneyReflectionsTray writes. Reconcile with the server
