@@ -74,6 +74,21 @@
     "evening": "God kveld",
     "welcome": "Velkommen"
   },
+  "welcomeBack": {
+    "greeting": "Velkommen tilbake, {name}",
+    "memory": {
+      "explored": "Sist utforsket du {career}.",
+      "interest": "Du var spesielt interessert i {career} sist.",
+      "saved": "Du hadde lagret {career} for å komme tilbake til den.",
+      "none": "Godt å se deg igjen — reisen din er akkurat slik du forlot den."
+    },
+    "prompt": "Hva har du lyst til å utforske i dag?",
+    "cta": {
+      "resume": "Fortsett reisen din",
+      "explore": "Utforsk karrierer"
+    },
+    "dismiss": "Lukk"
+  },
   "dashboard": {
     "pageContext": "Et overblikk over reisene, aktiviteten og det lagrede innholdet ditt.",
     "replayWalkthrough": "Spill av gjennomgangen på nytt",

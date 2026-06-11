@@ -74,6 +74,21 @@
     "evening": "Buenas noches",
     "welcome": "Bienvenido/a"
   },
+  "welcomeBack": {
+    "greeting": "Bienvenido de nuevo, {name}",
+    "memory": {
+      "explored": "La última vez estabas explorando {career}.",
+      "interest": "Te interesó mucho {career} la última vez.",
+      "saved": "Habías guardado {career} para volver a verlo.",
+      "none": "Qué bueno verte de nuevo: tu camino está justo donde lo dejaste."
+    },
+    "prompt": "¿Qué te gustaría explorar hoy?",
+    "cta": {
+      "resume": "Continúa tu camino",
+      "explore": "Explorar carreras"
+    },
+    "dismiss": "Cerrar"
+  },
   "dashboard": {
     "pageContext": "Un resumen de tus recorridos, tu actividad y el contenido que has guardado.",
     "replayWalkthrough": "Repetir el tutorial de la app",
