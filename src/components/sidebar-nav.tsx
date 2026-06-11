@@ -267,7 +267,7 @@ function NavSection({ title, children, collapsed, accent }: NavSectionProps) {
         {collapsed && <div className="w-6 border-t border-teal-500/40 mx-auto mb-2" />}
         <div
           className={cn(
-            "relative space-y-0.5 rounded-xl border border-transparent dark:border-white/10 bg-transparent dark:bg-white/5 overflow-hidden",
+            "relative space-y-0.5 rounded-xl border border-border/50 dark:border-white/10 bg-transparent dark:bg-white/5 overflow-hidden",
             collapsed ? "p-1" : "p-1.5"
           )}
         >
