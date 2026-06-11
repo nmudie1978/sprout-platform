@@ -7,6 +7,7 @@ import {
   buildCatalogIndexes,
   searchCatalog,
   sectorForCareer,
+  pensionNote,
   type CareerCatalog,
 } from "@/lib/careers-catalog/from-catalog";
 
@@ -60,6 +61,7 @@ export function useCareerCatalog() {
         indexes?.categoryById.get(id) ?? null,
       getSectorForCareer: (id: string): "public" | "private" | "mixed" =>
         indexes ? sectorForCareer(indexes, id) : "mixed",
+      getPensionNote: pensionNote,
       getCareersForCategory: (category: CareerCategory): Career[] =>
         query.data?.[category] ?? [],
       searchCareers: (q: string): Career[] =>
