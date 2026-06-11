@@ -24,7 +24,9 @@ import {
   RotateCcw,
   Lightbulb,
   ShieldAlert,
+  Flag,
 } from "lucide-react";
+import { ReportModal } from "@/components/report-modal";
 import {
   EXPERIENCE_LENGTHS,
   type ExperienceLength,
@@ -219,10 +221,22 @@ export function ExperienceRunner({
           {current && ` · scene ${current.index + 1} of ${current.total}`}
           {!current && fitInsights && " · complete"}
         </span>
-        <Button variant="ghost" size="sm" onClick={reset} className="text-muted-foreground hover:text-foreground gap-1.5">
-          <RotateCcw className="h-3.5 w-3.5" />
-          Start over
-        </Button>
+        <div className="flex items-center gap-1">
+          <ReportModal
+            targetType="CONTENT"
+            targetId={`career-twin-experience:${careerId ?? careerTitle}`}
+            targetName={`Experience: ${careerTitle}`}
+            trigger={
+              <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-destructive gap-1.5" aria-label="Report this content">
+                <Flag className="h-3.5 w-3.5" />
+              </Button>
+            }
+          />
+          <Button variant="ghost" size="sm" onClick={reset} className="text-muted-foreground hover:text-foreground gap-1.5">
+            <RotateCcw className="h-3.5 w-3.5" />
+            Start over
+          </Button>
+        </div>
       </div>
 
       {/* Completed turns */}

@@ -31,8 +31,10 @@ import {
   Compass,
   Radar,
   ShieldAlert,
+  Flag,
   User as UserIcon,
 } from "lucide-react";
+import { ReportModal } from "@/components/report-modal";
 
 interface ModeDef {
   id: string;
@@ -421,6 +423,23 @@ export function CareerTwinView({
                     >
                       {m.content}
                     </div>
+                    {m.role === "assistant" && (
+                      <ReportModal
+                        targetType="CONTENT"
+                        targetId={`career-twin-chat:${career?.id ?? ""}`}
+                        targetName={career ? `Career Twin — ${career.title}` : "Career Twin response"}
+                        trigger={
+                          <button
+                            type="button"
+                            className="mt-1 ml-1 inline-flex items-center gap-1 text-[11px] text-muted-foreground/60 hover:text-destructive transition-colors"
+                            aria-label="Report this response"
+                          >
+                            <Flag className="h-3 w-3" />
+                            Report
+                          </button>
+                        }
+                      />
+                    )}
                   </div>
                   {m.role === "user" && (
                     <div className="shrink-0 p-2 rounded-full bg-accent self-start">

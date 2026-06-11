@@ -2,7 +2,7 @@ import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
 import { getAdminSession } from "@/lib/admin/auth";
 import { prisma } from "@/lib/prisma";
-import { ArrowLeft, Shield, User, Briefcase, Clock, AlertTriangle, ShieldAlert } from "lucide-react";
+import { ArrowLeft, Shield, User, Briefcase, Clock, AlertTriangle, ShieldAlert, FileWarning } from "lucide-react";
 import { REPORT_REASONS } from "@/lib/community-guardian";
 import { ReportActions } from "@/components/admin/report-actions";
 
@@ -94,6 +94,8 @@ export default async function AdminReportDetailPage({ params }: PageProps) {
               <Briefcase className="h-3.5 w-3.5" />
             ) : report.targetType === "PLATFORM" ? (
               <ShieldAlert className="h-3.5 w-3.5 text-amber-500" />
+            ) : report.targetType === "CONTENT" ? (
+              <FileWarning className="h-3.5 w-3.5 text-amber-500" />
             ) : (
               <User className="h-3.5 w-3.5" />
             )}
@@ -101,8 +103,13 @@ export default async function AdminReportDetailPage({ params }: PageProps) {
               ? "Job post"
               : report.targetType === "PLATFORM"
                 ? "Platform / safety concern"
-                : "User"}
+                : report.targetType === "CONTENT"
+                  ? "Content"
+                  : "User"}
           </span>
+          {report.targetType === "CONTENT" && (
+            <code className="mt-1 block text-[10px] text-muted-foreground/70 break-all">{report.targetId}</code>
+          )}
         </DetailCard>
         <DetailCard label="Reason">
           <span className="text-sm">{reasonLabel}</span>
