@@ -2,20 +2,22 @@
 
 import { useMemo, useRef, useState, useEffect, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
-import {
-  CAREER_PATHWAYS,
-  findCareerCategory,
-  getAllCareers,
-  getCareersFromDiscovery,
-  getMatchReasons,
-  getSectorForCareer,
-  measureSignalStrength,
-  type Career,
-  type CareerCategory,
-  type DiscoveryPreferences,
+import type {
+  Career,
+  CareerCategory,
+  DiscoveryPreferences,
 } from "@/lib/career-pathways";
 import { Sparkles, Settings2, ZoomIn, ZoomOut, RotateCcw, ChevronLeft, ChevronRight, ChevronDown, Star, HelpCircle, X, MousePointerClick, Layers, Target, Plus, Check, Route, ArrowRight, Filter } from "lucide-react";
-import { getMatchResultForCareer } from "@/lib/matching";
+// Catalog-free matching: the engine + signal helper take their data from the
+// cached catalog (via useCareerCatalog) instead of bundling CAREER_PATHWAYS.
+import {
+  rankCareers,
+  getMatchReasonsFromEngine,
+  getMatchResultForCareer,
+  type FindCategory,
+} from "@/lib/matching";
+import { measureSignalStrength } from "@/lib/matching/lookups";
+import { useCareerCatalog } from "@/hooks/use-career-catalog";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
@@ -564,8 +566,8 @@ function matchesPreset(career: Career, preset: PresetFilterKey): boolean {
 }
 
 /** Return the full catalog careers that satisfy a preset. */
-function careersForPreset(preset: PresetFilterKey): Career[] {
-  return getAllCareers().filter((c) => matchesPreset(c, preset));
+function careersForPreset(preset: PresetFilterKey, allCareers: Career[]): Career[] {
+  return allCareers.filter((c) => matchesPreset(c, preset));
 }
 
 /* ── Radar Guide Tips ─────────────────────────────────────────────── */
@@ -875,8 +877,8 @@ const CATEGORY_ALIAS: Partial<Record<CareerCategory, CareerCategory>> = {
 };
 
 /** Resolve a career's radar-display category, applying the alias map. */
-function displayCategoryFor(careerId: string): CareerCategory | null {
-  const raw = findCareerCategory(careerId);
+function displayCategoryFor(careerId: string, findCategory: FindCategory): CareerCategory | null {
+  const raw = findCategory(careerId);
   if (!raw) return null;
   return CATEGORY_ALIAS[raw] ?? raw;
 }
@@ -971,10 +973,10 @@ function bandSizes(signalStrength: number): { strong: number; good: number; tota
  * breadth. If concentrated in fewer categories (<4), trim to 25 —
  * showing more would just be padding with weak matches.
  */
-function dynamicLimit(careers: { id: string }[]): number {
+function dynamicLimit(careers: { id: string }[], findCategory: FindCategory): number {
   const catCounts = new Map<string, number>();
   for (const c of careers) {
-    const cat = displayCategoryFor(c.id);
+    const cat = displayCategoryFor(c.id, findCategory);
     if (cat) catCounts.set(cat, (catCounts.get(cat) || 0) + 1);
   }
   const heavyCategories = [...catCounts.values()].filter((n) => n >= 10).length;
@@ -1025,6 +1027,7 @@ function careerInitials(title: string): string {
 
 function placeDots(
   careers: Career[],
+  findCategory: FindCategory,
   primaryGoalId?: string | null,
   strongSize: number = STRONG_BAND_SIZE,
   totalSize: number = STRONG_BAND_SIZE + GOOD_BAND_SIZE,
@@ -1044,7 +1047,7 @@ function placeDots(
   type Pre = { career: Career; ring: 0 | 1 | 2; idx: number };
   const buckets = new Map<string, Pre[]>();
   visibleCareers.forEach((career, idx) => {
-    const cat = displayCategoryFor(career.id);
+    const cat = displayCategoryFor(career.id, findCategory);
     if (!cat) return;
     const ring = ringFor(idx);
     const key = `${ring}|${cat}`;
@@ -1120,6 +1123,16 @@ function placeDots(
 }
 
 export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps) {
+  // Career catalog, fetched from the cached /api/careers/catalog instead of
+  // bundling the 740KB CAREER_PATHWAYS const. The matching engine + radar
+  // geometry take their data from here.
+  const {
+    careers: catalogCareers,
+    findCareerCategory: findCategory,
+    getSectorForCareer: sectorForId,
+    isLoading: catalogLoading,
+  } = useCareerCatalog();
+
   const compareShortlist = useCompareShortlist();
   const [compareModalOpen, setCompareModalOpen] = useState(false);
 
@@ -1140,7 +1153,7 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
 
   // Load a saved comparison set into the shortlist
   const loadSavedComparison = useCallback((careers: { id: string; title: string; emoji: string }[]) => {
-    const allCareers = getAllCareers();
+    const allCareers = catalogCareers;
     const resolved = careers
       .map((c) => allCareers.find((ac) => ac.id === c.id))
       .filter((c): c is Career => c !== undefined);
@@ -1215,11 +1228,7 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
   const resolveCareerIdByTitle = (title?: string | null) => {
     const t = title?.trim().toLowerCase();
     if (!t) return null;
-    for (const list of Object.values(CAREER_PATHWAYS)) {
-      const hit = list.find((c) => c.title.toLowerCase() === t);
-      if (hit) return hit.id;
-    }
-    return null;
+    return catalogCareers.find((c) => c.title.toLowerCase() === t)?.id ?? null;
   };
   const primaryGoalCareerId = useMemo(
     () => resolveCareerIdByTitle(goalsData?.primaryGoal?.title),
@@ -1234,27 +1243,27 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
   const bands = useMemo(() => bandSizes(signalStrength), [signalStrength]);
 
   const matched = useMemo(() => {
-    if (!preferences) return [];
-    const all = getCareersFromDiscovery(preferences, bands.total);
+    if (!preferences || catalogCareers.length === 0) return [];
+    const all = rankCareers(preferences, { careers: catalogCareers, findCategory }, bands.total);
     // Trim based on category spread — keep more when results are diverse
-    const limit = dynamicLimit(all);
+    const limit = dynamicLimit(all, findCategory);
     const sliced = all.slice(0, limit);
     if (presetFilter) {
       // Inject every career matching the active preset — even those
       // that didn't score against the user's preferences — so the
       // filter always surfaces its full curated set.
       const present = new Set(sliced.map((c) => c.id));
-      const extras = careersForPreset(presetFilter).filter(
+      const extras = careersForPreset(presetFilter, catalogCareers).filter(
         (c) => !present.has(c.id),
       );
       return [...sliced, ...extras];
     }
     return sliced;
-  }, [preferences, bands.total, presetFilter]);
+  }, [preferences, bands.total, presetFilter, catalogCareers, findCategory]);
 
   const dots = useMemo(
-    () => placeDots(matched, primaryGoalCareerId, bands.strong, matched.length),
-    [matched, primaryGoalCareerId, bands.strong]
+    () => placeDots(matched, findCategory, primaryGoalCareerId, bands.strong, matched.length),
+    [matched, findCategory, primaryGoalCareerId, bands.strong]
   );
 
   // Filter applied to both the radar dots and the matches report list.
@@ -1271,18 +1280,31 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
       if (presetFilter && !matchesPreset(d.career, presetFilter)) return false;
       if (!allTiersOn && !activeTiers.has(tierOf(d))) return false;
       if (sectorFilter !== "all") {
-        const s = getSectorForCareer(d.career.id);
+        const s = sectorForId(d.career.id);
         if (s !== sectorFilter && s !== "mixed") return false;
       }
       return true;
     });
-  }, [dots, activeTiers, allTiersOn, sectorFilter, presetFilter]);
+  }, [dots, activeTiers, allTiersOn, sectorFilter, presetFilter, sectorForId]);
 
   const hasPrefs =
     !!preferences &&
     ((preferences.subjects && preferences.subjects.length > 0) ||
       (preferences.workStyles && preferences.workStyles.length > 0) ||
       !!preferences.peoplePref);
+
+  // Catalog still loading (fetched async). Show a calm placeholder rather than
+  // a momentarily-empty radar so dots don't "pop in".
+  if (hasPrefs && catalogLoading && catalogCareers.length === 0) {
+    return (
+      <div className="relative rounded-2xl border border-border bg-card/40 p-10 flex items-center justify-center min-h-[320px]">
+        <div className="flex flex-col items-center gap-3 text-muted-foreground">
+          <Sparkles className="h-6 w-6 text-teal-500 animate-pulse" />
+          <p className="text-sm">Mapping your careers…</p>
+        </div>
+      </div>
+    );
+  }
 
   // Empty state — no preferences yet
   if (!hasPrefs) {
@@ -1772,7 +1794,7 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
             understands why this dot landed where it did. Closes the loop
             between the discovery quiz answers and the visual. */}
         {hovered && (() => {
-          const reasons = getMatchReasons(hovered.career, preferences ?? null).slice(0, 4);
+          const reasons = getMatchReasonsFromEngine(hovered.career, preferences ?? null, findCategory).slice(0, 4);
           return (
             <div
               className="absolute pointer-events-none px-2.5 py-1.5 rounded-md bg-popover border shadow-md text-[11px] max-w-[220px]"
