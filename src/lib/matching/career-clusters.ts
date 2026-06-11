@@ -108,14 +108,14 @@ export function getCareerCluster(
   const center = allCareers.find((c) => c.id === careerId);
   if (!center) return null;
 
-  const centerProfile = buildCareerProfile(center);
+  const centerProfile = buildCareerProfile(center, findCareerCategory);
   const centerCategory = findCareerCategory(center.id);
 
   // Score every other career
   const scored: { career: Career; sim: number; profile: CareerMatchProfile }[] = [];
   for (const c of allCareers) {
     if (c.id === careerId) continue;
-    const profile = buildCareerProfile(c);
+    const profile = buildCareerProfile(c, findCareerCategory);
     const sim = overallSimilarity(centerProfile, profile);
     scored.push({ career: c, sim, profile });
   }
