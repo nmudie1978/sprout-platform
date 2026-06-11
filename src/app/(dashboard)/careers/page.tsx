@@ -39,7 +39,7 @@ function CareersPageContent() {
   const router = useRouter();
   const pathname = usePathname();
   const isMobile = useIsMobile();
-  const { catalog, getAllCareers } = useCareerCatalog();
+  const { catalog, getAllCareers, isLoading: catalogLoading } = useCareerCatalog();
   // Country-aware localization: localize the RENDERED view only (filtering/
   // sorting/matching keep using the raw career objects). Norway/default/
   // logged-out → unchanged.
@@ -371,7 +371,17 @@ function CareersPageContent() {
       </div>
 
       {/* Results */}
-      {totalItems > 0 ? (
+      {catalogLoading && getAllCareers().length === 0 ? (
+        /* The catalog loads async from /api/careers/catalog; until it arrives
+           getAllCareers() is [] → don't flash "No careers found" on the main
+           browse surface. Show a calm skeleton instead. */
+        <Card className="border-2">
+          <CardContent className="flex items-center justify-center gap-2 py-16 text-sm text-muted-foreground">
+            <Loader2 className="h-4 w-4 animate-spin" />
+            Loading careers…
+          </CardContent>
+        </Card>
+      ) : totalItems > 0 ? (
         <>
           {/* Column headers — list view only. Mirrors the ListRow grid so
               labels line up over their data columns. `w-fit mx-auto`

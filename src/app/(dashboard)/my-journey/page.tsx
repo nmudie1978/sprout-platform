@@ -3116,7 +3116,7 @@ function ActionRow({
 export default function MyJourneyPage() {
   const { data: session } = useSession();
   const t = useTranslations();
-  const { getAllCareers } = useCareerCatalog();
+  const { getAllCareers, isLoading: catalogLoading } = useCareerCatalog();
   const isYouth = session?.user?.role === 'YOUTH';
   const { data: goalsData, isLoading: goalsLoading } = useGoals(isYouth);
   const goalTitle = goalsData?.primaryGoal?.title ?? null;
@@ -3220,7 +3220,11 @@ export default function MyJourneyPage() {
 
   // While goals are loading, show a skeleton to avoid flashing the onboarding
   // screen for users who already have a career goal set.
-  if (goalsLoading) {
+  // Show the skeleton while goals load AND while the async career catalog is
+  // still resolving a known goal. Without the catalog guard, goals (tiny)
+  // resolve first, `career` is briefly null, and a user who HAS a goal sees
+  // the "Choose a career goal to start exploring" empty state flash.
+  if (goalsLoading || (goalTitle && catalogLoading && !career)) {
     return (
       <div className="min-h-screen dark:bg-background">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 py-12">
