@@ -17,7 +17,6 @@ import { X, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import type { DiscoveryPreferences } from "@/lib/career-pathways";
-import { getCareersFromDiscovery } from "@/lib/career-pathways";
 import { SUBJECT_LABELS, WORK_STYLE_LABELS } from "@/lib/matching/config";
 
 // ── Timing ────────────────────────────────────────────────────────
@@ -36,11 +35,14 @@ interface NudgeContent {
   careerTitle: string;
 }
 
-function pickNudge(
+async function pickNudge(
   prefs: DiscoveryPreferences,
   seenIds: Set<string>,
-): NudgeContent | null {
-  // Get top-matching careers from the engine
+): Promise<NudgeContent | null> {
+  // Lazily pull in the matching engine (and the career catalog it needs)
+  // only when a nudge actually fires — 20-30 min after mount — so it stays
+  // out of every page's First Load JS.
+  const { getCareersFromDiscovery } = await import("@/lib/career-pathways");
   const careers = getCareersFromDiscovery(prefs, 30);
   if (!careers.length) return null;
 
@@ -172,18 +174,19 @@ export function DiscoveryNudge({
       if (dismissedRef.current) return;
 
       const seenIds = getSeenCareerIds();
-      const picked = pickNudge(preferences, seenIds);
-      if (!picked) return;
+      pickNudge(preferences, seenIds).then((picked) => {
+        if (dismissedRef.current || !picked) return;
 
-      setNudge(picked);
-      setVisible(true);
-      markShownThisSession();
-      addSeenCareerId(picked.careerId);
+        setNudge(picked);
+        setVisible(true);
+        markShownThisSession();
+        addSeenCareerId(picked.careerId);
 
-      // Auto-dismiss after 8 seconds
-      fadeTimerRef.current = setTimeout(() => {
-        handleFadeOut();
-      }, AUTO_DISMISS_MS);
+        // Auto-dismiss after 8 seconds
+        fadeTimerRef.current = setTimeout(() => {
+          handleFadeOut();
+        }, AUTO_DISMISS_MS);
+      });
     }, delay);
 
     return () => {

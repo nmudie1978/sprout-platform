@@ -17,6 +17,7 @@ import { FileText, Play, BarChart3, RefreshCw, ExternalLink } from 'lucide-react
 import { cn } from '@/lib/utils';
 import { useInsightsPool } from '@/hooks/use-insights-pool';
 import { deriveClusterTags } from '@/lib/insights/cluster-tags';
+import { useCareerCatalog } from '@/hooks/use-career-catalog';
 import type { PoolContentType } from '@/lib/insights/pool-types';
 
 const TYPE_ICON: Record<PoolContentType, typeof FileText> = {
@@ -43,7 +44,11 @@ function relTime(iso?: string): string | null {
 }
 
 export function WorthALook({ careerIds }: { careerIds: string[] }) {
-  const tags = useMemo(() => deriveClusterTags(careerIds), [careerIds]);
+  const { findCareerCategory } = useCareerCatalog();
+  const tags = useMemo(
+    () => deriveClusterTags(careerIds, findCareerCategory),
+    [careerIds, findCareerCategory],
+  );
   // Always three items; "show another" swaps them for the next verified set
   // (anti-repeat). No long summaries — just a title and a quiet source line.
   const { currentBatch, isLoading, fetchMore } = useInsightsPool(3, tags);

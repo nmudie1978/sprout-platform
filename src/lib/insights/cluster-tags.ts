@@ -14,7 +14,7 @@
  * relevant, broadening content).
  */
 
-import { findCareerCategory, type CareerCategory } from '@/lib/career-pathways';
+import type { CareerCategory } from '@/lib/career-pathways';
 
 /** Always-relevant world-of-work themes (match the pool's most common tags). */
 const UNIVERSAL_TAGS = ['future-of-work', 'skills', 'youth-employment', 'career-planning'];
@@ -47,7 +47,11 @@ const CATEGORY_TO_THEME_TAGS: Record<CareerCategory, string[]> = {
  * Cluster-specific tags come first (so they survive the cap), then universal
  * themes guarantee a non-empty, relevant result.
  */
-export function deriveClusterTags(careerIds: string[], max = 10): string[] {
+export function deriveClusterTags(
+  careerIds: string[],
+  findCareerCategory: (id: string) => CareerCategory | null,
+  max = 10,
+): string[] {
   const out: string[] = [];
   const seen = new Set<string>();
   const push = (t: string) => {
