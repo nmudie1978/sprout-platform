@@ -18,7 +18,7 @@ import {
 } from "lucide-react";
 import type { Career } from "@/lib/career-pathways";
 import type { LocalizedCareerView } from "@/lib/career-localization/types";
-import { getSectorForCareer } from "@/lib/career-pathways";
+import { useCareerCatalog } from "@/hooks/use-career-catalog";
 
 /** True when a localized view explicitly marks this career as not-yet-tailored. */
 function isNotTailored(career: Career | LocalizedCareerView): boolean {
@@ -51,7 +51,10 @@ function shortPath(educationPath: string): string {
 }
 
 /** Short sector label. */
-function shortSector(careerId: string): string {
+function shortSector(
+  careerId: string,
+  getSectorForCareer: (id: string) => "public" | "private" | "mixed",
+): string {
   const s = getSectorForCareer(careerId);
   if (s === "public") return "Public";
   if (s === "private") return "Private";
@@ -93,12 +96,13 @@ const growthConfig = {
  * List View Row - Entire row is clickable
  */
 function ListRow({ career, matchScore, onLearnMore, notTailoredLabel }: Omit<CareerCardV2Props, "viewMode">) {
+  const { getSectorForCareer } = useCareerCatalog();
   const growth = growthConfig[career.growthOutlook];
   const GrowthIcon = growth.icon;
   const notTailored = isNotTailored(career);
   const salaryShort = career.avgSalary ? career.avgSalary.split(" ")[0] : "";
 
-  const sector = shortSector(career.id);
+  const sector = shortSector(career.id, getSectorForCareer);
   const path = career.educationPath ? shortPath(career.educationPath) : "";
   const academic = getAcademicProfile(career);
   const demandColor = getDemandColors(academic.demand);

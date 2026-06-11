@@ -53,7 +53,7 @@ import {
 } from '@/lib/education';
 import { RoutePicker } from './route-picker';
 import { StageBlock } from './stage-block';
-import { getAllCareers } from '@/lib/career-pathways';
+import { useCareerCatalog } from '@/hooks/use-career-catalog';
 import {
   computeProgrammeAlignment,
   type AlignmentResult,
@@ -101,6 +101,7 @@ const COUNTRY_FLAGS: Record<string, string> = {
 
 export function EducationBrowser({ careerTitle, careerId, country, programmesOnly = false }: EducationBrowserProps) {
   const { data: foundation } = useFoundation();
+  const { getAllCareers } = useCareerCatalog();
 
   const lookup = careerId || careerTitle || '';
   const resolvedId = useMemo(() => resolveCareer(lookup), [lookup]);

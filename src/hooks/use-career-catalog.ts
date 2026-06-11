@@ -6,6 +6,8 @@ import type { Career, CareerCategory } from "@/lib/career-pathways";
 import {
   buildCatalogIndexes,
   searchCatalog,
+  sectorForCareer,
+  pensionNote,
   type CareerCatalog,
 } from "@/lib/careers-catalog/from-catalog";
 
@@ -45,11 +47,23 @@ export function useCareerCatalog() {
     () => ({
       isLoading: query.isLoading,
       error: query.error,
+      /** Raw category→careers map (empty until loaded). For the rare caller
+       *  that needs to iterate categories like the old CAREER_PATHWAYS. */
+      catalog: (query.data ?? {}) as CareerCatalog,
       careers: indexes?.all ?? [],
       getAllCareers: (): Career[] => indexes?.all ?? [],
       getCareerById: (id: string): Career | undefined => indexes?.byId.get(id),
       getCategoryForCareer: (id: string): CareerCategory | undefined =>
         indexes?.categoryById.get(id),
+      // Mirrors findCareerCategory() (first category by iteration order) — same
+      // as getCategoryForCareer but returns null rather than undefined.
+      findCareerCategory: (id: string): CareerCategory | null =>
+        indexes?.categoryById.get(id) ?? null,
+      getSectorForCareer: (id: string): "public" | "private" | "mixed" =>
+        indexes ? sectorForCareer(indexes, id) : "mixed",
+      getPensionNote: pensionNote,
+      getCareersForCategory: (category: CareerCategory): Career[] =>
+        query.data?.[category] ?? [],
       searchCareers: (q: string): Career[] =>
         indexes ? searchCatalog(indexes.all, q) : [],
       getAllCategories: (): CareerCategory[] =>

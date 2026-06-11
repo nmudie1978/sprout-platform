@@ -12,7 +12,8 @@ import { logAndSwallow } from "@/lib/observability";
 import { ConfirmDialog } from "@/components/mobile/ConfirmDialog";
 import { cn } from "@/lib/utils";
 import { toast } from "@/hooks/use-toast";
-import { searchCareers, getAllCareers, type Career } from "@/lib/career-pathways";
+import type { Career } from "@/lib/career-pathways";
+import { useCareerCatalog } from "@/hooks/use-career-catalog";
 import { createGoalWithMilestones, type GoalSlot, type CareerGoal } from "@/lib/goals/types";
 import { useDebounce } from "@/hooks/use-debounce";
 import { syncGuidanceGoal } from "@/lib/guidance/rules";
@@ -51,13 +52,14 @@ export function GoalSelectionSheet({
   const [showPrimaryConfirm, setShowPrimaryConfirm] = useState(false);
 
   const debouncedQuery = useDebounce(searchQuery, 200);
+  const { getAllCareers, searchCareers } = useCareerCatalog();
 
   // Get suggested careers (high growth, not already the goal)
   const suggestedCareers = useMemo(() => {
     return getAllCareers()
       .filter((c) => c.growthOutlook === "high" && c.title !== primaryGoal?.title)
       .slice(0, 6);
-  }, [primaryGoal]);
+  }, [primaryGoal, getAllCareers]);
 
   // Search results
   const searchResults = useMemo(() => {
@@ -65,7 +67,7 @@ export function GoalSelectionSheet({
     return searchCareers(debouncedQuery)
       .filter((career) => career.title !== primaryGoal?.title)
       .slice(0, 10);
-  }, [debouncedQuery, primaryGoal]);
+  }, [debouncedQuery, primaryGoal, searchCareers]);
 
   // Reset state when sheet opens
   useEffect(() => {

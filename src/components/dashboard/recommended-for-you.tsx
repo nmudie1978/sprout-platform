@@ -5,6 +5,7 @@ import {
   getExploredRecommendations,
   type RecommendationSignal,
 } from "@/lib/discover/explored-recommendations";
+import { useCareerCatalog } from "@/hooks/use-career-catalog";
 import type { Career } from "@/lib/career-pathways";
 
 /**
@@ -20,9 +21,15 @@ export function RecommendedForYou({
   signals: RecommendationSignal[];
   onSelect: (career: Career) => void;
 }) {
+  const { careers, getCategoryForCareer } = useCareerCatalog();
   const recommendations = useMemo(
-    () => getExploredRecommendations(signals, 3),
-    [signals],
+    () =>
+      getExploredRecommendations(
+        signals,
+        { all: careers, categoryForCareer: getCategoryForCareer },
+        3,
+      ),
+    [signals, careers, getCategoryForCareer],
   );
 
   if (recommendations.length === 0) {

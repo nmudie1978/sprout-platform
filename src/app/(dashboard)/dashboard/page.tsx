@@ -59,7 +59,8 @@ import { cn } from "@/lib/utils";
 import { OrientationWalkthrough } from "@/components/onboarding/orientation-walkthrough";
 import { LanguageDropdown } from "@/components/language-dropdown";
 import { CareerDetailSheet } from "@/components/career-detail-sheet";
-import { getAllCareers } from "@/lib/career-pathways";
+import type { Career } from "@/lib/career-pathways";
+import { useCareerCatalog } from "@/hooks/use-career-catalog";
 import { useDiscoverRecommendations } from "@/hooks/use-discover-recommendations";
 import { WhatILikeTray } from "@/components/dashboard/what-i-like-tray";
 import { RecommendedForYou } from "@/components/dashboard/recommended-for-you";
@@ -354,6 +355,7 @@ function DidYouKnowCard() {
 export default function DashboardPage() {
   const { data: session, status } = useSession();
   const t = useTranslations();
+  const { getAllCareers } = useCareerCatalog();
   // Onboarding walkthrough
   const [showOnboardingWizard, setShowOnboardingWizard] = useState(false);
   const isReplayRef = useRef(false);
@@ -667,7 +669,7 @@ export default function DashboardPage() {
     // 3. Try the reverse — match a catalogue title that has any
     // alternate equal to the (cleaned) goal title.
     return all.find((c) => alternates(c.title).includes(target)) || null;
-  }, [goalTitle]);
+  }, [goalTitle, getAllCareers]);
 
   // Strengths surface elsewhere now (Career Radar / discoveryPreferences).
   // The dashboard no longer pulls them from the legacy journey summary.
@@ -721,10 +723,10 @@ export default function DashboardPage() {
       });
     }
     return [...seeds.values()];
-  }, [exploredGoalsData, savedCareers, interestLevels]);
+  }, [exploredGoalsData, savedCareers, interestLevels, getAllCareers]);
 
   const [savedCareersPage, setSavedCareersPage] = useState(0);
-  const [savedCareerDetail, setSavedCareerDetail] = useState<ReturnType<typeof getAllCareers>[number] | null>(null);
+  const [savedCareerDetail, setSavedCareerDetail] = useState<Career | null>(null);
   const savedCareersPerPage = 4;
   const savedCareersPageCount = Math.max(1, Math.ceil(savedCareers.length / savedCareersPerPage));
   const savedCareersVisible = savedCareers.slice(

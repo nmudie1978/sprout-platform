@@ -55,3 +55,51 @@ export function searchCatalog(all: Career[], query: string): Career[] {
       career.keySkills.some((skill) => skill.toLowerCase().includes(q)),
   );
 }
+
+// Mirrors CATEGORY_SECTOR_DEFAULTS in career-pathways.ts. Small static map
+// (not catalog data) — safe to carry client-side.
+const CATEGORY_SECTOR_DEFAULTS: Partial<
+  Record<CareerCategory, "public" | "private" | "mixed">
+> = {
+  HEALTHCARE_LIFE_SCIENCES: "public",
+  EDUCATION_TRAINING: "public",
+  PUBLIC_SERVICE_SAFETY: "public",
+  MILITARY_DEFENCE: "public",
+  SOCIAL_CARE_COMMUNITY: "public",
+  TECHNOLOGY_IT: "private",
+  ARTIFICIAL_INTELLIGENCE: "private",
+  FINANCE_BANKING: "private",
+  CREATIVE_MEDIA: "private",
+  SALES_MARKETING: "private",
+  HOSPITALITY_TOURISM: "private",
+  REAL_ESTATE_PROPERTY: "private",
+  BUSINESS_MANAGEMENT: "private",
+  LOGISTICS_TRANSPORT: "mixed",
+  MANUFACTURING_ENGINEERING: "mixed",
+  CONSTRUCTION_TRADES: "mixed",
+  SPORT_FITNESS: "mixed",
+  TELECOMMUNICATIONS: "mixed",
+};
+
+/** Mirrors `getSectorForCareer()`: explicit field → category default → "mixed". */
+export function sectorForCareer(
+  indexes: CatalogIndexes,
+  careerId: string,
+): "public" | "private" | "mixed" {
+  const career = indexes.byId.get(careerId);
+  if (career?.sector) return career.sector;
+  const cat = indexes.categoryById.get(careerId);
+  return (cat && CATEGORY_SECTOR_DEFAULTS[cat]) ?? "mixed";
+}
+
+/** Mirrors `getPensionNote()`. Pure — no catalog needed. */
+export function pensionNote(sector: "public" | "private" | "mixed"): string {
+  switch (sector) {
+    case "public":
+      return "Public-sector pension (typically 66% of salary from age 67, strong job security)";
+    case "private":
+      return "Private-sector pension (mandatory 2%+ employer contribution, varies by company)";
+    case "mixed":
+      return "Pension varies — public employers offer stronger schemes, private varies by company";
+  }
+}

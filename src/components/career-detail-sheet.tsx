@@ -30,7 +30,7 @@ import {
 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import type { Career } from "@/lib/career-pathways";
-import { getCategoryForCareer } from "@/lib/career-pathways";
+import { useCareerCatalog } from "@/hooks/use-career-catalog";
 import type { LocalizedCareerView } from "@/lib/career-localization/types";
 import type { CareerGoal } from "@/lib/goals/types";
 import { createEmptyGoal } from "@/lib/goals/types";
@@ -77,6 +77,7 @@ export function CareerDetailSheet({
   const { data: session, update: refreshSession } = useSession();
   const router = useRouter();
   const queryClient = useQueryClient();
+  const { getCategoryForCareer } = useCareerCatalog();
   const [isPrimaryGoal, setIsPrimaryGoal] = useState(false);
   // True only right after the user sets this career as their goal — drives the
   // "explore it in My Journey now?" prompt (vs. just closing back to the radar).
