@@ -54,6 +54,10 @@ const RECOMMENDED = [
   // Sender address for transactional email (password reset). Without it,
   // sendMail silently skips — a warning here makes that visible at boot.
   "MAIL_FROM",
+  // Error monitoring. Sentry init is DSN-gated, so a missing DSN means ALL
+  // error capture is a silent no-op — warn loudly at boot if it's absent.
+  "SENTRY_DSN",
+  "NEXT_PUBLIC_SENTRY_DSN",
 ] as const;
 
 /**

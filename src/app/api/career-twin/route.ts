@@ -20,7 +20,7 @@ import {
   localeToLanguage,
 } from "@/lib/ai-guardrails";
 import { checkRateLimitAsync, RateLimits } from "@/lib/rate-limit";
-import { logAndSwallow } from "@/lib/observability";
+import { logAndSwallow, captureServerError } from "@/lib/observability";
 import { loadTwinHistory, appendTwinTurns, toPromptHistory, TWIN_CONTEXT_TURNS } from "@/lib/career-twin/history";
 import { loadTwinMemory, isReturningAfterGap } from "@/lib/career-twin/memory";
 
@@ -197,7 +197,7 @@ export async function POST(req: NextRequest) {
     }
     return NextResponse.json({ message: assistantMessage, mode: mode.id });
   } catch (error) {
-    logAndSwallow("career-twin:POST")(error);
+    captureServerError("career-twin:POST", error);
     return NextResponse.json({ message: twinFallback(careerTitle), fallback: true });
   }
 }

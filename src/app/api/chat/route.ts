@@ -6,7 +6,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import OpenAI from "openai";
-import { logAndSwallow } from "@/lib/observability";
+import { logAndSwallow, captureServerError } from "@/lib/observability";
 import {
   retrieveRelevantCareerCards,
   retrieveRelevantHelpDocs,
@@ -517,13 +517,9 @@ Keep it natural — don't list their profile back to them.`;
       ...(lifeSkillRecommended && { lifeSkillRecommended }),
     });
   } catch (error: any) {
-    // Log error for debugging (in development/staging)
-    console.error("[Chat API] Error occurred:", {
-      message: error?.message || error,
-      name: error?.name,
-      status: error?.status,
-      code: error?.code,
-    });
+    // Report to Sentry at error level — a swallowed failure here means the AI
+    // advisor is silently down with no alert. (Was console-only before.)
+    captureServerError("chat:POST", error);
 
     // Use smart fallback - we have message and intent from early parsing
     // T3: removed verbose fallback log
