@@ -173,7 +173,7 @@ export default function PrivacyPolicyPage() {
               To exercise any of these rights, contact us at <a href="mailto:privacy@endeavrly.no" className="text-primary hover:underline">privacy@endeavrly.no</a>. We will respond within 30 days. You may also delete your account and associated data through your profile settings.
             </p>
             <p>
-              If you are under 18, your parent or guardian may exercise these rights on your behalf.
+              If you are under 18, your parent or guardian may exercise these rights on your behalf by contacting us at <a href="mailto:privacy@endeavrly.no" className="text-primary hover:underline">privacy@endeavrly.no</a>.
             </p>
           </section>
 
@@ -187,7 +187,7 @@ export default function PrivacyPolicyPage() {
               <li>We do not serve targeted advertising or engage in behavioural profiling</li>
               <li>There are no messaging, social, or marketplace features — and no contact between users</li>
               <li>Personal contact information is not publicly displayed</li>
-              <li>Parents or guardians may request access to, correction of, or deletion of their child&apos;s data at any time</li>
+              <li>Parents or guardians may request access to, correction of, or deletion of their child&apos;s data at any time by emailing <a href="mailto:privacy@endeavrly.no" className="text-primary hover:underline">privacy@endeavrly.no</a></li>
             </ul>
           </section>
 

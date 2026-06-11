@@ -170,7 +170,7 @@ export default function CookiePolicyPage() {
               Because many of our users are minors, we take a minimal approach to cookies. We only use cookies that are strictly necessary for the Platform to function or that improve your experience. We do not use any cookies that profile, track, or target young users.
             </p>
             <p>
-              For users under 16, parental or guardian consent covers the use of strictly necessary cookies as part of the Platform&apos;s operation.
+              We set only strictly necessary cookies (for sign-in and your language choice). Under EU ePrivacy rules these do not require consent, so we do not show a cookie banner. A parent or guardian can contact us at <a href="mailto:privacy@endeavrly.no" className="text-primary hover:underline">privacy@endeavrly.no</a> about a young person&apos;s data at any time.
             </p>
           </section>
 
