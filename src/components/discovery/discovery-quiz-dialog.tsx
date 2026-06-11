@@ -84,7 +84,6 @@ const INTERESTS: { id: string; label: string; emoji: string }[] = [
   { id: "music-making", label: "Making music", emoji: "🎵" },
   { id: "fashion", label: "Fashion / style", emoji: "👗" },
   { id: "environment", label: "Environment / nature", emoji: "🌍" },
-  { id: "military-defence", label: "Military / defence", emoji: "🎖️" },
 ];
 
 interface DiscoveryQuizDialogProps {
