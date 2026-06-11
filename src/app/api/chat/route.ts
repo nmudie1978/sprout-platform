@@ -135,7 +135,18 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    // Rate limiting: 20 messages per hour
+    // Rate limiting: a 30-day per-user spend ceiling first (chat is the
+    // highest-traffic AI route; the hourly cap alone allows ~14k calls/month),
+    // then 20 messages per hour.
+    const monthlyQuota = await checkRateLimitAsync(`chat-month:${session.user.id}`, RateLimits.AI_MONTHLY_CHAT);
+    if (!monthlyQuota.success) {
+      return NextResponse.json({
+        message: "You've reached this month's limit for the advisor. It resets after a rolling 30-day window — in the meantime, browse careers or check the Q&A section.",
+        intent,
+        sources: {},
+        rateLimited: true,
+      });
+    }
     const rateLimit = await checkRateLimitAsync(`chat:${session.user.id}`, RateLimits.AI_CHAT);
     if (!rateLimit.success) {
       return NextResponse.json({

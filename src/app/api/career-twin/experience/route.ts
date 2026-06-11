@@ -77,7 +77,13 @@ export async function POST(req: NextRequest) {
     const lengthParam: string = (body.length ?? "").toString();
     const length = isValidExperienceLength(lengthParam) ? lengthParam : getExperienceLength(null).id;
 
-    // Rate limit shares the AI chat budget (each scene is one model call).
+    // Rate limit: a 30-day per-user spend ceiling first (each run is ~7 model
+    // calls — without this the hourly cap alone allows ~14k calls/user/month),
+    // then the short-window AI-chat budget.
+    const monthly = await checkRateLimitAsync(`career-twin-exp-month:${session.user.id}`, RateLimits.AI_MONTHLY_EXPERIENCE);
+    if (!monthly.success) {
+      return NextResponse.json({ rateLimited: true }, { status: 200 });
+    }
     const rl = await checkRateLimitAsync(`career-twin-exp:${session.user.id}`, RateLimits.AI_CHAT);
     if (!rl.success) {
       return NextResponse.json({ rateLimited: true }, { status: 200 });
