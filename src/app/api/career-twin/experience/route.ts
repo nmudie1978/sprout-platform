@@ -1,0 +1,173 @@
+export const dynamic = "force-dynamic";
+// AI/OpenAI calls can be slow; raise above Vercel's short default.
+export const maxDuration = 60;
+import { NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+import OpenAI from "openai";
+import { buildPersona } from "@/lib/career-twin";
+import { resolveCareerContext, loadProfileContext } from "@/lib/career-twin/resolve";
+import {
+  buildExperienceSystemPrompt,
+  buildStartUserMessage,
+  buildRespondUserMessage,
+  scenarioContentSchema,
+  respondContentSchema,
+  isValidExperienceLength,
+  getExperienceLength,
+  totalScenarios,
+  categoryForIndex,
+  type Scenario,
+} from "@/lib/career-twin/experience";
+import { isResponseSafe, localeToLanguage } from "@/lib/ai-guardrails";
+import { checkRateLimitAsync, RateLimits } from "@/lib/rate-limit";
+import { logAndSwallow } from "@/lib/observability";
+
+function getOpenAIClient(): OpenAI | null {
+  const apiKey = process.env.OPENAI_API_KEY;
+  const ok = !!(apiKey && apiKey.length > 10 && apiKey !== "sk-your-openai-api-key-here" && apiKey.startsWith("sk-"));
+  return ok ? new OpenAI({ apiKey }) : null;
+}
+
+/** One OpenAI JSON call. Returns the parsed object, or null on any failure. */
+async function jsonCompletion(
+  openai: OpenAI,
+  systemPrompt: string,
+  userMessage: string,
+): Promise<unknown | null> {
+  try {
+    const completion = await openai.chat.completions.create(
+      {
+        model: "gpt-4o-mini",
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: userMessage },
+        ],
+        temperature: 0.85,
+        max_tokens: 750,
+        response_format: { type: "json_object" },
+      },
+      { timeout: 30_000 },
+    );
+    const raw = completion.choices[0]?.message?.content?.trim();
+    if (!raw) return null;
+    return JSON.parse(raw);
+  } catch (e) {
+    logAndSwallow("career-twin:experience:openai")(e);
+    return null;
+  }
+}
+
+/** True when none of the supplied text trips the shared output guardrails. */
+function allSafe(...parts: (string | undefined)[]): boolean {
+  const text = parts.filter(Boolean).join("\n");
+  return !text || isResponseSafe(text).safe;
+}
+
+export async function POST(req: NextRequest) {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.id) {
+      return NextResponse.json({ requiresAuth: true }, { status: 200 });
+    }
+
+    const body = await req.json();
+    const action: string = (body.action ?? "").toString();
+    const careerIdParam: string | null = body.careerId ?? null;
+    const lengthParam: string = (body.length ?? "").toString();
+    const length = isValidExperienceLength(lengthParam) ? lengthParam : getExperienceLength(null).id;
+
+    // Rate limit shares the AI chat budget (each scene is one model call).
+    const rl = await checkRateLimitAsync(`career-twin-exp:${session.user.id}`, RateLimits.AI_CHAT);
+    if (!rl.success) {
+      return NextResponse.json({ rateLimited: true }, { status: 200 });
+    }
+
+    const career = await resolveCareerContext(session.user.id, careerIdParam);
+    if (!career) return NextResponse.json({ needsCareer: true }, { status: 200 });
+
+    const openai = getOpenAIClient();
+    if (!openai) return NextResponse.json({ unavailable: true }, { status: 200 });
+
+    const profile = await loadProfileContext(session.user.id);
+    const persona = buildPersona({ userId: session.user.id, career, profile });
+    const language = localeToLanguage(req.cookies.get("NEXT_LOCALE")?.value);
+    const systemPrompt = buildExperienceSystemPrompt({ persona, career, profile, length, language });
+    const total = totalScenarios(length);
+
+    // ── START: produce the first scene ──
+    if (action === "start") {
+      const parsed = await jsonCompletion(openai, systemPrompt, buildStartUserMessage(length));
+      const content = scenarioContentSchema.safeParse(parsed);
+      if (!content.success || !allSafe(content.data?.context, content.data?.situation)) {
+        return NextResponse.json({ unavailable: true }, { status: 200 });
+      }
+      const scenario: Scenario = {
+        index: 0,
+        total,
+        category: categoryForIndex(length, 0),
+        context: content.data.context,
+        situation: content.data.situation,
+      };
+      return NextResponse.json({ scenario });
+    }
+
+    // ── RESPOND: react to the user's reply, then next scene OR fit insights ──
+    if (action === "respond") {
+      const currentIndex = Number.isInteger(body.currentIndex) ? body.currentIndex : 0;
+      const userReply: string = (body.userReply ?? "").toString();
+      if (!userReply.trim()) {
+        return NextResponse.json({ error: "A response is required." }, { status: 400 });
+      }
+
+      const parsed = await jsonCompletion(
+        openai,
+        systemPrompt,
+        buildRespondUserMessage({ length, currentIndex, userReply }),
+      );
+      const content = respondContentSchema.safeParse(parsed);
+      if (
+        !content.success ||
+        !allSafe(
+          content.data?.consequence,
+          content.data?.reflection?.whatItsReallyLike,
+          content.data?.reflection?.whyEnjoy,
+          content.data?.reflection?.whyDislike,
+          content.data?.next?.context,
+          content.data?.next?.situation,
+          content.data?.fitInsights?.enjoyed,
+          content.data?.fitInsights?.lessInterested,
+        )
+      ) {
+        return NextResponse.json({ unavailable: true }, { status: 200 });
+      }
+
+      const { consequence, reflection, next, fitInsights } = content.data;
+      const nextIndex = currentIndex + 1;
+      const wrappedNext: Scenario | null =
+        nextIndex < total && next
+          ? {
+              index: nextIndex,
+              total,
+              category: categoryForIndex(length, nextIndex),
+              context: next.context,
+              situation: next.situation,
+            }
+          : null;
+
+      return NextResponse.json({
+        consequence,
+        reflection,
+        next: wrappedNext,
+        // Only surface fit insights once the day is actually over.
+        fitInsights: nextIndex >= total ? fitInsights ?? null : null,
+        complete: nextIndex >= total,
+      });
+    }
+
+    return NextResponse.json({ error: "Unknown action." }, { status: 400 });
+  } catch (error) {
+    logAndSwallow("career-twin:experience:POST")(error);
+    return NextResponse.json({ unavailable: true }, { status: 200 });
+  }
+}
