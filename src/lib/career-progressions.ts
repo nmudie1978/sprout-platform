@@ -215,7 +215,11 @@ export function getCareerProgression(careerId: string): CareerProgression | unde
 export interface CareerPathProgression {
   entry: string[];   // Beginner roles that lead to this career
   core: string[];    // The main role(s) at this level
-  next: string[];    // Advanced roles you can grow into
+  next?: string[];   // Flat "grows into" — used when there is no IC/management fork
+  // Two-track fork (opt-in): render BOTH or neither. "Senior" is the first step
+  // of the expert track, so the flow stays three stages, not four.
+  nextExpert?: string[]; // Deepen as an individual contributor (IC)
+  nextLead?: string[];   // Move into people / management
 }
 
 const careerPathProgressionMap: Record<string, CareerPathProgression> = {
@@ -223,37 +227,44 @@ const careerPathProgressionMap: Record<string, CareerPathProgression> = {
   "cloud-engineer": {
     entry: ["IT Support", "Junior SysAdmin", "DevOps Intern"],
     core: ["Cloud Engineer", "DevOps Engineer"],
-    next: ["Senior Cloud Engineer", "Platform Engineer", "Cloud Architect", "SRE"],
+    nextExpert: ["Senior Cloud Engineer", "Platform Engineer", "Cloud Architect"],
+    nextLead: ["Cloud Team Lead", "Cloud Engineering Manager"],
   },
   "software-developer": {
     entry: ["Coding Bootcamp Grad", "Junior Developer", "Intern"],
     core: ["Software Developer", "Full-Stack Developer"],
-    next: ["Senior Developer", "Tech Lead", "Staff Engineer", "Architect"],
+    nextExpert: ["Senior Developer", "Staff Engineer", "Principal Engineer", "Architect"],
+    nextLead: ["Tech Lead", "Engineering Manager", "Director of Engineering"],
   },
   "data-analyst": {
     entry: ["Data Entry", "Junior Analyst", "Business Intern"],
     core: ["Data Analyst", "BI Analyst"],
-    next: ["Senior Analyst", "Analytics Manager", "Data Scientist"],
+    nextExpert: ["Senior Analyst", "Data Scientist", "Principal Analyst"],
+    nextLead: ["Analytics Lead", "Analytics Manager"],
   },
   "data-scientist": {
     entry: ["Data Analyst", "ML Intern", "Research Assistant"],
     core: ["Data Scientist", "ML Engineer"],
-    next: ["Senior Data Scientist", "ML Lead", "Principal Scientist"],
+    nextExpert: ["Senior Data Scientist", "Staff Data Scientist", "Principal Scientist"],
+    nextLead: ["ML Lead", "Data Science Manager"],
   },
   "cybersecurity-analyst": {
     entry: ["IT Support", "SOC Analyst Tier 1", "Security Intern"],
     core: ["Cybersecurity Analyst", "Security Engineer"],
-    next: ["Senior Security Engineer", "Security Architect", "CISO"],
+    nextExpert: ["Senior Security Engineer", "Security Architect", "Principal Security Engineer"],
+    nextLead: ["Security Team Lead", "Security Manager", "CISO"],
   },
   "ux-designer": {
     entry: ["UI Designer", "Design Intern", "Visual Designer"],
     core: ["UX Designer", "Product Designer"],
-    next: ["Senior UX Designer", "Design Lead", "Head of Design"],
+    nextExpert: ["Senior UX Designer", "Staff Designer", "Principal Designer"],
+    nextLead: ["Design Lead", "Head of Design"],
   },
   "devops-engineer": {
     entry: ["Junior SysAdmin", "Build Engineer", "IT Support"],
     core: ["DevOps Engineer", "Platform Engineer"],
-    next: ["Senior DevOps", "SRE", "Infrastructure Lead"],
+    nextExpert: ["Senior DevOps Engineer", "Staff Engineer", "Infrastructure Architect"],
+    nextLead: ["DevOps Lead", "Platform Engineering Manager"],
   },
   "it-support": {
     entry: ["Helpdesk Intern", "Tech Support Trainee"],
@@ -263,12 +274,14 @@ const careerPathProgressionMap: Record<string, CareerPathProgression> = {
   "ai-engineer": {
     entry: ["ML Intern", "Data Scientist", "Software Developer"],
     core: ["AI Engineer", "ML Engineer"],
-    next: ["Senior AI Engineer", "AI Architect", "Head of AI"],
+    nextExpert: ["Senior AI Engineer", "Staff Engineer", "AI Architect"],
+    nextLead: ["AI Lead", "Head of AI"],
   },
   "qa-engineer": {
     entry: ["Manual Tester", "QA Intern", "Test Analyst"],
     core: ["QA Engineer", "SDET"],
-    next: ["Senior QA", "QA Lead", "Test Architect"],
+    nextExpert: ["Senior QA Engineer", "Test Architect", "Principal SDET"],
+    nextLead: ["QA Lead", "QA Manager"],
   },
   "product-manager-tech": {
     entry: ["Product Analyst", "Associate PM", "Business Analyst"],
@@ -302,7 +315,8 @@ const careerPathProgressionMap: Record<string, CareerPathProgression> = {
   "accountant": {
     entry: ["Accounting Intern", "Bookkeeper", "Junior Accountant"],
     core: ["Accountant", "Financial Accountant"],
-    next: ["Senior Accountant", "Finance Manager", "CFO"],
+    nextExpert: ["Senior Accountant", "Financial Controller", "Specialist (Tax/Audit)"],
+    nextLead: ["Finance Manager", "Head of Finance", "CFO"],
   },
   "project-manager": {
     entry: ["Project Coordinator", "Team Assistant", "Junior PM"],
@@ -312,7 +326,8 @@ const careerPathProgressionMap: Record<string, CareerPathProgression> = {
   "management-consultant": {
     entry: ["Analyst", "Associate Consultant"],
     core: ["Consultant", "Senior Consultant"],
-    next: ["Manager", "Principal", "Partner"],
+    nextExpert: ["Principal", "Subject-Matter Expert"],
+    nextLead: ["Engagement Manager", "Partner"],
   },
   "hr-specialist": {
     entry: ["HR Assistant", "Recruiter Trainee"],
@@ -322,7 +337,8 @@ const careerPathProgressionMap: Record<string, CareerPathProgression> = {
   "business-analyst": {
     entry: ["Junior Analyst", "Data Analyst", "Intern"],
     core: ["Business Analyst"],
-    next: ["Senior BA", "Lead BA", "Product Owner"],
+    nextExpert: ["Senior BA", "Lead BA", "Product Owner"],
+    nextLead: ["BA Team Lead", "Delivery Manager"],
   },
 
   // Marketing & Sales
@@ -402,42 +418,50 @@ const careerPathProgressionMap: Record<string, CareerPathProgression> = {
   "frontend-developer": {
     entry: ["Bootcamp Grad", "Junior Frontend Dev", "Intern"],
     core: ["Frontend Developer"],
-    next: ["Senior Frontend Dev", "Frontend Architect", "Tech Lead"],
+    nextExpert: ["Senior Frontend Dev", "Staff Engineer", "Frontend Architect"],
+    nextLead: ["Tech Lead", "Engineering Manager"],
   },
   "backend-developer": {
     entry: ["Junior Backend Dev", "Intern", "Graduate"],
     core: ["Backend Developer"],
-    next: ["Senior Backend Dev", "Backend Architect", "Tech Lead"],
+    nextExpert: ["Senior Backend Dev", "Staff Engineer", "Backend Architect"],
+    nextLead: ["Tech Lead", "Engineering Manager"],
   },
   "mobile-developer": {
     entry: ["Junior Mobile Dev", "Intern", "App Developer"],
     core: ["Mobile Developer", "iOS/Android Developer"],
-    next: ["Senior Mobile Dev", "Mobile Lead", "Mobile Architect"],
+    nextExpert: ["Senior Mobile Dev", "Staff Engineer", "Mobile Architect"],
+    nextLead: ["Mobile Lead", "Engineering Manager"],
   },
   "game-developer": {
     entry: ["QA Tester", "Junior Game Dev", "Intern"],
     core: ["Game Developer", "Game Programmer"],
-    next: ["Senior Game Dev", "Lead Programmer", "Technical Director"],
+    nextExpert: ["Senior Game Dev", "Principal Programmer", "Technical Director"],
+    nextLead: ["Lead Programmer", "Engineering Manager"],
   },
   "sre": {
     entry: ["Junior SysAdmin", "DevOps Engineer", "IT Support"],
     core: ["Site Reliability Engineer"],
-    next: ["Senior SRE", "SRE Lead", "Platform Architect"],
+    nextExpert: ["Senior SRE", "Staff SRE", "Platform Architect"],
+    nextLead: ["SRE Lead", "SRE Manager"],
   },
   "data-engineer": {
     entry: ["Data Analyst", "Junior Data Engineer", "BI Developer"],
     core: ["Data Engineer"],
-    next: ["Senior Data Engineer", "Data Architect", "Data Platform Lead"],
+    nextExpert: ["Senior Data Engineer", "Staff Engineer", "Data Architect"],
+    nextLead: ["Data Engineering Lead", "Data Platform Manager"],
   },
   "security-engineer": {
     entry: ["Security Analyst", "SOC Analyst", "IT Support"],
     core: ["Security Engineer"],
-    next: ["Senior Security Engineer", "Security Architect", "CISO"],
+    nextExpert: ["Senior Security Engineer", "Security Architect", "Principal Security Engineer"],
+    nextLead: ["Security Lead", "Security Manager", "CISO"],
   },
   "embedded-developer": {
     entry: ["Junior Embedded Dev", "Firmware Intern", "EE Graduate"],
     core: ["Embedded Developer", "Firmware Engineer"],
-    next: ["Senior Embedded Dev", "Embedded Architect", "Hardware Lead"],
+    nextExpert: ["Senior Embedded Dev", "Embedded Architect", "Principal Engineer"],
+    nextLead: ["Embedded Lead", "Hardware Lead"],
   },
   "enterprise-architect": {
     entry: ["Solutions Architect", "Senior Developer", "Technical Lead"],
@@ -474,7 +498,8 @@ const careerPathProgressionMap: Record<string, CareerPathProgression> = {
   "lab-technician": {
     entry: ["Lab Assistant", "Student Trainee"],
     core: ["Lab Technician", "Biomedical Scientist"],
-    next: ["Senior Scientist", "Lab Manager", "Department Head"],
+    nextExpert: ["Senior Scientist", "Principal Scientist"],
+    nextLead: ["Lab Manager", "Department Head"],
   },
 
   // New Trade Careers
@@ -530,17 +555,20 @@ const careerPathProgressionMap: Record<string, CareerPathProgression> = {
   "interior-designer": {
     entry: ["Design Assistant", "Junior Designer"],
     core: ["Interior Designer"],
-    next: ["Senior Designer", "Design Director", "Principal"],
+    nextExpert: ["Senior Designer", "Principal Designer"],
+    nextLead: ["Design Director", "Studio Lead"],
   },
   "architect": {
     entry: ["Architectural Intern", "Graduate Architect"],
     core: ["Architect"],
-    next: ["Senior Architect", "Project Architect", "Principal"],
+    nextExpert: ["Senior Architect", "Project Architect", "Principal"],
+    nextLead: ["Studio Lead", "Practice Director"],
   },
   "graphic-designer": {
     entry: ["Junior Designer", "Design Intern"],
     core: ["Graphic Designer"],
-    next: ["Senior Designer", "Art Director", "Creative Director"],
+    nextExpert: ["Senior Designer", "Lead Designer"],
+    nextLead: ["Art Director", "Creative Director"],
   },
 
   // New Public Service Careers
@@ -567,7 +595,8 @@ const careerPathProgressionMap: Record<string, CareerPathProgression> = {
   "environmental-scientist": {
     entry: ["Research Assistant", "Junior Scientist"],
     core: ["Environmental Scientist", "Consultant"],
-    next: ["Senior Scientist", "Project Manager", "Director"],
+    nextExpert: ["Senior Scientist", "Principal Consultant"],
+    nextLead: ["Project Manager", "Director"],
   },
 };
 
@@ -589,3 +618,8 @@ export function getCareerPathProgression(careerId: string): CareerPathProgressio
   if (gen?.paths) return gen.paths;
   return undefined;
 }
+
+/** Careers curated with an IC-vs-management fork (both nextExpert + nextLead). */
+export const careerPathProgressionForkIds: string[] = Object.entries(careerPathProgressionMap)
+  .filter(([, p]) => (p.nextExpert?.length ?? 0) > 0 && (p.nextLead?.length ?? 0) > 0)
+  .map(([id]) => id);
