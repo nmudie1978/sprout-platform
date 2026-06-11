@@ -43,7 +43,7 @@ export function PageContext({ pageKey, purpose, action }: PageContextProps) {
     return (
       <button
         onClick={handleReopen}
-        className="flex items-center gap-1.5 text-[11px] text-muted-foreground/40 hover:text-muted-foreground/70 transition-colors mb-3"
+        className="flex items-center gap-1.5 text-[11px] text-muted-foreground/65 hover:text-muted-foreground/70 transition-colors mb-3"
       >
         <Info className="h-3 w-3" />
         <span>What&apos;s this page?</span>
@@ -82,7 +82,7 @@ export function PageContext({ pageKey, purpose, action }: PageContextProps) {
         </div>
         <button
           onClick={handleDismiss}
-          className="p-0.5 rounded text-muted-foreground/30 hover:text-muted-foreground/60 transition-colors shrink-0"
+          className="p-0.5 rounded text-muted-foreground/60 hover:text-muted-foreground/60 transition-colors shrink-0"
           title="Got it"
         >
           <X className="h-3 w-3" />

@@ -54,7 +54,7 @@ export function FloatingCompareCTA({ shortlist, max, onCompare, onClear }: Float
             'inline-flex items-center gap-1 rounded-full px-3 py-1 text-[11px] font-semibold transition-colors',
             canCompare
               ? 'bg-teal-500 text-white hover:bg-teal-400'
-              : 'bg-muted/40 text-muted-foreground/50 cursor-not-allowed',
+              : 'bg-muted/40 text-muted-foreground/70 cursor-not-allowed',
           )}
           title={canCompare ? 'Open compare view' : 'Add at least 2 careers to compare'}
         >
@@ -66,7 +66,7 @@ export function FloatingCompareCTA({ shortlist, max, onCompare, onClear }: Float
         <button
           type="button"
           onClick={onClear}
-          className="h-6 w-6 rounded-full flex items-center justify-center text-muted-foreground/50 hover:text-foreground hover:bg-muted/30 transition-colors"
+          className="h-6 w-6 rounded-full flex items-center justify-center text-muted-foreground/70 hover:text-foreground hover:bg-muted/30 transition-colors"
           aria-label="Clear shortlist"
           title="Clear all"
         >

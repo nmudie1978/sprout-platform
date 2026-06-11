@@ -176,7 +176,7 @@ export default function GrowCardsPage() {
               <button
                 onClick={() => navigate(-1)}
                 disabled={pendingActions.length <= 1}
-                className="shrink-0 p-2 rounded-full text-muted-foreground/40 hover:text-foreground hover:bg-muted/50 transition-colors disabled:opacity-20 disabled:cursor-not-allowed"
+                className="shrink-0 p-2 rounded-full text-muted-foreground/65 hover:text-foreground hover:bg-muted/50 transition-colors disabled:opacity-20 disabled:cursor-not-allowed"
               >
                 <ChevronLeft className="h-5 w-5" />
               </button>
@@ -249,7 +249,7 @@ export default function GrowCardsPage() {
               <button
                 onClick={() => navigate(1)}
                 disabled={pendingActions.length <= 1}
-                className="shrink-0 p-2 rounded-full text-muted-foreground/40 hover:text-foreground hover:bg-muted/50 transition-colors disabled:opacity-20 disabled:cursor-not-allowed"
+                className="shrink-0 p-2 rounded-full text-muted-foreground/65 hover:text-foreground hover:bg-muted/50 transition-colors disabled:opacity-20 disabled:cursor-not-allowed"
               >
                 <ChevronRight className="h-5 w-5" />
               </button>
@@ -259,7 +259,7 @@ export default function GrowCardsPage() {
 
         {/* Card position indicator */}
         {pendingActions.length > 0 && (
-          <p className="text-center text-xs text-muted-foreground/40 mb-8">
+          <p className="text-center text-xs text-muted-foreground/65 mb-8">
             {safeIndex + 1} of {pendingActions.length} remaining
           </p>
         )}
@@ -267,7 +267,7 @@ export default function GrowCardsPage() {
         {/* Completed section */}
         {completedActions.length > 0 && (
           <div className="border-t border-border/20 pt-6">
-            <p className="text-xs font-medium text-muted-foreground/50 mb-3">
+            <p className="text-xs font-medium text-muted-foreground/70 mb-3">
               Completed ({completedActions.length})
             </p>
             <div className="flex flex-wrap gap-2">
@@ -294,7 +294,7 @@ export default function GrowCardsPage() {
 
         {/* Footer */}
         <div className="mt-12 text-center">
-          <p className="text-xs text-muted-foreground/30">
+          <p className="text-xs text-muted-foreground/60">
             One step at a time.
           </p>
         </div>

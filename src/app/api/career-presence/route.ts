@@ -1,5 +1,8 @@
 export const dynamic = "force-dynamic";
 import { NextRequest, NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
+import { checkRateLimitAsync, RateLimits } from '@/lib/rate-limit';
 import { scoreCareerPresence } from '@/lib/career-presence/scoring';
 import { interpretPresence, buildFallbackResult } from '@/lib/career-presence/agent';
 import type { CareerPresenceResult } from '@/lib/career-presence/types';
@@ -19,6 +22,20 @@ const CACHE_TTL = 60 * 60 * 1000; // 1 hour
  *   - available flag (false = no data for this career)
  */
 export async function GET(req: NextRequest) {
+  // Auth + rate limit: interpretPresence() can call OpenAI, and the in-memory
+  // cache resets on cold-start + is bustable by rotating ?careerId=, so an
+  // anonymous caller could run up an unbounded bill. Mirrors career-reality /
+  // youtube-search. (The deterministic fallback path is cheap, but gating the
+  // whole route is simplest and this is an authenticated dashboard feature.)
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
+  }
+  const rl = await checkRateLimitAsync(`career-presence:${session.user.id}`, RateLimits.AI_CHAT);
+  if (!rl.success) {
+    return NextResponse.json({ error: 'Rate limit exceeded. Please try again later.' }, { status: 429 });
+  }
+
   const { searchParams } = new URL(req.url);
   const careerId = searchParams.get('careerId')?.trim();
   const careerTitle = searchParams.get('career')?.trim();

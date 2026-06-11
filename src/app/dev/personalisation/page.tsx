@@ -74,7 +74,7 @@ function InlineLabel({ label }: { label: SignalLabel }) {
 
 function LabelDebug({ label }: { label: SignalLabel }) {
   return (
-    <span className="text-[9px] text-muted-foreground/30 ml-2">
+    <span className="text-[9px] text-muted-foreground/60 ml-2">
       [{label.reason} · {label.score}]
     </span>
   );
@@ -88,7 +88,7 @@ function SignalPill({ icon: Icon, label, value }: { icon: React.ComponentType<{ 
   return (
     <div className={cn("flex items-center gap-2 rounded-lg border px-3 py-2", isEmpty ? "border-border/20 opacity-40" : "border-teal-500/20 bg-teal-500/[0.03]")}>
       <Icon className="h-3.5 w-3.5 text-teal-500/50 shrink-0" />
-      <span className="text-[10px] text-muted-foreground/50 shrink-0">{label}</span>
+      <span className="text-[10px] text-muted-foreground/70 shrink-0">{label}</span>
       <span className="text-xs text-foreground/70 truncate">{display}</span>
     </div>
   );
@@ -157,7 +157,7 @@ export default function PersonalisationDemoPage() {
   if (!session) {
     return (
       <div className="text-center py-20">
-        <AlertCircle className="h-8 w-8 mx-auto text-muted-foreground/50 mb-3" />
+        <AlertCircle className="h-8 w-8 mx-auto text-muted-foreground/70 mb-3" />
         <p className="text-muted-foreground">Sign in to see personalised labels using your real data.</p>
       </div>
     );
@@ -166,7 +166,7 @@ export default function PersonalisationDemoPage() {
   if (isLoading) {
     return (
       <div className="text-center py-20">
-        <Loader2 className="h-8 w-8 mx-auto animate-spin text-muted-foreground/50 mb-3" />
+        <Loader2 className="h-8 w-8 mx-auto animate-spin text-muted-foreground/70 mb-3" />
         <p className="text-sm text-muted-foreground">Loading your profile...</p>
       </div>
     );
@@ -189,7 +189,7 @@ export default function PersonalisationDemoPage() {
 
       {/* Your Signals */}
       <div>
-        <h2 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground/40 mb-3">Your Signals</h2>
+        <h2 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground/65 mb-3">Your Signals</h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2">
           <SignalPill icon={MapPin} label="City" value={ctx.city} />
           <SignalPill icon={Target} label="Goal" value={ctx.goalTitle} />
@@ -207,7 +207,7 @@ export default function PersonalisationDemoPage() {
       {/* ═══════════════════════════════════════════ */}
       <div>
         <h2 className="text-lg font-semibold mb-1">Career Events</h2>
-        <p className="text-xs text-muted-foreground/40 mb-4">Each event gets an inline label explaining why it&apos;s relevant to you.</p>
+        <p className="text-xs text-muted-foreground/65 mb-4">Each event gets an inline label explaining why it&apos;s relevant to you.</p>
 
         <div className="space-y-2">
           {SAMPLE_EVENTS.map((event) => {
@@ -225,22 +225,22 @@ export default function PersonalisationDemoPage() {
                 {/* Date placeholder */}
                 <div className="text-center shrink-0 w-12">
                   <div className="text-lg font-bold text-foreground/70">—</div>
-                  <div className="text-[9px] text-muted-foreground/40 uppercase">2026</div>
+                  <div className="text-[9px] text-muted-foreground/65 uppercase">2026</div>
                 </div>
 
                 {/* Content */}
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
                     <span className="text-sm font-medium truncate">{event.title}</span>
-                    <span className="text-[10px] text-muted-foreground/30 shrink-0">{event.category}</span>
+                    <span className="text-[10px] text-muted-foreground/60 shrink-0">{event.category}</span>
                   </div>
                   <div className="flex items-center gap-2 mt-0.5">
                     {event.city && (
-                      <span className="text-[10px] text-muted-foreground/40 flex items-center gap-0.5">
+                      <span className="text-[10px] text-muted-foreground/65 flex items-center gap-0.5">
                         <MapPin className="h-2.5 w-2.5" /> {event.city}
                       </span>
                     )}
-                    <span className="text-[10px] text-muted-foreground/30">{event.format}</span>
+                    <span className="text-[10px] text-muted-foreground/60">{event.format}</span>
                   </div>
 
                   {/* Netflix-style label */}
@@ -253,7 +253,7 @@ export default function PersonalisationDemoPage() {
                 </div>
 
                 {/* Register */}
-                <button className="text-[10px] text-muted-foreground/30 hover:text-muted-foreground/60 transition-colors shrink-0 flex items-center gap-1">
+                <button className="text-[10px] text-muted-foreground/60 hover:text-muted-foreground/60 transition-colors shrink-0 flex items-center gap-1">
                   Register <ExternalLink className="h-2.5 w-2.5" />
                 </button>
               </div>
@@ -267,7 +267,7 @@ export default function PersonalisationDemoPage() {
       {/* ═══════════════════════════════════════════ */}
       <div>
         <h2 className="text-lg font-semibold mb-1">Dashboard Cards</h2>
-        <p className="text-xs text-muted-foreground/40 mb-4">Each card gets a contextual label from your signals.</p>
+        <p className="text-xs text-muted-foreground/65 mb-4">Each card gets a contextual label from your signals.</p>
 
         <div className="grid grid-cols-2 gap-3">
           {DASHBOARD_CARDS.map((card, i) => {
@@ -280,7 +280,7 @@ export default function PersonalisationDemoPage() {
                   <Icon className="h-4 w-4 text-teal-500/60" />
                   <span className="text-sm font-medium">{card.title}</span>
                 </div>
-                <p className="text-xs text-muted-foreground/40 mb-2">{card.description}</p>
+                <p className="text-xs text-muted-foreground/65 mb-2">{card.description}</p>
                 {label && (
                   <div>
                     <InlineLabel label={label} />
@@ -298,7 +298,7 @@ export default function PersonalisationDemoPage() {
       {/* ═══════════════════════════════════════════ */}
       <div>
         <h2 className="text-lg font-semibold mb-1">My Journey</h2>
-        <p className="text-xs text-muted-foreground/40 mb-4">Labels adapt based on your current stage and progress.</p>
+        <p className="text-xs text-muted-foreground/65 mb-4">Labels adapt based on your current stage and progress.</p>
 
         <div className="space-y-2">
           {pickLabels(journeyLabels, 3).map((label) => (
@@ -308,14 +308,14 @@ export default function PersonalisationDemoPage() {
             </div>
           ))}
           {journeyLabels.length === 0 && (
-            <p className="text-xs text-muted-foreground/30">No journey labels — start your journey to see personalised guidance.</p>
+            <p className="text-xs text-muted-foreground/60">No journey labels — start your journey to see personalised guidance.</p>
           )}
         </div>
       </div>
 
       {/* How it works */}
-      <div className="rounded-xl border border-border/20 bg-muted/10 p-4 text-xs text-muted-foreground/40">
-        <p className="font-medium text-muted-foreground/50 mb-2">How it works</p>
+      <div className="rounded-xl border border-border/20 bg-muted/10 p-4 text-xs text-muted-foreground/65">
+        <p className="font-medium text-muted-foreground/70 mb-2">How it works</p>
         <p>User signals (city, goal, strengths, interests, stage) are matched against content using pattern rules. The highest-scoring label is shown inline — like Netflix&apos;s &ldquo;Because you watched...&rdquo; rows. No AI, zero latency. Debug scores shown in brackets.</p>
       </div>
     </div>

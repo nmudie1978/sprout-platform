@@ -433,7 +433,7 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney, read
   if (!primaryGoalTitle) {
     return (
       <div className="rounded-xl border border-dashed border-border/40 p-8 text-center">
-        <Target className="h-8 w-8 mx-auto text-muted-foreground/30 mb-2" />
+        <Target className="h-8 w-8 mx-auto text-muted-foreground/60 mb-2" />
         <p className="text-sm text-muted-foreground">
           Set your primary goal to see your career roadmap
         </p>
@@ -496,7 +496,7 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney, read
         >
           {spanYears > 0 && (
             <>
-              <FileText className="h-3 w-3 text-muted-foreground/40 group-hover:text-foreground/60 shrink-0" />
+              <FileText className="h-3 w-3 text-muted-foreground/65 group-hover:text-foreground/60 shrink-0" />
               <span>
                 <span className="font-semibold text-foreground/85 group-hover:text-foreground">Total roadmap:</span> ~{spanYears} year{spanYears !== 1 ? 's' : ''} · Age {firstAge}–{lastAge}
               </span>
@@ -682,7 +682,7 @@ function RoadmapReportDialog({
           </div>
           <button
             onClick={onClose}
-            className="h-7 w-7 rounded-lg flex items-center justify-center text-muted-foreground/50 hover:text-foreground hover:bg-muted/20 transition-colors"
+            className="h-7 w-7 rounded-lg flex items-center justify-center text-muted-foreground/70 hover:text-foreground hover:bg-muted/20 transition-colors"
           >
             <X className="h-4 w-4" />
           </button>
@@ -692,7 +692,7 @@ function RoadmapReportDialog({
         <div className="max-h-[60vh] overflow-y-auto">
           <table className="w-full text-left">
             <thead>
-              <tr className="text-[9px] font-semibold uppercase tracking-wider text-muted-foreground/50 border-b border-border/20">
+              <tr className="text-[9px] font-semibold uppercase tracking-wider text-muted-foreground/70 border-b border-border/20">
                 <th className="px-5 py-2 w-[4.5rem]">Age</th>
                 <th className="px-2 py-2">Step</th>
                 <th className="px-5 py-2 w-24 text-right">Stage</th>
@@ -712,7 +712,7 @@ function RoadmapReportDialog({
                     <td className="px-2 py-2.5">
                       <p className="text-xs font-medium text-foreground/85">{item.title}</p>
                       {item.subtitle && (
-                        <p className="text-[10px] text-muted-foreground/50 mt-0.5">{item.subtitle}</p>
+                        <p className="text-[10px] text-muted-foreground/70 mt-0.5">{item.subtitle}</p>
                       )}
                     </td>
                     <td className="px-5 py-2.5 text-right">
@@ -729,7 +729,7 @@ function RoadmapReportDialog({
         </div>
 
         {/* Footer summary */}
-        <div className="px-5 py-3 border-t border-border/20 bg-muted/[0.04] flex items-center justify-between text-[10px] text-muted-foreground/50">
+        <div className="px-5 py-3 border-t border-border/20 bg-muted/[0.04] flex items-center justify-between text-[10px] text-muted-foreground/70">
           <span>{journey.items.length} steps</span>
           <span>
             {journey.items.filter((i) => i.stage === 'education').length} education ·{' '}

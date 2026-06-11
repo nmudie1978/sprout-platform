@@ -73,7 +73,7 @@ function ViewToggle({
             className={`p-1.5 rounded-md transition-colors ${
               active
                 ? "bg-white/10 text-foreground"
-                : "text-muted-foreground/50 hover:text-muted-foreground"
+                : "text-muted-foreground/70 hover:text-muted-foreground"
             }`}
           >
             <Icon className="h-3 w-3" />
@@ -187,7 +187,7 @@ function FactListRow({
           onSourceClick();
         }}
         title={`${fact.sourceName} (${sourceYear})`}
-        className="text-[9px] text-muted-foreground/40 hover:text-primary transition-colors flex-shrink-0 truncate max-w-[180px]"
+        className="text-[9px] text-muted-foreground/65 hover:text-primary transition-colors flex-shrink-0 truncate max-w-[180px]"
       >
         {fact.sourceName} ({sourceYear})
       </a>
@@ -224,7 +224,7 @@ function DotIndicator({
             />
           ))
         : (
-          <span className="text-[9px] text-muted-foreground/50 tabular-nums">
+          <span className="text-[9px] text-muted-foreground/70 tabular-nums">
             {current + 1} / {total}
           </span>
         )}
@@ -538,7 +538,7 @@ export function DidYouKnowCard({
             >
               <ChevronLeft className="h-3.5 w-3.5" />
             </button>
-            <span className="text-[9px] text-muted-foreground/50 tabular-nums">
+            <span className="text-[9px] text-muted-foreground/70 tabular-nums">
               {gridPage + 1} / {gridPages}
             </span>
             <button

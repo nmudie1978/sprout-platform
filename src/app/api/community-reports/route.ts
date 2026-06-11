@@ -44,11 +44,13 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json();
-    const { targetType, targetId, reason, details } = body;
+    const { targetType, reason, details } = body;
 
     // Validate target type. JOB_POST is retained in the enum for legacy
-    // rows but new reports target users/content only.
-    if (!["USER", "JOB_POST"].includes(targetType)) {
+    // rows; USER targets a specific person; PLATFORM is a general
+    // safeguarding concern not tied to a user (the always-reachable
+    // "Report a concern" affordance).
+    if (!["USER", "JOB_POST", "PLATFORM"].includes(targetType)) {
       return NextResponse.json(
         { error: "Invalid target type" },
         { status: 400 }
@@ -63,8 +65,13 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Verify the reported user exists (the supported target).
-    if (targetType === "USER") {
+    // PLATFORM concerns carry no user target — use a fixed sentinel id so the
+    // non-nullable column is satisfied. USER reports must reference a real,
+    // non-self account.
+    let targetId: string = body.targetId;
+    if (targetType === "PLATFORM") {
+      targetId = "PLATFORM";
+    } else if (targetType === "USER") {
       const user = await prisma.user.findUnique({
         where: { id: targetId },
         select: { id: true },
@@ -78,6 +85,9 @@ export async function POST(req: NextRequest) {
           { status: 400 }
         );
       }
+    }
+    if (!targetId) {
+      return NextResponse.json({ error: "Missing target" }, { status: 400 });
     }
 
     // All reports route to the platform-wide review queue. The per-job
@@ -95,20 +105,24 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    // Prevent duplicate reports of the same target within 24h.
-    const existingReport = await prisma.communityReport.findFirst({
-      where: {
-        reporterUserId: session.user.id,
-        targetType: targetType as CommunityReportTargetType,
-        targetId,
-        createdAt: { gte: new Date(Date.now() - 24 * 60 * 60 * 1000) },
-      },
-    });
-    if (existingReport) {
-      return NextResponse.json(
-        { error: "You have already reported this recently" },
-        { status: 400 }
-      );
+    // Prevent duplicate reports of the same target within 24h. PLATFORM
+    // concerns are exempt — a young person must always be able to raise a
+    // fresh safeguarding worry; the 5/hour rate limit above prevents flooding.
+    if (targetType !== "PLATFORM") {
+      const existingReport = await prisma.communityReport.findFirst({
+        where: {
+          reporterUserId: session.user.id,
+          targetType: targetType as CommunityReportTargetType,
+          targetId,
+          createdAt: { gte: new Date(Date.now() - 24 * 60 * 60 * 1000) },
+        },
+      });
+      if (existingReport) {
+        return NextResponse.json(
+          { error: "You have already reported this recently" },
+          { status: 400 }
+        );
+      }
     }
 
     const report = await prisma.communityReport.create({
@@ -143,7 +157,13 @@ export async function POST(req: NextRequest) {
             userId: admin.id,
             type: "COMMUNITY_REPORT_RECEIVED",
             title: "New Report",
-            message: `A new ${targetType === "USER" ? "user" : "content"} report has been submitted.`,
+            message: `A new ${
+              targetType === "USER"
+                ? "user"
+                : targetType === "PLATFORM"
+                  ? "safety concern"
+                  : "content"
+            } report has been submitted.`,
             link: `/admin/reports/${report.id}`,
           },
         })

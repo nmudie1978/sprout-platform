@@ -36,7 +36,7 @@ function CompactCard({ source, highlight }: { source: FundingSource; highlight?:
           <h4 className="text-[11px] font-medium text-foreground/90 leading-snug line-clamp-2">
             {source.name}
           </h4>
-          <ExternalLink className="h-2.5 w-2.5 text-muted-foreground/30 group-hover:text-primary/60 transition-colors shrink-0 mt-0.5" />
+          <ExternalLink className="h-2.5 w-2.5 text-muted-foreground/60 group-hover:text-primary/60 transition-colors shrink-0 mt-0.5" />
         </div>
         <p className="text-[10px] text-muted-foreground/65 leading-relaxed mt-1 line-clamp-2">
           {source.description}
@@ -89,9 +89,9 @@ export function FundingSection({ careerId }: FundingSectionProps) {
           )}
         </div>
         {expanded ? (
-          <ChevronUp className="h-3.5 w-3.5 text-muted-foreground/40" />
+          <ChevronUp className="h-3.5 w-3.5 text-muted-foreground/65" />
         ) : (
-          <ChevronDown className="h-3.5 w-3.5 text-muted-foreground/40" />
+          <ChevronDown className="h-3.5 w-3.5 text-muted-foreground/65" />
         )}
       </button>
 
@@ -100,10 +100,10 @@ export function FundingSection({ careerId }: FundingSectionProps) {
         <div className="flex items-center justify-end gap-1 -mb-1">
           {all.length > 2 && (
             <>
-              <button type="button" onClick={() => scroll('left')} className="p-1 rounded hover:bg-muted/40 text-muted-foreground/50 hover:text-foreground transition-colors" aria-label="Scroll left">
+              <button type="button" onClick={() => scroll('left')} className="p-1 rounded hover:bg-muted/40 text-muted-foreground/70 hover:text-foreground transition-colors" aria-label="Scroll left">
                 <ChevronLeft className="h-3.5 w-3.5" />
               </button>
-              <button type="button" onClick={() => scroll('right')} className="p-1 rounded hover:bg-muted/40 text-muted-foreground/50 hover:text-foreground transition-colors" aria-label="Scroll right">
+              <button type="button" onClick={() => scroll('right')} className="p-1 rounded hover:bg-muted/40 text-muted-foreground/70 hover:text-foreground transition-colors" aria-label="Scroll right">
                 <ChevronRight className="h-3.5 w-3.5" />
               </button>
             </>

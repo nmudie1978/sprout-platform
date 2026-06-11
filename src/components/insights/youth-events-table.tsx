@@ -147,11 +147,11 @@ function EventListItem({ event }: { event: EventItem }) {
               <MapPin className="h-2.5 w-2.5 flex-shrink-0" />
             )}
             <span className="truncate">{event.locationLabel}</span>
-            <span className="md:hidden text-muted-foreground/50">·</span>
+            <span className="md:hidden text-muted-foreground/70">·</span>
             <span className="md:hidden flex-shrink-0">{event.category}</span>
-            <span className="md:hidden text-muted-foreground/50">·</span>
+            <span className="md:hidden text-muted-foreground/70">·</span>
             <span className="md:hidden flex-shrink-0">{event.format}</span>
-            <span className="md:hidden text-muted-foreground/50">·</span>
+            <span className="md:hidden text-muted-foreground/70">·</span>
             <span className="md:hidden flex-shrink-0">{PROVIDER_DISPLAY_NAMES[event.provider]}</span>
             {isUrgent && (
               <span className="text-amber-600 dark:text-amber-400 font-medium ml-1">
@@ -524,7 +524,7 @@ export function YouthEventsTable({ className, defaultPageSize = 5 }: YouthEvents
         </CardHeader>
         <CardContent>
           <div className="text-center py-10">
-            <RefreshCw className="h-8 w-8 mx-auto mb-3 text-muted-foreground/50 animate-spin" style={{ animationDuration: "3s" }} />
+            <RefreshCw className="h-8 w-8 mx-auto mb-3 text-muted-foreground/70 animate-spin" style={{ animationDuration: "3s" }} />
             <p className="text-sm text-muted-foreground mb-1">
               Events are being refreshed
             </p>
@@ -731,7 +731,7 @@ function GiveMoreButton({
           </>
         )}
       </Button>
-      <p className="text-[10px] text-muted-foreground/50">
+      <p className="text-[10px] text-muted-foreground/70">
         {allLoaded
           ? `Showing all ${totalEvents} events — refresh to check for new ones`
           : `Showing ${visibleCount} of ${totalEvents} events · ${remaining} more available`}

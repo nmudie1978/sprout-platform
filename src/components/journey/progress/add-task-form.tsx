@@ -47,7 +47,7 @@ export function AddTaskForm({ stageId, mode, onAdd }: AddTaskFormProps) {
 
   return (
     <div className="flex items-center gap-1.5 px-2.5 py-1">
-      <Plus className="h-3 w-3 text-muted-foreground/40 flex-shrink-0" />
+      <Plus className="h-3 w-3 text-muted-foreground/65 flex-shrink-0" />
       <input
         ref={inputRef}
         type="text"
@@ -66,7 +66,7 @@ export function AddTaskForm({ stageId, mode, onAdd }: AddTaskFormProps) {
         placeholder="Add a task..."
         className={cn(
           'flex-1 text-sm bg-transparent border-none outline-none',
-          'placeholder:text-muted-foreground/40'
+          'placeholder:text-muted-foreground/65'
         )}
         maxLength={120}
       />

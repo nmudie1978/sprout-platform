@@ -170,7 +170,7 @@ export function JourneyCompaniesTray({
           </div>
           <button
             onClick={() => setOpen(false)}
-            className="p-1.5 rounded-md hover:bg-muted/40 text-muted-foreground/50 hover:text-foreground transition-colors"
+            className="p-1.5 rounded-md hover:bg-muted/40 text-muted-foreground/70 hover:text-foreground transition-colors"
             aria-label="Close companies"
           >
             <X className="h-3.5 w-3.5" />
@@ -200,7 +200,7 @@ export function JourneyCompaniesTray({
                     className="rounded shrink-0"
                   />
                 ) : (
-                  <Building2 className="h-[18px] w-[18px] text-muted-foreground/40 shrink-0" />
+                  <Building2 className="h-[18px] w-[18px] text-muted-foreground/65 shrink-0" />
                 )}
                 <div className="min-w-0 flex-1">
                   <div className="text-[12px] font-medium text-foreground/90 truncate">
@@ -211,7 +211,7 @@ export function JourneyCompaniesTray({
                   </div>
                 </div>
                 {emp.careersUrl && (
-                  <ExternalLink className="h-3.5 w-3.5 text-muted-foreground/40 group-hover:text-sky-400 shrink-0 transition-colors" />
+                  <ExternalLink className="h-3.5 w-3.5 text-muted-foreground/65 group-hover:text-sky-400 shrink-0 transition-colors" />
                 )}
               </div>
             );

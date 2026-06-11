@@ -107,6 +107,11 @@ enum ReportStatus {
 enum CommunityReportTargetType {
   JOB_POST
   USER
+  // A general safeguarding concern not tied to a specific user — the
+  // always-reachable "Report a concern" affordance. targetId is the
+  // sentinel "PLATFORM". Lets a young person raise a safety worry even
+  // though the platform has no open user-to-user content surface.
+  PLATFORM
 }
 
 enum CommunityReportStatus {

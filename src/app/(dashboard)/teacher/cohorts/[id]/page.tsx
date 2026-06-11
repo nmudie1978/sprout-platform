@@ -137,7 +137,7 @@ export default async function CohortDetailPage({
                     key={slug}
                     className="flex items-center gap-3 text-sm"
                   >
-                    <span className="w-5 text-muted-foreground/50 text-xs font-mono">
+                    <span className="w-5 text-muted-foreground/70 text-xs font-mono">
                       {i + 1}
                     </span>
                     <span className="flex-1 text-foreground/85">

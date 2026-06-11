@@ -29,18 +29,28 @@ const requiredSchema = z.object({
     .string()
     .url()
     .refine((v) => !PLACEHOLDER_RE.test(v), "looks like a placeholder value"),
+  // Required in production: the nightly GDPR-retention purge and the
+  // revalidate cron reject any request without `Bearer $CRON_SECRET`. If
+  // this is unset in prod, Vercel Cron gets a 403 and the purge SILENTLY
+  // NEVER RUNS — a data-retention compliance hole. Fail the deploy loudly
+  // instead of discovering it weeks later.
+  CRON_SECRET: z.string().min(16, "must be a real secret (>=16 chars)"),
+  // Required in production: the Admin Portal session is signed/verified with
+  // this. If it's unset, `verifyAdminToken` returns false for everyone — the
+  // Portal (and the safeguarding reports queue behind it) silently locks out
+  // ALL admins. Fail-closed is safe, but fail the deploy loudly instead of
+  // discovering admin access is bricked.
+  ADMIN_SESSION_SECRET: z.string().min(16, "must be a real secret (>=16 chars)"),
 });
 
 // Should be present in production, but their own modules already guard
-// them (rate-limit.ts for REDIS_URL, the cron routes for CRON_SECRET) or
-// they degrade gracefully — so these are warnings, not hard failures.
+// them (rate-limit.ts for REDIS_URL) or they degrade gracefully — so these
+// are warnings, not hard failures.
 const RECOMMENDED = [
   "REDIS_URL",
   "DIRECT_URL",
-  "CRON_SECRET",
   "OPENAI_API_KEY",
   "RESEND_API_KEY",
-  "ADMIN_SESSION_SECRET",
 ] as const;
 
 /**

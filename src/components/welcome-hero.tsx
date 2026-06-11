@@ -34,7 +34,7 @@ export function WelcomeHero() {
         >
           <button
             onClick={dismiss}
-            className="absolute top-3 right-3 p-1 rounded-md text-muted-foreground/40 hover:text-muted-foreground transition-colors"
+            className="absolute top-3 right-3 p-1 rounded-md text-muted-foreground/65 hover:text-muted-foreground transition-colors"
             aria-label="Dismiss"
           >
             <X className="h-4 w-4" />

@@ -200,26 +200,26 @@ export function DiscoverFlow({ initialProfile, onComplete, onSaveProgress, onClo
 
         <div className="grid grid-cols-2 gap-3">
           <div className="rounded-lg bg-card/60 border border-border/40 p-3">
-            <p className="text-[10px] uppercase tracking-wider text-muted-foreground/50 mb-1">Interests</p>
+            <p className="text-[10px] uppercase tracking-wider text-muted-foreground/70 mb-1">Interests</p>
             <p className="text-xs text-foreground/80">{profile.interests.length} selected</p>
           </div>
           <div className="rounded-lg bg-card/60 border border-border/40 p-3">
-            <p className="text-[10px] uppercase tracking-wider text-muted-foreground/50 mb-1">Strengths</p>
+            <p className="text-[10px] uppercase tracking-wider text-muted-foreground/70 mb-1">Strengths</p>
             <p className="text-xs text-foreground/80">{profile.strengths.length} selected</p>
           </div>
           <div className="rounded-lg bg-card/60 border border-border/40 p-3">
-            <p className="text-[10px] uppercase tracking-wider text-muted-foreground/50 mb-1">Motivations</p>
+            <p className="text-[10px] uppercase tracking-wider text-muted-foreground/70 mb-1">Motivations</p>
             <p className="text-xs text-foreground/80">{profile.motivations.length} selected</p>
           </div>
           <div className="rounded-lg bg-card/60 border border-border/40 p-3">
-            <p className="text-[10px] uppercase tracking-wider text-muted-foreground/50 mb-1">Clarity</p>
+            <p className="text-[10px] uppercase tracking-wider text-muted-foreground/70 mb-1">Clarity</p>
             <p className="text-xs text-foreground/80">
               {CLARITY_OPTIONS.find((o) => o.id === profile.clarityLevel)?.label || '—'}
             </p>
           </div>
         </div>
 
-        <p className="text-xs text-muted-foreground/50 text-center">
+        <p className="text-xs text-muted-foreground/70 text-center">
           You can update these anytime from My Journey
         </p>
 
@@ -243,11 +243,11 @@ export function DiscoverFlow({ initialProfile, onComplete, onSaveProgress, onClo
       {/* Progress bar */}
       <div className="mb-6">
         <div className="flex items-center justify-between mb-2">
-          <span className="text-[10px] uppercase tracking-wider text-muted-foreground/50">
+          <span className="text-[10px] uppercase tracking-wider text-muted-foreground/70">
             Step {step + 1} of {STEPS.length}
           </span>
           {onClose && (
-            <button onClick={onClose} className="text-xs text-muted-foreground/50 hover:text-muted-foreground">
+            <button onClick={onClose} className="text-xs text-muted-foreground/70 hover:text-muted-foreground">
               Save & exit
             </button>
           )}

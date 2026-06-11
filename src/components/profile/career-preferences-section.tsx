@@ -194,7 +194,7 @@ export function CareerPreferencesSection({ initial }: CareerPreferencesSectionPr
                     selected
                       ? "border-teal-500/60 bg-teal-500/15 text-teal-300"
                       : disabled
-                        ? "border-border/30 text-muted-foreground/30 cursor-not-allowed"
+                        ? "border-border/30 text-muted-foreground/60 cursor-not-allowed"
                         : "border-border/40 text-muted-foreground/70 hover:border-teal-500/40 hover:text-foreground"
                   )}
                 >
@@ -286,7 +286,7 @@ export function CareerPreferencesSection({ initial }: CareerPreferencesSectionPr
               </span>
             ))}
             {interests.length === 0 && (
-              <span className="text-[11px] text-muted-foreground/40 italic">
+              <span className="text-[11px] text-muted-foreground/65 italic">
                 Nothing added yet.
               </span>
             )}
@@ -317,7 +317,7 @@ export function CareerPreferencesSection({ initial }: CareerPreferencesSectionPr
             </Button>
           </div>
           {interests.length >= MAX_INTERESTS && (
-            <p className="text-[10px] text-muted-foreground/50 mt-1">
+            <p className="text-[10px] text-muted-foreground/70 mt-1">
               Maximum {MAX_INTERESTS} interests.
             </p>
           )}

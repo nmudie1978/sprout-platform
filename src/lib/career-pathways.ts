@@ -8336,44 +8336,62 @@ export function getCareersForCategory(category: CareerCategory): Career[] {
   return CAREER_PATHWAYS[category] || [];
 }
 
+// ── Memoised indexes over the static CAREER_PATHWAYS catalog ──
+//
+// CAREER_PATHWAYS is a 600+ career constant that never changes at runtime,
+// but getAllCareers()/getCareerById()/getCategoryForCareer() were each
+// re-flattening or re-scanning it on EVERY call — and several callers invoke
+// them inside render paths and per-item `.find()` loops (effectively O(n²)).
+// Build the flat list + lookup Maps once, lazily, and reuse them.
+
+let _allCareers: Career[] | undefined;
+let _careerById: Map<string, Career> | undefined;
+let _categoryByCareerId: Map<string, CareerCategory> | undefined;
+
+function buildIndexes(): void {
+  const seen = new Set<string>();
+  const all: Career[] = [];
+  const byId = new Map<string, Career>();
+  const categoryById = new Map<string, CareerCategory>();
+  for (const [category, careers] of Object.entries(CAREER_PATHWAYS)) {
+    for (const career of careers) {
+      // First occurrence wins (careers can be cross-listed across categories),
+      // matching the previous flatten+dedupe and first-match-by-iteration-order
+      // behaviour of the old linear scans.
+      if (seen.has(career.id)) continue;
+      seen.add(career.id);
+      all.push(career);
+      byId.set(career.id, career);
+      categoryById.set(career.id, category as CareerCategory);
+    }
+  }
+  _allCareers = all;
+  _careerById = byId;
+  _categoryByCareerId = categoryById;
+}
+
 /**
  * Get a single career by ID
  */
 export function getCareerById(id: string): Career | undefined {
-  for (const careers of Object.values(CAREER_PATHWAYS)) {
-    const career = careers.find((c) => c.id === id);
-    if (career) return career;
-  }
-  return undefined;
+  if (!_careerById) buildIndexes();
+  return _careerById!.get(id);
 }
 
 /**
- * Get all careers as a flat array
+ * Get all careers as a flat array (deduped by id, first occurrence wins).
  */
 export function getAllCareers(): Career[] {
-  // A handful of careers are cross-listed across categories. Dedupe by id
-  // (first occurrence wins) so the UI never renders duplicate React keys,
-  // and counts/lookups stay honest.
-  const seen = new Set<string>();
-  return Object.values(CAREER_PATHWAYS)
-    .flat()
-    .filter((career) => {
-      if (seen.has(career.id)) return false;
-      seen.add(career.id);
-      return true;
-    });
+  if (!_allCareers) buildIndexes();
+  return _allCareers!;
 }
 
 /**
  * Get the category for a given career
  */
 export function getCategoryForCareer(careerId: string): CareerCategory | undefined {
-  for (const [category, careers] of Object.entries(CAREER_PATHWAYS)) {
-    if (careers.some((c) => c.id === careerId)) {
-      return category as CareerCategory;
-    }
-  }
-  return undefined;
+  if (!_categoryByCareerId) buildIndexes();
+  return _categoryByCareerId!.get(careerId);
 }
 
 /** Look up specialist path type by career title (case-insensitive). */

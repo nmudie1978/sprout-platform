@@ -11,7 +11,8 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
-import { Trash2, AlertTriangle, Target, AlertCircle, User, ExternalLink, MessageSquare, Info, Sparkles, Compass } from "lucide-react";
+import { Trash2, AlertTriangle, Target, AlertCircle, User, ExternalLink, MessageSquare, Info, Sparkles, Compass, ShieldAlert, Flag } from "lucide-react";
+import { ReportModal } from "@/components/report-modal";
 import { DiscoveryQuizDialog } from "@/components/discovery/discovery-quiz-dialog";
 import type { DiscoveryPreferences } from "@/lib/career-pathways";
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
@@ -560,7 +561,7 @@ export default function ProfilePage() {
               </p>
               <span className={cn(
                 "text-xs font-semibold tabular-nums",
-                isComplete ? "text-success" : "text-muted-foreground/50"
+                isComplete ? "text-success" : "text-muted-foreground/70"
               )}>
                 {percent}%
               </span>
@@ -581,7 +582,7 @@ export default function ProfilePage() {
                     "inline-flex items-center rounded-pill px-2.5 py-0.5 text-xs font-medium",
                     required
                       ? "bg-warning/10 text-warning"
-                      : "bg-muted/50 text-muted-foreground/50"
+                      : "bg-muted/50 text-muted-foreground/70"
                   )}
                 >
                   {field}
@@ -606,7 +607,7 @@ export default function ProfilePage() {
                 <TooltipProvider delayDuration={200}>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Info className="h-3.5 w-3.5 text-muted-foreground/40 cursor-help" />
+                      <Info className="h-3.5 w-3.5 text-muted-foreground/65 cursor-help" />
                     </TooltipTrigger>
                     <TooltipContent side="right" className="max-w-[260px] text-xs p-3">
                       <p className="font-medium mb-1">Why this matters</p>
@@ -679,7 +680,7 @@ export default function ProfilePage() {
                 <TooltipProvider delayDuration={150}>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Info className="h-3.5 w-3.5 text-muted-foreground/40 cursor-help" />
+                      <Info className="h-3.5 w-3.5 text-muted-foreground/65 cursor-help" />
                     </TooltipTrigger>
                     <TooltipContent side="right" className="max-w-[240px] text-xs p-3">
                       Your name, location, and about section make up your profile. Only what you fill in is visible.
@@ -712,7 +713,7 @@ export default function ProfilePage() {
                           onChange={(e) => setFormData({ ...formData, displayName: e.target.value })}
                           className="h-9 text-sm"
                         />
-                        <p className="mt-1 text-xs text-muted-foreground/40">
+                        <p className="mt-1 text-xs text-muted-foreground/65">
                           First name <span className="text-warning">*</span>
                         </p>
                       </div>
@@ -724,7 +725,7 @@ export default function ProfilePage() {
                           onChange={(e) => setFormData({ ...formData, surname: e.target.value })}
                           className="h-9 text-sm"
                         />
-                        <p className="mt-1 text-xs text-muted-foreground/40">
+                        <p className="mt-1 text-xs text-muted-foreground/65">
                           Surname
                         </p>
                       </div>
@@ -795,7 +796,7 @@ export default function ProfilePage() {
                   rows={2}
                   className="mt-1 text-sm"
                 />
-                <p className="mt-0.5 text-xs text-muted-foreground/30">{formData.bio.length}/500</p>
+                <p className="mt-0.5 text-xs text-muted-foreground/60">{formData.bio.length}/500</p>
               </div>
 
               {/* Phone + City side by side */}
@@ -884,6 +885,35 @@ export default function ProfilePage() {
                   Give Feedback (Beta)
                 </Button>
               </Link>
+            </CardContent>
+          </Card>
+
+          {/* Safety — always-reachable safeguarding report. */}
+          <Card className="border-2 border-amber-500/20 shadow-sm hover-lift overflow-hidden relative">
+            <div className="absolute inset-0 bg-amber-500/5 opacity-50 pointer-events-none" />
+            <CardHeader className="relative">
+              <CardTitle className="text-xl flex items-center gap-2">
+                <ShieldAlert className="h-5 w-5 text-amber-500" />
+                Safety
+              </CardTitle>
+              <CardDescription>
+                Seen something that doesn&apos;t feel right, or have a safety
+                worry? Tell us and our team will review it.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="relative">
+              <ReportModal
+                targetType="PLATFORM"
+                trigger={
+                  <Button
+                    variant="outline"
+                    className="w-full h-11 sm:h-10 border-amber-500/30 hover:bg-amber-500/10"
+                  >
+                    <Flag className="mr-2 h-4 w-4" />
+                    Report a concern
+                  </Button>
+                }
+              />
             </CardContent>
           </Card>
 

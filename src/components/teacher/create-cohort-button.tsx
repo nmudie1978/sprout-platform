@@ -108,7 +108,7 @@ export function CreateCohortButton({
 
             <div className="space-y-2">
               <Label htmlFor="cohort-focus" className="text-xs uppercase tracking-wider text-muted-foreground">
-                Career focus <span className="text-muted-foreground/40 normal-case tracking-normal">(optional)</span>
+                Career focus <span className="text-muted-foreground/65 normal-case tracking-normal">(optional)</span>
               </Label>
               <Input
                 id="cohort-focus"

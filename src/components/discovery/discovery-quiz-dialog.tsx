@@ -413,7 +413,7 @@ function SubjectMultiSelect({
             )}
           </div>
         )}
-        <ChevronDown className={cn('h-3.5 w-3.5 text-muted-foreground/50 shrink-0 transition-transform', open && 'rotate-180')} />
+        <ChevronDown className={cn('h-3.5 w-3.5 text-muted-foreground/70 shrink-0 transition-transform', open && 'rotate-180')} />
       </div>
 
       {/* Dropdown */}
@@ -443,7 +443,7 @@ function SubjectMultiSelect({
                       'text-[10px] px-1.5 py-0.5 rounded-full transition-colors',
                       isStarred
                         ? 'bg-amber-500/20 text-amber-300'
-                        : 'text-muted-foreground/40 hover:text-amber-300 hover:bg-amber-500/10',
+                        : 'text-muted-foreground/65 hover:text-amber-300 hover:bg-amber-500/10',
                     )}
                     title="Star this subject — it counts more in your radar"
                   >
@@ -518,7 +518,7 @@ function InterestMultiSelect({
             )}
           </div>
         )}
-        <ChevronDown className={cn('h-3.5 w-3.5 text-muted-foreground/50 shrink-0 transition-transform', open && 'rotate-180')} />
+        <ChevronDown className={cn('h-3.5 w-3.5 text-muted-foreground/70 shrink-0 transition-transform', open && 'rotate-180')} />
       </div>
 
       {/* Dropdown */}

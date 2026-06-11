@@ -193,7 +193,7 @@ export function JourneyReflectionsTray({
           </div>
           <button
             onClick={() => setOpen(false)}
-            className="p-1.5 rounded-md hover:bg-muted/40 text-muted-foreground/50 hover:text-foreground transition-colors"
+            className="p-1.5 rounded-md hover:bg-muted/40 text-muted-foreground/70 hover:text-foreground transition-colors"
             aria-label="Close reflections"
           >
             <X className="h-3.5 w-3.5" />
@@ -244,7 +244,7 @@ export function JourneyReflectionsTray({
             className={cn(
               "flex-1 min-h-0 w-full resize-none rounded-md border border-border/40",
               "bg-background/40 px-3 py-2 text-[13px] leading-relaxed",
-              "placeholder:text-muted-foreground/40",
+              "placeholder:text-muted-foreground/65",
               "focus:outline-none focus:ring-1 focus:ring-amber-500/40 focus:border-amber-500/40",
             )}
             maxLength={MAX_LENGTH}
@@ -254,7 +254,7 @@ export function JourneyReflectionsTray({
 
         {/* Footer — char count + saved tick + clear */}
         <div className="flex items-center justify-between px-3 py-2 border-t border-border/30 shrink-0">
-          <div className="text-[10px] text-muted-foreground/50 tabular-nums">
+          <div className="text-[10px] text-muted-foreground/70 tabular-nums">
             {text.length} / {MAX_LENGTH}
             {savedTick && (
               <span className="ml-2 inline-flex items-center gap-1 text-emerald-500/85">
@@ -266,7 +266,7 @@ export function JourneyReflectionsTray({
           {text.trim().length > 0 && (
             <button
               onClick={handleClear}
-              className="inline-flex items-center gap-1 text-[10px] text-muted-foreground/50 hover:text-red-400 transition-colors"
+              className="inline-flex items-center gap-1 text-[10px] text-muted-foreground/70 hover:text-red-400 transition-colors"
               aria-label={`Clear ${LENS_LABEL[lens]} reflection`}
               title={`Clear ${LENS_LABEL[lens]} reflection`}
             >

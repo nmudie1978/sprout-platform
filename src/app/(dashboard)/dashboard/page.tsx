@@ -27,11 +27,9 @@ import {
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { useQuery } from "@tanstack/react-query";
-import { SMALL_JOBS_ENABLED } from "@/lib/feature-flags";
 import {
   ArrowRight,
   Compass,
-  Briefcase,
   TrendingUp,
   Lightbulb,
   Pencil,
@@ -178,7 +176,7 @@ function StatCard({
       <p className="text-xs text-muted-foreground/60 uppercase tracking-wider mb-0.5">{label}</p>
       <p className="text-sm font-semibold text-foreground leading-tight">{value}</p>
       {sublabel && (
-        <p className="text-xs text-muted-foreground/50 mt-0.5">{sublabel}</p>
+        <p className="text-xs text-muted-foreground/70 mt-0.5">{sublabel}</p>
       )}
     </div>
   );
@@ -734,14 +732,6 @@ export default function DashboardPage() {
     savedCareersPage * savedCareersPerPage + savedCareersPerPage
   );
 
-  // Application stats
-  const appStats = dashboardStats?.appStats ?? {
-    applied: 0,
-    waiting: 0,
-    accepted: 0,
-    done: 0,
-  };
-
   // Date & greeting
   const today = new Date();
   const dateStr = today.toLocaleDateString("en-GB", {
@@ -818,7 +808,7 @@ export default function DashboardPage() {
               <button
                 type="button"
                 onClick={() => { isReplayRef.current = true; setShowOnboardingWizard(true); }}
-                className="h-7 w-7 rounded-pill border border-border/40 bg-background/60 flex items-center justify-center text-muted-foreground/50 hover:text-foreground hover:bg-muted/40 transition-colors hit-44"
+                className="h-7 w-7 rounded-pill border border-border/40 bg-background/60 flex items-center justify-center text-muted-foreground/70 hover:text-foreground hover:bg-muted/40 transition-colors hit-44"
                 title="Replay app walkthrough"
               >
                 <Compass className="h-3.5 w-3.5" />
@@ -862,7 +852,7 @@ export default function DashboardPage() {
                   title={pct === 100 ? 'Profile complete' : `Profile ${pct}% complete`}
                   className="relative p-1.5 rounded-control hover:bg-muted/50 transition-colors group hit-44"
                 >
-                  <User className="h-4 w-4 text-muted-foreground/50 group-hover:text-muted-foreground transition-colors" />
+                  <User className="h-4 w-4 text-muted-foreground/70 group-hover:text-muted-foreground transition-colors" />
                 </Link>
               );
             })()}
@@ -965,7 +955,7 @@ export default function DashboardPage() {
                   ) : (
                     <>
                       {t('journey.cardTitle')}
-                      <span className="text-muted-foreground/40 font-normal">&mdash;</span>
+                      <span className="text-muted-foreground/65 font-normal">&mdash;</span>
                       <Link
                         href="/careers/radar"
                         data-spotlight="choose-goal"
@@ -1040,7 +1030,7 @@ export default function DashboardPage() {
                                   // nothing left to nudge toward, so Clarity rests.
                                   completedLensCount < 3 && "animate-stage-pulse",
                                 )
-                              : "text-muted-foreground/40"
+                              : "text-muted-foreground/65"
                           )}
                         >
                           {label}
@@ -1101,7 +1091,7 @@ export default function DashboardPage() {
             const allCareers = getAllCareers();
             if (exploredGoals.length === 0) {
               return (
-                <p className="text-xs text-muted-foreground/50">{t('exploredJourneys.emptyState')}</p>
+                <p className="text-xs text-muted-foreground/70">{t('exploredJourneys.emptyState')}</p>
               );
             }
             const sorted = [...exploredGoals].sort((a, b) => {
@@ -1121,7 +1111,7 @@ export default function DashboardPage() {
                 <div className="rounded-control border border-border/60 overflow-hidden">
                   <table className="w-full text-left">
                     <thead>
-                      <tr className="text-xs font-semibold uppercase tracking-wider text-muted-foreground/50 border-b border-border/40 bg-muted/20">
+                      <tr className="text-xs font-semibold uppercase tracking-wider text-muted-foreground/70 border-b border-border/40 bg-muted/20">
                         <th className="px-2.5 py-1.5">Career</th>
                         <th className="px-2 py-1.5 w-16 text-center">Stage</th>
                         <th className="px-2 py-1.5 w-24 text-center">Interest</th>
@@ -1174,7 +1164,7 @@ export default function DashboardPage() {
                                 {career && interestLevels[career.id] ? (
                                   <InterestLevelStars value={interestLevels[career.id]} />
                                 ) : (
-                                  <span className="text-xs text-muted-foreground/30">—</span>
+                                  <span className="text-xs text-muted-foreground/60">—</span>
                                 )}
                               </span>
                             </td>
@@ -1205,15 +1195,15 @@ export default function DashboardPage() {
                     <button
                       onClick={() => setJourneyPage((p) => Math.max(0, p - 1))}
                       disabled={page === 0}
-                      className="p-0.5 rounded-control hit-44 text-muted-foreground/30 hover:text-muted-foreground/60 disabled:opacity-30 transition-colors"
+                      className="p-0.5 rounded-control hit-44 text-muted-foreground/60 hover:text-muted-foreground/60 disabled:opacity-30 transition-colors"
                     >
                       <ChevronLeft className="h-3 w-3" />
                     </button>
-                    <span className="text-xs text-muted-foreground/30 tabular-nums">{page + 1}/{totalPages}</span>
+                    <span className="text-xs text-muted-foreground/60 tabular-nums">{page + 1}/{totalPages}</span>
                     <button
                       onClick={() => setJourneyPage((p) => Math.min(totalPages - 1, p + 1))}
                       disabled={page >= totalPages - 1}
-                      className="p-0.5 rounded-control hit-44 text-muted-foreground/30 hover:text-muted-foreground/60 disabled:opacity-30 transition-colors"
+                      className="p-0.5 rounded-control hit-44 text-muted-foreground/60 hover:text-muted-foreground/60 disabled:opacity-30 transition-colors"
                     >
                       <ChevronRight className="h-3 w-3" />
                     </button>
@@ -1296,7 +1286,7 @@ export default function DashboardPage() {
                       {interestLevels[c.careerId] && (
                         <InterestLevelStars value={interestLevels[c.careerId]} className="shrink-0" />
                       )}
-                      <span className="text-xs text-muted-foreground/30 shrink-0">
+                      <span className="text-xs text-muted-foreground/60 shrink-0">
                         {(() => {
                           const s = Math.floor((Date.now() - new Date(c.savedAt).getTime()) / 1000);
                           if (s < 60) return 'now';
@@ -1326,19 +1316,19 @@ export default function DashboardPage() {
                       type="button"
                       onClick={() => setSavedCareersPage((p) => Math.max(0, p - 1))}
                       disabled={savedCareersPage === 0}
-                      className="p-0.5 hit-44 text-muted-foreground/50 hover:text-foreground disabled:opacity-30 disabled:cursor-not-allowed"
+                      className="p-0.5 hit-44 text-muted-foreground/70 hover:text-foreground disabled:opacity-30 disabled:cursor-not-allowed"
                       aria-label={t('common.previousPage')}
                     >
                       <ChevronLeft className="h-3 w-3" />
                     </button>
-                    <span className="text-xs text-muted-foreground/40 tabular-nums">
+                    <span className="text-xs text-muted-foreground/65 tabular-nums">
                       {savedCareersPage + 1} / {savedCareersPageCount}
                     </span>
                     <button
                       type="button"
                       onClick={() => setSavedCareersPage((p) => Math.min(savedCareersPageCount - 1, p + 1))}
                       disabled={savedCareersPage >= savedCareersPageCount - 1}
-                      className="p-0.5 hit-44 text-muted-foreground/50 hover:text-foreground disabled:opacity-30 disabled:cursor-not-allowed"
+                      className="p-0.5 hit-44 text-muted-foreground/70 hover:text-foreground disabled:opacity-30 disabled:cursor-not-allowed"
                       aria-label={t('common.nextPage')}
                     >
                       <ChevronRight className="h-3 w-3" />
@@ -1347,7 +1337,7 @@ export default function DashboardPage() {
                 )}
               </>
             ) : (
-              <p className="text-xs text-muted-foreground/50">{t('savedCareers.emptyState')}</p>
+              <p className="text-xs text-muted-foreground/70">{t('savedCareers.emptyState')}</p>
             )}
           </DashboardSection>
         </div>
@@ -1395,49 +1385,9 @@ export default function DashboardPage() {
           </DashboardSection>
         </div>
 
-        {/* Small Jobs — compact. Hidden until the marketplace
-            re-opens; gated by NEXT_PUBLIC_SMALL_JOBS_ENABLED. */}
-        {SMALL_JOBS_ENABLED && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-          <DashboardSection
-            title={t('smallJobs.title')}
-            icon={Briefcase}
-            iconColor="text-muted-foreground"
-            tooltip={t('smallJobs.tooltip')}
-            className="mb-0"
-          >
-            <div className="flex gap-2">
-              {[
-                { label: t('smallJobs.applied'), value: appStats.applied },
-                { label: t('smallJobs.waiting'), value: appStats.waiting },
-                { label: t('smallJobs.accepted'), value: appStats.accepted },
-                { label: t('smallJobs.done'), value: appStats.done },
-              ].map((stat) => (
-                <div key={stat.label} className="flex-1 text-center py-1.5">
-                  <p className="text-xs font-bold text-foreground/75 tabular-nums">{stat.value}</p>
-                  <p className="text-xs text-muted-foreground/40 uppercase tracking-wider">{stat.label}</p>
-                </div>
-              ))}
-            </div>
-            {/* Last completed job — row with date + location */}
-            <div className="mt-1.5 pt-1.5 border-t border-border/15">
-              <div className="flex items-center gap-1.5 text-xs uppercase tracking-wider text-muted-foreground/40 mb-1">
-                <CheckCircle2 className="h-2.5 w-2.5 text-muted-foreground/50 shrink-0" />
-                <span>Last completed</span>
-              </div>
-              {dashboardStats?.lastCompletedJob ? (
-                <div className="flex items-center gap-3 text-xs">
-                  <span className="text-foreground/70 font-medium truncate flex-1">{dashboardStats.lastCompletedJob.title}</span>
-                  <span className="text-muted-foreground/40 shrink-0">{new Date(dashboardStats.lastCompletedJob.completedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
-                  <span className="text-muted-foreground/40 shrink-0 truncate max-w-[100px]">{dashboardStats.lastCompletedJob.location}</span>
-                </div>
-              ) : (
-                <span className="text-xs text-muted-foreground/30">None yet</span>
-              )}
-            </div>
-          </DashboardSection>
-        </div>
-        )}
+        {/* The Small Jobs marketplace tile was removed — the jobs marketplace
+            is permanently discontinued (see CLAUDE.md <removed_features_strict>),
+            so it must not be re-enableable via an env flag. */}
 
       </div>
 

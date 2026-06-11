@@ -101,6 +101,23 @@ export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
 
   // ============================================
+  // DEV / TEST PREVIEW ROUTES — never reachable in production
+  // ============================================
+  // /dev/* and /test/* are unfinished demo/preview surfaces (theme
+  // previews, journey-renderer sandboxes, grow-* mockups). robots.txt
+  // disallows them but that's only advisory — block them outright in
+  // production so they never render to a real user (incl. minors).
+  if (
+    process.env.VERCEL_ENV === "production" &&
+    (pathname === "/dev" ||
+      pathname.startsWith("/dev/") ||
+      pathname === "/test" ||
+      pathname.startsWith("/test/"))
+  ) {
+    return new NextResponse(null, { status: 404 });
+  }
+
+  // ============================================
   // SMALL JOBS FEATURE GATE
   // ============================================
   // When disabled, bounce anyone landing on a small-jobs page back to

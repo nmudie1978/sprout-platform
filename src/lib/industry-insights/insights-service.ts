@@ -615,7 +615,7 @@ const CURATED_ARTICLES: InsightArticle[] = [
     title: "Employment Outlook 2025",
     description:
       "Analysis of global employment trends and projections for the coming years.",
-    url: "https://www.oecd.org/employment/outlook/",
+    url: "https://www.oecd.org/en/topics/employment.html",
     source: "OECD",
     publishedAt: "2024-09-15",
     thumbnail:
@@ -808,7 +808,7 @@ const CURATED_ARTICLES: InsightArticle[] = [
     title: "The Global Demand for Software Developers",
     description:
       "Software development remains one of the most sought-after skill sets across all industries worldwide.",
-    url: "https://www.oecd.org/digital/software-skills-demand",
+    url: "https://www.oecd.org/en/topics/digital-skills.html",
     source: "OECD",
     publishedAt: "2024-08-18",
     thumbnail:
@@ -1300,7 +1300,7 @@ const CURATED_PODCASTS: InsightPodcast[] = [
     host: "Alison Beard",
     publishedAt: "2024-12-03",
     duration: "32 min",
-    externalUrl: "https://hbr.org/2020/01/podcast-ideacast",
+    externalUrl: "https://hbr.org/podcasts/ideacast",
     thumbnail:
       "https://images.unsplash.com/photo-1531746790095-e5885f1ffd1d?w=600&h=400&fit=crop",
     section: "big-picture",
@@ -1360,7 +1360,7 @@ const CURATED_PODCASTS: InsightPodcast[] = [
     host: "Alison Beard",
     publishedAt: "2025-01-15",
     duration: "34 min",
-    externalUrl: "https://hbr.org/2020/01/podcast-ideacast",
+    externalUrl: "https://hbr.org/podcasts/ideacast",
     thumbnail:
       "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=600&h=400&fit=crop",
     section: "jobs-on-the-rise",
@@ -1430,7 +1430,7 @@ const CURATED_PODCASTS: InsightPodcast[] = [
     host: "Alison Beard",
     publishedAt: "2024-11-20",
     duration: "31 min",
-    externalUrl: "https://hbr.org/2020/01/podcast-ideacast",
+    externalUrl: "https://hbr.org/podcasts/ideacast",
     thumbnail:
       "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600&h=400&fit=crop",
     section: "jobs-on-the-rise",
@@ -1500,7 +1500,7 @@ const CURATED_PODCASTS: InsightPodcast[] = [
     host: "Alison Beard",
     publishedAt: "2024-09-15",
     duration: "30 min",
-    externalUrl: "https://hbr.org/2020/01/podcast-ideacast",
+    externalUrl: "https://hbr.org/podcasts/ideacast",
     thumbnail:
       "https://images.unsplash.com/photo-1586717791821-3f44a563fa4c?w=600&h=400&fit=crop",
     section: "jobs-on-the-rise",
@@ -1584,7 +1584,7 @@ const CURATED_PODCASTS: InsightPodcast[] = [
     host: "Alison Beard",
     publishedAt: "2024-06-25",
     duration: "29 min",
-    externalUrl: "https://hbr.org/2020/01/podcast-ideacast",
+    externalUrl: "https://hbr.org/podcasts/ideacast",
     thumbnail:
       "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600&h=400&fit=crop",
     section: "jobs-on-the-rise",
@@ -1658,7 +1658,7 @@ const CURATED_PODCASTS: InsightPodcast[] = [
     host: "Alison Beard",
     publishedAt: "2024-10-22",
     duration: "29 min",
-    externalUrl: "https://hbr.org/2020/01/podcast-ideacast",
+    externalUrl: "https://hbr.org/podcasts/ideacast",
     thumbnail:
       "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=600&h=400&fit=crop",
     section: "skills-that-matter",
@@ -1770,7 +1770,7 @@ const CURATED_PODCASTS: InsightPodcast[] = [
     host: "Alison Beard",
     publishedAt: "2024-09-30",
     duration: "33 min",
-    externalUrl: "https://hbr.org/2020/01/podcast-ideacast",
+    externalUrl: "https://hbr.org/podcasts/ideacast",
     thumbnail:
       "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=600&h=400&fit=crop",
     section: "skills-that-matter",
@@ -1812,7 +1812,7 @@ const CURATED_PODCASTS: InsightPodcast[] = [
     host: "Alison Beard",
     publishedAt: "2024-08-22",
     duration: "28 min",
-    externalUrl: "https://hbr.org/2020/01/podcast-ideacast",
+    externalUrl: "https://hbr.org/podcasts/ideacast",
     thumbnail:
       "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&h=400&fit=crop",
     section: "skills-that-matter",
@@ -1896,7 +1896,7 @@ const CURATED_PODCASTS: InsightPodcast[] = [
     host: "Alison Beard",
     publishedAt: "2024-05-30",
     duration: "32 min",
-    externalUrl: "https://hbr.org/2020/01/podcast-ideacast",
+    externalUrl: "https://hbr.org/podcasts/ideacast",
     thumbnail:
       "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600&h=400&fit=crop",
     section: "skills-that-matter",
@@ -1970,7 +1970,7 @@ const CURATED_PODCASTS: InsightPodcast[] = [
     host: "Alison Beard",
     publishedAt: "2024-11-05",
     duration: "34 min",
-    externalUrl: "https://hbr.org/2020/01/podcast-ideacast",
+    externalUrl: "https://hbr.org/podcasts/ideacast",
     thumbnail:
       "https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&h=400&fit=crop",
     section: "industry-spotlights",

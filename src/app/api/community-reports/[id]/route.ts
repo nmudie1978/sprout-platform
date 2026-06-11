@@ -13,17 +13,39 @@ export const dynamic = "force-dynamic";
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+import { getAdminSession } from "@/lib/admin/auth";
 import { prisma } from "@/lib/prisma";
 import { isAdmin } from "@/lib/community-guardian";
 import { logAuditAction } from "@/lib/safety";
 import { AuditAction, CommunityReportStatus } from "@prisma/client";
 
+/**
+ * Normalised admin identity from EITHER admin system:
+ *  - the env-var Admin Portal (cookie session) — the production admin, which
+ *    has NO User row, so `userId` is null;
+ *  - a NextAuth DB-role ADMIN — has a real `userId`.
+ * `label` is always a human/audit-friendly string. Returns null if the caller
+ * is not an admin under either system. Used so a Portal admin can action
+ * safeguarding reports (the queue lives under the Portal layout).
+ */
+async function resolveAdminActor(): Promise<{ userId: string | null; label: string } | null> {
+  const portal = await getAdminSession();
+  if (portal) return { userId: null, label: `portal:${portal.username}` };
+  const session = await getServerSession(authOptions);
+  if (session?.user?.id && (await isAdmin(session.user.id))) {
+    return { userId: session.user.id, label: session.user.email ?? session.user.id };
+  }
+  return null;
+}
+
 // GET /api/community-reports/[id]
 export async function GET(req: NextRequest, props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
   try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.id) {
+    // Admin (either system) sees any report; a youth sees only their own.
+    const admin = await resolveAdminActor();
+    const session = admin ? null : await getServerSession(authOptions);
+    if (!admin && !session?.user?.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
@@ -44,8 +66,8 @@ export async function GET(req: NextRequest, props: { params: Promise<{ id: strin
       return NextResponse.json({ error: "Report not found" }, { status: 404 });
     }
 
-    const isAdminUser = await isAdmin(session.user.id);
-    const isReporter = report.reporterUserId === session.user.id;
+    const isAdminUser = !!admin;
+    const isReporter = !!session?.user?.id && report.reporterUserId === session.user.id;
     if (!isAdminUser && !isReporter) {
       return NextResponse.json(
         { error: "Not authorized to view this report" },
@@ -81,9 +103,13 @@ export async function GET(req: NextRequest, props: { params: Promise<{ id: strin
 export async function PATCH(req: NextRequest, props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
   try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    // Accept either admin system (Portal cookie OR NextAuth ADMIN).
+    const actor = await resolveAdminActor();
+    if (!actor) {
+      return NextResponse.json(
+        { error: "Not authorized to update this report" },
+        { status: 403 }
+      );
     }
 
     const report = await prisma.communityReport.findUnique({
@@ -92,14 +118,6 @@ export async function PATCH(req: NextRequest, props: { params: Promise<{ id: str
     });
     if (!report) {
       return NextResponse.json({ error: "Report not found" }, { status: 404 });
-    }
-
-    const isAdminUser = await isAdmin(session.user.id);
-    if (!isAdminUser) {
-      return NextResponse.json(
-        { error: "Not authorized to update this report" },
-        { status: 403 }
-      );
     }
 
     const fullReport = await prisma.communityReport.findUnique({
@@ -132,16 +150,16 @@ export async function PATCH(req: NextRequest, props: { params: Promise<{ id: str
               isPaused: true,
               pausedAt: new Date(),
               pausedReason: reason,
-              pausedById: session.user.id,
+              pausedById: actor.userId,
             },
           });
           await logAuditAction({
             userId: fullReport.targetId,
-            actorId: session.user.id,
+            actorId: actor.userId ?? undefined,
             action: AuditAction.USER_PAUSED,
             targetType: "user",
             targetId: fullReport.targetId,
-            metadata: { reason, reportId: params.id },
+            metadata: { reason, reportId: params.id, actor: actor.label },
           });
           await prisma.notification.create({
             data: {
@@ -167,17 +185,59 @@ export async function PATCH(req: NextRequest, props: { params: Promise<{ id: str
         await prisma.communityReport.update({
           where: { id: params.id },
           data: {
-            assignedGuardianUserId: session.user.id,
+            // FK to User — only a NextAuth admin has one; a Portal admin
+            // records the claim via the audit log + UNDER_REVIEW status.
+            assignedGuardianUserId: actor.userId,
             status: "UNDER_REVIEW",
           },
         });
         await logAuditAction({
-          actorId: session.user.id,
+          actorId: actor.userId ?? undefined,
           action: AuditAction.COMMUNITY_REPORT_CLAIMED,
           targetType: "report",
           targetId: params.id,
+          metadata: { actor: actor.label },
         });
         return NextResponse.json({ message: "Report claimed successfully" });
+      }
+
+      case "redactContent": {
+        // Remove unsafe content from the reported user's public profile
+        // (free-text bio + interest/skill tags) without deleting the account.
+        // The <safeguarding_rules> "remove unsafe content" capability — distinct
+        // from pauseUser, which suspends the whole account.
+        if (!fullReport || fullReport.targetType !== "USER") {
+          return NextResponse.json(
+            { error: "Only user-profile content can be redacted" },
+            { status: 400 }
+          );
+        }
+        await prisma.youthProfile.updateMany({
+          where: { userId: fullReport.targetId },
+          data: { bio: null, interests: [], skillTags: [] },
+        });
+        await logAuditAction({
+          userId: fullReport.targetId,
+          actorId: actor.userId ?? undefined,
+          action: AuditAction.CONTENT_MODERATED,
+          targetType: "user",
+          targetId: fullReport.targetId,
+          metadata: { reportId: params.id, actor: actor.label, redacted: "bio,interests,skillTags" },
+        });
+        await prisma.notification.create({
+          data: {
+            userId: fullReport.targetId,
+            type: "COMMUNITY_ACTION_TAKEN",
+            title: "Profile content removed",
+            message:
+              "Some content on your profile was removed by our team because it may have breached our community guidelines. You can update your profile at any time.",
+          },
+        });
+        await prisma.communityReport.update({
+          where: { id: params.id },
+          data: { status: "ACTION_TAKEN", actionTaken: "redacted_content", actionTakenAt: new Date() },
+        });
+        return NextResponse.json({ message: "Content redacted successfully" });
       }
 
       case "addNote": {
@@ -201,10 +261,11 @@ export async function PATCH(req: NextRequest, props: { params: Promise<{ id: str
           },
         });
         await logAuditAction({
-          actorId: session.user.id,
+          actorId: actor.userId ?? undefined,
           action: AuditAction.COMMUNITY_REPORT_ESCALATED,
           targetType: "report",
           targetId: params.id,
+          metadata: { actor: actor.label },
         });
         return NextResponse.json({ message: "Report escalated successfully" });
       }
@@ -224,10 +285,11 @@ export async function PATCH(req: NextRequest, props: { params: Promise<{ id: str
         });
         if (status === "RESOLVED") {
           await logAuditAction({
-            actorId: session.user.id,
+            actorId: actor.userId ?? undefined,
             action: AuditAction.COMMUNITY_REPORT_RESOLVED,
             targetType: "report",
             targetId: params.id,
+            metadata: { actor: actor.label },
           });
         }
         return NextResponse.json({ message: "Status updated successfully" });

@@ -83,7 +83,7 @@ function SteppingStoneItem({ stone }: { stone: SteppingStone }) {
       {stone.isCompleted ? (
         <CheckCircle2 className="h-4 w-4 text-success" />
       ) : (
-        <Circle className="h-4 w-4 text-muted-foreground/30" />
+        <Circle className="h-4 w-4 text-muted-foreground/60" />
       )}
     </div>
   );

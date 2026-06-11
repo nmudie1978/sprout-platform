@@ -36,7 +36,7 @@ export function ProgressSection({ goalId }: ProgressSectionProps) {
     return (
       <section className="mt-8">
         <div className="rounded-xl border-2 border-dashed border-muted-foreground/20 p-8 text-center">
-          <ListChecks className="h-8 w-8 mx-auto text-muted-foreground/40 mb-2" />
+          <ListChecks className="h-8 w-8 mx-auto text-muted-foreground/65 mb-2" />
           <p className="text-sm font-medium text-muted-foreground">No tasks yet</p>
           <p className="text-xs text-muted-foreground/70 mt-1">
             Add your first task to start tracking your progress.

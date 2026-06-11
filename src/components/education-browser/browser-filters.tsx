@@ -91,7 +91,7 @@ export function BrowserFilters({ filters, onChange, cities }: BrowserFiltersProp
           value={filters.search}
           onChange={(e) => set('search', e.target.value)}
           placeholder="Search programmes, institutions, cities..."
-          className="w-full h-9 rounded-xl border border-border/20 bg-muted/10 pl-9 pr-8 text-[12px] text-foreground/80 placeholder:text-muted-foreground/30 focus:outline-none focus:border-teal-500/30 transition-colors"
+          className="w-full h-9 rounded-xl border border-border/20 bg-muted/10 pl-9 pr-8 text-[12px] text-foreground/80 placeholder:text-muted-foreground/60 focus:outline-none focus:border-teal-500/30 transition-colors"
         />
         {filters.search && (
           <button

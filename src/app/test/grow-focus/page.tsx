@@ -168,7 +168,7 @@ export default function GrowFocusPage() {
                 );
               })}
               {remaining.length > 4 && (
-                <p className="text-xs text-muted-foreground/40 pl-6.5">
+                <p className="text-xs text-muted-foreground/65 pl-6.5">
                   +{remaining.length - 4} more
                 </p>
               )}
@@ -206,8 +206,8 @@ export default function GrowFocusPage() {
                         key={action.id}
                         className="flex items-center gap-3 py-1"
                       >
-                        <CheckCircle2 className="h-3.5 w-3.5 text-muted-foreground/30" />
-                        <span className="text-sm text-muted-foreground/40 line-through">
+                        <CheckCircle2 className="h-3.5 w-3.5 text-muted-foreground/60" />
+                        <span className="text-sm text-muted-foreground/65 line-through">
                           {action.title}
                         </span>
                       </div>
@@ -220,7 +220,7 @@ export default function GrowFocusPage() {
         )}
 
         {/* Footer */}
-        <p className="text-center text-xs text-muted-foreground/40 pt-8 pb-8">
+        <p className="text-center text-xs text-muted-foreground/65 pt-8 pb-8">
           You&apos;re doing great. One step at a time.
         </p>
       </div>
@@ -253,8 +253,8 @@ function FocusCard({
 
       {/* Label */}
       <div className="mb-2 flex items-center justify-center gap-1.5">
-        <Sparkles className="h-3.5 w-3.5 text-muted-foreground/50" />
-        <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground/50">
+        <Sparkles className="h-3.5 w-3.5 text-muted-foreground/70" />
+        <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground/70">
           Your Next Step
         </p>
       </div>
@@ -282,7 +282,7 @@ function FocusCard({
       <div className="mt-4">
         <button
           onClick={onSkip}
-          className="inline-flex items-center gap-1 text-xs text-muted-foreground/50 hover:text-muted-foreground transition-colors"
+          className="inline-flex items-center gap-1 text-xs text-muted-foreground/70 hover:text-muted-foreground transition-colors"
         >
           Skip — not for me
           <ArrowRight className="h-3 w-3" />

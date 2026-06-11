@@ -83,13 +83,13 @@ export function BeyondBordersCarousel() {
         <div className="flex items-center gap-2">
           <Globe className="h-4 w-4 text-teal-500" />
           <h3 className="text-sm font-semibold">Beyond Borders</h3>
-          <span className="text-[10px] text-muted-foreground/50">Global perspectives</span>
+          <span className="text-[10px] text-muted-foreground/70">Global perspectives</span>
         </div>
         <div className="absolute right-0 flex items-center gap-1">
           <button
             onClick={() => scroll("left")}
             disabled={!canScrollLeft}
-            className="p-1 rounded-full text-muted-foreground/40 hover:text-foreground disabled:opacity-20 transition-colors"
+            className="p-1 rounded-full text-muted-foreground/65 hover:text-foreground disabled:opacity-20 transition-colors"
             aria-label="Scroll left"
           >
             <ChevronLeft className="h-4 w-4" />
@@ -97,7 +97,7 @@ export function BeyondBordersCarousel() {
           <button
             onClick={() => scroll("right")}
             disabled={!canScrollRight}
-            className="p-1 rounded-full text-muted-foreground/40 hover:text-foreground disabled:opacity-20 transition-colors"
+            className="p-1 rounded-full text-muted-foreground/65 hover:text-foreground disabled:opacity-20 transition-colors"
             aria-label="Scroll right"
           >
             <ChevronRight className="h-4 w-4" />
@@ -133,7 +133,7 @@ export function BeyondBordersCarousel() {
                   if (!isSaved && !saveMutation.isPending) saveMutation.mutate(article);
                 }}
                 disabled={isSaved}
-                className="inline-flex items-center gap-1 text-[10px] text-muted-foreground/50 hover:text-teal-500 transition-colors disabled:text-teal-500"
+                className="inline-flex items-center gap-1 text-[10px] text-muted-foreground/70 hover:text-teal-500 transition-colors disabled:text-teal-500"
               >
                 {isSaved ? (
                   <><BookmarkCheck className="h-3 w-3" /> Saved</>

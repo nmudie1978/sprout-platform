@@ -148,7 +148,7 @@ function SavedCareersTab() {
           <button
             type="button"
             onClick={() => removeCuriosity(c.careerId)}
-            className="p-1 rounded-control text-muted-foreground/30 hover:text-destructive hover:bg-destructive/10 transition-colors shrink-0"
+            className="p-1 rounded-control text-muted-foreground/60 hover:text-destructive hover:bg-destructive/10 transition-colors shrink-0"
             aria-label={`Remove ${c.careerTitle}`}
           >
             <X className="h-3.5 w-3.5" />
@@ -243,7 +243,7 @@ function ReflectionsTab() {
             <h3 className="text-xs font-bold uppercase tracking-wide text-foreground truncate">
               {group.career.label}
             </h3>
-            <span className="ml-auto text-xs text-muted-foreground/40 tabular-nums">
+            <span className="ml-auto text-xs text-muted-foreground/65 tabular-nums">
               {group.entries.length}
             </span>
           </div>
@@ -252,7 +252,7 @@ function ReflectionsTab() {
               lens (Discover/Understand/Clarity) it was written on. */}
           <table className="w-full table-fixed text-left">
             <thead>
-              <tr className="text-[10px] uppercase tracking-wide text-muted-foreground/50">
+              <tr className="text-[10px] uppercase tracking-wide text-muted-foreground/70">
                 <th className="px-3 py-1.5 font-medium w-24">Stage</th>
                 <th className="px-3 py-1.5 font-medium">Reflection</th>
               </tr>

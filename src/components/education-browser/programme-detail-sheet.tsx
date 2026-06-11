@@ -121,14 +121,14 @@ export function ProgrammeDetailSheet({
         <DialogHeader>
           <div className="flex items-center gap-2 mb-1">
             <div className="h-2 w-2 rounded-full bg-teal-400" />
-            <span className="text-[10px] text-muted-foreground/50 uppercase tracking-wider">
+            <span className="text-[10px] text-muted-foreground/70 uppercase tracking-wider">
               {prog.institution} &middot; {prog.city}
             </span>
           </div>
           <DialogTitle className="text-base leading-snug">
             {prog.englishName}
           </DialogTitle>
-          <p className="text-[11px] text-muted-foreground/40">{prog.programme}</p>
+          <p className="text-[11px] text-muted-foreground/65">{prog.programme}</p>
         </DialogHeader>
 
         <div className="space-y-4 mt-3">
@@ -186,7 +186,7 @@ export function ProgrammeDetailSheet({
           {/* ── Entry requirements ─────────────────────────────────── */}
           {prog.entryRequirements && (
             <div>
-              <p className="text-[10px] font-semibold text-muted-foreground/50 uppercase tracking-wider mb-1.5">
+              <p className="text-[10px] font-semibold text-muted-foreground/70 uppercase tracking-wider mb-1.5">
                 Entry requirements
               </p>
               <p className="text-[12px] text-foreground/70 leading-relaxed">
@@ -198,7 +198,7 @@ export function ProgrammeDetailSheet({
           {/* ── Career outcome ─────────────────────────────────────── */}
           {prog.careerOutcome && (
             <div>
-              <p className="text-[10px] font-semibold text-muted-foreground/50 uppercase tracking-wider mb-1.5">
+              <p className="text-[10px] font-semibold text-muted-foreground/70 uppercase tracking-wider mb-1.5">
                 Where this leads
               </p>
               <p className="text-[12px] text-foreground/70 leading-relaxed">
@@ -229,7 +229,7 @@ export function ProgrammeDetailSheet({
             <button
               type="button"
               onClick={handleToggleModules}
-              className="flex items-center gap-2 text-[11px] text-muted-foreground/50 hover:text-foreground/70 transition-colors w-full"
+              className="flex items-center gap-2 text-[11px] text-muted-foreground/70 hover:text-foreground/70 transition-colors w-full"
             >
               <BookOpen className="h-3.5 w-3.5" />
               <span className="font-medium">Course modules</span>
@@ -241,7 +241,7 @@ export function ProgrammeDetailSheet({
               <div className="mt-2.5">
                 {loadingModules ? (
                   <div className="py-3 text-center">
-                    <p className="text-[11px] text-muted-foreground/40">Loading modules...</p>
+                    <p className="text-[11px] text-muted-foreground/65">Loading modules...</p>
                   </div>
                 ) : modules && modules.length > 0 ? (
                   (() => {
@@ -256,7 +256,7 @@ export function ProgrammeDetailSheet({
                         {[...byYear.entries()].map(([year, mods]) => (
                           <div key={year ?? 'none'}>
                             {year != null && (
-                              <p className="text-[10px] font-medium text-muted-foreground/40 uppercase tracking-wider mb-1.5">
+                              <p className="text-[10px] font-medium text-muted-foreground/65 uppercase tracking-wider mb-1.5">
                                 Year {year}
                               </p>
                             )}
@@ -275,7 +275,7 @@ export function ProgrammeDetailSheet({
                                     )}
                                   </div>
                                   {m.credits && (
-                                    <span className="text-[10px] text-muted-foreground/40 shrink-0 font-medium">
+                                    <span className="text-[10px] text-muted-foreground/65 shrink-0 font-medium">
                                       {m.credits} ECTS
                                     </span>
                                   )}
@@ -289,7 +289,7 @@ export function ProgrammeDetailSheet({
                   })()
                 ) : (
                   <div className="py-3 text-center rounded-lg border border-border/10 bg-background/20">
-                    <p className="text-[11px] text-muted-foreground/40">
+                    <p className="text-[11px] text-muted-foreground/65">
                       Module details not yet available for this programme.
                     </p>
                   </div>
@@ -317,8 +317,8 @@ function FactCell({
   return (
     <div className="rounded-lg border border-border/10 bg-muted/[0.04] px-3 py-2.5">
       <div className="flex items-center gap-1.5 mb-0.5">
-        <Icon className="h-3 w-3 text-muted-foreground/40" />
-        <p className="text-[9px] text-muted-foreground/40 uppercase tracking-wider">{label}</p>
+        <Icon className="h-3 w-3 text-muted-foreground/65" />
+        <p className="text-[9px] text-muted-foreground/65 uppercase tracking-wider">{label}</p>
       </div>
       <p className="text-[12px] text-foreground/75 font-medium">{value}</p>
     </div>

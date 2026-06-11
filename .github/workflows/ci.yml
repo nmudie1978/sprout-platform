@@ -33,13 +33,24 @@ jobs:
       - name: Lint
         run: npm run lint
 
-      # Typecheck is currently noisy due to pre-existing TS errors in
-      # test files and node_modules type mismatches. Running it as a
-      # non-blocking step so it surfaces issues without failing the
-      # build. Tighten to `run: npm run typecheck` once the baseline
-      # is clean.
-      - name: Typecheck (non-blocking)
-        run: npm run typecheck || true
+      # Baseline is clean (strict mode), so typecheck is a blocking gate —
+      # CLAUDE.md mandates strict TypeScript and a green typecheck before merge.
+      - name: Typecheck
+        run: npm run typecheck
+
+      # Guard against a SILENT false-green: vitest exits 0 even when its
+      # config fails to load (bad import, missing setup) — collecting zero
+      # tests while reporting success. Assert the suite is actually wired
+      # before trusting the Test step. `vitest list` prints one line per
+      # collected test; zero non-empty lines means the runner is broken.
+      - name: Verify test suite is wired (no 0-test false-green)
+        run: |
+          COUNT=$(npx vitest list --silent 2>/dev/null | grep -c '.' || true)
+          echo "vitest collected $COUNT test cases"
+          if [ "$COUNT" -eq 0 ]; then
+            echo "::error::vitest collected 0 tests — config/setup is broken (false-green guard tripped)"
+            exit 1
+          fi
 
       - name: Test
         run: npm run test:run

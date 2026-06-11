@@ -61,7 +61,7 @@ export function InsightUpdateToast({ update, onDismiss }: InsightUpdateToastProp
 
             <button
               onClick={onDismiss}
-              className="flex-shrink-0 p-0.5 rounded-md text-muted-foreground/40 hover:text-muted-foreground/70 transition-colors"
+              className="flex-shrink-0 p-0.5 rounded-md text-muted-foreground/65 hover:text-muted-foreground/70 transition-colors"
               aria-label="Dismiss"
             >
               <X className="h-3 w-3" />

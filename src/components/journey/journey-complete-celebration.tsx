@@ -81,7 +81,7 @@ export function JourneyCompleteCelebration({
               type="button"
               onClick={onClose}
               aria-label="Close"
-              className="absolute right-3 top-3 inline-flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground/50 hover:text-foreground hover:bg-muted/30 transition-colors"
+              className="absolute right-3 top-3 inline-flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground/70 hover:text-foreground hover:bg-muted/30 transition-colors"
             >
               <X className="h-4 w-4" />
             </button>

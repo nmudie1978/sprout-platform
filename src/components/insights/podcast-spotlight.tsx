@@ -186,7 +186,7 @@ export function PodcastSpotlight() {
                     Hosted by {CFYE_PODCAST.host} &bull; {CFYE_PODCAST.organisationFull}
                   </p>
                 </div>
-                <ArrowUpRight className="h-4 w-4 text-muted-foreground/40 group-hover:text-emerald-500 transition-colors shrink-0 mt-0.5" />
+                <ArrowUpRight className="h-4 w-4 text-muted-foreground/65 group-hover:text-emerald-500 transition-colors shrink-0 mt-0.5" />
               </div>
 
               {/* Description */}

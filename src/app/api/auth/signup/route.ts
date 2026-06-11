@@ -169,7 +169,7 @@ export async function POST(req: NextRequest) {
 
       if (age > PLATFORM_MAX_AGE) {
         return NextResponse.json(
-          { error: `Youth workers must be ${PLATFORM_MAX_AGE} or younger. Consider registering as an employer.` },
+          { error: `Endeavrly is for ages ${PLATFORM_MIN_AGE}–${PLATFORM_MAX_AGE}. Thanks for your interest!` },
           { status: 400 }
         );
       }
@@ -183,10 +183,10 @@ export async function POST(req: NextRequest) {
         );
       }
 
-      // All youth (15–23) are ACTIVE on creation. Age personalises the
+      // All youth (15–30) are ACTIVE on creation. Age personalises the
       // Clarity roadmap; it is NOT an in-app gate, and there is no
       // guardian-consent barrier to using the product. See CLAUDE.md
-      // <age_policy>. The only age check is the 15–23 floor above.
+      // <age_policy>. The only age check is the 15–30 floor above.
       initialAccountStatus = AccountStatus.ACTIVE;
     } else if (role === "TEACHER") {
       // Teachers must be 18+ and use a recognised school domain.

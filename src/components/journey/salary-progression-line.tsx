@@ -112,7 +112,7 @@ export function SalaryProgressionLine({ career }: SalaryProgressionLineProps) {
 
   if (!progression || rows.length === 0) {
     return (
-      <p className="text-xs text-muted-foreground/50 py-6 text-center">
+      <p className="text-xs text-muted-foreground/70 py-6 text-center">
         Salary progression isn&rsquo;t available for this career yet.
       </p>
     );
@@ -127,7 +127,7 @@ export function SalaryProgressionLine({ career }: SalaryProgressionLineProps) {
         <TrendingUp className="h-3.5 w-3.5 text-emerald-400" />
         <div className="flex-1 min-w-0">
           <h3 className="text-[12px] font-semibold text-foreground/85">How pay grows with experience</h3>
-          <p className="text-[9px] text-muted-foreground/50">Typical salary with market range · NOK/year · Norway</p>
+          <p className="text-[9px] text-muted-foreground/70">Typical salary with market range · NOK/year · Norway</p>
         </div>
         {provenance?.tier === 'verified' ? (
           provenance.sourceUrl ? (

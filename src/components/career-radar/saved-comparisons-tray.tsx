@@ -209,7 +209,7 @@ export function SavedComparisonsTray({
           </div>
           <button
             onClick={() => setOpen(false)}
-            className="p-1.5 rounded-md hover:bg-muted/40 text-muted-foreground/50 hover:text-foreground transition-colors"
+            className="p-1.5 rounded-md hover:bg-muted/40 text-muted-foreground/70 hover:text-foreground transition-colors"
             aria-label="Close saved comparisons"
           >
             <X className="h-3.5 w-3.5" />
@@ -221,7 +221,7 @@ export function SavedComparisonsTray({
           {count === 0 ? (
             <div className="flex flex-col items-center justify-center h-full text-center px-4">
               <Layers className="h-8 w-8 text-muted-foreground/20 mb-3" />
-              <p className="text-xs text-muted-foreground/50 leading-relaxed">
+              <p className="text-xs text-muted-foreground/70 leading-relaxed">
                 Compare 2-3 careers on the radar, then they'll appear here for quick access later.
               </p>
             </div>
@@ -253,18 +253,18 @@ export function SavedComparisonsTray({
                       {comp.title}
                     </p>
                     {/* Career names */}
-                    <p className="text-[10px] text-muted-foreground/50 truncate mt-0.5">
+                    <p className="text-[10px] text-muted-foreground/70 truncate mt-0.5">
                       {comp.careers.map((c) => c.title).join(" vs ")}
                     </p>
                     {/* Time */}
-                    <p className="text-[9px] text-muted-foreground/30 mt-1">
+                    <p className="text-[9px] text-muted-foreground/60 mt-1">
                       {formatTimeAgo(comp.savedAt)}
                     </p>
                   </div>
                   {/* Delete */}
                   <button
                     onClick={(e) => handleDelete(e, comp.id)}
-                    className="p-1 rounded opacity-0 group-hover:opacity-100 hover:bg-red-500/10 text-muted-foreground/30 hover:text-red-400 transition-all shrink-0"
+                    className="p-1 rounded opacity-0 group-hover:opacity-100 hover:bg-red-500/10 text-muted-foreground/60 hover:text-red-400 transition-all shrink-0"
                     aria-label={`Delete ${comp.title}`}
                   >
                     <Trash2 className="h-3 w-3" />
@@ -278,7 +278,7 @@ export function SavedComparisonsTray({
         {/* Footer hint */}
         {count > 0 && (
           <div className="px-4 py-2 border-t border-border/20 shrink-0">
-            <p className="text-[9px] text-muted-foreground/40 text-center">
+            <p className="text-[9px] text-muted-foreground/65 text-center">
               Click to load into radar
             </p>
           </div>

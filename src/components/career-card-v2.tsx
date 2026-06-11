@@ -174,7 +174,7 @@ function ListRow({ career, matchScore, onLearnMore, notTailoredLabel }: Omit<Car
             </Tooltip>
           </TooltipProvider>
         ) : (
-          <span className="text-[10px] text-muted-foreground/40">—</span>
+          <span className="text-[10px] text-muted-foreground/65">—</span>
         )}
       </span>
 

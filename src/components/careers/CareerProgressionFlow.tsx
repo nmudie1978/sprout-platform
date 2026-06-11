@@ -56,7 +56,7 @@ function Stage({ label, sublabel, roles, colorClass, bgClass }: StageProps) {
 function StageConnector() {
   return (
     <div className="hidden md:flex items-center justify-center px-1 py-4">
-      <ChevronRight className="h-3.5 w-3.5 text-muted-foreground/40" />
+      <ChevronRight className="h-3.5 w-3.5 text-muted-foreground/65" />
     </div>
   );
 }

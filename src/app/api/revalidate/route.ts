@@ -1,6 +1,7 @@
 export const dynamic = "force-dynamic";
 
 import { NextRequest, NextResponse } from "next/server";
+import * as Sentry from "@sentry/nextjs";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
@@ -146,6 +147,8 @@ async function handleRevalidate(req: NextRequest) {
     });
   } catch (error) {
     console.error("[Revalidate] Error:", error);
+    // Escalate: a silently-failing cron has no other tripwire.
+    Sentry.captureException(error, { level: "error", tags: { cron: "revalidate" } });
     return NextResponse.json(
       { error: "Revalidation failed", details: String(error) },
       { status: 500 },

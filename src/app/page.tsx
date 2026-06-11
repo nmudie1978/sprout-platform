@@ -139,7 +139,7 @@ export default async function LandingPage() {
       {/* ============================================ */}
       {/* SECTION 1 — HERO */}
       {/* ============================================ */}
-      <section className="relative overflow-hidden">
+      <section id="main-content" className="relative overflow-hidden">
         {/* Radial gradient glow — emerald-tinted */}
         <div className="absolute top-0 z-0 h-full w-full bg-emerald-950/10 bg-[radial-gradient(ellipse_20%_80%_at_50%_-20%,rgba(16,185,129,0.15),rgba(255,255,255,0))]" />
 

@@ -56,7 +56,7 @@ export function WhereYoureLeaning() {
         onClick={close}
         aria-label="Dismiss"
         title="Dismiss"
-        className="shrink-0 rounded p-0.5 text-muted-foreground/40 transition-colors hover:text-muted-foreground/80"
+        className="shrink-0 rounded p-0.5 text-muted-foreground/65 transition-colors hover:text-muted-foreground/80"
       >
         <X className="h-3.5 w-3.5" />
       </button>

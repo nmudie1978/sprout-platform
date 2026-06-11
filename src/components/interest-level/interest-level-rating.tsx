@@ -48,7 +48,7 @@ export function InterestLevelStars({
               SIZES[size],
               i <= lvl
                 ? "fill-amber-400 text-amber-400"
-                : "fill-transparent text-muted-foreground/30",
+                : "fill-transparent text-muted-foreground/60",
             )}
           />
         ))}
@@ -104,7 +104,7 @@ export function InterestLevelPicker({
                   SIZES[size],
                   active
                     ? "fill-amber-400 text-amber-400"
-                    : "fill-transparent text-muted-foreground/40",
+                    : "fill-transparent text-muted-foreground/65",
                 )}
               />
             </button>
@@ -131,7 +131,7 @@ export function InterestLevelBadge({
 }) {
   if (!value) {
     return (
-      <span className={cn("text-[11px] text-muted-foreground/40", className)}>{notRatedLabel}</span>
+      <span className={cn("text-[11px] text-muted-foreground/65", className)}>{notRatedLabel}</span>
     );
   }
   return (

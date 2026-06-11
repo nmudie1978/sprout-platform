@@ -163,7 +163,7 @@ function CompareCard({ career, preferences, onRemove }: CompareCardProps) {
       <div className="relative p-4 border-b border-border/30">
         <button
           onClick={onRemove}
-          className="absolute top-2 right-2 h-6 w-6 rounded-md flex items-center justify-center text-muted-foreground/40 hover:text-foreground hover:bg-muted/30 transition-colors"
+          className="absolute top-2 right-2 h-6 w-6 rounded-md flex items-center justify-center text-muted-foreground/65 hover:text-foreground hover:bg-muted/30 transition-colors"
           aria-label={`Remove ${career.title}`}
           title="Remove from comparison"
         >
@@ -179,7 +179,7 @@ function CompareCard({ career, preferences, onRemove }: CompareCardProps) {
             title={`Watch 'Day in the Life of ${career.title}' on YouTube`}
           >
             {career.title}
-            <ArrowRight className="h-3 w-3 text-muted-foreground/40 group-hover/link:text-teal-400 transition-colors" />
+            <ArrowRight className="h-3 w-3 text-muted-foreground/65 group-hover/link:text-teal-400 transition-colors" />
           </a>
         </div>
         <p className="text-[11px] text-muted-foreground/75 leading-relaxed">
@@ -248,22 +248,22 @@ function CompareCard({ career, preferences, onRemove }: CompareCardProps) {
         <p className={cn(titleClass, 'mb-1')}>Study paths &amp; school subjects</p>
         <div className="space-y-1.5">
           <div className="flex items-start gap-2 text-[10px]">
-            <ArrowRight className="h-3 w-3 text-muted-foreground/40 shrink-0 mt-px" />
+            <ArrowRight className="h-3 w-3 text-muted-foreground/65 shrink-0 mt-px" />
             <span className="text-foreground/75 leading-snug">{getPathwayLabel(academic.pathwayType)}</span>
           </div>
           <div className="flex items-start gap-2 text-[10px]">
-            <ArrowRight className="h-3 w-3 text-muted-foreground/40 shrink-0 mt-px" />
+            <ArrowRight className="h-3 w-3 text-muted-foreground/65 shrink-0 mt-px" />
             <span className="text-foreground/75 leading-snug">{career.educationPath.replace(/\([^)]*\)/g, '').replace(/\s+/g, ' ').trim()}</span>
           </div>
           {academic.grade.hasCutoff && academic.grade.gradeMin !== null && (
-            <p className="text-[9px] text-muted-foreground/50">
+            <p className="text-[9px] text-muted-foreground/70">
               Typical grades: {academic.grade.gradeMin}&ndash;{academic.grade.gradeMax} (Norwegian 1&ndash;6)
             </p>
           )}
         </div>
         {essentialSubjects.length > 0 && (
           <p className="text-[10px] text-foreground/65">
-            <span className="text-muted-foreground/50">Key subjects: </span>
+            <span className="text-muted-foreground/70">Key subjects: </span>
             {essentialSubjects.map(s => s.name).join(', ')}
           </p>
         )}

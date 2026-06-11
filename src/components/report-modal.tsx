@@ -23,21 +23,24 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { Flag, AlertTriangle, Loader2 } from "lucide-react";
 
+// Must stay in sync with REPORT_REASONS in src/lib/community-guardian.ts —
+// the server rejects any reason code it doesn't recognise.
 const REPORT_REASONS = {
   INAPPROPRIATE_CONTENT: "Inappropriate or offensive content",
   SUSPECTED_SCAM: "Suspected scam or fraud",
   SAFETY_CONCERN: "Safety concern",
   HARASSMENT: "Harassment or bullying",
   SPAM: "Spam or irrelevant content",
-  UNDERPAYMENT: "Pay below legal minimum",
   OTHER: "Other",
 } as const;
 
 type ReportReason = keyof typeof REPORT_REASONS;
 
 interface ReportModalProps {
-  targetType: "JOB_POST" | "USER";
-  targetId: string;
+  // PLATFORM = a general safeguarding concern not tied to a user.
+  targetType: "JOB_POST" | "USER" | "PLATFORM";
+  // Not required for PLATFORM (the server uses a sentinel).
+  targetId?: string;
   targetName?: string;
   trigger?: React.ReactNode;
 }
@@ -60,7 +63,7 @@ export function ReportModal({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           targetType,
-          targetId,
+          targetId: targetType === "PLATFORM" ? undefined : targetId,
           reason,
           details: details.trim() || undefined,
         }),
@@ -120,7 +123,9 @@ export function ReportModal({
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <AlertTriangle className="h-5 w-5 text-amber-500" />
-            Report {targetType === "JOB_POST" ? "Job Post" : "User"}
+            {targetType === "PLATFORM"
+              ? "Report a concern"
+              : `Report ${targetType === "JOB_POST" ? "Job Post" : "User"}`}
           </DialogTitle>
           <DialogDescription>
             {targetName && (
@@ -128,8 +133,9 @@ export function ReportModal({
                 {targetName}
               </span>
             )}
-            Help keep our community safe by reporting content that violates our
-            guidelines.
+            {targetType === "PLATFORM"
+              ? "Tell us about anything that doesn't feel right — content, a message, or a safety worry. A member of our team will review it. If you're in immediate danger, contact your local emergency services."
+              : "Help keep our community safe by reporting content that violates our guidelines."}
           </DialogDescription>
         </DialogHeader>
 

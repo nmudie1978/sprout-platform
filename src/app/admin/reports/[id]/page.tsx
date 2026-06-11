@@ -1,9 +1,8 @@
 import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
+import { getAdminSession } from "@/lib/admin/auth";
 import { prisma } from "@/lib/prisma";
-import { ArrowLeft, Shield, User, Briefcase, Clock, AlertTriangle } from "lucide-react";
+import { ArrowLeft, Shield, User, Briefcase, Clock, AlertTriangle, ShieldAlert } from "lucide-react";
 import { REPORT_REASONS } from "@/lib/community-guardian";
 import { ReportActions } from "@/components/admin/report-actions";
 
@@ -16,9 +15,10 @@ interface PageProps {
 export default async function AdminReportDetailPage({ params }: PageProps) {
   const { id } = await params;
 
-  const session = await getServerSession(authOptions);
-  if (!session?.user || session.user.role !== "ADMIN") {
-    redirect("/dashboard");
+  // Portal session (production admin), matching the rest of /admin.
+  const admin = await getAdminSession();
+  if (!admin) {
+    redirect("/admin/login");
   }
 
   const report = await prisma.communityReport.findUnique({
@@ -90,8 +90,18 @@ export default async function AdminReportDetailPage({ params }: PageProps) {
         </DetailCard>
         <DetailCard label="Target">
           <span className="inline-flex items-center gap-1.5 text-sm">
-            {report.targetType === "JOB_POST" ? <Briefcase className="h-3.5 w-3.5" /> : <User className="h-3.5 w-3.5" />}
-            {report.targetType === "JOB_POST" ? "Job post" : "User"}
+            {report.targetType === "JOB_POST" ? (
+              <Briefcase className="h-3.5 w-3.5" />
+            ) : report.targetType === "PLATFORM" ? (
+              <ShieldAlert className="h-3.5 w-3.5 text-amber-500" />
+            ) : (
+              <User className="h-3.5 w-3.5" />
+            )}
+            {report.targetType === "JOB_POST"
+              ? "Job post"
+              : report.targetType === "PLATFORM"
+                ? "Platform / safety concern"
+                : "User"}
           </span>
         </DetailCard>
         <DetailCard label="Reason">

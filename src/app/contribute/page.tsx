@@ -279,7 +279,7 @@ function ContributeForm() {
           </div>
 
           <div className="rounded-xl border bg-card/50 p-4 mb-6">
-            <p className="text-[10px] text-muted-foreground/50 uppercase tracking-wider mb-3">
+            <p className="text-[10px] text-muted-foreground/70 uppercase tracking-wider mb-3">
               What you submitted
             </p>
             <div className="flex items-center gap-2 mb-3">
@@ -361,7 +361,7 @@ function ContributeForm() {
                   "text-[10px] mt-1 text-center",
                   i === step
                     ? "text-foreground font-medium"
-                    : "text-muted-foreground/50",
+                    : "text-muted-foreground/70",
                 )}
               >
                 {title}
@@ -418,7 +418,7 @@ function ContributeForm() {
                   </div>
                   <div>
                     <label className="text-sm font-medium mb-1.5 block">
-                      City <span className="text-muted-foreground/50">(optional)</span>
+                      City <span className="text-muted-foreground/70">(optional)</span>
                     </label>
                     <Input
                       placeholder="e.g. Oslo"
@@ -540,7 +540,7 @@ function ContributeForm() {
                 <div>
                   <label className="text-sm font-medium mb-1.5 block">
                     Your email{" "}
-                    <span className="text-muted-foreground/50">(optional, never shown)</span>
+                    <span className="text-muted-foreground/70">(optional, never shown)</span>
                   </label>
                   <Input
                     type="email"
@@ -552,7 +552,7 @@ function ContributeForm() {
 
                 {/* Preview */}
                 <div className="rounded-xl border bg-card/50 p-4 mt-2">
-                  <p className="text-[10px] text-muted-foreground/50 uppercase tracking-wider mb-2">
+                  <p className="text-[10px] text-muted-foreground/70 uppercase tracking-wider mb-2">
                     Preview
                   </p>
                   <div className="flex items-center gap-2 mb-3">
@@ -628,7 +628,7 @@ function ContributeForm() {
         </div>
 
         {/* Footer */}
-        <p className="text-[10px] text-muted-foreground/40 text-center mt-8">
+        <p className="text-[10px] text-muted-foreground/65 text-center mt-8">
           Your path will be reviewed before it goes live. Names are shown as
           initials only. No personal data is shared beyond what you enter here.
         </p>

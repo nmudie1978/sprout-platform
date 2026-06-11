@@ -497,7 +497,7 @@ function EmptySpotlightsState({ hasFilters }: { hasFilters: boolean }) {
   return (
     <Card className="border-dashed">
       <CardContent className="flex flex-col items-center justify-center py-8 text-center">
-        <Users className="mb-3 h-10 w-10 text-muted-foreground/50" />
+        <Users className="mb-3 h-10 w-10 text-muted-foreground/70" />
         {hasFilters ? (
           <>
             <p className="text-sm font-medium">No stories match your filters</p>

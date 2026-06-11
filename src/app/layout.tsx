@@ -47,6 +47,15 @@ export default async function RootLayout({
     // only if the user has explicitly opted into light via the toggle.
     <html lang={locale} className="dark" suppressHydrationWarning>
       <body className={`${inter.variable} font-sans`}>
+        {/* Skip link — first focusable element, visible only on keyboard
+            focus. Lets keyboard / screen-reader users jump past the nav
+            straight to the page's main content (WCAG 2.4.1). */}
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-md focus:bg-background focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:text-foreground focus:shadow-lg focus:outline-none focus:ring-2 focus:ring-ring"
+        >
+          Skip to content
+        </a>
         <NextIntlClientProvider locale={locale} messages={messages}>
           <Providers session={session}>{children}</Providers>
         </NextIntlClientProvider>

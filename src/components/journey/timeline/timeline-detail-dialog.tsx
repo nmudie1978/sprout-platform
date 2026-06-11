@@ -769,7 +769,7 @@ export function TimelineDetailDialog({
                           <span className="h-1 w-1 rounded-full bg-teal-400/70 shrink-0" />
                           <span className="font-semibold">{c.name}</span>
                           <span className="text-muted-foreground/60">&middot; {c.provider}</span>
-                          <ExternalLink className="h-2.5 w-2.5 text-muted-foreground/40 group-hover:text-teal-300 transition-colors" />
+                          <ExternalLink className="h-2.5 w-2.5 text-muted-foreground/65 group-hover:text-teal-300 transition-colors" />
                         </a>
                       </li>
                     ))}
@@ -845,9 +845,9 @@ function CertificationsSection({ career }: { career?: string | null }) {
             <div className="flex-1 min-w-0">
               <p className="text-xs font-medium text-foreground/85 group-hover:text-violet-300 transition-colors">{cert.name}</p>
               <p className="text-[10px] text-muted-foreground/60 mt-0.5">{cert.provider} · {cert.duration}</p>
-              <p className="text-[9px] text-muted-foreground/50 mt-0.5">{cert.recognised}</p>
+              <p className="text-[9px] text-muted-foreground/70 mt-0.5">{cert.recognised}</p>
             </div>
-            <ExtLink className="h-3 w-3 text-muted-foreground/30 group-hover:text-violet-400 shrink-0 mt-0.5" />
+            <ExtLink className="h-3 w-3 text-muted-foreground/60 group-hover:text-violet-400 shrink-0 mt-0.5" />
           </a>
         ))}
       </div>

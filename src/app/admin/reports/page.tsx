@@ -1,9 +1,8 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
+import { getAdminSession } from "@/lib/admin/auth";
 import { prisma } from "@/lib/prisma";
-import { Shield, ChevronRight, Clock, AlertTriangle, CheckCircle2, XCircle, UserX, Briefcase } from "lucide-react";
+import { Shield, ChevronRight, Clock, AlertTriangle, CheckCircle2, XCircle, UserX, Briefcase, ShieldAlert } from "lucide-react";
 import { CommunityReportStatus } from "@prisma/client";
 import { REPORT_REASONS } from "@/lib/community-guardian";
 import { cn } from "@/lib/utils";
@@ -35,9 +34,12 @@ const STATUS_CONFIG: Record<CommunityReportStatus, { label: string; className: s
 
 export default async function AdminReportsPage(props: PageProps) {
   const searchParams = await props.searchParams;
-  const session = await getServerSession(authOptions);
-  if (!session?.user || session.user.role !== "ADMIN") {
-    redirect("/dashboard");
+  // Production admin is the env-var Portal (cookie session), not a NextAuth
+  // DB-role account — and this page lives under the Portal layout. Gate on the
+  // Portal session so a Portal admin can actually reach the safeguarding queue.
+  const admin = await getAdminSession();
+  if (!admin) {
+    redirect("/admin/login");
   }
 
   const validStatuses = Object.values(CommunityReportStatus) as CommunityReportStatus[];
@@ -140,7 +142,10 @@ export default async function AdminReportsPage(props: PageProps) {
               {reports.map((r) => {
                 const status = STATUS_CONFIG[r.status];
                 const StatusIcon = status.Icon;
-                const TargetIcon = r.targetType === "JOB_POST" ? Briefcase : UserX;
+                const TargetIcon =
+                  r.targetType === "JOB_POST" ? Briefcase : r.targetType === "PLATFORM" ? ShieldAlert : UserX;
+                const targetLabel =
+                  r.targetType === "JOB_POST" ? "Job" : r.targetType === "PLATFORM" ? "Safety concern" : "User";
                 const reporterName =
                   r.reporter.youthProfile?.displayName ??
                   r.reporter.email?.split("@")[0] ??
@@ -158,8 +163,10 @@ export default async function AdminReportsPage(props: PageProps) {
                     <td className="px-4 py-3">
                       <span className="inline-flex items-center gap-1.5 text-xs text-foreground/80">
                         <TargetIcon className="h-3.5 w-3.5 text-muted-foreground/60" />
-                        {r.targetType === "JOB_POST" ? "Job" : "User"}
-                        <code className="text-[10px] text-muted-foreground/50 ml-1">{r.targetId.slice(0, 8)}</code>
+                        {targetLabel}
+                        {r.targetType !== "PLATFORM" && (
+                          <code className="text-[10px] text-muted-foreground/70 ml-1">{r.targetId.slice(0, 8)}</code>
+                        )}
                       </span>
                     </td>
                     <td className="px-4 py-3 text-xs text-foreground/80">

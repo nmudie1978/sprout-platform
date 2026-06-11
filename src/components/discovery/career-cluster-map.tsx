@@ -107,13 +107,13 @@ export function CareerClusterMap({ careerId, onSelectCareer, limit = 8 }: Career
             </div>
 
             {/* Arrow */}
-            <ChevronRight className="h-3.5 w-3.5 text-muted-foreground/40 group-hover:text-primary/60 transition-colors mt-1 shrink-0" />
+            <ChevronRight className="h-3.5 w-3.5 text-muted-foreground/65 group-hover:text-primary/60 transition-colors mt-1 shrink-0" />
           </button>
         ))}
       </div>
 
       {/* ── Hint ────────────────────────────────────────────────── */}
-      <p className="text-[10px] text-muted-foreground/50 flex items-center gap-1">
+      <p className="text-[10px] text-muted-foreground/70 flex items-center gap-1">
         <Sparkles className="h-3 w-3" />
         Based on work style, skills, and study requirements
       </p>

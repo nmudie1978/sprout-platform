@@ -76,7 +76,7 @@ export function MyContentTab() {
             <img src={it.thumbnail} alt="" className="h-24 w-full object-cover" />
           )}
           <div className="p-2.5">
-            <p className="text-[8px] font-semibold uppercase tracking-wide text-muted-foreground/50">
+            <p className="text-[8px] font-semibold uppercase tracking-wide text-muted-foreground/70">
               {it.type}
             </p>
             <a
