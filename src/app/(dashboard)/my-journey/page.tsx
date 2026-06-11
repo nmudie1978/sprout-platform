@@ -46,6 +46,7 @@ import { localizeCareer } from '@/lib/career-localization';
 import { displaySalary, displayEducation, showsSalaryProgression } from '@/lib/career-localization/display';
 import type { CareerDetails } from '@/lib/career-typical-days';
 import type { CareerProgression } from '@/lib/career-progressions';
+import { CareerProgressionFlow, type CareerProgressionData } from '@/components/careers/CareerProgressionFlow';
 import type { RealityCheckResult } from '@/lib/career-reality-types';
 import { getCertificationPath, getCareerRequirements, getNorwayProgrammes, getProgrammesForCareer, hasEducationData, getSpanishReadiness, type NordicCountry } from '@/lib/education';
 import { countryToCode, DEFAULT_COUNTRY } from '@/lib/countries';
@@ -116,6 +117,7 @@ interface CareerDetailsResponse {
   category: string;
   details: CareerDetails | null;
   progression: CareerProgression | null;
+  pathProgression: CareerProgressionData | null;
   hasDetails: boolean;
 }
 
@@ -984,7 +986,7 @@ function UnderstandTab({
   const [openSection, setOpenSection] = useState<string | null>(null);
   const [selectedRow, setSelectedRow] = useState<number | null>(null);
   const { isCollapsed: uCollapsed, toggle: uToggle } = useSectionCollapse(
-    ['u-role', 'u-day', 'u-education-pathway', 'u-specialisms', 'u-notes'],
+    ['u-role', 'u-growth', 'u-day', 'u-education-pathway', 'u-specialisms', 'u-notes'],
     [],
     // Day & Workplace and Education Pathway ALWAYS open minimised so the tab
     // opens focused on "Inside the Role". The user can expand them in-session,
@@ -998,6 +1000,7 @@ function UnderstandTab({
 
   const details = detailsData?.details ?? null;
   const progression = detailsData?.progression ?? null;
+  const pathProgression = (detailsData?.pathProgression ?? null) as CareerProgressionData | null;
   // One or two realistic example employers for the Typical Day card, so
   // the day feels grounded in a real place (e.g. a telecoms engineer at
   // Telenor). Prefers curated employers, falls back to category-level.
@@ -1164,6 +1167,24 @@ function UnderstandTab({
           </div>
         )}
       </SectionCard>
+
+      {/* How this role grows — entry → core → (expert / lead) ladder. */}
+      {pathProgression && (
+        <SectionCard accent="blue">
+          <SectionHeader
+            icon={TrendingUp}
+            title="How this role grows"
+            tooltip="Where this role can lead as you gain experience — and, where it applies, the two different directions careers can take."
+            collapsed={uCollapsed('u-growth')}
+            onToggle={() => uToggle('u-growth')}
+          />
+          {!uCollapsed('u-growth') && (
+            <div className="px-4 pb-4">
+              <CareerProgressionFlow progression={pathProgression} />
+            </div>
+          )}
+        </SectionCard>
+      )}
 
       {/* Career Presence was previously a standalone card here — it's
           now embedded inside the "Real Career Paths & Tools" section
