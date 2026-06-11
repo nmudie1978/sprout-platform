@@ -188,14 +188,12 @@ export function inferEducationRoute(career: Career): EducationRoute {
 // Matching lookups live in a pure, catalog-free module (single source of
 // truth) so the matching engine can use them without bundling this data const.
 import {
-  CATEGORY_SECTOR_DEFAULTS,
-  WORK_SETTING_DEFAULTS,
-  PEOPLE_INTENSITY_DEFAULTS,
-  WORK_SETTING_OVERRIDES,
-  PEOPLE_INTENSITY_OVERRIDES,
   SUBJECT_CATEGORY_WEIGHTS,
   SUBJECT_CAREER_BOOSTS,
   INTEREST_CAREER_BOOSTS,
+  workSettingFor,
+  peopleIntensityFor,
+  sectorFor,
 } from './matching/lookups';
 // Re-export the public ones so existing importers of '@/lib/career-pathways'
 // (grade-match, the radar) keep working unchanged.
@@ -9002,10 +9000,7 @@ export function getPathTypeForCareer(careerTitle: string): SpecialistPathType | 
 
 /** Resolve the sector for a career (explicit field → category default → "mixed"). */
 export function getSectorForCareer(careerId: string): "public" | "private" | "mixed" {
-  const career = getCareerById(careerId);
-  if (career?.sector) return career.sector;
-  const cat = getCategoryForCareer(careerId);
-  return (cat && CATEGORY_SECTOR_DEFAULTS[cat]) ?? "mixed";
+  return sectorFor(getCareerById(careerId), getCategoryForCareer(careerId));
 }
 
 /** Short pension note based on sector. */
@@ -9520,17 +9515,11 @@ export interface GradeBand {
 
 
 export function getCareerWorkSetting(career: Career): WorkSetting {
-  if (career.workSetting) return career.workSetting;
-  if (WORK_SETTING_OVERRIDES[career.id]) return WORK_SETTING_OVERRIDES[career.id];
-  const cat = findCareerCategory(career.id);
-  return cat ? WORK_SETTING_DEFAULTS[cat] : "mixed";
+  return workSettingFor(career, findCareerCategory(career.id));
 }
 
 export function getCareerPeopleIntensity(career: Career): PeopleIntensity {
-  if (career.peopleIntensity) return career.peopleIntensity;
-  if (PEOPLE_INTENSITY_OVERRIDES[career.id]) return PEOPLE_INTENSITY_OVERRIDES[career.id];
-  const cat = findCareerCategory(career.id);
-  return cat ? PEOPLE_INTENSITY_DEFAULTS[cat] : "medium";
+  return peopleIntensityFor(career, findCareerCategory(career.id));
 }
 
 // Subject → career category weights.

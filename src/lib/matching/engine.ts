@@ -89,7 +89,7 @@ export function buildCareerProfile(career: Career): CareerMatchProfile {
     WORK_SETTING_TO_DIMENSIONS.mixed;
 
   // Fit dimensions (creativity, people, hands-on, variety, academic, outdoor)
-  const fitDims = getFitDimensions(career);
+  const fitDims = getFitDimensions(career, category === "UNKNOWN" ? undefined : category);
   const fitMap = Object.fromEntries(fitDims.map((d) => [d.id, d.score / 5]));
 
   // Blend work setting dimensions with fit-dimension scores for richer signal

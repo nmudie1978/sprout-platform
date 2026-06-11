@@ -9,6 +9,7 @@
  * Types are imported type-only (erased at build → stays catalog-free at runtime).
  */
 import type {
+  Career,
   CareerCategory,
   WorkSetting,
   PeopleIntensity,
@@ -451,4 +452,40 @@ export function measureSignalStrength(prefs: DiscoveryPreferences | null | undef
   if (prefs.workStyles && prefs.workStyles.length > 0) dims++;
   if (prefs.peoplePref) dims++;
   return dims;
+}
+
+// ── Pure category-aware resolvers ──────────────────────────────────
+// These take the career's category as an argument instead of looking it up
+// from the catalog, so the matching engine / radar can call them without
+// importing the 740KB CAREER_PATHWAYS const. The career-pathways.ts wrappers
+// (getCareerWorkSetting etc.) pass findCareerCategory(career.id) — identical
+// behaviour; client callers pass the category from the fetched catalog.
+
+/** Work setting: explicit field → per-id override → category default → mixed. */
+export function workSettingFor(
+  career: Career,
+  category: CareerCategory | null | undefined,
+): WorkSetting {
+  if (career.workSetting) return career.workSetting;
+  if (WORK_SETTING_OVERRIDES[career.id]) return WORK_SETTING_OVERRIDES[career.id];
+  return category ? WORK_SETTING_DEFAULTS[category] : "mixed";
+}
+
+/** People intensity: explicit field → per-id override → category default → medium. */
+export function peopleIntensityFor(
+  career: Career,
+  category: CareerCategory | null | undefined,
+): PeopleIntensity {
+  if (career.peopleIntensity) return career.peopleIntensity;
+  if (PEOPLE_INTENSITY_OVERRIDES[career.id]) return PEOPLE_INTENSITY_OVERRIDES[career.id];
+  return category ? PEOPLE_INTENSITY_DEFAULTS[category] : "medium";
+}
+
+/** Sector: explicit field → category default → mixed. */
+export function sectorFor(
+  career: Career | null | undefined,
+  category: CareerCategory | null | undefined,
+): "public" | "private" | "mixed" {
+  if (career?.sector) return career.sector;
+  return (category && CATEGORY_SECTOR_DEFAULTS[category]) ?? "mixed";
 }

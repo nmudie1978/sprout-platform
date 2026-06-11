@@ -15,6 +15,7 @@ import { X, ArrowRight, Download } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import type { Career, DiscoveryPreferences } from '@/lib/career-pathways';
+import { findCareerCategory } from '@/lib/career-pathways';
 import {
   getFitDimensions,
   shortDayToDay,
@@ -139,7 +140,7 @@ interface CompareCardProps {
 }
 
 function CompareCard({ career, preferences, onRemove }: CompareCardProps) {
-  const dims = getFitDimensions(career);
+  const dims = getFitDimensions(career, findCareerCategory(career.id));
   const tasks = shortDayToDay(career);
   const signals = getValueSignals(career);
   const academic = getAcademicProfile(career);
@@ -293,7 +294,7 @@ function buildComparisonHtml(careers: Career[], preferences: DiscoveryPreference
 
   const cardsHtml = careers
     .map((career) => {
-      const dims = getFitDimensions(career);
+      const dims = getFitDimensions(career, findCareerCategory(career.id));
       const tasks = shortDayToDay(career);
       const signals = getValueSignals(career);
       const ap = getAcademicProfile(career);

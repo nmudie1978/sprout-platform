@@ -23,7 +23,8 @@ import type {
   EntryRoute,
   GradeBand,
 } from "../career-pathways";
-import { UNIVERSITY_ROUTES } from "../career-pathways";
+// From the pure lookups module so this file stays out of the radar bundle.
+import { UNIVERSITY_ROUTES } from "../matching/lookups";
 
 export type GradeMatchStatus =
   | "aligned"  // User's range overlaps the career's typical band
