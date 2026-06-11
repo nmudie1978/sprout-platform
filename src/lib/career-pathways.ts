@@ -9684,7 +9684,7 @@ export function getMatchReasons(
 ): string[] {
   // Delegate to the new matching engine for richer, dimension-based reasons.
   const { getMatchReasonsFromEngine } = require("@/lib/matching/engine");
-  return getMatchReasonsFromEngine(career, prefs);
+  return getMatchReasonsFromEngine(career, prefs, findCareerCategory);
 }
 
 /**
@@ -9989,7 +9989,7 @@ export function getCareersFromDiscovery(
   // Delegate to the new hybrid matching engine.
   // The engine handles scoring, diversity, interleaving, and weak-signal bias.
   const { rankCareers } = require("@/lib/matching/engine");
-  return rankCareers(prefs, limit);
+  return rankCareers(prefs, { careers: getAllCareers(), findCategory: findCareerCategory }, limit);
 }
 
 /**

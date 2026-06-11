@@ -18,7 +18,10 @@
 import { describe, it, expect } from "vitest";
 import { rankCareers, buildUserProfile, scoreCareer, buildCareerProfile, getMatchResultForCareer } from "../engine";
 import type { DiscoveryPreferences } from "@/lib/career-pathways";
-import { getAllCareers } from "@/lib/career-pathways";
+
+// Engine now takes catalog data via ctx — build it from the real catalog.
+const CTX = { careers: getAllCareers(), findCategory: findCareerCategory };
+import { getAllCareers, findCareerCategory } from "@/lib/career-pathways";
 
 // ── Personas ──────────────────────────────────────────────────────
 
@@ -157,7 +160,7 @@ describe("Matching engine — adversarial scenarios", () => {
   describe("invariants across every persona", () => {
     for (const [name, prefs] of Object.entries(PERSONAS)) {
       it(`[${name}] returns valid results: no NaN, no duplicates, scores in [0,100]`, () => {
-        const careers = rankCareers(prefs, 50);
+        const careers = rankCareers(prefs, CTX, 50);
         assertNoDuplicates(careers);
         assertScoresValid(careers);
       });
@@ -166,11 +169,11 @@ describe("Matching engine — adversarial scenarios", () => {
 
   describe("empty input → empty results (no leakage)", () => {
     it("empty preferences returns []", () => {
-      expect(rankCareers(PERSONAS.empty, 50)).toEqual([]);
+      expect(rankCareers(PERSONAS.empty, CTX, 50)).toEqual([]);
     });
 
     it("'mixed' on every dimension still returns results (it's a real signal)", () => {
-      const r = rankCareers(PERSONAS.mixedAll, 50);
+      const r = rankCareers(PERSONAS.mixedAll, CTX, 50);
       // If no input dimension is set strongly the engine returns []. mixedAll
       // sets workStyles and peoplePref, so the engine sees non-empty input
       // — it should produce something.
@@ -180,7 +183,7 @@ describe("Matching engine — adversarial scenarios", () => {
 
   describe("contradictory inputs degrade gracefully", () => {
     it("creative + analytical contradiction still produces ranked results", () => {
-      const r = rankCareers(PERSONAS.contradictoryCreativeAnalytical, 50);
+      const r = rankCareers(PERSONAS.contradictoryCreativeAnalytical, CTX, 50);
       expect(r.length).toBeGreaterThan(0);
       // Top score should not be a perfect 100% — no career fits both creative
       // and analytical perfectly. Even a bridge career like "data viz designer"
@@ -190,7 +193,7 @@ describe("Matching engine — adversarial scenarios", () => {
     });
 
     it("outdoors + office contradiction still produces results, scores degraded", () => {
-      const r = rankCareers(PERSONAS.contradictoryOutdoorsOffice, 50);
+      const r = rankCareers(PERSONAS.contradictoryOutdoorsOffice, CTX, 50);
       expect(r.length).toBeGreaterThan(0);
       // The top score should be modest — there's no clean "outdoor office" job.
       const top = getMatchResultForCareer(r[0].id);
@@ -200,19 +203,19 @@ describe("Matching engine — adversarial scenarios", () => {
 
   describe("sparse inputs produce SOMETHING (never an empty list)", () => {
     it("one interest keyword surfaces results", () => {
-      const r = rankCareers(PERSONAS.sparseOneInterest, 50);
+      const r = rankCareers(PERSONAS.sparseOneInterest, CTX, 50);
       expect(r.length).toBeGreaterThan(0);
     });
 
     it("one subject surfaces results", () => {
-      const r = rankCareers(PERSONAS.sparseSubjectsOnly, 50);
+      const r = rankCareers(PERSONAS.sparseSubjectsOnly, CTX, 50);
       expect(r.length).toBeGreaterThan(0);
     });
   });
 
   describe("over-specified input still produces a coherent ranked list", () => {
     it("every-subject selection doesn't crash and returns ranked results", () => {
-      const r = rankCareers(PERSONAS.overSpecified, 80);
+      const r = rankCareers(PERSONAS.overSpecified, CTX, 80);
       expect(r.length).toBeGreaterThan(10);
       assertNoDuplicates(r);
     });
@@ -220,63 +223,63 @@ describe("Matching engine — adversarial scenarios", () => {
 
   describe("normalisation handles weird input shapes", () => {
     it("weird casing in subjects/interests still scores", () => {
-      const r = rankCareers(PERSONAS.weirdCasing, 50);
+      const r = rankCareers(PERSONAS.weirdCasing, CTX, 50);
       expect(r.length).toBeGreaterThan(0);
     });
 
     it("garbage interests don't poison the ranking — at least the subject signal survives", () => {
-      const r = rankCareers(PERSONAS.garbageInterests, 50);
+      const r = rankCareers(PERSONAS.garbageInterests, CTX, 50);
       expect(r.length).toBeGreaterThan(0);
     });
   });
 
   describe("smell tests — top results should not flagrantly contradict input", () => {
     it("STRONG creative input — top 5 should contain at least one creative-leaning career", () => {
-      const r = rankCareers(PERSONAS.creative, 10);
+      const r = rankCareers(PERSONAS.creative, CTX, 10);
       expect(r.length).toBeGreaterThan(0);
       // Look for any career whose profile has creative > 0.5
       const top5 = r.slice(0, 5);
-      const hasCreative = top5.some((c) => buildCareerProfile(c).creative > 0.5);
+      const hasCreative = top5.some((c) => buildCareerProfile(c, findCareerCategory).creative > 0.5);
       expect(hasCreative).toBe(true);
     });
 
     it("STRONG STEM input — top 5 should contain at least one analytical career", () => {
-      const r = rankCareers(PERSONAS.academicSTEM, 10);
+      const r = rankCareers(PERSONAS.academicSTEM, CTX, 10);
       expect(r.length).toBeGreaterThan(0);
       const top5 = r.slice(0, 5);
-      const hasAnalytical = top5.some((c) => buildCareerProfile(c).analytical > 0.5);
+      const hasAnalytical = top5.some((c) => buildCareerProfile(c, findCareerCategory).analytical > 0.5);
       expect(hasAnalytical).toBe(true);
     });
 
     it("STRONG hands-on input — top 5 should contain at least one hands-on career", () => {
-      const r = rankCareers(PERSONAS.practicalHandsOn, 10);
+      const r = rankCareers(PERSONAS.practicalHandsOn, CTX, 10);
       expect(r.length).toBeGreaterThan(0);
       const top5 = r.slice(0, 5);
-      const hasHandsOn = top5.some((c) => buildCareerProfile(c).handsOn > 0.5);
+      const hasHandsOn = top5.some((c) => buildCareerProfile(c, findCareerCategory).handsOn > 0.5);
       expect(hasHandsOn).toBe(true);
     });
 
     it("STRONG people input — top 5 should contain at least one high-people career", () => {
-      const r = rankCareers(PERSONAS.socialPeople, 10);
+      const r = rankCareers(PERSONAS.socialPeople, CTX, 10);
       expect(r.length).toBeGreaterThan(0);
       const top5 = r.slice(0, 5);
-      const hasPeople = top5.some((c) => buildCareerProfile(c).peopleOrientation > 0.5);
+      const hasPeople = top5.some((c) => buildCareerProfile(c, findCareerCategory).peopleOrientation > 0.5);
       expect(hasPeople).toBe(true);
     });
   });
 
   describe("input changes meaningfully change output (engine is responsive)", () => {
     it("creative vs STEM produce non-identical top-5 lists", () => {
-      const a = rankCareers(PERSONAS.creative, 5).map((c) => c.id);
-      const b = rankCareers(PERSONAS.academicSTEM, 5).map((c) => c.id);
+      const a = rankCareers(PERSONAS.creative, CTX, 5).map((c) => c.id);
+      const b = rankCareers(PERSONAS.academicSTEM, CTX, 5).map((c) => c.id);
       const overlap = a.filter((id) => b.includes(id));
       // Some overlap is fine, but not 100% — the engine must respond.
       expect(overlap.length).toBeLessThan(5);
     });
 
     it("handsOn vs creative produce non-identical top-5 lists", () => {
-      const a = rankCareers(PERSONAS.practicalHandsOn, 5).map((c) => c.id);
-      const b = rankCareers(PERSONAS.creative, 5).map((c) => c.id);
+      const a = rankCareers(PERSONAS.practicalHandsOn, CTX, 5).map((c) => c.id);
+      const b = rankCareers(PERSONAS.creative, CTX, 5).map((c) => c.id);
       const overlap = a.filter((id) => b.includes(id));
       expect(overlap.length).toBeLessThan(5);
     });
@@ -294,11 +297,11 @@ describe("Matching engine — adversarial scenarios", () => {
     it("any persona's top-10 spans at least 1 category (sanity)", () => {
       const monocultures: string[] = [];
       for (const [name, prefs] of Object.entries(PERSONAS)) {
-        const r = rankCareers(prefs, 10);
+        const r = rankCareers(prefs, CTX, 10);
         if (r.length < 5) continue; // skip empty / sparse cases
         const cats = new Set<string>();
         for (const c of r) {
-          const profile = buildCareerProfile(c);
+          const profile = buildCareerProfile(c, findCareerCategory);
           if (profile.category) cats.add(profile.category);
         }
         expect(cats.size, `[${name}] returned 0 categories — engine broken`).toBeGreaterThanOrEqual(1);
@@ -316,7 +319,7 @@ describe("Matching engine — adversarial scenarios", () => {
   describe("scoreCareer is a pure deterministic function (idempotency)", () => {
     it("calling scoreCareer twice on same inputs returns the same score", () => {
       const career = getAllCareers()[0];
-      const profile = buildCareerProfile(career);
+      const profile = buildCareerProfile(career, findCareerCategory);
       const user = buildUserProfile(PERSONAS.academicSTEM);
       const a = scoreCareer(user, profile);
       const b = scoreCareer(user, profile);

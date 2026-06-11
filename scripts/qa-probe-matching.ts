@@ -4,6 +4,10 @@
  */
 import { rankCareers, buildCareerProfile, getMatchResultForCareer } from "../src/lib/matching/engine";
 import type { DiscoveryPreferences } from "../src/lib/career-pathways";
+import { getAllCareers, findCareerCategory } from "../src/lib/career-pathways";
+
+// Engine now takes catalog data via ctx.
+const CTX = { careers: getAllCareers(), findCategory: findCareerCategory };
 
 const personas: Record<string, DiscoveryPreferences> = {
   practicalHandsOn: {
@@ -30,9 +34,9 @@ const personas: Record<string, DiscoveryPreferences> = {
 
 for (const [name, p] of Object.entries(personas)) {
   console.log(`\n── ${name} ──`);
-  const r = rankCareers(p, 10);
+  const r = rankCareers(p, CTX, 10);
   for (const c of r) {
-    const profile = buildCareerProfile(c);
+    const profile = buildCareerProfile(c, findCareerCategory);
     const result = getMatchResultForCareer(c.id);
     console.log(
       `  ${(result?.matchPercent ?? 0).toFixed(0).padStart(3)}%  ${c.id.padEnd(35)}  cat=${profile.category}`,

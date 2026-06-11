@@ -28,36 +28,37 @@ import {
   ANALYTICAL_KEYWORDS,
   POPULAR_CAREERS,
 } from "./config";
+// Types only — the engine is now CATALOG-FREE. It never value-imports
+// career-pathways.ts (the 740KB god-module); the caller supplies the careers
+// list + a findCategory fn via EngineCtx, so the Career Radar can run the
+// engine on the client without bundling the catalog.
+import type { Career, CareerCategory, DiscoveryPreferences } from "@/lib/career-pathways";
 import {
-  type Career,
-  type CareerCategory,
-  type DiscoveryPreferences,
-  getAllCareers,
-  findCareerCategory,
-  getCareerWorkSetting,
-  getCareerPeopleIntensity,
-  getSectorForCareer,
+  SUBJECT_CATEGORY_WEIGHTS,
+  SUBJECT_CAREER_BOOSTS,
+  INTEREST_CAREER_BOOSTS,
   measureSignalStrength,
-} from "@/lib/career-pathways";
+  workSettingFor,
+  peopleIntensityFor,
+  sectorFor,
+} from "@/lib/matching/lookups";
 import { getFitDimensions } from "@/lib/compare/fit-dimensions";
 import { getAcademicProfile } from "@/lib/education/academic-readiness";
-
-// ── Subject data (imported indirectly via lookup functions) ────────
-// These mirror the maps in career-pathways.ts. We build subject
-// relevance per-career using category membership + boost lists.
-// We import the raw data by re-declaring the maps here so the
-// matching engine is self-contained and testable.
-
-import {
-  getSubjectCategoryWeights,
-  getSubjectCareerBoosts,
-  getInterestCareerBoosts,
-} from "@/lib/career-pathways";
 import {
   matchCareerToGradeRange,
   shouldExcludeByRoute,
   gradeMatchScoreAdjustment,
 } from "@/lib/career-pathways/grade-match";
+
+/** Look up a career's category by id (catalog-derived; supplied by the caller). */
+export type FindCategory = (careerId: string) => CareerCategory | null;
+
+/** Catalog data the engine needs, injected by the caller (server: from the
+ *  real catalog; client: from the fetched /api/careers/catalog via the hook). */
+export interface EngineCtx {
+  careers: Career[];
+  findCategory: FindCategory;
+}
 
 // ══════════════════════════════════════════════════════════════════
 // 1. BUILD CAREER PROFILE
@@ -76,20 +77,21 @@ export function clearProfileCache(): void {
  * Combines: workSetting, peopleIntensity, fit-dimensions,
  * academic-readiness, subject-category weights, and boost lists.
  */
-export function buildCareerProfile(career: Career): CareerMatchProfile {
+export function buildCareerProfile(career: Career, findCategory: FindCategory): CareerMatchProfile {
   const cached = profileCache.get(career.id);
   if (cached) return cached;
 
-  const category = findCareerCategory(career.id) || "UNKNOWN";
-  const workSetting = getCareerWorkSetting(career);
-  const peopleIntensity = getCareerPeopleIntensity(career);
+  const cat = findCategory(career.id);
+  const category = cat || "UNKNOWN";
+  const workSetting = workSettingFor(career, cat);
+  const peopleIntensity = peopleIntensityFor(career, cat);
 
   // Work environment dimensions from setting
   const envDims = WORK_SETTING_TO_DIMENSIONS[workSetting] ||
     WORK_SETTING_TO_DIMENSIONS.mixed;
 
   // Fit dimensions (creativity, people, hands-on, variety, academic, outdoor)
-  const fitDims = getFitDimensions(career, category === "UNKNOWN" ? undefined : category);
+  const fitDims = getFitDimensions(career, cat);
   const fitMap = Object.fromEntries(fitDims.map((d) => [d.id, d.score / 5]));
 
   // Blend work setting dimensions with fit-dimension scores for richer signal
@@ -143,7 +145,7 @@ export function buildCareerProfile(career: Career): CareerMatchProfile {
     academicDemand,
     pathwayType,
     category,
-    sector: getSectorForCareer(career.id),
+    sector: sectorFor(career, cat),
     growthOutlook: career.growthOutlook,
     entryLevel: career.entryLevel ?? false,
   };
@@ -166,8 +168,8 @@ function buildSubjectRelevance(
   category: CareerCategory,
 ): Record<string, number> {
   const relevance: Record<string, number> = {};
-  const weights = getSubjectCategoryWeights();
-  const boosts = getSubjectCareerBoosts();
+  const weights = SUBJECT_CATEGORY_WEIGHTS;
+  const boosts = SUBJECT_CAREER_BOOSTS;
 
   for (const [subject, categoryWeights] of Object.entries(weights)) {
     const weight = categoryWeights[category] ?? 0;
@@ -343,7 +345,7 @@ export function scoreCareer(
   // accurate than the old keyword-in-ID approach.
   let interestHits = 0;
   if (user.interests.length > 0) {
-    const boosts = getInterestCareerBoosts();
+    const boosts = INTEREST_CAREER_BOOSTS;
     for (const interest of user.interests) {
       const boostedCareers = boosts[interest];
       if (boostedCareers && boostedCareers.includes(career.careerId)) {
@@ -697,10 +699,11 @@ let lastMatchResults = new Map<string, MatchResult>();
 
 export function rankCareers(
   prefs: DiscoveryPreferences,
+  ctx: EngineCtx,
   limit = 80,
 ): Career[] {
   const C = MATCHING_CONFIG;
-  const allCareers = getAllCareers();
+  const allCareers = ctx.careers;
   if (!allCareers.length) return [];
 
   const hasInput =
@@ -725,7 +728,7 @@ export function rankCareers(
   // Score every candidate
   const results: MatchResult[] = [];
   for (const career of candidates) {
-    const careerProfile = buildCareerProfile(career);
+    const careerProfile = buildCareerProfile(career, ctx.findCategory);
     const result = scoreCareer(userProfile, careerProfile);
 
     // Grade-range adjustment. Applied as a sort-order nudge only:
@@ -804,6 +807,7 @@ export function getMatchResultForCareer(careerId: string): MatchResult | undefin
 export function getMatchReasonsFromEngine(
   career: Career,
   prefs: DiscoveryPreferences | null | undefined,
+  findCategory: FindCategory,
 ): string[] {
   if (!prefs) return [];
 
@@ -813,7 +817,7 @@ export function getMatchReasonsFromEngine(
 
   // Compute fresh
   const userProfile = buildUserProfile(prefs);
-  const careerProfile = buildCareerProfile(career);
+  const careerProfile = buildCareerProfile(career, findCategory);
   const result = scoreCareer(userProfile, careerProfile);
   return result.reasons;
 }
@@ -825,8 +829,9 @@ export function getMatchReasonsFromEngine(
 export function debugScoreCareerV2(
   career: Career,
   prefs: DiscoveryPreferences,
+  findCategory: FindCategory,
 ): MatchResult {
   const userProfile = buildUserProfile(prefs);
-  const careerProfile = buildCareerProfile(career);
+  const careerProfile = buildCareerProfile(career, findCategory);
   return scoreCareer(userProfile, careerProfile);
 }

@@ -1,6 +1,9 @@
 import { describe, it, expect } from "vitest";
 import { buildUserProfile, buildCareerProfile, scoreCareer, rankCareers } from "../engine";
 import type { DiscoveryPreferences, Career } from "@/lib/career-pathways";
+
+// Engine now takes catalog data via ctx — build it from the real catalog.
+const CTX = { careers: getAllCareers(), findCategory: findCareerCategory };
 import { getCareerById, getAllCareers, findCareerCategory } from "@/lib/career-pathways";
 
 // ── User scenario from bug report ─────────────────────────────────
@@ -60,7 +63,7 @@ describe("Matching Engine", () => {
     it("builds a profile for a desk career", () => {
       const career = getCareerById("software-developer");
       expect(career).toBeDefined();
-      const profile = buildCareerProfile(career!);
+      const profile = buildCareerProfile(career!, findCareerCategory);
       expect(profile.desk).toBeGreaterThan(0.7);
       expect(profile.outdoors).toBeLessThan(0.3);
       expect(profile.subjectRelevance.computing).toBeGreaterThan(0.3);
@@ -69,14 +72,14 @@ describe("Matching Engine", () => {
     it("builds a profile for an outdoors career", () => {
       const career = getCareerById("park-ranger") || getCareerById("farmer");
       if (!career) return; // skip if career not found
-      const profile = buildCareerProfile(career);
+      const profile = buildCareerProfile(career, findCareerCategory);
       expect(profile.outdoors).toBeGreaterThan(0.5);
     });
 
     it("builds a profile for a creative career", () => {
       const career = getCareerById("graphic-designer");
       if (!career) return;
-      const profile = buildCareerProfile(career);
+      const profile = buildCareerProfile(career, findCareerCategory);
       expect(profile.creative).toBeGreaterThan(0.5);
     });
   });
@@ -84,7 +87,7 @@ describe("Matching Engine", () => {
   describe("scoreCareer", () => {
     it("desk career scores well for desk user", () => {
       const user = buildUserProfile({ ...USER_PREFS, workStyles: ["desk"] });
-      const career = buildCareerProfile(getCareerById("software-developer")!);
+      const career = buildCareerProfile(getCareerById("software-developer")!, findCareerCategory);
       const result = scoreCareer(user, career);
       expect(result.matchPercent).toBeGreaterThan(40);
     });
@@ -94,7 +97,7 @@ describe("Matching Engine", () => {
       // Find a hands-on career related to Chemistry
       const pharmacist = getCareerById("pharmacist");
       if (!pharmacist) return;
-      const career = buildCareerProfile(pharmacist);
+      const career = buildCareerProfile(pharmacist, findCareerCategory);
       const result = scoreCareer(user, career);
       // OLD engine: -50 penalty, invisible. NEW engine: lower but still visible.
       expect(result.matchPercent).toBeGreaterThan(20);
@@ -103,14 +106,14 @@ describe("Matching Engine", () => {
     it("desk + outdoors user sees BOTH desk and outdoor careers", () => {
       const user = buildUserProfile(USER_PREFS);
 
-      const deskCareer = buildCareerProfile(getCareerById("software-developer")!);
+      const deskCareer = buildCareerProfile(getCareerById("software-developer")!, findCareerCategory);
       const deskResult = scoreCareer(user, deskCareer);
 
       // Find an outdoors career
       const allCareers = getAllCareers();
       const outdoorCareer = allCareers.find(c => c.workSetting === "outdoors");
       if (!outdoorCareer) return;
-      const outdoorProfile = buildCareerProfile(outdoorCareer);
+      const outdoorProfile = buildCareerProfile(outdoorCareer, findCareerCategory);
       const outdoorResult = scoreCareer(user, outdoorProfile);
 
       // Both should score reasonably (not negative!)
@@ -120,7 +123,7 @@ describe("Matching Engine", () => {
 
     it("generates meaningful reasons", () => {
       const user = buildUserProfile(USER_PREFS);
-      const career = buildCareerProfile(getCareerById("software-developer")!);
+      const career = buildCareerProfile(getCareerById("software-developer")!, findCareerCategory);
       const result = scoreCareer(user, career);
       expect(result.reasons.length).toBeGreaterThan(0);
       expect(result.reasons.length).toBeLessThanOrEqual(3);
@@ -129,7 +132,7 @@ describe("Matching Engine", () => {
 
   describe("rankCareers", () => {
     it("returns diverse results for diverse preferences", () => {
-      const careers = rankCareers(USER_PREFS, 24);
+      const careers = rankCareers(USER_PREFS, CTX, 24);
       expect(careers.length).toBeGreaterThan(10);
 
       // Should span multiple categories
@@ -142,7 +145,7 @@ describe("Matching Engine", () => {
     });
 
     it("returns empty for no preferences", () => {
-      const careers = rankCareers({}, 24);
+      const careers = rankCareers({}, CTX, 24);
       expect(careers).toHaveLength(0);
     });
 
@@ -151,7 +154,7 @@ describe("Matching Engine", () => {
         subjects: ["computing"],
         workStyles: ["desk"],
       };
-      const careers = rankCareers(prefs, 24);
+      const careers = rankCareers(prefs, CTX, 24);
       const categories = new Set<string>();
       for (const c of careers) {
         const cat = findCareerCategory(c.id);
@@ -167,7 +170,7 @@ describe("Matching Engine", () => {
         workStyles: ["desk", "outdoors", "hands-on", "creative"],
         peoplePref: "with-people",
       };
-      const careers = rankCareers(prefs, 24);
+      const careers = rankCareers(prefs, CTX, 24);
       expect(careers.length).toBeGreaterThan(0);
     });
 
@@ -180,8 +183,8 @@ describe("Matching Engine", () => {
         subjects: ["art", "drama", "music"],
         workStyles: ["creative"],
       };
-      const stemCareers = rankCareers(stemPrefs, 10);
-      const artsCareers = rankCareers(artsPrefs, 10);
+      const stemCareers = rankCareers(stemPrefs, CTX, 10);
+      const artsCareers = rankCareers(artsPrefs, CTX, 10);
 
       const stemIds = new Set(stemCareers.map(c => c.id));
       const artsIds = new Set(artsCareers.map(c => c.id));
@@ -197,7 +200,7 @@ describe("Matching Engine", () => {
         subjects: ["physics", "math", "chemistry"],
         workStyles: ["desk"],
       };
-      const careers = rankCareers(prefs, 30);
+      const careers = rankCareers(prefs, CTX, 30);
       const hasEntryLevel = careers.some(c => c.entryLevel);
       // Should include some entry-level careers via interleaving
       // (This may not always be true if all matching careers are academic,
