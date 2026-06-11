@@ -14,7 +14,7 @@ import { RailRenderer, SteppingRenderer } from './renderers';
 import { FOUNDATION_ITEM_ID } from './renderers/foundation-banner';
 import { TimelineStyleSelector } from './timeline-style-selector';
 import { TimelineDetailDialog, loadCardData, cycleProgress, isStepUnlocked, enforceProgressChain } from './timeline';
-import { getCareerById, getAllCareers } from '@/lib/career-pathways';
+import { useCareerCatalog } from '@/hooks/use-career-catalog';
 import { useRoadmapCardData } from '@/hooks/use-roadmap-card-data';
 import { useTimelineStyle } from '@/hooks/use-timeline-style';
 import { markClarityActive } from '@/lib/journey/lens-progress';
@@ -279,6 +279,12 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney, read
   const careerName = journey?.career ?? '';
 
   // ── Voice-guided simulation ───────────────────────────────────────
+  // Catalog fetched async (from the cached /api/careers/catalog) instead of a
+  // static import, so the ~740KB CAREER_PATHWAYS constant stays out of the
+  // /my-journey + /dashboard client bundles. Returns empty until loaded; the
+  // only use here is an optional salary lookup, so it degrades gracefully.
+  const { getCareerById, getAllCareers } = useCareerCatalog();
+
   const narrationCtx = useMemo<NarrationContext | null>(() => {
     if (!journey || !primaryGoalTitle) return null;
     return {
@@ -301,7 +307,7 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney, read
         return career?.avgSalary;
       })(),
     };
-  }, [journey, primaryGoalTitle, profileData, userAge, educationContextData]);
+  }, [journey, primaryGoalTitle, profileData, userAge, educationContextData, getCareerById, getAllCareers]);
 
   const [simState, simControls] = useRoadmapSimulation(journey, narrationCtx);
 
