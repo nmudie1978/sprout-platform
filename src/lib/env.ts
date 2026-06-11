@@ -51,6 +51,9 @@ const RECOMMENDED = [
   "DIRECT_URL",
   "OPENAI_API_KEY",
   "RESEND_API_KEY",
+  // Sender address for transactional email (password reset). Without it,
+  // sendMail silently skips — a warning here makes that visible at boot.
+  "MAIL_FROM",
 ] as const;
 
 /**

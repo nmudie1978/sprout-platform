@@ -180,6 +180,11 @@ export default function SignInPage() {
                 required
                 className="h-11 sm:h-10"
               />
+              <div className="text-right">
+                <Link href="/auth/forgot-password" className="text-xs text-primary hover:underline">
+                  Forgot password?
+                </Link>
+              </div>
             </div>
 
             <Button type="submit" className="w-full h-11 sm:h-10" disabled={loading}>

@@ -190,6 +190,7 @@ model User {
   careerTwinMessages CareerTwinMessage[]
   accounts           Account[]
   sessions           Session[]
+  passwordResetTokens PasswordResetToken[]
   notifications      Notification[]
   badges             Badge[]
 
@@ -305,6 +306,22 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+// Password reset tokens. We store only a SHA-256 hash of the token; the raw
+// token lives solely in the emailed link, so a DB leak can't reset passwords.
+// Single-use (usedAt) + short-lived (expiresAt). Cascades on user deletion.
+model PasswordResetToken {
+  id        String    @id @default(cuid())
+  userId    String
+  tokenHash String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
 }
 
 model YouthProfile {
