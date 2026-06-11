@@ -21,6 +21,64 @@ export interface CareerProgression {
 
 export const careerProgressions: CareerProgression[] = [
   {
+    careerId: "solicitor",
+    levels: [
+      {
+        level: "entry",
+        title: "Trainee Solicitor",
+        yearsExperience: "0-2 years",
+        salaryRange: "550-700k kr",
+      },
+      {
+        level: "mid",
+        title: "Associate Solicitor",
+        yearsExperience: "2-6 years",
+        salaryRange: "700-1.0M kr",
+      },
+      {
+        level: "senior",
+        title: "Senior Associate",
+        yearsExperience: "6-10 years",
+        salaryRange: "1.0M-1.4M kr",
+      },
+      {
+        level: "lead",
+        title: "Partner / Equity Partner",
+        yearsExperience: "10+ years",
+        salaryRange: "1.4M-3M+ kr",
+      },
+    ],
+  },
+  {
+    careerId: "barrister",
+    levels: [
+      {
+        level: "entry",
+        title: "Pupil Barrister",
+        yearsExperience: "0-1 years",
+        salaryRange: "450-650k kr",
+      },
+      {
+        level: "mid",
+        title: "Junior Barrister",
+        yearsExperience: "1-8 years",
+        salaryRange: "650k-1.2M kr",
+      },
+      {
+        level: "senior",
+        title: "Senior Barrister",
+        yearsExperience: "8-15 years",
+        salaryRange: "1.2M-2M kr",
+      },
+      {
+        level: "lead",
+        title: "King's Counsel (KC)",
+        yearsExperience: "15+ years",
+        salaryRange: "2M-4M+ kr",
+      },
+    ],
+  },
+  {
     careerId: "software-developer",
     levels: [
       {
