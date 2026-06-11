@@ -13,27 +13,16 @@
 import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { useQueryClient } from "@tanstack/react-query";
 // Analytics removed — no third-party tracking (see Cookie Policy). This
 // local no-op keeps the former call sites compiling while emitting nothing.
 const track = (..._args: unknown[]): void => {};
 import { toast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
-import { createEmptyGoal, type CareerGoal } from "@/lib/goals/types";
 import { markTwinAsked } from "@/lib/career-twin/asked-signal";
-import { GoalSelectionSheet } from "@/components/goals/GoalSelectionSheet";
 import { motion, AnimatePresence } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import {
   Sparkles,
   Send,
@@ -41,7 +30,6 @@ import {
   Compass,
   Radar,
   ShieldAlert,
-  Target,
   User as UserIcon,
 } from "lucide-react";
 
@@ -84,14 +72,8 @@ export function CareerTwinView({
   const [messages, setMessages] = useState<TwinMessage[]>([]);
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
-  const [currentPrimaryTitle, setCurrentPrimaryTitle] = useState<string | null>(null);
-  const [primaryGoal, setPrimaryGoalState] = useState<CareerGoal | null>(null);
-  const [showGoalModal, setShowGoalModal] = useState(false);
-  const [showGoalPicker, setShowGoalPicker] = useState(false);
-  const [settingGoal, setSettingGoal] = useState(false);
   const [returningDays, setReturningDays] = useState<number | null>(null);
 
-  const queryClient = useQueryClient();
   const scrollRef = useRef<HTMLDivElement>(null);
 
   // Load persona + modes for the resolved career.
@@ -147,62 +129,6 @@ export function CareerTwinView({
 
   // Load the user's current Primary Goal so we can show whether THIS career
   // is already their goal (and warn before replacing a different one).
-  useEffect(() => {
-    let cancelled = false;
-    fetch("/api/goals")
-      .then((r) => (r.ok ? r.json() : null))
-      .then((data) => {
-        if (cancelled || !data) return;
-        setCurrentPrimaryTitle(data.primaryGoal?.title ?? null);
-        setPrimaryGoalState(data.primaryGoal ?? null);
-      })
-      .catch(() => {
-        /* non-blocking: just hide the "replaces X" hint */
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
-  const isPrimaryGoal = useMemo(
-    () =>
-      !!career &&
-      !!currentPrimaryTitle &&
-      currentPrimaryTitle.trim().toLowerCase() === career.title.trim().toLowerCase(),
-    [career, currentPrimaryTitle],
-  );
-
-  const setPrimaryGoal = async () => {
-    if (!career || settingGoal) return;
-    setSettingGoal(true);
-    try {
-      const res = await fetch("/api/goals", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ slot: "primary", goal: createEmptyGoal(career.title) }),
-      });
-      if (!res.ok) throw new Error("goal_put_failed");
-      const data = await res.json();
-      setCurrentPrimaryTitle(data.primaryGoal?.title ?? career.title);
-      queryClient.invalidateQueries({ queryKey: ["goals"] });
-      track("career_twin_primary_goal_set", { career: career.title });
-      setShowGoalModal(false);
-      toast({
-        title: t("goalSetToast"),
-        description: t("goalSetToastBody"),
-        variant: "success",
-      });
-    } catch {
-      toast({
-        title: t("goalSetError"),
-        description: t("goalSetErrorBody"),
-        variant: "destructive",
-      });
-    } finally {
-      setSettingGoal(false);
-    }
-  };
-
   const activeMode = useMemo(
     () => modes.find((m) => m.id === modeId) ?? modes[0],
     [modes, modeId],
@@ -347,13 +273,10 @@ export function CareerTwinView({
                 <Sparkles className="h-5 w-5 text-white" />
               </div>
               <div className="min-w-0">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <h2 className="font-bold text-lg leading-tight">{t("title")}</h2>
-                  <Badge variant="secondary" className="shrink-0">
-                    {career.emoji ? `${career.emoji} ` : ""}
-                    {career.title}
-                  </Badge>
-                </div>
+                <h2 className="font-bold text-lg leading-tight">
+                  {career.emoji ? `${career.emoji} ` : ""}
+                  {career.title}
+                </h2>
                 <p className="text-sm text-muted-foreground mt-0.5">{t("subtitle")}</p>
               </div>
             </div>
@@ -380,40 +303,6 @@ export function CareerTwinView({
             </motion.div>
           )}
 
-          {/* Primary Goal action — set/change this career as the user's goal
-              without leaving Career Twin (no redirect to Career Radar).
-              Hidden when embedded in Clarity: the journey's goal is fixed
-              there, so there is no "change goal" affordance at all. */}
-          {!embedded && (
-          <div className="mt-4 flex items-center gap-2 flex-wrap">
-            {isPrimaryGoal ? (
-              <div className="inline-flex items-center gap-1.5 rounded-full bg-primary/15 text-primary px-3 py-1.5 text-xs font-semibold">
-                <Target className="h-3.5 w-3.5" />
-                {t("primaryGoalActive")}
-              </div>
-            ) : (
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={() => setShowGoalModal(true)}
-                className="bg-background/70"
-              >
-                <Target className="h-4 w-4 mr-1.5" />
-                {t("setPrimaryGoal")}
-              </Button>
-            )}
-            {/* Change to a DIFFERENT career as the Primary Goal, without
-                leaving Career Twin — reuses the shared goal picker. */}
-            <Button
-              size="sm"
-              variant="ghost"
-              onClick={() => setShowGoalPicker(true)}
-              className="text-muted-foreground hover:text-foreground"
-            >
-              {t("changeGoal")}
-            </Button>
-          </div>
-          )}
         </div>
 
         {/* Reality-check disclaimer — calmer (muted) when embedded in Clarity,
@@ -590,65 +479,6 @@ export function CareerTwinView({
         </form>
       </Card>
 
-      {/* Set / change Primary Goal confirmation */}
-      <Dialog open={showGoalModal} onOpenChange={(o) => !o && !settingGoal && setShowGoalModal(false)}>
-        <DialogContent className="sm:max-w-md max-w-[calc(100vw-2rem)]">
-          <DialogHeader>
-            <DialogTitle>{t("setGoalTitle")}</DialogTitle>
-            <DialogDescription>{t("setGoalBody", { career: career.title })}</DialogDescription>
-          </DialogHeader>
-          {currentPrimaryTitle && !isPrimaryGoal && (
-            <div className="rounded-lg bg-amber-50 dark:bg-amber-950/30 border border-amber-200/60 dark:border-amber-900/40 px-3 py-2 text-xs text-amber-800 dark:text-amber-300">
-              {t("setGoalReplace", { current: currentPrimaryTitle })}
-            </div>
-          )}
-          <DialogFooter className="flex-col sm:flex-row gap-2 sm:gap-0">
-            <Button
-              variant="outline"
-              onClick={() => setShowGoalModal(false)}
-              disabled={settingGoal}
-              className="w-full sm:w-auto"
-            >
-              {t("cancel")}
-            </Button>
-            <Button
-              onClick={setPrimaryGoal}
-              disabled={settingGoal}
-              className="w-full sm:w-auto bg-gradient-to-r from-primary to-teal-600"
-            >
-              {settingGoal ? (
-                <Loader2 className="h-4 w-4 mr-1.5 animate-spin" />
-              ) : (
-                <Target className="h-4 w-4 mr-1.5" />
-              )}
-              {t("confirmSetGoal")}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      {/* Change Primary Goal to a different career — reuses the shared
-          search/select sheet (handles its own confirm/swap + toast). */}
-      <GoalSelectionSheet
-        open={showGoalPicker}
-        onClose={() => setShowGoalPicker(false)}
-        targetSlot="primary"
-        primaryGoal={primaryGoal}
-        onSuccess={() => {
-          setShowGoalPicker(false);
-          track("career_twin_primary_goal_changed");
-          // Refresh the locally-cached goals so the badge/CTA update.
-          fetch("/api/goals")
-            .then((r) => (r.ok ? r.json() : null))
-            .then((data) => {
-              if (!data) return;
-              setCurrentPrimaryTitle(data.primaryGoal?.title ?? null);
-              setPrimaryGoalState(data.primaryGoal ?? null);
-            })
-            .catch(() => {});
-          queryClient.invalidateQueries({ queryKey: ["goals"] });
-        }}
-      />
     </div>
   );
 }
