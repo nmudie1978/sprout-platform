@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getCareerDetails, hasDetailedContent } from "@/lib/career-typical-days";
 import { getCareerById, getCategoryForCareer } from "@/lib/career-pathways";
-import { getCareerProgression } from "@/lib/career-progressions";
+import { getCareerProgression, getCareerPathProgression } from "@/lib/career-progressions";
 
 export async function GET(request: Request, props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
@@ -31,12 +31,17 @@ export async function GET(request: Request, props: { params: Promise<{ id: strin
 
   // Get progression data
   const progression = getCareerProgression(careerId);
+  // Path progression (entry/core/next + IC-vs-management fork) for the
+  // "How this role grows" section. Kept server-side so the data module
+  // doesn't ship to the client bundle.
+  const pathProgression = getCareerPathProgression(careerId) ?? null;
 
   return NextResponse.json({
     career,
     category,
     details,
     progression,
+    pathProgression,
     hasDetails,
   });
 }
