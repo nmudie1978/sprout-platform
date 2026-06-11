@@ -431,6 +431,9 @@ export const INTEREST_CAREER_BOOSTS: Record<string, string[]> = {
     "environmental-engineer", "renewable-energy-engineer",
     "farm-manager", "forestry-worker",
   ],
+  // Retired from the Discovery picker (use the Careers → Military category to
+  // browse these). Kept so users who saved this interest before it was removed
+  // still get sensible matches until they next update their preferences.
   "military-defence": [
     "military-officer", "soldier", "infantry-officer", "special-forces-operator",
     "military-pilot", "naval-officer", "marine", "combat-engineer",
