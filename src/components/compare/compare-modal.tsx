@@ -14,8 +14,8 @@
 import { X, ArrowRight, Download } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
-import type { Career, DiscoveryPreferences } from '@/lib/career-pathways';
-import { findCareerCategory } from '@/lib/career-pathways';
+import type { Career, CareerCategory, DiscoveryPreferences } from '@/lib/career-pathways';
+import { useCareerCatalog } from '@/hooks/use-career-catalog';
 import {
   getFitDimensions,
   shortDayToDay,
@@ -35,6 +35,7 @@ interface CompareModalProps {
 
 export function CompareModal({ open, careers, preferences, onClose, onRemove }: CompareModalProps) {
   const [mounted, setMounted] = useState(false);
+  const { findCareerCategory } = useCareerCatalog();
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -43,7 +44,7 @@ export function CompareModal({ open, careers, preferences, onClose, onRemove }: 
 
   const handleDownload = () => {
     try {
-      const html = buildComparisonHtml(careers, preferences);
+      const html = buildComparisonHtml(careers, preferences, findCareerCategory);
       const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -140,9 +141,11 @@ interface CompareCardProps {
 }
 
 function CompareCard({ career, preferences, onRemove }: CompareCardProps) {
-  const dims = getFitDimensions(career, findCareerCategory(career.id));
+  const { findCareerCategory } = useCareerCatalog();
+  const cat = findCareerCategory(career.id);
+  const dims = getFitDimensions(career, cat);
   const tasks = shortDayToDay(career);
-  const signals = getValueSignals(career);
+  const signals = getValueSignals(career, cat);
   const academic = getAcademicProfile(career);
   const essentialSubjects = academic.subjects.filter(s => s.importance === 'essential');
 
@@ -288,15 +291,20 @@ function escapeHtml(s: string): string {
     .replace(/'/g, '&#39;');
 }
 
-function buildComparisonHtml(careers: Career[], preferences: DiscoveryPreferences | null | undefined): string {
+function buildComparisonHtml(
+  careers: Career[],
+  preferences: DiscoveryPreferences | null | undefined,
+  findCategory: (careerId: string) => CareerCategory | null,
+): string {
   const date = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
   const titles = careers.map((c) => c.title).join(' vs ');
 
   const cardsHtml = careers
     .map((career) => {
-      const dims = getFitDimensions(career, findCareerCategory(career.id));
+      const cat = findCategory(career.id);
+      const dims = getFitDimensions(career, cat);
       const tasks = shortDayToDay(career);
-      const signals = getValueSignals(career);
+      const signals = getValueSignals(career, cat);
       const ap = getAcademicProfile(career);
 
       const dimsHtml = dims

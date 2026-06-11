@@ -17,7 +17,8 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { X, Heart, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useCuriositySaves } from "@/hooks/use-curiosity-saves";
-import { getAllCareers, type Career } from "@/lib/career-pathways";
+import type { Career } from "@/lib/career-pathways";
+import { useCareerCatalog } from "@/hooks/use-career-catalog";
 
 interface SavedCareersTrayProps {
   /** Vertical offset in pixels for the trigger tab so this tray
@@ -29,6 +30,7 @@ interface SavedCareersTrayProps {
 
 export function SavedCareersTray({ topOffsetPx = 80, className }: SavedCareersTrayProps) {
   const { curiosities, removeCuriosity } = useCuriositySaves();
+  const { careers } = useCareerCatalog();
   const [open, setOpen] = useState(false);
   const trayRef = useRef<HTMLDivElement>(null);
   const hoverTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -71,11 +73,11 @@ export function SavedCareersTray({ topOffsetPx = 80, className }: SavedCareersTr
   }, []);
 
   const handleOpen = useCallback((careerId: string) => {
-    const career: Career | undefined = getAllCareers().find((c) => c.id === careerId);
+    const career: Career | undefined = careers.find((c) => c.id === careerId);
     if (!career) return;
     window.dispatchEvent(new CustomEvent("open-career-detail", { detail: career }));
     setOpen(false);
-  }, []);
+  }, [careers]);
 
   const handleRemove = useCallback(
     (e: React.MouseEvent, careerId: string) => {

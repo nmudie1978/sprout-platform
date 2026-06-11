@@ -15,6 +15,8 @@ export {
   clearProfileCache,
 } from "./engine";
 
+export type { EngineCtx, FindCategory } from "./engine";
+
 export type {
   CareerMatchProfile,
   UserMatchProfile,

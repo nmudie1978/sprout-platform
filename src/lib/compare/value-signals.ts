@@ -14,7 +14,7 @@
  * Length rule: each bullet 8–10 words max.
  */
 
-import { type Career, type CareerCategory, findCareerCategory } from '@/lib/career-pathways';
+import type { Career, CareerCategory } from '@/lib/career-pathways';
 
 // ── Per-career manual entries ───────────────────────────────────────
 
@@ -578,7 +578,7 @@ const MAX_SIGNALS = 3;
  * Get up to 3 short, neutral "things to consider" bullets for a career.
  * Resolution: per-career → keyword → category fallback → empty.
  */
-export function getValueSignals(career: Career): string[] {
+export function getValueSignals(career: Career, category: CareerCategory | null | undefined): string[] {
   // 1. Per-career manual entry
   const manual = CAREER_VALUE_SIGNALS[career.id];
   if (manual && manual.length > 0) {
@@ -593,7 +593,7 @@ export function getValueSignals(career: Career): string[] {
   }
 
   // 3. Category fallback
-  const cat = findCareerCategory(career.id);
+  const cat = category;
   if (cat) {
     return CATEGORY_VALUE_SIGNALS[cat].slice(0, MAX_SIGNALS);
   }
