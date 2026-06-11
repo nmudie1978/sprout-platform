@@ -10,13 +10,9 @@
  * educationPath, category) plus light keyword matching.
  */
 
-import {
-  type Career,
-  type CareerCategory,
-  findCareerCategory,
-  getCareerWorkSetting,
-  getCareerPeopleIntensity,
-} from '@/lib/career-pathways';
+import type { Career, CareerCategory } from '@/lib/career-pathways';
+// Pure, catalog-free resolvers — keeps this module out of the radar bundle.
+import { workSettingFor, peopleIntensityFor } from '@/lib/matching/lookups';
 
 export type FitDimensionId =
   | 'creativity'
@@ -80,20 +76,20 @@ function scoreCreativity(career: Career, cat: CareerCategory | undefined, text: 
   let s = 1;
   if (cat === 'CREATIVE_MEDIA') s += 4;
   else if (cat === 'SALES_MARKETING' || cat === 'HOSPITALITY_TOURISM') s += 1;
-  if (getCareerWorkSetting(career) === 'creative') s += 2;
+  if (workSettingFor(career, cat) === 'creative') s += 2;
   s += Math.min(2, countKeywordHits(text, CREATIVE_KEYWORDS));
   return clamp(s);
 }
 
-function scorePeople(career: Career): number {
-  const intensity = getCareerPeopleIntensity(career);
+function scorePeople(career: Career, cat: CareerCategory | undefined): number {
+  const intensity = peopleIntensityFor(career, cat);
   if (intensity === 'high') return 5;
   if (intensity === 'medium') return 3;
   return 1;
 }
 
-function scoreHandsOn(career: Career): number {
-  const setting = getCareerWorkSetting(career);
+function scoreHandsOn(career: Career, cat: CareerCategory | undefined): number {
+  const setting = workSettingFor(career, cat);
   if (setting === 'hands-on') return 5;
   if (setting === 'outdoors') return 5;
   if (setting === 'mixed') return 3;
@@ -120,8 +116,8 @@ function scoreAcademic(career: Career, text: string): number {
   return clamp(s);
 }
 
-function scoreOutdoor(career: Career, text: string): number {
-  const setting = getCareerWorkSetting(career);
+function scoreOutdoor(career: Career, cat: CareerCategory | undefined, text: string): number {
+  const setting = workSettingFor(career, cat);
   let s = 0;
   if (setting === 'outdoors') s += 5;
   else if (setting === 'hands-on') s += 2;
@@ -133,8 +129,11 @@ function scoreOutdoor(career: Career, text: string): number {
 
 // ── Public API ──────────────────────────────────────────────────────
 
-export function getFitDimensions(career: Career): FitDimension[] {
-  const cat = findCareerCategory(career.id) ?? undefined;
+export function getFitDimensions(
+  career: Career,
+  category: CareerCategory | null | undefined,
+): FitDimension[] {
+  const cat = category ?? undefined;
   const text = `${career.description} ${career.keySkills.join(' ')} ${career.dailyTasks.join(' ')}`;
 
   return [
@@ -147,13 +146,13 @@ export function getFitDimensions(career: Career): FitDimension[] {
     {
       id: 'people',
       label: 'People',
-      score: scorePeople(career),
+      score: scorePeople(career, cat),
       highMeans: 'You spend most of your day with people.',
     },
     {
       id: 'handsOn',
       label: 'Hands-on',
-      score: scoreHandsOn(career),
+      score: scoreHandsOn(career, cat),
       highMeans: 'You work with your hands or on your feet, not behind a desk.',
     },
     {
@@ -171,7 +170,7 @@ export function getFitDimensions(career: Career): FitDimension[] {
     {
       id: 'outdoor',
       label: 'Outdoor',
-      score: scoreOutdoor(career, text),
+      score: scoreOutdoor(career, cat, text),
       highMeans: 'Lots of time outside, not in an office.',
     },
   ];
@@ -233,14 +232,15 @@ export function shortDayToDay(career: Career): string[] {
  */
 export function whyItMightSuitYou(
   career: Career,
+  category: CareerCategory | null | undefined,
   preferences: { workStyles?: string[]; peoplePref?: string; subjects?: string[]; interests?: string[] } | null | undefined,
 ): string {
-  const dims = getFitDimensions(career);
+  const dims = getFitDimensions(career, category);
   const top = dims.slice().sort((a, b) => b.score - a.score)[0];
 
   // Personalised hook if we have preferences
   if (preferences) {
-    const setting = getCareerWorkSetting(career);
+    const setting = workSettingFor(career, category);
     const styles = preferences.workStyles ?? [];
     if (styles.includes('hands-on') && (setting === 'hands-on' || setting === 'outdoors')) {
       return 'Hands-on work matches what you said you enjoy.';
@@ -254,7 +254,7 @@ export function whyItMightSuitYou(
     if (styles.includes('outdoors') && setting === 'outdoors') {
       return 'Outdoor work — matches what you said you enjoy.';
     }
-    const intensity = getCareerPeopleIntensity(career);
+    const intensity = peopleIntensityFor(career, category);
     if (preferences.peoplePref === 'with-people' && intensity === 'high') {
       return 'Lots of people interaction — what you said you wanted.';
     }
