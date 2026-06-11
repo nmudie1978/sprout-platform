@@ -25,6 +25,7 @@ import { useCareerCatalog } from "@/hooks/use-career-catalog";
 import { localizeCareer } from "@/lib/career-localization";
 import { useCareerFilters } from "@/lib/career-filters/use-career-filters";
 import { getAllSkills, getSalaryBounds } from "@/lib/career-filters/utils";
+import { withBrowseCrossListCounts } from "@/lib/career-filters/cross-list";
 import { useIsMobile } from "@/hooks/use-media-query";
 import type { DiscoveryPreferences } from "@/lib/career-pathways";
 import { useCuriositySaves } from "@/hooks/use-curiosity-saves";
@@ -207,13 +208,13 @@ function CareersPageContent() {
   const allSkills = useMemo(() => getAllSkills(allCareers), [allCareers]);
   const salaryBounds = useMemo(() => getSalaryBounds(allCareers), [allCareers]);
 
-  // Count careers by category
+  // Count careers by category (cross-listed: e.g. Public Service includes military)
   const categoryCounts = useMemo(() => {
     const counts: Record<string, number> = { ALL: allCareers.length };
     for (const [category, careers] of Object.entries(catalog)) {
       counts[category] = careers.length;
     }
-    return counts;
+    return withBrowseCrossListCounts(counts);
   }, [allCareers.length, catalog]);
 
   // Handlers
