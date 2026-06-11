@@ -322,4 +322,8 @@ export const RateLimits = {
   AI_MONTHLY_TIMELINE: { interval: 30 * 24 * 3600_000, maxRequests: 20 },
   AI_MONTHLY_NARRATE: { interval: 30 * 24 * 3600_000, maxRequests: 600 },
   AI_MONTHLY_CAREER_PATHS: { interval: 30 * 24 * 3600_000, maxRequests: 10 },
+  // Experience-the-job: each scene/step is one model call. 300/month ≈ 40
+  // full "typical day" runs — generous for real use, but caps a single account
+  // so the stateless step loop can't drain the monthly OpenAI budget.
+  AI_MONTHLY_EXPERIENCE: { interval: 30 * 24 * 3600_000, maxRequests: 300 },
 } as const;

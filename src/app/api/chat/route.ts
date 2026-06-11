@@ -325,7 +325,10 @@ Keep it natural — don't list their profile back to them.`;
     recentHistory.forEach((msg: any) => {
       messages.push({
         role: msg.role as "user" | "assistant",
-        content: msg.content,
+        // Cap each history entry (matches the current-message cap) so a client
+        // can't smuggle megabytes of history past the per-message limit and
+        // amplify token cost.
+        content: (msg.content ?? "").toString().slice(0, 2000),
       });
     });
 
