@@ -20,6 +20,7 @@ import { toast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { markTwinAsked } from "@/lib/career-twin/asked-signal";
 import { motion, AnimatePresence } from "framer-motion";
+import { ExperienceRunner } from "./experience-runner";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -69,6 +70,7 @@ export function CareerTwinView({
   const [isSparse, setIsSparse] = useState(false);
   const [modes, setModes] = useState<ModeDef[]>([]);
   const [modeId, setModeId] = useState<string>("ask_future_me");
+  const [experienceActive, setExperienceActive] = useState(false);
   const [messages, setMessages] = useState<TwinMessage[]>([]);
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
@@ -144,6 +146,7 @@ export function CareerTwinView({
   }, [messages, sending]);
 
   const selectMode = (id: string) => {
+    setExperienceActive(false);
     setModeId(id);
     track("career_twin_mode_selected", { mode: id });
   };
@@ -335,7 +338,7 @@ export function CareerTwinView({
                 key={m.id}
                 onClick={() => selectMode(m.id)}
                 className={`shrink-0 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
-                  m.id === modeId
+                  !experienceActive && m.id === modeId
                     ? accentChipActive
                     : `bg-background ${accentHoverBorder}`
                 }`}
@@ -343,9 +346,28 @@ export function CareerTwinView({
                 {m.label}
               </button>
             ))}
+            {/* Experience The Job — swaps the chat for the guided scenario runner. */}
+            <button
+              onClick={() => {
+                setExperienceActive(true);
+                track("career_twin_experience_opened", { career: career.title });
+              }}
+              className={`shrink-0 inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
+                experienceActive ? accentChipActive : `bg-background ${accentHoverBorder}`
+              }`}
+            >
+              <Compass className="h-3 w-3" />
+              Experience the job
+            </button>
           </div>
         </div>
 
+        {experienceActive ? (
+          <div className="px-4 sm:px-6 py-4">
+            <ExperienceRunner careerId={career.id} careerTitle={career.title} />
+          </div>
+        ) : (
+        <>
         {/* Chat area — height trimmed ~20% (420→336px) when embedded in
             Clarity so the tab reads more compact; standalone keeps 420px. */}
         <div ref={scrollRef} className={cn(
@@ -477,6 +499,8 @@ export function CareerTwinView({
             </Button>
           </div>
         </form>
+        </>
+        )}
       </Card>
 
     </div>
