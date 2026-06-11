@@ -7,15 +7,6 @@ export async function GET(req: NextRequest, props: { params: Promise<{ slug: str
   try {
     const profile = await prisma.youthProfile.findUnique({
       where: { publicProfileSlug: params.slug },
-      include: {
-        user: {
-          select: {
-            id: true,
-            location: true,
-            ageBracket: true,
-          },
-        },
-      },
     });
 
     if (!profile) {
@@ -33,15 +24,16 @@ export async function GET(req: NextRequest, props: { params: Promise<{ slug: str
       );
     }
 
-    // Return public profile data
+    // Return public profile data. Deliberately minimal: a minor's
+    // location and age band are NOT exposed on an anonymously-readable
+    // public profile (data minimisation / youth safety — see CLAUDE.md
+    // <safeguarding_rules> "No Public Personal Contact Display").
     return NextResponse.json({
       userId: profile.userId,
       displayName: profile.displayName,
       avatarId: profile.avatarId,
       bio: profile.bio,
       interests: profile.interests,
-      location: profile.user.location,
-      ageBracket: profile.user.ageBracket,
     });
   } catch (error) {
     console.error("Failed to fetch public profile:", error);
