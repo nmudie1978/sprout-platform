@@ -3,6 +3,7 @@
 import { useState, useMemo, useCallback } from "react";
 import type { Career, CareerCategory } from "@/lib/career-pathways";
 import { useCareerCatalog } from "@/hooks/use-career-catalog";
+import { browseCareersForCategory } from "@/lib/career-filters/cross-list";
 import { getAcademicProfile, getDemandLabel, demandAtMost } from "@/lib/education/academic-readiness";
 import type {
   CareerFilterState,
@@ -253,7 +254,11 @@ export function useCareerFilters(
     if (filters.category === "ALL") {
       careers = getAllCareers();
     } else {
-      careers = getCareersForCategory(filters.category as CareerCategory);
+      // Browse cross-listing: e.g. Public Service also surfaces military.
+      careers = browseCareersForCategory(
+        filters.category as CareerCategory,
+        getCareersForCategory,
+      );
     }
 
     // Apply search
