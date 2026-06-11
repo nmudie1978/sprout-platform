@@ -20,7 +20,9 @@ import {
   Briefcase,
   Filter,
   BookOpen,
+  Flag,
 } from "lucide-react";
+import { ReportModal } from "@/components/report-modal";
 import Link from "next/link";
 import { PageHeader } from "@/components/page-header";
 
@@ -148,6 +150,21 @@ export default function BrowseQuestionsPage() {
                       </span>
                     </CardDescription>
                   </div>
+                  <ReportModal
+                    targetType="CONTENT"
+                    targetId={`question:${q.id}`}
+                    targetName={q.question}
+                    trigger={
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="text-muted-foreground hover:text-destructive shrink-0"
+                        aria-label="Report this question"
+                      >
+                        <Flag className="h-4 w-4" />
+                      </Button>
+                    }
+                  />
                 </div>
               </CardHeader>
 

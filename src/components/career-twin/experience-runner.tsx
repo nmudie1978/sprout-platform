@@ -24,7 +24,9 @@ import {
   RotateCcw,
   Lightbulb,
   ShieldAlert,
+  Flag,
 } from "lucide-react";
+import { ReportModal } from "@/components/report-modal";
 import {
   EXPERIENCE_LENGTHS,
   type ExperienceLength,
@@ -46,6 +48,18 @@ const LENGTH_ICON: Record<ExperienceLength, typeof Compass> = {
   challenging_day: CloudSun,
 };
 
+// Honest, non-fabricated fallback shown when the run completes but the model
+// didn't return structured fit insights — so the experience never dead-ends.
+const FALLBACK_FIT: FitInsights = {
+  enjoyed:
+    "You worked through a full set of moments from this job — sit with which ones felt natural or energising. That's a real signal.",
+  lessInterested:
+    "Notice any moments that felt flat, stressful or draining. Those tell you just as much as the parts you enjoyed.",
+  skillsUsed: [],
+  skillsToDevelop: [],
+  questionsToExplore: [],
+};
+
 export function ExperienceRunner({
   careerId,
   careerTitle,
@@ -60,6 +74,10 @@ export function ExperienceRunner({
   const [reply, setReply] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // Shown when a reply trips the distress guard — a supportive message in
+  // place of an in-character continuation. The current scene stays so the
+  // user can respond differently or step away.
+  const [supportMessage, setSupportMessage] = useState<string | null>(null);
   const endRef = useRef<HTMLDivElement>(null);
 
   const post = useCallback(
@@ -114,8 +132,14 @@ export function ExperienceRunner({
     const myReply = reply.trim();
     setLoading(true);
     setError(null);
+    setSupportMessage(null);
     try {
       const data = await post({ action: "respond", currentIndex: answered.index, userReply: myReply });
+      // Distress guard tripped server-side: show support, keep the scene.
+      if (data.support) {
+        setSupportMessage(data.support);
+        return;
+      }
       if (!data.consequence) {
         setError(messageFor(data));
         return;
@@ -125,8 +149,21 @@ export function ExperienceRunner({
         { scenario: answered, userReply: myReply, consequence: data.consequence, reflection: data.reflection },
       ]);
       setReply("");
-      setCurrent(data.next ?? null);
-      if (data.fitInsights) setFitInsights(data.fitInsights);
+      // Drive terminal state off the server's `complete` flag — NOT off the
+      // presence of fitInsights (which is optional and the model can omit).
+      // Without this, a "complete but no insights" reply left the screen
+      // frozen blank with no way forward but losing the run.
+      if (data.complete) {
+        setCurrent(null);
+        setFitInsights(data.fitInsights ?? FALLBACK_FIT);
+      } else if (data.next) {
+        setCurrent(data.next);
+      } else {
+        // Model dropped the next scene mid-run — recover gracefully instead
+        // of dead-ending on a blank screen.
+        setCurrent(null);
+        setError("Your future self lost the thread for a moment. Your reflections above are saved here — start another experience whenever you're ready.");
+      }
       requestAnimationFrame(() => endRef.current?.scrollIntoView({ behavior: "smooth", block: "end" }));
     } catch {
       setError("Something went wrong. Please try again.");
@@ -142,6 +179,7 @@ export function ExperienceRunner({
     setFitInsights(null);
     setReply("");
     setError(null);
+    setSupportMessage(null);
   };
 
   // ── Length picker ──
@@ -183,10 +221,22 @@ export function ExperienceRunner({
           {current && ` · scene ${current.index + 1} of ${current.total}`}
           {!current && fitInsights && " · complete"}
         </span>
-        <Button variant="ghost" size="sm" onClick={reset} className="text-muted-foreground hover:text-foreground gap-1.5">
-          <RotateCcw className="h-3.5 w-3.5" />
-          Start over
-        </Button>
+        <div className="flex items-center gap-1">
+          <ReportModal
+            targetType="CONTENT"
+            targetId={`career-twin-experience:${careerId ?? careerTitle}`}
+            targetName={`Experience: ${careerTitle}`}
+            trigger={
+              <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-destructive gap-1.5" aria-label="Report this content">
+                <Flag className="h-3.5 w-3.5" />
+              </Button>
+            }
+          />
+          <Button variant="ghost" size="sm" onClick={reset} className="text-muted-foreground hover:text-foreground gap-1.5">
+            <RotateCcw className="h-3.5 w-3.5" />
+            Start over
+          </Button>
+        </div>
       </div>
 
       {/* Completed turns */}
@@ -202,6 +252,14 @@ export function ExperienceRunner({
           </Card>
         </div>
       ))}
+
+      {/* Supportive interjection when a reply tripped the distress guard. */}
+      {supportMessage && (
+        <div className="rounded-control border border-teal-300/50 bg-teal-50 dark:bg-teal-950/30 px-4 py-3 text-sm text-teal-900 dark:text-teal-200 flex items-start gap-2.5">
+          <ShieldAlert className="h-4 w-4 mt-0.5 shrink-0 text-teal-600 dark:text-teal-400" />
+          <p className="leading-relaxed">{supportMessage}</p>
+        </div>
+      )}
 
       {/* Current unanswered scene + input */}
       {current && (

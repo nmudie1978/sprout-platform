@@ -349,46 +349,44 @@ export async function getSavedItemsByCareer(
  * Add a tag to multiple items
  */
 export async function addTagToItems(itemIds: string[], profileId: string, tag: string): Promise<number> {
-  let updated = 0;
-
-  for (const itemId of itemIds) {
-    const item = await prisma.savedItem.findFirst({
-      where: { id: itemId, profileId, deletedAt: null },
+  if (itemIds.length === 0) return 0;
+  // One scoped read, then a single updateMany on the items that don't already
+  // carry the tag (avoids the old per-item findFirst+update N+1).
+  const items = await prisma.savedItem.findMany({
+    where: { id: { in: itemIds }, profileId, deletedAt: null },
+    select: { id: true, tags: true },
+  });
+  const toUpdate = items.filter((i) => !i.tags.includes(tag)).map((i) => i.id);
+  if (toUpdate.length > 0) {
+    await prisma.savedItem.updateMany({
+      where: { id: { in: toUpdate } },
+      data: { tags: { push: tag } },
     });
-
-    if (item && !item.tags.includes(tag)) {
-      await prisma.savedItem.update({
-        where: { id: itemId },
-        data: { tags: [...item.tags, tag] },
-      });
-      updated++;
-    }
   }
-
-  return updated;
+  return toUpdate.length;
 }
 
 /**
  * Remove a tag from multiple items
  */
 export async function removeTagFromItems(itemIds: string[], profileId: string, tag: string): Promise<number> {
-  let updated = 0;
-
-  for (const itemId of itemIds) {
-    const item = await prisma.savedItem.findFirst({
-      where: { id: itemId, profileId, deletedAt: null },
-    });
-
-    if (item && item.tags.includes(tag)) {
-      await prisma.savedItem.update({
-        where: { id: itemId },
-        data: { tags: item.tags.filter((t) => t !== tag) },
-      });
-      updated++;
-    }
-  }
-
-  return updated;
+  if (itemIds.length === 0) return 0;
+  // One scoped read; each row's resulting array differs, so updates run in
+  // parallel rather than as a sequential per-item findFirst+update N+1.
+  const items = await prisma.savedItem.findMany({
+    where: { id: { in: itemIds }, profileId, deletedAt: null },
+    select: { id: true, tags: true },
+  });
+  const toUpdate = items.filter((i) => i.tags.includes(tag));
+  await Promise.all(
+    toUpdate.map((i) =>
+      prisma.savedItem.update({
+        where: { id: i.id },
+        data: { tags: i.tags.filter((t) => t !== tag) },
+      }),
+    ),
+  );
+  return toUpdate.length;
 }
 
 // ============================================

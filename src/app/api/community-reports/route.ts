@@ -48,9 +48,9 @@ export async function POST(req: NextRequest) {
 
     // Validate target type. JOB_POST is retained in the enum for legacy
     // rows; USER targets a specific person; PLATFORM is a general
-    // safeguarding concern not tied to a user (the always-reachable
-    // "Report a concern" affordance).
-    if (!["USER", "JOB_POST", "PLATFORM"].includes(targetType)) {
+    // safeguarding concern not tied to a user; CONTENT targets a specific
+    // piece of content (Ask-a-Pro question, AI Career Twin response).
+    if (!["USER", "JOB_POST", "PLATFORM", "CONTENT"].includes(targetType)) {
       return NextResponse.json(
         { error: "Invalid target type" },
         { status: 400 }
@@ -71,6 +71,10 @@ export async function POST(req: NextRequest) {
     let targetId: string = body.targetId;
     if (targetType === "PLATFORM") {
       targetId = "PLATFORM";
+    } else if (targetType === "CONTENT") {
+      // A typed content reference string (e.g. "question:<id>",
+      // "career-twin-experience"). Clamp length; no entity lookup.
+      targetId = (body.targetId ?? "").toString().slice(0, 200);
     } else if (targetType === "USER") {
       const user = await prisma.user.findUnique({
         where: { id: targetId },

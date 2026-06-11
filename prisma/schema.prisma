@@ -112,6 +112,10 @@ enum CommunityReportTargetType {
   // sentinel "PLATFORM". Lets a young person raise a safety worry even
   // though the platform has no open user-to-user content surface.
   PLATFORM
+  // A specific piece of content: a published Ask-a-Pro question, an AI
+  // Career Twin response, etc. targetId carries a typed reference, e.g.
+  // "question:<id>", "career-twin-chat", "career-twin-experience".
+  CONTENT
 }
 
 enum CommunityReportStatus {

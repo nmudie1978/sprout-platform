@@ -326,4 +326,7 @@ export const RateLimits = {
   // full "typical day" runs — generous for real use, but caps a single account
   // so the stateless step loop can't drain the monthly OpenAI budget.
   AI_MONTHLY_EXPERIENCE: { interval: 30 * 24 * 3600_000, maxRequests: 300 },
+  // Chat is the highest-traffic AI surface; generous monthly backstop so a
+  // single account can't sustain 20/hr (≈14k/month) against the budget.
+  AI_MONTHLY_CHAT: { interval: 30 * 24 * 3600_000, maxRequests: 1000 },
 } as const;

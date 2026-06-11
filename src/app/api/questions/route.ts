@@ -97,7 +97,11 @@ export async function GET(req: NextRequest) {
       where.status = "PUBLISHED";
     }
 
-    if (status && !myQuestions) {
+    // Status filtering is for the OWNER viewing their own questions only.
+    // On the public path the PUBLISHED gate above is final — never let a
+    // `?status=PENDING|REJECTED` param override it and expose unmoderated
+    // youth-authored questions.
+    if (status && myQuestions) {
       where.status = status;
     }
 

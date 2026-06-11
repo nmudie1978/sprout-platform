@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { getAdminSession } from "@/lib/admin/auth";
 import { prisma } from "@/lib/prisma";
-import { Shield, ChevronRight, Clock, AlertTriangle, CheckCircle2, XCircle, UserX, Briefcase, ShieldAlert } from "lucide-react";
+import { Shield, ChevronRight, Clock, AlertTriangle, CheckCircle2, XCircle, UserX, Briefcase, ShieldAlert, FileWarning } from "lucide-react";
 import { CommunityReportStatus } from "@prisma/client";
 import { REPORT_REASONS } from "@/lib/community-guardian";
 import { cn } from "@/lib/utils";
@@ -143,9 +143,15 @@ export default async function AdminReportsPage(props: PageProps) {
                 const status = STATUS_CONFIG[r.status];
                 const StatusIcon = status.Icon;
                 const TargetIcon =
-                  r.targetType === "JOB_POST" ? Briefcase : r.targetType === "PLATFORM" ? ShieldAlert : UserX;
+                  r.targetType === "JOB_POST" ? Briefcase
+                  : r.targetType === "PLATFORM" ? ShieldAlert
+                  : r.targetType === "CONTENT" ? FileWarning
+                  : UserX;
                 const targetLabel =
-                  r.targetType === "JOB_POST" ? "Job" : r.targetType === "PLATFORM" ? "Safety concern" : "User";
+                  r.targetType === "JOB_POST" ? "Job"
+                  : r.targetType === "PLATFORM" ? "Safety concern"
+                  : r.targetType === "CONTENT" ? "Content"
+                  : "User";
                 const reporterName =
                   r.reporter.youthProfile?.displayName ??
                   r.reporter.email?.split("@")[0] ??
@@ -165,7 +171,9 @@ export default async function AdminReportsPage(props: PageProps) {
                         <TargetIcon className="h-3.5 w-3.5 text-muted-foreground/60" />
                         {targetLabel}
                         {r.targetType !== "PLATFORM" && (
-                          <code className="text-[10px] text-muted-foreground/70 ml-1">{r.targetId.slice(0, 8)}</code>
+                          <code className="text-[10px] text-muted-foreground/70 ml-1">
+                            {r.targetType === "CONTENT" ? r.targetId.slice(0, 40) : r.targetId.slice(0, 8)}
+                          </code>
                         )}
                       </span>
                     </td>

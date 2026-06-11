@@ -19,7 +19,7 @@ import {
   categoryForIndex,
   type Scenario,
 } from "@/lib/career-twin/experience";
-import { isResponseSafe, localeToLanguage } from "@/lib/ai-guardrails";
+import { isResponseSafe, localeToLanguage, classifyIntent, getFallbackResponse } from "@/lib/ai-guardrails";
 import { checkRateLimitAsync, RateLimits } from "@/lib/rate-limit";
 import { logAndSwallow } from "@/lib/observability";
 
@@ -133,6 +133,15 @@ export async function POST(req: NextRequest) {
       const userReply: string = (body.userReply ?? "").toString().slice(0, 1500);
       if (!userReply.trim()) {
         return NextResponse.json({ error: "A response is required." }, { status: 400 });
+      }
+
+      // Distress / unsafe disclosure in a free-text reply must be met with
+      // support — NOT an in-character roleplay "consequence". Mirror the main
+      // chat route: classify the user's input and, when unsafe, return the
+      // supportive crisis-line response without ever calling the model.
+      // Intentionally not persisted (the mode is ephemeral anyway).
+      if (classifyIntent(userReply) === "unsafe") {
+        return NextResponse.json({ support: getFallbackResponse("unsafe") }, { status: 200 });
       }
 
       const parsed = await jsonCompletion(

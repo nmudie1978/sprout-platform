@@ -38,7 +38,9 @@ type ReportReason = keyof typeof REPORT_REASONS;
 
 interface ReportModalProps {
   // PLATFORM = a general safeguarding concern not tied to a user.
-  targetType: "JOB_POST" | "USER" | "PLATFORM";
+  // CONTENT = a specific piece of content (question, AI response); targetId
+  // carries a typed reference string.
+  targetType: "JOB_POST" | "USER" | "PLATFORM" | "CONTENT";
   // Not required for PLATFORM (the server uses a sentinel).
   targetId?: string;
   targetName?: string;
@@ -125,7 +127,9 @@ export function ReportModal({
             <AlertTriangle className="h-5 w-5 text-amber-500" />
             {targetType === "PLATFORM"
               ? "Report a concern"
-              : `Report ${targetType === "JOB_POST" ? "Job Post" : "User"}`}
+              : targetType === "CONTENT"
+                ? "Report this content"
+                : `Report ${targetType === "JOB_POST" ? "Job Post" : "User"}`}
           </DialogTitle>
           <DialogDescription>
             {targetName && (
@@ -135,7 +139,9 @@ export function ReportModal({
             )}
             {targetType === "PLATFORM"
               ? "Tell us about anything that doesn't feel right — content, a message, or a safety worry. A member of our team will review it. If you're in immediate danger, contact your local emergency services."
-              : "Help keep our community safe by reporting content that violates our guidelines."}
+              : targetType === "CONTENT"
+                ? "Flag this content for our team to review. Tell us what felt wrong, inaccurate or unsafe about it."
+                : "Help keep our community safe by reporting content that violates our guidelines."}
           </DialogDescription>
         </DialogHeader>
 

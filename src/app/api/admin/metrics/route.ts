@@ -3,17 +3,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getAdminSession } from "@/lib/admin/auth";
 
-// Calculate age from date of birth
-function calculateAge(dateOfBirth: Date): number {
-  const today = new Date();
-  let age = today.getFullYear() - dateOfBirth.getFullYear();
-  const monthDiff = today.getMonth() - dateOfBirth.getMonth();
-  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dateOfBirth.getDate())) {
-    age--;
-  }
-  return age;
-}
-
 // Get date X days ago (start of that day)
 function getDaysAgo(days: number): Date {
   const date = new Date();
@@ -62,32 +51,44 @@ export async function GET(request: NextRequest) {
     // ============================================
     // USER METRICS (AGGREGATED ONLY)
     // ============================================
-    const [totalUsers, newUsers, usersByRole, usersWithDob, newUserDates] = await Promise.all([
+    const [totalUsers, newUsers, usersByRole, dobAggRows, newUserDates] = await Promise.all([
       prisma.user.count(),
       prisma.user.count({ where: { createdAt: { gte: startDate } } }),
       prisma.user.groupBy({ by: ["role"], _count: { id: true } }),
-      prisma.user.findMany({
-        where: { dateOfBirth: { not: null } },
-        select: { dateOfBirth: true },
-      }),
+      // Age distribution computed in SQL (one aggregate row) instead of
+      // loading every user's DOB into JS. `extract(year from age(dob))` ==
+      // calculateAge (completed years). Buckets/avg mirror the old 13–30 filter.
+      prisma.$queryRaw<
+        { with_dob: number; valid_count: number; avg_age: number | null; b1315: number; b1617: number; b1819: number; b20: number }[]
+      >`
+        SELECT
+          count(*)::int AS with_dob,
+          count(*) FILTER (WHERE yrs BETWEEN 13 AND 30)::int AS valid_count,
+          avg(yrs) FILTER (WHERE yrs BETWEEN 13 AND 30)::float AS avg_age,
+          count(*) FILTER (WHERE yrs BETWEEN 13 AND 15)::int AS b1315,
+          count(*) FILTER (WHERE yrs BETWEEN 16 AND 17)::int AS b1617,
+          count(*) FILTER (WHERE yrs BETWEEN 18 AND 19)::int AS b1819,
+          count(*) FILTER (WHERE yrs BETWEEN 20 AND 30)::int AS b20
+        FROM (
+          SELECT extract(year from age("dateOfBirth"))::int AS yrs
+          FROM "User" WHERE "dateOfBirth" IS NOT NULL
+        ) s
+      `,
       prisma.user.findMany({
         where: { createdAt: { gte: startDate } },
         select: { createdAt: true },
       }),
     ]);
 
-    const ages = usersWithDob
-      .map((u) => calculateAge(u.dateOfBirth!))
-      .filter((age) => age >= 13 && age <= 30); // Filter reasonable ages
-
-    const averageAge = ages.length > 0 ? ages.reduce((a, b) => a + b, 0) / ages.length : null;
-    const ageCoverage = totalUsers > 0 ? Math.round((usersWithDob.length / totalUsers) * 100) : 0;
+    const dobAgg = dobAggRows[0] ?? { with_dob: 0, valid_count: 0, avg_age: null, b1315: 0, b1617: 0, b1819: 0, b20: 0 };
+    const averageAge = dobAgg.valid_count > 0 ? dobAgg.avg_age : null;
+    const ageCoverage = totalUsers > 0 ? Math.round((dobAgg.with_dob / totalUsers) * 100) : 0;
 
     const ageDistribution = {
-      "13-15": ages.filter((a) => a >= 13 && a <= 15).length,
-      "16-17": ages.filter((a) => a >= 16 && a <= 17).length,
-      "18-19": ages.filter((a) => a >= 18 && a <= 19).length,
-      "20+": ages.filter((a) => a >= 20).length,
+      "13-15": dobAgg.b1315,
+      "16-17": dobAgg.b1617,
+      "18-19": dobAgg.b1819,
+      "20+": dobAgg.b20,
     };
 
     // ============================================
@@ -123,7 +124,8 @@ export async function GET(request: NextRequest) {
       // clarity). See /api/journey/completion/sync.
       prisma.journeyGoalData.count({ where: { journeyCompletedSteps: { has: "clarity" } } }),
       // Distinct users who have started at least one journey (for the average).
-      prisma.journeyGoalData.findMany({ distinct: ["userId"], select: { userId: true } }),
+      // COUNT(DISTINCT) in SQL instead of materialising every userId in JS.
+      prisma.$queryRaw<{ count: number }[]>`SELECT COUNT(DISTINCT "userId")::int AS count FROM "JourneyGoalData"`,
       prisma.journeyGoalData.findMany({
         where: { createdAt: { gte: startDate } },
         select: { createdAt: true },
@@ -157,7 +159,7 @@ export async function GET(request: NextRequest) {
       `,
     ]);
 
-    const exploringUsers = usersWithJourney.length;
+    const exploringUsers = usersWithJourney[0]?.count ?? 0;
     const avgJourneysPerUser = exploringUsers > 0 ? journeysTotal / exploringUsers : 0;
     const themeDark = themeRows.find((t) => t.theme === "dark")?.count ?? 0;
     const themeLight = themeRows.find((t) => t.theme === "light")?.count ?? 0;
