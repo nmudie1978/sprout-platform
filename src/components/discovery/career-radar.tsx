@@ -43,7 +43,8 @@ type PresetFilterKey =
   | "future-proof"
   | "vocational"
   | "physically-demanding"
-  | "highly-competitive";
+  | "highly-competitive"
+  | "military";
 
 /** Menu order + labels for the Career Radar preset dropdown. */
 const PRESET_FILTER_OPTIONS: { key: PresetFilterKey; label: string }[] = [
@@ -56,6 +57,7 @@ const PRESET_FILTER_OPTIONS: { key: PresetFilterKey; label: string }[] = [
   { key: "vocational", label: "Vocational (non-Degree)" },
   { key: "physically-demanding", label: "Physically Demanding Roles" },
   { key: "highly-competitive", label: "Highly Competitive Careers" },
+  { key: "military", label: "Military / Defence" },
 ];
 
 /**
@@ -550,6 +552,10 @@ function matchesPreset(career: Career, preset: PresetFilterKey): boolean {
       return PRESET_HIGHLY_COMPETITIVE.has(career.id);
     case "fast-growing":
       return PRESET_FAST_GROWING.has(career.id);
+    case "military":
+      // Self-maintaining: every military career (incl. the Forsvaret roles)
+      // is tagged pathType "military", so this needs no hand-curated id list.
+      return career.pathType === "military";
     case "vocational":
       // Curated "no-degree" hand-list (always trusted) ∪ catalogue careers
       // flagged entryLevel=true — but the entryLevel net is filtered through
