@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useCallback } from "react";
 import type { Career, CareerCategory } from "@/lib/career-pathways";
-import { CAREER_PATHWAYS, getAllCareers, getSectorForCareer } from "@/lib/career-pathways";
+import { useCareerCatalog } from "@/hooks/use-career-catalog";
 import { getAcademicProfile, getDemandLabel, demandAtMost } from "@/lib/education/academic-readiness";
 import type {
   CareerFilterState,
@@ -70,6 +70,8 @@ export function useCareerFilters(
   recommendationMap?: Map<string, number>
 ): UseCareerFiltersReturn {
   const [filters, setFilters] = useState<CareerFilterState>(DEFAULT_FILTER_STATE);
+  const { getAllCareers, getCareersForCategory, getSectorForCareer } =
+    useCareerCatalog();
 
   const updateFilter = useCallback(
     <K extends keyof CareerFilterState>(key: K, value: CareerFilterState[K]) => {
@@ -251,7 +253,7 @@ export function useCareerFilters(
     if (filters.category === "ALL") {
       careers = getAllCareers();
     } else {
-      careers = CAREER_PATHWAYS[filters.category as CareerCategory] || [];
+      careers = getCareersForCategory(filters.category as CareerCategory);
     }
 
     // Apply search
@@ -328,7 +330,7 @@ export function useCareerFilters(
       }
       return a.title.localeCompare(b.title);
     });
-  }, [filters, recommendationMap]);
+  }, [filters, recommendationMap, getAllCareers, getCareersForCategory, getSectorForCareer]);
 
   const hasActiveFilters = useMemo(() => {
     return (

@@ -46,6 +46,9 @@ export function useCareerCatalog() {
     () => ({
       isLoading: query.isLoading,
       error: query.error,
+      /** Raw category→careers map (empty until loaded). For the rare caller
+       *  that needs to iterate categories like the old CAREER_PATHWAYS. */
+      catalog: (query.data ?? {}) as CareerCatalog,
       careers: indexes?.all ?? [],
       getAllCareers: (): Career[] => indexes?.all ?? [],
       getCareerById: (id: string): Career | undefined => indexes?.byId.get(id),
