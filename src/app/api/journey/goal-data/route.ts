@@ -13,7 +13,7 @@ import { prisma } from '@/lib/prisma';
 export async function GET(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
-    if (!session || session.user.role !== 'YOUTH') {
+    if (!session?.user?.id || session.user.role !== 'YOUTH') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -47,7 +47,7 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
-    if (!session || session.user.role !== 'YOUTH') {
+    if (!session?.user?.id || session.user.role !== 'YOUTH') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -113,12 +113,12 @@ export async function POST(req: NextRequest) {
 export async function PATCH(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
-    if (!session || session.user.role !== 'YOUTH') {
+    if (!session?.user?.id || session.user.role !== 'YOUTH') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const body = await req.json();
-    const { goalId, roadmapCardData, momentumActions } = body;
+    const { goalId, goalTitle, roadmapCardData, momentumActions } = body;
 
     if (!goalId) {
       return NextResponse.json({ error: 'goalId is required' }, { status: 400 });
@@ -132,31 +132,40 @@ export async function PATCH(req: NextRequest) {
       data.roadmapCardData = roadmapCardData ? JSON.parse(JSON.stringify(roadmapCardData)) : null;
     }
 
-    if (momentumActions !== undefined) {
-      // Sanity-cap the array — momentum is per-user, but we don't
-      // want a runaway client to store 100k entries.
-      const sanitised = Array.isArray(momentumActions) ? momentumActions.slice(0, 500) : [];
-      // Merge into the existing journeySummary so we don't trample
-      // other keys (educationContext, exploredRoles, etc.).
-      const existing = await prisma.journeyGoalData.findUnique({
-        where: {
-          userId_goalId: { userId: session.user.id, goalId },
-        },
-        select: { journeySummary: true },
-      });
-      const currentSummary = (existing?.journeySummary as Record<string, unknown> | null) || {};
-      const mergedSummary = { ...currentSummary, momentumActions: sanitised };
-      data.journeySummary = JSON.parse(JSON.stringify(mergedSummary));
-    }
+    // The momentum read-merge-write and the final persist run inside one
+    // transaction so two concurrent PATCHes (e.g. the debounced momentum
+    // save racing the roadmap autosave) can't lose-update journeySummary.
+    // We upsert rather than update so a momentum save that arrives before
+    // the goal row exists (POST/PATCH race) creates the row instead of
+    // throwing P2025 → 500 and dropping the user's action.
+    await prisma.$transaction(async (tx) => {
+      if (momentumActions !== undefined) {
+        // Sanity-cap the array — momentum is per-user, but we don't
+        // want a runaway client to store 100k entries.
+        const sanitised = Array.isArray(momentumActions) ? momentumActions.slice(0, 500) : [];
+        // Merge into the existing journeySummary so we don't trample
+        // other keys (educationContext, exploredRoles, etc.).
+        const existing = await tx.journeyGoalData.findUnique({
+          where: { userId_goalId: { userId: session.user.id, goalId } },
+          select: { journeySummary: true },
+        });
+        const currentSummary = (existing?.journeySummary as Record<string, unknown> | null) || {};
+        const mergedSummary = { ...currentSummary, momentumActions: sanitised };
+        data.journeySummary = JSON.parse(JSON.stringify(mergedSummary));
+      }
 
-    await prisma.journeyGoalData.update({
-      where: {
-        userId_goalId: {
+      await tx.journeyGoalData.upsert({
+        where: { userId_goalId: { userId: session.user.id, goalId } },
+        create: {
           userId: session.user.id,
           goalId,
+          // A partial PATCH may not carry the human-readable title; fall
+          // back to the slug so the NOT NULL goalTitle column is satisfied.
+          goalTitle: typeof goalTitle === 'string' && goalTitle.trim() ? goalTitle : goalId,
+          ...data,
         },
-      },
-      data,
+        update: data,
+      });
     });
 
     return NextResponse.json({ success: true });
@@ -177,7 +186,7 @@ export async function PATCH(req: NextRequest) {
 export async function DELETE(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
-    if (!session || session.user.role !== 'YOUTH') {
+    if (!session?.user?.id || session.user.role !== 'YOUTH') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 

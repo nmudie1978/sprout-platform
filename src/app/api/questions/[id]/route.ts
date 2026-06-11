@@ -27,13 +27,8 @@ export async function GET(req: NextRequest, props: { params: Promise<{ id: strin
           where: {
             publishedAt: { not: null },
           },
-          include: {
-            answerer: {
-              select: {
-                email: true,
-              },
-            },
-          },
+          // NB: no answerer.email — the answer carries non-PII
+          // professionalTitle/professionalCompany for attribution.
           orderBy: {
             createdAt: "desc",
           },

@@ -13,7 +13,7 @@ import {
 /** Resolve (or lazily create) the YouthProfile id for the session. */
 async function resolveProfileId(): Promise<string | null> {
   const session = await getServerSession(authOptions);
-  if (!session || session.user.role !== 'YOUTH') return null;
+  if (!session?.user?.id || session.user.role !== 'YOUTH') return null;
 
   let profile = await prisma.youthProfile.findUnique({
     where: { userId: session.user.id },

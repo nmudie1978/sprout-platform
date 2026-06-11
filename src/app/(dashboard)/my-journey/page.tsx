@@ -2364,7 +2364,7 @@ function ClarityTab({ goalTitle, career }: { goalTitle: string | null; career: C
       fetch('/api/journey/goal-data', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ goalId: serverGoalId, momentumActions: updated }),
+        body: JSON.stringify({ goalId: serverGoalId, goalTitle, momentumActions: updated }),
       })
         .then(r => {
           if (r.ok) setSyncStatus('saved');

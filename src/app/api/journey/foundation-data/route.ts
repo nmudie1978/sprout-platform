@@ -13,7 +13,7 @@ import { prisma } from '@/lib/prisma';
 export async function GET() {
   try {
     const session = await getServerSession(authOptions);
-    if (!session || session.user.role !== 'YOUTH') {
+    if (!session?.user?.id || session.user.role !== 'YOUTH') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -38,7 +38,7 @@ export async function GET() {
 export async function PATCH(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
-    if (!session || session.user.role !== 'YOUTH') {
+    if (!session?.user?.id || session.user.role !== 'YOUTH') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
