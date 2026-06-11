@@ -43,6 +43,31 @@ export function logAndSwallow(context: string): (err: unknown) => void {
 }
 
 /**
+ * Report a SERVER-side failure to Sentry at `error` level (so it surfaces in
+ * the issue stream / can page) and always console.error it. Use in the
+ * top-level catch of routes whose failure matters — especially AI routes,
+ * where a swallowed error means a flagship feature is silently down.
+ *
+ * @example
+ *   } catch (error) {
+ *     captureServerError("chat:POST", error);
+ *     return NextResponse.json(fallback);
+ *   }
+ */
+export function captureServerError(context: string, err: unknown): void {
+  try {
+    Sentry.captureException(err, {
+      level: "error",
+      tags: { serverRoute: context },
+    });
+  } catch {
+    // Don't cascade if Sentry itself fails.
+  }
+  // eslint-disable-next-line no-console
+  console.error(`[err:${context}]`, err);
+}
+
+/**
  * Like `logAndSwallow` but for a client-side mutation whose failure
  * the user would want to eventually know about. Sentry gets the
  * error at `error` level so we actually investigate regressions.

@@ -21,7 +21,7 @@ import {
 } from "@/lib/career-twin/experience";
 import { isResponseSafe, localeToLanguage, classifyIntent, getFallbackResponse } from "@/lib/ai-guardrails";
 import { checkRateLimitAsync, RateLimits } from "@/lib/rate-limit";
-import { logAndSwallow } from "@/lib/observability";
+import { logAndSwallow, captureServerError } from "@/lib/observability";
 
 function getOpenAIClient(): OpenAI | null {
   const apiKey = process.env.OPENAI_API_KEY;
@@ -191,7 +191,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ error: "Unknown action." }, { status: 400 });
   } catch (error) {
-    logAndSwallow("career-twin:experience:POST")(error);
+    captureServerError("career-twin:experience:POST", error);
     return NextResponse.json({ unavailable: true }, { status: 200 });
   }
 }
