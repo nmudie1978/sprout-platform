@@ -38,7 +38,9 @@ export async function GET(req: NextRequest) {
 
   const { searchParams } = new URL(req.url);
   const careerId = searchParams.get('careerId')?.trim();
-  const careerTitle = searchParams.get('career')?.trim();
+  // Cap the title: it's user-controlled and flows into the OpenAI prompt, so an
+  // unbounded value would amplify token cost. 120 chars covers any real title.
+  const careerTitle = searchParams.get('career')?.trim().slice(0, 120);
 
   if (!careerId || !careerTitle) {
     return NextResponse.json(

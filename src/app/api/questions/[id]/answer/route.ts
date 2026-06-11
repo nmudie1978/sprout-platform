@@ -56,11 +56,8 @@ export async function POST(req: NextRequest, props: { params: Promise<{ id: stri
         publishedAt: new Date(), // Auto-publish (can add review step later)
       },
       include: {
-        answerer: {
-          select: {
-            email: true,
-          },
-        },
+        // NB: do not select answerer.email — the answer already carries
+        // the non-PII professionalTitle/professionalCompany for display.
         question: true,
       },
     });
@@ -89,6 +86,13 @@ export async function POST(req: NextRequest, props: { params: Promise<{ id: stri
 export async function GET(req: NextRequest, props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
   try {
+    // Ask-a-Pro is a signed-in youth surface; don't serve answer data
+    // (or any answerer relation) to anonymous callers.
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     const questionId = params.id;
 
     const answers = await prisma.proAnswer.findMany({
@@ -96,13 +100,8 @@ export async function GET(req: NextRequest, props: { params: Promise<{ id: strin
         questionId,
         publishedAt: { not: null },
       },
-      include: {
-        answerer: {
-          select: {
-            email: true,
-          },
-        },
-      },
+      // NB: no answerer.email — professionalTitle/professionalCompany on
+      // the answer itself are the intended public attribution.
       orderBy: {
         createdAt: "desc",
       },

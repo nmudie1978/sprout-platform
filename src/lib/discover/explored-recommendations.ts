@@ -10,12 +10,18 @@
  * Pure and deterministic (no Date/Math.random), so it's easy to unit-test and
  * safe to memoise on the client.
  */
-import {
-  CAREER_PATHWAYS,
-  getAllCareers,
-  type Career,
-  type CareerCategory,
-} from "@/lib/career-pathways";
+import type { Career, CareerCategory } from "@/lib/career-pathways";
+
+/**
+ * Catalog access this module needs. Passing it in (rather than importing
+ * CAREER_PATHWAYS) keeps the heavy catalog out of the client bundle — the
+ * dashboard supplies it from useCareerCatalog(). Server callers can pass
+ * the static helpers.
+ */
+export interface CareerLookup {
+  all: Career[];
+  categoryForCareer: (id: string) => CareerCategory | undefined;
+}
 
 export type RecommendationSignalKind = "explored" | "saved" | "rated";
 
@@ -39,18 +45,6 @@ export interface ExploredRecommendation {
 const CATEGORY_MATCH = 3;
 const SHARED_SKILL = 1;
 
-/** Map every career id → its category, in one pass over the source data. */
-function buildCategoryIndex(): Map<string, CareerCategory> {
-  const index = new Map<string, CareerCategory>();
-  for (const [category, careers] of Object.entries(CAREER_PATHWAYS) as [
-    CareerCategory,
-    Career[],
-  ][]) {
-    for (const c of careers) if (!index.has(c.id)) index.set(c.id, category);
-  }
-  return index;
-}
-
 function reasonFor(kind: RecommendationSignalKind, title: string): string {
   if (kind === "saved") return `Because you saved ${title}`;
   return `Because you explored ${title}`;
@@ -65,13 +59,14 @@ function reasonFor(kind: RecommendationSignalKind, title: string): string {
  */
 export function getExploredRecommendations(
   signals: RecommendationSignal[],
+  lookup: CareerLookup,
   limit = 3,
 ): ExploredRecommendation[] {
   if (signals.length === 0) return [];
 
-  const all = getAllCareers();
+  const all = lookup.all;
   const byId = new Map(all.map((c) => [c.id, c]));
-  const categoryOf = buildCategoryIndex();
+  const categoryOf = { get: (id: string) => lookup.categoryForCareer(id) };
   const excluded = new Set(signals.map((s) => s.careerId));
 
   // Resolve each signal to its career + skill set; drop unknown ids.

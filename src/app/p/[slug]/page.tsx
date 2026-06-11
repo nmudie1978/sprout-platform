@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Shield } from "lucide-react";
+import { Shield } from "lucide-react";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { Avatar } from "@/components/avatar";
@@ -44,12 +44,6 @@ export default async function PublicProfilePage(
             />
           </div>
           <h1 className="text-3xl font-bold">{profile.displayName}</h1>
-          {profile.location && (
-            <p className="mt-2 flex items-center justify-center gap-2 text-muted-foreground">
-              <MapPin className="h-4 w-4" />
-              {profile.location}
-            </p>
-          )}
         </div>
 
         <div className="space-y-6">

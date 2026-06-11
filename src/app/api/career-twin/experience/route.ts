@@ -77,15 +77,18 @@ export async function POST(req: NextRequest) {
     const lengthParam: string = (body.length ?? "").toString();
     const length = isValidExperienceLength(lengthParam) ? lengthParam : getExperienceLength(null).id;
 
-    // Rate limit: a 30-day per-user spend ceiling first (each run is ~7 model
-    // calls — without this the hourly cap alone allows ~14k calls/user/month),
-    // then the short-window AI-chat budget.
-    const monthly = await checkRateLimitAsync(`career-twin-exp-month:${session.user.id}`, RateLimits.AI_MONTHLY_EXPERIENCE);
-    if (!monthly.success) {
+    // Two-tier rate limit: a short-window burst cap AND a 30-day per-user cap.
+    // The step loop is stateless (the client drives currentIndex), so the
+    // monthly cap is what actually bounds total spend per account.
+    const burst = await checkRateLimitAsync(`career-twin-exp:${session.user.id}`, RateLimits.AI_CHAT);
+    if (!burst.success) {
       return NextResponse.json({ rateLimited: true }, { status: 200 });
     }
-    const rl = await checkRateLimitAsync(`career-twin-exp:${session.user.id}`, RateLimits.AI_CHAT);
-    if (!rl.success) {
+    const monthly = await checkRateLimitAsync(
+      `career-twin-exp-month:${session.user.id}`,
+      RateLimits.AI_MONTHLY_EXPERIENCE,
+    );
+    if (!monthly.success) {
       return NextResponse.json({ rateLimited: true }, { status: 200 });
     }
 
@@ -120,8 +123,14 @@ export async function POST(req: NextRequest) {
 
     // ── RESPOND: react to the user's reply, then next scene OR fit insights ──
     if (action === "respond") {
-      const currentIndex = Number.isInteger(body.currentIndex) ? body.currentIndex : 0;
-      const userReply: string = (body.userReply ?? "").toString();
+      // Clamp the client-supplied index to a real scene; reject nonsense.
+      const rawIndex = Number.isInteger(body.currentIndex) ? body.currentIndex : 0;
+      if (rawIndex < 0 || rawIndex >= total) {
+        return NextResponse.json({ error: "Invalid scene." }, { status: 400 });
+      }
+      const currentIndex = rawIndex;
+      // Bound the free-text reply before it reaches the model (token-cost guard).
+      const userReply: string = (body.userReply ?? "").toString().slice(0, 1500);
       if (!userReply.trim()) {
         return NextResponse.json({ error: "A response is required." }, { status: 400 });
       }

@@ -16,7 +16,7 @@ import { useMemo, useState } from 'react';
 import Link from 'next/link';
 import { ChevronDown, MapPin, GraduationCap, ArrowRight } from 'lucide-react';
 import { getSpecialisms } from '@/lib/career-specialisms';
-import { getCareerById } from '@/lib/career-pathways';
+import { useCareerCatalog } from '@/hooks/use-career-catalog';
 import { cn } from '@/lib/utils';
 
 interface CareerSpecialismsProps {
@@ -24,6 +24,7 @@ interface CareerSpecialismsProps {
 }
 
 export function CareerSpecialisms({ careerId }: CareerSpecialismsProps) {
+  const { getCareerById } = useCareerCatalog();
   const branches = useMemo(() => getSpecialisms(careerId), [careerId]);
   const [openId, setOpenId] = useState<string | null>(null);
 

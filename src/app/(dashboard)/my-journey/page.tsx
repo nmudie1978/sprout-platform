@@ -40,7 +40,8 @@ import {
 } from '@/components/ui/tooltip';
 import { cn, slugify } from '@/lib/utils';
 import { useGoals } from '@/hooks/use-goals';
-import { getAllCareers, getSectorForCareer, getPensionNote, type Career } from '@/lib/career-pathways';
+import type { Career } from '@/lib/career-pathways';
+import { useCareerCatalog } from '@/hooks/use-career-catalog';
 import { localizeCareer } from '@/lib/career-localization';
 import { displaySalary, displayEducation, showsSalaryProgression } from '@/lib/career-localization/display';
 import type { CareerDetails } from '@/lib/career-typical-days';
@@ -539,6 +540,7 @@ function DiscoverTab({
   /** Navigate to Understand tab (for "See full progression" link). */
   onGoToUnderstand?: () => void;
 }) {
+  const { getSectorForCareer, getPensionNote } = useCareerCatalog();
   const [roadmapFullscreen, setRoadmapFullscreen] = useState(false);
   const [showSalaryPopup, setShowSalaryPopup] = useState(false);
   const { data: ytData } = useYouTubeVideo(goalTitle);
@@ -2364,7 +2366,7 @@ function ClarityTab({ goalTitle, career }: { goalTitle: string | null; career: C
       fetch('/api/journey/goal-data', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ goalId: serverGoalId, momentumActions: updated }),
+        body: JSON.stringify({ goalId: serverGoalId, goalTitle, momentumActions: updated }),
       })
         .then(r => {
           if (r.ok) setSyncStatus('saved');
@@ -3114,6 +3116,7 @@ function ActionRow({
 export default function MyJourneyPage() {
   const { data: session } = useSession();
   const t = useTranslations();
+  const { getAllCareers } = useCareerCatalog();
   const isYouth = session?.user?.role === 'YOUTH';
   const { data: goalsData, isLoading: goalsLoading } = useGoals(isYouth);
   const goalTitle = goalsData?.primaryGoal?.title ?? null;
@@ -3121,7 +3124,7 @@ export default function MyJourneyPage() {
   const career = useMemo(() => {
     if (!goalTitle) return null;
     return getAllCareers().find((c) => c.title === goalTitle) || null;
-  }, [goalTitle]);
+  }, [goalTitle, getAllCareers]);
 
 
   const [activeTab, setActiveTab] = useState<V2Tab>('discover');

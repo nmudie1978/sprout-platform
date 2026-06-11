@@ -2,18 +2,19 @@
  * Guards for explored-derived recommendations (dashboard "Recommended for you").
  */
 import { describe, it, expect } from "vitest";
-import { getAllCareers } from "@/lib/career-pathways";
+import { getAllCareers, getCategoryForCareer } from "@/lib/career-pathways";
 import {
   getExploredRecommendations,
   type RecommendationSignal,
 } from "@/lib/discover/explored-recommendations";
 
 const ALL = getAllCareers();
+const LOOKUP = { all: ALL, categoryForCareer: getCategoryForCareer };
 const exists = (id: string) => ALL.some((c) => c.id === id);
 
 describe("getExploredRecommendations", () => {
   it("returns nothing for a brand-new user (no signals)", () => {
-    expect(getExploredRecommendations([])).toEqual([]);
+    expect(getExploredRecommendations([], LOOKUP)).toEqual([]);
   });
 
   it("never recommends a career the user has already engaged with", () => {
@@ -22,7 +23,7 @@ describe("getExploredRecommendations", () => {
     const signals: RecommendationSignal[] = [
       { careerId: seedId, weight: 5, kind: "rated", title: "Seed" },
     ];
-    const recs = getExploredRecommendations(signals, 5);
+    const recs = getExploredRecommendations(signals, LOOKUP, 5);
     expect(recs.length).toBeGreaterThan(0);
     expect(recs.some((r) => r.career.id === seedId)).toBe(false);
   });
@@ -31,6 +32,7 @@ describe("getExploredRecommendations", () => {
     const seedId = exists("doctor") ? "doctor" : ALL[0].id;
     const recs = getExploredRecommendations(
       [{ careerId: seedId, weight: 5, kind: "explored", title: "Doctor" }],
+      LOOKUP,
       3,
     );
     expect(recs.length).toBeGreaterThan(0);
@@ -45,14 +47,15 @@ describe("getExploredRecommendations", () => {
     const signals: RecommendationSignal[] = [
       { careerId: seedId, weight: 4, kind: "rated", title: "Seed" },
     ];
-    const a = getExploredRecommendations(signals, 3).map((r) => r.career.id);
-    const b = getExploredRecommendations(signals, 3).map((r) => r.career.id);
+    const a = getExploredRecommendations(signals, LOOKUP, 3).map((r) => r.career.id);
+    const b = getExploredRecommendations(signals, LOOKUP, 3).map((r) => r.career.id);
     expect(a).toEqual(b);
   });
 
   it("ignores unknown career ids without throwing", () => {
     const recs = getExploredRecommendations(
       [{ careerId: "not-a-real-career-xyz", weight: 5, kind: "saved" }],
+      LOOKUP,
       3,
     );
     expect(recs).toEqual([]);
@@ -62,6 +65,7 @@ describe("getExploredRecommendations", () => {
     const seedId = exists("nurse") ? "nurse" : ALL[0].id;
     const recs = getExploredRecommendations(
       [{ careerId: seedId, weight: 2, kind: "saved", title: "Nurse" }],
+      LOOKUP,
       3,
     );
     if (recs.length > 0) {

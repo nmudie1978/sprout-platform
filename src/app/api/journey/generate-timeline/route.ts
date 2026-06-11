@@ -73,7 +73,7 @@ function isValidJourney(data: unknown): data is Omit<Journey, 'id'> {
 export async function POST(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
-    if (!session || session.user.role !== 'YOUTH') {
+    if (!session?.user?.id || session.user.role !== 'YOUTH') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 

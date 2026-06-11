@@ -322,8 +322,10 @@ export const RateLimits = {
   AI_MONTHLY_TIMELINE: { interval: 30 * 24 * 3600_000, maxRequests: 20 },
   AI_MONTHLY_NARRATE: { interval: 30 * 24 * 3600_000, maxRequests: 600 },
   AI_MONTHLY_CAREER_PATHS: { interval: 30 * 24 * 3600_000, maxRequests: 10 },
-  // Experience-mode: ~7 model calls per completed run → ~85 runs/month.
-  AI_MONTHLY_EXPERIENCE: { interval: 30 * 24 * 3600_000, maxRequests: 600 },
+  // Experience-the-job: each scene/step is one model call. 300/month ≈ 40
+  // full "typical day" runs — generous for real use, but caps a single account
+  // so the stateless step loop can't drain the monthly OpenAI budget.
+  AI_MONTHLY_EXPERIENCE: { interval: 30 * 24 * 3600_000, maxRequests: 300 },
   // Chat is the highest-traffic AI surface; generous monthly backstop so a
   // single account can't sustain 20/hr (≈14k/month) against the budget.
   AI_MONTHLY_CHAT: { interval: 30 * 24 * 3600_000, maxRequests: 1000 },

@@ -20,11 +20,8 @@ import { motion } from "framer-motion";
 import { Compass, Search, Sparkles, Loader2, Briefcase, Layers, TrendingUp, Heart, ArrowRight } from "lucide-react";
 import { DiscoveryNudge } from "@/components/discovery/discovery-nudge";
 import Link from "next/link";
-import {
-  CAREER_PATHWAYS,
-  getAllCareers,
-  type Career,
-} from "@/lib/career-pathways";
+import type { Career } from "@/lib/career-pathways";
+import { useCareerCatalog } from "@/hooks/use-career-catalog";
 import { localizeCareer } from "@/lib/career-localization";
 import { useCareerFilters } from "@/lib/career-filters/use-career-filters";
 import { getAllSkills, getSalaryBounds } from "@/lib/career-filters/utils";
@@ -42,6 +39,7 @@ function CareersPageContent() {
   const router = useRouter();
   const pathname = usePathname();
   const isMobile = useIsMobile();
+  const { catalog, getAllCareers } = useCareerCatalog();
   // Country-aware localization: localize the RENDERED view only (filtering/
   // sorting/matching keep using the raw career objects). Norway/default/
   // logged-out → unchanged.
@@ -205,18 +203,18 @@ function CareersPageContent() {
   }, []);
 
   // Memoize all skills and salary bounds from all careers
-  const allCareers = useMemo(() => getAllCareers(), []);
+  const allCareers = useMemo(() => getAllCareers(), [getAllCareers]);
   const allSkills = useMemo(() => getAllSkills(allCareers), [allCareers]);
   const salaryBounds = useMemo(() => getSalaryBounds(allCareers), [allCareers]);
 
   // Count careers by category
   const categoryCounts = useMemo(() => {
     const counts: Record<string, number> = { ALL: allCareers.length };
-    for (const [category, careers] of Object.entries(CAREER_PATHWAYS)) {
+    for (const [category, careers] of Object.entries(catalog)) {
       counts[category] = careers.length;
     }
     return counts;
-  }, [allCareers.length]);
+  }, [allCareers.length, catalog]);
 
   // Handlers
   const handleCategoryChange = useCallback(
@@ -295,7 +293,7 @@ function CareersPageContent() {
         {[
           { icon: Briefcase, label: t('careers.stats.careers'), value: getAllCareers().length, color: "text-primary" },
           { icon: Search, label: t('careers.stats.showing'), value: totalItems, color: "text-primary" },
-          { icon: Layers, label: t('careers.stats.categories'), value: Object.keys(CAREER_PATHWAYS).length, color: "text-info" },
+          { icon: Layers, label: t('careers.stats.categories'), value: Object.keys(catalog).length, color: "text-info" },
         ].map((stat) => (
           <div key={stat.label} className="flex items-center gap-1.5 sm:gap-2 bg-foreground/10 dark:bg-card/80 border border-foreground/20 dark:border-border/40 rounded-control px-2 sm:px-3 py-1.5 shrink-0 backdrop-blur-sm">
             <stat.icon className={`h-3.5 w-3.5 ${stat.color}`} />

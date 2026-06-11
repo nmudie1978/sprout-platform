@@ -99,13 +99,14 @@ const nextConfig = {
             value: 'camera=(), microphone=(), geolocation=()',
           },
           // Content-Security-Policy — baseline XSS/clickjacking defence for a
-          // minors' platform. Shipped REPORT-ONLY first: it surfaces what a
-          // strict policy would block (Next inline hydration, Sentry, YouTube
-          // embeds, Tailwind inline styles) WITHOUT breaking the app. Once the
-          // browser console / report endpoint shows no legitimate violations,
-          // flip this key to 'Content-Security-Policy' to enforce.
+          // minors' platform. Now ENFORCED. The policy still allows
+          // 'unsafe-inline'/'unsafe-eval' on script-src because Next.js inline
+          // hydration + framer-motion require them; the meaningful protection
+          // here is default-src 'self', object-src 'none', a frame-src allowlist,
+          // frame-ancestors/base-uri/form-action 'self'. Follow-up hardening:
+          // move to nonce-based script-src and drop 'unsafe-inline'/'unsafe-eval'.
           {
-            key: 'Content-Security-Policy-Report-Only',
+            key: 'Content-Security-Policy',
             value: [
               "default-src 'self'",
               // Next.js hydration + framer-motion need inline/eval; tighten to
