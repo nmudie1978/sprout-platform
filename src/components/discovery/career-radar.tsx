@@ -18,6 +18,7 @@ import {
 } from "@/lib/matching";
 import { measureSignalStrength } from "@/lib/matching/lookups";
 import { useCareerCatalog } from "@/hooks/use-career-catalog";
+import { buildMorePool } from "@/lib/discover/more-pool";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
@@ -1000,6 +1001,12 @@ function dynamicLimit(careers: { id: string }[], findCategory: FindCategory): nu
 const STRONG_BAND_SIZE = 7;
 const GOOD_BAND_SIZE = 13;
 
+// "Show more matches" — how deep the on-demand ranked pool fetches
+// (the engine scores the whole catalog regardless; only the slice
+// grows), and how many extra careers each "Show more" click reveals.
+const DEEP_MATCH_LIMIT = 200;
+const MORE_MATCH_CHUNK = 12;
+
 /**
  * Format a salary range like "450,000 - 700,000 kr/year" into a
  * short compact form: "450k - 700k" or "1.2M - 2M".
@@ -1293,6 +1300,42 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
     });
   }, [dots, activeTiers, allTiersOn, sectorFilter, presetFilter, sectorForId]);
 
+  // ── "Show more matches" — a deeper ranked pool revealed on demand in
+  // the Matches Report below the radar. The radar dots stay capped (calm,
+  // uncluttered); only the list grows. Extras respect the active sector +
+  // preset filters and exclude anything already on the radar/report.
+  // See docs/superpowers/specs/2026-06-12-radar-show-more-matches-design.md
+  const [revealed, setRevealed] = useState(0);
+
+  // Reset the reveal count whenever the inputs that define the pool change.
+  useEffect(() => {
+    setRevealed(0);
+  }, [preferences, presetFilter, sectorFilter]);
+
+  const deepPool = useMemo(
+    () =>
+      preferences && catalogCareers.length > 0
+        ? rankCareers(preferences, { careers: catalogCareers, findCategory }, DEEP_MATCH_LIMIT)
+        : [],
+    [preferences, catalogCareers, findCategory]
+  );
+
+  const morePool = useMemo(
+    () =>
+      buildMorePool({
+        deepPool,
+        visibleIds: new Set(visibleDots.map((d) => d.career.id)),
+        sectorFilter,
+        presetFilter,
+        matchesPreset,
+        getSector: sectorForId,
+      }),
+    [deepPool, visibleDots, sectorFilter, presetFilter, sectorForId]
+  );
+
+  const moreShown = useMemo(() => morePool.slice(0, revealed), [morePool, revealed]);
+  const moreRemaining = morePool.length - revealed;
+
   const hasPrefs =
     !!preferences &&
     ((preferences.subjects && preferences.subjects.length > 0) ||
@@ -1352,6 +1395,104 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
       </div>
     );
   }
+
+  // Shared Matches Report table head — reused by the band carousel and
+  // the "More matches" list so both tables line up column-for-column.
+  const matchTableHead = (
+    <thead className="sticky top-0 z-[5] bg-muted">
+      <tr className="border-b border-border/40 bg-muted">
+        <th className="text-left px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-foreground/70">Role</th>
+        <th className="hidden sm:table-cell text-left px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-foreground/70">Salary</th>
+        <th className="text-center px-2 py-1.5 w-16 text-[10px] font-semibold uppercase tracking-wider text-foreground/70" title="Growth outlook — hover each dot for detail">Growth</th>
+        <th className="hidden md:table-cell text-left px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-foreground/70">Education path</th>
+        <th className="px-2 py-1.5 w-10 text-center bg-teal-500/[0.08] border-l border-teal-500/20">
+          <div className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-teal-300" title="Tap + on any 2–3 careers to compare them side by side. See how they stack up across day-to-day, training time, fit, and more.">
+            <Plus className="h-2.5 w-2.5" strokeWidth={3} />
+            Add
+            <HelpCircle className="h-2.5 w-2.5 text-teal-400/60" />
+          </div>
+        </th>
+      </tr>
+    </thead>
+  );
+
+  // Shared Matches Report row — used by both the band carousel and the
+  // "More matches" list. Closes over compareShortlist + the career-detail
+  // dispatch so a revealed extra behaves exactly like a band row.
+  const renderMatchRow = (career: Career, topMatch: boolean) => {
+    const growth = career.growthOutlook;
+    const inList = compareShortlist.isInShortlist(career.id);
+    return (
+      <tr
+        key={career.id}
+        onClick={() => {
+          window.dispatchEvent(
+            new CustomEvent("open-career-detail", { detail: career })
+          );
+        }}
+        className={cn(
+          "cursor-pointer hover:bg-muted/30 transition-colors",
+          topMatch && "bg-pink-500/[0.06]"
+        )}
+      >
+        <td className="px-3 py-1 align-middle">
+          <div className="flex items-center gap-2 min-w-0">
+            <span className="text-sm leading-none shrink-0">{career.emoji}</span>
+            <span className="text-foreground font-medium truncate">{career.title}</span>
+            {topMatch && (
+              <span className="text-[8px] font-bold uppercase tracking-wide text-pink-500 shrink-0">
+                Top
+              </span>
+            )}
+            <GradeStatusBadge careerId={career.id} />
+          </div>
+        </td>
+        <td className="hidden sm:table-cell px-3 py-1 align-middle text-foreground/70 whitespace-nowrap">
+          {formatSalaryShort(career.avgSalary)}
+        </td>
+        <td className="px-3 py-1 align-middle text-center">
+          <span
+            className={cn(
+              "inline-block h-2.5 w-2.5 rounded-full cursor-help",
+              growth === "high" && "bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.6)]",
+              growth === "medium" && "bg-amber-500 shadow-[0_0_6px_rgba(245,158,11,0.5)]",
+              growth === "stable" && "bg-blue-400 shadow-[0_0_6px_rgba(96,165,250,0.5)]"
+            )}
+            title={`Growth outlook: ${growth.charAt(0).toUpperCase() + growth.slice(1)} — ${
+              growth === "high" ? "strong hiring demand expected"
+                : growth === "medium" ? "steady demand, moderate growth"
+                : "consistent demand, little change"
+            }`}
+          />
+        </td>
+        <td
+          className="hidden md:table-cell px-3 py-1 align-middle text-foreground/65 max-w-[280px] truncate"
+          title={career.educationPath}
+        >
+          {career.educationPath}
+        </td>
+        <td className="px-2 py-1 align-middle text-center bg-teal-500/[0.04] border-l border-teal-500/15">
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              compareShortlist.toggle(career);
+            }}
+            className={cn(
+              "inline-flex items-center justify-center h-5 w-5 rounded border transition-all",
+              inList
+                ? "bg-teal-500/25 border-teal-500/60 text-teal-200 hover:bg-teal-500/35"
+                : "border-teal-500/30 text-teal-400/70 hover:border-teal-500/60 hover:text-teal-300 hover:bg-teal-500/15"
+            )}
+            aria-label={inList ? `Remove ${career.title} from compare` : `Add ${career.title} to compare`}
+            title={inList ? "Remove from compare" : "Add to compare — pick 2 or 3 careers, then tap Compare"}
+          >
+            {inList ? <Check className="h-3 w-3" strokeWidth={3} /> : <Plus className="h-3 w-3" strokeWidth={2.5} />}
+          </button>
+        </td>
+      </tr>
+    );
+  };
 
   return (
     <>
@@ -1976,108 +2117,9 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
                         inside the card so the radar page stays compact. */}
                     <div className="max-h-[200px] overflow-y-auto">
                     <table className="w-full text-xs relative" style={{ borderCollapse: "collapse" }}>
-                      <thead className="sticky top-0 z-[5] bg-muted">
-                        <tr className="border-b border-border/40 bg-muted">
-                          <th className="text-left px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-foreground/70">Role</th>
-                          <th className="hidden sm:table-cell text-left px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-foreground/70">Salary</th>
-                          <th className="text-center px-2 py-1.5 w-16 text-[10px] font-semibold uppercase tracking-wider text-foreground/70" title="Growth outlook — hover each dot for detail">Growth</th>
-                          <th className="hidden md:table-cell text-left px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-foreground/70">Education path</th>
-                          <th className="px-2 py-1.5 w-10 text-center bg-teal-500/[0.08] border-l border-teal-500/20">
-                            <div className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-teal-300" title="Tap + on any 2–3 careers to compare them side by side. See how they stack up across day-to-day, training time, fit, and more.">
-                              <Plus className="h-2.5 w-2.5" strokeWidth={3} />
-                              Add
-                              <HelpCircle className="h-2.5 w-2.5 text-teal-400/60" />
-                            </div>
-                          </th>
-                        </tr>
-                      </thead>
+                      {matchTableHead}
                       <tbody className="divide-y divide-border/30">
-                        {band.dots.map((d) => {
-                          const growth = d.career.growthOutlook;
-                          const growthClass =
-                            growth === "high"
-                              ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border-emerald-500/25"
-                              : growth === "medium"
-                              ? "bg-amber-500/15 text-amber-600 dark:text-amber-400 border-amber-500/25"
-                              : "bg-amber-500/15 text-amber-500 dark:text-amber-400 border-amber-500/25";
-                          return (
-                            <tr
-                              key={d.career.id}
-                              onClick={() => {
-                                window.dispatchEvent(
-                                  new CustomEvent("open-career-detail", {
-                                    detail: d.career,
-                                  })
-                                );
-                              }}
-                              className={cn(
-                                "cursor-pointer hover:bg-muted/30 transition-colors",
-                                d.topMatch && "bg-pink-500/[0.06]"
-                              )}
-                            >
-                              <td className="px-3 py-1 align-middle">
-                                <div className="flex items-center gap-2 min-w-0">
-                                  <span className="text-sm leading-none shrink-0">{d.career.emoji}</span>
-                                  <span className="text-foreground font-medium truncate">{d.career.title}</span>
-                                  {d.topMatch && (
-                                    <span className="text-[8px] font-bold uppercase tracking-wide text-pink-500 shrink-0">
-                                      Top
-                                    </span>
-                                  )}
-                                  <GradeStatusBadge careerId={d.career.id} />
-                                </div>
-                              </td>
-                              <td className="hidden sm:table-cell px-3 py-1 align-middle text-foreground/70 whitespace-nowrap">
-                                {formatSalaryShort(d.career.avgSalary)}
-                              </td>
-                              <td className="px-3 py-1 align-middle text-center">
-                                <span
-                                  className={cn(
-                                    "inline-block h-2.5 w-2.5 rounded-full cursor-help",
-                                    growth === "high" && "bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.6)]",
-                                    growth === "medium" && "bg-amber-500 shadow-[0_0_6px_rgba(245,158,11,0.5)]",
-                                    growth === "stable" && "bg-blue-400 shadow-[0_0_6px_rgba(96,165,250,0.5)]"
-                                  )}
-                                  title={`Growth outlook: ${growth.charAt(0).toUpperCase() + growth.slice(1)} — ${
-                                    growth === "high" ? "strong hiring demand expected"
-                                      : growth === "medium" ? "steady demand, moderate growth"
-                                      : "consistent demand, little change"
-                                  }`}
-                                />
-                              </td>
-                              <td
-                                className="hidden md:table-cell px-3 py-1 align-middle text-foreground/65 max-w-[280px] truncate"
-                                title={d.career.educationPath}
-                              >
-                                {d.career.educationPath}
-                              </td>
-                              <td className="px-2 py-1 align-middle text-center bg-teal-500/[0.04] border-l border-teal-500/15">
-                                {(() => {
-                                  const inList = compareShortlist.isInShortlist(d.career.id);
-                                  return (
-                                    <button
-                                      type="button"
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        compareShortlist.toggle(d.career);
-                                      }}
-                                      className={cn(
-                                        "inline-flex items-center justify-center h-5 w-5 rounded border transition-all",
-                                        inList
-                                          ? "bg-teal-500/25 border-teal-500/60 text-teal-200 hover:bg-teal-500/35"
-                                          : "border-teal-500/30 text-teal-400/70 hover:border-teal-500/60 hover:text-teal-300 hover:bg-teal-500/15"
-                                      )}
-                                      aria-label={inList ? `Remove ${d.career.title} from compare` : `Add ${d.career.title} to compare`}
-                                      title={inList ? "Remove from compare" : "Add to compare — pick 2 or 3 careers, then tap Compare"}
-                                    >
-                                      {inList ? <Check className="h-3 w-3" strokeWidth={3} /> : <Plus className="h-3 w-3" strokeWidth={2.5} />}
-                                    </button>
-                                  );
-                                })()}
-                              </td>
-                            </tr>
-                          );
-                        })}
+                        {band.dots.map((d) => renderMatchRow(d.career, !!d.topMatch))}
                       </tbody>
                     </table>
                     </div>
@@ -2108,6 +2150,40 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
           </div>
         );
       })()}
+
+      {/* ─── More matches — the long tail beyond the radar's display cap.
+          Drawn from a deeper ranked slice, respecting the active sector +
+          preset filters, minus anything already on the radar/report.
+          Revealed in chunks so the radar stays calm and the page compact. */}
+      {morePool.length > 0 && (
+        <div className="px-4 pb-3 border-t border-border/40 pt-3">
+          <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground mb-2">
+            More matches
+          </p>
+          {moreShown.length > 0 && (
+            <div className="rounded-lg border bg-background overflow-hidden mb-2">
+              <div className="max-h-[200px] overflow-y-auto">
+                <table className="w-full text-xs relative" style={{ borderCollapse: "collapse" }}>
+                  {matchTableHead}
+                  <tbody className="divide-y divide-border/30">
+                    {moreShown.map((career) => renderMatchRow(career, false))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+          {moreRemaining > 0 && (
+            <button
+              type="button"
+              onClick={() => setRevealed((r) => r + MORE_MATCH_CHUNK)}
+              className="inline-flex items-center gap-1 text-[11px] font-medium text-muted-foreground hover:text-foreground transition-colors"
+            >
+              Show {Math.min(MORE_MATCH_CHUNK, moreRemaining)} more match{Math.min(MORE_MATCH_CHUNK, moreRemaining) === 1 ? "" : "es"}
+              <ChevronDown className="h-3.5 w-3.5" />
+            </button>
+          )}
+        </div>
+      )}
     </div>
 
     {/* Compare modal */}
