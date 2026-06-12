@@ -26,6 +26,8 @@ export async function GET() {
         accountStatus: true,
         authProvider: true,
         fullName: true,
+        isPaused: true,
+        pausedReason: true,
         youthProfile: {
           select: {
             displayName: true,

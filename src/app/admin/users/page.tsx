@@ -2,10 +2,11 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Shield, Users, ArrowLeft, RefreshCw, Search } from "lucide-react";
+import { Shield, Users, ArrowLeft, RefreshCw, Search, Ban, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { toast } from "@/hooks/use-toast";
 
 interface UserData {
   id: string;
@@ -15,6 +16,8 @@ interface UserData {
   accountStatus: string;
   authProvider: string;
   fullName: string | null;
+  isPaused: boolean;
+  pausedReason: string | null;
   youthProfile: {
     displayName: string;
     city: string | null;
@@ -69,6 +72,48 @@ export default function AdminUsersPage() {
   const [stats, setStats] = useState<Stats | null>(null);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
+  const [actioningId, setActioningId] = useState<string | null>(null);
+
+  const toggleSuspend = async (user: UserData) => {
+    const action = user.isPaused ? "unsuspend" : "suspend";
+    if (action === "suspend") {
+      const ok = window.confirm(
+        `Suspend ${user.email}? They will be paused and notified. This is logged. You can reinstate them anytime.`,
+      );
+      if (!ok) return;
+    }
+    let reason: string | undefined;
+    if (action === "suspend") {
+      reason = window.prompt("Reason for suspension (shown to the user):", "Suspended by an admin") || undefined;
+      if (reason === undefined) return; // cancelled
+    }
+    setActioningId(user.id);
+    try {
+      const res = await fetch(`/api/admin/users/${user.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action, reason }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        toast({ title: data.error || "Action failed", variant: "destructive" });
+        return;
+      }
+      toast({
+        title: action === "suspend" ? "User suspended" : "User reinstated",
+        variant: "success",
+      });
+      // Optimistically reflect the new state, then refetch for source-of-truth.
+      setUsers((prev) =>
+        prev.map((u) => (u.id === user.id ? { ...u, isPaused: action === "suspend" } : u)),
+      );
+      fetchUsers();
+    } catch {
+      toast({ title: "Network error — please try again", variant: "destructive" });
+    } finally {
+      setActioningId(null);
+    }
+  };
 
   const fetchUsers = async () => {
     setLoading(true);
@@ -224,6 +269,7 @@ export default function AdminUsersPage() {
                   <th className="px-4 py-3">Journey</th>
                   <th className="px-4 py-3">Joined</th>
                   <th className="px-4 py-3">Status</th>
+                  <th className="px-4 py-3">Action</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-700/50">
@@ -276,18 +322,56 @@ export default function AdminUsersPage() {
                         </span>
                       </td>
                       <td className="px-4 py-3">
-                        <Badge
-                          variant="secondary"
+                        <div className="flex flex-col gap-1">
+                          <Badge
+                            variant="secondary"
+                            className={
+                              user.accountStatus === "ACTIVE"
+                                ? "bg-green-500/10 text-green-400"
+                                : user.accountStatus === "ONBOARDING"
+                                  ? "bg-amber-500/10 text-amber-400"
+                                  : "bg-red-500/10 text-red-400"
+                            }
+                          >
+                            {user.accountStatus}
+                          </Badge>
+                          {user.isPaused && (
+                            <Badge
+                              variant="secondary"
+                              className="bg-red-500/10 text-red-400 text-[9px]"
+                              title={user.pausedReason || undefined}
+                            >
+                              SUSPENDED
+                            </Badge>
+                          )}
+                        </div>
+                      </td>
+                      <td className="px-4 py-3">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          disabled={actioningId === user.id}
+                          onClick={() => toggleSuspend(user)}
                           className={
-                            user.accountStatus === "ACTIVE"
-                              ? "bg-green-500/10 text-green-400"
-                              : user.accountStatus === "ONBOARDING"
-                                ? "bg-amber-500/10 text-amber-400"
-                                : "bg-red-500/10 text-red-400"
+                            user.isPaused
+                              ? "border-emerald-500/40 text-emerald-400 hover:bg-emerald-500/10 bg-transparent"
+                              : "border-red-500/40 text-red-400 hover:bg-red-500/10 bg-transparent"
                           }
                         >
-                          {user.accountStatus}
-                        </Badge>
+                          {actioningId === user.id ? (
+                            <RefreshCw className="h-3.5 w-3.5 animate-spin" />
+                          ) : user.isPaused ? (
+                            <>
+                              <Play className="h-3.5 w-3.5 mr-1" />
+                              Reinstate
+                            </>
+                          ) : (
+                            <>
+                              <Ban className="h-3.5 w-3.5 mr-1" />
+                              Suspend
+                            </>
+                          )}
+                        </Button>
                       </td>
                     </tr>
                   );

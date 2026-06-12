@@ -960,6 +960,7 @@ function UnderstandTab({
   /** Notifies the page so the Clarity tab unlocks immediately. */
   onConfirmChange?: (confirmed: boolean) => void;
 }) {
+  const t = useTranslations("careerTwin");
   const { data: detailsData, isLoading: detailsLoading } = useCareerDetails(career?.id ?? null);
   const { data: learningData, isLoading: learningLoading } = useLearningRecommendations(goalTitle);
   const { data: courseSearchData } = useCourseSearch(goalTitle);
@@ -1082,6 +1083,12 @@ function UnderstandTab({
                   ) : realityData ? (
                     <>
                       <p className="text-xs text-foreground/60 leading-relaxed">{realityData.realitySummary}</p>
+                      {/* AI-generated content can be inaccurate — same disclaimer the
+                          Career Twin shows, reused so the labelling stays consistent. */}
+                      <div className="flex items-start gap-1.5">
+                        <Info className="h-3 w-3 text-muted-foreground/60 shrink-0 mt-0.5" />
+                        <p className="text-[11px] text-muted-foreground/70 leading-snug">{t("disclaimer")}</p>
+                      </div>
                       {(() => {
                         const hardships = realityData.realityPoints.filter(
                           (p) => !/\b(degree|training|qualification|certif|educat|university|college|school|study|course|licence|license)\b/i.test(p)
