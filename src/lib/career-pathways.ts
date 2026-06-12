@@ -9570,6 +9570,28 @@ export function getCategoryForCareer(careerId: string): CareerCategory | undefin
   return _categoryByCareerId!.get(careerId);
 }
 
+/**
+ * Resolve a career category from either a career id/slug OR a display title.
+ *
+ * `getCategoryForCareer` is keyed strictly by `career.id` (e.g. "sniper").
+ * Several callers (e.g. the journey-report scenario engine) only have the
+ * human-readable title (e.g. "Sniper") to hand, which previously failed the
+ * id lookup, fell through to a keyword heuristic, and — for careers the
+ * heuristic didn't recognise — landed on a wrong generic employer pool
+ * (a Sniper getting "Telenor"). This resolver tries the id first, then a
+ * case-insensitive title match, so title-only callers classify correctly.
+ */
+export function getCategoryForCareerByName(
+  careerIdOrTitle: string,
+): CareerCategory | undefined {
+  const direct = getCategoryForCareer(careerIdOrTitle);
+  if (direct) return direct;
+  const lower = careerIdOrTitle.trim().toLowerCase();
+  if (!lower) return undefined;
+  const match = getAllCareers().find((c) => c.title.toLowerCase() === lower);
+  return match ? getCategoryForCareer(match.id) : undefined;
+}
+
 /** Look up specialist path type by career title (case-insensitive). */
 export function getPathTypeForCareer(careerTitle: string): SpecialistPathType | undefined {
   const lower = careerTitle.toLowerCase();
