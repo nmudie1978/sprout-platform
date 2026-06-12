@@ -33,6 +33,7 @@ export function CareerTwinCta({
   variant = "dashboard",
   className,
   career: careerProp,
+  onlyWhenDue = false,
 }: {
   variant?: "dashboard" | "journey" | "journeyComplete";
   className?: string;
@@ -40,6 +41,11 @@ export function CareerTwinCta({
    *  self-resolving the user's primary goal — needed inside My Journey →
    *  Clarity, which may be showing a non-primary explored goal. */
   career?: CareerInfo | null;
+  /** Dashboard only: render NOTHING unless a 21-day check-in is actually
+   *  due (the Twin would greet the user as "returning"). Keeps the
+   *  dashboard calm — no standing "meet future you" banner, just a gentle
+   *  check-in when the user has been away. */
+  onlyWhenDue?: boolean;
 }) {
   const t = useTranslations("careerTwin");
   const router = useRouter();
@@ -136,6 +142,10 @@ export function CareerTwinCta({
 
   // Dashboard card — hidden once the user dismisses it.
   if (dismissed) return null;
+
+  // When mounted as a check-in only surface, stay silent until the 21-day
+  // gap has actually elapsed (the API tells us via checkIn.returning).
+  if (onlyWhenDue && !returning) return null;
 
   const handleDismiss = (e: React.MouseEvent) => {
     e.preventDefault();

@@ -5,7 +5,6 @@ import {
   MapPin,
   Sparkles,
   Users,
-  Briefcase,
   TrendingUp,
   Calendar,
   UserCog,
@@ -530,27 +529,28 @@ export default function WhitePaperPage() {
         </ModuleCard>
 
         <ModuleCard
-          icon={Briefcase}
-          title="Micro-Job Marketplace"
-          tagline="Can I get my first work experience?"
+          icon={Compass}
+          title="Realistic Pathways"
+          tagline="How do I actually get there?"
         >
           <p>
-            Local, age-appropriate jobs posted by verified adults: babysitting,
-            dog walking, tech help, gardening, tutoring, cleaning, light DIY.
+            For every career, Endeavrly maps the honest routes in — education
+            and training options, the skills that matter, typical entry paths,
+            and realistic expectations about pay and lifestyle.
           </p>
           <Bullets
             items={[
-              "Jobs are geolocated, filterable by category, schedule, and location; a map view surfaces what's nearby.",
-              "Applications use structured messaging — predefined prompts only, no free text.",
-              "Applications page tracks status (pending, accepted, in progress, completed).",
-              "Earnings dashboard visualises completed work. Payments happen outside the platform — by design.",
-              "Every posting has a Report button linked to moderation.",
+              "Education routes and study paths surfaced per career, tuned to where the young person is now.",
+              "The Understand phase sets realistic expectations: the day-to-day, the hard truths, and the skills needed.",
+              "The Clarity phase turns exploration into a personal roadmap of confident next steps.",
+              "Real career stories from people who walked the path add grounded, human context.",
             ]}
           />
           <p className="italic text-xs text-muted-foreground mt-2">
-            The marketplace is not the point of Endeavrly — it exists in
-            service of the Journey. Responsibility signals feed back into the
-            student's own growth, never a public scoreboard.
+            Endeavrly is a career exploration and clarity platform — it is{" "}
+            <strong>not</strong> a jobs marketplace and processes{" "}
+            <strong>no payments</strong>. It helps young people understand
+            their future, never trades on their labour.
           </p>
         </ModuleCard>
 
@@ -892,7 +892,7 @@ export default function WhitePaperPage() {
                   <div className="text-[11px] text-muted-foreground/70">endeavrly.no</div>
                 </td>
                 <td className="px-3 py-3 align-top">Norway-first, Nordics-next</td>
-                <td className="px-3 py-3 align-top">15–30 youth career discovery + first-job marketplace + safety-by-design messaging + transparent matching</td>
+                <td className="px-3 py-3 align-top">Youth career discovery + realistic pathways + clarity roadmap + safety-by-design + transparent matching (not a jobs marketplace; no payments)</td>
                 <td className="px-3 py-3 align-top">Direct-to-youth and family (no school licence required)</td>
                 <td className="px-3 py-3 align-top">Free for youth; commercial model in development</td>
               </tr>
@@ -905,9 +905,9 @@ export default function WhitePaperPage() {
           items={[
             "Direct-to-family, not school-locked — Unifrog and Xello only reach a student if their school buys a licence. A young person whose school has no contract simply has no access. We open the front door directly to the student and their parents.",
             "Built for the Nordic context — Norwegian university programmes via utdanning.no, salary ranges grounded in SSB labour stats, NAV outlook signals, Norwegian apprenticeship pathways. Generic global tools don't speak fluently about Bachelor-Master 3+2 routes, fagbrev, or vidergående subject choices.",
-            "Safety architecture from line one — we are designed for minors. No free-text chat between minors and adults, verified employers, no in-app payments, guardian consent first-class. Generic platforms bolt safety on; ours is structural.",
+            "Safety architecture from line one — we are designed for minors. No open social mechanics, no in-app payments, no jobs marketplace, reporting and moderation built in. Generic platforms bolt safety on; ours is structural.",
             "Transparent matching, not assessment-quiz lottery — every match is explainable in plain English (\"matches your interest in Chemistry\", \"hands-on work, which you said you enjoy\"). CareerExplorer-style personality quizzes give a result with no audit trail.",
-            "First-job marketplace inside the same product — a student doesn't just learn that being a vet involves dogs; they can take a small dog-walking job nearby this weekend. Career exploration and real-world experience live in one app, not separate silos.",
+            "One coherent journey — Discover, Understand, and Clarity live in a single product, so exploration flows straight into a personal roadmap rather than scattering across separate silos.",
             "No engagement traps — no streaks, leaderboards, infinite scroll, or notification spam. We are deliberately uncompetitive with TikTok and Instagram for attention, and that is the point.",
           ]}
         />
