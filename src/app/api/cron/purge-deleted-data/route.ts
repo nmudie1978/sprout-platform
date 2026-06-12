@@ -113,6 +113,14 @@ export async function GET(req: NextRequest) {
         where: { OR: [{ userId: { in: purgeIds } }, { email: { in: purgeEmails } }] },
       });
       results.newsletterSubscriptions = newsletters.count;
+      // Right-to-erasure: LegalAcceptance has a bare userId with NO @relation,
+      // so Prisma's onDelete cascade does not reach it. Its rows hold the
+      // signup IP + user-agent + consent timestamps, which would otherwise
+      // survive the account purge as orphaned PII. Delete explicitly.
+      const legalAcceptances = await prisma.legalAcceptance.deleteMany({
+        where: { userId: { in: purgeIds } },
+      });
+      results.legalAcceptances = legalAcceptances.count;
       const purged = await prisma.user.deleteMany({
         where: { id: { in: purgeIds } },
       });
