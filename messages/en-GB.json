@@ -37,7 +37,23 @@
     "guardianPending": "Waiting for guardian confirmation — tap to resend or change",
     "profileComplete": "Profile complete",
     "profilePercent": "Profile {pct}% complete",
-    "startHint": "Start here"
+    "startHint": "Start here",
+    "journeyComplete": "Complete",
+    "exploredTitle": "My Explored Journeys",
+    "recommendedTitle": "Recommended for you",
+    "recommendedTooltip": "Careers we think you'll like, based on the ones you've explored, saved, and rated.",
+    "worthALookTitle": "Worth a look",
+    "worthALookTooltip": "Fresh, verified reads from the world of work — tuned to the careers you keep exploring.",
+    "seeAll": "See all",
+    "more": "More",
+    "mainFocus": "Your main career focus is:",
+    "stageDiscoverTooltip": "Discover — exploring what this career is about",
+    "stageUnderstandTooltip": "Understand — exploring the role in depth",
+    "stageCompleteTooltip": "Journey Complete",
+    "reloadTitle": "Reload this journey?",
+    "reloadBodyPrefix": "This makes",
+    "reloadBodySuffix": "your active journey and takes you to My Journey. Your current journey stays saved in Explored Journeys, so you can switch back anytime.",
+    "reloadConfirm": "Reload journey"
   },
   "journey": {
     "title": "My Journey",
@@ -174,7 +190,8 @@
     "stage": "Stage",
     "status": "Status",
     "primaryGoal": "Primary Goal",
-    "saved": "Saved"
+    "saved": "Saved",
+    "interest": "Interest"
   },
   "savedCareers": {
     "title": "Saved careers",
@@ -411,5 +428,19 @@
     "goalSetError": "Couldn't set your goal",
     "goalSetErrorBody": "Please try again in a moment.",
     "welcomeBack": "Welcome back — it's been about {weeks, plural, one {# week} other {# weeks}}. Your future self has been waiting. Pick up where you left off."
+  },
+  "recommendations": {
+    "becauseExplored": "Because you explored {title}",
+    "becauseSaved": "Because you saved {title}",
+    "coldStart": "Explore a career and we'll suggest others that fit what you're drawn to."
+  },
+  "worthALook": {
+    "emptyState": "Fresh reads from the world of work will appear here."
+  },
+  "pageContext": {
+    "whatsThis": "What's this page?",
+    "whyHere": "Why you're here:",
+    "learnMore": "Learn more",
+    "gotIt": "Got it"
   }
 }

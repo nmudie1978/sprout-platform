@@ -37,8 +37,16 @@ export interface RecommendationSignal {
 
 export interface ExploredRecommendation {
   career: Career;
-  /** e.g. "Because you explored Product Manager". */
+  /**
+   * English fallback, e.g. "Because you explored Product Manager".
+   * UI should prefer the structured `reasonKind` + `reasonTitle` fields
+   * and translate them (see the dashboard "Recommended for you" panel).
+   */
   reason: string;
+  /** Which engagement produced this pick — drives the localised "Because you …" line. */
+  reasonKind: RecommendationSignalKind;
+  /** The career title to interpolate into the localised reason. */
+  reasonTitle: string;
   sourceCareerId: string;
 }
 
@@ -140,5 +148,7 @@ export function getExploredRecommendations(
       career,
       sourceCareerId: acc.bestSource.signal.careerId,
       reason: reasonFor(acc.bestSource.signal.kind, acc.bestSource.title),
+      reasonKind: acc.bestSource.signal.kind,
+      reasonTitle: acc.bestSource.title,
     }));
 }

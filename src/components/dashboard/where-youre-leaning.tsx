@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { X } from "lucide-react";
 import { buildDecisionBoard } from "@/lib/decision-board/build";
 import { useDecisionInputs } from "@/hooks/use-decision-inputs";
@@ -14,6 +15,7 @@ const STORAGE_KEY = "decision-teaser-closed";
  * still lives in My Library → Decision.
  */
 export function WhereYoureLeaning() {
+  const t = useTranslations();
   const { inputs, userId, isLoading } = useDecisionInputs();
   const { board } = useDecisionBoard();
 
@@ -46,7 +48,7 @@ export function WhereYoureLeaning() {
   return (
     <div className="mb-3 flex items-center justify-between gap-2 rounded-control border border-border/30 bg-card/20 px-3.5 py-2">
       <p className="truncate text-[13px] text-foreground/85">
-        Your main career focus is:{" "}
+        {t('dashboard.mainFocus')}{" "}
         <span className="font-semibold">
           {leader.emoji} {leader.title}
         </span>
