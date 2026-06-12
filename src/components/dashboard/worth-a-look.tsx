@@ -18,6 +18,7 @@
  */
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { FileText, Play, BarChart3, RefreshCw, ExternalLink } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useInsightsPool } from '@/hooks/use-insights-pool';
@@ -54,6 +55,7 @@ function relTime(iso?: string): string | null {
 }
 
 export function WorthALook({ careerIds }: { careerIds: string[] }) {
+  const t = useTranslations();
   const { findCareerCategory } = useCareerCatalog();
   const tags = useMemo(
     () => deriveClusterTags(careerIds, findCareerCategory),
@@ -149,7 +151,7 @@ export function WorthALook({ careerIds }: { careerIds: string[] }) {
   if (items.length === 0) {
     return (
       <p className="text-xs text-muted-foreground/70">
-        Fresh reads from the world of work will appear here.
+        {t('worthALook.emptyState')}
       </p>
     );
   }

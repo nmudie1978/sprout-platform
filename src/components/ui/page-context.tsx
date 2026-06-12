@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useTranslations } from "next-intl";
 import { Info, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -16,6 +17,7 @@ interface PageContextProps {
 const STORAGE_PREFIX = "endeavrly-page-ctx-";
 
 export function PageContext({ pageKey, purpose, action }: PageContextProps) {
+  const t = useTranslations();
   const storageKey = `${STORAGE_PREFIX}${pageKey}`;
   const [dismissed, setDismissed] = useState(true); // start hidden to avoid flash
   const [expanded, setExpanded] = useState(false);
@@ -46,7 +48,7 @@ export function PageContext({ pageKey, purpose, action }: PageContextProps) {
         className="flex items-center gap-1.5 text-[11px] text-muted-foreground/65 hover:text-muted-foreground/70 transition-colors mb-3"
       >
         <Info className="h-3 w-3" />
-        <span>What&apos;s this page?</span>
+        <span>{t('pageContext.whatsThis')}</span>
       </button>
     );
   }
@@ -61,7 +63,7 @@ export function PageContext({ pageKey, purpose, action }: PageContextProps) {
           {expanded ? (
             <div className="space-y-1">
               <p className="text-xs text-foreground/70 leading-relaxed">
-                <span className="font-medium text-foreground/80">Why you&apos;re here: </span>
+                <span className="font-medium text-foreground/80">{t('pageContext.whyHere')} </span>
                 {purpose}
               </p>
               {action && (
@@ -76,14 +78,14 @@ export function PageContext({ pageKey, purpose, action }: PageContextProps) {
               className="text-xs text-foreground/60 hover:text-foreground/80 transition-colors text-left"
             >
               {purpose}
-              <span className="text-teal-500/50 ml-1">Learn more</span>
+              <span className="text-teal-500/50 ml-1">{t('pageContext.learnMore')}</span>
             </button>
           )}
         </div>
         <button
           onClick={handleDismiss}
           className="p-0.5 rounded text-muted-foreground/60 hover:text-muted-foreground/60 transition-colors shrink-0"
-          title="Got it"
+          title={t('pageContext.gotIt')}
         >
           <X className="h-3 w-3" />
         </button>

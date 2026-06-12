@@ -37,7 +37,23 @@
     "guardianPending": "Venter på bekreftelse fra foresatt — trykk for å sende på nytt eller endre",
     "profileComplete": "Profil fullført",
     "profilePercent": "Profil {pct}% fullført",
-    "startHint": "Start her"
+    "startHint": "Start her",
+    "journeyComplete": "Fullført",
+    "exploredTitle": "Mine utforskede reiser",
+    "recommendedTitle": "Anbefalt for deg",
+    "recommendedTooltip": "Karrierer vi tror du vil like, basert på dem du har utforsket, lagret og vurdert.",
+    "worthALookTitle": "Verdt et blikk",
+    "worthALookTooltip": "Ferske, verifiserte artikler fra arbeidslivet — tilpasset karrierene du stadig utforsker.",
+    "seeAll": "Se alle",
+    "more": "Mer",
+    "mainFocus": "Ditt viktigste karrierefokus er:",
+    "stageDiscoverTooltip": "Utforsk — utforsker hva denne karrieren handler om",
+    "stageUnderstandTooltip": "Forstå — utforsker rollen i dybden",
+    "stageCompleteTooltip": "Reise fullført",
+    "reloadTitle": "Last inn denne reisen på nytt?",
+    "reloadBodyPrefix": "Dette gjør",
+    "reloadBodySuffix": "til din aktive reise og tar deg til Min reise. Den nåværende reisen din forblir lagret i Utforskede reiser, så du kan bytte tilbake når som helst.",
+    "reloadConfirm": "Last inn reisen på nytt"
   },
   "journey": {
     "title": "Min reise",
@@ -174,7 +190,8 @@
     "stage": "Fase",
     "status": "Status",
     "primaryGoal": "Hovedmål",
-    "saved": "Lagret"
+    "saved": "Lagret",
+    "interest": "Interesse"
   },
   "savedCareers": {
     "title": "Lagrede karrierer",
@@ -411,5 +428,19 @@
     "goalSetError": "Kunne ikke sette målet ditt",
     "goalSetErrorBody": "Prøv igjen om et øyeblikk.",
     "welcomeBack": "Velkommen tilbake — det er omtrent {weeks, plural, one {# uke} other {# uker}} siden sist. Ditt fremtidige jeg har ventet. Fortsett der du slapp."
+  },
+  "recommendations": {
+    "becauseExplored": "Fordi du utforsket {title}",
+    "becauseSaved": "Fordi du lagret {title}",
+    "coldStart": "Utforsk en karriere, så foreslår vi andre som passer det du trekkes mot."
+  },
+  "worthALook": {
+    "emptyState": "Ferske artikler fra arbeidslivet dukker opp her."
+  },
+  "pageContext": {
+    "whatsThis": "Hva er denne siden?",
+    "whyHere": "Hvorfor du er her:",
+    "learnMore": "Les mer",
+    "gotIt": "Skjønner"
   }
 }
