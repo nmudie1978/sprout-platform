@@ -36,7 +36,6 @@ import type { CareerGoal } from "@/lib/goals/types";
 import { createEmptyGoal } from "@/lib/goals/types";
 import { syncGuidanceGoal } from "@/lib/guidance/rules";
 import { useCuriositySaves } from "@/hooks/use-curiosity-saves";
-import { CareerDepth } from "@/components/career-depth/career-depth";
 import { hasCareerEmployers } from "@/lib/career-employers";
 import { TopEmployers } from "@/components/journey/top-employers";
 
@@ -324,12 +323,9 @@ export function CareerDetailSheet({
                     Set this as your career goal to explore it properly
                   </p>
                   <p className="text-[10px] text-muted-foreground mt-0.5">
-                    Your career goal is the career you focus on first. My Journey gives you the full picture \u2014 and you can change it anytime.
+                    Your career goal is the career you focus on first. My Journey gives you the full picture — and you can change it anytime.
                   </p>
                 </div>
-
-                {/* Career depth — day-in-life + pay progression snapshot */}
-                <CareerDepth career={career} />
 
                 {/* Where you could work — real companies/institutions in the
                     viewer's country (NO/ES) for this career. Links careers to
