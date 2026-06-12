@@ -12,7 +12,7 @@
  * Not linked anywhere; used with headless Chrome to eyeball the result.
  */
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { SidebarNav } from "@/components/sidebar-nav";
@@ -20,6 +20,16 @@ import { TourSpotlight } from "@/components/onboarding/tour-spotlight";
 import { OrientationWalkthrough } from "@/components/onboarding/orientation-walkthrough";
 
 export default function OnboardingSpotlightDevPage() {
+  // useSearchParams must sit under a Suspense boundary or the production build
+  // fails when prerendering this route.
+  return (
+    <Suspense fallback={null}>
+      <OnboardingSpotlightHarness />
+    </Suspense>
+  );
+}
+
+function OnboardingSpotlightHarness() {
   const [qc] = useState(() => new QueryClient());
   const params = useSearchParams();
   const mode = params.get("mode") ?? "spotlight";
