@@ -1167,7 +1167,9 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
       compareShortlist.loadSet(resolved);
       setCompareModalOpen(true);
     }
-  }, [compareShortlist]);
+    // catalogCareers must be a dep — saved-comparison ids resolve against it,
+    // and it loads asynchronously after this callback is first created.
+  }, [compareShortlist, catalogCareers]);
 
   // Listen for "add to compare" events dispatched by the career detail sheet.
   // This intentionally only ADDS (doesn't toggle) — the detail sheet button
@@ -1238,7 +1240,10 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
   };
   const primaryGoalCareerId = useMemo(
     () => resolveCareerIdByTitle(goalsData?.primaryGoal?.title),
-    [goalsData?.primaryGoal?.title]
+    // catalogCareers must be a dep: goals resolve before the async catalog
+    // loads, so without it this runs once with catalogCareers=[] and never
+    // re-runs — the primary-goal dot would never be highlighted.
+    [goalsData?.primaryGoal?.title, catalogCareers]
   );
 
   const zoomIn = () => setZoom((z) => Math.min(ZOOM_MAX, +(z + ZOOM_STEP).toFixed(2)));
