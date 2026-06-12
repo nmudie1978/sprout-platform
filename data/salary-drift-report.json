@@ -1,8 +1,8 @@
 {
-  "generatedAt": "2026-04-14T21:16:35.433Z",
-  "totalCatalogueCareers": 821,
-  "totalMapped": 48,
-  "totalUnmapped": 773,
+  "generatedAt": "2026-06-12T12:38:02.743Z",
+  "totalCatalogueCareers": 1038,
+  "totalMapped": 60,
+  "totalUnmapped": 978,
   "rows": [
     {
       "careerId": "doctor",
@@ -19,10 +19,10 @@
       "careerTitle": "Nurse",
       "styrkCode": "2221",
       "styrkLabel": "Nursing professionals",
-      "catalogueSalary": "450,000 - 650,000 kr/year",
+      "catalogueSalary": "625,000 - 905,000 kr/year",
       "ssbAnnualMean": 766440,
-      "driftPct": 39.4,
-      "recommendation": "review"
+      "driftPct": 0.2,
+      "recommendation": "ok"
     },
     {
       "careerId": "healthcare-worker",
@@ -49,30 +49,30 @@
       "careerTitle": "Pharmacist",
       "styrkCode": "2262",
       "styrkLabel": "Pharmacists",
-      "catalogueSalary": "550,000 - 750,000 kr/year",
+      "catalogueSalary": "670,000 - 915,000 kr/year",
       "ssbAnnualMean": 791400,
-      "driftPct": 21.8,
-      "recommendation": "review"
+      "driftPct": -0.1,
+      "recommendation": "ok"
     },
     {
       "careerId": "physiotherapist",
       "careerTitle": "Physiotherapist",
       "styrkCode": "2264",
       "styrkLabel": "Physiotherapists",
-      "catalogueSalary": "480,000 - 650,000 kr/year",
+      "catalogueSalary": "560,000 - 760,000 kr/year",
       "ssbAnnualMean": 659040,
-      "driftPct": 16.6,
-      "recommendation": "review"
+      "driftPct": -0.1,
+      "recommendation": "ok"
     },
     {
       "careerId": "psychologist",
       "careerTitle": "Psychologist",
       "styrkCode": "2634",
       "styrkLabel": "Psychologists",
-      "catalogueSalary": "550,000 - 800,000 kr/year",
+      "catalogueSalary": "685,000 - 995,000 kr/year",
       "ssbAnnualMean": 839160,
-      "driftPct": 24.3,
-      "recommendation": "review"
+      "driftPct": -0.1,
+      "recommendation": "ok"
     },
     {
       "careerId": "biomedical-scientist",
@@ -99,10 +99,10 @@
       "careerTitle": "Veterinarian",
       "styrkCode": "2250",
       "styrkLabel": "Veterinarians",
-      "catalogueSalary": "550,000 - 850,000 kr/year",
+      "catalogueSalary": "660,000 - 1,020,000 kr/year",
       "ssbAnnualMean": 838680,
-      "driftPct": 19.8,
-      "recommendation": "review"
+      "driftPct": -0.2,
+      "recommendation": "ok"
     },
     {
       "careerId": "veterinary-assistant",
@@ -119,10 +119,10 @@
       "careerTitle": "Dental Hygienist",
       "styrkCode": "3251",
       "styrkLabel": "Dental assistants and therapists",
-      "catalogueSalary": "450,000 - 600,000 kr/year",
+      "catalogueSalary": "530,000 - 710,000 kr/year",
       "ssbAnnualMean": 620040,
-      "driftPct": 18.1,
-      "recommendation": "review"
+      "driftPct": 0,
+      "recommendation": "ok"
     },
     {
       "careerId": "optician",
@@ -579,10 +579,10 @@
       "careerTitle": "Midwife",
       "styrkCode": "2222",
       "styrkLabel": "Midwifery professionals",
-      "catalogueSalary": "550,000 - 750,000 kr/year",
+      "catalogueSalary": "690,000 - 940,000 kr/year",
       "ssbAnnualMean": 816480,
-      "driftPct": 25.6,
-      "recommendation": "review"
+      "driftPct": 0.2,
+      "recommendation": "ok"
     },
     {
       "careerId": "mental-health-nurse",
@@ -825,34 +825,464 @@
       "recommendation": "out-of-scope"
     },
     {
+      "careerId": "physician-assistant",
+      "careerTitle": "Physician Assistant",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "650,000 - 950,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "physical-therapist",
+      "careerTitle": "Physical Therapist",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "550,000 - 900,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "speech-therapist",
+      "careerTitle": "Speech Therapist",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "540,000 - 820,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "radiologic-technologist",
+      "careerTitle": "Radiologic Technologist",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "520,000 - 780,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "medical-laboratory-technician",
+      "careerTitle": "Medical Laboratory Technician",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "480,000 - 700,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "optometrist",
+      "careerTitle": "Optometrist",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "600,000 - 950,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "dermatologist",
+      "careerTitle": "Dermatologist",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "900,000 - 1,700,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "general-practitioner",
+      "careerTitle": "General Practitioner (GP)",
+      "styrkCode": "2211",
+      "styrkLabel": "Generalist medical practitioners",
+      "catalogueSalary": "850,000 - 1,500,000 kr/year",
+      "ssbAnnualMean": 1099080,
+      "driftPct": -6.5,
+      "recommendation": "ok"
+    },
+    {
+      "careerId": "pediatrician",
+      "careerTitle": "Paediatrician",
+      "styrkCode": "2212",
+      "styrkLabel": "Specialist medical practitioners",
+      "catalogueSalary": "1,000,000 - 1,800,000 kr/year",
+      "ssbAnnualMean": 1325520,
+      "driftPct": -5.3,
+      "recommendation": "ok"
+    },
+    {
+      "careerId": "emergency-medicine-physician",
+      "careerTitle": "Emergency Medicine Physician",
+      "styrkCode": "2212",
+      "styrkLabel": "Specialist medical practitioners",
+      "catalogueSalary": "1,000,000 - 1,800,000 kr/year",
+      "ssbAnnualMean": 1325520,
+      "driftPct": -5.3,
+      "recommendation": "ok"
+    },
+    {
+      "careerId": "cardiologist",
+      "careerTitle": "Cardiologist",
+      "styrkCode": "2212",
+      "styrkLabel": "Specialist medical practitioners",
+      "catalogueSalary": "1,050,000 - 1,900,000 kr/year",
+      "ssbAnnualMean": 1325520,
+      "driftPct": -10.1,
+      "recommendation": "ok"
+    },
+    {
+      "careerId": "neurologist",
+      "careerTitle": "Neurologist",
+      "styrkCode": "2212",
+      "styrkLabel": "Specialist medical practitioners",
+      "catalogueSalary": "1,000,000 - 1,800,000 kr/year",
+      "ssbAnnualMean": 1325520,
+      "driftPct": -5.3,
+      "recommendation": "ok"
+    },
+    {
+      "careerId": "obstetrician-gynaecologist",
+      "careerTitle": "Obstetrician & Gynaecologist",
+      "styrkCode": "2212",
+      "styrkLabel": "Specialist medical practitioners",
+      "catalogueSalary": "1,000,000 - 1,800,000 kr/year",
+      "ssbAnnualMean": 1325520,
+      "driftPct": -5.3,
+      "recommendation": "ok"
+    },
+    {
+      "careerId": "psychotherapist",
+      "careerTitle": "Psychotherapist",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "600,000 - 950,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "mental-health-counsellor",
+      "careerTitle": "Mental Health Counsellor",
+      "styrkCode": "2635",
+      "styrkLabel": "Social work and counselling professionals",
+      "catalogueSalary": "480,000 - 720,000 kr/year",
+      "ssbAnnualMean": 675120,
+      "driftPct": 12.5,
+      "recommendation": "ok"
+    },
+    {
+      "careerId": "genetic-counsellor",
+      "careerTitle": "Genetic Counsellor",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "600,000 - 880,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "art-therapist",
+      "careerTitle": "Art Therapist",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "480,000 - 700,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "audiologist",
+      "careerTitle": "Audiologist",
+      "styrkCode": "2269",
+      "styrkLabel": "Health professionals not elsewhere classified",
+      "catalogueSalary": "540,000 - 790,000 kr/year",
+      "ssbAnnualMean": 802200,
+      "driftPct": 20.6,
+      "recommendation": "review"
+    },
+    {
+      "careerId": "respiratory-therapist",
+      "careerTitle": "Respiratory Therapist",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "520,000 - 760,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "medical-assistant",
+      "careerTitle": "Medical Assistant",
+      "styrkCode": "3344",
+      "styrkLabel": "Medical secretaries",
+      "catalogueSalary": "450,000 - 545,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "missing-ssb"
+    },
+    {
+      "careerId": "phlebotomist",
+      "careerTitle": "Phlebotomist",
+      "styrkCode": "3212",
+      "styrkLabel": "Medical and pathology laboratory technicians",
+      "catalogueSalary": "400,000 - 540,000 kr/year",
+      "ssbAnnualMean": 681720,
+      "driftPct": 45,
+      "recommendation": "review"
+    },
+    {
+      "careerId": "dental-technician",
+      "careerTitle": "Dental Technician",
+      "styrkCode": "3214",
+      "styrkLabel": "Medical and dental prosthetic technicians",
+      "catalogueSalary": "560,000 - 770,000 kr/year",
+      "ssbAnnualMean": 710280,
+      "driftPct": 6.8,
+      "recommendation": "ok"
+    },
+    {
+      "careerId": "occupational-therapy-assistant",
+      "careerTitle": "Occupational Therapy Assistant",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "440,000 - 620,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "biomedical-engineer",
+      "careerTitle": "Biomedical Engineer",
+      "styrkCode": "2149",
+      "styrkLabel": "Engineering professionals not elsewhere classified",
+      "catalogueSalary": "620,000 - 980,000 kr/year",
+      "ssbAnnualMean": 991920,
+      "driftPct": 24,
+      "recommendation": "review"
+    },
+    {
+      "careerId": "health-informatics-specialist",
+      "careerTitle": "Health Informatics Specialist",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "620,000 - 980,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "health-educator",
+      "careerTitle": "Health Educator",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "480,000 - 720,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "patient-navigator",
+      "careerTitle": "Patient Navigator",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "460,000 - 680,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "internal-medicine-physician",
+      "careerTitle": "Internal Medicine Physician",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "1,050,000 - 1,800,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "oncologist",
+      "careerTitle": "Medical Oncologist",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "1,100,000 - 1,900,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "endocrinologist",
+      "careerTitle": "Endocrinologist",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "1,000,000 - 1,700,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "rheumatologist",
+      "careerTitle": "Rheumatologist",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "1,000,000 - 1,700,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "infectious-disease-specialist",
+      "careerTitle": "Infectious Disease Specialist",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "1,050,000 - 1,800,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "intensive-care-physician",
+      "careerTitle": "Intensive Care Physician",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "1,150,000 - 2,000,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "clinical-pharmacologist",
+      "careerTitle": "Clinical Pharmacologist",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "900,000 - 1,500,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "occupational-health-physician",
+      "careerTitle": "Occupational Health Physician",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "950,000 - 1,600,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "sports-medicine-physician",
+      "careerTitle": "Sports Medicine Physician",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "900,000 - 1,500,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "orthodontist",
+      "careerTitle": "Orthodontist",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "950,000 - 1,700,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "clinical-psychologist",
+      "careerTitle": "Clinical Psychologist",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "650,000 - 1,000,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "neuropsychologist",
+      "careerTitle": "Neuropsychologist",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "700,000 - 1,100,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "clinical-scientist",
+      "careerTitle": "Clinical Scientist",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "600,000 - 950,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "health-economist",
+      "careerTitle": "Health Economist",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "700,000 - 1,100,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "healthcare-data-scientist",
+      "careerTitle": "Healthcare Data Scientist",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "750,000 - 1,200,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "medical-science-liaison",
+      "careerTitle": "Medical Science Liaison",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "800,000 - 1,300,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
       "careerId": "primary-teacher",
       "careerTitle": "Primary School Teacher",
       "styrkCode": "2341",
       "styrkLabel": "Primary school teachers",
-      "catalogueSalary": "450,000 - 600,000 kr/year",
+      "catalogueSalary": "605,000 - 805,000 kr/year",
       "ssbAnnualMean": 704520,
-      "driftPct": 34.2,
-      "recommendation": "review"
+      "driftPct": -0.1,
+      "recommendation": "ok"
     },
     {
       "careerId": "secondary-teacher",
       "careerTitle": "Secondary School Teacher",
       "styrkCode": "2330",
       "styrkLabel": "Secondary education teachers",
-      "catalogueSalary": "480,000 - 650,000 kr/year",
+      "catalogueSalary": "635,000 - 860,000 kr/year",
       "ssbAnnualMean": 749400,
-      "driftPct": 32.6,
-      "recommendation": "review"
+      "driftPct": 0.3,
+      "recommendation": "ok"
     },
     {
       "careerId": "kindergarten-teacher",
       "careerTitle": "Kindergarten Teacher",
       "styrkCode": "2342",
       "styrkLabel": "Early childhood educators",
-      "catalogueSalary": "420,000 - 550,000 kr/year",
+      "catalogueSalary": "545,000 - 710,000 kr/year",
       "ssbAnnualMean": 627240,
-      "driftPct": 29.3,
-      "recommendation": "review"
+      "driftPct": 0,
+      "recommendation": "ok"
     },
     {
       "careerId": "special-needs-educator",
@@ -880,6 +1310,16 @@
       "styrkCode": "",
       "styrkLabel": "",
       "catalogueSalary": "500,000 - 700,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "driving-instructor",
+      "careerTitle": "Driving Instructor",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "450,000 - 700,000 kr/year",
       "ssbAnnualMean": null,
       "driftPct": null,
       "recommendation": "out-of-scope"
@@ -915,24 +1355,384 @@
       "recommendation": "out-of-scope"
     },
     {
+      "careerId": "teacher-generalist",
+      "careerTitle": "Teacher",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "520,000 - 780,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "high-school-teacher",
+      "careerTitle": "High School Teacher",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "570,000 - 820,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "preschool-teacher",
+      "careerTitle": "Preschool Teacher",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "440,000 - 650,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "special-education-teacher",
+      "careerTitle": "Special Education Teacher",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "550,000 - 820,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "esl-teacher",
+      "careerTitle": "ESL Teacher",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "450,000 - 750,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "efl-teacher",
+      "careerTitle": "EFL Teacher",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "300,000 - 650,000 kr/year (varies widely by country)",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "language-teacher",
+      "careerTitle": "Language Teacher",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "480,000 - 780,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "mathematics-teacher",
+      "careerTitle": "Mathematics Teacher",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "550,000 - 820,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "science-teacher",
+      "careerTitle": "Science Teacher",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "540,000 - 810,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "physics-teacher",
+      "careerTitle": "Physics Teacher",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "570,000 - 830,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "chemistry-teacher",
+      "careerTitle": "Chemistry Teacher",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "570,000 - 830,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "biology-teacher",
+      "careerTitle": "Biology Teacher",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "550,000 - 820,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "history-teacher",
+      "careerTitle": "History Teacher",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "540,000 - 810,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "geography-teacher",
+      "careerTitle": "Geography Teacher",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "540,000 - 810,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "social-studies-teacher",
+      "careerTitle": "Social Studies Teacher",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "540,000 - 800,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "computer-science-teacher",
+      "careerTitle": "Computer Science Teacher",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "570,000 - 830,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "pe-teacher",
+      "careerTitle": "Physical Education Teacher",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "520,000 - 780,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "art-teacher",
+      "careerTitle": "Art Teacher",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "500,000 - 770,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "drama-teacher",
+      "careerTitle": "Drama Teacher",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "500,000 - 770,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "vocational-education-teacher",
+      "careerTitle": "Vocational Education Teacher",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "530,000 - 800,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "technical-instructor",
+      "careerTitle": "Technical Instructor",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "500,000 - 800,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "lecturer",
+      "careerTitle": "Lecturer",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "600,000 - 900,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "senior-lecturer",
+      "careerTitle": "Senior Lecturer",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "750,000 - 1,100,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "professor",
+      "careerTitle": "Professor",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "900,000 - 1,350,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "assistant-professor",
+      "careerTitle": "Assistant Professor",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "650,000 - 950,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "associate-professor",
+      "careerTitle": "Associate Professor",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "800,000 - 1,150,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "teaching-assistant",
+      "careerTitle": "Teaching Assistant",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "250,000 - 450,000 kr/year (often part-time)",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "private-tutor",
+      "careerTitle": "Private Tutor",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "150,000 - 600,000 kr/year (often part-time)",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "online-instructor",
+      "careerTitle": "Online Instructor",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "300,000 - 900,000 kr/year (varies widely — platform + course success)",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "curriculum-developer",
+      "careerTitle": "Curriculum Developer",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "550,000 - 900,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "instructional-designer",
+      "careerTitle": "Instructional Designer",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "600,000 - 1,000,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "education-consultant",
+      "careerTitle": "Education Consultant",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "650,000 - 1,300,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "academic-advisor",
+      "careerTitle": "Academic Advisor",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "450,000 - 700,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "school-counselor",
+      "careerTitle": "School Counsellor",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "500,000 - 780,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "learning-support-specialist",
+      "careerTitle": "Learning Support Specialist",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "470,000 - 720,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "literacy-coach",
+      "careerTitle": "Literacy Coach",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "500,000 - 800,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "educational-trainer",
+      "careerTitle": "Educational Trainer",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "550,000 - 900,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
       "careerId": "software-developer",
       "careerTitle": "Software Developer",
       "styrkCode": "2512",
       "styrkLabel": "Software developers",
-      "catalogueSalary": "550,000 - 900,000 kr/year",
+      "catalogueSalary": "745,000 - 1,215,000 kr/year",
       "ssbAnnualMean": 979440,
-      "driftPct": 35.1,
-      "recommendation": "review"
-    },
-    {
-      "careerId": "data-scientist",
-      "careerTitle": "Data Scientist",
-      "styrkCode": "",
-      "styrkLabel": "",
-      "catalogueSalary": "600,000 - 950,000 kr/year",
-      "ssbAnnualMean": null,
-      "driftPct": null,
-      "recommendation": "out-of-scope"
+      "driftPct": -0.1,
+      "recommendation": "ok"
     },
     {
       "careerId": "cybersecurity-analyst",
@@ -940,6 +1740,26 @@
       "styrkCode": "",
       "styrkLabel": "",
       "catalogueSalary": "550,000 - 850,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "soc-analyst",
+      "careerTitle": "SOC Analyst",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "520,000 - 780,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "digital-forensics-analyst",
+      "careerTitle": "Digital Forensics Analyst",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "600,000 - 950,000 kr/year",
       "ssbAnnualMean": null,
       "driftPct": null,
       "recommendation": "out-of-scope"
@@ -955,24 +1775,34 @@
       "recommendation": "out-of-scope"
     },
     {
+      "careerId": "product-designer",
+      "careerTitle": "Product Designer",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "550,000 - 850,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
       "careerId": "cloud-engineer",
       "careerTitle": "Cloud Engineer",
       "styrkCode": "2521",
       "styrkLabel": "Database designers and administrators",
-      "catalogueSalary": "600,000 - 950,000 kr/year",
+      "catalogueSalary": "745,000 - 1,175,000 kr/year",
       "ssbAnnualMean": 959280,
-      "driftPct": 23.8,
-      "recommendation": "review"
+      "driftPct": -0.1,
+      "recommendation": "ok"
     },
     {
       "careerId": "it-support",
       "careerTitle": "IT Support Specialist",
       "styrkCode": "3512",
       "styrkLabel": "Computer network and systems technicians",
-      "catalogueSalary": "400,000 - 550,000 kr/year",
+      "catalogueSalary": "635,000 - 875,000 kr/year",
       "ssbAnnualMean": 754440,
-      "driftPct": 58.8,
-      "recommendation": "review"
+      "driftPct": -0.1,
+      "recommendation": "ok"
     },
     {
       "careerId": "devops-engineer",
@@ -985,21 +1815,11 @@
       "recommendation": "out-of-scope"
     },
     {
-      "careerId": "ai-engineer",
-      "careerTitle": "AI Engineer",
-      "styrkCode": "",
-      "styrkLabel": "",
-      "catalogueSalary": "650,000 - 1,100,000 kr/year",
-      "ssbAnnualMean": null,
-      "driftPct": null,
-      "recommendation": "out-of-scope"
-    },
-    {
       "careerId": "it-project-manager",
       "careerTitle": "IT Project Manager",
       "styrkCode": "",
       "styrkLabel": "",
-      "catalogueSalary": "600,000 - 950,000 kr/year",
+      "catalogueSalary": "780,000 - 1,250,000 kr/year",
       "ssbAnnualMean": null,
       "driftPct": null,
       "recommendation": "out-of-scope"
@@ -1165,21 +1985,21 @@
       "recommendation": "out-of-scope"
     },
     {
-      "careerId": "sre",
-      "careerTitle": "Site Reliability Engineer",
+      "careerId": "game-designer",
+      "careerTitle": "Game Designer",
       "styrkCode": "",
       "styrkLabel": "",
-      "catalogueSalary": "650,000 - 1,000,000 kr/year",
+      "catalogueSalary": "450,000 - 750,000 kr/year",
       "ssbAnnualMean": null,
       "driftPct": null,
       "recommendation": "out-of-scope"
     },
     {
-      "careerId": "data-engineer",
-      "careerTitle": "Data Engineer",
+      "careerId": "sre",
+      "careerTitle": "Site Reliability Engineer",
       "styrkCode": "",
       "styrkLabel": "",
-      "catalogueSalary": "600,000 - 900,000 kr/year",
+      "catalogueSalary": "650,000 - 1,000,000 kr/year",
       "ssbAnnualMean": null,
       "driftPct": null,
       "recommendation": "out-of-scope"
@@ -1290,16 +2110,6 @@
       "styrkCode": "",
       "styrkLabel": "",
       "catalogueSalary": "600,000 - 900,000 kr/year",
-      "ssbAnnualMean": null,
-      "driftPct": null,
-      "recommendation": "out-of-scope"
-    },
-    {
-      "careerId": "mlops-engineer",
-      "careerTitle": "MLOps Engineer",
-      "styrkCode": "",
-      "styrkLabel": "",
-      "catalogueSalary": "650,000 - 1,000,000 kr/year",
       "ssbAnnualMean": null,
       "driftPct": null,
       "recommendation": "out-of-scope"
@@ -1465,16 +2275,6 @@
       "recommendation": "out-of-scope"
     },
     {
-      "careerId": "machine-learning-engineer",
-      "careerTitle": "Machine Learning Engineer",
-      "styrkCode": "",
-      "styrkLabel": "",
-      "catalogueSalary": "650,000 - 1,050,000 kr/year",
-      "ssbAnnualMean": null,
-      "driftPct": null,
-      "recommendation": "out-of-scope"
-    },
-    {
       "careerId": "applied-ai-engineer",
       "careerTitle": "Applied AI Engineer",
       "styrkCode": "",
@@ -1487,36 +2287,6 @@
     {
       "careerId": "ai-network-engineer",
       "careerTitle": "AI Infrastructure Network Engineer",
-      "styrkCode": "",
-      "styrkLabel": "",
-      "catalogueSalary": "750,000 - 1,200,000 kr/year",
-      "ssbAnnualMean": null,
-      "driftPct": null,
-      "recommendation": "out-of-scope"
-    },
-    {
-      "careerId": "computer-vision-engineer",
-      "careerTitle": "Computer Vision Engineer",
-      "styrkCode": "",
-      "styrkLabel": "",
-      "catalogueSalary": "700,000 - 1,150,000 kr/year",
-      "ssbAnnualMean": null,
-      "driftPct": null,
-      "recommendation": "out-of-scope"
-    },
-    {
-      "careerId": "nlp-engineer",
-      "careerTitle": "NLP Engineer",
-      "styrkCode": "",
-      "styrkLabel": "",
-      "catalogueSalary": "700,000 - 1,150,000 kr/year",
-      "ssbAnnualMean": null,
-      "driftPct": null,
-      "recommendation": "out-of-scope"
-    },
-    {
-      "careerId": "ai-product-manager",
-      "careerTitle": "AI Product Manager",
       "styrkCode": "",
       "styrkLabel": "",
       "catalogueSalary": "750,000 - 1,200,000 kr/year",
@@ -1819,10 +2589,10 @@
       "careerTitle": "Data Analyst",
       "styrkCode": "2511",
       "styrkLabel": "Systems analysts",
-      "catalogueSalary": "550,000 - 800,000 kr/year",
+      "catalogueSalary": "785,000 - 1,145,000 kr/year",
       "ssbAnnualMean": 964320,
-      "driftPct": 42.9,
-      "recommendation": "review"
+      "driftPct": -0.1,
+      "recommendation": "ok"
     },
     {
       "careerId": "ai-researcher",
@@ -1830,16 +2600,6 @@
       "styrkCode": "",
       "styrkLabel": "",
       "catalogueSalary": "900,000 - 1,500,000 kr/year",
-      "ssbAnnualMean": null,
-      "driftPct": null,
-      "recommendation": "out-of-scope"
-    },
-    {
-      "careerId": "robotics-engineer",
-      "careerTitle": "Robotics Engineer",
-      "styrkCode": "",
-      "styrkLabel": "",
-      "catalogueSalary": "650,000 - 1,000,000 kr/year",
       "ssbAnnualMean": null,
       "driftPct": null,
       "recommendation": "out-of-scope"
@@ -1936,23 +2696,23 @@
     },
     {
       "careerId": "project-manager",
-      "careerTitle": "Project Manager",
+      "careerTitle": "Project Manager (generalist)",
       "styrkCode": "2421",
       "styrkLabel": "Management and organisation analysts",
-      "catalogueSalary": "550,000 - 850,000 kr/year",
+      "catalogueSalary": "770,000 - 1,185,000 kr/year",
       "ssbAnnualMean": 977880,
-      "driftPct": 39.7,
-      "recommendation": "review"
+      "driftPct": 0,
+      "recommendation": "ok"
     },
     {
       "careerId": "hr-specialist",
       "careerTitle": "HR Specialist",
       "styrkCode": "2423",
       "styrkLabel": "Personnel and careers professionals",
-      "catalogueSalary": "480,000 - 680,000 kr/year",
+      "catalogueSalary": "720,000 - 1,020,000 kr/year",
       "ssbAnnualMean": 871320,
-      "driftPct": 50.2,
-      "recommendation": "review"
+      "driftPct": 0.2,
+      "recommendation": "ok"
     },
     {
       "careerId": "management-consultant",
@@ -1999,10 +2759,10 @@
       "careerTitle": "Lawyer",
       "styrkCode": "2611",
       "styrkLabel": "Lawyers",
-      "catalogueSalary": "600,000 - 1,200,000 kr/year",
+      "catalogueSalary": "725,000 - 1,445,000 kr/year",
       "ssbAnnualMean": 1084440,
-      "driftPct": 20.5,
-      "recommendation": "review"
+      "driftPct": -0.1,
+      "recommendation": "ok"
     },
     {
       "careerId": "environmental-scientist",
@@ -2445,16 +3205,6 @@
       "recommendation": "out-of-scope"
     },
     {
-      "careerId": "real-estate-agent",
-      "careerTitle": "Real Estate Agent",
-      "styrkCode": "3334",
-      "styrkLabel": "Real estate agents and property managers",
-      "catalogueSalary": "500,000 - 900,000 kr/year",
-      "ssbAnnualMean": 1064160,
-      "driftPct": 52,
-      "recommendation": "review"
-    },
-    {
       "careerId": "real-estate-broker",
       "careerTitle": "Real Estate Broker",
       "styrkCode": "",
@@ -2469,10 +3219,10 @@
       "careerTitle": "Property Manager",
       "styrkCode": "3334",
       "styrkLabel": "Real estate agents and property managers",
-      "catalogueSalary": "500,000 - 750,000 kr/year",
+      "catalogueSalary": "850,000 - 1,275,000 kr/year",
       "ssbAnnualMean": 1064160,
-      "driftPct": 70.3,
-      "recommendation": "review"
+      "driftPct": 0.2,
+      "recommendation": "ok"
     },
     {
       "careerId": "leasing-agent",
@@ -2805,14 +3555,614 @@
       "recommendation": "out-of-scope"
     },
     {
+      "careerId": "solicitor",
+      "careerTitle": "Solicitor",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "650,000 - 1,300,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "barrister",
+      "careerTitle": "Barrister",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "700,000 - 1,800,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "commercial-lawyer",
+      "careerTitle": "Commercial Lawyer",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "750,000 - 1,400,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "mergers-acquisitions-lawyer",
+      "careerTitle": "M&A Lawyer",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "900,000 - 2,000,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "banking-finance-lawyer",
+      "careerTitle": "Banking & Finance Lawyer",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "850,000 - 1,900,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "competition-lawyer",
+      "careerTitle": "Competition Lawyer",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "850,000 - 1,800,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "employment-lawyer",
+      "careerTitle": "Employment Lawyer",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "700,000 - 1,300,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "litigation-lawyer",
+      "careerTitle": "Litigation Lawyer",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "750,000 - 1,500,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "arbitration-lawyer",
+      "careerTitle": "Arbitration Lawyer",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "900,000 - 2,000,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "intellectual-property-lawyer",
+      "careerTitle": "Intellectual Property Lawyer",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "800,000 - 1,600,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "patent-attorney",
+      "careerTitle": "Patent Attorney",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "850,000 - 1,600,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "trademark-attorney",
+      "careerTitle": "Trademark Attorney",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "750,000 - 1,400,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "technology-lawyer",
+      "careerTitle": "Technology Lawyer",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "850,000 - 1,700,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "data-protection-lawyer",
+      "careerTitle": "Data Protection & Privacy Lawyer",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "850,000 - 1,600,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "cybersecurity-lawyer",
+      "careerTitle": "Cybersecurity Lawyer",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "900,000 - 1,700,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "regulatory-compliance-lawyer",
+      "careerTitle": "Regulatory & Compliance Lawyer",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "800,000 - 1,500,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "tax-lawyer",
+      "careerTitle": "Tax Lawyer",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "900,000 - 1,900,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "construction-lawyer",
+      "careerTitle": "Construction Lawyer",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "800,000 - 1,500,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "energy-lawyer",
+      "careerTitle": "Energy Lawyer",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "950,000 - 2,000,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "maritime-lawyer",
+      "careerTitle": "Maritime Lawyer",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "900,000 - 1,800,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "aviation-lawyer",
+      "careerTitle": "Aviation Lawyer",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "900,000 - 1,800,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "insurance-lawyer",
+      "careerTitle": "Insurance Lawyer",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "750,000 - 1,400,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "healthcare-lawyer",
+      "careerTitle": "Healthcare Lawyer",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "800,000 - 1,500,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "public-procurement-lawyer",
+      "careerTitle": "Public Procurement Lawyer",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "750,000 - 1,400,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "government-lawyer",
+      "careerTitle": "Government Lawyer",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "700,000 - 1,300,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "international-trade-lawyer",
+      "careerTitle": "International Trade Lawyer",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "850,000 - 1,700,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "human-rights-lawyer",
+      "careerTitle": "Human Rights Lawyer",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "550,000 - 1,000,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "criminal-defence-lawyer",
+      "careerTitle": "Criminal Defence Lawyer",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "600,000 - 1,200,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "immigration-lawyer",
+      "careerTitle": "Immigration Lawyer",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "600,000 - 1,100,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "family-lawyer",
+      "careerTitle": "Family Lawyer",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "600,000 - 1,100,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "environmental-lawyer",
+      "careerTitle": "Environmental Lawyer",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "750,000 - 1,400,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "private-equity-lawyer",
+      "careerTitle": "Private Equity & Venture Capital Lawyer",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "1,000,000 - 2,200,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "investment-funds-lawyer",
+      "careerTitle": "Investment Funds Lawyer",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "900,000 - 1,900,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "restructuring-insolvency-lawyer",
+      "careerTitle": "Restructuring & Insolvency Lawyer",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "850,000 - 1,800,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "trusts-estates-lawyer",
+      "careerTitle": "Trusts & Estates Lawyer",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "700,000 - 1,300,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "esg-counsel",
+      "careerTitle": "ESG Counsel",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "850,000 - 1,600,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "legal-consultant",
+      "careerTitle": "Legal Consultant",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "750,000 - 1,600,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "company-secretary",
+      "careerTitle": "Company Secretary",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "650,000 - 1,200,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "contract-manager",
+      "careerTitle": "Contract Manager",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "650,000 - 1,100,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "actuary",
+      "careerTitle": "Actuary",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "750,000 - 1,400,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "financial-controller",
+      "careerTitle": "Financial Controller",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "650,000 - 1,150,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "tax-adviser",
+      "careerTitle": "Tax Adviser",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "600,000 - 1,200,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "credit-analyst",
+      "careerTitle": "Credit Analyst",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "600,000 - 1,000,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "private-banker",
+      "careerTitle": "Private Banker",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "700,000 - 1,500,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "chief-risk-officer",
+      "careerTitle": "Chief Risk Officer (CRO)",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "1,500,000 - 3,500,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "chief-compliance-officer",
+      "careerTitle": "Chief Compliance Officer (CCO)",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "1,300,000 - 3,000,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "chief-investment-officer",
+      "careerTitle": "Chief Investment Officer (CIO)",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "1,800,000 - 4,500,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "valuation-specialist",
+      "careerTitle": "Valuation Specialist",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "650,000 - 1,400,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "transaction-services-adviser",
+      "careerTitle": "Transaction Services Adviser",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "650,000 - 1,500,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "fund-manager",
+      "careerTitle": "Fund Manager",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "900,000 - 2,500,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "family-office-adviser",
+      "careerTitle": "Family Office Adviser",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "900,000 - 2,800,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "pension-fund-manager",
+      "careerTitle": "Pension Fund Manager",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "800,000 - 1,900,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "sovereign-wealth-fund-manager",
+      "careerTitle": "Sovereign Wealth Fund Manager",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "900,000 - 2,500,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "capital-markets-adviser",
+      "careerTitle": "Capital Markets Adviser",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "700,000 - 2,200,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "structured-finance-specialist",
+      "careerTitle": "Structured Finance Specialist",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "750,000 - 1,800,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "project-finance-specialist",
+      "careerTitle": "Project Finance Specialist",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "750,000 - 1,900,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "restructuring-adviser",
+      "careerTitle": "Restructuring Adviser",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "750,000 - 2,000,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "real-estate-investment-manager",
+      "careerTitle": "Real Estate Investment Manager",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "750,000 - 2,000,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "infrastructure-investment-manager",
+      "careerTitle": "Infrastructure Investment Manager",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "800,000 - 2,200,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "finance-project-manager",
+      "careerTitle": "Finance Project Manager",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "850,000 - 1,400,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
       "careerId": "accountant",
       "careerTitle": "Accountant",
       "styrkCode": "2411",
       "styrkLabel": "Accountants",
-      "catalogueSalary": "480,000 - 700,000 kr/year",
+      "catalogueSalary": "765,000 - 1,115,000 kr/year",
       "ssbAnnualMean": 939360,
-      "driftPct": 59.2,
-      "recommendation": "review"
+      "driftPct": -0.1,
+      "recommendation": "ok"
     },
     {
       "careerId": "financial-advisor",
@@ -3009,10 +4359,10 @@
       "careerTitle": "Investment Banker",
       "styrkCode": "2412",
       "styrkLabel": "Financial and investment advisers",
-      "catalogueSalary": "900,000 - 3,000,000+ kr/year (with bonus)",
+      "catalogueSalary": "485,000 - 1,610,000 kr/year",
       "ssbAnnualMean": 1046760,
-      "driftPct": -46.3,
-      "recommendation": "review"
+      "driftPct": -0.1,
+      "recommendation": "ok"
     },
     {
       "careerId": "equity-analyst",
@@ -3029,10 +4379,10 @@
       "careerTitle": "Financial Analyst",
       "styrkCode": "2413",
       "styrkLabel": "Financial analysts",
-      "catalogueSalary": "550,000 - 950,000 kr/year",
+      "catalogueSalary": "750,000 - 1,295,000 kr/year",
       "ssbAnnualMean": 1022280,
-      "driftPct": 36.3,
-      "recommendation": "review"
+      "driftPct": 0,
+      "recommendation": "ok"
     },
     {
       "careerId": "hedge-fund-manager",
@@ -3389,40 +4739,40 @@
       "careerTitle": "Mechanical Engineer",
       "styrkCode": "2144",
       "styrkLabel": "Mechanical engineers",
-      "catalogueSalary": "550,000 - 850,000 kr/year",
+      "catalogueSalary": "855,000 - 1,320,000 kr/year",
       "ssbAnnualMean": 1087440,
-      "driftPct": 55.3,
-      "recommendation": "review"
+      "driftPct": 0,
+      "recommendation": "ok"
     },
     {
       "careerId": "electrical-engineer",
       "careerTitle": "Electrical Engineer",
       "styrkCode": "2151",
       "styrkLabel": "Electrical engineers",
-      "catalogueSalary": "550,000 - 850,000 kr/year",
+      "catalogueSalary": "845,000 - 1,310,000 kr/year",
       "ssbAnnualMean": 1077360,
-      "driftPct": 53.9,
-      "recommendation": "review"
+      "driftPct": 0,
+      "recommendation": "ok"
     },
     {
       "careerId": "electrician",
       "careerTitle": "Electrician",
       "styrkCode": "7411",
       "styrkLabel": "Building and related electricians",
-      "catalogueSalary": "450,000 - 650,000 kr/year",
+      "catalogueSalary": "530,000 - 770,000 kr/year",
       "ssbAnnualMean": 650760,
-      "driftPct": 18.3,
-      "recommendation": "review"
+      "driftPct": 0.1,
+      "recommendation": "ok"
     },
     {
       "careerId": "plumber",
       "careerTitle": "Plumber",
       "styrkCode": "7126",
       "styrkLabel": "Plumbers and pipefitters",
-      "catalogueSalary": "420,000 - 620,000 kr/year",
+      "catalogueSalary": "515,000 - 760,000 kr/year",
       "ssbAnnualMean": 636360,
-      "driftPct": 22.4,
-      "recommendation": "review"
+      "driftPct": -0.2,
+      "recommendation": "ok"
     },
     {
       "careerId": "petroleum-engineer",
@@ -3499,10 +4849,10 @@
       "careerTitle": "Auto Mechanic",
       "styrkCode": "7231",
       "styrkLabel": "Motor vehicle mechanics and repairers",
-      "catalogueSalary": "400,000 - 580,000 kr/year",
+      "catalogueSalary": "475,000 - 685,000 kr/year",
       "ssbAnnualMean": 579360,
-      "driftPct": 18.2,
-      "recommendation": "review"
+      "driftPct": -0.1,
+      "recommendation": "ok"
     },
     {
       "careerId": "energy-trading-manager",
@@ -4835,6 +6185,146 @@
       "recommendation": "out-of-scope"
     },
     {
+      "careerId": "aeronautical-engineer",
+      "careerTitle": "Aeronautical Engineer",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "700,000 - 1,200,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "astronautical-engineer",
+      "careerTitle": "Astronautical Engineer",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "750,000 - 1,300,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "propulsion-engineer",
+      "careerTitle": "Propulsion Engineer",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "750,000 - 1,300,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "avionics-engineer",
+      "careerTitle": "Avionics Engineer",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "700,000 - 1,200,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "aerospace-structural-engineer",
+      "careerTitle": "Structural Engineer (Aerospace)",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "700,000 - 1,150,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "flight-test-engineer",
+      "careerTitle": "Flight Test Engineer",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "750,000 - 1,300,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "materials-engineer",
+      "careerTitle": "Materials Engineer",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "650,000 - 1,050,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "spacecraft-engineer",
+      "careerTitle": "Spacecraft Engineer",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "800,000 - 1,400,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "mission-control-specialist",
+      "careerTitle": "Mission Control Specialist",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "650,000 - 1,000,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "orbital-analyst",
+      "careerTitle": "Orbital Analyst",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "750,000 - 1,200,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "aerospace-technician",
+      "careerTitle": "Aerospace Technician",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "450,000 - 750,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "manufacturing-engineer",
+      "careerTitle": "Manufacturing Engineer",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "600,000 - 1,000,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "quality-assurance-engineer",
+      "careerTitle": "Quality Assurance Engineer",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "600,000 - 950,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "aircraft-mechanic",
+      "careerTitle": "Aircraft Mechanic",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "500,000 - 850,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
       "careerId": "logistics-coordinator",
       "careerTitle": "Logistics Coordinator",
       "styrkCode": "",
@@ -4859,10 +6349,10 @@
       "careerTitle": "Truck Driver",
       "styrkCode": "8332",
       "styrkLabel": "Heavy truck and lorry drivers",
-      "catalogueSalary": "400,000 - 550,000 kr/year",
+      "catalogueSalary": "495,000 - 680,000 kr/year",
       "ssbAnnualMean": 588600,
-      "driftPct": 23.9,
-      "recommendation": "review"
+      "driftPct": 0.2,
+      "recommendation": "ok"
     },
     {
       "careerId": "warehouse-manager",
@@ -4940,16 +6430,6 @@
       "styrkCode": "",
       "styrkLabel": "",
       "catalogueSalary": "350,000 - 480,000 kr/year",
-      "ssbAnnualMean": null,
-      "driftPct": null,
-      "recommendation": "out-of-scope"
-    },
-    {
-      "careerId": "delivery-driver",
-      "careerTitle": "Delivery Driver",
-      "styrkCode": "",
-      "styrkLabel": "",
-      "catalogueSalary": "400,000 - 550,000 kr/year",
       "ssbAnnualMean": null,
       "driftPct": null,
       "recommendation": "out-of-scope"
@@ -5039,10 +6519,10 @@
       "careerTitle": "Chef",
       "styrkCode": "3434",
       "styrkLabel": "Chefs",
-      "catalogueSalary": "380,000 - 600,000 kr/year",
+      "catalogueSalary": "475,000 - 750,000 kr/year",
       "ssbAnnualMean": 613200,
-      "driftPct": 25.1,
-      "recommendation": "review"
+      "driftPct": 0.1,
+      "recommendation": "ok"
     },
     {
       "careerId": "tour-guide",
@@ -5069,10 +6549,10 @@
       "careerTitle": "Hairdresser",
       "styrkCode": "5141",
       "styrkLabel": "Hairdressers",
-      "catalogueSalary": "320,000 - 480,000 kr/year",
+      "catalogueSalary": "395,000 - 595,000 kr/year",
       "ssbAnnualMean": 495600,
-      "driftPct": 23.9,
-      "recommendation": "review"
+      "driftPct": 0.1,
+      "recommendation": "ok"
     },
     {
       "careerId": "fitness-instructor",
@@ -5149,10 +6629,10 @@
       "careerTitle": "Photographer",
       "styrkCode": "3431",
       "styrkLabel": "Photographers",
-      "catalogueSalary": "350,000 - 600,000 kr/year",
+      "catalogueSalary": "525,000 - 900,000 kr/year",
       "ssbAnnualMean": 712200,
-      "driftPct": 49.9,
-      "recommendation": "review"
+      "driftPct": 0,
+      "recommendation": "ok"
     },
     {
       "careerId": "video-editor",
@@ -5179,20 +6659,20 @@
       "careerTitle": "Architect",
       "styrkCode": "2161",
       "styrkLabel": "Building architects",
-      "catalogueSalary": "550,000 - 900,000 kr/year",
+      "catalogueSalary": "705,000 - 1,155,000 kr/year",
       "ssbAnnualMean": 929040,
-      "driftPct": 28.1,
-      "recommendation": "review"
+      "driftPct": -0.1,
+      "recommendation": "ok"
     },
     {
       "careerId": "graphic-designer",
       "careerTitle": "Graphic Designer",
       "styrkCode": "2166",
       "styrkLabel": "Graphic and multimedia designers",
-      "catalogueSalary": "420,000 - 650,000 kr/year",
+      "catalogueSalary": "605,000 - 940,000 kr/year",
       "ssbAnnualMean": 771840,
-      "driftPct": 44.3,
-      "recommendation": "review"
+      "driftPct": -0.1,
+      "recommendation": "ok"
     },
     {
       "careerId": "house-cleaner",
@@ -5320,6 +6800,116 @@
       "styrkCode": "",
       "styrkLabel": "",
       "catalogueSalary": "480,000 - 750,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "esthetician",
+      "careerTitle": "Esthetician",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "380,000 - 650,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "cosmetologist",
+      "careerTitle": "Cosmetologist",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "380,000 - 650,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "hairstylist",
+      "careerTitle": "Hairstylist",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "350,000 - 650,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "barber",
+      "careerTitle": "Barber",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "320,000 - 600,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "spa-therapist",
+      "careerTitle": "Spa Therapist",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "350,000 - 620,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "beauty-therapist",
+      "careerTitle": "Beauty Therapist",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "350,000 - 620,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "skincare-specialist",
+      "careerTitle": "Skincare Specialist",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "380,000 - 700,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "laser-technician",
+      "careerTitle": "Laser Technician",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "420,000 - 750,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "tattoo-artist",
+      "careerTitle": "Tattoo Artist",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "300,000 - 900,000 kr/year (highly variable — portfolio-driven)",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "piercing-specialist",
+      "careerTitle": "Piercing Specialist",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "280,000 - 550,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "wellness-coach",
+      "careerTitle": "Wellness Coach",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "350,000 - 900,000 kr/year",
       "ssbAnnualMean": null,
       "driftPct": null,
       "recommendation": "out-of-scope"
@@ -5755,16 +7345,6 @@
       "recommendation": "out-of-scope"
     },
     {
-      "careerId": "telco-oss-engineer",
-      "careerTitle": "OSS Engineer",
-      "styrkCode": "",
-      "styrkLabel": "",
-      "catalogueSalary": "650,000 - 950,000 kr/year",
-      "ssbAnnualMean": null,
-      "driftPct": null,
-      "recommendation": "out-of-scope"
-    },
-    {
       "careerId": "telco-bss-engineer",
       "careerTitle": "BSS Engineer",
       "styrkCode": "",
@@ -6125,26 +7705,6 @@
       "recommendation": "out-of-scope"
     },
     {
-      "careerId": "content-creator",
-      "careerTitle": "Content Creator",
-      "styrkCode": "",
-      "styrkLabel": "",
-      "catalogueSalary": "200,000 - 1,500,000 kr/year (highly variable)",
-      "ssbAnnualMean": null,
-      "driftPct": null,
-      "recommendation": "out-of-scope"
-    },
-    {
-      "careerId": "video-editor",
-      "careerTitle": "Video Editor",
-      "styrkCode": "",
-      "styrkLabel": "",
-      "catalogueSalary": "450,000 - 800,000 kr/year",
-      "ssbAnnualMean": null,
-      "driftPct": null,
-      "recommendation": "out-of-scope"
-    },
-    {
       "careerId": "animator",
       "careerTitle": "Animator",
       "styrkCode": "",
@@ -6159,10 +7719,10 @@
       "careerTitle": "Journalist",
       "styrkCode": "2642",
       "styrkLabel": "Journalists",
-      "catalogueSalary": "500,000 - 750,000 kr/year",
+      "catalogueSalary": "655,000 - 980,000 kr/year",
       "ssbAnnualMean": 817440,
-      "driftPct": 30.8,
-      "recommendation": "review"
+      "driftPct": 0,
+      "recommendation": "ok"
     },
     {
       "careerId": "copywriter",
@@ -6190,16 +7750,6 @@
       "styrkCode": "",
       "styrkLabel": "",
       "catalogueSalary": "400,000 - 850,000 kr/year",
-      "ssbAnnualMean": null,
-      "driftPct": null,
-      "recommendation": "out-of-scope"
-    },
-    {
-      "careerId": "interior-designer",
-      "careerTitle": "Interior Designer",
-      "styrkCode": "",
-      "styrkLabel": "",
-      "catalogueSalary": "450,000 - 800,000 kr/year",
       "ssbAnnualMean": null,
       "driftPct": null,
       "recommendation": "out-of-scope"
@@ -6885,6 +8435,166 @@
       "recommendation": "out-of-scope"
     },
     {
+      "careerId": "translator",
+      "careerTitle": "Translator",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "400,000 - 800,000 kr/year (freelance-heavy)",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "interpreter",
+      "careerTitle": "Interpreter",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "450,000 - 900,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "linguist",
+      "careerTitle": "Linguist",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "500,000 - 900,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "language-tutor",
+      "careerTitle": "Language Tutor",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "200,000 - 500,000 kr/year (often part-time)",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "localization-specialist",
+      "careerTitle": "Localization Specialist",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "500,000 - 900,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "localization-project-manager",
+      "careerTitle": "Localization Project Manager",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "650,000 - 1,100,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "terminologist",
+      "careerTitle": "Terminologist",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "500,000 - 850,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "lexicographer",
+      "careerTitle": "Lexicographer",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "500,000 - 850,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "proofreader",
+      "careerTitle": "Proofreader",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "350,000 - 650,000 kr/year (freelance-heavy)",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "editor",
+      "careerTitle": "Editor",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "500,000 - 900,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "subtitler",
+      "careerTitle": "Subtitler",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "350,000 - 700,000 kr/year (freelance-heavy)",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "transcriptionist",
+      "careerTitle": "Transcriptionist",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "300,000 - 550,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "voice-over-artist",
+      "careerTitle": "Voice-Over Artist",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "200,000 - 900,000 kr/year (gig-based, highly variable)",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "computational-linguist",
+      "careerTitle": "Computational Linguist",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "750,000 - 1,200,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "language-data-annotator",
+      "careerTitle": "Language Data Annotator",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "300,000 - 550,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "bilingual-customer-support-specialist",
+      "careerTitle": "Bilingual Customer Support Specialist",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "380,000 - 600,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
       "careerId": "police-officer",
       "careerTitle": "Police Officer",
       "styrkCode": "5412",
@@ -6899,10 +8609,10 @@
       "careerTitle": "Firefighter",
       "styrkCode": "5411",
       "styrkLabel": "Fire-fighters",
-      "catalogueSalary": "420,000 - 600,000 kr/year",
+      "catalogueSalary": "620,000 - 885,000 kr/year",
       "ssbAnnualMean": 752640,
-      "driftPct": 47.6,
-      "recommendation": "review"
+      "driftPct": 0,
+      "recommendation": "ok"
     },
     {
       "careerId": "judge",
@@ -6920,6 +8630,26 @@
       "styrkCode": "",
       "styrkLabel": "",
       "catalogueSalary": "650,000 - 1,100,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "magistrate",
+      "careerTitle": "Magistrate",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "700,000 - 1,100,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "tribunal-judge",
+      "careerTitle": "Tribunal Judge",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "850,000 - 1,400,000 kr/year",
       "ssbAnnualMean": null,
       "driftPct": null,
       "recommendation": "out-of-scope"
@@ -7035,16 +8765,6 @@
       "recommendation": "out-of-scope"
     },
     {
-      "careerId": "youth-worker",
-      "careerTitle": "Youth Worker",
-      "styrkCode": "",
-      "styrkLabel": "",
-      "catalogueSalary": "420,000 - 580,000 kr/year",
-      "ssbAnnualMean": null,
-      "driftPct": null,
-      "recommendation": "out-of-scope"
-    },
-    {
       "careerId": "civil-servant",
       "careerTitle": "Civil Servant",
       "styrkCode": "",
@@ -7080,26 +8800,6 @@
       "styrkCode": "",
       "styrkLabel": "",
       "catalogueSalary": "470,000 - 640,000 kr/year",
-      "ssbAnnualMean": null,
-      "driftPct": null,
-      "recommendation": "out-of-scope"
-    },
-    {
-      "careerId": "child-protection-officer",
-      "careerTitle": "Child Protection Officer",
-      "styrkCode": "",
-      "styrkLabel": "",
-      "catalogueSalary": "500,000 - 700,000 kr/year",
-      "ssbAnnualMean": null,
-      "driftPct": null,
-      "recommendation": "out-of-scope"
-    },
-    {
-      "careerId": "family-support-worker",
-      "careerTitle": "Family Support Worker",
-      "styrkCode": "",
-      "styrkLabel": "",
-      "catalogueSalary": "420,000 - 580,000 kr/year",
       "ssbAnnualMean": null,
       "driftPct": null,
       "recommendation": "out-of-scope"
@@ -7275,16 +8975,6 @@
       "recommendation": "out-of-scope"
     },
     {
-      "careerId": "probation-officer",
-      "careerTitle": "Probation Officer",
-      "styrkCode": "",
-      "styrkLabel": "",
-      "catalogueSalary": "490,000 - 660,000 kr/year",
-      "ssbAnnualMean": null,
-      "driftPct": null,
-      "recommendation": "out-of-scope"
-    },
-    {
       "careerId": "housing-support-officer",
       "careerTitle": "Housing Support Officer",
       "styrkCode": "",
@@ -7379,20 +9069,20 @@
       "careerTitle": "Military Officer",
       "styrkCode": "0110",
       "styrkLabel": "Commissioned armed forces officers",
-      "catalogueSalary": "550,000 - 950,000 kr/year",
+      "catalogueSalary": "825,000 - 1,420,000 kr/year",
       "ssbAnnualMean": 1121640,
-      "driftPct": 49.6,
-      "recommendation": "review"
+      "driftPct": -0.1,
+      "recommendation": "ok"
     },
     {
       "careerId": "soldier",
       "careerTitle": "Soldier",
       "styrkCode": "0210",
       "styrkLabel": "Non-commissioned armed forces officers",
-      "catalogueSalary": "380,000 - 550,000 kr/year",
+      "catalogueSalary": "835,000 - 1,210,000 kr/year",
       "ssbAnnualMean": 1023960,
-      "driftPct": 120.2,
-      "recommendation": "review"
+      "driftPct": 0.1,
+      "recommendation": "ok"
     },
     {
       "careerId": "infantry-officer",
@@ -7585,14 +9275,114 @@
       "recommendation": "out-of-scope"
     },
     {
+      "careerId": "cyberforsvaret-cyber-officer",
+      "careerTitle": "Cyber Officer (Cyberforsvaret)",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "650,000 - 1,100,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "cyberforsvaret-cyber-intel-analyst",
+      "careerTitle": "Cyber Intelligence Analyst (Cyberforsvaret)",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "600,000 - 1,000,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "forsvaret-cryptologist",
+      "careerTitle": "Military Cryptologist (Kryptolog)",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "600,000 - 1,000,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "forsvaret-signals-officer",
+      "careerTitle": "Signals Officer (Sambandsoffiser)",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "600,000 - 950,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "forsvaret-electronic-warfare-specialist",
+      "careerTitle": "Electronic Warfare Specialist (EK)",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "600,000 - 950,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "etjenesten-sigint-analyst",
+      "careerTitle": "Signals Intelligence Analyst (E-tjenesten)",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "600,000 - 1,000,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "forsvaret-space-operations-officer",
+      "careerTitle": "Space Operations Officer (Forsvaret)",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "650,000 - 1,100,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "forsvaret-combat-medic",
+      "careerTitle": "Combat Medic (Sanitetssoldat)",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "480,000 - 750,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "forsvaret-chaplain",
+      "careerTitle": "Military Chaplain (Feltprest)",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "600,000 - 900,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "forsvaret-military-lawyer",
+      "careerTitle": "Military Lawyer (Militærjurist)",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "700,000 - 1,200,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
       "careerId": "personal-trainer",
       "careerTitle": "Personal Trainer",
       "styrkCode": "3422",
       "styrkLabel": "Sports coaches, instructors and officials",
-      "catalogueSalary": "350,000 - 700,000 kr/year",
+      "catalogueSalary": "445,000 - 890,000 kr/year",
       "ssbAnnualMean": 668640,
-      "driftPct": 27.4,
-      "recommendation": "review"
+      "driftPct": 0.2,
+      "recommendation": "ok"
     },
     {
       "careerId": "sports-coach",
@@ -7605,31 +9395,11 @@
       "recommendation": "ok"
     },
     {
-      "careerId": "fitness-instructor",
-      "careerTitle": "Fitness Instructor",
-      "styrkCode": "",
-      "styrkLabel": "",
-      "catalogueSalary": "320,000 - 550,000 kr/year",
-      "ssbAnnualMean": null,
-      "driftPct": null,
-      "recommendation": "out-of-scope"
-    },
-    {
       "careerId": "sports-physiotherapist",
       "careerTitle": "Sports Physiotherapist",
       "styrkCode": "",
       "styrkLabel": "",
       "catalogueSalary": "550,000 - 850,000 kr/year",
-      "ssbAnnualMean": null,
-      "driftPct": null,
-      "recommendation": "out-of-scope"
-    },
-    {
-      "careerId": "nutritionist",
-      "careerTitle": "Nutritionist",
-      "styrkCode": "",
-      "styrkLabel": "",
-      "catalogueSalary": "450,000 - 750,000 kr/year",
       "ssbAnnualMean": null,
       "driftPct": null,
       "recommendation": "out-of-scope"
@@ -7995,34 +9765,314 @@
       "recommendation": "out-of-scope"
     },
     {
-      "careerId": "real-estate-agent",
-      "careerTitle": "Real Estate Agent",
-      "styrkCode": "3334",
-      "styrkLabel": "Real estate agents and property managers",
-      "catalogueSalary": "450,000 - 900,000 kr/year (commission-based, highly variable)",
-      "ssbAnnualMean": 1064160,
-      "driftPct": 57.7,
-      "recommendation": "review"
-    },
-    {
-      "careerId": "lettings-agent",
-      "careerTitle": "Lettings Agent",
+      "careerId": "extreme-sports-athlete",
+      "careerTitle": "Professional Extreme Sports Athlete",
       "styrkCode": "",
       "styrkLabel": "",
-      "catalogueSalary": "380,000 - 600,000 kr/year",
+      "catalogueSalary": "100,000 - 3,000,000+ kr/year (highly variable, sponsorships dominate)",
       "ssbAnnualMean": null,
       "driftPct": null,
       "recommendation": "out-of-scope"
     },
     {
-      "careerId": "property-manager",
-      "careerTitle": "Property Manager",
+      "careerId": "base-jumper",
+      "careerTitle": "BASE Jumper",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "0 - 800,000 kr/year (sponsorship + content-driven, highly variable)",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "wingsuit-pilot",
+      "careerTitle": "Wingsuit Pilot",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "0 - 1,000,000 kr/year (sponsorship and content-driven)",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "skydiving-instructor",
+      "careerTitle": "Skydiving Instructor",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "400,000 - 750,000 kr/year (seasonal, pay per jump)",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "paragliding-instructor",
+      "careerTitle": "Paragliding Instructor",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "350,000 - 700,000 kr/year (seasonal)",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "hang-gliding-instructor",
+      "careerTitle": "Hang Gliding Instructor",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "300,000 - 650,000 kr/year (seasonal)",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "big-wave-surf-instructor",
+      "careerTitle": "Surfing Instructor (Big Wave)",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "350,000 - 800,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "freestyle-snowboard-instructor",
+      "careerTitle": "Snowboard Instructor (Freestyle/Backcountry)",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "300,000 - 600,000 kr/year (seasonal)",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "freestyle-ski-instructor",
+      "careerTitle": "Ski Instructor (Freestyle/Backcountry)",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "300,000 - 600,000 kr/year (seasonal)",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "bmx-rider",
+      "careerTitle": "BMX Rider",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "0 - 1,500,000 kr/year (highly variable, top riders earn well via sponsorship)",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "skateboarder-pro",
+      "careerTitle": "Professional Skateboarder",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "0 - 2,500,000+ kr/year (sponsorship-dominated)",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "motocross-rider",
+      "careerTitle": "Motocross Rider",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "0 - 5,000,000+ kr/year (top riders earn millions)",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "rally-driver",
+      "careerTitle": "Rally Driver (Off-road)",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "0 - 5,000,000+ kr/year (team-supported, sponsorship-heavy)",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "rock-climbing-guide",
+      "careerTitle": "Rock Climbing Guide",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "400,000 - 800,000 kr/year (seasonal)",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "ice-climbing-guide",
+      "careerTitle": "Ice Climbing Guide",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "400,000 - 850,000 kr/year (seasonal)",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "mountaineering-guide",
+      "careerTitle": "Mountaineering Guide",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "450,000 - 900,000 kr/year (seasonal + expeditions)",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "parkour-athlete",
+      "careerTitle": "Parkour Athlete",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "150,000 - 900,000 kr/year (sponsorship + stunt + content)",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "stunt-performer",
+      "careerTitle": "Stunt Performer",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "400,000 - 1,500,000+ kr/year (gig-based)",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "adventure-sports-coach",
+      "careerTitle": "Adventure Sports Coach",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "450,000 - 800,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "extreme-sports-event-organizer",
+      "careerTitle": "Extreme Sports Event Organiser",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "450,000 - 900,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "expedition-leader",
+      "careerTitle": "Expedition Leader",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "450,000 - 900,000 kr/year (expedition-based)",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "outdoor-survival-instructor",
+      "careerTitle": "Outdoor Survival Instructor",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "350,000 - 700,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "whitewater-rafting-guide",
+      "careerTitle": "Whitewater Rafting Guide",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "300,000 - 600,000 kr/year (seasonal)",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "scuba-diving-instructor",
+      "careerTitle": "Scuba Diving Instructor",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "300,000 - 700,000 kr/year (often seasonal + resort-based)",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "freediving-instructor",
+      "careerTitle": "Freediving Instructor",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "300,000 - 650,000 kr/year (seasonal)",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "kitesurfing-instructor",
+      "careerTitle": "Kitesurfing Instructor",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "300,000 - 600,000 kr/year (seasonal)",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "windsurfing-instructor",
+      "careerTitle": "Windsurfing Instructor",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "280,000 - 550,000 kr/year (seasonal)",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "extreme-sports-photographer",
+      "careerTitle": "Extreme Sports Photographer",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "350,000 - 900,000 kr/year (freelance-heavy)",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "extreme-sports-videographer",
+      "careerTitle": "Extreme Sports Videographer",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "400,000 - 1,000,000 kr/year (freelance-heavy)",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "extreme-sports-safety-coordinator",
+      "careerTitle": "Safety Coordinator (Extreme Sports)",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "500,000 - 950,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "real-estate-agent",
+      "careerTitle": "Real Estate Agent",
       "styrkCode": "3334",
       "styrkLabel": "Real estate agents and property managers",
-      "catalogueSalary": "500,000 - 750,000 kr/year",
+      "catalogueSalary": "710,000 - 1,420,000 kr/year",
       "ssbAnnualMean": 1064160,
-      "driftPct": 70.3,
-      "recommendation": "review"
+      "driftPct": -0.1,
+      "recommendation": "ok"
     },
     {
       "careerId": "property-valuer",
@@ -8030,16 +10080,6 @@
       "styrkCode": "",
       "styrkLabel": "",
       "catalogueSalary": "550,000 - 850,000 kr/year",
-      "ssbAnnualMean": null,
-      "driftPct": null,
-      "recommendation": "out-of-scope"
-    },
-    {
-      "careerId": "mortgage-advisor",
-      "careerTitle": "Mortgage Advisor",
-      "styrkCode": "",
-      "styrkLabel": "",
-      "catalogueSalary": "550,000 - 900,000 kr/year",
       "ssbAnnualMean": null,
       "driftPct": null,
       "recommendation": "out-of-scope"
@@ -8135,34 +10175,14 @@
       "recommendation": "out-of-scope"
     },
     {
-      "careerId": "carpenter",
-      "careerTitle": "Carpenter",
-      "styrkCode": "7115",
-      "styrkLabel": "Carpenters and joiners",
-      "catalogueSalary": "450,000 - 650,000 kr/year",
-      "ssbAnnualMean": 576600,
-      "driftPct": 4.8,
-      "recommendation": "ok"
-    },
-    {
-      "careerId": "electrician",
-      "careerTitle": "Electrician",
-      "styrkCode": "7411",
-      "styrkLabel": "Building and related electricians",
-      "catalogueSalary": "500,000 - 750,000 kr/year",
-      "ssbAnnualMean": 650760,
-      "driftPct": 4.1,
-      "recommendation": "ok"
-    },
-    {
-      "careerId": "plumber",
-      "careerTitle": "Plumber",
-      "styrkCode": "7126",
-      "styrkLabel": "Plumbers and pipefitters",
-      "catalogueSalary": "480,000 - 700,000 kr/year",
-      "ssbAnnualMean": 636360,
-      "driftPct": 7.9,
-      "recommendation": "ok"
+      "careerId": "construction-project-manager",
+      "careerTitle": "Construction Project Manager",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "750,000 - 1,300,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
     },
     {
       "careerId": "bricklayer",
@@ -8210,6 +10230,156 @@
       "styrkCode": "",
       "styrkLabel": "",
       "catalogueSalary": "650,000 - 950,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "ai-engineer",
+      "careerTitle": "AI Engineer",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "750,000 - 1,200,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "machine-learning-engineer",
+      "careerTitle": "Machine Learning Engineer",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "750,000 - 1,150,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "data-scientist",
+      "careerTitle": "Data Scientist",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "700,000 - 1,100,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "ai-research-scientist",
+      "careerTitle": "AI Research Scientist",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "900,000 - 1,600,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "nlp-engineer",
+      "careerTitle": "NLP Engineer",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "750,000 - 1,200,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "computer-vision-engineer",
+      "careerTitle": "Computer Vision Engineer",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "750,000 - 1,200,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "mlops-engineer",
+      "careerTitle": "MLOps Engineer",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "750,000 - 1,200,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "ai-solutions-architect",
+      "careerTitle": "AI Solutions Architect",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "900,000 - 1,500,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "prompt-engineer",
+      "careerTitle": "Prompt Engineer",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "650,000 - 1,100,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "generative-ai-engineer",
+      "careerTitle": "Generative AI Engineer",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "750,000 - 1,250,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "robotics-engineer",
+      "careerTitle": "Robotics Engineer",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "700,000 - 1,100,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "ai-product-manager",
+      "careerTitle": "AI Product Manager",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "850,000 - 1,400,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "data-engineer",
+      "careerTitle": "Data Engineer",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "700,000 - 1,100,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "ai-ethics-specialist",
+      "careerTitle": "AI Ethics Specialist",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "700,000 - 1,200,000 kr/year",
+      "ssbAnnualMean": null,
+      "driftPct": null,
+      "recommendation": "out-of-scope"
+    },
+    {
+      "careerId": "ai-consultant",
+      "careerTitle": "AI Consultant",
+      "styrkCode": "",
+      "styrkLabel": "",
+      "catalogueSalary": "850,000 - 1,500,000 kr/year",
       "ssbAnnualMean": null,
       "driftPct": null,
       "recommendation": "out-of-scope"

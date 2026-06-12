@@ -229,7 +229,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       keySkills: ["medical knowledge", "communication", "empathy", "decision-making", "stress management"],
       dailyTasks: ["Examine patients", "Diagnose conditions", "Prescribe treatments", "Perform procedures", "Document care"],
       growthOutlook: "high",
-      lastVerifiedAt: "2026-04-14",
+      lastVerifiedAt: "2026-06-12",
       sourceUrl: "https://www.ssb.no/en/statbank/table/11418",
     },
     {
@@ -242,7 +242,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       keySkills: ["patient care", "medical knowledge", "communication", "empathy", "attention to detail"],
       dailyTasks: ["Monitor patients", "Administer medications", "Assist with procedures", "Document care", "Support families"],
       growthOutlook: "high",
-      lastVerifiedAt: "2026-04-14",
+      lastVerifiedAt: "2026-06-12",
       sourceUrl: "https://www.ssb.no/en/statbank/table/11418",
     },
     {
@@ -267,7 +267,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       keySkills: ["precision", "medical knowledge", "patient communication", "manual dexterity", "attention to detail"],
       dailyTasks: ["Examine teeth", "Perform fillings and extractions", "Take X-rays", "Advise on dental hygiene"],
       growthOutlook: "stable",
-      lastVerifiedAt: "2026-04-14",
+      lastVerifiedAt: "2026-06-12",
       sourceUrl: "https://www.ssb.no/en/statbank/table/11418",
     },
     {
@@ -280,7 +280,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       keySkills: ["pharmaceutical knowledge", "attention to detail", "communication", "problem-solving", "ethics"],
       dailyTasks: ["Dispense prescriptions", "Advise patients", "Check drug interactions", "Manage inventory"],
       growthOutlook: "stable",
-      lastVerifiedAt: "2026-04-14",
+      lastVerifiedAt: "2026-06-12",
       sourceUrl: "https://www.ssb.no/en/statbank/table/11418",
     },
     {
@@ -293,7 +293,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       keySkills: ["anatomy knowledge", "manual therapy", "communication", "patience", "physical fitness"],
       dailyTasks: ["Assess patients", "Create treatment plans", "Guide exercises", "Track progress", "Provide manual therapy"],
       growthOutlook: "high",
-      lastVerifiedAt: "2026-04-14",
+      lastVerifiedAt: "2026-06-12",
       sourceUrl: "https://www.ssb.no/en/statbank/table/11418",
     },
     {
@@ -306,7 +306,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       keySkills: ["empathy", "active listening", "analytical thinking", "communication", "ethics"],
       dailyTasks: ["Conduct therapy sessions", "Assess patients", "Develop treatment plans", "Document progress"],
       growthOutlook: "high",
-      lastVerifiedAt: "2026-04-14",
+      lastVerifiedAt: "2026-06-12",
       sourceUrl: "https://www.ssb.no/en/statbank/table/11418",
     },
     {
@@ -342,7 +342,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       keySkills: ["animal medicine", "surgical skills", "communication", "empathy", "diagnostic reasoning"],
       dailyTasks: ["Examine animals", "Perform surgeries", "Prescribe treatments", "Advise owners", "Handle emergencies"],
       growthOutlook: "stable",
-      lastVerifiedAt: "2026-04-14",
+      lastVerifiedAt: "2026-06-12",
       sourceUrl: "https://www.ssb.no/en/statbank/table/11418",
     },
     {
@@ -367,7 +367,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       keySkills: ["dental procedures", "patient education", "attention to detail", "communication", "manual dexterity"],
       dailyTasks: ["Clean teeth", "Take X-rays", "Apply fluoride", "Educate patients", "Document treatments"],
       growthOutlook: "stable",
-      lastVerifiedAt: "2026-04-14",
+      lastVerifiedAt: "2026-06-12",
       sourceUrl: "https://www.ssb.no/en/statbank/table/11418",
     },
     {
@@ -601,7 +601,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       keySkills: ["clinical skill", "empathy", "calm under pressure", "communication", "patient advocacy"],
       dailyTasks: ["Monitor pregnancies", "Support labour and birth", "Provide postnatal care", "Educate parents", "Coordinate with doctors"],
       growthOutlook: "high",
-      lastVerifiedAt: "2026-04-14",
+      lastVerifiedAt: "2026-06-12",
       sourceUrl: "https://www.ssb.no/en/statbank/table/11418",
     },
     {
@@ -923,26 +923,26 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     //    are intentionally left unverified (no lastVerifiedAt) until run
     //    through the salary-freshness pipeline. ──
     // Tier 1: medical (non-surgical) physician specialties
-    { id: "general-practitioner", title: "General Practitioner (GP)", emoji: "🩺", description: "The family doctor (fastlege) — the first point of contact for most health concerns, treating everything from infections to chronic conditions and referring on when needed.", avgSalary: "850,000 - 1,500,000 kr/year", lastVerifiedAt: "2026-06-10", sourceUrl: "https://www.ssb.no/en/statbank/table/11418", educationPath: "Medical degree (6 years) + General Practice (allmennmedisin) specialisation (5 years)", keySkills: ["broad clinical knowledge", "communication", "empathy", "decision-making", "continuity of care"], dailyTasks: ["See patients across all ages", "Diagnose and treat common illness", "Manage chronic conditions", "Refer to specialists", "Coordinate ongoing care"], growthOutlook: "high", workSetting: "hands-on", peopleIntensity: "high", entryRoute: "profesjonsstudium", gradeBand: { floor: 5, ceiling: 6, competitiveness: "highly-competitive" } },
-    { id: "pediatrician", title: "Paediatrician", emoji: "🧸", description: "A doctor specialising in the health of babies, children, and teenagers — from routine development to complex childhood illness.", avgSalary: "1,000,000 - 1,800,000 kr/year", lastVerifiedAt: "2026-06-10", sourceUrl: "https://www.ssb.no/en/statbank/table/11418", educationPath: "Medical degree (6 years) + Paediatrics specialisation (5 years)", keySkills: ["child health", "diagnosis", "communication with families", "patience", "empathy"], dailyTasks: ["Examine children", "Diagnose childhood conditions", "Reassure and brief parents", "Manage development concerns", "Coordinate with hospital teams"], growthOutlook: "high", workSetting: "hands-on", peopleIntensity: "high", entryRoute: "profesjonsstudium", gradeBand: { floor: 5, ceiling: 6, competitiveness: "highly-competitive" } },
-    { id: "emergency-medicine-physician", title: "Emergency Medicine Physician", emoji: "🚑", description: "Assess and stabilise patients in the emergency department — making fast decisions across the full range of acute illness and injury.", avgSalary: "1,000,000 - 1,800,000 kr/year", lastVerifiedAt: "2026-06-10", sourceUrl: "https://www.ssb.no/en/statbank/table/11418", educationPath: "Medical degree (6 years) + Emergency Medicine (akutt- og mottaksmedisin) specialisation (5-6 years)", keySkills: ["rapid assessment", "decision-making under pressure", "resuscitation", "teamwork", "calm under stress"], dailyTasks: ["Triage and assess arrivals", "Stabilise critical patients", "Order and interpret tests", "Lead resuscitations", "Hand over to specialists"], growthOutlook: "high", workSetting: "hands-on", peopleIntensity: "high", entryRoute: "profesjonsstudium", gradeBand: { floor: 5, ceiling: 6, competitiveness: "highly-competitive" } },
-    { id: "cardiologist", title: "Cardiologist", emoji: "🫀", description: "A doctor specialising in the heart and circulation — diagnosing and treating conditions like heart disease, rhythm problems, and heart failure.", avgSalary: "1,050,000 - 1,900,000 kr/year", lastVerifiedAt: "2026-06-10", sourceUrl: "https://www.ssb.no/en/statbank/table/11418", educationPath: "Medical degree (6 years) + Cardiology specialisation (6 years)", keySkills: ["cardiac diagnosis", "imaging interpretation", "procedural skill", "communication", "clinical judgement"], dailyTasks: ["Assess heart patients", "Interpret ECGs and scans", "Perform procedures like angiograms", "Manage long-term treatment", "Consult with surgeons"], growthOutlook: "high", workSetting: "hands-on", peopleIntensity: "high", entryRoute: "profesjonsstudium", gradeBand: { floor: 5, ceiling: 6, competitiveness: "highly-competitive" } },
-    { id: "neurologist", title: "Neurologist", emoji: "🧠", description: "A doctor specialising in the brain, spinal cord, and nerves — diagnosing and treating conditions like epilepsy, stroke, MS, and migraine.", avgSalary: "1,000,000 - 1,800,000 kr/year", lastVerifiedAt: "2026-06-10", sourceUrl: "https://www.ssb.no/en/statbank/table/11418", educationPath: "Medical degree (6 years) + Neurology specialisation (5-6 years)", keySkills: ["neurological examination", "diagnosis", "imaging interpretation", "problem-solving", "communication"], dailyTasks: ["Examine the nervous system", "Diagnose neurological disease", "Interpret brain scans", "Manage long-term conditions", "Coordinate with neurosurgeons"], growthOutlook: "high", workSetting: "hands-on", peopleIntensity: "high", entryRoute: "profesjonsstudium", gradeBand: { floor: 5, ceiling: 6, competitiveness: "highly-competitive" } },
-    { id: "obstetrician-gynaecologist", title: "Obstetrician & Gynaecologist", emoji: "🤰", description: "A doctor specialising in pregnancy, childbirth, and women's reproductive health — combining routine care with high-stakes delivery-room decisions.", avgSalary: "1,000,000 - 1,800,000 kr/year", lastVerifiedAt: "2026-06-10", sourceUrl: "https://www.ssb.no/en/statbank/table/11418", educationPath: "Medical degree (6 years) + Obstetrics & Gynaecology specialisation (6 years)", keySkills: ["obstetric care", "diagnosis", "procedural skill", "calm under pressure", "empathy"], dailyTasks: ["Care for pregnant patients", "Deliver babies", "Run gynaecology clinics", "Perform procedures", "Handle obstetric emergencies"], growthOutlook: "high", workSetting: "hands-on", peopleIntensity: "high", entryRoute: "profesjonsstudium", gradeBand: { floor: 5, ceiling: 6, competitiveness: "highly-competitive" } },
+    { id: "general-practitioner", title: "General Practitioner (GP)", emoji: "🩺", description: "The family doctor (fastlege) — the first point of contact for most health concerns, treating everything from infections to chronic conditions and referring on when needed.", avgSalary: "850,000 - 1,500,000 kr/year", lastVerifiedAt: "2026-06-12", sourceUrl: "https://www.ssb.no/en/statbank/table/11418", educationPath: "Medical degree (6 years) + General Practice (allmennmedisin) specialisation (5 years)", keySkills: ["broad clinical knowledge", "communication", "empathy", "decision-making", "continuity of care"], dailyTasks: ["See patients across all ages", "Diagnose and treat common illness", "Manage chronic conditions", "Refer to specialists", "Coordinate ongoing care"], growthOutlook: "high", workSetting: "hands-on", peopleIntensity: "high", entryRoute: "profesjonsstudium", gradeBand: { floor: 5, ceiling: 6, competitiveness: "highly-competitive" } },
+    { id: "pediatrician", title: "Paediatrician", emoji: "🧸", description: "A doctor specialising in the health of babies, children, and teenagers — from routine development to complex childhood illness.", avgSalary: "1,000,000 - 1,800,000 kr/year", lastVerifiedAt: "2026-06-12", sourceUrl: "https://www.ssb.no/en/statbank/table/11418", educationPath: "Medical degree (6 years) + Paediatrics specialisation (5 years)", keySkills: ["child health", "diagnosis", "communication with families", "patience", "empathy"], dailyTasks: ["Examine children", "Diagnose childhood conditions", "Reassure and brief parents", "Manage development concerns", "Coordinate with hospital teams"], growthOutlook: "high", workSetting: "hands-on", peopleIntensity: "high", entryRoute: "profesjonsstudium", gradeBand: { floor: 5, ceiling: 6, competitiveness: "highly-competitive" } },
+    { id: "emergency-medicine-physician", title: "Emergency Medicine Physician", emoji: "🚑", description: "Assess and stabilise patients in the emergency department — making fast decisions across the full range of acute illness and injury.", avgSalary: "1,000,000 - 1,800,000 kr/year", lastVerifiedAt: "2026-06-12", sourceUrl: "https://www.ssb.no/en/statbank/table/11418", educationPath: "Medical degree (6 years) + Emergency Medicine (akutt- og mottaksmedisin) specialisation (5-6 years)", keySkills: ["rapid assessment", "decision-making under pressure", "resuscitation", "teamwork", "calm under stress"], dailyTasks: ["Triage and assess arrivals", "Stabilise critical patients", "Order and interpret tests", "Lead resuscitations", "Hand over to specialists"], growthOutlook: "high", workSetting: "hands-on", peopleIntensity: "high", entryRoute: "profesjonsstudium", gradeBand: { floor: 5, ceiling: 6, competitiveness: "highly-competitive" } },
+    { id: "cardiologist", title: "Cardiologist", emoji: "🫀", description: "A doctor specialising in the heart and circulation — diagnosing and treating conditions like heart disease, rhythm problems, and heart failure.", avgSalary: "1,050,000 - 1,900,000 kr/year", lastVerifiedAt: "2026-06-12", sourceUrl: "https://www.ssb.no/en/statbank/table/11418", educationPath: "Medical degree (6 years) + Cardiology specialisation (6 years)", keySkills: ["cardiac diagnosis", "imaging interpretation", "procedural skill", "communication", "clinical judgement"], dailyTasks: ["Assess heart patients", "Interpret ECGs and scans", "Perform procedures like angiograms", "Manage long-term treatment", "Consult with surgeons"], growthOutlook: "high", workSetting: "hands-on", peopleIntensity: "high", entryRoute: "profesjonsstudium", gradeBand: { floor: 5, ceiling: 6, competitiveness: "highly-competitive" } },
+    { id: "neurologist", title: "Neurologist", emoji: "🧠", description: "A doctor specialising in the brain, spinal cord, and nerves — diagnosing and treating conditions like epilepsy, stroke, MS, and migraine.", avgSalary: "1,000,000 - 1,800,000 kr/year", lastVerifiedAt: "2026-06-12", sourceUrl: "https://www.ssb.no/en/statbank/table/11418", educationPath: "Medical degree (6 years) + Neurology specialisation (5-6 years)", keySkills: ["neurological examination", "diagnosis", "imaging interpretation", "problem-solving", "communication"], dailyTasks: ["Examine the nervous system", "Diagnose neurological disease", "Interpret brain scans", "Manage long-term conditions", "Coordinate with neurosurgeons"], growthOutlook: "high", workSetting: "hands-on", peopleIntensity: "high", entryRoute: "profesjonsstudium", gradeBand: { floor: 5, ceiling: 6, competitiveness: "highly-competitive" } },
+    { id: "obstetrician-gynaecologist", title: "Obstetrician & Gynaecologist", emoji: "🤰", description: "A doctor specialising in pregnancy, childbirth, and women's reproductive health — combining routine care with high-stakes delivery-room decisions.", avgSalary: "1,000,000 - 1,800,000 kr/year", lastVerifiedAt: "2026-06-12", sourceUrl: "https://www.ssb.no/en/statbank/table/11418", educationPath: "Medical degree (6 years) + Obstetrics & Gynaecology specialisation (6 years)", keySkills: ["obstetric care", "diagnosis", "procedural skill", "calm under pressure", "empathy"], dailyTasks: ["Care for pregnant patients", "Deliver babies", "Run gynaecology clinics", "Perform procedures", "Handle obstetric emergencies"], growthOutlook: "high", workSetting: "hands-on", peopleIntensity: "high", entryRoute: "profesjonsstudium", gradeBand: { floor: 5, ceiling: 6, competitiveness: "highly-competitive" } },
     // Tier 2: mental health & counselling
     { id: "psychotherapist", title: "Psychotherapist", emoji: "🛋️", description: "Help people work through mental and emotional difficulties using structured talking therapies — from anxiety and depression to trauma and relationships.", avgSalary: "600,000 - 950,000 kr/year", educationPath: "Master's in Psychology or clinical health training + accredited psychotherapy training", keySkills: ["active listening", "therapeutic techniques", "empathy", "patience", "self-awareness"], dailyTasks: ["Hold therapy sessions", "Build treatment plans", "Track client progress", "Keep confidential notes", "Refer when needed"], growthOutlook: "high", workSetting: "desk", peopleIntensity: "high", entryRoute: "master", gradeBand: { floor: 4, ceiling: 5, competitiveness: "competitive" } },
-    { id: "mental-health-counsellor", title: "Mental Health Counsellor", emoji: "💬", description: "Support people facing emotional, social, or psychological challenges through one-to-one and group counselling — often a more accessible route into mental health work.", avgSalary: "480,000 - 720,000 kr/year", lastVerifiedAt: "2026-06-10", sourceUrl: "https://www.ssb.no/en/statbank/table/11418", educationPath: "Bachelor's in counselling, social work, or psychology + counselling training", keySkills: ["active listening", "empathy", "communication", "professional boundaries", "resilience"], dailyTasks: ["Meet clients", "Listen and guide", "Develop coping strategies", "Signpost to services", "Document sessions"], growthOutlook: "high", workSetting: "desk", peopleIntensity: "high", entryRoute: "bachelor", gradeBand: { floor: 3, ceiling: 4, competitiveness: "accessible" } },
+    { id: "mental-health-counsellor", title: "Mental Health Counsellor", emoji: "💬", description: "Support people facing emotional, social, or psychological challenges through one-to-one and group counselling — often a more accessible route into mental health work.", avgSalary: "480,000 - 720,000 kr/year", lastVerifiedAt: "2026-06-12", sourceUrl: "https://www.ssb.no/en/statbank/table/11418", educationPath: "Bachelor's in counselling, social work, or psychology + counselling training", keySkills: ["active listening", "empathy", "communication", "professional boundaries", "resilience"], dailyTasks: ["Meet clients", "Listen and guide", "Develop coping strategies", "Signpost to services", "Document sessions"], growthOutlook: "high", workSetting: "desk", peopleIntensity: "high", entryRoute: "bachelor", gradeBand: { floor: 3, ceiling: 4, competitiveness: "accessible" } },
     { id: "genetic-counsellor", title: "Genetic Counsellor", emoji: "🧬", description: "Help individuals and families understand inherited conditions and genetic test results — guiding big, sensitive decisions with clarity and care.", avgSalary: "600,000 - 880,000 kr/year", educationPath: "Master's in Genetic Counselling (after a bachelor's in a biological or health science)", keySkills: ["genetics knowledge", "counselling", "communication", "empathy", "analytical thinking"], dailyTasks: ["Take family histories", "Explain genetic risk", "Interpret test results", "Support decision-making", "Coordinate with clinicians"], growthOutlook: "high", peopleIntensity: "high", entryRoute: "master", gradeBand: { floor: 4, ceiling: 5, competitiveness: "competitive" } },
     { id: "art-therapist", title: "Art Therapist", emoji: "🎨", description: "Use creative making — drawing, painting, sculpture — as a way to help people express and process feelings that are hard to put into words.", avgSalary: "480,000 - 700,000 kr/year", educationPath: "Master's in Art Therapy (after a relevant bachelor's in art, health, or psychology)", keySkills: ["creativity", "empathy", "psychology knowledge", "communication", "patience"], dailyTasks: ["Plan creative sessions", "Support clients through art", "Observe and interpret", "Adapt to needs", "Document progress"], growthOutlook: "medium", workSetting: "creative", peopleIntensity: "high", entryRoute: "master", gradeBand: { floor: 4, ceiling: 5, competitiveness: "competitive" } },
     // Tier 3: accessible allied health
-    { id: "audiologist", title: "Audiologist", emoji: "👂", description: "Test hearing and balance, and fit hearing aids — helping people of all ages hear and stay connected to the world around them.", avgSalary: "540,000 - 790,000 kr/year", lastVerifiedAt: "2026-06-10", sourceUrl: "https://www.ssb.no/en/statbank/table/11418", educationPath: "Bachelor's in Audiology (audiograf, 3 years)", keySkills: ["hearing assessment", "technical fitting", "patience", "communication", "precision"], dailyTasks: ["Test hearing", "Diagnose hearing loss", "Fit and tune hearing aids", "Counsel patients", "Follow up on progress"], growthOutlook: "high", workSetting: "hands-on", peopleIntensity: "high", entryRoute: "bachelor", gradeBand: { floor: 4, ceiling: 5, competitiveness: "competitive" } },
+    { id: "audiologist", title: "Audiologist", emoji: "👂", description: "Test hearing and balance, and fit hearing aids — helping people of all ages hear and stay connected to the world around them.", avgSalary: "650,000 - 955,000 kr/year", lastVerifiedAt: "2026-06-12", sourceUrl: "https://www.ssb.no/en/statbank/table/11418", educationPath: "Bachelor's in Audiology (audiograf, 3 years)", keySkills: ["hearing assessment", "technical fitting", "patience", "communication", "precision"], dailyTasks: ["Test hearing", "Diagnose hearing loss", "Fit and tune hearing aids", "Counsel patients", "Follow up on progress"], growthOutlook: "high", workSetting: "hands-on", peopleIntensity: "high", entryRoute: "bachelor", gradeBand: { floor: 4, ceiling: 5, competitiveness: "competitive" } },
     { id: "respiratory-therapist", title: "Respiratory Therapist", emoji: "🫁", description: "Help patients who struggle to breathe — managing ventilators, oxygen, and therapies for conditions from asthma to critical illness.", avgSalary: "520,000 - 760,000 kr/year", educationPath: "Bachelor's in nursing or respiratory care + specialist training", keySkills: ["respiratory care", "equipment handling", "patient monitoring", "calm under pressure", "teamwork"], dailyTasks: ["Assess breathing", "Manage ventilators and oxygen", "Deliver breathing therapies", "Monitor critical patients", "Support emergencies"], growthOutlook: "high", workSetting: "hands-on", peopleIntensity: "high", entryRoute: "bachelor", gradeBand: { floor: 4, ceiling: 5, competitiveness: "competitive" } },
     { id: "medical-assistant", title: "Medical Assistant", emoji: "🏥", description: "Keep a clinic running by combining patient-facing and admin tasks — taking vitals, prepping rooms, and supporting doctors and nurses. An accessible first step into healthcare.", avgSalary: "450,000 - 545,000 kr/year", lastVerifiedAt: "2026-06-10", sourceUrl: "https://www.ssb.no/en/statbank/table/11418", educationPath: "Vocational upper-secondary (helsesekretær / health-service worker) — no university required", keySkills: ["patient care", "organisation", "communication", "basic clinical skills", "reliability"], dailyTasks: ["Take vital signs", "Prepare patients and rooms", "Support procedures", "Handle records", "Book appointments"], growthOutlook: "high", entryLevel: true, workSetting: "hands-on", peopleIntensity: "high", educationRoute: "vocational", entryRoute: "fagbrev", gradeBand: { floor: 3, ceiling: 4, competitiveness: "accessible" } },
-    { id: "phlebotomist", title: "Phlebotomist", emoji: "🩸", description: "Draw blood samples for testing, donation, and research — a focused, hands-on role that's one of the most accessible ways into a hospital or lab.", avgSalary: "400,000 - 540,000 kr/year", educationPath: "Short specialist course or on-the-job training (often after a health-service vocational qualification)", keySkills: ["careful technique", "steady hands", "reassuring manner", "attention to detail", "hygiene"], dailyTasks: ["Take blood samples", "Label and log samples", "Reassure nervous patients", "Keep equipment sterile", "Follow safety rules"], growthOutlook: "medium", entryLevel: true, workSetting: "hands-on", peopleIntensity: "high", educationRoute: "on-the-job", entryRoute: "direct-entry", gradeBand: { floor: 2, ceiling: 4, competitiveness: "accessible" } },
-    { id: "dental-technician", title: "Dental Technician", emoji: "🦷", description: "Make crowns, bridges, dentures, and braces in the lab — a precise, hands-on craft behind the scenes of dentistry.", avgSalary: "560,000 - 770,000 kr/year", lastVerifiedAt: "2026-06-10", sourceUrl: "https://www.ssb.no/en/statbank/table/11418", educationPath: "Vocational training + technical college (fagskole) in dental technology", keySkills: ["fine manual skill", "precision", "materials knowledge", "patience", "attention to detail"], dailyTasks: ["Make dental appliances", "Work from dentists' moulds", "Shape and finish materials", "Match colour and fit", "Quality-check work"], growthOutlook: "medium", entryLevel: true, workSetting: "hands-on", peopleIntensity: "low", educationRoute: "vocational", entryRoute: "fagskole", gradeBand: { floor: 3, ceiling: 4, competitiveness: "accessible" } },
+    { id: "phlebotomist", title: "Phlebotomist", emoji: "🩸", description: "Draw blood samples for testing, donation, and research — a focused, hands-on role that's one of the most accessible ways into a hospital or lab.", avgSalary: "580,000 - 785,000 kr/year", educationPath: "Short specialist course or on-the-job training (often after a health-service vocational qualification)", keySkills: ["careful technique", "steady hands", "reassuring manner", "attention to detail", "hygiene"], dailyTasks: ["Take blood samples", "Label and log samples", "Reassure nervous patients", "Keep equipment sterile", "Follow safety rules"], growthOutlook: "medium", entryLevel: true, workSetting: "hands-on", peopleIntensity: "high", educationRoute: "on-the-job", entryRoute: "direct-entry", gradeBand: { floor: 2, ceiling: 4, competitiveness: "accessible" } , lastVerifiedAt: "2026-06-12" , sourceUrl: "https://www.ssb.no/en/statbank/table/11418" },
+    { id: "dental-technician", title: "Dental Technician", emoji: "🦷", description: "Make crowns, bridges, dentures, and braces in the lab — a precise, hands-on craft behind the scenes of dentistry.", avgSalary: "560,000 - 770,000 kr/year", lastVerifiedAt: "2026-06-12", sourceUrl: "https://www.ssb.no/en/statbank/table/11418", educationPath: "Vocational training + technical college (fagskole) in dental technology", keySkills: ["fine manual skill", "precision", "materials knowledge", "patience", "attention to detail"], dailyTasks: ["Make dental appliances", "Work from dentists' moulds", "Shape and finish materials", "Match colour and fit", "Quality-check work"], growthOutlook: "medium", entryLevel: true, workSetting: "hands-on", peopleIntensity: "low", educationRoute: "vocational", entryRoute: "fagskole", gradeBand: { floor: 3, ceiling: 4, competitiveness: "accessible" } },
     { id: "occupational-therapy-assistant", title: "Occupational Therapy Assistant", emoji: "🧩", description: "Support occupational therapists in helping people regain everyday skills after illness or injury — a practical, people-facing route into rehab without a full degree.", avgSalary: "440,000 - 620,000 kr/year", educationPath: "Vocational health qualification (helsefagarbeider) + on-the-job training", keySkills: ["patient support", "practical problem-solving", "empathy", "communication", "encouragement"], dailyTasks: ["Help deliver therapy plans", "Support daily-living practice", "Prepare equipment", "Track progress", "Encourage clients"], growthOutlook: "high", entryLevel: true, workSetting: "hands-on", peopleIntensity: "high", educationRoute: "vocational", entryRoute: "fagbrev", gradeBand: { floor: 3, ceiling: 4, competitiveness: "accessible" } },
     // Tier 4: future-facing / health-tech crossover
-    { id: "biomedical-engineer", title: "Biomedical Engineer", emoji: "🦾", description: "Design the technology that saves lives — from MRI scanners and pacemakers to prosthetics and surgical robots, blending engineering with medicine.", avgSalary: "620,000 - 980,000 kr/year", lastVerifiedAt: "2026-06-10", sourceUrl: "https://www.ssb.no/en/statbank/table/11418", educationPath: "Master's in Biomedical Engineering (5 years)", keySkills: ["engineering", "problem-solving", "biology knowledge", "maths", "creativity"], dailyTasks: ["Design medical devices", "Test and refine prototypes", "Work with clinicians", "Ensure safety standards", "Solve technical problems"], growthOutlook: "high", workSetting: "mixed", peopleIntensity: "medium", entryRoute: "master", gradeBand: { floor: 4, ceiling: 5, competitiveness: "competitive" } },
+    { id: "biomedical-engineer", title: "Biomedical Engineer", emoji: "🦾", description: "Design the technology that saves lives — from MRI scanners and pacemakers to prosthetics and surgical robots, blending engineering with medicine.", avgSalary: "770,000 - 1,215,000 kr/year", lastVerifiedAt: "2026-06-12", sourceUrl: "https://www.ssb.no/en/statbank/table/11418", educationPath: "Master's in Biomedical Engineering (5 years)", keySkills: ["engineering", "problem-solving", "biology knowledge", "maths", "creativity"], dailyTasks: ["Design medical devices", "Test and refine prototypes", "Work with clinicians", "Ensure safety standards", "Solve technical problems"], growthOutlook: "high", workSetting: "mixed", peopleIntensity: "medium", entryRoute: "master", gradeBand: { floor: 4, ceiling: 5, competitiveness: "competitive" } },
     { id: "health-informatics-specialist", title: "Health Informatics Specialist", emoji: "💻", description: "Sit at the meeting point of healthcare and data — designing the systems that manage patient records, support decisions, and keep hospitals running.", avgSalary: "620,000 - 980,000 kr/year", educationPath: "Bachelor's or Master's in Health Informatics, IT, or a health field + data training", keySkills: ["data systems", "healthcare knowledge", "analytical thinking", "problem-solving", "communication"], dailyTasks: ["Manage health data systems", "Improve clinical software", "Analyse health information", "Train staff", "Protect data privacy"], growthOutlook: "high", workSetting: "desk", peopleIntensity: "medium", entryRoute: "master", gradeBand: { floor: 4, ceiling: 5, competitiveness: "competitive" } },
     // Tier 5: community & support
     { id: "health-educator", title: "Health Educator", emoji: "📣", description: "Help communities live healthier lives — running programmes on everything from mental wellbeing to nutrition, often working where it's needed most. (Also called a community health worker.)", avgSalary: "480,000 - 720,000 kr/year", educationPath: "Bachelor's in Public Health or Health Promotion (3 years)", keySkills: ["communication", "teaching", "empathy", "organisation", "cultural awareness"], dailyTasks: ["Run health programmes", "Create educational material", "Lead workshops", "Connect people to services", "Measure impact"], growthOutlook: "medium", peopleIntensity: "high", entryRoute: "bachelor", gradeBand: { floor: 3, ceiling: 4, competitiveness: "accessible" } },
@@ -980,7 +980,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       keySkills: ["communication", "patience", "creativity", "organisation", "classroom management"],
       dailyTasks: ["Plan lessons", "Teach classes", "Grade assignments", "Meet with parents", "Support student development"],
       growthOutlook: "stable",
-      lastVerifiedAt: "2026-04-14",
+      lastVerifiedAt: "2026-06-12",
       sourceUrl: "https://www.ssb.no/en/statbank/table/11418",
     },
     {
@@ -993,7 +993,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       keySkills: ["subject expertise", "communication", "mentoring", "assessment", "technology use"],
       dailyTasks: ["Teach specialised subjects", "Prepare students for exams", "Advise on career paths", "Grade work"],
       growthOutlook: "stable",
-      lastVerifiedAt: "2026-04-14",
+      lastVerifiedAt: "2026-06-12",
       sourceUrl: "https://www.ssb.no/en/statbank/table/11418",
     },
     {
@@ -1006,7 +1006,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       keySkills: ["creativity", "patience", "communication", "play-based learning", "child development"],
       dailyTasks: ["Plan activities", "Supervise children", "Support social development", "Communicate with parents"],
       growthOutlook: "high",
-      lastVerifiedAt: "2026-04-14",
+      lastVerifiedAt: "2026-06-12",
       sourceUrl: "https://www.ssb.no/en/statbank/table/11418",
     },
     {
@@ -1030,7 +1030,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       keySkills: ["research", "teaching", "public speaking", "academic writing", "mentoring"],
       dailyTasks: ["Lecture students", "Conduct research", "Write papers", "Supervise theses", "Attend conferences"],
       growthOutlook: "medium",
-      lastVerifiedAt: "2026-04-14",
+      lastVerifiedAt: "2026-06-12",
       sourceUrl: "https://www.ssb.no/en/statbank/table/11418",
     },
     {
@@ -1150,7 +1150,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       dailyTasks: ["Write code", "Debug issues", "Review code", "Analyse requirements", "Optimise performance"],
       growthOutlook: "high",
       entryLevel: true,
-      lastVerifiedAt: "2026-04-14",
+      lastVerifiedAt: "2026-06-12",
       sourceUrl: "https://www.ssb.no/en/statbank/table/11418",
       sector: "private",
     },
@@ -1225,7 +1225,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       keySkills: ["cloud platforms", "networking", "automation", "security", "problem-solving"],
       dailyTasks: ["Manage cloud infrastructure", "Optimise costs", "Ensure security", "Automate deployments"],
       growthOutlook: "high",
-      lastVerifiedAt: "2026-04-14",
+      lastVerifiedAt: "2026-06-12",
       sourceUrl: "https://www.ssb.no/en/statbank/table/11418",
     },
     {
@@ -1239,7 +1239,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       dailyTasks: ["Resolve user issues", "Set up equipment", "Maintain systems", "Document solutions"],
       growthOutlook: "stable",
       entryLevel: true,
-      lastVerifiedAt: "2026-04-14",
+      lastVerifiedAt: "2026-06-12",
       sourceUrl: "https://www.ssb.no/en/statbank/table/11418",
     },
     {
@@ -2141,7 +2141,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       keySkills: ["SQL", "Excel", "data visualisation", "statistics", "business acumen"],
       dailyTasks: ["Query databases", "Build dashboards", "Analyse trends", "Present findings", "Support decision-making"],
       growthOutlook: "high",
-      lastVerifiedAt: "2026-04-14",
+      lastVerifiedAt: "2026-06-12",
       sourceUrl: "https://www.ssb.no/en/statbank/table/11418",
     },
     {
@@ -2252,7 +2252,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       keySkills: ["leadership", "organisation", "communication", "risk management", "stakeholder management"],
       dailyTasks: ["Plan projects", "Coordinate teams", "Track progress", "Manage budgets", "Report to stakeholders"],
       growthOutlook: "high",
-      lastVerifiedAt: "2026-04-14",
+      lastVerifiedAt: "2026-06-12",
       sourceUrl: "https://www.ssb.no/en/statbank/table/11418",
     },
     {
@@ -2265,7 +2265,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       keySkills: ["communication", "empathy", "organisation", "conflict resolution", "legal knowledge"],
       dailyTasks: ["Recruit candidates", "Onboard employees", "Handle HR issues", "Develop policies"],
       growthOutlook: "stable",
-      lastVerifiedAt: "2026-04-14",
+      lastVerifiedAt: "2026-06-12",
       sourceUrl: "https://www.ssb.no/en/statbank/table/11418",
     },
     {
@@ -2323,7 +2323,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       keySkills: ["legal knowledge", "analytical thinking", "communication", "negotiation", "research"],
       dailyTasks: ["Advise clients", "Draft contracts", "Represent in court", "Research case law", "Negotiate settlements"],
       growthOutlook: "stable",
-      lastVerifiedAt: "2026-04-14",
+      lastVerifiedAt: "2026-06-12",
       sourceUrl: "https://www.ssb.no/en/statbank/table/11418",
     },
     {
@@ -2831,7 +2831,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       keySkills: ["tenant relations", "budgeting", "maintenance coordination", "communication", "problem-solving"],
       dailyTasks: ["Collect rent", "Coordinate repairs", "Handle tenant issues", "Inspect properties", "Manage budgets"],
       growthOutlook: "medium",
-      lastVerifiedAt: "2026-04-14",
+      lastVerifiedAt: "2026-06-12",
       sourceUrl: "https://www.ssb.no/en/statbank/table/11418",
     },
     {
@@ -4340,7 +4340,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       keySkills: ["attention to detail", "numeracy", "organisation", "software skills", "ethics"],
       dailyTasks: ["Record transactions", "Prepare financial statements", "File taxes", "Advise clients"],
       growthOutlook: "stable",
-      lastVerifiedAt: "2026-04-14",
+      lastVerifiedAt: "2026-06-12",
       sourceUrl: "https://www.ssb.no/en/statbank/table/11418",
     },
     {
@@ -4523,9 +4523,9 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     { id: "stockbroker", title: "Stockbroker", emoji: "📈", description: "Buy and sell stocks on behalf of clients — building portfolios, providing advice, and managing relationships.", avgSalary: "650,000 - 1,800,000 kr/year (commission-driven)", educationPath: "Bachelor's in Finance / Economics + Finansforetaket licensing", keySkills: ["market knowledge", "client service", "trading", "communication", "risk management"], dailyTasks: ["Place trades", "Advise clients", "Track markets", "Build portfolios", "Manage compliance"], growthOutlook: "medium" },
     { id: "trader", title: "Trader", emoji: "💹", description: "Trade financial instruments — equities, FX, commodities, derivatives — on behalf of a bank, fund, or own account.", avgSalary: "700,000 - 3,000,000+ kr/year (highly variable, performance-based)", educationPath: "Bachelor's/Master's in Finance / Maths + trading internship", keySkills: ["market analysis", "fast decision-making", "risk control", "discipline", "stress management"], dailyTasks: ["Watch markets", "Place trades", "Manage risk", "Read research", "Brief desk"], growthOutlook: "medium" },
     { id: "day-trader", title: "Day Trader", emoji: "⏱️", description: "Buy and sell securities within the same day — making many small trades and rarely holding positions overnight.", avgSalary: "0 - 2,000,000+ kr/year (highly variable, often negative)", educationPath: "Self-taught — most professional day traders fail; risk capital required", keySkills: ["technical analysis", "discipline", "risk management", "patience", "emotional control"], dailyTasks: ["Watch markets", "Take entries", "Manage stops", "Journal trades", "Review setups"], growthOutlook: "stable" },
-    { id: "investment-banker", title: "Investment Banker", emoji: "🏦", description: "Advise companies on M&A, IPOs, and capital raising — building financial models and pitching deals to executives.", avgSalary: "485,000 - 1,610,000 kr/year", educationPath: "Bachelor's/Master's in Finance / Economics + analyst programme", keySkills: ["financial modelling", "valuation", "stamina", "client management", "presentation"], dailyTasks: ["Build models", "Draft pitches", "Run analyses", "Brief clients", "Execute deals"], growthOutlook: "medium" , lastVerifiedAt: "2026-04-14" , sourceUrl: "https://www.ssb.no/en/statbank/table/11418" },
+    { id: "investment-banker", title: "Investment Banker", emoji: "🏦", description: "Advise companies on M&A, IPOs, and capital raising — building financial models and pitching deals to executives.", avgSalary: "485,000 - 1,610,000 kr/year", educationPath: "Bachelor's/Master's in Finance / Economics + analyst programme", keySkills: ["financial modelling", "valuation", "stamina", "client management", "presentation"], dailyTasks: ["Build models", "Draft pitches", "Run analyses", "Brief clients", "Execute deals"], growthOutlook: "medium" , lastVerifiedAt: "2026-06-12" , sourceUrl: "https://www.ssb.no/en/statbank/table/11418" },
     { id: "equity-analyst", title: "Equity Analyst", emoji: "📊", description: "Research and value listed companies — publishing recommendations to fund managers and institutional clients.", avgSalary: "650,000 - 1,500,000 kr/year", educationPath: "Bachelor's in Finance / Economics + CFA route", keySkills: ["financial analysis", "valuation", "report writing", "industry knowledge", "modelling"], dailyTasks: ["Build models", "Read reports", "Meet management", "Write notes", "Brief sales"], growthOutlook: "medium" },
-    { id: "financial-analyst", title: "Financial Analyst", emoji: "💼", description: "Analyse business performance, build forecasts, and support decision-making — in corporate finance, banking, or asset management.", avgSalary: "750,000 - 1,295,000 kr/year", educationPath: "Bachelor's in Finance / Economics + Excel / financial modelling skills", keySkills: ["financial modelling", "Excel", "analysis", "communication", "attention to detail"], dailyTasks: ["Build forecasts", "Track performance", "Analyse variance", "Brief management", "Support decisions"], growthOutlook: "high" , lastVerifiedAt: "2026-04-14" , sourceUrl: "https://www.ssb.no/en/statbank/table/11418", entryRoute: "bachelor", gradeBand: { floor: 4, ceiling: 5, competitiveness: "competitive" } },
+    { id: "financial-analyst", title: "Financial Analyst", emoji: "💼", description: "Analyse business performance, build forecasts, and support decision-making — in corporate finance, banking, or asset management.", avgSalary: "750,000 - 1,295,000 kr/year", educationPath: "Bachelor's in Finance / Economics + Excel / financial modelling skills", keySkills: ["financial modelling", "Excel", "analysis", "communication", "attention to detail"], dailyTasks: ["Build forecasts", "Track performance", "Analyse variance", "Brief management", "Support decisions"], growthOutlook: "high" , lastVerifiedAt: "2026-06-12" , sourceUrl: "https://www.ssb.no/en/statbank/table/11418", entryRoute: "bachelor", gradeBand: { floor: 4, ceiling: 5, competitiveness: "competitive" } },
     { id: "hedge-fund-manager", title: "Hedge Fund Manager", emoji: "🎯", description: "Run a hedge fund — make investment decisions, manage risk, and grow client capital across complex strategies.", avgSalary: "1,200,000 - 10,000,000+ kr/year (performance fees)", educationPath: "Bachelor's/Master's in Finance + decade of trading or PM experience", keySkills: ["investment strategy", "risk management", "decision-making", "leadership", "investor relations"], dailyTasks: ["Make decisions", "Manage risk", "Meet investors", "Run team", "Track P&L"], growthOutlook: "medium" },
     { id: "options-trader", title: "Options Trader", emoji: "📉", description: "Trade options contracts — using volatility, time decay, and complex strategies to profit and hedge risk.", avgSalary: "700,000 - 3,000,000+ kr/year (variable)", educationPath: "Bachelor's in Finance / Maths / Physics + trading desk experience", keySkills: ["volatility", "Greeks", "risk modelling", "strategy", "discipline"], dailyTasks: ["Quote options", "Hedge risk", "Build positions", "Watch vol", "Manage P&L"], growthOutlook: "medium" },
     { id: "forex-trader", title: "Forex Trader", emoji: "💱", description: "Trade currency pairs in the FX market — analysing macro, central banks, and price action 24/5.", avgSalary: "0 - 2,000,000+ kr/year (highly variable)", educationPath: "Self-taught or finance background + risk capital", keySkills: ["macro analysis", "technical analysis", "risk management", "discipline", "stamina"], dailyTasks: ["Watch news", "Place trades", "Manage stops", "Read flows", "Journal trades"], growthOutlook: "stable" },
@@ -4848,7 +4848,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       keySkills: ["CAD software", "problem-solving", "mathematics", "physics", "project management"],
       dailyTasks: ["Design components", "Run simulations", "Oversee production", "Test prototypes"],
       growthOutlook: "stable",
-      lastVerifiedAt: "2026-04-14",
+      lastVerifiedAt: "2026-06-12",
       sourceUrl: "https://www.ssb.no/en/statbank/table/11418",
     },
     {
@@ -4861,7 +4861,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       keySkills: ["circuit design", "problem-solving", "mathematics", "programming", "safety awareness"],
       dailyTasks: ["Design electrical systems", "Test equipment", "Troubleshoot issues", "Write specifications"],
       growthOutlook: "high",
-      lastVerifiedAt: "2026-04-14",
+      lastVerifiedAt: "2026-06-12",
       sourceUrl: "https://www.ssb.no/en/statbank/table/11418",
     },
     {
@@ -4875,7 +4875,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       dailyTasks: ["Install wiring", "Repair electrical faults", "Test systems", "Follow safety codes"],
       growthOutlook: "high",
       entryLevel: true,
-      lastVerifiedAt: "2026-04-14",
+      lastVerifiedAt: "2026-06-12",
       sourceUrl: "https://www.ssb.no/en/statbank/table/11418",
     },
     {
@@ -4889,7 +4889,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       dailyTasks: ["Install pipes", "Repair leaks", "Maintain heating systems", "Read blueprints"],
       growthOutlook: "stable",
       entryLevel: true,
-      lastVerifiedAt: "2026-04-14",
+      lastVerifiedAt: "2026-06-12",
       sourceUrl: "https://www.ssb.no/en/statbank/table/11418",
     },
     {
@@ -4938,7 +4938,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       dailyTasks: ["Build structures", "Install frameworks", "Read blueprints", "Use power tools"],
       growthOutlook: "stable",
       entryLevel: true,
-      lastVerifiedAt: "2026-04-14",
+      lastVerifiedAt: "2026-06-12",
       sourceUrl: "https://www.ssb.no/en/statbank/table/11418",
     },
     {
@@ -4988,7 +4988,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       dailyTasks: ["Diagnose vehicle issues", "Perform repairs", "Replace parts", "Conduct inspections", "Use diagnostic tools"],
       growthOutlook: "stable",
       entryLevel: true,
-      lastVerifiedAt: "2026-04-14",
+      lastVerifiedAt: "2026-06-12",
       sourceUrl: "https://www.ssb.no/en/statbank/table/11418",
     },
     {
@@ -6428,7 +6428,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       dailyTasks: ["Drive routes", "Load/unload cargo", "Maintain vehicle", "Complete paperwork"],
       growthOutlook: "stable",
       entryLevel: true,
-      lastVerifiedAt: "2026-04-14",
+      lastVerifiedAt: "2026-06-12",
       sourceUrl: "https://www.ssb.no/en/statbank/table/11418",
     },
     {
@@ -6498,7 +6498,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       keySkills: ["aviation knowledge", "decision-making under pressure", "communication", "situational awareness", "teamwork", "technical proficiency"],
       dailyTasks: ["Pre-flight planning", "Fly aircraft", "Monitor systems", "Communicate with ATC", "Manage crew coordination"],
       growthOutlook: "stable",
-      lastVerifiedAt: "2026-04-14",
+      lastVerifiedAt: "2026-06-12",
       sourceUrl: "https://www.ssb.no/en/statbank/table/11418",
     },
     {
@@ -6539,7 +6539,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     // ── Drivers & couriers ──
     { id: "taxi-driver", title: "Taxi Driver", emoji: "🚕", description: "Drive a licensed taxi — picking up passengers from ranks, street hails, or app bookings (Uber, Bolt). Flexible shifts, independent work.", avgSalary: "350,000 - 600,000 kr/year", educationPath: "Class B licence + kjøreseddel (taxi licence)", keySkills: ["local knowledge", "safe driving", "customer service", "patience", "navigation", "app management"], dailyTasks: ["Pick up passengers", "Manage app bookings", "Calculate fares", "Process payments", "Maintain car", "Stay on shift"], growthOutlook: "stable", entryLevel: true },
     { id: "courier", title: "Courier", emoji: "📮", description: "Deliver parcels and documents quickly — by van, bike, or on foot — for businesses or end customers.", avgSalary: "350,000 - 500,000 kr/year", educationPath: "Driving licence (or none for bike couriers); on-the-job training", keySkills: ["fast navigation", "physical stamina", "time management", "reliability", "customer service"], dailyTasks: ["Pick up parcels", "Plan routes", "Deliver fast", "Get signatures", "Track packages"], growthOutlook: "stable", entryLevel: true },
-    { id: "bus-driver", title: "Bus Driver", emoji: "🚌", description: "Drive scheduled bus routes — city, regional, or long-distance — getting passengers safely from stop to stop.", avgSalary: "450,000 - 600,000 kr/year", educationPath: "Class D licence + yrkessjåførkompetanse (CPC) — funded paths exist", keySkills: ["safe driving", "punctuality", "customer service", "patience", "stamina"], dailyTasks: ["Drive route", "Stop at all stops", "Sell tickets", "Help passengers", "Inspect bus"], growthOutlook: "stable", entryLevel: true , lastVerifiedAt: "2026-04-14" , sourceUrl: "https://www.ssb.no/en/statbank/table/11418" },
+    { id: "bus-driver", title: "Bus Driver", emoji: "🚌", description: "Drive scheduled bus routes — city, regional, or long-distance — getting passengers safely from stop to stop.", avgSalary: "450,000 - 600,000 kr/year", educationPath: "Class D licence + yrkessjåførkompetanse (CPC) — funded paths exist", keySkills: ["safe driving", "punctuality", "customer service", "patience", "stamina"], dailyTasks: ["Drive route", "Stop at all stops", "Sell tickets", "Help passengers", "Inspect bus"], growthOutlook: "stable", entryLevel: true , lastVerifiedAt: "2026-06-12" , sourceUrl: "https://www.ssb.no/en/statbank/table/11418" },
     { id: "food-delivery-rider", title: "Food Delivery Rider", emoji: "🛵", description: "Deliver hot food from restaurants to customers — by bike, e-bike, or scooter — for Foodora, Wolt, etc.", avgSalary: "200,000 - 400,000 kr/year (variable, often part-time)", educationPath: "No formal requirement; bike or moped + smartphone", keySkills: ["fast cycling", "navigation", "weather tolerance", "stamina", "customer service"], dailyTasks: ["Accept orders", "Cycle to restaurants", "Deliver food", "Track app", "Stay safe in traffic"], growthOutlook: "stable", entryLevel: true },
     { id: "logistics-driver", title: "Logistics Driver", emoji: "🚚", description: "Move goods between warehouses, distribution centres, and retailers — usually in a fixed local route.", avgSalary: "450,000 - 600,000 kr/year", educationPath: "Class C licence + yrkessjåførkompetanse", keySkills: ["safe driving", "load handling", "navigation", "punctuality", "documentation"], dailyTasks: ["Load truck", "Drive route", "Deliver pallets", "Get signatures", "Maintain logbook"], growthOutlook: "stable", entryLevel: true },
     { id: "freight-driver", title: "Freight Driver", emoji: "🚛", description: "Drive heavy goods vehicles long distance — across Norway and into Europe — moving freight for haulage companies.", avgSalary: "500,000 - 750,000 kr/year", educationPath: "Class C/CE licence + yrkessjåførkompetanse + ADR (for hazardous goods)", keySkills: ["heavy vehicle handling", "endurance", "navigation", "documentation", "self-reliance"], dailyTasks: ["Load freight", "Drive long routes", "Manage rest hours", "Deliver loads", "Maintain logbook"], growthOutlook: "stable" },
@@ -6573,7 +6573,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       dailyTasks: ["Prepare dishes", "Create menus", "Manage kitchen staff", "Maintain hygiene standards"],
       growthOutlook: "stable",
       entryLevel: true,
-      lastVerifiedAt: "2026-04-14",
+      lastVerifiedAt: "2026-06-12",
       sourceUrl: "https://www.ssb.no/en/statbank/table/11418",
     },
     {
@@ -6610,7 +6610,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       dailyTasks: ["Cut and style hair", "Consult with clients", "Apply treatments", "Stay updated on trends"],
       growthOutlook: "stable",
       entryLevel: true,
-      lastVerifiedAt: "2026-04-14",
+      lastVerifiedAt: "2026-06-12",
       sourceUrl: "https://www.ssb.no/en/statbank/table/11418",
     },
     {
@@ -6707,7 +6707,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       dailyTasks: ["Plan and shoot photos", "Edit images", "Meet with clients", "Manage equipment", "Market services"],
       growthOutlook: "medium",
       entryLevel: true,
-      lastVerifiedAt: "2026-04-14",
+      lastVerifiedAt: "2026-06-12",
       sourceUrl: "https://www.ssb.no/en/statbank/table/11418",
     },
     {
@@ -6743,7 +6743,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       keySkills: ["architectural design", "CAD/BIM software", "building codes", "project management", "creativity"],
       dailyTasks: ["Design buildings", "Create drawings and models", "Meet with clients", "Coordinate with engineers", "Oversee construction"],
       growthOutlook: "medium",
-      lastVerifiedAt: "2026-04-14",
+      lastVerifiedAt: "2026-06-12",
       sourceUrl: "https://www.ssb.no/en/statbank/table/11418",
     },
     {
@@ -6756,7 +6756,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       keySkills: ["Adobe Creative Suite", "typography", "layout design", "creativity", "client communication"],
       dailyTasks: ["Design visual content", "Create brand materials", "Present concepts", "Revise based on feedback", "Prepare files for production"],
       growthOutlook: "medium",
-      lastVerifiedAt: "2026-04-14",
+      lastVerifiedAt: "2026-06-12",
       sourceUrl: "https://www.ssb.no/en/statbank/table/11418",
     },
     {
@@ -7403,7 +7403,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       keySkills: ["writing", "interviewing", "research", "ethics", "deadline management"],
       dailyTasks: ["Pitch stories", "Interview sources", "Verify facts", "Write copy", "Meet deadlines"],
       growthOutlook: "stable",
-      lastVerifiedAt: "2026-04-14",
+      lastVerifiedAt: "2026-06-12",
       sourceUrl: "https://www.ssb.no/en/statbank/table/11418",
     },
     {
@@ -7881,7 +7881,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       dailyTasks: ["Respond to fire and rescue calls", "Maintain equipment and vehicles", "Conduct fire drills", "Inspect buildings for safety", "Train with new techniques"],
       growthOutlook: "stable",
       pathType: "firefighter",
-      lastVerifiedAt: "2026-04-14",
+      lastVerifiedAt: "2026-06-12",
       sourceUrl: "https://www.ssb.no/en/statbank/table/11418",
     },
     {
@@ -8431,10 +8431,10 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       dailyTasks: ["Lead unit", "Plan operations", "Train personnel", "Maintain readiness", "Report up the chain"],
       growthOutlook: "stable",
       pathType: "military",
-      lastVerifiedAt: "2026-04-14",
+      lastVerifiedAt: "2026-06-12",
       sourceUrl: "https://www.ssb.no/en/statbank/table/11418",
     },
-    { id: "soldier", title: "Soldier", emoji: "🪖", description: "Serve in the army — train in combat, weapons, and field operations as part of a unit defending the country.", avgSalary: "835,000 - 1,210,000 kr/year", educationPath: "Førstegangstjeneste (initial service, 12 months) + further training for career soldiers", keySkills: ["physical fitness", "discipline", "teamwork", "weapon handling", "resilience"], dailyTasks: ["Drill and train", "Maintain equipment", "Run patrols", "Practice tactics", "Stand watch"], growthOutlook: "stable", entryLevel: true, pathType: "military" , lastVerifiedAt: "2026-04-14" , sourceUrl: "https://www.ssb.no/en/statbank/table/11418" },
+    { id: "soldier", title: "Soldier", emoji: "🪖", description: "Serve in the army — train in combat, weapons, and field operations as part of a unit defending the country.", avgSalary: "835,000 - 1,210,000 kr/year", educationPath: "Førstegangstjeneste (initial service, 12 months) + further training for career soldiers", keySkills: ["physical fitness", "discipline", "teamwork", "weapon handling", "resilience"], dailyTasks: ["Drill and train", "Maintain equipment", "Run patrols", "Practice tactics", "Stand watch"], growthOutlook: "stable", entryLevel: true, pathType: "military" , lastVerifiedAt: "2026-06-12" , sourceUrl: "https://www.ssb.no/en/statbank/table/11418" },
     { id: "infantry-officer", title: "Infantry Officer", emoji: "🎖️", description: "Lead infantry units in the field — planning operations, training soldiers, and executing missions.", avgSalary: "600,000 - 900,000 kr/year", educationPath: "Krigsskolen (Norwegian Military Academy, 3 years) + commission", keySkills: ["leadership", "tactics", "decision-making", "fitness", "communication"], dailyTasks: ["Lead training", "Plan exercises", "Mentor soldiers", "Run operations", "Report to command"], growthOutlook: "stable", pathType: "military" },
     { id: "special-forces-operator", title: "Special Forces Operator", emoji: "🦅", description: "Elite soldier trained for high-risk missions — direct action, reconnaissance, hostage rescue, counter-terrorism.", avgSalary: "650,000 - 950,000 kr/year", educationPath: "Forsvarets Spesialkommando (FSK) selection + multi-year specialist training", keySkills: ["elite fitness", "marksmanship", "calm under fire", "languages", "small-team tactics"], dailyTasks: ["Train relentlessly", "Plan missions", "Maintain kit", "Conduct ops", "Debrief after"], growthOutlook: "stable", pathType: "military" },
     { id: "sniper", title: "Sniper", emoji: "🎯", description: "Highly trained marksman delivering precision long-range fire and reconnaissance — usually as part of a small team.", avgSalary: "500,000 - 800,000 kr/year", educationPath: "Military service + sniper school selection + advanced marksmanship", keySkills: ["marksmanship", "patience", "fieldcraft", "navigation", "stealth"], dailyTasks: ["Practice shooting", "Maintain weapons", "Train fieldcraft", "Conduct reconnaissance", "Provide overwatch"], growthOutlook: "stable", pathType: "military" },
@@ -8488,7 +8488,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       dailyTasks: ["Run sessions", "Plan programmes", "Track client progress", "Build client base", "Stay current on training science"],
       growthOutlook: "high",
       entryLevel: true,
-      lastVerifiedAt: "2026-04-14",
+      lastVerifiedAt: "2026-06-12",
       sourceUrl: "https://www.ssb.no/en/statbank/table/11418",
     },
     {
@@ -8502,7 +8502,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       dailyTasks: ["Run training sessions", "Plan tactics", "Analyse performance", "Mentor athletes", "Coordinate fixtures"],
       growthOutlook: "medium",
       entryLevel: true,
-      lastVerifiedAt: "2026-04-14",
+      lastVerifiedAt: "2026-06-12",
       sourceUrl: "https://www.ssb.no/en/statbank/table/11418",
     },
     {
@@ -8992,7 +8992,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       keySkills: ["negotiation", "sales", "communication", "local market knowledge", "trust-building"],
       dailyTasks: ["Run viewings", "List properties", "Negotiate offers", "Advise clients", "Coordinate paperwork"],
       growthOutlook: "stable",
-      lastVerifiedAt: "2026-04-14",
+      lastVerifiedAt: "2026-06-12",
       sourceUrl: "https://www.ssb.no/en/statbank/table/11418",
     },
     {
@@ -9017,7 +9017,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       keySkills: ["tenant relations", "budgeting", "maintenance coordination", "communication", "problem-solving"],
       dailyTasks: ["Collect rent", "Coordinate repairs", "Handle tenant issues", "Inspect properties", "Manage budgets"],
       growthOutlook: "medium",
-      lastVerifiedAt: "2026-04-14",
+      lastVerifiedAt: "2026-06-12",
       sourceUrl: "https://www.ssb.no/en/statbank/table/11418",
     },
     {
@@ -9080,7 +9080,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       keySkills: ["empathy", "active listening", "advocacy", "resilience", "case management"],
       dailyTasks: ["Assess client needs", "Build support plans", "Coordinate services", "Visit homes", "Document casework"],
       growthOutlook: "high",
-      lastVerifiedAt: "2026-04-14",
+      lastVerifiedAt: "2026-06-12",
       sourceUrl: "https://www.ssb.no/en/statbank/table/11418",
     },
     {
@@ -9202,7 +9202,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       dailyTasks: ["Build structures", "Install frameworks", "Read blueprints", "Use power tools"],
       growthOutlook: "stable",
       entryLevel: true,
-      lastVerifiedAt: "2026-04-14",
+      lastVerifiedAt: "2026-06-12",
       sourceUrl: "https://www.ssb.no/en/statbank/table/11418",
     },
     {
@@ -9216,7 +9216,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       dailyTasks: ["Install wiring", "Repair electrical faults", "Test systems", "Follow safety codes"],
       growthOutlook: "high",
       entryLevel: true,
-      lastVerifiedAt: "2026-04-14",
+      lastVerifiedAt: "2026-06-12",
       sourceUrl: "https://www.ssb.no/en/statbank/table/11418",
     },
     {
@@ -9230,7 +9230,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       dailyTasks: ["Install pipes", "Repair leaks", "Maintain heating systems", "Read blueprints"],
       growthOutlook: "stable",
       entryLevel: true,
-      lastVerifiedAt: "2026-04-14",
+      lastVerifiedAt: "2026-06-12",
       sourceUrl: "https://www.ssb.no/en/statbank/table/11418",
     },
     {
@@ -9244,7 +9244,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       dailyTasks: ["Mix mortar", "Lay bricks", "Read plans", "Build to spec", "Maintain quality"],
       growthOutlook: "stable",
       entryLevel: true,
-      lastVerifiedAt: "2026-04-14",
+      lastVerifiedAt: "2026-06-12",
       sourceUrl: "https://www.ssb.no/en/statbank/table/11418",
     },
     {
