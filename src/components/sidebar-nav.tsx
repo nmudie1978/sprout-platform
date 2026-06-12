@@ -104,7 +104,7 @@ function NavItem({ href, icon: Icon, label, active, badge, statusDot, collapsed,
   }, [router, href]);
 
   const link = (
-    <Link href={href} prefetch={true} className="block group relative" title={tooltip ? undefined : collapsed ? label : undefined} onMouseEnter={handleMouseEnter}>
+    <Link href={href} prefetch={true} data-tour-target={href} className="block group relative" title={tooltip ? undefined : collapsed ? label : undefined} onMouseEnter={handleMouseEnter}>
       {/* Active glow indicator */}
       {active && (
         <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-r-full bg-teal-400 shadow-[0_0_8px_rgba(45,212,191,0.6)]" />
