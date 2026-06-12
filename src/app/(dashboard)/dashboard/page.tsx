@@ -50,13 +50,13 @@ import { useAllInterestLevels } from "@/hooks/use-interest-level";
 import { InterestLevelStars } from "@/components/interest-level/interest-level-rating";
 import { WorthALook } from "@/components/dashboard/worth-a-look";
 import { WhereYoureLeaning } from "@/components/dashboard/where-youre-leaning";
-import { captureClientMutationError } from "@/lib/observability";
 import type { GoalsResponse } from "@/lib/goals/types";
 import { computeLensProgress, isJourneySnapshotWorthy, journeyStageLabel } from "@/lib/journey/lens-progress";
 import { useLensProgressSync } from "@/hooks/use-lens-progress-sync";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { OrientationWalkthrough } from "@/components/onboarding/orientation-walkthrough";
+import { RadarOnboardingWizard } from "@/components/onboarding/radar-onboarding-wizard";
 import { LanguageDropdown } from "@/components/language-dropdown";
 import { CareerDetailSheet } from "@/components/career-detail-sheet";
 import type { Career } from "@/lib/career-pathways";
@@ -74,6 +74,7 @@ import { GoalSelectionSheet } from "@/components/goals/GoalSelectionSheet";
 import { useSubtleHint } from "@/hooks/use-subtle-hint";
 import { SpotlightHint } from "@/components/ui/spotlight-hint";
 import { DiscoveryNudge } from "@/components/discovery/discovery-nudge";
+import { CareerTwinCta } from "@/components/career-twin/career-twin-cta";
 
 // ── Glass Card ───────────────────────────────────────────────────────
 function GlassCard({
@@ -358,6 +359,11 @@ export default function DashboardPage() {
   const { getAllCareers } = useCareerCatalog();
   // Onboarding walkthrough
   const [showOnboardingWizard, setShowOnboardingWizard] = useState(false);
+  // Radar discovery wizard — the data-collecting step that runs straight
+  // after the orientation tour on a genuine first-run. It persists
+  // discoveryPreferences (warming up Career Radar + Recommendations) and
+  // is fully skippable. Replays of the tour do NOT reopen it.
+  const [showRadarWizard, setShowRadarWizard] = useState(false);
   const isReplayRef = useRef(false);
   const dismissedRef = useRef(false);
   const [careerMatchesCardDismissed, setCareerMatchesCardDismissed] = useState(true);
@@ -764,14 +770,28 @@ export default function DashboardPage() {
           dismissedRef.current = true;
           setShowOnboardingWizard(false);
           if (!wasReplay) {
-            // First-run: mark onboarding done so it doesn't replay. The user
-            // stays on the dashboard whether they finish or cancel the
-            // walkthrough — we deliberately do NOT redirect anywhere (no jump
-            // to Career Radar). If the PATCH fails, Sentry sees it and the
-            // walkthrough will replay next login (safe).
-            fetch("/api/onboarding", { method: "PATCH" }).catch(captureClientMutationError("dashboard:onboardingDone"));
-            refetchOnboarding();
+            // First-run: hand off to the Radar discovery wizard so we
+            // actually collect discoveryPreferences (warming up Career Radar
+            // + Recommendations). That wizard marks onboarding complete on
+            // finish OR skip — so we deliberately do NOT PATCH here. The user
+            // still stays on the dashboard (no redirect to the radar). If the
+            // user closes the wizard without completing it, onboarding stays
+            // unmarked and the flow safely replays next login.
+            setShowRadarWizard(true);
           }
+        }}
+      />
+
+      {/* First-run discovery wizard — runs immediately after the tour. Three
+          short questions persist discoveryPreferences and prime the radar.
+          Skippable + non-blocking; the component marks onboarding complete on
+          finish or skip, then we refresh status so the dashboard reflects it. */}
+      <RadarOnboardingWizard
+        open={showRadarWizard}
+        onComplete={() => {
+          setShowRadarWizard(false);
+          dismissedRef.current = true;
+          refetchOnboarding();
         }}
       />
 
@@ -1045,6 +1065,22 @@ export default function DashboardPage() {
               </div>
             </div>
 
+            {/* Calm "resume" affordance — the whole card already links to
+                /my-journey, but an explicit, named cue makes returning users
+                feel invited back in (the cheap retention win). Shown only
+                while a journey is in progress (not yet 3/3) so a finished
+                journey rests. This is a styled <span> inside the parent
+                <Link>, NOT a nested anchor. No streaks, no gamification. */}
+            {goalTitle && completedLensCount < 3 && (
+              <div className="mt-4 pt-3 border-t border-border/20">
+                <span className="inline-flex items-center gap-1.5 text-sm font-medium text-primary group-hover:text-primary/80 transition-colors">
+                  <PlayCircle className="h-4 w-4 shrink-0" />
+                  {t('journey.continueJourney', { career: goalTitle })}
+                  <ArrowRight className="h-3.5 w-3.5 shrink-0 transition-transform group-hover:translate-x-0.5" />
+                </span>
+              </div>
+            )}
+
             </GlassCard>
           );
           return goalTitle ? (
@@ -1058,8 +1094,14 @@ export default function DashboardPage() {
             DidYouKnowCard. Kept there so the top of the page stays
             focused on the active journey and today's actions. */}
 
-        {/* Career Twin now lives inside the journey card as a 3/3 completion
-            reward (see journeyComplete variant above) — no standalone banner. */}
+        {/* Career Twin lives inside the journey card as a 3/3 completion
+            reward (see journeyComplete variant above). In addition, a gentle
+            21-day CHECK-IN surfaces here when (and only when) the user has
+            been away long enough that the Twin would greet them as
+            "returning" — the dashboard retention re-entry point. The card
+            self-resolves the user's career and is dismissible; onlyWhenDue
+            keeps it silent the rest of the time (no standing banner). */}
+        <CareerTwinCta variant="dashboard" onlyWhenDue className="mb-6" />
 
         {/* ── Discovery Nudge — sparse, preference-based suggestion ── */}
         {discoveryPrefs && (

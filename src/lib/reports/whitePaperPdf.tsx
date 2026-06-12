@@ -270,12 +270,12 @@ export function WhitePaperPdf() {
         <View style={styles.sectionWrap}>
           <SectionHeader number="Executive Summary" title="What it is" />
           <Text style={styles.para}>
-            A career discovery and first-job platform built specifically for
-            young people aged 15 to 23. It helps students understand who they
-            are, explore careers that genuinely fit them, find meaningful early
-            work, and build a realistic roadmap toward a fulfilling adult life
-            — without exposing them to the risks of general-purpose social and
-            freelance platforms.
+            A career exploration and clarity platform built specifically for
+            young people. It helps students understand who they are, explore
+            careers that genuinely fit them, understand the realistic pathways
+            in, and build a roadmap toward a fulfilling adult life — without
+            exposing them to the risks of general-purpose social and freelance
+            platforms. It is not a jobs marketplace and processes no payments.
           </Text>
           <Text style={styles.para}>
             Three non-negotiable commitments shape the product: safety by
@@ -394,12 +394,14 @@ export function WhitePaperPdf() {
               appropriate for minors: no medical, legal, or financial advice;
               defers to human professionals for serious concerns.
             </Card>
-            <Card title="Micro-Job Marketplace — My first work experience">
-              Local, age-appropriate jobs posted by verified adults.
-              Geolocated, filterable, with a map view. Structured messaging
-              (predefined prompts only). Earnings dashboard. Payments happen
-              outside the platform — by design. Every posting has a Report
-              button.
+            <Card title="Realistic Pathways — How do I actually get there?">
+              For every career, Endeavrly maps the honest routes in: education
+              and training options, the skills that matter, typical entry
+              paths, and realistic expectations about pay and lifestyle. The
+              Understand phase sets expectations; the Clarity phase turns
+              exploration into a personal roadmap of next steps. Endeavrly is a
+              career exploration and clarity platform — not a jobs marketplace,
+              and it processes no payments.
             </Card>
             <Card title="Industry Insights — What does the real world look like?">
               Global Lens, Youth Lens, Dig Deeper, Go Further. Evidence-linked
@@ -595,9 +597,10 @@ export function WhitePaperPdf() {
               One-time payment.
             </Card>
             <Card title="Endeavrly (Norway-first, Nordics-next)">
-              15–23 youth career discovery + first-job marketplace +
-              safety-by-design messaging + transparent matching. Direct-to-youth
-              and family — no school licence required. Free for youth.
+              Youth career discovery, realistic pathways, and clarity +
+              safety-by-design + transparent matching. Direct-to-youth and
+              family — no school licence required. Free for youth. Not a jobs
+              marketplace; no payments.
             </Card>
           </View>
 
@@ -623,8 +626,9 @@ export function WhitePaperPdf() {
             Personality quizzes give a result with no audit trail.
           </Bullet>
           <Bullet>
-            First-job marketplace inside the same product — career exploration
-            and real-world experience live in one app, not separate silos.
+            One coherent journey — Discover, Understand, and Clarity live in a
+            single product, so exploration flows straight into a personal
+            roadmap rather than scattering across separate silos.
           </Bullet>
           <Bullet>
             No engagement traps — no streaks, leaderboards, infinite scroll,
