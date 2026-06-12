@@ -9,6 +9,9 @@ import {
   videoSearchLocale,
   buildDayInLifeQuery,
   buildEnglishDayInLifeQuery,
+  buildEnglishExplainerQuery,
+  broadenCareer,
+  normaliseCareerSpelling,
   type VideoSearchLocale,
 } from '@/lib/video-locale';
 
@@ -59,15 +62,17 @@ function extractCareerFromQuery(q: string): string {
 }
 
 function careerTokens(career: string): string[] {
-  const cleaned = career.toLowerCase().replace(/[^a-z0-9\s]/g, ' ');
+  // Normalise spelling (programme → program) so a British catalogue title's
+  // tokens match the American-spelled video titles that dominate YouTube.
+  const cleaned = normaliseCareerSpelling(career.toLowerCase()).replace(/[^a-z0-9\s]/g, ' ');
   return cleaned
     .split(/\s+/)
     .filter((t) => t.length >= 4 && !CAREER_STOPWORDS.has(t));
 }
 
 function isTitleRelevant(title: string, career: string, tokens: string[]): boolean {
-  const t = title.toLowerCase();
-  if (t.includes(career.toLowerCase())) return true;
+  const t = normaliseCareerSpelling(title.toLowerCase());
+  if (t.includes(normaliseCareerSpelling(career.toLowerCase()))) return true;
   if (tokens.length === 0) return true; // no meaningful filter → keep
   return tokens.some((tok) => new RegExp(`\\b${tok}\\b`, 'i').test(t));
 }
@@ -124,18 +129,28 @@ function applyRelevanceFilter(videos: YouTubeVideo[], career: string): YouTubeVi
   return videos.filter((v) => isTitleRelevant(v.title ?? '', career, tokens));
 }
 
+/** Merge several video lists, de-duping by videoId, preserving order. */
+function mergeVideos(...lists: YouTubeVideo[][]): YouTubeVideo[] {
+  const seen = new Set<string>();
+  const out: YouTubeVideo[] = [];
+  for (const list of lists) {
+    for (const v of list) {
+      if (v.videoId && !seen.has(v.videoId)) {
+        seen.add(v.videoId);
+        out.push(v);
+      }
+    }
+  }
+  return out;
+}
+
 export async function GET(req: NextRequest) {
-  // Auth + rate limit: this endpoint triggers paid YouTube Data API calls, so
-  // it must not be anonymously reachable. The DB cache only protects *repeated*
-  // queries — an attacker rotating `?career=`/`?q=` values busts the cache on
-  // every request and runs up an unbounded bill. Mirrors /api/career-reality.
+  // Auth: this endpoint triggers paid YouTube Data API calls, so it must not be
+  // anonymously reachable. (The rate limit is applied LATER — only on a cache
+  // miss — so normal browsing of already-cached careers is never blocked.)
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) {
     return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
-  }
-  const rl = await checkRateLimitAsync(`youtube-search:${session.user.id}`, RateLimits.AI_CHAT);
-  if (!rl.success) {
-    return NextResponse.json({ error: 'Rate limit exceeded. Please try again later.' }, { status: 429 });
   }
 
   const { searchParams } = new URL(req.url);
@@ -179,6 +194,16 @@ export async function GET(req: NextRequest) {
     }
   } catch { /* cache miss, proceed to API */ }
 
+  // Cache MISS → we're about to make paid YouTube API calls, so apply the rate
+  // limit HERE rather than before the cache. Browsing already-cached careers
+  // (the popular ones — nurse, firefighter, etc.) is never blocked; the limit
+  // still guards the only thing that costs money: an attacker (or heavy run)
+  // rotating to fresh, uncached `?career=` values.
+  const rl = await checkRateLimitAsync(`youtube-search:${session.user.id}`, RateLimits.AI_CHAT);
+  if (!rl.success) {
+    return NextResponse.json({ error: 'Rate limit exceeded. Please try again later.' }, { status: 429 });
+  }
+
   const apiKey = process.env.YOUTUBE_API_KEY;
   if (!apiKey) {
     return NextResponse.json(EMPTY_RESULT);
@@ -203,6 +228,37 @@ export async function GET(req: NextRequest) {
       videos = applyRelevanceFilter(rawEnglish, career);
       usedFallback = videos.length > 0;
     }
+
+    // 3) Explainer formats — "what does a X do" surfaces the explainer-style
+    //    videos ("what is a X / role of a X / X responsibilities") that the
+    //    day-in-the-life query under-returns, especially for office/managerial
+    //    roles with few vlogs. English only (so localized results stay
+    //    localized). Merged in to supplement when results are thin; one extra
+    //    call per career, cached for a week.
+    if (locale.lang === 'en' && videos.length < 5) {
+      const rawExplainer = await fetchYouTubeVideos(buildEnglishExplainerQuery(career), 'en', undefined, apiKey);
+      videos = mergeVideos(videos, applyRelevanceFilter(rawExplainer, career));
+    }
+
+    // 4) Broaden niche/qualified titles when still empty: "IT Programme Manager"
+    //    → "Program Manager". Strips a leading qualifier + normalises spelling,
+    //    then tries both day-in-the-life and explainer for the broader term.
+    if (videos.length === 0) {
+      const broad = broadenCareer(career);
+      if (broad) {
+        const [rawBroadDay, rawBroadEx] = await Promise.all([
+          fetchYouTubeVideos(buildEnglishDayInLifeQuery(broad), 'en', undefined, apiKey),
+          fetchYouTubeVideos(buildEnglishExplainerQuery(broad), 'en', undefined, apiKey),
+        ]);
+        videos = mergeVideos(
+          applyRelevanceFilter(rawBroadDay, broad),
+          applyRelevanceFilter(rawBroadEx, broad),
+        );
+        usedFallback = usedFallback || videos.length > 0;
+      }
+    }
+
+    videos = videos.slice(0, 6);
 
     const result: YouTubeSearchResult = {
       videos,
