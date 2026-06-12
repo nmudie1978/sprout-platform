@@ -1,5 +1,6 @@
-import { Star, ExternalLink, ArrowRight, CheckCircle2, Users, Route, Shield, Heart } from "lucide-react";
+import { ExternalLink, ArrowRight, CheckCircle2, Users, Route, Shield, Heart } from "lucide-react";
 import Link from "next/link";
+import { BrandMark } from "@/components/brand-mark";
 
 export const metadata = {
   title: "For Parents — Endeavrly",
@@ -12,10 +13,7 @@ export default function ForParentsPage() {
       <div className="mx-auto max-w-2xl px-6 py-16 sm:py-24">
         {/* Header */}
         <div className="mb-12">
-          <Link href="/" className="inline-flex items-center gap-2 text-primary mb-8">
-            <Star className="h-6 w-6" />
-            <span className="font-semibold">Endeavrly</span>
-          </Link>
+          <BrandMark size="lg" href="/" className="mb-8" wordmarkClassName="text-primary" />
 
           <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl mb-6">
             Your career story can change a young person&apos;s future

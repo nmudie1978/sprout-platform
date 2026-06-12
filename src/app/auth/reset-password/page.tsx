@@ -9,7 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { Star, Loader2, CheckCircle2 } from "lucide-react";
+import { Navigation2, Loader2, CheckCircle2 } from "lucide-react";
 
 function ResetPasswordInner() {
   const router = useRouter();
@@ -84,7 +84,7 @@ function ResetPasswordInner() {
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <div className="mx-auto mb-2 flex h-11 w-11 items-center justify-center rounded-2xl bg-primary text-primary-foreground">
-            <Star className="h-5 w-5" />
+            <Navigation2 className="h-5 w-5 fill-current" strokeWidth={1.5} />
           </div>
           <CardTitle>Choose a new password</CardTitle>
           <CardDescription>
