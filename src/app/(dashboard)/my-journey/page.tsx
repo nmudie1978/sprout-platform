@@ -989,10 +989,11 @@ function UnderstandTab({
   const { isCollapsed: uCollapsed, toggle: uToggle } = useSectionCollapse(
     ['u-role', 'u-growth', 'u-day', 'u-education-pathway', 'u-specialisms', 'u-notes'],
     [],
-    // Day & Workplace and Education Pathway ALWAYS open minimised so the tab
-    // opens focused on "Inside the Role". The user can expand them in-session,
-    // but every fresh load resets them to minimised (no sticky-open).
-    ['u-day', 'u-education-pathway'],
+    // These sections ALWAYS open minimised so the Understand tab opens calm and
+    // scannable. The user can expand them in-session, but every fresh load
+    // resets them to minimised (no sticky-open). Inside the Role + How this
+    // role grows are included per owner request.
+    ['u-role', 'u-growth', 'u-day', 'u-education-pathway'],
   );
 
   if (!career || !goalTitle) {
