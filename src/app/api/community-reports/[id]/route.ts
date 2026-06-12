@@ -181,6 +181,60 @@ export async function PATCH(req: NextRequest, props: { params: Promise<{ id: str
         return NextResponse.json({ message: "User paused successfully" });
       }
 
+      case "reinstateUser": {
+        // Reverse a pauseUser suspension. Without this, a paused account was
+        // irreversible from the moderation queue — a safeguarding gap (an
+        // admin must be able to undo a suspension after review). Reverses
+        // exactly what pauseUser sets on the User row.
+        if (!fullReport || fullReport.targetType !== "USER") {
+          return NextResponse.json(
+            { error: "This report does not target a user" },
+            { status: 400 }
+          );
+        }
+        const target = await prisma.user.findUnique({
+          where: { id: fullReport.targetId },
+          select: { isPaused: true },
+        });
+        if (target && target.isPaused) {
+          await prisma.user.update({
+            where: { id: fullReport.targetId },
+            data: {
+              isPaused: false,
+              pausedAt: null,
+              pausedReason: null,
+              pausedById: null,
+            },
+          });
+          await logAuditAction({
+            userId: fullReport.targetId,
+            actorId: actor.userId ?? undefined,
+            action: AuditAction.USER_UNPAUSED,
+            targetType: "user",
+            targetId: fullReport.targetId,
+            metadata: { reportId: params.id, actor: actor.label },
+          });
+          await prisma.notification.create({
+            data: {
+              userId: fullReport.targetId,
+              type: "COMMUNITY_ACTION_TAKEN",
+              title: "Account reinstated",
+              message:
+                "Your account has been reinstated after review. You can use Endeavrly as normal again. Thank you for your patience.",
+            },
+          });
+        }
+        await prisma.communityReport.update({
+          where: { id: params.id },
+          data: {
+            status: "RESOLVED",
+            actionTaken: "reinstated_user",
+            actionTakenAt: new Date(),
+          },
+        });
+        return NextResponse.json({ message: "User reinstated successfully" });
+      }
+
       case "claim": {
         await prisma.communityReport.update({
           where: { id: params.id },
@@ -238,6 +292,86 @@ export async function PATCH(req: NextRequest, props: { params: Promise<{ id: str
           data: { status: "ACTION_TAKEN", actionTaken: "redacted_content", actionTakenAt: new Date() },
         });
         return NextResponse.json({ message: "Content redacted successfully" });
+      }
+
+      case "hideContent": {
+        // Hide a reported piece of CONTENT (Ask-a-Pro question / AI Career Twin
+        // output) so it's no longer shown to youth.
+        //
+        // CONTENT report targetIds are typed references:
+        //   - "question:<id>"        -> a persisted ProQuestion. Hiding it =
+        //     flipping its status to REJECTED, which the public browse query
+        //     (GET /api/questions, where.status = "PUBLISHED") already filters
+        //     out. No migration needed, and it's reversible by re-moderating.
+        //   - "career-twin-chat" / "career-twin-experience" -> EPHEMERAL AI
+        //     output that is generated per-request and never stored as a
+        //     moderatable row. There is nothing persistent to hide; the most we
+        //     can safely do is record the report as actioned so the team has a
+        //     trail (and the model-level guardrails already constrain output).
+        if (!fullReport || fullReport.targetType !== "CONTENT") {
+          return NextResponse.json(
+            { error: "This report does not target a content item" },
+            { status: 400 }
+          );
+        }
+
+        const ref = fullReport.targetId || "";
+        if (ref.startsWith("question:")) {
+          const questionId = ref.slice("question:".length);
+          const existing = await prisma.proQuestion.findUnique({
+            where: { id: questionId },
+            select: { id: true },
+          });
+          if (!existing) {
+            return NextResponse.json(
+              { error: "The reported question no longer exists" },
+              { status: 404 }
+            );
+          }
+          await prisma.proQuestion.update({
+            where: { id: questionId },
+            data: {
+              status: "REJECTED",
+              rejectionReason: "Hidden following a safety report",
+              moderatedBy: actor.userId,
+              moderatedAt: new Date(),
+            },
+          });
+          await logAuditAction({
+            actorId: actor.userId ?? undefined,
+            action: AuditAction.CONTENT_MODERATED,
+            targetType: "content",
+            targetId: ref,
+            metadata: { reportId: params.id, actor: actor.label, hidden: "pro_question" },
+          });
+          await prisma.communityReport.update({
+            where: { id: params.id },
+            data: { status: "ACTION_TAKEN", actionTaken: "hidden_content", actionTakenAt: new Date() },
+          });
+          return NextResponse.json({ message: "Content hidden successfully" });
+        }
+
+        // Ephemeral AI content (career-twin-*): nothing persistent to hide.
+        // Record the action so the report is closed with a clear trail.
+        await logAuditAction({
+          actorId: actor.userId ?? undefined,
+          action: AuditAction.CONTENT_MODERATED,
+          targetType: "content",
+          targetId: ref,
+          metadata: {
+            reportId: params.id,
+            actor: actor.label,
+            note: "Ephemeral AI output — no stored row to hide; report acknowledged.",
+          },
+        });
+        await prisma.communityReport.update({
+          where: { id: params.id },
+          data: { status: "ACTION_TAKEN", actionTaken: "acknowledged_ephemeral_content", actionTakenAt: new Date() },
+        });
+        return NextResponse.json({
+          message:
+            "This is one-off AI-generated content with no stored copy to remove. The report has been recorded and acknowledged.",
+        });
       }
 
       case "addNote": {

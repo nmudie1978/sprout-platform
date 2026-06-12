@@ -17,7 +17,7 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
-import { CheckCircle2, XCircle, AlertTriangle, Shield, Loader2, MessageSquare, Pause, EraserIcon } from "lucide-react";
+import { CheckCircle2, XCircle, AlertTriangle, Shield, Loader2, MessageSquare, Pause, Play, EraserIcon, EyeOff } from "lucide-react";
 import type { CommunityReportStatus, CommunityReportTargetType } from "@prisma/client";
 
 interface Props {
@@ -90,6 +90,56 @@ export function ReportActions({ reportId, currentStatus, targetType, targetAlrea
               <Pause className="h-3.5 w-3.5 mr-1.5" />
             )}
             Pause user
+          </Button>
+        )}
+
+        {targetType === "USER" && targetAlreadyPaused && (
+          <Button
+            size="sm"
+            variant="outline"
+            disabled={pending || busyAction !== null}
+            onClick={() => {
+              if (
+                !window.confirm(
+                  "Reinstate this user's account? The suspension is lifted, the user can use Endeavrly again, and they are notified. This is logged.",
+                )
+              )
+                return;
+              runAction("reinstateUser", {}, "User reinstated");
+            }}
+            className="border-emerald-500/40 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-500/10"
+          >
+            {busyAction === "reinstateUser" ? (
+              <Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" />
+            ) : (
+              <Play className="h-3.5 w-3.5 mr-1.5" />
+            )}
+            Reinstate user
+          </Button>
+        )}
+
+        {targetType === "CONTENT" && (
+          <Button
+            size="sm"
+            variant="outline"
+            disabled={pending || busyAction !== null || isTerminal}
+            onClick={() => {
+              if (
+                !window.confirm(
+                  "Hide the reported content from youth? Persisted content (e.g. an Ask-a-Pro question) is unpublished. One-off AI output has no stored copy, so the report is recorded instead. This is logged.",
+                )
+              )
+                return;
+              runAction("hideContent", {}, "Content hidden");
+            }}
+            className="border-orange-500/40 text-orange-700 dark:text-orange-300 hover:bg-orange-500/10"
+          >
+            {busyAction === "hideContent" ? (
+              <Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" />
+            ) : (
+              <EyeOff className="h-3.5 w-3.5 mr-1.5" />
+            )}
+            Hide content
           </Button>
         )}
 
@@ -233,7 +283,7 @@ export function ReportActions({ reportId, currentStatus, targetType, targetAlrea
       )}
 
       <p className="text-[10px] text-muted-foreground/60 pt-2 border-t border-border/20">
-        All actions are logged to AuditLog. Paused jobs / users stay paused until an admin unpauses manually.
+        All actions are logged to AuditLog. A paused user stays paused until an admin uses “Reinstate user”.
       </p>
     </div>
   );

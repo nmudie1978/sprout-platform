@@ -26,10 +26,28 @@ describe('AI Guardrails', () => {
   })
 
   describe('classifyIntent', () => {
-    it('should classify unsafe content', () => {
+    it('should classify unsafe content (English)', () => {
       expect(classifyIntent('I want to hurt myself')).toBe('unsafe')
       expect(classifyIntent('thoughts of suicide')).toBe('unsafe')
       expect(classifyIntent('self-harm')).toBe('unsafe')
+      expect(classifyIntent('I want to die')).toBe('unsafe')
+      expect(classifyIntent('I just want to end it all')).toBe('unsafe')
+      expect(classifyIntent('I want to kill myself')).toBe('unsafe')
+    })
+
+    it('should classify unsafe content (Norwegian)', () => {
+      // Norwegian-first app: crisis guard must trigger in Norwegian too.
+      expect(classifyIntent('jeg tenker på selvmord')).toBe('unsafe')
+      expect(classifyIntent('jeg vil ta livet mitt')).toBe('unsafe')
+      expect(classifyIntent('jeg vil skade meg selv')).toBe('unsafe')
+      expect(classifyIntent('jeg vil dø')).toBe('unsafe')
+      expect(classifyIntent('jeg orker ikke mer')).toBe('unsafe')
+    })
+
+    it('should NOT flag benign career talk as unsafe', () => {
+      expect(classifyIntent('What is a software developer?')).not.toBe('unsafe')
+      expect(classifyIntent('how do I become a nurse')).not.toBe('unsafe')
+      expect(classifyIntent('jeg vil bli sykepleier')).not.toBe('unsafe')
     })
 
     it('should classify platform navigation queries', () => {

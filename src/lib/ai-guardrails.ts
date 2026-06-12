@@ -91,15 +91,36 @@ export type IntentType =
 export function classifyIntent(userMessage: string): IntentType {
   const lower = userMessage.toLowerCase();
 
-  // Unsafe content detection
+  // Unsafe content detection.
+  // This is a NORWEGIAN-FIRST app (ages 15-30), so the crisis short-circuit
+  // must catch Norwegian phrasings too — not only English. Terms are kept
+  // conservative (clear self-harm/crisis intent) to avoid false positives on
+  // benign career talk; matched as substrings like the rest of this function.
   const unsafeKeywords = [
+    // English
     "suicide",
     "self-harm",
+    "self harm",
     "kill myself",
     "hurt myself",
+    "want to die",
+    "end it all",
+    "end my life",
     "depression",
     "anxiety disorder",
     "mental health crisis",
+    // Norwegian
+    "selvmord", // suicide
+    "ta livet mitt", // take my life
+    "ta livet sitt", // take one's life
+    "ta mitt eget liv", // take my own life
+    "skade meg selv", // harm myself
+    "skade seg selv", // harm oneself
+    "selvskading", // self-harm (noun)
+    "vil dø", // want to die
+    "vil ikke leve", // don't want to live
+    "orker ikke mer", // can't take it anymore
+    "orker ikke leve", // can't bear to live
   ];
 
   if (unsafeKeywords.some((keyword) => lower.includes(keyword))) {
