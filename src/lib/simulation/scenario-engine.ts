@@ -20,7 +20,7 @@ import {
   type ProgrammeWithInstitution,
   type CareerRequirements,
 } from '@/lib/education';
-import { getCategoryForCareer, type CareerCategory } from '@/lib/career-pathways';
+import { getCategoryForCareerByName, type CareerCategory } from '@/lib/career-pathways';
 import type { JourneyItem } from '@/lib/journey/career-journey-types';
 
 // ── Types ───────────────────────────────────────────────────────────
@@ -178,18 +178,25 @@ const CATEGORY_SECTOR: Partial<Record<CareerCategory, string>> = {
   CONSTRUCTION_TRADES: 'trades',
 };
 
-function getSector(careerId: string): string {
+function getSector(careerId: string, careerTitle?: string): string {
   // Prefer the authoritative career category — complete and deterministic.
-  const category = getCategoryForCareer(careerId);
+  // Resolve by id OR title: callers like the journey report pass the display
+  // title ("Sniper") rather than the slug ("sniper"), and a strict id-only
+  // lookup would miss it, fall through to the keyword heuristic, and (for
+  // careers the heuristic doesn't recognise) land on the wrong `general`
+  // employer pool — e.g. a Sniper getting "Telenor" as a first employer.
+  const category =
+    getCategoryForCareerByName(careerId) ??
+    (careerTitle ? getCategoryForCareerByName(careerTitle) : undefined);
   if (category && CATEGORY_SECTOR[category]) return CATEGORY_SECTOR[category]!;
 
-  // Fallback heuristic for ids not found in the catalogue (e.g. when called
-  // with a free-text title rather than a slug).
-  const id = careerId.toLowerCase();
+  // Fallback heuristic for careers not found in the catalogue. Match against
+  // both the id and the title so free-text titles still classify.
+  const id = `${careerId} ${careerTitle ?? ''}`.toLowerCase();
   if (/doctor|nurse|surgeon|dentist|physio|vet|health|medic|pharma/.test(id)) return 'healthcare';
   if (/software|developer|data|it-|cyber|cloud|qa|devops|frontend|backend/.test(id)) return 'technology';
   if (/engineer|mechanical|civil|electrical|chemical/.test(id)) return 'engineering';
-  if (/soldier|military|army|navy|defence|defense|forsvar/.test(id)) return 'military';
+  if (/soldier|military|army|navy|air ?force|defence|defense|forsvar|sniper|marksman|infantry|artillery|commando|special forces|paratroop|combat|reconnaissance|officer cadet|naval|gunner/.test(id)) return 'military';
   if (/police|firefighter|fire-|paramedic|security|rescue|prison/.test(id)) return 'public_safety';
   if (/social-worker|care-worker|youth-worker|counsellor|support-worker/.test(id)) return 'social_care';
   if (/coach|athlete|fitness|sport|trainer/.test(id)) return 'sport';
@@ -213,7 +220,7 @@ export function generateScenarios(
 ): Scenario[] {
   const programmes = getProgrammesForCareer(careerId);
   const reqs = getCareerRequirements(careerId) || getCareerRequirements(careerTitle);
-  const sector = getSector(careerId);
+  const sector = getSector(careerId, careerTitle);
   const employers = SECTOR_EMPLOYERS[sector] ?? SECTOR_EMPLOYERS.general;
 
   // Split programmes into Norwegian vs international
