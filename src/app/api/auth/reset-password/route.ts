@@ -41,8 +41,12 @@ export async function POST(req: NextRequest) {
 
     const hashed = await bcrypt.hash(password as string, 10);
     // Set the new password, consume this token, and invalidate any siblings.
-    await prisma.$transaction([
-      prisma.user.update({ where: { id: token!.userId }, data: { password: hashed } }),
+    const [updatedUser] = await prisma.$transaction([
+      prisma.user.update({
+        where: { id: token!.userId },
+        data: { password: hashed },
+        select: { email: true },
+      }),
       prisma.passwordResetToken.update({ where: { id: token!.id }, data: { usedAt: new Date() } }),
       prisma.passwordResetToken.updateMany({
         where: { userId: token!.userId, usedAt: null },
@@ -50,7 +54,10 @@ export async function POST(req: NextRequest) {
       }),
     ]);
 
-    return NextResponse.json({ ok: true });
+    // Return the account email so the client can verify the change end-to-end
+    // by signing in with the new password (the caller already proved ownership
+    // of this email by possessing the single-use reset token).
+    return NextResponse.json({ ok: true, email: updatedUser.email });
   } catch (error) {
     logAndSwallow("auth:reset-password")(error);
     return NextResponse.json({ error: "Something went wrong. Please try again." }, { status: 500 });

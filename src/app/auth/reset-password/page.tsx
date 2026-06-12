@@ -3,6 +3,7 @@
 import { Suspense, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
+import { signIn } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -18,6 +19,9 @@ function ResetPasswordInner() {
   const [confirm, setConfirm] = useState("");
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
+  // Whether we confirmed the new password actually works by signing in with it
+  // (end-to-end verification, not just trusting the reset endpoint's 200).
+  const [verified, setVerified] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -40,6 +44,31 @@ function ResetPasswordInner() {
       if (!res.ok) {
         toast({ title: "Couldn't reset password", description: data.error ?? "Please try again.", variant: "destructive" });
         return;
+      }
+
+      // Verify the change end-to-end: sign in with the brand-new password
+      // against the SAME backend that just claimed to have set it. This turns
+      // "the endpoint returned 200" into "the new credentials actually work" —
+      // and lands the user straight in their dashboard on success.
+      if (data.email) {
+        const signInResult = await signIn("credentials", {
+          email: data.email,
+          password,
+          redirect: false,
+        });
+        if (signInResult?.ok && !signInResult.error) {
+          setVerified(true);
+          setDone(true);
+          setTimeout(() => router.push("/dashboard"), 1500);
+          return;
+        }
+        // Reset succeeded server-side but the auto sign-in didn't go through
+        // (e.g. transient/rate-limit). The password IS changed — send them to
+        // sign in manually rather than claiming failure.
+        toast({
+          title: "Password updated",
+          description: "Please sign in with your new password.",
+        });
       }
       setDone(true);
       setTimeout(() => router.push("/auth/signin"), 2500);
@@ -69,10 +98,14 @@ function ResetPasswordInner() {
                 <CheckCircle2 className="h-6 w-6 text-primary" />
               </div>
               <p className="text-sm text-muted-foreground">
-                Your password has been updated. Redirecting you to sign in…
+                {verified
+                  ? "Your new password is confirmed and you're signed in. Taking you to your dashboard…"
+                  : "Your password has been updated. Redirecting you to sign in…"}
               </p>
               <Button asChild className="w-full">
-                <Link href="/auth/signin">Sign in</Link>
+                <Link href={verified ? "/dashboard" : "/auth/signin"}>
+                  {verified ? "Go to dashboard" : "Sign in"}
+                </Link>
               </Button>
             </div>
           ) : !token ? (
