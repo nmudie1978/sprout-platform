@@ -33,7 +33,6 @@ import {
   User,
   HelpCircle,
   Info,
-  Star,
   Sparkles,
   Wallet,
   Shield,
@@ -51,6 +50,7 @@ import {
   Zap,
   Library,
 } from "lucide-react";
+import { BrandMark } from "@/components/brand-mark";
 
 // ── Types ────────────────────────────────────────────────────────────
 
@@ -352,15 +352,13 @@ export function SidebarNav({ userRole, userName, userEmail, userProfilePic }: Si
         className="sticky top-0 flex flex-col h-screen overflow-y-auto overflow-x-hidden"
       >
       {/* Brand */}
-      <div className={cn("flex items-center gap-2.5 p-4 mb-2 relative", collapsed && "justify-center")}>
-        <div className="relative w-8 h-8 rounded-xl bg-teal-500/20 flex items-center justify-center shrink-0 cursor-default">
-          <Star className="h-4 w-4 text-teal-400" />
-        </div>
-        {!collapsed && (
-          <span className="font-bold text-base tracking-tight text-foreground dark:text-slate-100">
-            Endeavrly
-          </span>
-        )}
+      <div className={cn("flex items-center p-4 mb-2 relative", collapsed && "justify-center")}>
+        <BrandMark
+          size="md"
+          showWordmark={!collapsed}
+          iconClassName="text-teal-400 fill-teal-400"
+          wordmarkClassName="font-bold text-foreground dark:text-slate-100"
+        />
       </div>
 
       {/* Navigation */}

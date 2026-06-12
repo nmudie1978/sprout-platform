@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
-import { Star, Loader2 } from "lucide-react";
+import { Navigation2, Loader2 } from "lucide-react";
 
 export default function CompleteProfilePage() {
   const router = useRouter();
@@ -95,7 +95,7 @@ export default function CompleteProfilePage() {
       <Card className="w-full max-w-md shadow-2xl border-2 sm:hover-lift">
         <CardHeader className="space-y-2">
           <div className="flex justify-center mb-2">
-            <Star className="h-10 w-10 text-green-600" />
+            <Navigation2 className="h-10 w-10 text-emerald-500 fill-emerald-500" strokeWidth={1.5} />
           </div>
           <CardTitle className="text-2xl text-center">Complete Your Profile</CardTitle>
           <CardDescription className="text-base text-center">

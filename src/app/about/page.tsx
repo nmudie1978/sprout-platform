@@ -1,4 +1,5 @@
-import { Star, Download, Users, ArrowRight } from "lucide-react";
+import { Download, Users, ArrowRight } from "lucide-react";
+import { BrandMark } from "@/components/brand-mark";
 import Link from "next/link";
 
 export const metadata = {
@@ -12,10 +13,7 @@ export default function AboutPage() {
       <div className="mx-auto max-w-2xl px-6 py-16 sm:py-24">
         {/* Header */}
         <div className="mb-12">
-          <Link href="/" className="inline-flex items-center gap-2 text-primary mb-8">
-            <Star className="h-6 w-6" />
-            <span className="font-semibold">Endeavrly</span>
-          </Link>
+          <BrandMark size="lg" href="/" className="mb-8" wordmarkClassName="text-primary" />
 
           <p className="text-xs font-medium uppercase tracking-[0.18em] text-teal-600 dark:text-teal-400/80 mb-3">
             The Career Operating System for young people
