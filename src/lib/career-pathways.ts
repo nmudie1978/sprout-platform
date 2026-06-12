@@ -1288,6 +1288,33 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       sourceUrl: "https://www.ssb.no/en/statbank/table/11418",
     },
     {
+      id: "it-programme-manager",
+      title: "IT Programme Manager",
+      emoji: "🗂️",
+      description:
+        "Own a whole programme of related IT projects — not one delivery, but the coordinated set that together hit a business goal (a cloud migration, a new core platform, a security overhaul). You set governance, manage interdependencies and a shared budget, resolve cross-project conflicts, and keep executives confident the outcomes will land. A step up from IT Project Manager: less day-to-day delivery, more direction and benefits realisation.",
+      avgSalary: "1,000,000 - 1,600,000 kr/year",
+      educationPath:
+        "Bachelor's or Master's in IT, Informatics or Business + 6-10 years running IT projects + programme certification (MSP / PgMP) on top of PMP/PRINCE2 or Scrum",
+      educationRoute: "university",
+      keySkills: [
+        "programme governance",
+        "stakeholder management",
+        "benefits realisation",
+        "budget ownership",
+        "risk and dependency management",
+      ],
+      dailyTasks: [
+        "Direct delivery across multiple project teams",
+        "Manage interdependencies and the programme budget",
+        "Brief executives and steering committees",
+        "Resolve cross-project risks and escalations",
+        "Track that the programme actually delivers its benefits",
+      ],
+      growthOutlook: "high",
+      sector: "mixed",
+    },
+    {
       id: "cio",
       title: "Chief Information Officer",
       emoji: "👔",
