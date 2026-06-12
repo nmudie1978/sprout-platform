@@ -987,12 +987,12 @@ function UnderstandTab({
   const [openSection, setOpenSection] = useState<string | null>(null);
   const [selectedRow, setSelectedRow] = useState<number | null>(null);
   const { isCollapsed: uCollapsed, toggle: uToggle } = useSectionCollapse(
-    ['u-role', 'u-growth', 'u-day', 'u-education-pathway', 'u-specialisms', 'u-notes'],
+    ['u-role', 'u-growth', 'u-day', 'u-openings', 'u-education-pathway', 'u-specialisms', 'u-notes'],
     [],
-    // Day & Workplace and Education Pathway ALWAYS open minimised so the tab
-    // opens focused on "Inside the Role". The user can expand them in-session,
-    // but every fresh load resets them to minimised (no sticky-open).
-    ['u-day', 'u-education-pathway'],
+    // Day & Workplace, Real openings and Education Pathway ALWAYS open minimised
+    // so the tab opens focused on "Inside the Role". The user can expand them
+    // in-session, but every fresh load resets them to minimised (no sticky-open).
+    ['u-day', 'u-openings', 'u-education-pathway'],
   );
 
   if (!career || !goalTitle) {
@@ -1304,6 +1304,43 @@ function UnderstandTab({
           );
         })()}
       </SectionCard>
+
+      {/* ── Real openings — a reality-check on current demand. Deliberately a
+          deep link OUT to a pre-filled LinkedIn job search, NOT an in-app job
+          board: Endeavrly is a career-exploration platform, not a jobs
+          marketplace (no in-app listings/applications). Framed as "see what
+          the real market looks like", not "apply now". ── */}
+      {career?.title && (
+        <SectionCard accent="blue">
+          <SectionHeader
+            icon={Briefcase}
+            title="Real openings"
+            tooltip="A quick read on real-world demand — opens a live LinkedIn job search for this role in a new tab. Endeavrly doesn't handle applications."
+            collapsed={uCollapsed('u-openings')}
+            onToggle={() => uToggle('u-openings')}
+          />
+          {!uCollapsed('u-openings') && (
+            <div className="p-4 sm:p-5">
+              <p className="text-sm text-foreground/70 leading-relaxed mb-4">
+                See what real <span className="font-semibold text-foreground/85">{career.title}</span> roles look like right now. This opens a live LinkedIn search — a window on current demand, not a place to apply through Endeavrly.
+              </p>
+              <a
+                href={`https://www.linkedin.com/jobs/search/?keywords=${encodeURIComponent(career.title)}&location=Norway`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 rounded-control border border-border/40 bg-muted/[0.06] px-4 py-2.5 text-sm font-semibold text-foreground/85 hover:bg-muted/20 transition-colors"
+              >
+                <Briefcase className="h-4 w-4" />
+                View openings on LinkedIn
+                <ExternalLink className="h-3.5 w-3.5 text-muted-foreground/60" />
+              </a>
+              <p className="text-xs text-muted-foreground/45 mt-3">
+                Opens LinkedIn in a new tab. This is just to show you the real market — Endeavrly never handles job applications.
+              </p>
+            </div>
+          )}
+        </SectionCard>
+      )}
 
       {/* ── Education Pathway — School Readiness + Study Path as tabs
           inside a single card. The two sections used to live as two
