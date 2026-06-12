@@ -9,8 +9,9 @@ export const youthProfileSchema = z.object({
   availability: z.string().max(200).optional(),
   city: z.string().min(1, "City is required").max(100, "City must be less than 100 characters"),
   interests: z.array(z.string()).default([]),
-  guardianEmail: z.string().email("Invalid email").optional().or(z.literal("")),
-  guardianConsent: z.boolean().optional(),
+  // Guardian email/consent are intentionally NOT collected — see <age_policy>
+  // in CLAUDE.md. The platform has no guardian-consent flow; any guardian
+  // field sent by a legacy client is ignored (Zod strips unknown keys).
   careerAspiration: z.string().max(200, "Career aspiration must be less than 200 characters").optional().or(z.literal("")),
 });
 

@@ -70,6 +70,7 @@ export async function GET(req: NextRequest) {
     // Fetch the full user-owned tree in parallel.
     const [
       consents,
+      legalAcceptance,
       twinMessages,
       aiChatMessages,
       swipes,
@@ -104,6 +105,10 @@ export async function GET(req: NextRequest) {
       contentInteractions,
     ] = await Promise.all([
       safe("consents", () => prisma.consentRecord.findMany({ ...byUser, orderBy: { grantedAt: "desc" } })),
+      // The actual terms/privacy consent captured at signup lives here, not in
+      // the legacy ConsentRecord table — include it so an Art.15 access request
+      // reflects the user's real consent rather than an empty list.
+      safe("legalAcceptance", () => prisma.legalAcceptance.findUnique({ ...byUser })),
       safe("careerTwinMessages", () => prisma.careerTwinMessage.findMany({ ...byUser, orderBy: { createdAt: "asc" }, select: { careerId: true, role: true, content: true, mode: true, createdAt: true } })),
       safe("aiChatMessages", () => prisma.aiChatMessage.findMany({ ...byUser, orderBy: { createdAt: "asc" } })),
       safe("swipes", () => prisma.swipe.findMany({ where: { youthId: userId } })),
@@ -182,6 +187,12 @@ export async function GET(req: NextRequest) {
         grantedAt: c.grantedAt,
         revokedAt: c.revokedAt,
       })),
+      // Real terms/privacy consent captured at signup (anonymised IP + UA).
+      legalAcceptance: legalAcceptance
+        ? (({ id, userId: _uid, ...rest }) => rest)(
+            legalAcceptance as { id: string; userId: string } & Record<string, unknown>,
+          )
+        : null,
       // Career discovery & matching
       savedCareers,
       savedItems,

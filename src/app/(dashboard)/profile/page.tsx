@@ -91,7 +91,6 @@ export default function ProfilePage() {
     phoneNumber: "",
     city: "",
     interests: [] as string[],
-    guardianEmail: "",
   });
   const formInitializedRef = useRef(false);
   const lastUserIdRef = useRef<string | null>(null);
@@ -158,7 +157,6 @@ export default function ProfilePage() {
         phoneNumber: profile.phoneNumber || "",
         city: profile.city || "",
         interests: profile.interests || [],
-        guardianEmail: profile.guardianEmail || "",
       });
       // Initialize DOB dropdowns from existing date
       if (profile.user?.dateOfBirth) {
@@ -196,7 +194,6 @@ export default function ProfilePage() {
         phoneNumber: data.phoneNumber || "",
         city: data.city || "",
         interests: data.interests || [],
-        guardianEmail: data.guardianEmail || "",
       });
       toast({
         title: "Profile saved!",

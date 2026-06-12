@@ -100,8 +100,7 @@ export async function POST(req: NextRequest) {
         availability: validatedData.availability,
         city: validatedData.city || null,
         interests: validatedData.interests,
-        guardianEmail: validatedData.guardianEmail,
-        guardianConsent: validatedData.guardianConsent || false,
+        // Guardian email/consent intentionally not collected — see <age_policy>.
         careerAspiration: validatedData.careerAspiration || null,
         publicProfileSlug,
         profileVisibility: false, // Default to private
@@ -292,7 +291,7 @@ export async function PATCH(req: NextRequest) {
     // Check if user is in ONBOARDING status and should be activated
     const user = await prisma.user.findUnique({
       where: { id: session.user.id },
-      select: { accountStatus: true, youthAgeBand: true },
+      select: { accountStatus: true },
     });
 
     // Profile is complete if required fields are filled
@@ -311,30 +310,19 @@ export async function PATCH(req: NextRequest) {
         availability: validatedData.availability || null,
         city: validatedData.city || null,
         interests: validatedData.interests,
-        guardianEmail: validatedData.guardianEmail || null,
-        ...(validatedData.guardianConsent !== undefined && { guardianConsent: validatedData.guardianConsent }),
         careerAspiration: validatedData.careerAspiration || null,
       },
     });
 
-    // If user is in ONBOARDING and has completed required fields, activate them
+    // If user is in ONBOARDING and has completed required fields, activate them.
+    // Per <age_policy> (CLAUDE.md) age is a personaliser, NOT a gate: every
+    // youth is ACTIVE on completion regardless of age — there is no
+    // guardian-consent flow and no PENDING_VERIFICATION limbo. Do NOT re-gate.
     if (user?.accountStatus === AccountStatus.ONBOARDING && hasRequiredFields) {
-      // Check if under 18 (needs guardian consent first)
-      const needsGuardianConsent = user.youthAgeBand === "UNDER_SIXTEEN" || user.youthAgeBand === "SIXTEEN_SEVENTEEN";
-
-      if (needsGuardianConsent && !validatedData.guardianConsent) {
-        // Under 18 without guardian consent -> PENDING_VERIFICATION
-        await prisma.user.update({
-          where: { id: session.user.id },
-          data: { accountStatus: AccountStatus.PENDING_VERIFICATION },
-        });
-      } else {
-        // 18+ or has guardian consent -> ACTIVE
-        await prisma.user.update({
-          where: { id: session.user.id },
-          data: { accountStatus: AccountStatus.ACTIVE },
-        });
-      }
+      await prisma.user.update({
+        where: { id: session.user.id },
+        data: { accountStatus: AccountStatus.ACTIVE },
+      });
     }
 
     return NextResponse.json(profile);

@@ -10,10 +10,27 @@ import {
   sanitizeMessage,
   truncateUserAgent,
 } from "@/lib/feedback-validation";
+import { checkRateLimitAsync, RateLimits } from "@/lib/rate-limit";
 
 export async function POST(request: Request) {
   try {
     const session = await getServerSession(authOptions);
+
+    // Feedback is open to anonymous users, so throttle per-account when
+    // signed in, else per-IP, to stop unbounded DB-row spam. 10/min is far
+    // above any genuine feedback cadence.
+    const ip = (request.headers.get("x-forwarded-for") || "unknown")
+      .split(",")[0]
+      .trim();
+    const rlKey = `feedback:${session?.user?.id || ip}`;
+    const rl = await checkRateLimitAsync(rlKey, RateLimits.STRICT);
+    if (!rl.success) {
+      return NextResponse.json(
+        { error: "You're sending feedback too quickly. Please try again shortly." },
+        { status: 429 },
+      );
+    }
+
     const body = await request.json();
     const data = feedbackSchema.parse(body);
 
