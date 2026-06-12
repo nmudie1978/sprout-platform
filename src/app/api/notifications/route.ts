@@ -8,7 +8,7 @@ export async function GET(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
 
-    if (!session) {
+    if (!session?.user?.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
@@ -71,7 +71,7 @@ export async function PATCH(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
 
-    if (!session) {
+    if (!session?.user?.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 

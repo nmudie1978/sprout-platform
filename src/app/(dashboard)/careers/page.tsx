@@ -40,7 +40,7 @@ function CareersPageContent() {
   const router = useRouter();
   const pathname = usePathname();
   const isMobile = useIsMobile();
-  const { catalog, getAllCareers } = useCareerCatalog();
+  const { catalog, getAllCareers, isLoading: isCatalogLoading } = useCareerCatalog();
   // Country-aware localization: localize the RENDERED view only (filtering/
   // sorting/matching keep using the raw career objects). Norway/default/
   // logged-out → unchanged.
@@ -372,7 +372,19 @@ function CareersPageContent() {
       </div>
 
       {/* Results */}
-      {totalItems > 0 ? (
+      {isCatalogLoading && totalItems === 0 ? (
+        /* Catalog still loading from /api/careers/catalog — show a loading
+           state rather than flashing "No careers found" (which would be
+           wrong: getAllCareers() returns [] until the async fetch lands). */
+        <Card className="border-2">
+          <CardContent className="py-12 text-center">
+            <div className="flex flex-col items-center gap-3">
+              <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+              <p className="text-sm text-muted-foreground">Loading careers...</p>
+            </div>
+          </CardContent>
+        </Card>
+      ) : totalItems > 0 ? (
         <>
           {/* Column headers — list view only. Mirrors the ListRow grid so
               labels line up over their data columns. `w-fit mx-auto`
