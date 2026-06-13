@@ -69,6 +69,7 @@ export function CareerTwinView({
   const [needsCareer, setNeedsCareer] = useState(false);
   const [career, setCareer] = useState<CareerInfo | null>(null);
   const [intro, setIntro] = useState("");
+  const [opener, setOpener] = useState<{ text: string; question: string | null } | null>(null);
   const [isSparse, setIsSparse] = useState(false);
   const [modes, setModes] = useState<ModeDef[]>([]);
   const [modeId, setModeId] = useState<string>("ask_future_me");
@@ -95,6 +96,12 @@ export function CareerTwinView({
         }
         setCareer(data.career);
         setIntro(data.intro ?? data.persona?.intro ?? "");
+        // Proactive, personalised opener (server-built, deterministic). Only
+        // shown when the user has no prior conversation for this career — once
+        // a real chat exists, that history leads instead.
+        if (data.opener?.text) {
+          setOpener({ text: data.opener.text, question: data.opener.question ?? null });
+        }
         setIsSparse(
           !data.persona?.strengthsAssumedFromProfile ||
             data.persona.strengthsAssumedFromProfile.length === 0,
@@ -376,7 +383,10 @@ export function CareerTwinView({
           "overflow-y-auto px-4 sm:px-6 py-4 space-y-4 bg-gradient-to-b from-background to-muted/20",
           embedded ? "h-[336px]" : "h-[420px]",
         )}>
-          {returningDays != null && (
+          {/* The proactive opener already greets a returning user warmly, so
+              only show the standalone welcome-back banner when there's no
+              opener (avoids a redundant double greeting). */}
+          {returningDays != null && !opener && (
             <div className={cn("mb-4 rounded-card border border-border px-4 py-3 text-sm text-foreground/80", accentSoftBg)}>
               {(() => {
                 const weeks = Math.max(1, Math.round(returningDays / 7));
@@ -385,10 +395,30 @@ export function CareerTwinView({
             </div>
           )}
           {messages.length === 0 ? (
-            <div className="h-full flex flex-col items-center justify-center text-center">
+            <div className={cn("h-full flex flex-col", opener ? "justify-start" : "items-center justify-center text-center")}>
+              {/* Proactive opener — the Twin speaks first, referencing the
+                  user's real recent activity, so it feels like a companion
+                  who's been paying attention. */}
+              {opener && (
+                <motion.div
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="flex gap-2.5 mb-5"
+                >
+                  <div className={cn("shrink-0 p-2 rounded-full self-start", accentGradient)}>
+                    <Sparkles className="h-4 w-4 text-white" />
+                  </div>
+                  <div className="max-w-[82%]">
+                    <div className="rounded-2xl px-4 py-2.5 text-sm whitespace-pre-wrap bg-muted">
+                      {opener.text}
+                    </div>
+                  </div>
+                </motion.div>
+              )}
               <p className="text-sm text-muted-foreground mb-3">{t("suggested")}</p>
-              <div className="flex flex-col gap-2 w-full max-w-md">
-                {suggested.map((q, i) => (
+              <div className={cn("flex flex-col gap-2 w-full", !opener && "max-w-md")}>
+                {/* Lead with the opener's reflective question when present. */}
+                {(opener?.question ? [opener.question, ...suggested.filter((q) => q !== opener.question)] : suggested).map((q, i) => (
                   <button
                     key={i}
                     onClick={() => send(q)}
