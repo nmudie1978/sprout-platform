@@ -965,18 +965,18 @@ const ZOOM_STEP = 0.25;
 // Weak signal → fewer dots so the radar isn't pretending to have
 // matches it can't meaningfully rank. Strong signal → full picture.
 function bandSizes(signalStrength: number): { strong: number; good: number; total: number } {
-  // Always fetch a generous set (60). The actual display limit is
+  // Always fetch a generous set (80). The actual display limit is
   // decided after fetching, based on how many categories the results
   // span (see dynamicLimit below).
-  if (signalStrength <= 0.5) return { strong: 10, good: 25, total: 60 };
-  if (signalStrength <= 1)   return { strong: 12, good: 28, total: 60 };
-  if (signalStrength < 2.5)  return { strong: 14, good: 30, total: 60 };
-  return                            { strong: 16, good: 32, total: 60 };
+  if (signalStrength <= 0.5) return { strong: 10, good: 25, total: 80 };
+  if (signalStrength <= 1)   return { strong: 12, good: 28, total: 80 };
+  if (signalStrength < 2.5)  return { strong: 14, good: 30, total: 80 };
+  return                            { strong: 16, good: 32, total: 80 };
 }
 
 /**
  * Trim results based on category spread. If results are scattered
- * across many categories (5+), keep up to 60 so users see the full
+ * across many categories (5+), keep up to 80 so users see the full
  * breadth. If concentrated in fewer categories (<4), trim to 25 —
  * showing more would just be padding with weak matches.
  */
@@ -988,11 +988,11 @@ function dynamicLimit(careers: { id: string }[], findCategory: FindCategory): nu
   }
   const heavyCategories = [...catCounts.values()].filter((n) => n >= 10).length;
 
-  // Breadth: 5+ categories → show all 60 for full exploration
-  if (catCounts.size >= 5) return 60;
-  // Concentration: at most 2 categories have 10+ hits → still show 60
+  // Breadth: 5+ categories → show all 80 for full exploration
+  if (catCounts.size >= 5) return 80;
+  // Concentration: at most 2 categories have 10+ hits → still show 80
   // so the user sees depth within their focused area
-  if (heavyCategories <= 2 && careers.length >= 30) return 60;
+  if (heavyCategories <= 2 && careers.length >= 30) return 80;
   // Otherwise cap at 25 to avoid padding with weak matches
   return 25;
 }
