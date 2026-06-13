@@ -44,7 +44,11 @@ const TabsContent = React.forwardRef<
   <TabsPrimitive.Content
     ref={ref}
     className={cn(
-      "mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+      // `tabs-content-motion` (globals.css) gives a calm fade-up cross-fade
+      // when this content becomes active. Pure CSS keyed on Radix's
+      // data-[state=active], so mount/unmount behaviour is unchanged and it
+      // is disabled under prefers-reduced-motion.
+      "tabs-content-motion mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
       className
     )}
     {...props}
