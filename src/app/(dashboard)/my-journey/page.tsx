@@ -985,13 +985,15 @@ function UnderstandTab({
   // All hooks must be called before any early return
   const [openSection, setOpenSection] = useState<string | null>(null);
   const [selectedRow, setSelectedRow] = useState<number | null>(null);
+  // EVERY Understand section opens minimised on load, at all times. The user
+  // can expand sections in-session, but every fresh load resets them all to
+  // minimised (ignores any stored open/closed choice) — the tab always opens
+  // calm and scannable. Reuse one list for both args so they can't drift.
+  const U_SECTION_KEYS = ['u-role', 'u-growth', 'u-day', 'u-education-pathway', 'u-specialisms', 'u-notes'];
   const { isCollapsed: uCollapsed, toggle: uToggle } = useSectionCollapse(
-    ['u-role', 'u-growth', 'u-day', 'u-education-pathway', 'u-specialisms', 'u-notes'],
+    U_SECTION_KEYS,
     [],
-    // Day & Workplace and Education Pathway ALWAYS open minimised so the tab
-    // opens focused on "Inside the Role". The user can expand them in-session,
-    // but every fresh load resets them to minimised (no sticky-open).
-    ['u-day', 'u-education-pathway'],
+    U_SECTION_KEYS,
   );
 
   if (!career || !goalTitle) {
