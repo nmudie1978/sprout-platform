@@ -266,12 +266,22 @@ export async function GET(req: NextRequest) {
       title: videos[0]?.title ?? null,
     };
 
-    // Localized hit caches 7 days. An English-fallback result (or an empty miss)
-    // caches 1 day so newly-indexed local-language content is picked up sooner.
+    // TTL by result quality:
+    //  - Empty result → 1 HOUR only. An empty is almost always a transient
+    //    miss (a quota blip, an API hiccup, a moment during a deploy). The
+    //    cache-read treats an empty `videos: []` as a hit, so a long TTL here
+    //    "poisons" the career — users see no videos with no retry until expiry.
+    //    A short TTL still throttles re-fetches but lets it self-heal in ~1h
+    //    instead of 24h. (See: IT Programme Manager / nurse / firefighter were
+    //    all stuck empty for a day.)
+    //  - English-fallback hit → 1 day (so newly-indexed local content is found).
+    //  - Localized hit → 7 days.
     const cachePayload = result as unknown as Prisma.InputJsonValue;
-    const ttlMs = videos.length > 0 && !usedFallback
-      ? 7 * 24 * 60 * 60 * 1000
-      : 1 * 24 * 60 * 60 * 1000;
+    const ttlMs = videos.length === 0
+      ? 60 * 60 * 1000
+      : usedFallback
+      ? 1 * 24 * 60 * 60 * 1000
+      : 7 * 24 * 60 * 60 * 1000;
     prisma.videoCache.upsert({
       where: { cacheKey },
       create: { cacheKey, data: cachePayload, expiresAt: new Date(Date.now() + ttlMs) },
