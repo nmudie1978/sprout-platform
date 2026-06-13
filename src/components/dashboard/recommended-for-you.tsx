@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useRef } from "react";
 import { useTranslations } from "next-intl";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import {
@@ -36,6 +36,30 @@ export function RecommendedForYou({
     [signals, careers, getCategoryForCareer],
   );
 
+  // Track which recommendation IDs we've already shown so that an item which
+  // is *newly* surfaced (after the user saves / explores a career) gets a
+  // brief one-shot highlight pulse — it lights up, then settles. Items that
+  // were already on screen don't re-pulse on reorder. Skip the very first
+  // render (no pulse on initial mount), and skip entirely under reduced motion.
+  const seenIds = useRef<Set<string>>(new Set());
+  const hasMounted = useRef(false);
+  // Decide newness against the *previous* seen set, then immediately fold the
+  // current ids in so the next render won't re-pulse them. Captured during
+  // render (refs, not state) so there's no extra commit/flicker.
+  const newIds = useMemo(() => {
+    const fresh = new Set<string>();
+    if (!reduce && hasMounted.current) {
+      for (const r of recommendations) {
+        if (!seenIds.current.has(r.career.id)) fresh.add(r.career.id);
+      }
+    }
+    seenIds.current = new Set(recommendations.map((r) => r.career.id));
+    hasMounted.current = true;
+    return fresh;
+    // Recompute only when the rendered set changes.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [recommendations, reduce]);
+
   if (recommendations.length === 0) {
     return (
       <div className="flex h-full flex-col items-start justify-center gap-2 text-xs">
@@ -53,15 +77,49 @@ export function RecommendedForYou({
   return (
     <div className="divide-y divide-border/60 overflow-hidden rounded-control border border-border/60 bg-muted/10">
       <AnimatePresence initial={false}>
-        {recommendations.map(({ career, reasonKind, reasonTitle }) => (
+        {recommendations.map(({ career, reasonKind, reasonTitle }) => {
+          const pulse = newIds.has(career.id);
+          return (
           <motion.button
             key={career.id}
             type="button"
             layout={!reduce}
-            initial={reduce ? false : { opacity: 0, y: -6 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial={
+              reduce
+                ? false
+                : {
+                    opacity: 0,
+                    y: -6,
+                    // One-shot highlight: a soft accent wash + ring that the
+                    // item fades out of (below) the first time it's surfaced.
+                    // Brand gold accent (#D4A84F) as concrete rgba so motion
+                    // can tween it (CSS vars aren't parseable by the animator).
+                    backgroundColor: pulse
+                      ? "rgba(212, 168, 79, 0.16)"
+                      : "rgba(212, 168, 79, 0)",
+                    boxShadow: pulse
+                      ? "inset 0 0 0 1px rgba(212, 168, 79, 0.38)"
+                      : "inset 0 0 0 0 rgba(212, 168, 79, 0)",
+                  }
+            }
+            animate={{
+              opacity: 1,
+              y: 0,
+              backgroundColor: "rgba(212, 168, 79, 0)",
+              boxShadow: "inset 0 0 0 0 rgba(212, 168, 79, 0)",
+            }}
             exit={reduce ? undefined : { opacity: 0, height: 0 }}
-            transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+            transition={
+              reduce
+                ? { duration: 0.28, ease: [0.22, 1, 0.36, 1] }
+                : {
+                    duration: 0.28,
+                    ease: [0.22, 1, 0.36, 1],
+                    // Let the accent wash/ring linger, then ease out over ~1s.
+                    backgroundColor: { duration: 1, ease: "easeOut", delay: 0.15 },
+                    boxShadow: { duration: 1, ease: "easeOut", delay: 0.15 },
+                  }
+            }
             whileHover={reduce ? undefined : { x: 2 }}
             onClick={() => onSelect(career)}
             className="flex w-full items-center gap-2 px-2.5 py-2 text-left text-xs transition-colors hover:bg-muted/40"
@@ -78,7 +136,8 @@ export function RecommendedForYou({
               </span>
             </span>
           </motion.button>
-        ))}
+          );
+        })}
       </AnimatePresence>
     </div>
   );
