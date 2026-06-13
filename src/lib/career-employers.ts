@@ -16,6 +16,19 @@ export interface Employer {
 }
 
 const CAREER_EMPLOYERS: Record<string, Employer[]> = {
+  // Blockchain is a global, largely remote field led by crypto/web3
+  // specialists — NOT the generic Norwegian IT consultancies the sector
+  // fallback would otherwise show. Lead with Norway's crypto employer (Firi),
+  // then established web3 companies that genuinely hire blockchain engineers
+  // (most are remote-friendly across Europe).
+  'blockchain-developer': [
+    { name: 'Firi', industry: 'Crypto Exchange (Oslo)', size: '100+', careersUrl: 'https://www.firi.com/en/career' },
+    { name: 'Coinbase', industry: 'Crypto Exchange', size: '3,000+', careersUrl: 'https://www.coinbase.com/careers' },
+    { name: 'Chainlink Labs', industry: 'Web3 Infrastructure', size: '600+', careersUrl: 'https://chainlinklabs.com/careers' },
+    { name: 'Consensys', industry: 'Ethereum / Web3', size: '700+', careersUrl: 'https://consensys.io/careers' },
+    { name: 'Ledger', industry: 'Crypto Security', size: '700+', careersUrl: 'https://www.ledger.com/career' },
+    { name: 'Kraken', industry: 'Crypto Exchange', size: '2,000+', careersUrl: 'https://www.kraken.com/careers' },
+  ],
   'project-manager': [
     { name: 'Capgemini', industry: 'IT Consulting', size: '2,000+', careersUrl: 'https://www.capgemini.com/no-no/careers/' },
     { name: 'Sopra Steria', industry: 'IT Consulting', size: '2,500+', careersUrl: 'https://www.soprasteria.no/karriere' },
