@@ -26,7 +26,10 @@ function EmployerCard({ emp }: { emp: Employer }) {
     : null;
 
   const content = (
-    <div className="flex flex-col justify-between min-w-[180px] max-w-[200px] shrink-0 rounded-lg border border-border/30 bg-card/40 px-3 py-2.5 hover:border-border/50 hover:bg-card/60 transition-colors group h-full">
+    <div className={cn(
+      "flex flex-col justify-between min-w-[180px] max-w-[200px] shrink-0 rounded-lg border border-border/30 bg-card/40 px-3 py-2.5 hover:border-border/50 hover:bg-card/60 transition-colors group h-full",
+      emp.careersUrl && "press",
+    )}>
       <div className="flex items-center gap-2 mb-1.5">
         {domain ? (
           <img

@@ -188,7 +188,7 @@ export function JourneyCompaniesTray({
                 className={cn(
                   "flex items-center gap-3 rounded-lg border border-border/30 bg-card/40 px-3 py-2.5",
                   emp.careersUrl &&
-                    "hover:border-sky-500/40 hover:bg-card/70 transition-colors group",
+                    "press hover:border-sky-500/40 hover:bg-card/70 transition-colors group",
                 )}
               >
                 {domain ? (

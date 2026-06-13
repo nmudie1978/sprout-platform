@@ -399,11 +399,39 @@
     to   { opacity: 1; transform: none; }
   }
 
-  /* Respect the user's motion preference — no entrance animation, no lift. */
+  /* Press feedback — pair with .hover-lift on clickable cards/rows so a
+     tap/click feels physical. Subtle ~1% scale-down on :active only. The
+     transition is short so the press reads instant but not jarring. */
+  .press {
+    @apply transition-transform duration-150 ease-out;
+  }
+  .press:active {
+    transform: scale(0.99);
+  }
+
+  /* Smooth tab content transitions — applied by the shared <TabsContent>
+     so every Radix tab cross-fades + fades up gently when it becomes
+     active, instead of swapping instantly. Keyed to data-[state=active]
+     so it re-runs each time the user switches tabs. GPU-only (opacity +
+     transform), short and eased to stay calm. */
+  .tabs-content-motion[data-state="active"] {
+    animation: tabs-content-enter 0.28s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  @keyframes tabs-content-enter {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: none; }
+  }
+
+  /* Respect the user's motion preference — no entrance animation, no lift,
+     no press scale, no tab cross-fade. Final states render instantly. */
   @media (prefers-reduced-motion: reduce) {
     .reveal-up { animation: none; }
     .hover-lift,
     .hover-lift:hover { transition: none; transform: none; }
+    .press { transition: none; }
+    .press:active { transform: none; }
+    .tabs-content-motion[data-state="active"] { animation: none; }
   }
 
   /* Animated blob */

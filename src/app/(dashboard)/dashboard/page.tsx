@@ -242,6 +242,25 @@ function ProgressRing({
   const progress = total > 0 ? current / total : 0;
   const offset = circumference - progress * circumference;
 
+  // Animate the ring filling from empty → its real value once on mount.
+  // We start the dashoffset fully "empty" (= circumference) and, after the
+  // first paint, set it to the real offset so the existing
+  // `transition-all duration-700` sweeps it into place. Users who prefer
+  // reduced motion (or any SSR/no-JS render) see the final state instantly.
+  const [animatedOffset, setAnimatedOffset] = useState(circumference);
+  useEffect(() => {
+    const prefersReduced =
+      typeof window !== "undefined" &&
+      window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+    if (prefersReduced) {
+      setAnimatedOffset(offset);
+      return;
+    }
+    // rAF ensures the empty state paints before we transition to `offset`.
+    const raf = requestAnimationFrame(() => setAnimatedOffset(offset));
+    return () => cancelAnimationFrame(raf);
+  }, [offset]);
+
   return (
     <div className="relative" style={{ width: size, height: size }}>
       <svg width={size} height={size} className="-rotate-90">
@@ -262,10 +281,10 @@ function ProgressRing({
           stroke="currentColor"
           strokeWidth={strokeWidth}
           strokeDasharray={circumference}
-          strokeDashoffset={offset}
+          strokeDashoffset={animatedOffset}
           strokeLinecap="round"
           className={cn(
-            "transition-all duration-700",
+            "transition-[stroke-dashoffset] duration-700 ease-out",
             active ? "text-primary" : "text-muted-foreground/60"
           )}
         />
@@ -1327,7 +1346,7 @@ export default function DashboardPage() {
                           const found = getAllCareers().find((x) => x.id === c.careerId);
                           if (found) setSavedCareerDetail(found);
                         }}
-                        className="flex items-center gap-2 flex-1 min-w-0 text-left"
+                        className="press flex items-center gap-2 flex-1 min-w-0 text-left"
                       >
                         <span className="shrink-0 text-sm">{c.careerEmoji}</span>
                         <span className="text-muted-foreground/70 truncate flex-1">{c.careerTitle}</span>
