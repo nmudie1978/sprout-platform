@@ -18,9 +18,23 @@ const SIDEBAR_HREFS = new Set([
   "/feedback",
 ]);
 
+// The feature steps must walk down the sidebar in its visual order:
+// Dashboard → My Journey → My Career Radar → My Library → Career Twin →
+// Explore Careers → Youth Events → Industry Insights.
+const SIDEBAR_ORDER = [
+  "/dashboard",
+  "/my-journey",
+  "/careers/radar",
+  "/library",
+  "/career-advisor",
+  "/careers",
+  "/career-events",
+  "/insights",
+];
+
 describe("walkthrough tour steps", () => {
-  it("has the expected 7 steps", () => {
-    expect(STEPS).toHaveLength(7);
+  it("is intro + 8 sidebar steps + CTA = 10 steps", () => {
+    expect(STEPS).toHaveLength(10);
   });
 
   it("every target points at a real sidebar destination", () => {
@@ -31,13 +45,14 @@ describe("walkthrough tour steps", () => {
     }
   });
 
-  it("maps the five feature steps to the right sidebar items", () => {
+  it("walks the sidebar in order between the intro and CTA", () => {
+    const targets = STEPS.map((s) => s.target);
+    expect(targets).toEqual([undefined, ...SIDEBAR_ORDER, undefined]);
+  });
+
+  it("covers My Library (the previously-missing item)", () => {
     const byTitle = Object.fromEntries(STEPS.map((s) => [s.title, s.target]));
-    expect(byTitle["Career Radar"]).toBe("/careers/radar");
-    expect(byTitle["Dashboard"]).toBe("/dashboard");
-    expect(byTitle["My Journey"]).toBe("/my-journey");
-    expect(byTitle["Career Twin"]).toBe("/career-advisor");
-    expect(byTitle["Industry Insights"]).toBe("/insights");
+    expect(byTitle["My Library"]).toBe("/library");
   });
 
   it("leaves the intro and CTA steps without a target", () => {
