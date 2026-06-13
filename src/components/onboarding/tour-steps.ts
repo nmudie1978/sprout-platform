@@ -2,9 +2,12 @@ import {
   Sparkles,
   LayoutDashboard,
   Route,
+  Radar,
+  Library,
   Bot,
-  BarChart3,
   Compass,
+  Calendar,
+  BarChart3,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
@@ -15,6 +18,11 @@ import type { LucideIcon } from "lucide-react";
 // `target` — the sidebar destination it describes — which the TourSpotlight
 // uses to highlight the matching sidebar item (via its `data-tour-target`
 // attribute) as the user steps through. Intro/CTA steps have no target.
+//
+// The feature steps follow the sidebar's own top-to-bottom order (Dashboard →
+// My Journey → My Career Radar → My Library → Career Twin → Explore Careers →
+// Youth Events → Industry Insights) so the spotlight walks straight down the
+// nav as the user clicks Next.
 
 export interface WalkthroughStep {
   icon: LucideIcon;
@@ -32,15 +40,7 @@ export const STEPS: WalkthroughStep[] = [
     iconColor: "text-teal-500",
     iconBg: "bg-teal-500/10",
     title: "Let me show you around",
-    body: "Endeavrly helps you explore careers properly — step by step. Here’s how the platform works.",
-  },
-  {
-    icon: Compass,
-    iconColor: "text-pink-500",
-    iconBg: "bg-pink-500/10",
-    title: "Career Radar",
-    body: "This is where you explore careers and choose your career goal — the one career you want to focus on first. Tell it what you enjoy and it maps careers across every path, including ones you’ve never heard of.",
-    target: "/careers/radar",
+    body: "Endeavrly helps you explore careers properly — step by step. Here’s a quick tour of what’s in the sidebar.",
   },
   {
     icon: LayoutDashboard,
@@ -59,12 +59,44 @@ export const STEPS: WalkthroughStep[] = [
     target: "/my-journey",
   },
   {
+    icon: Radar,
+    iconColor: "text-pink-500",
+    iconBg: "bg-pink-500/10",
+    title: "My Career Radar",
+    body: "Where you explore careers and choose your career goal — the one you want to focus on first. Tell it what you enjoy and it maps careers across every path, including ones you’ve never heard of.",
+    target: "/careers/radar",
+  },
+  {
+    icon: Library,
+    iconColor: "text-amber-500",
+    iconBg: "bg-amber-500/10",
+    title: "My Library",
+    body: "Everything you save and write lives here — saved careers, side-by-side comparisons, saved insights, and your own reflections. Your private space to come back to.",
+    target: "/library",
+  },
+  {
     icon: Bot,
     iconColor: "text-cyan-500",
     iconBg: "bg-cyan-500/10",
     title: "Career Twin",
     body: "Meet a digital version of your future self in a career. Ask Future You about study and skills, money and lifestyle, the hard truths, and the next small step you can take — it talks back, just for you.",
     target: "/career-advisor",
+  },
+  {
+    icon: Compass,
+    iconColor: "text-sky-500",
+    iconBg: "bg-sky-500/10",
+    title: "Explore Careers",
+    body: "Browse hundreds of careers with real salary, growth and skills info. Filter by what fits you and save the ones that spark something.",
+    target: "/careers",
+  },
+  {
+    icon: Calendar,
+    iconColor: "text-rose-500",
+    iconBg: "bg-rose-500/10",
+    title: "Youth Events",
+    body: "Workshops, open days and meet-ups for young people exploring careers — a low-pressure way to see things up close.",
+    target: "/career-events",
   },
   {
     icon: BarChart3,
