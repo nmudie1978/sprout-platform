@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
+import { useTranslations } from "next-intl";
 import {
   getExploredRecommendations,
   type RecommendationSignal,
@@ -21,6 +22,7 @@ export function RecommendedForYou({
   signals: RecommendationSignal[];
   onSelect: (career: Career) => void;
 }) {
+  const t = useTranslations();
   const { careers, getCategoryForCareer } = useCareerCatalog();
   const recommendations = useMemo(
     () =>
@@ -36,8 +38,7 @@ export function RecommendedForYou({
     return (
       <div className="flex h-full flex-col items-start justify-center gap-2 text-xs">
         <p className="leading-relaxed text-muted-foreground/60">
-          Explore a career and we&apos;ll suggest others that fit what you&apos;re
-          drawn to.
+          {t('recommendations.coldStart')}
         </p>
       </div>
     );
@@ -45,7 +46,7 @@ export function RecommendedForYou({
 
   return (
     <div className="divide-y divide-border/60 overflow-hidden rounded-control border border-border/60 bg-muted/10">
-      {recommendations.map(({ career, reason }) => (
+      {recommendations.map(({ career, reasonKind, reasonTitle }) => (
         <button
           key={career.id}
           type="button"
@@ -58,7 +59,9 @@ export function RecommendedForYou({
               {career.title}
             </span>
             <span className="block truncate text-[10px] text-muted-foreground/65">
-              {reason}
+              {reasonKind === "saved"
+                ? t('recommendations.becauseSaved', { title: reasonTitle })
+                : t('recommendations.becauseExplored', { title: reasonTitle })}
             </span>
           </span>
         </button>

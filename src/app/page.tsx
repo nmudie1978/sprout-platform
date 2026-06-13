@@ -5,8 +5,8 @@ import { LandingNavAuthClient } from "@/components/landing/landing-nav-auth-clie
 import { LanguageDropdown } from "@/components/language-dropdown";
 import { getTranslations } from "next-intl/server";
 import { Button } from "@/components/ui/button";
+import { BrandMark } from "@/components/brand-mark";
 import {
-  Star,
   ArrowRight,
   Sparkles,
   Compass,
@@ -106,14 +106,7 @@ export default async function LandingPage() {
       {/* ============================================ */}
       <nav className="sticky top-0 z-50 w-full border-b border-slate-800/80 bg-slate-950/80 backdrop-blur-xl">
         <div className="mx-auto flex h-14 sm:h-16 max-w-6xl items-center justify-between px-5">
-          <Link href="/" className="flex items-center gap-2.5">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-emerald-500 to-teal-600">
-              <Star className="h-4.5 w-4.5 text-white" />
-            </div>
-            <span className="font-semibold text-lg tracking-tight text-white">
-              Endeavrly
-            </span>
-          </Link>
+          <BrandMark size="lg" href="/" wordmarkClassName="text-white" iconClassName="text-emerald-400 fill-emerald-400" />
 
           <div className="flex items-center gap-3 sm:gap-5">
             {/* Language switcher — always reachable, even logged out.
@@ -526,14 +519,7 @@ export default async function LandingPage() {
       <footer className="border-t border-slate-800/60 bg-slate-950 py-10 sm:py-14">
         <div className="mx-auto max-w-6xl px-5">
           <div className="flex flex-col items-center gap-5">
-            <div className="flex items-center gap-2.5">
-              <div className="flex h-7 w-7 items-center justify-center rounded-md bg-gradient-to-br from-emerald-500 to-teal-600">
-                <Star className="h-3.5 w-3.5 text-white" />
-              </div>
-              <span className="font-semibold text-base text-white">
-                Endeavrly
-              </span>
-            </div>
+            <BrandMark size="md" wordmarkClassName="text-white" iconClassName="text-emerald-400 fill-emerald-400" />
             <div className="flex flex-wrap justify-center gap-4 sm:gap-6 text-sm text-neutral-500">
               <Link
                 href="/about"

@@ -1,4 +1,5 @@
-import { Star, ExternalLink, Compass, BarChart3, Briefcase, Route, Target, Shield } from "lucide-react";
+import { ExternalLink, Compass, BarChart3, Briefcase, Route, Target, Shield } from "lucide-react";
+import { BrandMark } from "@/components/brand-mark";
 import Link from "next/link";
 import { getAboutPageStats, type ResearchStatWithYear } from "@/lib/researchEvidence";
 
@@ -38,10 +39,7 @@ function TheGapSection() {
 export default function InfoPage() {
   return (
     <div className="container mx-auto px-3 py-4 sm:px-6 sm:py-8 max-w-2xl">
-      <div className="flex items-center gap-2 text-primary mb-5">
-        <Star className="h-5 w-5" />
-        <span className="font-semibold text-sm">Endeavrly</span>
-      </div>
+      <BrandMark size="sm" className="mb-5" wordmarkClassName="font-semibold text-primary" />
 
       <h1 className="text-2xl sm:text-3xl font-bold tracking-tight mb-4">Why Endeavrly Exists</h1>
       <p className="text-sm text-foreground leading-relaxed">

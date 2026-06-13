@@ -418,6 +418,7 @@ const CONSULTING_EMPLOYERS: Employer[] = [
   { name: 'KPMG', industry: 'Audit / Advisory', size: '270,000+', careersUrl: 'https://kpmg.com' },
   { name: 'PwC', industry: 'Audit / Advisory', size: '360,000+', careersUrl: 'https://www.pwc.com' },
   { name: 'BearingPoint', industry: 'Management & Tech Consulting', size: '5,000+', careersUrl: 'https://www.bearingpoint.com/en/careers/' },
+  { name: 'Analysys Mason', industry: 'TMT Management Consulting', size: '1,000+', careersUrl: 'https://www.analysysmason.com/careers/' },
 ];
 
 /**

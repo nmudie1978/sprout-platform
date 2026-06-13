@@ -76,7 +76,6 @@ import { setUnderstandConfirmed, isUnderstandConfirmed, setDiscoverConfirmed, is
 import { nextCelebrationState, type CelebrationBaseline } from '@/lib/journey/celebration';
 import { JourneyCompleteCelebration } from '@/components/journey/journey-complete-celebration';
 import { useInterestLevel } from '@/hooks/use-interest-level';
-import { InterestLevelPicker } from '@/components/interest-level/interest-level-rating';
 
 const PersonalCareerTimeline = dynamic(
   () => import('@/components/journey').then((m) => m.PersonalCareerTimeline),
@@ -2154,37 +2153,14 @@ function ClarityTab({ goalTitle, career }: { goalTitle: string | null; career: C
   // display name is missing or awkward.
   const possessiveName = 'Your';
 
-  // Collapse state for Roadmap + Momentum + From the Field, persisted
-  // per-user via localStorage so the user's choice survives reloads.
-  const [roadmapCollapsed, setRoadmapCollapsed] = useState(false);
-  const [momentumCollapsed, setMomentumCollapsed] = useState(false);
-  const [claritySubTab, setClaritySubTab] = useState<'ask-future-me' | 'momentum'>('ask-future-me');
-  // g-future (Ask Future Me / Momentum) starts minimised so Clarity opens
-  // calm; the user's expand choice is remembered after that.
-  const { isCollapsed: gCollapsed, toggle: gToggle } = useSectionCollapse(['g-field', 'g-future'], ['g-future']);
-  useEffect(() => {
-    try {
-      // Roadmap starts minimised by default (no stored pref → collapsed) so
-      // the Clarity tab opens calm; the user's choice is remembered after.
-      const storedRoadmap = window.localStorage.getItem('grow-roadmap-collapsed');
-      setRoadmapCollapsed(storedRoadmap === null ? true : storedRoadmap === '1');
-      setMomentumCollapsed(window.localStorage.getItem('grow-momentum-collapsed') === '1');
-    } catch { /* ignore */ }
-  }, []);
-  const toggleRoadmap = () => {
-    setRoadmapCollapsed((prev) => {
-      const next = !prev;
-      try { window.localStorage.setItem('grow-roadmap-collapsed', next ? '1' : '0'); } catch { /* ignore */ }
-      return next;
-    });
-  };
-  const toggleMomentum = () => {
-    setMomentumCollapsed((prev) => {
-      const next = !prev;
-      try { window.localStorage.setItem('grow-momentum-collapsed', next ? '1' : '0'); } catch { /* ignore */ }
-      return next;
-    });
-  };
+  // The consolidated Clarity card has three tabs: Your Roadmap (primary,
+  // default), Ask Future Me (Career Twin), and Momentum.
+  const [claritySubTab, setClaritySubTab] = useState<'roadmap' | 'ask-future-me' | 'momentum'>('roadmap');
+  // g-future is the consolidated Roadmap/Ask Future Me/Momentum card. It
+  // starts EXPANDED (not in the default-collapsed list) because the roadmap
+  // is the primary Clarity surface; the user's collapse choice is remembered
+  // per-user via localStorage (handled inside useSectionCollapse).
+  const { isCollapsed: gCollapsed, toggle: gToggle } = useSectionCollapse(['g-field', 'g-future'], []);
 
   // Simulation — "Play Journey" button in the intro triggers the
   // voice-guided roadmap experience inside PersonalCareerTimeline.
@@ -2553,68 +2529,30 @@ function ClarityTab({ goalTitle, career }: { goalTitle: string | null; career: C
         </p>
       </div>
 
-      {/* 1. Roadmap — collapsible. The timeline component owns its
-          own header ("Henry's Roadmap to Surgeon · …") so the
-          collapse toggle is a small chevron above it. */}
-      <SectionCard className="border-amber-500/30" style={{ boxShadow: '0 0 20px rgba(245,158,11,0.06)' }}>
-        {/* Header row — collapse toggle owns the row, a separate
-            full-screen button sits on the right so it's always
-            reachable without triggering collapse. */}
-        <div className="flex items-center border-b border-border/20">
-          <button
-            type="button"
-            onClick={toggleRoadmap}
-            aria-expanded={!roadmapCollapsed}
-            className="flex-1 flex items-center justify-between gap-3 px-5 py-3.5 hover:bg-amber-500/[0.04] transition-colors text-left"
-          >
-            <div className="flex items-center gap-2.5">
-              <Rocket className="h-4 w-4 text-amber-400" />
-              <h3 className="text-sm font-semibold text-foreground/90">{possessiveName} Roadmap</h3>
-            </div>
-            <ChevronDown
-              className={cn(
-                'h-4 w-4 text-muted-foreground/55 transition-transform duration-200',
-                roadmapCollapsed && '-rotate-90'
-              )}
-            />
-          </button>
-          {!roadmapCollapsed && goalTitle && (
-            <button
-              type="button"
-              onClick={() => setRoadmapFullscreen(true)}
-              title="Expand to full screen"
-              aria-label="Expand roadmap to full screen"
-              className="inline-flex items-center gap-1.5 mr-3 px-2.5 py-1.5 rounded-md border border-border/30 bg-background/40 text-[11px] font-medium text-muted-foreground hover:text-foreground hover:border-amber-500/40 hover:bg-amber-500/[0.06] transition-colors"
-            >
-              <Maximize2 className="h-3.5 w-3.5" />
-              Full screen
-            </button>
-          )}
-        </div>
-        {!roadmapCollapsed && (
-          <div className="p-4">
-            <PersonalCareerTimeline
-              primaryGoalTitle={goalTitle}
-              onSimulationReady={({ play }) => setSimulationPlay(() => play)}
-            />
-          </div>
-        )}
-      </SectionCard>
-      <AnimatePresence>
-        {roadmapFullscreen && goalTitle && (
-          <FullscreenRoadmap goalTitle={goalTitle} onClose={() => setRoadmapFullscreen(false)} />
-        )}
-      </AnimatePresence>
-
-      {/* 2. Ask Future Me + Momentum — tabbed container.
+      {/* Consolidated Clarity card — one SectionCard, three tabs:
+          [Your Roadmap | Ask Future Me | Momentum]. Your Roadmap is the
+          primary surface so it's the default tab and the card opens expanded.
           Amber edge border + faint amber glow so it reads as part of the
-          orange Clarity section (matches the Roadmap card). */}
+          orange Clarity section. */}
       <SectionCard
         className="border-amber-500/30"
         style={{ boxShadow: '0 0 20px rgba(245,158,11,0.06)' }}
       >
         {/* Tab bar */}
         <div className="flex border-b border-border/20">
+          <button
+            type="button"
+            onClick={() => setClaritySubTab('roadmap')}
+            className={cn(
+              "flex-1 flex items-center justify-center gap-2 px-4 py-3 text-xs font-medium transition-colors",
+              claritySubTab === 'roadmap'
+                ? "text-amber-400 border-b-2 border-amber-400 -mb-px"
+                : "text-muted-foreground/70 hover:text-muted-foreground"
+            )}
+          >
+            <Rocket className="h-3.5 w-3.5" />
+            {possessiveName} Roadmap
+          </button>
           <button
             type="button"
             onClick={() => setClaritySubTab('ask-future-me')}
@@ -2641,8 +2579,8 @@ function ClarityTab({ goalTitle, career }: { goalTitle: string | null; career: C
             <Zap className="h-3.5 w-3.5" />
             Momentum
           </button>
-          {/* Minimise the whole Ask Future Me / Momentum container. Choice
-              persists via localStorage so it survives reloads. */}
+          {/* Minimise the whole consolidated card. Choice persists via
+              localStorage so it survives reloads. */}
           <button
             type="button"
             onClick={() => gToggle('g-future')}
@@ -2653,6 +2591,33 @@ function ClarityTab({ goalTitle, career }: { goalTitle: string | null; career: C
             <ChevronDown className={cn('h-4 w-4 transition-transform duration-200', gCollapsed('g-future') && '-rotate-90')} />
           </button>
         </div>
+
+        {/* Tab content: Your Roadmap — the personal career timeline. The
+            timeline component owns its own header ("…'s Roadmap to …"). A
+            full-screen button sits at the top-right so a long ladder can be
+            scanned without the page chrome. */}
+        {!gCollapsed('g-future') && claritySubTab === 'roadmap' && (
+          <div className="p-4">
+            {goalTitle && (
+              <div className="flex justify-end mb-3">
+                <button
+                  type="button"
+                  onClick={() => setRoadmapFullscreen(true)}
+                  title="Expand to full screen"
+                  aria-label="Expand roadmap to full screen"
+                  className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md border border-border/30 bg-background/40 text-[11px] font-medium text-muted-foreground hover:text-foreground hover:border-amber-500/40 hover:bg-amber-500/[0.06] transition-colors"
+                >
+                  <Maximize2 className="h-3.5 w-3.5" />
+                  Full screen
+                </button>
+              </div>
+            )}
+            <PersonalCareerTimeline
+              primaryGoalTitle={goalTitle}
+              onSimulationReady={({ play }) => setSimulationPlay(() => play)}
+            />
+          </div>
+        )}
 
         {/* Tab content: Ask Future Me — the Career Twin, inline. Opening it
             here never navigates away, so the user keeps their place in Clarity. */}
@@ -2901,6 +2866,12 @@ function ClarityTab({ goalTitle, career }: { goalTitle: string | null; career: C
         )}
 
       </SectionCard>
+      {/* Full-screen roadmap overlay — triggered from the Your Roadmap tab. */}
+      <AnimatePresence>
+        {roadmapFullscreen && goalTitle && (
+          <FullscreenRoadmap goalTitle={goalTitle} onClose={() => setRoadmapFullscreen(false)} />
+        )}
+      </AnimatePresence>
 
       {/* ── Confidence Tracker (after dates — user absorbs roadmap + deadlines, then reflects) ── */}
       {career && goalTitle && (
@@ -2940,7 +2911,7 @@ function ClarityCompletionCard({
   // Clarity and fires the celebration. Filling in the foundation alone does
   // NOT complete Clarity — otherwise the modal would pop just for opening the
   // roadmap. The celebration only triggers once the interest level is chosen.
-  const { level: interestLevel, setLevel: setInterestLevel, hydrated: interestHydrated } = useInterestLevel(careerId);
+  const { level: interestLevel, hydrated: interestHydrated } = useInterestLevel(careerId);
   const hasSetInterest = interestLevel != null;
 
   const clarityComplete = hasFoundation && hasSetInterest;
@@ -3013,35 +2984,16 @@ function ClarityCompletionCard({
     }
   }, [careerTitle]);
 
-  // Before completion we show a single calm interest-rating prompt
-  // ("How do you feel about this path now?"). Once Clarity is complete the
-  // prompt gives way to the celebration box, which is the full story at that
-  // point. The outer wrapper's padding + muted card background also go away
-  // so the celebration stands alone.
+  // Interest is rated in the ConfidenceTracker ("How interested are you?"),
+  // which is the single canonical control in Clarity and writes the same
+  // useInterestLevel(careerId) store this card reads. The redundant in-card
+  // rating prompt ("How do you feel about this path now?") has been removed —
+  // completion is still driven by interestLevel + hasFoundation below, so the
+  // celebration/active-state logic is unchanged. Before completion this card
+  // renders nothing visible (the celebration is a modal); once complete it
+  // shows the slim success row.
   return (
-    <div
-      className={cn(
-        clarityComplete
-          ? ''
-          : 'rounded-xl border border-border/30 bg-card/30 px-5 py-4',
-      )}
-    >
-      {!clarityComplete && (
-        <>
-          <p className="text-sm font-semibold mb-1 text-foreground/85">
-            How do you feel about this path now?
-          </p>
-          <p className="text-[11px] text-muted-foreground/70 mb-3">
-            Rate your interest to capture where you&apos;ve landed — that completes Clarity.
-          </p>
-          <InterestLevelPicker value={interestLevel} onChange={setInterestLevel} size="sm" />
-          {!hasFoundation && (
-            <p className="mt-2.5 text-[10px] font-medium text-amber-400/90">
-              ↑ Add “Your Foundation” on the roadmap above (school, subjects, finish year) to personalise everything and finish Clarity.
-            </p>
-          )}
-        </>
-      )}
+    <div>
       {clarityComplete && (
         /* Centred slim success row + a short human note underneath.
            Only as wide as its content: status label + PDF export. */

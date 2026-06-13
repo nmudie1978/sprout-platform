@@ -1,6 +1,7 @@
 import Link from "next/link";
-import { Star, ArrowLeft } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { BrandMark } from "@/components/brand-mark";
 import { LanguageDropdown } from "@/components/language-dropdown";
 
 export default function AboutLayout({
@@ -13,12 +14,11 @@ export default function AboutLayout({
       {/* Header */}
       <header className="sticky top-0 z-50 border-b backdrop-blur-lg bg-background/80">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-          <Link href="/" className="flex items-center space-x-2">
-            <Star className="h-7 w-7 text-green-600" />
-            <span className="text-xl font-bold bg-gradient-to-r from-green-600 to-emerald-500 bg-clip-text text-transparent">
-              Endeavrly
-            </span>
-          </Link>
+          <BrandMark
+            size="lg"
+            href="/"
+            wordmarkClassName="font-bold bg-gradient-to-r from-green-600 to-emerald-500 bg-clip-text text-transparent"
+          />
           <div className="flex items-center gap-2 sm:gap-3">
             <LanguageDropdown iconOnly />
             <Button variant="ghost" size="sm" asChild>

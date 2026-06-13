@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
-import { Star, Loader2 } from "lucide-react";
+import { Navigation2, Loader2 } from "lucide-react";
 
 export default function AcceptTermsPage() {
   const router = useRouter();
@@ -53,7 +53,7 @@ export default function AcceptTermsPage() {
       <Card className="w-full max-w-lg border-2">
         <CardHeader className="text-center">
           <div className="flex justify-center mb-4">
-            <Star className="h-10 w-10 text-green-600" />
+            <Navigation2 className="h-10 w-10 text-emerald-500 fill-emerald-500" strokeWidth={1.5} />
           </div>
           <CardTitle className="text-2xl">Updated Terms</CardTitle>
           <CardDescription className="text-base">

@@ -63,3 +63,51 @@ export function buildDayInLifeQuery(career: string, country?: string | null): st
 export function buildEnglishDayInLifeQuery(career: string): string {
   return `${ENGLISH.phrase} ${career}`.trim();
 }
+
+/**
+ * Normalise spelling so the (English) relevance filter matches videos
+ * regardless of British/American spelling. Most YouTube career content uses
+ * American spelling ("Program Manager"), while our catalogue uses British
+ * ("Programme Manager") — without this, a British career title's tokens never
+ * match the American-spelled video titles.
+ */
+export function normaliseCareerSpelling(s: string): string {
+  // Preserve the original capitalisation ("Programme" → "Program",
+  // "programme" → "program") so display/query casing stays natural.
+  return s.replace(/\bprogramme\b/gi, (m) =>
+    m[0] === m[0].toUpperCase() ? "Program" : "program",
+  );
+}
+
+/**
+ * An English "what does a {career} do" query. The day-in-the-life search biases
+ * YouTube toward vlogs; this surfaces the explainer format ("what does a X do",
+ * "what is the role of a X", "X responsibilities") which is often the better
+ * intro for a young person — especially for office/managerial roles that have
+ * few day-in-the-life vlogs.
+ */
+export function buildEnglishExplainerQuery(career: string): string {
+  return `what does a ${normaliseCareerSpelling(career)} do`.trim();
+}
+
+/**
+ * A broader version of a niche/qualified career title, used ONLY as a
+ * last-resort fallback when the specific title finds no videos. Strips a single
+ * leading qualifier ("IT Programme Manager" → "Program Manager") and normalises
+ * spelling. Returns null when there's nothing to broaden.
+ */
+const LEADING_QUALIFIERS = new Set([
+  "it", "senior", "junior", "lead", "principal", "chief", "head",
+  "assistant", "associate", "trainee", "global", "regional", "deputy",
+]);
+export function broadenCareer(career: string): string | null {
+  const norm = normaliseCareerSpelling(career).trim().replace(/\s+/g, " ");
+  const words = norm.split(" ");
+  if (words.length >= 3 && LEADING_QUALIFIERS.has(words[0].toLowerCase())) {
+    return words.slice(1).join(" ");
+  }
+  // Spelling-only broadening (e.g. "Programme Manager" → "Program Manager")
+  // still counts as a distinct query worth trying.
+  if (norm.toLowerCase() !== career.trim().toLowerCase()) return norm;
+  return null;
+}

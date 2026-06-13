@@ -280,10 +280,13 @@ function ProgressRing({
 }
 
 // ── Lens label mapping ───────────────────────────────────────────────
+// `labelKey` points at the existing journey.* lens labels so the stage
+// names stay consistent with the rest of the My Journey UI (and stay
+// translated). `act` is the legacy step key for Clarity.
 const LENS_LABELS = [
-  { key: "discover", label: "Discover" },
-  { key: "understand", label: "Understand" },
-  { key: "act", label: "Clarity" },
+  { key: "discover", labelKey: "journey.discover.label" },
+  { key: "understand", labelKey: "journey.understand.label" },
+  { key: "act", labelKey: "journey.clarity.label" },
 ] as const;
 
 // ── Main Page ────────────────────────────────────────────────────────
@@ -883,7 +886,7 @@ export default function DashboardPage() {
 
         <PageContext
           pageKey="dashboard"
-          purpose="A snapshot of your journeys, activity, and saved content."
+          purpose={t('dashboard.pageContext')}
         />
 
         {/* ── First-action card ───────────────────────────────────
@@ -958,7 +961,7 @@ export default function DashboardPage() {
           <GlassCard data-spotlight="journey-card" className={cn("p-5 sm:p-6 transition-all duration-300 border-primary/30 shadow-sm", goalTitle ? "hover:border-primary/50 hover:shadow-md" : "hover:border-primary/40")}>
             <div className="flex items-center gap-2 mb-4">
               <div className="p-1.5 rounded-control bg-muted/30">
-                <span title="Your journey tracks progress through Discover, Understand, and Clarity."><TrendingUp className="h-4 w-4 text-muted-foreground cursor-help" /></span>
+                <span title={t('journey.progressTooltip')}><TrendingUp className="h-4 w-4 text-muted-foreground cursor-help" /></span>
               </div>
               <div>
                 <h2 className="text-base font-semibold text-foreground flex items-center gap-1.5 flex-wrap">
@@ -970,7 +973,7 @@ export default function DashboardPage() {
                       {completedLensCount === 3 && (
                         <span className="inline-flex items-center gap-1 text-xs font-medium text-emerald-400/80">
                           <CheckCircle2 className="h-3.5 w-3.5 shrink-0" />
-                          Complete
+                          {t('dashboard.journeyComplete')}
                         </span>
                       )}
                     </>
@@ -1012,7 +1015,7 @@ export default function DashboardPage() {
                     shows which stage you're on, so no separate "Current
                     stage: X" line needed (it duplicated the label). */}
                 <div className="flex gap-1 mb-3">
-                  {LENS_LABELS.map(({ key, label }) => {
+                  {LENS_LABELS.map(({ key, labelKey }) => {
                     // `act` is the legacy key — the new lens-progress
                     // helper exposes Clarity as `clarity`.
                     const lensKey = key === 'act' ? 'clarity' : key;
@@ -1055,7 +1058,7 @@ export default function DashboardPage() {
                               : "text-muted-foreground/65"
                           )}
                         >
-                          {label}
+                          {t(labelKey)}
                         </p>
                       </div>
                     );
@@ -1120,10 +1123,10 @@ export default function DashboardPage() {
             Worth-a-look row below so the two halves don't read as one block. */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
           <DashboardSection
-            title="My Explored Journeys"
+            title={t('dashboard.exploredTitle')}
             icon={Target}
             iconColor="text-muted-foreground"
-            tooltip="Every journey you start is saved here. Switch between them anytime."
+            tooltip={t('exploredJourneys.tooltip')}
             className="mb-0"
             fixedHeight="h-[180px] overflow-y-auto"
           >
@@ -1156,9 +1159,9 @@ export default function DashboardPage() {
                   <table className="w-full text-left">
                     <thead>
                       <tr className="text-xs font-semibold uppercase tracking-wider text-muted-foreground/70 border-b border-border/40 bg-muted/20">
-                        <th className="px-2.5 py-1.5">Career</th>
-                        <th className="px-2 py-1.5 w-16 text-center">Stage</th>
-                        <th className="px-2 py-1.5 w-24 text-center">Interest</th>
+                        <th className="px-2.5 py-1.5">{t('exploredJourneys.career')}</th>
+                        <th className="px-2 py-1.5 w-16 text-center">{t('exploredJourneys.stage')}</th>
+                        <th className="px-2 py-1.5 w-24 text-center">{t('exploredJourneys.interest')}</th>
                         <th className="px-2 py-1.5 w-8"></th>
                       </tr>
                     </thead>
@@ -1169,7 +1172,7 @@ export default function DashboardPage() {
                         const stageInfo = journeyStageLabel(goal.goalTitle);
                         const stageLabel = stageInfo?.label ?? 'Discover';
                         const stageLetter = stageLabel === 'Clarity' || stageLabel === 'Complete' ? 'C' : stageLabel === 'Understand' ? 'U' : 'D';
-                        const stageTooltip = stageLabel === 'Clarity' || stageLabel === 'Complete' ? 'Journey Complete' : stageLabel === 'Understand' ? 'Understand — exploring the role in depth' : 'Discover — exploring what this career is about';
+                        const stageTooltip = stageLabel === 'Clarity' || stageLabel === 'Complete' ? t('dashboard.stageCompleteTooltip') : stageLabel === 'Understand' ? t('dashboard.stageUnderstandTooltip') : t('dashboard.stageDiscoverTooltip');
                         const stageColor = stageLetter === 'C' ? 'text-primary bg-primary/15' : stageLetter === 'U' ? 'text-primary/80 bg-primary/10' : 'text-muted-foreground bg-muted';
                         return (
                           <tr
@@ -1266,17 +1269,15 @@ export default function DashboardPage() {
           >
             <AlertDialogContent>
               <AlertDialogHeader>
-                <AlertDialogTitle>Reload this journey?</AlertDialogTitle>
+                <AlertDialogTitle>{t('dashboard.reloadTitle')}</AlertDialogTitle>
                 <AlertDialogDescription>
-                  This makes{" "}
+                  {t('dashboard.reloadBodyPrefix')}{" "}
                   <span className="font-medium text-foreground">{pendingReloadGoal}</span>{" "}
-                  your active journey and takes you to My Journey. Your current
-                  journey stays saved in Explored Journeys, so you can switch
-                  back anytime.
+                  {t('dashboard.reloadBodySuffix')}
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogCancel>{t('common.cancel')}</AlertDialogCancel>
                 <AlertDialogAction
                   disabled={switchGoalMutation.isPending}
                   onClick={() => {
@@ -1288,7 +1289,7 @@ export default function DashboardPage() {
                     });
                   }}
                 >
-                  Reload journey
+                  {t('dashboard.reloadConfirm')}
                 </AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
@@ -1304,7 +1305,7 @@ export default function DashboardPage() {
             fixedHeight="h-[180px] overflow-y-auto"
             action={
               <Link href="/library?tab=saved" className="text-xs text-primary/70 hover:text-primary transition-colors">
-                See all →
+                {t('dashboard.seeAll')} →
               </Link>
             }
           >
@@ -1393,15 +1394,15 @@ export default function DashboardPage() {
               which sat empty for almost everyone (saved resources still live
               in My Library). Always personalised once a journey is started. */}
           <DashboardSection
-            title="Recommended for you"
+            title={t('dashboard.recommendedTitle')}
             icon={Lightbulb}
             iconColor="text-amber-400"
-            tooltip="Careers we think you'll like, based on the ones you've explored, saved, and rated."
+            tooltip={t('dashboard.recommendedTooltip')}
             className="mb-0"
             fixedHeight="h-[180px] overflow-y-auto"
             action={
               <Link href="/careers" className="text-xs text-primary/70 hover:text-primary transition-colors">
-                See all →
+                {t('dashboard.seeAll')} →
               </Link>
             }
           >
@@ -1413,15 +1414,15 @@ export default function DashboardPage() {
               old Reflections preview; the full reflections history lives in
               My Library. ── */}
           <DashboardSection
-            title="Worth a look"
+            title={t('dashboard.worthALookTitle')}
             icon={Sparkles}
             iconColor="text-violet-400"
-            tooltip="Fresh, verified reads from the world of work — tuned to the careers you keep exploring."
+            tooltip={t('dashboard.worthALookTooltip')}
             className="mb-0"
             fixedHeight="h-[180px] overflow-y-auto"
             action={
               <Link href="/insights" className="text-xs text-primary/70 hover:text-primary transition-colors">
-                More →
+                {t('dashboard.more')} →
               </Link>
             }
           >

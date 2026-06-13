@@ -37,7 +37,23 @@
     "guardianPending": "Esperando la confirmación de tu tutor — toca para reenviar o cambiar",
     "profileComplete": "Perfil completo",
     "profilePercent": "Perfil {pct}% completo",
-    "startHint": "Empieza aquí"
+    "startHint": "Empieza aquí",
+    "journeyComplete": "Completado",
+    "exploredTitle": "Mis recorridos explorados",
+    "recommendedTitle": "Recomendado para ti",
+    "recommendedTooltip": "Carreras que creemos que te gustarán, según las que has explorado, guardado y valorado.",
+    "worthALookTitle": "Vale la pena ver",
+    "worthALookTooltip": "Lecturas frescas y verificadas del mundo laboral — adaptadas a las carreras que sigues explorando.",
+    "seeAll": "Ver todo",
+    "more": "Más",
+    "mainFocus": "Tu enfoque profesional principal es:",
+    "stageDiscoverTooltip": "Descubrir — explorando de qué trata esta carrera",
+    "stageUnderstandTooltip": "Entender — explorando el rol en profundidad",
+    "stageCompleteTooltip": "Recorrido completado",
+    "reloadTitle": "¿Recargar este recorrido?",
+    "reloadBodyPrefix": "Esto convierte",
+    "reloadBodySuffix": "en tu recorrido activo y te lleva a Mi recorrido. Tu recorrido actual sigue guardado en Recorridos explorados, así que puedes volver cuando quieras.",
+    "reloadConfirm": "Recargar recorrido"
   },
   "journey": {
     "title": "Mi recorrido",
@@ -174,7 +190,8 @@
     "stage": "Etapa",
     "status": "Estado",
     "primaryGoal": "Objetivo principal",
-    "saved": "Guardado"
+    "saved": "Guardado",
+    "interest": "Interés"
   },
   "savedCareers": {
     "title": "Carreras guardadas",
@@ -411,5 +428,19 @@
     "goalSetError": "No se ha podido fijar tu objetivo",
     "goalSetErrorBody": "Inténtalo de nuevo en un momento.",
     "welcomeBack": "Bienvenido de nuevo — ha pasado {weeks, plural, one {# semana} other {# semanas}}. Tu yo del futuro te ha estado esperando. Retoma donde lo dejaste."
+  },
+  "recommendations": {
+    "becauseExplored": "Porque exploraste {title}",
+    "becauseSaved": "Porque guardaste {title}",
+    "coldStart": "Explora una carrera y te sugeriremos otras que encajen con lo que te atrae."
+  },
+  "worthALook": {
+    "emptyState": "Aquí aparecerán lecturas frescas del mundo laboral."
+  },
+  "pageContext": {
+    "whatsThis": "¿Qué es esta página?",
+    "whyHere": "Por qué estás aquí:",
+    "learnMore": "Saber más",
+    "gotIt": "Entendido"
   }
 }
