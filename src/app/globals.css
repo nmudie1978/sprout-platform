@@ -387,6 +387,25 @@
     @apply -translate-y-1 shadow-2xl;
   }
 
+  /* Calm staggered entrance — dashboard sections fade up on first paint.
+     Pair with an inline `animationDelay` for a gentle stagger. GPU-only
+     (opacity + transform), short and eased so it reads premium, not busy. */
+  .reveal-up {
+    animation: reveal-up 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  @keyframes reveal-up {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: none; }
+  }
+
+  /* Respect the user's motion preference — no entrance animation, no lift. */
+  @media (prefers-reduced-motion: reduce) {
+    .reveal-up { animation: none; }
+    .hover-lift,
+    .hover-lift:hover { transition: none; transform: none; }
+  }
+
   /* Animated blob */
   .animate-blob {
     animation: blob 7s infinite;

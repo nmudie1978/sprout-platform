@@ -1087,9 +1087,9 @@ export default function DashboardPage() {
             </GlassCard>
           );
           return goalTitle ? (
-            <Link href="/my-journey" className="block mb-6 group">{journeyCard}</Link>
+            <Link href="/my-journey" className="block mb-6 group reveal-up">{journeyCard}</Link>
           ) : (
-            <div className="block mb-6">{journeyCard}</div>
+            <div className="block mb-6 reveal-up">{journeyCard}</div>
           );
         })()}
 
@@ -1116,12 +1116,14 @@ export default function DashboardPage() {
         )}
 
         {/* Decision Board teaser — the synthesis of all explored journeys. */}
-        <WhereYoureLeaning />
+        <div className="reveal-up" style={{ animationDelay: "70ms" }}>
+          <WhereYoureLeaning />
+        </div>
 
         {/* ── 4. My Explored Journeys + Saved Careers ─────────────── */}
         {/* mb-8 (not mb-4): give a clear gap before the Saved Resources /
             Worth-a-look row below so the two halves don't read as one block. */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8 reveal-up" style={{ animationDelay: "140ms" }}>
           <DashboardSection
             title={t('dashboard.exploredTitle')}
             icon={Target}
@@ -1388,7 +1390,7 @@ export default function DashboardPage() {
         </div>
 
         {/* ── 5. Saved Resources + Reflections (Row B — 2-col grid) ── */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4 items-stretch">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4 items-stretch reveal-up" style={{ animationDelay: "210ms" }}>
           {/* Recommended for you — careers adjacent to what the user has
               explored/saved/rated. Replaces the old "Saved Resources" panel,
               which sat empty for almost everyone (saved resources still live
