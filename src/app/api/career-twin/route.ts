@@ -11,7 +11,8 @@ import {
   getMode,
   CAREER_TWIN_MODES,
 } from "@/lib/career-twin";
-import { resolveCareerContext, loadProfileContext } from "@/lib/career-twin/resolve";
+import { resolveCareerContext, loadProfileContext, loadRecentActivity } from "@/lib/career-twin/resolve";
+import { buildProactiveOpener } from "@/lib/career-twin/opener";
 import {
   classifyIntent,
   isResponseSafe,
@@ -68,16 +69,24 @@ export async function GET(req: NextRequest) {
     const profile = await loadProfileContext(session.user.id);
     const persona = buildPersona({ userId: session.user.id, career, profile });
 
-    const [history, memory] = await Promise.all([
+    const [history, memory, recentActivity] = await Promise.all([
       loadTwinHistory(session.user.id, career.id),
       loadTwinMemory(session.user.id, career.id),
+      loadRecentActivity(session.user.id, career, profile),
     ]);
+
+    // Deterministic, zero-cost proactive opener built from REAL recent
+    // activity (saved/explored careers, active goal, journey stage, returning
+    // gap). Null for brand-new users with no activity → the client falls back
+    // to the generic persona intro.
+    const opener = buildProactiveOpener(career, recentActivity);
 
     return NextResponse.json({
       needsCareer: false,
       career: { id: career.id, title: career.title, emoji: career.emoji ?? null },
       persona,
       intro: persona.intro,
+      opener,
       disclaimer: persona.uncertaintyDisclaimer,
       modes: CAREER_TWIN_MODES.map((m) => ({
         id: m.id,

@@ -17,9 +17,12 @@ import {
   searchCareers,
 } from "@/lib/career-pathways";
 import { computeAgeYears } from "@/lib/age-policy";
+import { daysBetween } from "./memory";
 import type {
   CareerTwinCareerContext,
   CareerTwinProfileContext,
+  RecentCareerSignal,
+  TwinRecentActivity,
 } from "./types";
 
 function toContext(career: ReturnType<typeof getCareerById>): CareerTwinCareerContext | null {
@@ -168,5 +171,101 @@ export async function loadProfileContext(
     interests,
     subjects,
     journeyStage,
+  };
+}
+
+/**
+ * Gather REAL recent-activity signals so the Twin can open with a proactive,
+ * personalised line ("I noticed you've been exploring X and Y lately…").
+ *
+ * All data here is already persisted server-side — saved careers, rated
+ * ("interest") careers, the active goal, the journey stage, and the last time
+ * the user spoke to THIS career's Twin. No AI call, no new heavy work: a few
+ * indexed reads. The active career is excluded from `recentCareers` so we
+ * never echo it back as "recent".
+ */
+export async function loadRecentActivity(
+  userId: string,
+  activeCareer: CareerTwinCareerContext,
+  profileContext?: CareerTwinProfileContext,
+): Promise<TwinRecentActivity> {
+  const profile = await prisma.youthProfile.findUnique({
+    where: { userId },
+    select: { id: true },
+  });
+
+  const [savedRows, interestRows, activeGoal, lastTurn, profileCtx] =
+    await Promise.all([
+      // Recently SAVED careers (titles are stored on the row).
+      profile
+        ? prisma.savedCareer.findMany({
+            where: { profileId: profile.id },
+            orderBy: { savedAt: "desc" },
+            take: 6,
+            select: { careerId: true, careerTitle: true, careerEmoji: true, savedAt: true },
+          })
+        : Promise.resolve([]),
+      // Recently RATED ("explored") careers — titles resolved from the catalog.
+      prisma.careerInterest.findMany({
+        where: { userId },
+        orderBy: { updatedAt: "desc" },
+        take: 6,
+        select: { careerId: true, updatedAt: true },
+      }),
+      prisma.journeyGoalData.findFirst({
+        where: { userId, isActive: true },
+        orderBy: { updatedAt: "desc" },
+        select: { goalTitle: true },
+      }),
+      prisma.careerTwinMessage.findFirst({
+        where: { userId, careerId: activeCareer.id },
+        orderBy: { createdAt: "desc" },
+        select: { createdAt: true },
+      }),
+      profileContext
+        ? Promise.resolve(profileContext)
+        : loadProfileContext(userId),
+    ]);
+
+  // Merge saved + rated into one most-recent-first list, de-duped by careerId,
+  // excluding the career this Twin is already grounded in.
+  type Dated = RecentCareerSignal & { at: number };
+  const merged: Dated[] = [];
+  const seen = new Set<string>([activeCareer.id]);
+
+  for (const r of savedRows) {
+    if (seen.has(r.careerId)) continue;
+    seen.add(r.careerId);
+    merged.push({
+      careerId: r.careerId,
+      title: r.careerTitle,
+      emoji: r.careerEmoji,
+      at: r.savedAt.getTime(),
+    });
+  }
+  for (const r of interestRows) {
+    if (seen.has(r.careerId)) continue;
+    const cat = getCareerById(r.careerId);
+    if (!cat) continue; // skip careers we can't name
+    seen.add(r.careerId);
+    merged.push({
+      careerId: r.careerId,
+      title: cat.title,
+      emoji: cat.emoji ?? null,
+      at: r.updatedAt.getTime(),
+    });
+  }
+
+  merged.sort((a, b) => b.at - a.at);
+  const recentCareers: RecentCareerSignal[] = merged
+    .slice(0, 3)
+    .map(({ careerId, title, emoji }) => ({ careerId, title, emoji }));
+
+  return {
+    activeCareerId: activeCareer.id,
+    activeGoalTitle: activeGoal?.goalTitle?.trim() || null,
+    recentCareers,
+    journeyStage: profileCtx.journeyStage ?? null,
+    daysSinceLastVisit: daysBetween(lastTurn?.createdAt?.toISOString() ?? null, Date.now()),
   };
 }

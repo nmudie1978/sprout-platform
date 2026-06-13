@@ -58,6 +58,34 @@ export interface TwinMemory {
   quizLabels: string[];
 }
 
+/** A career the user has recently engaged with (saved or rated). */
+export interface RecentCareerSignal {
+  /** Slug/catalog id. */
+  careerId: string;
+  /** Human title (resolved from the catalog or stored alongside the save). */
+  title: string;
+  emoji?: string | null;
+}
+
+/**
+ * Real, server-loaded signals of what the user has been doing lately. Used to
+ * build a PROACTIVE, personalised opener so the Twin feels like a companion
+ * who's been paying attention. Every field is best-effort and may be empty —
+ * the opener gracefully falls back to the generic intro when there's nothing.
+ */
+export interface TwinRecentActivity {
+  /** The career this Twin is grounded in (so we don't echo it back as "recent"). */
+  activeCareerId: string;
+  /** The active goal/career title, if any. */
+  activeGoalTitle: string | null;
+  /** Careers the user recently explored or saved, most-recent first (active one excluded). */
+  recentCareers: RecentCareerSignal[];
+  /** Where the user is in Discover → Understand → Clarity, if known. */
+  journeyStage: string | null;
+  /** Whole days since the user last spoke to THIS career's Twin (null on first visit). */
+  daysSinceLastVisit: number | null;
+}
+
 /**
  * The career the Twin is grounded in. May come from the rich catalog OR
  * be a minimal title-only context for careers not yet in the catalog —
