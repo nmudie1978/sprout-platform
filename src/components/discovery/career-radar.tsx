@@ -1846,7 +1846,10 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
               className="cursor-pointer radar-dot"
               style={{
                 transformOrigin: `${d.cx}px ${d.cy}px`,
-                animationDelay: `${d.ring * 120 + idx * 22}ms`,
+                // Short, capped stagger: with hundreds of dots an uncapped
+                // per-dot delay would crawl for seconds and feel janky. Cap the
+                // settle so the whole radar "comes alive" within ~300ms.
+                animationDelay: `${Math.min(idx * 8, 300)}ms`,
               }}
             >
               {/* Invisible hit-area so the click target is always solid,
@@ -1880,7 +1883,8 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
                     cy={d.cy}
                     r={15}
                     fill="none"
-                    className="stroke-amber-400 pointer-events-none drop-shadow-[0_0_6px_rgba(251,191,36,0.7)]"
+                    className="stroke-amber-400 pointer-events-none drop-shadow-[0_0_6px_rgba(251,191,36,0.7)] radar-goal-pulse"
+                    style={{ transformOrigin: `${d.cx}px ${d.cy}px` }}
                     strokeWidth={1.75}
                   />
                   <text
@@ -1915,13 +1919,15 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
         </svg>
 
         <style>{`
+          /* Calm settle-in (opacity 0->1, scale 0.85->1) — no bounce/overshoot,
+             so the radar "comes alive" gently rather than popping. GPU-only
+             (opacity + transform). */
           @keyframes radar-dot-pop {
-            0%   { opacity: 0; transform: scale(0); }
-            70%  { opacity: 1; transform: scale(1.25); }
+            0%   { opacity: 0; transform: scale(0.85); }
             100% { opacity: 1; transform: scale(1); }
           }
           .radar-dot {
-            animation: radar-dot-pop 0.45s cubic-bezier(0.34, 1.4, 0.64, 1) backwards;
+            animation: radar-dot-pop 0.4s cubic-bezier(0.22, 0.61, 0.36, 1) backwards;
           }
           .radar-dot:hover .radar-dot-circle {
             r: 8;
@@ -1936,9 +1942,20 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
             transform-box: fill-box;
             transform-origin: center;
           }
+          /* Goal dot — slow, calm focus pulse on the gold ring so "this is your
+             goal" reads at a glance. Slow + gentle (no flashing): subtle scale +
+             opacity breathe, GPU-only. */
+          @keyframes radar-goal-pulse {
+            0%, 100% { opacity: 0.85; transform: scale(1); }
+            50%      { opacity: 1;    transform: scale(1.12); }
+          }
+          .radar-goal-pulse {
+            animation: radar-goal-pulse 3s ease-in-out infinite;
+          }
           @media (prefers-reduced-motion: reduce) {
             .radar-dot { animation: none; }
             .radar-top-halo { animation: none; }
+            .radar-goal-pulse { animation: none; }
           }
         `}</style>
 
