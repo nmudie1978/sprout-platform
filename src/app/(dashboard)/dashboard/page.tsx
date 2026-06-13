@@ -773,13 +773,15 @@ export default function DashboardPage() {
           dismissedRef.current = true;
           setShowOnboardingWizard(false);
           if (!wasReplay) {
-            // First-run: hand off to the Radar discovery wizard so we
-            // actually collect discoveryPreferences (warming up Career Radar
-            // + Recommendations). That wizard marks onboarding complete on
-            // finish OR skip — so we deliberately do NOT PATCH here. The user
-            // still stays on the dashboard (no redirect to the radar). If the
-            // user closes the wizard without completing it, onboarding stays
-            // unmarked and the flow safely replays next login.
+            // Mark onboarding as seen the instant the tour is finished or
+            // skipped, so "Let me show you around" never auto-opens again on a
+            // later login — it stays reachable from the menu's replay button.
+            // (Previously we left it unmarked and only the Radar wizard marked
+            // completion, so a user who finished the tour but didn't finish the
+            // wizard got the whole tour replayed next login.) We still hand off
+            // to the Radar discovery wizard for THIS session to collect
+            // discoveryPreferences; the user stays on the dashboard.
+            void fetch("/api/onboarding", { method: "PATCH" }).catch(() => {});
             setShowRadarWizard(true);
           }
         }}
