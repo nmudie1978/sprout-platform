@@ -12,7 +12,7 @@ import {
   CAREER_TWIN_MODES,
 } from "@/lib/career-twin";
 import { resolveCareerContext, loadProfileContext, loadRecentActivity } from "@/lib/career-twin/resolve";
-import { buildProactiveOpener } from "@/lib/career-twin/opener";
+import { buildProactiveOpener, localeToTwinLang } from "@/lib/career-twin/opener";
 import { buildContextStarters } from "@/lib/career-twin/starters";
 import {
   classifyIntent,
@@ -80,12 +80,15 @@ export async function GET(req: NextRequest) {
     // activity (saved/explored careers, active goal, journey stage, returning
     // gap). Null for brand-new users with no activity → the client falls back
     // to the generic persona intro.
-    const opener = buildProactiveOpener(career, recentActivity);
+    // Localised to the viewer's UI language (NEXT_LOCALE cookie) so a NO/ES
+    // user is greeted and prompted in their own language.
+    const twinLang = localeToTwinLang(req.cookies.get("NEXT_LOCALE")?.value);
+    const opener = buildProactiveOpener(career, recentActivity, twinLang);
 
     // Context-aware starter chips, built from the SAME already-loaded recent
     // activity as the opener (zero extra cost, never hallucinated). Empty for
     // brand-new users → the client falls back to the generic mode starters.
-    const contextStarters = buildContextStarters(career.title, recentActivity);
+    const contextStarters = buildContextStarters(career.title, recentActivity, 3, twinLang);
 
     return NextResponse.json({
       needsCareer: false,
