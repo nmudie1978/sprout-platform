@@ -16,6 +16,23 @@ export interface Employer {
 }
 
 const CAREER_EMPLOYERS: Record<string, Employer[]> = {
+  // Pilots sit in LOGISTICS_TRANSPORT, whose sector fallback is freight/postal
+  // (Posten, DB Schenker, Wilhelmsen) — an airline pilot would never work
+  // there. Curate the actual airlines (Norway-first) and, for helicopter
+  // pilots, the offshore/SAR operators.
+  'airline-pilot': [
+    { name: 'SAS', industry: 'Airline', size: '7,000+', careersUrl: 'https://www.sasgroup.net/career/' },
+    { name: 'Norwegian', industry: 'Airline', size: '4,000+', careersUrl: 'https://www.norwegian.com/about/career/' },
+    { name: 'Widerøe', industry: 'Regional Airline', size: '3,000+', careersUrl: 'https://www.wideroe.no/om-wideroe/jobb-i-wideroe' },
+    { name: 'Wizz Air', industry: 'Airline', size: '7,000+', careersUrl: 'https://careers.wizzair.com/' },
+    { name: 'Lufthansa Group', industry: 'Airline (Global)', size: '90,000+', careersUrl: 'https://www.be-lufthansa.com/en/' },
+  ],
+  'helicopter-pilot': [
+    { name: 'Bristow Norway', industry: 'Offshore Helicopter', size: '500+', careersUrl: 'https://www.bristowgroup.com/careers/' },
+    { name: 'CHC Helicopter', industry: 'Offshore Helicopter', size: '2,000+', careersUrl: 'https://www.chcheli.com/careers' },
+    { name: 'Babcock', industry: 'SAR / Helicopter Services', size: '2,000+', careersUrl: 'https://www.babcockinternational.com/careers/' },
+    { name: 'Norsk Luftambulanse', industry: 'Air Ambulance', size: '600+', careersUrl: 'https://norskluftambulanse.no/jobb/' },
+  ],
   // Blockchain is a global, largely remote field led by crypto/web3
   // specialists — NOT the generic Norwegian IT consultancies the sector
   // fallback would otherwise show. Lead with Norway's crypto employer (Firi),
