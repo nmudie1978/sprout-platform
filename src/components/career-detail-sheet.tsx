@@ -27,6 +27,7 @@ import {
   BookmarkCheck,
   Sparkles,
   Building2,
+  ExternalLink,
 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import type { Career } from "@/lib/career-pathways";
@@ -344,6 +345,18 @@ export function CareerDetailSheet({
                         Companies and institutions in your country where this role is common — tap for their careers page.
                       </p>
                       <TopEmployers careerId={career.id} category={category} country={country} />
+                      {/* Real-world signal — a direct link to current openings
+                          for this role on LinkedIn (deep link, opens in a new
+                          tab; we don't handle applications). */}
+                      <a
+                        href={`https://www.linkedin.com/jobs/search/?keywords=${encodeURIComponent(career.title)}&location=Norway`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 text-[11px] font-medium text-primary hover:text-primary/80 transition-colors"
+                      >
+                        See live {career.title} roles on LinkedIn
+                        <ExternalLink className="h-3 w-3" />
+                      </a>
                     </div>
                   );
                 })()}
