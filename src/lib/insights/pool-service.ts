@@ -16,6 +16,7 @@ import type {
 } from "./pool-types";
 import { canonicalizeUrl, hashUrl } from "./canonicalize";
 import { getISOWeekSeed } from "./weekly-rotation";
+import { readIngestedPool } from "./ingested-source";
 
 // ---------------------------------------------------------------------------
 // Paths
@@ -37,15 +38,26 @@ async function ensureDir(): Promise<void> {
   }
 }
 
-/** Read the pool, returning only verified items */
+/**
+ * Read the served pool: the static verified seed merged with the live
+ * DB-ingested items (deduped by canonical URL hash, seed wins). Returns only
+ * verified items. The DB read is best-effort — on any failure we serve the
+ * seed alone so the page never breaks.
+ */
 export async function readPool(): Promise<PoolItem[]> {
+  let seed: PoolItem[] = [];
   try {
     const raw = await fs.readFile(POOL_FILE, "utf-8");
     const items: PoolItem[] = JSON.parse(raw);
-    return items.filter((i) => i.verificationStatus === "verified");
+    seed = items.filter((i) => i.verificationStatus === "verified");
   } catch {
-    return [];
+    seed = [];
   }
+
+  const ingested = await readIngestedPool();
+  const seenHashes = new Set(seed.map((i) => i.canonicalUrlHash));
+  const fresh = ingested.filter((i) => !seenHashes.has(i.canonicalUrlHash));
+  return [...seed, ...fresh];
 }
 
 /** Read all items including non-verified (for refresh script) */
