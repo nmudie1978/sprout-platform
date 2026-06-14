@@ -278,12 +278,14 @@
   "landing": {
     "hero": {
       "ageRange": "For 15–23 year olds",
-      "title": "Your future is yours to explore.",
+      "title": "Imagine the moment they say, \"I finally know what I want to do.\"",
       "problem": "But right now, the world of work is almost invisible. Job titles you don't understand. Qualifications you can't picture. Career advice that all sounds the same. Nobody shows you what these paths actually feel like — or whether they'd suit the person you're becoming.",
       "solution": "Endeavrly gives you what's been missing. Real careers. Honest information. A space to reflect on who you are and try things for yourself — so when you do choose a direction, it's yours. No quizzes. No pressure. Just clarity.",
-      "cta": "Explore Endeavrly",
+      "cta": "Start their journey",
+      "ctaSecondary": "Explore careers free",
+      "trust": "Safe, private, and built for ages 15–30 — no ads, no pressure, just clarity.",
       "tagline": "The Career Operating System for young people.",
-      "subhead": "See what a career really feels like before you commit to it."
+      "subhead": "Endeavrly helps young people explore careers, understand real pathways, and find the clarity to move forward with confidence."
     },
     "framework": {
       "title": "Three lenses. One journey.",

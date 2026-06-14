@@ -182,15 +182,34 @@ export default async function LandingPage() {
                 </FadeReveal>
               </div>
 
-              {/* CTA — understated text link */}
+              {/* CTA — primary action + understated secondary link */}
               <FadeReveal delay={2400}>
-                <a
-                  href="#how-it-works"
-                  className="inline-flex items-center gap-2 text-sm text-emerald-400/80 hover:text-emerald-300 transition-colors group"
-                >
-                  {t('landing.hero.cta')}
-                  <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
-                </a>
+                <div className="flex flex-wrap items-center gap-x-6 gap-y-4">
+                  <Button
+                    size="lg"
+                    asChild
+                    className="h-12 px-7 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white text-base font-medium transition-colors group"
+                  >
+                    <Link href="/auth/signup">
+                      {t('landing.hero.cta')}
+                      <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                    </Link>
+                  </Button>
+                  <a
+                    href="#how-it-works"
+                    className="inline-flex items-center gap-2 text-sm text-emerald-400/80 hover:text-emerald-300 transition-colors"
+                  >
+                    {t('landing.hero.ctaSecondary')}
+                  </a>
+                </div>
+              </FadeReveal>
+
+              {/* Trust strip */}
+              <FadeReveal delay={2700}>
+                <p className="mt-6 inline-flex items-center gap-2 text-xs text-neutral-500">
+                  <ShieldCheck className="h-3.5 w-3.5 text-emerald-400/70" />
+                  {t('landing.hero.trust')}
+                </p>
               </FadeReveal>
             </div>
 

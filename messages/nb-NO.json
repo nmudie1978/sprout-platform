@@ -278,12 +278,14 @@
   "landing": {
     "hero": {
       "ageRange": "For 15–23 åringer",
-      "title": "Fremtiden din er din å utforske.",
+      "title": "Tenk deg øyeblikket de sier: \"Endelig vet jeg hva jeg vil gjøre.\"",
       "problem": "Men akkurat nå er arbeidslivet nesten usynlig. Stillingstitler du ikke forstår. Kvalifikasjoner du ikke kan se for deg. Karriereråd som høres likt ut. Ingen viser deg hvordan disse veiene faktisk føles — eller om de passer til den du er i ferd med å bli.",
       "solution": "Endeavrly gir deg det som har manglet. Ekte karrierer. Ærlig informasjon. Et sted å reflektere over hvem du er og prøve ting selv — slik at når du velger en retning, er den din. Ingen tester. Ikke noe press. Bare klarhet.",
-      "cta": "Utforsk Endeavrly",
+      "cta": "Start reisen deres",
+      "ctaSecondary": "Utforsk karrierer gratis",
+      "trust": "Trygt, privat og laget for aldersgruppen 15–30 — ingen reklame, ikke noe press, bare klarhet.",
       "tagline": "Karriere-operativsystemet for unge.",
-      "subhead": "Se din mulige framtid før du forplikter deg til den."
+      "subhead": "Endeavrly hjelper unge med å utforske karrierer, forstå reelle veier og finne klarheten til å gå videre med selvtillit."
     },
     "framework": {
       "title": "Tre linser. Én reise.",
