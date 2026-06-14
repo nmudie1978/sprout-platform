@@ -1,4 +1,47 @@
 {
+  "arrival": {
+    "prompt": "¿Cómo llegas hoy?",
+    "subtitle": "Un toque, solo para ti. No hay respuesta incorrecta.",
+    "skip": "Omitir por ahora",
+    "moods": {
+      "lost": "Un poco perdido/a",
+      "curious": "Con curiosidad",
+      "pressured": "Con presión",
+      "motivated": "Con ganas"
+    },
+    "ack": {
+      "lost": "No pasa nada. Daremos el siguiente paso juntos, poco a poco.",
+      "curious": "Me encanta. Sigamos lo que te da curiosidad.",
+      "pressured": "Sin prisa. No hay un ritmo incorrecto: elige una cosa pequeña.",
+      "motivated": "Genial: convirtamos eso en un poco de impulso."
+    }
+  },
+  "clarityShift": {
+    "sectionTitle": "Tu claridad sobre este camino",
+    "afterCta": "Ya lo he explorado: ¿qué tan claro lo ves ahora?",
+    "prompt": {
+      "before": "Antes de empezar: ¿qué tan claro tienes si este camino es para ti?",
+      "after": "Ahora que lo has explorado: ¿qué tan claro lo ves?"
+    },
+    "levels": {
+      "veryUnsure": "Muy poco claro",
+      "unsure": "Poco claro",
+      "gettingClearer": "Más claro",
+      "fairlyClear": "Bastante claro",
+      "clear": "Claro"
+    },
+    "narrative": {
+      "steady": "Tu percepción de este camino se mantuvo igual. No pasa nada: la claridad suele llegar paso a paso.",
+      "clearer": {
+        "small": "Un poco más claro que al empezar. Eso es progreso real.",
+        "big": "Mucho más claro que al empezar: es un paso adelante de verdad."
+      },
+      "lessSure": {
+        "small": "Un poco menos seguro que al empezar. Eso también sirve: explorar suele plantear buenas preguntas.",
+        "big": "Menos seguro que al empezar, y eso es realmente útil. A veces explorar ayuda a descartar un camino, y eso también es progreso."
+      }
+    }
+  },
   "common": {
     "save": "Guardar",
     "cancel": "Cancelar",

@@ -39,6 +39,7 @@ import { syncGuidanceGoal } from "@/lib/guidance/rules";
 import { useCuriositySaves } from "@/hooks/use-curiosity-saves";
 import { hasCareerEmployers } from "@/lib/career-employers";
 import { TopEmployers } from "@/components/journey/top-employers";
+import { ClarityShiftSection } from "@/components/journey/clarity-shift-section";
 
 interface CareerDetailSheetProps {
   career: Career | LocalizedCareerView | null;
@@ -360,6 +361,16 @@ export function CareerDetailSheet({
                     </div>
                   );
                 })()}
+
+                {/* Clarity shift — how clear the user feels about this path
+                    before vs after exploring it. Self-contained: renders the
+                    before prompt, then the after, then a calm reflection.
+                    Returns nothing for signed-out users. */}
+                {isYouth && (
+                  <div className="border-t border-border/30 pt-3">
+                    <ClarityShiftSection careerId={career.id} />
+                  </div>
+                )}
 
                 {/* Actions */}
                 <div className="space-y-2">

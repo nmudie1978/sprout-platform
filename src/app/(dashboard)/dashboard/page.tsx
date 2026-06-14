@@ -70,6 +70,7 @@ import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import { Target } from "lucide-react";
 import { syncGuidanceGoal } from "@/lib/guidance/rules";
 import { PageContext } from "@/components/ui/page-context";
+import { ArrivalCheckIn } from "@/components/arrival/arrival-check-in";
 import { GoalSelectionSheet } from "@/components/goals/GoalSelectionSheet";
 import { useSubtleHint } from "@/hooks/use-subtle-hint";
 import { SpotlightHint } from "@/components/ui/spotlight-hint";
@@ -909,6 +910,14 @@ export default function DashboardPage() {
           pageKey="dashboard"
           purpose={t('dashboard.pageContext')}
         />
+
+        {/* ── Arrival check-in ────────────────────────────────────
+            Optional, self-reported "how are you arriving today?" — the
+            sensing half of the emotional-signal loop. Renders nothing once
+            answered or skipped, so it never adds clutter. */}
+        <div className="mb-4 sm:mb-5">
+          <ArrivalCheckIn />
+        </div>
 
         {/* ── First-action card ───────────────────────────────────
             Three states, in order of priority:
