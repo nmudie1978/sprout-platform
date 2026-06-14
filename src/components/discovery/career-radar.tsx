@@ -45,7 +45,8 @@ type PresetFilterKey =
   | "vocational"
   | "physically-demanding"
   | "highly-competitive"
-  | "military";
+  | "military"
+  | "ai-focused";
 
 /** Menu order + labels for the Career Radar preset dropdown. */
 const PRESET_FILTER_OPTIONS: { key: PresetFilterKey; label: string }[] = [
@@ -53,6 +54,7 @@ const PRESET_FILTER_OPTIONS: { key: PresetFilterKey; label: string }[] = [
   { key: "high-earning", label: "High-Earning Careers" },
   { key: "work-life-balance", label: "Work-Life Balance" },
   { key: "fast-growing", label: "Fast-Growing Careers" },
+  { key: "ai-focused", label: "AI-Focused Roles" },
   { key: "academic", label: "Academic / High Study" },
   { key: "future-proof", label: "Future-Proof Careers" },
   { key: "vocational", label: "Vocational (non-Degree)" },
@@ -534,6 +536,20 @@ function careerNeedsDegree(career: Career): boolean {
 // 2026-06-10): widely read as a clinical/degree-adjacent role.
 const VOCATIONAL_EXCLUDE = new Set<string>(["pharmacy-technician"]);
 
+/** AI-focused careers — the ARTIFICIAL_INTELLIGENCE category plus the AI/ML/
+ *  data-science roles that live in other categories (TECH, telecoms, health).
+ *  Hand-listed to match the other preset sets; the radar is catalog-decoupled
+ *  so it can't derive the category at this layer. */
+const PRESET_AI_FOCUSED = new Set<string>([
+  "ai-engineer", "machine-learning-engineer", "data-scientist", "ai-research-scientist",
+  "nlp-engineer", "computer-vision-engineer", "mlops-engineer", "ai-solutions-architect",
+  "prompt-engineer", "generative-ai-engineer", "robotics-engineer", "ai-product-manager",
+  "data-engineer", "ai-ethics-specialist", "ai-consultant", "applied-ai-engineer",
+  "ai-researcher", "ai-safety-researcher", "ai-network-engineer", "decision-science-lead",
+  "principal-data-scientist", "senior-data-scientist", "healthcare-data-scientist",
+  "telco-ai-ml-engineer",
+]);
+
 /** Return true if the career satisfies the chosen preset filter. */
 function matchesPreset(career: Career, preset: PresetFilterKey): boolean {
   switch (preset) {
@@ -557,6 +573,8 @@ function matchesPreset(career: Career, preset: PresetFilterKey): boolean {
       // Self-maintaining: every military career (incl. the Forsvaret roles)
       // is tagged pathType "military", so this needs no hand-curated id list.
       return career.pathType === "military";
+    case "ai-focused":
+      return PRESET_AI_FOCUSED.has(career.id);
     case "vocational":
       // Curated "no-degree" hand-list (always trusted) ∪ catalogue careers
       // flagged entryLevel=true — but the entryLevel net is filtered through
