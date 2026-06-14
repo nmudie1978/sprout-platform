@@ -148,6 +148,20 @@ export async function POST(req: NextRequest) {
         rateLimited: true,
       });
     }
+    // Monthly cost ceiling — caps total Twin spend per account over a rolling
+    // 30-day window so a single user can't drain the OpenAI budget by spreading
+    // calls across days (the per-hour limit alone allows ~14k/month).
+    const monthlyRl = await checkRateLimitAsync(
+      `career-twin-month:${session.user.id}`,
+      RateLimits.AI_MONTHLY_TWIN
+    );
+    if (!monthlyRl.success) {
+      return NextResponse.json({
+        message:
+          "You've explored a lot with your Career Twin this month. Take some time to sit with what you've learned — we'll be right here when you're ready for more.",
+        rateLimited: true,
+      });
+    }
 
     // Resolve the career the Twin is grounded in
     const career = await resolveCareerContext(session.user.id, careerIdParam);

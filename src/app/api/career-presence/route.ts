@@ -65,11 +65,23 @@ export async function GET(req: NextRequest) {
     return NextResponse.json(fallback);
   }
 
-  // Interpret via the agent (AI or deterministic)
-  const result = await interpretPresence(careerId, careerTitle, scored);
+  // Monthly cost ceiling — only the AI explanation costs money, so we gate it
+  // here (cache hits + deterministic fallbacks above stay free). When a user
+  // has hit their monthly cap we still return a calm, accurate deterministic
+  // result rather than an error, so the feature degrades gracefully.
+  const monthlyRl = await checkRateLimitAsync(
+    `career-presence-month:${session.user.id}`,
+    RateLimits.AI_MONTHLY_PRESENCE
+  );
 
-  // Cache the result
-  cache.set(cacheKey, { result, expiresAt: Date.now() + CACHE_TTL });
+  // Interpret via the agent (AI when under the cap, else deterministic)
+  const result = await interpretPresence(careerId, careerTitle, scored, monthlyRl.success);
+
+  // Only cache the AI-backed result — don't poison the shared cache with a
+  // degraded (capped) result that other users would then be served.
+  if (monthlyRl.success) {
+    cache.set(cacheKey, { result, expiresAt: Date.now() + CACHE_TTL });
+  }
 
   return NextResponse.json(result);
 }
