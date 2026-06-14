@@ -15,6 +15,7 @@ import type {
   PoolContentType,
 } from "./pool-types";
 import { canonicalizeUrl, hashUrl } from "./canonicalize";
+import { getISOWeekSeed } from "./weekly-rotation";
 
 // ---------------------------------------------------------------------------
 // Paths
@@ -120,6 +121,7 @@ export function getNextBatch(
   }
 
   // 4. Score candidates
+  const weekSeed = getISOWeekSeed(new Date());
   const scored = candidates.map((item) => {
     let score = 0;
 
@@ -136,8 +138,14 @@ export function getNextBatch(
       score += Math.max(0, 5 - daysOld / 90); // Up to +5 for items < 90 days old
     }
 
-    // Small random factor to vary batches
-    score += Math.random() * 3;
+    // Week-seeded deterministic factor: the baseline featured set is stable
+    // within the ISO week (cache-friendly) and rotates each week. Per-user
+    // `exclude` anti-repeat still personalises within the week.
+    const idHash = Array.from(item.id).reduce(
+      (h, c) => (h * 31 + c.charCodeAt(0)) | 0,
+      weekSeed
+    );
+    score += (((idHash >>> 0) % 1000) / 1000) * 3; // 0..3, deterministic per week+item
 
     return { item, score };
   });
