@@ -35,6 +35,40 @@ describe("country-localised employers", () => {
     expect(hasCareerEmployers("doctor", "HEALTHCARE_LIFE_SCIENCES", "Italy")).toBe(false);
   });
 
+  it("realism overrides win over the coarse category fallback for trade/service roles", () => {
+    // A welder must NOT show oil/energy majors; a hairdresser must NOT show hotels;
+    // a taxi driver must NOT show freight/postal — these were the broken defaults.
+    const welder = getCareerEmployers("welder", "MANUFACTURING_ENGINEERING").map((e) => e.name).join(" ");
+    expect(welder).not.toMatch(/Aker Solutions|Equinor|Kongsberg/);
+    expect(welder).toMatch(/Vard|Ulstein|fabrication/i);
+
+    const hair = getCareerEmployers("hairdresser", "HOSPITALITY_TOURISM").map((e) => e.name).join(" ");
+    expect(hair).not.toMatch(/Scandic|Strawberry|SAS/);
+    expect(hair).toMatch(/Nikita|Cutters|salon/i);
+
+    const taxi = getCareerEmployers("taxi-driver", "LOGISTICS_TRANSPORT").map((e) => e.name).join(" ");
+    expect(taxi).not.toMatch(/Posten|Schenker|Wilhelmsen/);
+    expect(taxi).toMatch(/Taxi|Bolt|Uber/i);
+  });
+
+  it("realism overrides never override a hand-authored CAREER_EMPLOYERS entry", () => {
+    // airline-pilot is hand-authored — must still lead with the airlines.
+    expect(getCareerEmployers("airline-pilot", "LOGISTICS_TRANSPORT")[0].name).toMatch(/SAS|Norwegian|Widerøe/);
+  });
+
+  it("every realism employer is well-formed (name/industry/size; valid https link when present)", () => {
+    for (const id of ["welder", "hairdresser", "taxi-driver", "plumber", "chef", "bus-driver"]) {
+      const list = getCareerEmployers(id, undefined);
+      expect(list.length).toBeGreaterThan(0);
+      for (const e of list) {
+        expect(e.name).toBeTruthy();
+        expect(e.industry).toBeTruthy();
+        expect(e.size).toBeTruthy();
+        if (e.careersUrl) expect(e.careersUrl).toMatch(/^https:\/\//);
+      }
+    }
+  });
+
   it("every Spanish sector employer has a valid https link", () => {
     for (const cat of ["HEALTHCARE_LIFE_SCIENCES", "FINANCE_BANKING", "CONSTRUCTION_TRADES", "TELECOMMUNICATIONS"]) {
       const es = getCareerEmployers("x", cat, "ES");
