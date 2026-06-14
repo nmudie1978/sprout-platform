@@ -3045,6 +3045,34 @@ function ClarityCompletionCard({
         </div>
       )}
 
+      {/* Completion cue — restores the guidance that told users what's left to
+          finish Clarity (and unlock the "moment of arrival"). Clarity needs BOTH
+          an interest rating AND a Foundation; without this nudge a user who
+          hasn't set their Foundation never completes and never sees why. Shown
+          only once both halves have loaded and it's genuinely incomplete — no
+          rating picker (that lives in the ConfidenceTracker above). */}
+      {foundationReady && interestHydrated && !clarityComplete && (
+        <div className="rounded-lg border border-amber-500/20 bg-amber-500/[0.04] px-3.5 py-3">
+          <p className="text-[11px] font-semibold text-amber-300/90">
+            One step left to finish Clarity{careerTitle ? ` for ${careerTitle}` : ''}
+          </p>
+          <ul className="mt-1.5 space-y-1 text-[10.5px] text-muted-foreground/80 leading-relaxed">
+            {!hasSetInterest && (
+              <li>• Rate how interested you are in “How interested are you?” above.</li>
+            )}
+            {!hasFoundation && (
+              <li>
+                • Add your Foundation — school, subjects and finish year — in the{' '}
+                <span className="font-medium text-foreground/85">Your Roadmap</span> tab.
+              </li>
+            )}
+          </ul>
+          <p className="mt-2 text-[10px] text-muted-foreground/55">
+            Do both and your journey-complete moment unlocks. ✨
+          </p>
+        </div>
+      )}
+
       <JourneyCompleteCelebration
         open={showCelebration}
         onClose={() => setShowCelebration(false)}
