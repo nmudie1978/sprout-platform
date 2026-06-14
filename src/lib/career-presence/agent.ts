@@ -135,14 +135,19 @@ STRICT RULES:
 /**
  * Produce the full CareerPresenceResult by interpreting scored data.
  * Uses AI when available, falls back to deterministic templates.
+ *
+ * `allowAI` lets the caller suppress the OpenAI call (e.g. when the user has
+ * hit their monthly cost cap) while still returning a calm, accurate result
+ * built from the deterministic templates.
  */
 export async function interpretPresence(
   careerId: string,
   careerTitle: string,
   countries: ScoredPresence[],
+  allowAI = true,
 ): Promise<CareerPresenceResult> {
   // Try AI explanation first, fall back to deterministic
-  const aiExplanation = await buildAIExplanation(careerTitle, countries);
+  const aiExplanation = allowAI ? await buildAIExplanation(careerTitle, countries) : null;
   const explanation = aiExplanation || buildDeterministicExplanation(careerTitle, countries);
   const cautionNote = buildCautionNote(countries);
 

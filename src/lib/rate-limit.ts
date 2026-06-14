@@ -329,4 +329,13 @@ export const RateLimits = {
   // Chat is the highest-traffic AI surface; generous monthly backstop so a
   // single account can't sustain 20/hr (≈14k/month) against the budget.
   AI_MONTHLY_CHAT: { interval: 30 * 24 * 3600_000, maxRequests: 1000 },
+  // Career Twin shares the AI_CHAT per-hour budget; this is its monthly
+  // backstop so a single account can't sustain 20/hr against the budget.
+  AI_MONTHLY_TWIN: { interval: 30 * 24 * 3600_000, maxRequests: 1000 },
+  // Career-presence is cached + has a deterministic fallback, so AI calls are
+  // infrequent; this caps the rare cache-miss AI calls per account.
+  AI_MONTHLY_PRESENCE: { interval: 30 * 24 * 3600_000, maxRequests: 200 },
+  // Translation is batched (one call per content batch). Generous so real
+  // multilingual users aren't blocked, but a single account can't grind it.
+  AI_MONTHLY_TRANSLATE: { interval: 30 * 24 * 3600_000, maxRequests: 1000 },
 } as const;
