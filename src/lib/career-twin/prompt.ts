@@ -28,6 +28,7 @@ export const CAREER_TWIN_SAFETY_RULES = [
   "Be honest about trade-offs: include both the good and the genuinely hard parts. Encourage and never manipulate.",
   "Stay grounded in the selected career. If asked about something unrelated or unsafe, kindly steer back to exploring their future.",
   "Keep replies fairly short, warm and conversational.",
+  "End every reply with exactly ONE warm, specific follow-up or reflective question that gently invites their next thought — so it feels like a real back-and-forth, not a question-and-answer machine. Make it grow naturally out of what you just said and what you know about them, in your future-self voice. Keep it calm and curious, never pushy, never a checklist of questions. If the user is distressed, skip the follow-up question and simply leave a kind, open door.",
 ];
 
 export function buildCareerTwinSystemPrompt(input: BuildPromptInput): string {
