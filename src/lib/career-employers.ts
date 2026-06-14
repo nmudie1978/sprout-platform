@@ -6,6 +6,12 @@
  * careers page URL. Add careers by editing CAREER_EMPLOYERS.
  */
 
+// Realistic, Norway-first employer overrides for ~190 hands-on / trade /
+// service / transport roles whose coarse category fallback named implausible
+// big brands. The realism module re-imports `Employer` type-only (no runtime
+// cycle); consulted in getTopEmployers below.
+import { REALISM_EMPLOYERS } from './career-employers-realism';
+
 export interface Employer {
   name: string;
   industry: string;
@@ -255,6 +261,11 @@ const CAREER_ID_ALIASES: Record<string, string> = {
 export function getTopEmployers(careerId: string): Employer[] {
   return CAREER_EMPLOYERS[careerId]
     ?? CAREER_EMPLOYERS[CAREER_ID_ALIASES[careerId] ?? '']
+    // REALISM_EMPLOYERS covers hands-on / trade / service roles whose coarse
+    // category fallback named implausible big brands (welder→Aker, etc.).
+    // Hand-authored CAREER_EMPLOYERS still wins; realism wins over the
+    // category fallback in getCareerEmployers.
+    ?? REALISM_EMPLOYERS[careerId]
     ?? [];
 }
 
@@ -262,7 +273,10 @@ export function getTopEmployers(careerId: string): Employer[] {
  * Whether a career has top-employer data.
  */
 export function hasTopEmployers(careerId: string): boolean {
-  return (CAREER_EMPLOYERS[careerId]?.length ?? 0) > 0;
+  return (
+    (CAREER_EMPLOYERS[careerId]?.length ?? 0) > 0 ||
+    (REALISM_EMPLOYERS[careerId]?.length ?? 0) > 0
+  );
 }
 
 /**

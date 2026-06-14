@@ -21,6 +21,35 @@ const baseCareer = (over: Partial<Career> = {}): Career => ({
   ...over,
 });
 
+describe('Career DNA — education realism', () => {
+  const eduTrait = (c: Career) =>
+    deriveCareerDNA(c).traits.find((t) => t.id === 'education-length')!;
+
+  it('does not imply a degree for a clearly non-degree, vocational career', () => {
+    // No explicit educationRoute + a vocational keyword: must resolve via the
+    // route inference, NOT default to a degree-shaped line.
+    const trades = baseCareer({
+      id: 'welder',
+      title: 'Welder',
+      educationPath: 'Fagbrev (vocational, ~2 years) + apprenticeship',
+    });
+    const dna = deriveCareerDNA(trades);
+    expect(dna.snapshot.educationPath).toMatch(/vocational|on-the-job|entry/i);
+    expect(dna.snapshot.educationPath).not.toMatch(/university degree/i);
+    expect(eduTrait(trades).score).toBeLessThanOrEqual(4);
+  });
+
+  it('keeps a long, degree-shaped education for a genuine university career', () => {
+    const doc = baseCareer({
+      id: 'doctor-x',
+      title: 'Hospital Doctor',
+      educationPath: 'Medical Degree (6 years) + specialisation',
+    });
+    expect(deriveCareerDNA(doc).snapshot.educationPath).toMatch(/university degree/i);
+    expect(eduTrait(doc).score).toBeGreaterThanOrEqual(7);
+  });
+});
+
 describe('Career DNA — derivation', () => {
   it('produces all ten traits in canonical order', () => {
     const p = deriveCareerDNA(baseCareer());

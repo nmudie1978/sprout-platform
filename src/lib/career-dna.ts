@@ -10,7 +10,7 @@
  * a backend or migration.
  */
 
-import type { Career } from '@/lib/career-pathways';
+import { inferEducationRoute, type Career } from '@/lib/career-pathways';
 import type {
   CareerDNAProfile,
   CareerDNATrait,
@@ -89,7 +89,7 @@ function describeTrait(id: CareerDNATraitId, score: number): string {
     },
     'education-length': {
       high: 'A long, structured education path is usually required.',
-      mid: 'Typically needs a degree or focused training.',
+      mid: 'A focused training route, or a degree for some paths.',
       low: 'You can enter with shorter training or on the job.',
     },
     independence: {
@@ -153,16 +153,25 @@ function educationScore(career: Career): number {
   let base: number;
   if (years != null) base = years <= 1 ? 2 : years <= 2 ? 4 : years <= 3 ? 5 : years <= 5 ? 7 : 9;
   else base = 5;
-  switch (career.educationRoute) {
+  // Use the *resolved* route (inferEducationRoute applies educationPath
+  // keywords + sensible category defaults), not the raw field — which is
+  // unset on ~95% of careers and otherwise leaves trades / service / manual
+  // roles reading as if a degree is required.
+  switch (inferEducationRoute(career)) {
     case 'on-the-job':
-      base = Math.min(base, 3);
+      base = Math.min(base, 2);
       break;
     case 'vocational':
-      base = Math.min(base, 5);
+      // fagbrev / apprenticeship is genuinely short vs a degree — keep it in
+      // the "shorter training or on the job" band so it never implies a degree.
+      base = Math.min(base, 3);
       break;
     case 'university':
-      base = Math.max(base, 6);
+      // Genuine degree routes belong in the high band ("long, structured
+      // education"), so the mid band can honestly mean "mixed / shorter".
+      base = Math.max(base, 7);
       break;
+    // 'mixed' keeps the year/keyword-derived base (several viable routes).
   }
   if (/doctor|phd|doctorate|specialis/i.test(career.educationPath)) base = Math.max(base, 9);
   return base;
@@ -332,13 +341,10 @@ function deriveSnapshot(
     mixed: 'Several viable routes',
     'on-the-job': 'On-the-job or entry-level',
   };
-  const educationPath = career.educationRoute
-    ? eduMap[career.educationRoute]
-    : scores['education-length'] >= 7
-      ? 'Longer university or professional study'
-      : scores['education-length'] <= 3
-        ? 'Short training or on-the-job'
-        : 'Typically a degree or focused training';
+  // Always resolve the route (keyword + category default) rather than relying
+  // on the raw field, so the snapshot never defaults to a degree-shaped line
+  // for trades / service / manual careers that have no explicit route set.
+  const educationPath = eduMap[inferEducationRoute(career)];
 
   return { careerType, workEnvironment, incomePotential, jobOutlook, educationPath };
 }
