@@ -32,6 +32,8 @@ import {
   Radar,
   ShieldAlert,
   Flag,
+  Volume2,
+  Square,
   User as UserIcon,
 } from "lucide-react";
 import { ReportModal } from "@/components/report-modal";
@@ -70,6 +72,7 @@ export function CareerTwinView({
   const [career, setCareer] = useState<CareerInfo | null>(null);
   const [intro, setIntro] = useState("");
   const [opener, setOpener] = useState<{ text: string; question: string | null } | null>(null);
+  const [contextStarters, setContextStarters] = useState<string[]>([]);
   const [isSparse, setIsSparse] = useState(false);
   const [modes, setModes] = useState<ModeDef[]>([]);
   const [modeId, setModeId] = useState<string>("ask_future_me");
@@ -78,8 +81,43 @@ export function CareerTwinView({
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
   const [returningDays, setReturningDays] = useState<number | null>(null);
+  // Opt-in text-to-speech ("Listen") — browser SpeechSynthesis only, no deps,
+  // no network, no cost. Tracks which message is currently being read.
+  const [speakingId, setSpeakingId] = useState<string | null>(null);
+  const ttsSupported =
+    typeof window !== "undefined" && typeof window.speechSynthesis !== "undefined";
 
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  // Stop any in-flight speech when the component unmounts (e.g. tab switch).
+  useEffect(() => {
+    return () => {
+      if (typeof window !== "undefined" && window.speechSynthesis) {
+        window.speechSynthesis.cancel();
+      }
+    };
+  }, []);
+
+  const toggleSpeak = useCallback(
+    (id: string, text: string) => {
+      if (typeof window === "undefined" || !window.speechSynthesis) return;
+      const synth = window.speechSynthesis;
+      // Toggle off if this message is already being read.
+      if (speakingId === id) {
+        synth.cancel();
+        setSpeakingId(null);
+        return;
+      }
+      synth.cancel();
+      const utter = new SpeechSynthesisUtterance(text);
+      utter.rate = 1;
+      utter.onend = () => setSpeakingId((cur) => (cur === id ? null : cur));
+      utter.onerror = () => setSpeakingId((cur) => (cur === id ? null : cur));
+      setSpeakingId(id);
+      synth.speak(utter);
+    },
+    [speakingId],
+  );
 
   // Load persona + modes for the resolved career.
   useEffect(() => {
@@ -101,6 +139,11 @@ export function CareerTwinView({
         // a real chat exists, that history leads instead.
         if (data.opener?.text) {
           setOpener({ text: data.opener.text, question: data.opener.question ?? null });
+        }
+        // Context-aware starter chips (server-built, deterministic). Empty for
+        // brand-new users → we fall back to the generic mode starters below.
+        if (Array.isArray(data.contextStarters)) {
+          setContextStarters(data.contextStarters.filter((q: unknown): q is string => typeof q === "string"));
         }
         setIsSparse(
           !data.persona?.strengthsAssumedFromProfile ||
@@ -159,6 +202,27 @@ export function CareerTwinView({
     setModeId(id);
     track("career_twin_mode_selected", { mode: id });
   };
+
+  const launchExperience = useCallback(() => {
+    setExperienceActive(true);
+    if (career) track("career_twin_experience_opened", { career: career.title });
+  }, [career]);
+
+  // Empty-state starter chips: lead with the context-aware ones (only on the
+  // default "Ask Future Me" mode, where they fit), then the active mode's
+  // generic starters. The opener's reflective question still leads when present.
+  const emptyStateChips = useMemo(() => {
+    const ctx = modeId === "ask_future_me" ? contextStarters : [];
+    const base = opener?.question
+      ? [opener.question, ...suggested.filter((q) => q !== opener.question)]
+      : suggested;
+    const seen = new Set<string>();
+    return [...ctx, ...base].filter((q) => {
+      if (seen.has(q)) return false;
+      seen.add(q);
+      return true;
+    });
+  }, [modeId, contextStarters, opener, suggested]);
 
   const send = useCallback(
     async (text: string) => {
@@ -357,10 +421,7 @@ export function CareerTwinView({
             ))}
             {/* Experience The Job — swaps the chat for the guided scenario runner. */}
             <button
-              onClick={() => {
-                setExperienceActive(true);
-                track("career_twin_experience_opened", { career: career.title });
-              }}
+              onClick={launchExperience}
               className={`shrink-0 inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
                 experienceActive ? accentChipActive : `bg-background ${accentHoverBorder}`
               }`}
@@ -417,8 +478,9 @@ export function CareerTwinView({
               )}
               <p className="text-sm text-muted-foreground mb-3">{t("suggested")}</p>
               <div className={cn("flex flex-col gap-2 w-full", !opener && "max-w-md")}>
-                {/* Lead with the opener's reflective question when present. */}
-                {(opener?.question ? [opener.question, ...suggested.filter((q) => q !== opener.question)] : suggested).map((q, i) => (
+                {/* Lead with context-aware chips (real careers / journey stage),
+                    then the opener's reflective question, then generic starters. */}
+                {emptyStateChips.map((q, i) => (
                   <button
                     key={i}
                     onClick={() => send(q)}
@@ -428,6 +490,20 @@ export function CareerTwinView({
                   </button>
                 ))}
               </div>
+              {/* Gentle, contextual nudge into the scenario runner — shown only
+                  on the empty state, not on every message, so it stays calm. */}
+              <button
+                type="button"
+                onClick={launchExperience}
+                className={cn(
+                  "mt-4 inline-flex items-center gap-2 self-start rounded-full border-2 border-dashed px-4 py-2 text-sm font-medium text-muted-foreground transition-colors",
+                  accentHoverBorder,
+                  accentHoverText,
+                )}
+              >
+                <Compass className="h-4 w-4" />
+                Want to actually live a day as a {career.title}?
+              </button>
             </div>
           ) : (
             <AnimatePresence>
@@ -454,21 +530,49 @@ export function CareerTwinView({
                       {m.content}
                     </div>
                     {m.role === "assistant" && (
-                      <ReportModal
-                        targetType="CONTENT"
-                        targetId={`career-twin-chat:${career?.id ?? ""}`}
-                        targetName={career ? `Career Twin — ${career.title}` : "Career Twin response"}
-                        trigger={
+                      <div className="mt-1 ml-1 flex items-center gap-3">
+                        {ttsSupported && (
                           <button
                             type="button"
-                            className="mt-1 ml-1 inline-flex items-center gap-1 text-[11px] text-muted-foreground/60 hover:text-destructive transition-colors"
-                            aria-label="Report this response"
+                            onClick={() => toggleSpeak(m.id, m.content)}
+                            className={cn(
+                              "inline-flex items-center gap-1 text-[11px] transition-colors",
+                              speakingId === m.id
+                                ? "text-foreground/80"
+                                : cn("text-muted-foreground/60", accentHoverText),
+                            )}
+                            aria-label={speakingId === m.id ? "Stop reading aloud" : "Listen to this response"}
+                            aria-pressed={speakingId === m.id}
                           >
-                            <Flag className="h-3 w-3" />
-                            Report
+                            {speakingId === m.id ? (
+                              <>
+                                <Square className="h-3 w-3" />
+                                Stop
+                              </>
+                            ) : (
+                              <>
+                                <Volume2 className="h-3 w-3" />
+                                Listen
+                              </>
+                            )}
                           </button>
-                        }
-                      />
+                        )}
+                        <ReportModal
+                          targetType="CONTENT"
+                          targetId={`career-twin-chat:${career?.id ?? ""}`}
+                          targetName={career ? `Career Twin — ${career.title}` : "Career Twin response"}
+                          trigger={
+                            <button
+                              type="button"
+                              className="inline-flex items-center gap-1 text-[11px] text-muted-foreground/60 hover:text-destructive transition-colors"
+                              aria-label="Report this response"
+                            >
+                              <Flag className="h-3 w-3" />
+                              Report
+                            </button>
+                          }
+                        />
+                      </div>
                     )}
                   </div>
                   {m.role === "user" && (

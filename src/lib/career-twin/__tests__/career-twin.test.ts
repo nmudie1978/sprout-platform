@@ -7,7 +7,12 @@ import {
 } from "../modes";
 import { buildPersona, UNCERTAINTY_DISCLAIMER } from "../persona";
 import { buildCareerTwinSystemPrompt, CAREER_TWIN_SAFETY_RULES } from "../prompt";
-import type { CareerTwinCareerContext, CareerTwinProfileContext } from "../types";
+import { buildContextStarters } from "../starters";
+import type {
+  CareerTwinCareerContext,
+  CareerTwinProfileContext,
+  TwinRecentActivity,
+} from "../types";
 
 const physio: CareerTwinCareerContext = {
   id: "physiotherapist",
@@ -220,5 +225,65 @@ describe("Career Twin — system prompt (safety contract)", () => {
       profile: { ...richProfile, age: 14 },
     });
     expect(youngPrompt.toLowerCase()).toContain("under 16");
+  });
+
+  it("instructs the Twin to end every reply with one inviting follow-up question", () => {
+    expect(CAREER_TWIN_SAFETY_RULES.some((r) => /follow-up or reflective question/i.test(r))).toBe(true);
+    expect(prompt.toLowerCase()).toContain("end every reply with exactly one");
+    // The follow-up must be suppressed when the user is distressed.
+    expect(prompt.toLowerCase()).toContain("if the user is distressed, skip the follow-up");
+  });
+});
+
+describe("Career Twin — context-aware starter chips", () => {
+  const activity = (over: Partial<TwinRecentActivity> = {}): TwinRecentActivity => ({
+    activeCareerId: "physiotherapist",
+    activeGoalTitle: null,
+    recentCareers: [],
+    journeyStage: null,
+    daysSinceLastVisit: null,
+    ...over,
+  });
+
+  it("returns generic-free (empty) chips for a brand-new user with no activity", () => {
+    expect(buildContextStarters("Physiotherapist", null)).toEqual([]);
+    expect(buildContextStarters("Physiotherapist", activity())).not.toContain("");
+  });
+
+  it("builds a compare chip from a real recently-explored OTHER career", () => {
+    const chips = buildContextStarters(
+      "Physiotherapist",
+      activity({ recentCareers: [{ careerId: "nurse", title: "Nurse" }] }),
+    );
+    expect(chips.some((c) => /compare with Nurse/i.test(c))).toBe(true);
+  });
+
+  it("never echoes the active career back as the comparison target", () => {
+    const chips = buildContextStarters(
+      "Physiotherapist",
+      activity({ recentCareers: [{ careerId: "physiotherapist", title: "Physiotherapist" }] }),
+    );
+    expect(chips.some((c) => /compare with Physiotherapist/i.test(c))).toBe(false);
+  });
+
+  it("adapts the route question to the journey stage", () => {
+    const discover = buildContextStarters("Physiotherapist", activity({ journeyStage: "Discover" }));
+    expect(discover.some((c) => /from school to Physiotherapist/i.test(c))).toBe(true);
+
+    const understand = buildContextStarters("Physiotherapist", activity({ journeyStage: "Understand" }));
+    expect(understand.some((c) => /hardest part/i.test(c))).toBe(true);
+
+    const clarity = buildContextStarters("Physiotherapist", activity({ journeyStage: "Clarity" }));
+    expect(clarity.some((c) => /small step/i.test(c))).toBe(true);
+  });
+
+  it("caps the number of chips and de-dupes", () => {
+    const chips = buildContextStarters(
+      "Physiotherapist",
+      activity({ recentCareers: [{ careerId: "nurse", title: "Nurse" }], journeyStage: "Discover" }),
+      3,
+    );
+    expect(chips.length).toBeLessThanOrEqual(3);
+    expect(new Set(chips).size).toBe(chips.length);
   });
 });

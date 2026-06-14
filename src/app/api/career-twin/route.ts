@@ -13,6 +13,7 @@ import {
 } from "@/lib/career-twin";
 import { resolveCareerContext, loadProfileContext, loadRecentActivity } from "@/lib/career-twin/resolve";
 import { buildProactiveOpener } from "@/lib/career-twin/opener";
+import { buildContextStarters } from "@/lib/career-twin/starters";
 import {
   classifyIntent,
   isResponseSafe,
@@ -81,12 +82,18 @@ export async function GET(req: NextRequest) {
     // to the generic persona intro.
     const opener = buildProactiveOpener(career, recentActivity);
 
+    // Context-aware starter chips, built from the SAME already-loaded recent
+    // activity as the opener (zero extra cost, never hallucinated). Empty for
+    // brand-new users → the client falls back to the generic mode starters.
+    const contextStarters = buildContextStarters(career.title, recentActivity);
+
     return NextResponse.json({
       needsCareer: false,
       career: { id: career.id, title: career.title, emoji: career.emoji ?? null },
       persona,
       intro: persona.intro,
       opener,
+      contextStarters,
       disclaimer: persona.uncertaintyDisclaimer,
       modes: CAREER_TWIN_MODES.map((m) => ({
         id: m.id,
