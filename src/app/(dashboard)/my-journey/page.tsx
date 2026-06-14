@@ -66,6 +66,7 @@ import { CareerSpecialisms } from '@/components/journey/career-specialisms';
 import { hasSpecialisms } from '@/lib/career-specialisms';
 import { TopEmployers } from '@/components/journey/top-employers';
 import { SalaryProgressionLine } from '@/components/journey/salary-progression-line';
+import { CareerDNASection } from '@/components/career-dna/career-dna-section';
 import { hasCareerEmployers, getRepresentativeEmployers } from '@/lib/career-employers';
 import { hasMyths } from '@/lib/career-myths';
 import { ConfidenceTracker } from '@/components/journey/confidence-tracker';
@@ -871,6 +872,11 @@ function DiscoverTab({
             → School Readiness" sections respectively. The pre-2026-04-22
             dead IIFE was removed; pull from git history if needed. */}
       </div>
+
+      {/* Career DNA — a subtle link that opens a modal showing what this
+          career is *made of* (objective traits), not who the user is.
+          Mirrors the calm, understated salary affordance above. */}
+      <CareerDNASection career={career} />
 
       {/* Self-confirmation — drives the dashboard's Discover progress
           AND the tab lock. Picking a goal alone no longer counts; the
