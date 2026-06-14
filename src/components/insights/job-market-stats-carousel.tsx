@@ -68,6 +68,7 @@ import {
 } from "@/lib/industry-insights/job-market-stats";
 import type { StatDatum } from "@/lib/industry-insights/stat-types";
 import { resolveBarColor } from "@/lib/industry-insights/bar-color";
+import { getISOWeekSeed } from "@/lib/insights/weekly-rotation";
 import { SourceDrawer } from "./source-drawer";
 
 // ============================================
@@ -861,7 +862,9 @@ export function JobMarketStatsCarousel({
   const [currentPage, setCurrentPage] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
-  const [batchSeed, setBatchSeed] = useState(0);
+  // Seed the opening batch by ISO week so the featured stats rotate every
+  // Monday (stable within the week). "Give me more" still advances from here.
+  const [batchSeed, setBatchSeed] = useState(() => getISOWeekSeed(new Date()));
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [selectedStat, setSelectedStat] = useState<StatDatum | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
