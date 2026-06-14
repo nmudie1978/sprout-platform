@@ -18,6 +18,7 @@ import {
   validateYouTubeVideo,
 } from "./validate-insight-url";
 import { getRedisClient } from "@/lib/rate-limit";
+import { getISOWeekSeed, rotateWeekly } from "@/lib/insights/weekly-rotation";
 
 // ============================================
 // SECTION DEFINITIONS
@@ -2852,10 +2853,15 @@ export async function fetchSectionContent(
     (safePage + 1) * videoPageSize
   );
 
+  // Rotate the curated article/podcast decks by ISO week so the featured
+  // ordering visibly changes each Monday (stable within the week). Videos keep
+  // their recency-first ordering.
+  const weekSeed = getISOWeekSeed(new Date());
+
   return {
-    articles,
+    articles: rotateWeekly(articles, weekSeed),
     videos,
-    podcasts,
+    podcasts: rotateWeekly(podcasts, weekSeed),
     lastFetched: new Date().toISOString(),
     pagination: {
       page: safePage,
