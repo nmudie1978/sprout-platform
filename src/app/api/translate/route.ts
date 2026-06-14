@@ -52,6 +52,19 @@ export async function POST(req: NextRequest) {
       { status: 429, headers: { "Retry-After": String(Math.ceil((rl.reset - Date.now()) / 1000)) } }
     );
   }
+  // Monthly cost ceiling — caps total translation spend per account over a
+  // rolling 30-day window so a single user can't drain the OpenAI budget by
+  // spreading batches across days. The UI degrades to the source language.
+  const monthlyRl = await checkRateLimitAsync(
+    `translate-month:${session.user.id}`,
+    RateLimits.AI_MONTHLY_TRANSLATE
+  );
+  if (!monthlyRl.success) {
+    return NextResponse.json(
+      { error: "Monthly translation quota reached. It resets after the rolling 30-day window." },
+      { status: 429, headers: { "Retry-After": String(Math.ceil((monthlyRl.reset - Date.now()) / 1000)) } }
+    );
+  }
 
   try {
     const body = await req.json();
