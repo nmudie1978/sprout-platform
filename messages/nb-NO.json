@@ -1,4 +1,47 @@
 {
+  "arrival": {
+    "prompt": "Hvordan har du det i dag?",
+    "subtitle": "Ett trykk, bare for deg. Det finnes ingen feil svar.",
+    "skip": "Hopp over for nå",
+    "moods": {
+      "lost": "Litt forvirret",
+      "curious": "Nysgjerrig",
+      "pressured": "Under press",
+      "motivated": "Motivert"
+    },
+    "ack": {
+      "lost": "Det er helt greit. Vi tar neste steg sammen, helt rolig.",
+      "curious": "Så fint. La oss følge det du er nysgjerrig på.",
+      "pressured": "Ingen hast her. Det finnes ikke noe feil tempo — velg én liten ting.",
+      "motivated": "Flott — la oss gjøre det om til litt fremdrift."
+    }
+  },
+  "clarityShift": {
+    "sectionTitle": "Din klarhet om denne veien",
+    "afterCta": "Jeg har utforsket dette — hvor klar føler du deg nå?",
+    "prompt": {
+      "before": "Før du går i gang — hvor klar føler du deg på om denne veien passer for deg?",
+      "after": "Nå som du har utforsket den — hvor klar føler du deg?"
+    },
+    "levels": {
+      "veryUnsure": "Veldig usikker",
+      "unsure": "Usikker",
+      "gettingClearer": "Blir klarere",
+      "fairlyClear": "Ganske klar",
+      "clear": "Klar"
+    },
+    "narrative": {
+      "steady": "Følelsen din for denne veien holdt seg stabil. Det er helt greit — klarhet kommer ofte ett steg om gangen.",
+      "clearer": {
+        "small": "Litt klarere enn da du startet. Det er ekte fremgang.",
+        "big": "Mye klarere enn da du startet — det er et ordentlig steg framover."
+      },
+      "lessSure": {
+        "small": "Litt mer usikker enn da du startet. Det er også nyttig — å utforske vekker ofte gode spørsmål.",
+        "big": "Mer usikker enn da du startet — og det er faktisk nyttig. Noen ganger hjelper utforsking deg å utelukke en vei, og det er også en slags fremgang."
+      }
+    }
+  },
   "common": {
     "save": "Lagre",
     "cancel": "Avbryt",

@@ -1,4 +1,47 @@
 {
+  "arrival": {
+    "prompt": "How are you arriving today?",
+    "subtitle": "One tap, just for you. There's no wrong answer.",
+    "skip": "Skip for now",
+    "moods": {
+      "lost": "A bit lost",
+      "curious": "Curious",
+      "pressured": "Under pressure",
+      "motivated": "Motivated"
+    },
+    "ack": {
+      "lost": "That's okay. We'll take the next step together, nice and small.",
+      "curious": "Love that. Let's follow what you're curious about.",
+      "pressured": "No rush here. There's no wrong pace — pick one small thing.",
+      "motivated": "Great — let's turn that into a bit of momentum."
+    }
+  },
+  "clarityShift": {
+    "sectionTitle": "Your clarity on this path",
+    "afterCta": "I've explored this — how clear do you feel now?",
+    "prompt": {
+      "before": "Before you dive in — how clear do you feel about whether this path is right for you?",
+      "after": "Now you've explored it — how clear do you feel?"
+    },
+    "levels": {
+      "veryUnsure": "Very unsure",
+      "unsure": "Unsure",
+      "gettingClearer": "Getting clearer",
+      "fairlyClear": "Fairly clear",
+      "clear": "Clear"
+    },
+    "narrative": {
+      "steady": "Your sense of this path held steady. That's okay — clarity often comes a step at a time.",
+      "clearer": {
+        "small": "A little clearer than when you started. That's real progress.",
+        "big": "Much clearer than when you started — that's a real step forward."
+      },
+      "lessSure": {
+        "small": "A little less sure than when you started. That's useful too — exploring often raises good questions.",
+        "big": "Less sure than when you started — and that's genuinely useful. Sometimes exploring helps rule a path out, which is its own kind of progress."
+      }
+    }
+  },
   "common": {
     "save": "Save",
     "cancel": "Cancel",

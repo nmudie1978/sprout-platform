@@ -258,6 +258,11 @@ model User {
   // Career Interest ★1–5 self-ratings (My Library "Exploring" tab)
   careerInterests CareerInterest[]
 
+  // Emotional-signal loop: self-reported "how are you arriving today?" check-ins
+  arrivalCheckIns ArrivalCheckIn[]
+  // Emotional-signal loop: before/after clarity ratings around exploring a career
+  clarityShifts   ClarityShift[]
+
   // Saved jobs (bookmarks — separate from Application)
 
   // School mode — a TEACHER owns Cohorts; a YOUTH has CohortMemberships.
@@ -2214,6 +2219,45 @@ model CareerInterest {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, careerId])
+  @@index([userId])
+}
+
+// ============================================
+// EMOTIONAL SIGNALS — sense → respond loop
+// ============================================
+
+// Arrival Check-in: a self-reported "how are you arriving today?" mood.
+// SENSING half of the loop. One mood + one timestamp per tap — never
+// inferred from behaviour (CLAUDE.md: no behavioural profiling). Private to
+// the user; never surfaced to guardians or teachers.
+model ArrivalCheckIn {
+  id        String   @id @default(cuid())
+  userId    String
+  mood      String // ArrivalMood ("lost"|"curious"|"pressured"|"motivated"), validated at the API layer
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+}
+
+// Clarity Shift: how clear/sure a user feels about a career BEFORE vs AFTER
+// exploring it. Closes the sense → respond loop — the delta is reflected back
+// as a calm, honest emotional signal ("you feel clearer than when you
+// started"). One row per (user, career); re-rating updates in place so it
+// can't be gamed into a streak.
+model ClarityShift {
+  id          String   @id @default(cuid())
+  userId      String
+  careerSlug  String // matches Career.id (validated against the catalog at the API layer)
+  beforeScore Int? // 1–5 (validated at the API layer)
+  afterScore  Int? // 1–5 (validated at the API layer)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, careerSlug])
   @@index([userId])
 }
 
