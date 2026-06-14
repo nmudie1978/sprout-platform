@@ -462,6 +462,49 @@
     }
   }
 
+  /* Ambient presence backdrop — large, very low-opacity blurred gradient
+     "blobs" that drift slowly behind the app so it never feels dead at rest.
+     Extremely subtle (CALM, not a screensaver): tiny opacities set inline by
+     <AmbientBackdrop>, slow CSS drifts, GPU-only transforms. */
+  .ambient-blob {
+    position: absolute;
+    border-radius: 9999px;
+    filter: blur(70px);
+    /* slow drift; per-element duration/delay set inline so the two blobs
+       never sync into a pulse */
+    animation: blob 34s ease-in-out infinite;
+  }
+
+  /* Idle "breathing" glow — a faint sign of life at rest. Very slow, subtle
+     scale + opacity only (~7s breath). */
+  .ambient-breath {
+    position: absolute;
+    border-radius: 9999px;
+    filter: blur(60px);
+    animation: ambient-breath 7.5s ease-in-out infinite;
+  }
+
+  @keyframes ambient-breath {
+    0%, 100% {
+      transform: scale(1);
+      opacity: 0.7;
+    }
+    50% {
+      transform: scale(1.08);
+      opacity: 1;
+    }
+  }
+
+  /* Reduced motion: the whole ambient layer goes completely still. Keeps the
+     faint static wash, drops all drift/breathing. */
+  @media (prefers-reduced-motion: reduce) {
+    .ambient-backdrop .ambient-blob,
+    .ambient-backdrop .ambient-breath {
+      animation: none !important;
+      transform: none !important;
+    }
+  }
+
   /* Floating shapes animation */
   .animate-float-slow {
     animation: float-slow 8s ease-in-out infinite;
