@@ -7,6 +7,7 @@ import { AmbientLightBackground } from "@/components/ui/ambient-light-background
 import { AmbientBackdrop } from "@/components/ui/ambient-backdrop";
 import { ThemeTallyPing } from "@/components/theme-tally-ping";
 import { ReportModal } from "@/components/report-modal";
+import { CompareHost } from "@/components/compare/compare-host";
 import { prisma } from "@/lib/prisma";
 import { isAcceptanceCurrent } from "@/lib/legal/versions";
 import { headers } from "next/headers";
@@ -116,6 +117,11 @@ export default async function DashboardLayout({
             switcher now lives as an icon in the dashboard header (next to the
             walkthrough control) rather than a persistent top bar. */}
         <main id="main-content" className="flex-1 pb-16 lg:pb-0">{children}</main>
+
+        {/* Global compare experience — persistent shortlist, floating pill,
+            compare modal, and the "you now have 3 — compare?" prompt. Youth
+            only (teachers don't have career exploration). */}
+        {session.user.role === "YOUTH" && <CompareHost />}
 
         {/* Footer with legal links — hidden on mobile.
             Transparent in light mode so the canvas gradient shows
