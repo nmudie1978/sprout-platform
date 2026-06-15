@@ -1,130 +1,122 @@
 {
-  "lastRefreshISO": "2026-06-03T19:56:40.948Z",
-  "totalItems": 37,
-  "totalVerified": 37,
+  "lastRefreshISO": "2026-06-15T22:06:51.159Z",
+  "totalItems": 28,
+  "totalVerified": 28,
   "totalFailed": 0,
   "totalPending": 0,
-  "duplicatesRejected": 41,
+  "duplicatesRejected": 0,
   "byType": {
-    "article": 17,
-    "video": 11,
-    "stat_report": 9,
+    "article": 18,
+    "video": 5,
+    "stat_report": 5,
     "pdf": 0
   },
   "byDomain": {
-    "weforum.org": 5,
-    "oecd.org": 5,
-    "worldbank.org": 1,
-    "mckinsey.com": 4,
-    "deloitte.com": 1,
+    "weforum.org": 4,
+    "oecd.org": 3,
+    "deloitte.com": 2,
+    "accenture.com": 3,
+    "unesco.org": 1,
+    "undp.org": 1,
     "wipo.int": 1,
     "who.int": 1,
-    "visualcapitalist.com": 2,
-    "ourworldindata.org": 2,
-    "youtube.com": 11,
-    "bcg.com": 1,
-    "pwc.com": 1,
-    "unesco.org": 1,
-    "accenture.com": 1
+    "worldbank.org": 2,
+    "youtube.com": 4,
+    "ted.com": 1,
+    "ourworldindata.org": 1,
+    "visualcapitalist.com": 4
   },
   "verificationHealth": [
     {
       "domain": "weforum.org",
-      "checked": 5,
-      "passed": 5,
-      "failed": 0,
-      "lastCheckedAt": "2026-06-03T19:56:06.121Z"
-    },
-    {
-      "domain": "oecd.org",
-      "checked": 5,
-      "passed": 5,
-      "failed": 0,
-      "lastCheckedAt": "2026-06-03T19:55:34.079Z"
-    },
-    {
-      "domain": "worldbank.org",
-      "checked": 1,
-      "passed": 1,
-      "failed": 0,
-      "lastCheckedAt": "2026-06-03T19:54:20.323Z"
-    },
-    {
-      "domain": "mckinsey.com",
       "checked": 4,
       "passed": 4,
       "failed": 0,
-      "lastCheckedAt": "2026-06-03T19:56:08.752Z"
+      "lastCheckedAt": "2026-06-15T22:06:42.391Z"
+    },
+    {
+      "domain": "oecd.org",
+      "checked": 3,
+      "passed": 3,
+      "failed": 0,
+      "lastCheckedAt": "2026-06-15T22:06:42.933Z"
     },
     {
       "domain": "deloitte.com",
-      "checked": 1,
-      "passed": 1,
-      "failed": 0,
-      "lastCheckedAt": "2026-06-03T19:55:24.410Z"
-    },
-    {
-      "domain": "wipo.int",
-      "checked": 1,
-      "passed": 1,
-      "failed": 0,
-      "lastCheckedAt": "2026-06-03T19:55:25.853Z"
-    },
-    {
-      "domain": "who.int",
-      "checked": 1,
-      "passed": 1,
-      "failed": 0,
-      "lastCheckedAt": "2026-06-03T19:55:27.494Z"
-    },
-    {
-      "domain": "visualcapitalist.com",
       "checked": 2,
       "passed": 2,
       "failed": 0,
-      "lastCheckedAt": "2026-06-03T19:56:08.383Z"
+      "lastCheckedAt": "2026-06-15T22:06:43.238Z"
     },
     {
-      "domain": "ourworldindata.org",
-      "checked": 2,
-      "passed": 2,
+      "domain": "accenture.com",
+      "checked": 3,
+      "passed": 3,
       "failed": 0,
-      "lastCheckedAt": "2026-06-03T19:56:08.427Z"
-    },
-    {
-      "domain": "youtube.com",
-      "checked": 11,
-      "passed": 11,
-      "failed": 0,
-      "lastCheckedAt": "2026-06-03T19:56:40.755Z"
-    },
-    {
-      "domain": "bcg.com",
-      "checked": 1,
-      "passed": 1,
-      "failed": 0,
-      "lastCheckedAt": "2026-06-03T19:55:31.115Z"
-    },
-    {
-      "domain": "pwc.com",
-      "checked": 1,
-      "passed": 1,
-      "failed": 0,
-      "lastCheckedAt": "2026-06-03T19:55:31.541Z"
+      "lastCheckedAt": "2026-06-15T22:06:43.671Z"
     },
     {
       "domain": "unesco.org",
       "checked": 1,
       "passed": 1,
       "failed": 0,
-      "lastCheckedAt": "2026-06-03T19:55:33.357Z"
+      "lastCheckedAt": "2026-06-15T22:06:43.754Z"
     },
     {
-      "domain": "accenture.com",
+      "domain": "undp.org",
       "checked": 1,
       "passed": 1,
       "failed": 0,
-      "lastCheckedAt": "2026-06-03T19:56:08.153Z"
+      "lastCheckedAt": "2026-06-15T22:06:44.056Z"
+    },
+    {
+      "domain": "wipo.int",
+      "checked": 1,
+      "passed": 1,
+      "failed": 0,
+      "lastCheckedAt": "2026-06-15T22:06:46.763Z"
+    },
+    {
+      "domain": "who.int",
+      "checked": 1,
+      "passed": 1,
+      "failed": 0,
+      "lastCheckedAt": "2026-06-15T22:06:46.979Z"
+    },
+    {
+      "domain": "worldbank.org",
+      "checked": 2,
+      "passed": 2,
+      "failed": 0,
+      "lastCheckedAt": "2026-06-15T22:06:47.142Z"
+    },
+    {
+      "domain": "youtube.com",
+      "checked": 4,
+      "passed": 4,
+      "failed": 0,
+      "lastCheckedAt": "2026-06-15T22:06:50.062Z"
+    },
+    {
+      "domain": "ted.com",
+      "checked": 1,
+      "passed": 1,
+      "failed": 0,
+      "lastCheckedAt": "2026-06-15T22:06:47.949Z"
+    },
+    {
+      "domain": "ourworldindata.org",
+      "checked": 1,
+      "passed": 1,
+      "failed": 0,
+      "lastCheckedAt": "2026-06-15T22:06:50.787Z"
+    },
+    {
+      "domain": "visualcapitalist.com",
+      "checked": 4,
+      "passed": 4,
+      "failed": 0,
+      "lastCheckedAt": "2026-06-15T22:06:51.094Z"
     }
   ]
 }

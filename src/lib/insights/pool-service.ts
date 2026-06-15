@@ -93,6 +93,26 @@ export function isDuplicate(url: string, existingPool: PoolItem[]): boolean {
 const MAX_PER_DOMAIN = 2;
 /** Max items sharing the same primary tag in a single batch */
 const MAX_PER_TAG = 2;
+/**
+ * Hard recency rule: never surface content older than this. Items must carry a
+ * publishDate within the window — undated items are excluded because we cannot
+ * prove they are fresh. This is a guarantee, not just a ranking boost: stale
+ * insights erode trust on a platform young people use to plan their future.
+ */
+const MAX_AGE_MONTHS = 12;
+
+/** True if the item carries a publishDate within the last MAX_AGE_MONTHS. */
+export function isWithinMaxAge(
+  item: Pick<PoolItem, "publishDate">,
+  now: number = Date.now(),
+): boolean {
+  if (!item.publishDate) return false;
+  const published = new Date(item.publishDate).getTime();
+  if (Number.isNaN(published)) return false;
+  const cutoff = new Date(now);
+  cutoff.setMonth(cutoff.getMonth() - MAX_AGE_MONTHS);
+  return published >= cutoff.getTime();
+}
 
 export function getNextBatch(
   pool: PoolItem[],
@@ -100,8 +120,12 @@ export function getNextBatch(
 ): PoolBatchResponse {
   const batchSize = Math.min(request.batchSize ?? 5, 10);
 
-  // 1. Start with verified-only
-  let candidates = pool.filter((i) => i.verificationStatus === "verified");
+  // 1. Start with verified-only AND within the hard recency window. Stale
+  //    content is dropped here so it can never reach a batch, regardless of
+  //    scoring or the empty-batch fallback in the route.
+  let candidates = pool.filter(
+    (i) => i.verificationStatus === "verified" && isWithinMaxAge(i),
+  );
 
   // 2. Remove excluded IDs
   if (request.excludeIds && request.excludeIds.length > 0) {

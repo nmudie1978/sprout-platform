@@ -1,346 +1,254 @@
 [
   {
-    "title": "Future of Jobs Report 2025",
-    "summary": "What 800+ employers say about the skills and jobs growing fastest over the next five years.",
+    "title": "Beyond the inflection point: The new forces shaping the transformation of work",
+    "summary": "Ageing populations, deglobalization and AI are reshaping work all at once — and employers expect 39% of core skills to change by 2030, making constant reskilling the new normal.",
     "sourceName": "World Economic Forum",
-    "sourceUrl": "https://www.weforum.org/publications/the-future-of-jobs-report-2025/",
-    "contentType": "stat_report",
-    "tags": ["future-of-work", "skills", "automation"],
-    "publishDate": "2025-01-07"
+    "sourceUrl": "https://www.weforum.org/stories/2025/12/work-transformation-skills-agility-growth/",
+    "contentType": "article",
+    "tags": ["future-of-work", "skills", "ai"],
+    "publishDate": "2025-12-15"
   },
   {
-    "title": "OECD Skills Outlook 2023",
-    "summary": "How education systems worldwide are adapting (or not) to prepare young people for the jobs of tomorrow.",
+    "title": "The AI-driven workforce is here. How should your industry transform?",
+    "summary": "AI is projected to displace 92 million jobs but create 170 million new ones by 2030 — a net gain of 78 million — with the winning model being 'AI for execution, humans for judgment and creativity'.",
+    "sourceName": "World Economic Forum",
+    "sourceUrl": "https://www.weforum.org/stories/2026/02/workforce-transformation-ai-jobs/",
+    "contentType": "article",
+    "tags": ["ai", "future-of-work", "jobs"],
+    "publishDate": "2026-02-27"
+  },
+  {
+    "title": "How AI skills and experience are transforming the workplace",
+    "summary": "New data shows workers who build real AI skills are seeing better wages and higher-quality jobs — proof that learning to use AI well is becoming a genuine career advantage.",
+    "sourceName": "World Economic Forum",
+    "sourceUrl": "https://www.weforum.org/stories/2026/02/ai-improving-wages-job-quality/",
+    "contentType": "article",
+    "tags": ["ai", "skills", "jobs"],
+    "publishDate": "2026-02-10"
+  },
+  {
+    "title": "How AI is changing the nature of entry-level work",
+    "summary": "US entry-level job postings dropped 35% in 18 months as AI takes over routine tasks — and the work that remains looks different, with new hires joining client work sooner.",
+    "sourceName": "World Economic Forum",
+    "sourceUrl": "https://www.weforum.org/stories/2026/03/how-ai-is-changing-the-nature-of-entry-level-work/",
+    "contentType": "article",
+    "tags": ["ai", "jobs", "future-of-work"],
+    "publishDate": "2026-03-01"
+  },
+  {
+    "title": "OECD Skills Outlook 2025",
+    "summary": "A major OECD report on building the 21st-century skills people need to thrive, showing how things outside your control — like where you grow up — still shape who gets ahead.",
     "sourceName": "OECD",
-    "sourceUrl": "https://www.oecd.org/en/publications/oecd-skills-outlook-2023_27452f29-en.html",
+    "sourceUrl": "https://www.oecd.org/en/publications/oecd-skills-outlook-2025_26163cd3-en.html",
     "contentType": "stat_report",
-    "tags": ["skills", "education", "future-of-work"],
-    "publishDate": "2023-11-07"
+    "tags": ["skills", "education", "skills-gap"],
+    "publishDate": "2025-12-09"
   },
   {
-    "title": "The State of the Global Workplace 2024",
-    "summary": "Gallup's annual report on employee engagement, wellbeing, and how workplace culture is shifting for younger workers.",
-    "sourceName": "Gallup via World Economic Forum",
-    "sourceUrl": "https://www.weforum.org/stories/2024/06/state-of-the-global-workplace-gallup/",
-    "contentType": "article",
-    "tags": ["workplace-culture", "wellbeing", "engagement"],
-    "publishDate": "2024-06-14"
-  },
-  {
-    "title": "AI Will Transform the Global Economy — IMF Analysis",
-    "summary": "Nearly 40% of jobs worldwide are exposed to AI. Here's what that means and which roles are most affected.",
-    "sourceName": "International Monetary Fund via WEF",
-    "sourceUrl": "https://www.weforum.org/stories/2024/01/ai-will-transform-the-global-economy-lets-make-sure-it-benefits-humanity/",
-    "contentType": "article",
-    "tags": ["ai", "automation", "future-of-work"],
-    "publishDate": "2024-01-15"
-  },
-  {
-    "title": "How Young People Can Prepare for the AI Age",
-    "summary": "OECD research on the skills, mindsets, and learning strategies that help youth thrive alongside AI.",
+    "title": "Making AI Work: Why Investing in Skills Matters",
+    "summary": "The OECD argues that whether AI actually pays off depends less on the tech and more on whether people have the skills to use it — making training the real game-changer.",
     "sourceName": "OECD",
-    "sourceUrl": "https://www.oecd.org/en/topics/artificial-intelligence.html",
+    "sourceUrl": "https://www.oecd.org/en/blogs/2026/01/making-ai-work-why-investing-in-skills-matters.html",
     "contentType": "article",
-    "tags": ["ai", "skills", "youth-employment"],
-    "publishDate": "2024-06-01"
+    "tags": ["ai", "skills", "future-of-work"],
+    "publishDate": "2026-02-02"
   },
   {
-    "title": "World Development Report 2024: The Middle-Income Trap",
-    "summary": "The World Bank explores why many economies struggle to create enough quality jobs — and what young people can expect.",
-    "sourceName": "World Bank",
-    "sourceUrl": "https://www.worldbank.org/en/publication/wdr2024",
+    "title": "Education Policy Outlook 2025",
+    "summary": "Subtitled 'Nurturing Engaged and Resilient Lifelong Learners in a World of Digital Transformation', this OECD report looks at how education can keep up as digital tech and AI change how we learn.",
+    "sourceName": "OECD",
+    "sourceUrl": "https://www.oecd.org/en/publications/education-policy-outlook-2025_c3f402ba-en.html",
     "contentType": "stat_report",
-    "tags": ["global-economy", "jobs", "development"],
-    "publishDate": "2024-08-01"
+    "tags": ["education", "skills", "technology"],
+    "publishDate": "2025-11-28"
   },
   {
-    "title": "Green Jobs: Skills for the Net-Zero Transition",
-    "summary": "McKinsey quantifies the massive workforce shift needed for climate goals — and the green skills gap that's emerging.",
-    "sourceName": "McKinsey & Company",
-    "sourceUrl": "https://www.mckinsey.com/capabilities/sustainability/our-insights/the-net-zero-transition-what-it-would-cost-what-it-could-bring",
-    "contentType": "article",
-    "tags": ["green-jobs", "sustainability", "skills-gap"],
-    "publishDate": "2024-01-25"
-  },
-  {
-    "title": "GenAI and the Future of Work in America",
-    "summary": "McKinsey research on which jobs, industries, and activities are most exposed to generative AI disruption.",
-    "sourceName": "McKinsey & Company",
-    "sourceUrl": "https://www.mckinsey.com/mgi/our-research/generative-ai-and-the-future-of-work-in-america",
-    "contentType": "article",
-    "tags": ["ai", "automation", "future-of-work"],
-    "publishDate": "2023-07-26"
-  },
-  {
-    "title": "Deloitte's 2024 Gen Z and Millennial Survey",
-    "summary": "What matters most to Gen Z at work: purpose, mental health support, climate action, and flexible work.",
+    "title": "Gen Zs and millennials are redefining career progression on their own terms",
+    "summary": "Three-quarters of Gen Z now use AI daily at work — many to find learning opportunities and career advice — but they say they're adapting faster than their bosses and organizations can keep up.",
     "sourceName": "Deloitte",
-    "sourceUrl": "https://www.deloitte.com/global/en/issues/work/content/genz-millennialsurvey.html",
+    "sourceUrl": "https://www.deloitte.com/us/en/insights/topics/talent/gen-z-and-millennial-workforce-trends.html",
     "contentType": "stat_report",
-    "tags": ["gen-z", "workplace-culture", "wellbeing"],
-    "publishDate": "2024-05-15"
+    "tags": ["gen-z", "ai", "career-planning"],
+    "publishDate": "2026-06-08"
   },
   {
-    "title": "Global Innovation Index 2024",
-    "summary": "WIPO's ranking of the most innovative economies — and the creative industries where young talent is needed most.",
-    "sourceName": "WIPO",
-    "sourceUrl": "https://www.wipo.int/global_innovation_index/en/2024/",
+    "title": "2026 Gen Z and Millennial Survey",
+    "summary": "Deloitte's global survey finds Gen Z prioritising stability, well-being and meaning over fast promotions, while nearly 74% now use AI in daily work and see it as a tool for growth.",
+    "sourceName": "Deloitte",
+    "sourceUrl": "https://www.deloitte.com/global/en/issues/work/genz-millennial-survey.html",
     "contentType": "stat_report",
-    "tags": ["innovation", "technology", "entrepreneurship"],
-    "publishDate": "2024-09-26"
+    "tags": ["gen-z", "future-of-work", "wellbeing"],
+    "publishDate": "2026-05-13"
   },
   {
-    "title": "Education at a Glance 2024",
-    "summary": "OECD's comprehensive look at education systems, from enrolment rates to graduate employment outcomes.",
-    "sourceName": "OECD",
-    "sourceUrl": "https://www.oecd.org/en/publications/education-at-a-glance-2024_c00cad36-en.html",
-    "contentType": "stat_report",
-    "tags": ["education", "employment", "global-trends"],
-    "publishDate": "2024-09-10"
-  },
-  {
-    "title": "The Rise of the Creator Economy",
-    "summary": "How millions of young creators are building careers outside traditional employment — and what skills they need.",
-    "sourceName": "World Economic Forum",
-    "sourceUrl": "https://www.weforum.org/stories/2023/08/creator-economy-social-media-influencers-career/",
-    "contentType": "article",
-    "tags": ["creator-economy", "entrepreneurship", "digital-skills"],
-    "publishDate": "2023-08-14"
-  },
-  {
-    "title": "Mental Health at Work: 2024 Report",
-    "summary": "WHO data on workplace mental health, with focus on young workers and the industries with highest burnout rates.",
-    "sourceName": "World Health Organization",
-    "sourceUrl": "https://www.who.int/news-room/fact-sheets/detail/mental-health-at-work",
-    "contentType": "article",
-    "tags": ["mental-health", "wellbeing", "workplace-culture"],
-    "publishDate": "2024-09-28"
-  },
-  {
-    "title": "Visual Capitalist: The 50 Most In-Demand Jobs",
-    "summary": "An infographic breakdown of the fastest-growing occupations globally, with salary ranges and required skills.",
-    "sourceName": "Visual Capitalist",
-    "sourceUrl": "https://www.visualcapitalist.com/visualized-the-most-in-demand-jobs-in-2024/",
-    "contentType": "article",
-    "tags": ["jobs", "in-demand", "career-planning"],
-    "publishDate": "2024-03-15"
-  },
-  {
-    "title": "Our World in Data: Global Education",
-    "summary": "Interactive charts showing education access, literacy, and outcomes worldwide — essential context for career planning.",
-    "sourceName": "Our World in Data",
-    "sourceUrl": "https://ourworldindata.org/global-education",
-    "contentType": "article",
-    "tags": ["education", "global-trends", "data-viz"],
-    "publishDate": "2024-01-01"
-  },
-  {
-    "title": "How to Future-Proof Your Career | TED-Ed",
-    "summary": "A 5-minute animated explainer on the transferable skills that stay valuable no matter how technology changes.",
-    "sourceName": "TED-Ed",
-    "sourceUrl": "https://www.youtube.com/watch?v=BqOwmHDrd8I",
-    "contentType": "video",
-    "tags": ["skills", "career-planning", "future-of-work"],
-    "duration": "5:15",
-    "thumbnailUrl": "https://img.youtube.com/vi/BqOwmHDrd8I/hqdefault.jpg"
-  },
-  {
-    "title": "The Future of Jobs | World Economic Forum",
-    "summary": "WEF's overview of how technology, demographics, and globalisation are reshaping the labour market.",
-    "sourceName": "World Economic Forum",
-    "sourceUrl": "https://www.youtube.com/watch?v=EfxuOCnEHko",
-    "contentType": "video",
-    "tags": ["future-of-work", "automation", "global-trends"],
-    "duration": "4:22",
-    "thumbnailUrl": "https://img.youtube.com/vi/EfxuOCnEHko/hqdefault.jpg"
-  },
-  {
-    "title": "What Is the Green Economy? | OECD",
-    "summary": "An accessible explainer on the green transition — what it is, which sectors are growing, and how to get involved.",
-    "sourceName": "OECD",
-    "sourceUrl": "https://www.youtube.com/watch?v=GPNdmCKm1JM",
-    "contentType": "video",
-    "tags": ["green-jobs", "sustainability", "economy"],
-    "duration": "3:45",
-    "thumbnailUrl": "https://img.youtube.com/vi/GPNdmCKm1JM/hqdefault.jpg"
-  },
-  {
-    "title": "How AI Will Change Work | OECD AI Policy Observatory",
-    "summary": "OECD breaks down which tasks and industries face the biggest shifts from AI — and the new roles emerging.",
-    "sourceName": "OECD",
-    "sourceUrl": "https://www.youtube.com/watch?v=rDs3o1uLEdU",
-    "contentType": "video",
-    "tags": ["ai", "automation", "future-of-work"],
-    "duration": "6:10",
-    "thumbnailUrl": "https://img.youtube.com/vi/rDs3o1uLEdU/hqdefault.jpg"
-  },
-  {
-    "title": "The Skills You Need to Succeed | World Economic Forum",
-    "summary": "Top 10 skills employers value most in 2025 — from analytical thinking to resilience and leadership.",
-    "sourceName": "World Economic Forum",
-    "sourceUrl": "https://www.youtube.com/watch?v=k6oMlpF9QEI",
-    "contentType": "video",
-    "tags": ["skills", "future-of-work", "career-planning"],
-    "duration": "3:30",
-    "thumbnailUrl": "https://img.youtube.com/vi/k6oMlpF9QEI/hqdefault.jpg"
-  },
-  {
-    "title": "What Is Sustainable Development? | United Nations",
-    "summary": "A clear, visual explainer of the UN's 17 Sustainable Development Goals and how they connect to careers.",
-    "sourceName": "United Nations",
-    "sourceUrl": "https://www.youtube.com/watch?v=o08ykAqLOxk",
-    "contentType": "video",
-    "tags": ["sustainability", "global-goals", "career-planning"],
-    "duration": "4:00",
-    "thumbnailUrl": "https://img.youtube.com/vi/o08ykAqLOxk/hqdefault.jpg"
-  },
-  {
-    "title": "Will a Robot Take My Job? | TED-Ed",
-    "summary": "A fun animated look at which jobs are most and least likely to be automated — and how to adapt.",
-    "sourceName": "TED-Ed",
-    "sourceUrl": "https://www.youtube.com/watch?v=jrV5KMjdWrI",
-    "contentType": "video",
-    "tags": ["automation", "ai", "career-planning"],
-    "duration": "5:30",
-    "thumbnailUrl": "https://img.youtube.com/vi/jrV5KMjdWrI/hqdefault.jpg"
-  },
-  {
-    "title": "BCG: What Gen Z Wants from Employers",
-    "summary": "BCG's survey of 5,000+ Gen Z respondents on what makes a job worth having — flexibility, purpose, and growth rank highest.",
-    "sourceName": "Boston Consulting Group",
-    "sourceUrl": "https://www.bcg.com/publications/2024/what-gen-z-wants-from-employers",
-    "contentType": "article",
-    "tags": ["gen-z", "workplace-culture", "career-planning"],
-    "publishDate": "2024-04-10"
-  },
-  {
-    "title": "PwC's Global Workforce Hopes and Fears Survey 2024",
-    "summary": "26,000+ workers share how AI, climate change, and economic uncertainty are shaping their career expectations.",
-    "sourceName": "PwC",
-    "sourceUrl": "https://www.pwc.com/gx/en/issues/workforce/hopes-and-fears.html",
-    "contentType": "stat_report",
-    "tags": ["workplace-culture", "ai", "global-trends"],
-    "publishDate": "2024-06-25"
-  },
-  {
-    "title": "How Internships Shape Careers | OECD Education",
-    "summary": "OECD evidence on how work-based learning, internships, and apprenticeships improve youth employment outcomes.",
-    "sourceName": "OECD",
-    "sourceUrl": "https://www.oecd.org/en/topics/youth-employment.html",
-    "contentType": "article",
-    "tags": ["internships", "apprenticeships", "youth-employment"],
-    "publishDate": "2024-05-01"
-  },
-  {
-    "title": "UNESCO: Digital Skills for Youth",
-    "summary": "UNESCO's framework for digital literacy — what young people need to know to compete in a digital-first economy.",
-    "sourceName": "UNESCO",
-    "sourceUrl": "https://www.unesco.org/en/digital-competencies-skills",
-    "contentType": "article",
-    "tags": ["digital-skills", "education", "youth-employment"],
-    "publishDate": "2024-03-15"
-  },
-  {
-    "title": "The Entrepreneurship Gap: Youth and Startups",
-    "summary": "OECD data on youth entrepreneurship rates, barriers to starting a business, and policy support across countries.",
-    "sourceName": "OECD",
-    "sourceUrl": "https://www.oecd.org/en/publications/the-missing-entrepreneurs-2023_230e6a92-en.html",
-    "contentType": "stat_report",
-    "tags": ["entrepreneurship", "youth-employment", "startups"],
-    "publishDate": "2023-12-12"
-  },
-  {
-    "title": "What Jobs Will AI Create? | McKinsey Global Institute",
-    "summary": "Beyond the fear: McKinsey maps the entirely new job categories emerging from AI adoption across industries.",
-    "sourceName": "McKinsey & Company",
-    "sourceUrl": "https://www.mckinsey.com/mgi/our-research/a-new-future-of-work-the-race-to-deploy-ai-and-raise-skills-in-europe-and-beyond",
-    "contentType": "article",
-    "tags": ["ai", "future-of-work", "skills"],
-    "publishDate": "2024-05-21"
-  },
-  {
-    "title": "How Countries Are Closing the Skills Gap",
-    "summary": "WEF case studies on how 12 countries are redesigning education and training to match emerging job needs.",
-    "sourceName": "World Economic Forum",
-    "sourceUrl": "https://www.weforum.org/publications/putting-skills-first-opportunities-for-building-efficient-and-equitable-labour-markets/",
-    "contentType": "stat_report",
-    "tags": ["skills-gap", "education", "policy"],
-    "publishDate": "2024-01-15"
-  },
-  {
-    "title": "TED Talk: The Surprising Habits of Original Thinkers",
-    "summary": "Adam Grant explores what makes creative people tick — procrastination, doubt, and the power of bad ideas.",
-    "sourceName": "TED",
-    "sourceUrl": "https://www.youtube.com/watch?v=fxbCHn6gE3U",
-    "contentType": "video",
-    "tags": ["creativity", "mindset", "career-planning"],
-    "duration": "15:25",
-    "thumbnailUrl": "https://img.youtube.com/vi/fxbCHn6gE3U/hqdefault.jpg"
-  },
-  {
-    "title": "Why Emotional Intelligence Matters More Than IQ | TED",
-    "summary": "A compelling look at how emotional skills — empathy, self-awareness, resilience — predict career success better than grades.",
-    "sourceName": "TED",
-    "sourceUrl": "https://www.youtube.com/watch?v=Y7m9eNoB3NU",
-    "contentType": "video",
-    "tags": ["skills", "emotional-intelligence", "career-planning"],
-    "duration": "16:48",
-    "thumbnailUrl": "https://img.youtube.com/vi/Y7m9eNoB3NU/hqdefault.jpg"
-  },
-  {
-    "title": "Accenture: Life Trends 2025",
-    "summary": "How technology, culture, and economic pressures are changing the way Gen Z relates to work and identity.",
+    "title": "Talent Reinventors: Delivering value with and for people in the age of AI",
+    "summary": "Companies that pair AI adoption with a people-first mindset are pulling ahead — and the skills that win are about teaming, mobility and learning on the job alongside AI.",
     "sourceName": "Accenture",
-    "sourceUrl": "https://www.accenture.com/us-en/insights/song/accenture-life-trends",
+    "sourceUrl": "https://www.accenture.com/us-en/insights/consulting/talent-reinventors-delivering-value-people-age-ai",
     "contentType": "article",
-    "tags": ["gen-z", "technology", "workplace-culture"],
-    "publishDate": "2024-10-15"
+    "tags": ["ai", "skills", "future-of-work"],
+    "publishDate": "2026-03-16"
   },
   {
-    "title": "Visual Capitalist: The World's Most Spoken Languages",
-    "summary": "A stunning visualisation of global languages — and why multilingual skills are increasingly valued by employers.",
-    "sourceName": "Visual Capitalist",
-    "sourceUrl": "https://www.visualcapitalist.com/the-worlds-most-spoken-languages/",
-    "contentType": "article",
-    "tags": ["languages", "global-trends", "skills"],
-    "publishDate": "2024-02-20"
+    "title": "Pulse of Change",
+    "summary": "Bosses are confident about AI but workers aren't on board: only about 1 in 5 employees feel like active co-creators of how AI changes their job, making people — not tech — the biggest barrier.",
+    "sourceName": "Accenture",
+    "sourceUrl": "https://www.accenture.com/us-en/insights/pulse-of-change",
+    "contentType": "stat_report",
+    "tags": ["ai", "workplace-culture", "future-of-work"],
+    "publishDate": "2026-01-15"
   },
   {
-    "title": "Our World in Data: Technology Adoption Over Time",
-    "summary": "Interactive chart showing how fast new technologies spread — from electricity to smartphones to AI.",
-    "sourceName": "Our World in Data",
-    "sourceUrl": "https://ourworldindata.org/technology-adoption",
+    "title": "Learning, Reinvented: Accelerating Human–AI Collaboration",
+    "summary": "84% of leaders expect people and AI to work side by side within three years, but only 11% of companies actually let humans and AI learn from each other — and those that do see 4x faster skill-building.",
+    "sourceName": "Accenture",
+    "sourceUrl": "https://www.accenture.com/us-en/insights/consulting/learning-reinvented-accelerating-human-ai-collaboration",
     "contentType": "article",
-    "tags": ["technology", "innovation", "data-viz"],
-    "publishDate": "2024-01-01"
+    "tags": ["ai", "skills", "future-of-work"],
+    "publishDate": "2025-09-02"
   },
   {
-    "title": "How to Network as a Young Professional | TED",
-    "summary": "Practical, no-cringe tips for building professional connections when you're just starting out.",
+    "title": "Agents of Change: On the 10th Anniversary of World Youth Skills Day",
+    "summary": "UN leaders marked 10 years of World Youth Skills Day by pushing for every young person to get real digital and AI skills, warning that 62% of youth use AI but only 30% have had any training.",
+    "sourceName": "UNESCO",
+    "sourceUrl": "https://www.unesco.org/en/articles/agents-change-10th-anniversary-world-youth-skills-day-call-empower-youth-through-digital-and-ai",
+    "contentType": "article",
+    "tags": ["skills", "digital-skills", "future-of-work"],
+    "publishDate": "2025-07-15"
+  },
+  {
+    "title": "Listening to 200 young people about work, purpose and the future",
+    "summary": "UNDP ran a Future of Work Academy where 200+ young people swapped notes on AI, green jobs and building meaningful careers — and the big takeaway was that curiosity beats content.",
+    "sourceName": "UNDP",
+    "sourceUrl": "https://www.undp.org/eurasia/blog/youth-and-work-purpose-future",
+    "contentType": "article",
+    "tags": ["future-of-work", "green-jobs", "career-planning"],
+    "publishDate": "2025-11-12"
+  },
+  {
+    "title": "Four Young Creators Transforming Local Ideas Into Global Solutions Using Intellectual Property",
+    "summary": "Four under-35 innovators from Angola, Brazil, the US and Vietnam show how understanding intellectual property turned their local ideas into real businesses solving global problems.",
+    "sourceName": "WIPO",
+    "sourceUrl": "https://www.wipo.int/en/web/youth-engagement/w/news/2025/eet-four-young-creators-and-innovators-transforming-local-ideas-into-global-solutions-using-intellectual-property",
+    "contentType": "article",
+    "tags": ["career-planning", "skills", "development"],
+    "publishDate": "2025-08-12"
+  },
+  {
+    "title": "What 'mental health in all policies' can look like on the ground",
+    "summary": "WHO spotlights France's Working First and Housing First programmes as proof that having a job and a home can actively support mental health recovery, not just follow it.",
+    "sourceName": "World Health Organization",
+    "sourceUrl": "https://www.who.int/europe/news/item/28-07-2025-housing-and-employment-programmes-show-what--mental-health-in-all-policies--can-look-like-on-the-ground",
+    "contentType": "article",
+    "tags": ["wellbeing", "policy", "jobs"],
+    "publishDate": "2025-07-28"
+  },
+  {
+    "title": "Skills Training Is Opening Opportunities for Millions of Young People in Africa",
+    "summary": "World Bank-backed skills programmes across Africa are connecting millions of young people to real jobs, with new regional projects aiming to reach 28 million youth in 22 countries.",
+    "sourceName": "World Bank",
+    "sourceUrl": "https://www.worldbank.org/en/news/feature/2025/10/20/skills-education-training-job-youth-employment-opportunities-millions-young-people-africa",
+    "contentType": "article",
+    "tags": ["youth-employment", "skills", "development"],
+    "publishDate": "2025-11-12"
+  },
+  {
+    "title": "Partnering to Unlock Youth Employment: Q&A with Dr. Mona Mourshed",
+    "summary": "The CEO of a nonprofit that has trained people into new careers across 17 countries explains how tying training to what employers actually want has helped graduates earn $2 billion in wages.",
+    "sourceName": "World Bank",
+    "sourceUrl": "https://www.worldbank.org/en/news/feature/2025/12/18/partnering-to-unlock-youth-employment",
+    "contentType": "article",
+    "tags": ["youth-employment", "career-planning", "skills"],
+    "publishDate": "2025-12-18"
+  },
+  {
+    "title": "AI is Coming for Your Job. Now What?",
+    "summary": "Robinhood's Vlad Tenev gives a clear-eyed take on what happens when AI reshapes most of today's jobs — and why the outcome might not be the doom you'd expect.",
     "sourceName": "TED",
-    "sourceUrl": "https://www.youtube.com/watch?v=2adYMGCFul0",
+    "sourceUrl": "https://www.youtube.com/watch?v=cJfKqKEyw1o",
     "contentType": "video",
-    "tags": ["networking", "career-planning", "professional-skills"],
-    "duration": "11:22",
-    "thumbnailUrl": "https://img.youtube.com/vi/2adYMGCFul0/hqdefault.jpg"
+    "tags": ["ai", "future-of-work", "career-planning"],
+    "publishDate": "2026-01-06"
   },
   {
-    "title": "Remote Work Is Here to Stay | McKinsey",
-    "summary": "McKinsey's data on hybrid work trends, productivity, and what it means for early-career professionals.",
-    "sourceName": "McKinsey & Company",
-    "sourceUrl": "https://www.mckinsey.com/industries/real-estate/our-insights/americans-are-embracing-flexible-work-and-they-want-more-of-it",
+    "title": "How to build a career you actually love",
+    "summary": "Investor Bill Gurley argues that fascination beats 'follow your passion,' and that obsessive, lifelong learning is the real engine of a career that lights you up.",
+    "sourceName": "TED",
+    "sourceUrl": "https://www.ted.com/talks/bill_gurley_how_to_build_a_career_you_actually_love",
+    "contentType": "video",
+    "tags": ["career-planning", "mindset", "skills"],
+    "publishDate": "2026-04-01"
+  },
+  {
+    "title": "Is Your Job Safe from AI? A Career Consultant + a YouTuber Answer",
+    "summary": "A workplace expert and a creator team up to break down how to thrive through career chaos and stay employable as AI changes the rules.",
+    "sourceName": "TED",
+    "sourceUrl": "https://www.youtube.com/watch?v=plbqT4dBNwo",
+    "contentType": "video",
+    "tags": ["ai", "future-of-work", "career-planning"],
+    "publishDate": "2025-06-17"
+  },
+  {
+    "title": "I'll Probably Lose My Job to AI. Here's Why That's OK",
+    "summary": "Journalist Megan J. McArdle reframes AI job loss through the story of the 19th-century Luddites, asking what we'd really give up by halting progress to protect today's jobs.",
+    "sourceName": "TED",
+    "sourceUrl": "https://www.youtube.com/watch?v=DM6UVe5jsxA",
+    "contentType": "video",
+    "tags": ["ai", "future-of-work", "mindset"],
+    "publishDate": "2025-07-15"
+  },
+  {
+    "title": "3 Possible Futures for AI — Which Will We Choose?",
+    "summary": "After decades working in AI across the US and China, Alvin W. Graylin lays out three very different futures we could be heading toward — and why the choice is ours.",
+    "sourceName": "TED",
+    "sourceUrl": "https://www.youtube.com/watch?v=jnPfz0WXLIM",
+    "contentType": "video",
+    "tags": ["ai", "technology", "future-of-work"],
+    "publishDate": "2026-02-16"
+  },
+  {
+    "title": "Top of the Charts: our most popular work in 2025",
+    "summary": "Our World in Data's roundup of its most popular charts of the year — a fast tour of the biggest global trends in health, energy, economy and AI, all in one place.",
+    "sourceName": "Our World in Data",
+    "sourceUrl": "https://ourworldindata.org/top-of-the-charts-2025",
     "contentType": "article",
-    "tags": ["remote-work", "workplace-culture", "future-of-work"],
-    "publishDate": "2024-06-30"
+    "tags": ["data-viz", "global-trends", "economy"],
+    "publishDate": "2025-12-04"
   },
   {
-    "title": "The Power of Apprenticeships | World Economic Forum",
-    "summary": "Real stories and data showing how apprenticeships give young people a fast track into skilled careers.",
-    "sourceName": "World Economic Forum",
-    "sourceUrl": "https://www.youtube.com/watch?v=yvJPv5G8rlk",
-    "contentType": "video",
-    "tags": ["apprenticeships", "skills", "youth-employment"],
-    "duration": "4:15",
-    "thumbnailUrl": "https://img.youtube.com/vi/yvJPv5G8rlk/hqdefault.jpg"
+    "title": "Charted: The World's Fastest Growing Jobs (2025-2030)",
+    "summary": "Almost every one of the world's fastest-growing jobs is tied to AI or robotics — think Big Data Specialists, FinTech Engineers and AI/ML roles leading the pack to 2030.",
+    "sourceName": "Visual Capitalist",
+    "sourceUrl": "https://www.visualcapitalist.com/charted-the-worlds-fastest-growing-jobs-2025-2030/",
+    "contentType": "article",
+    "tags": ["jobs", "future-of-work", "data-viz"],
+    "publishDate": "2025-08-11"
+  },
+  {
+    "title": "Mapped: AI Adoption by Country in 2026",
+    "summary": "The UAE (70%) and Singapore (63%) lead the world in everyday AI use, while the US trails 20+ countries — a global map of who's actually using AI in 2026.",
+    "sourceName": "Visual Capitalist",
+    "sourceUrl": "https://www.visualcapitalist.com/mapped-ai-adoption-by-country-in-2026/",
+    "contentType": "article",
+    "tags": ["ai", "global-trends", "data-viz"],
+    "publishDate": "2026-05-15"
+  },
+  {
+    "title": "How People Are Actually Using AI at Work in 2026",
+    "summary": "AI at work has grown up: decision-making is now the #1 use case (28%), as people lean on it for analysis and judgment rather than just writing emails.",
+    "sourceName": "Visual Capitalist",
+    "sourceUrl": "https://www.visualcapitalist.com/how-people-are-using-ai-at-work-in-2026/",
+    "contentType": "article",
+    "tags": ["ai", "future-of-work", "data-viz"],
+    "publishDate": "2026-03-01"
+  },
+  {
+    "title": "Renewables overtook coal in the global electricity mix for the first time in a century",
+    "summary": "Big milestone for the green economy: in 2025 renewables hit 33.8% of global electricity, edging past coal for the first time since 1919 thanks to a solar and wind boom.",
+    "sourceName": "Visual Capitalist",
+    "sourceUrl": "https://www.visualcapitalist.com/renewables-beat-coal-for-the-first-time-since-1919/",
+    "contentType": "article",
+    "tags": ["sustainability", "green-jobs", "data-viz"],
+    "publishDate": "2026-05-26"
   }
 ]
