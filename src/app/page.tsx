@@ -43,7 +43,7 @@ const FEATURES = [
   {
     title: "Reflect privately",
     description:
-      "Guided prompts help you notice what fits. Everything stays on your device.",
+      "Guided prompts help you notice what fits — and only you can ever see them.",
     icon: BookOpen,
     accentBg: "bg-blue-500/15",
     accentText: "text-blue-400",
@@ -51,7 +51,7 @@ const FEATURES = [
   {
     title: "Honest, not hyped",
     description:
-      "Straight information about what careers actually involve \u2014 no recommendation feeds, no AI-generated hype, no motivational fluff.",
+      "Straight information about what careers actually involve \u2014 no engagement-bait feeds, no hype, no motivational fluff.",
     icon: Users,
     accentBg: "bg-amber-500/15",
     accentText: "text-amber-400",
@@ -67,7 +67,7 @@ const FEATURES = [
   {
     title: "Safety by default",
     description:
-      "No public profiles, no tracking, and no targeted advertising \u2014 ever. Your exploration stays private to you.",
+      "Profiles are private by default, no tracking, and no targeted advertising \u2014 ever. Your exploration stays private to you.",
     icon: ShieldCheck,
     accentBg: "bg-teal-500/15",
     accentText: "text-teal-400",
@@ -443,7 +443,7 @@ export default async function LandingPage() {
       <section className="border-t border-slate-800/60">
         <div className="mx-auto max-w-4xl px-5 py-14 sm:py-16">
           <div className="flex flex-wrap justify-center gap-3">
-            {["No ads", "No tracking", "No public profiles", "Safety by design"].map(
+            {["No ads", "No tracking", "Private by default", "Safety by design"].map(
               (label) => (
                 <span
                   key={label}
