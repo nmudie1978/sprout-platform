@@ -24,6 +24,12 @@ describe("shouldPromptForCompare", () => {
   it("is false when removing down to max from above (can't happen, but guard)", () => {
     expect(shouldPromptForCompare(4, 3, 3)).toBe(false);
   });
+  it("is false on a bulk jump to max (localStorage hydration / loadSet on page load)", () => {
+    // The persisted shortlist loading 0 → 3 on refresh must NOT be read as
+    // "the user just added the third" — this caused the prompt to pop up randomly.
+    expect(shouldPromptForCompare(0, 3, 3)).toBe(false);
+    expect(shouldPromptForCompare(1, 3, 3)).toBe(false);
+  });
 });
 
 describe("compareShortlistStore", () => {
