@@ -179,6 +179,14 @@ export default async function LandingPage() {
                 </FadeReveal>
               </div>
 
+              {/* Earned emotional payoff — the moment, placed AFTER the problem
+                  so the reader has felt the tension and the quote lands. */}
+              <FadeReveal delay={2100} className="mb-10 sm:mb-12">
+                <p className="border-l-2 border-emerald-500/50 pl-4 text-lg sm:text-xl font-medium text-white/90 leading-snug max-w-lg">
+                  {t('landing.hero.payoff')}
+                </p>
+              </FadeReveal>
+
               {/* CTA — primary action + understated secondary link */}
               <FadeReveal delay={2400}>
                 <div className="flex flex-wrap items-center gap-x-6 gap-y-4">
