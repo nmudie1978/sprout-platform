@@ -7,6 +7,28 @@ import {
 } from "../career-employers";
 import { getAllCareers, getCategoryForCareer } from "../career-pathways";
 
+describe("high-earning career additions (2026-06-15)", () => {
+  const NEW = [
+    "chief-information-security-officer", "distinguished-engineer", "private-equity-partner",
+    "venture-capital-partner", "portfolio-manager", "corporate-finance-director", "asset-manager",
+    "law-firm-partner", "offshore-installation-manager", "test-pilot", "chief-commercial-officer",
+    "chief-revenue-officer", "vp-sales", "real-estate-fund-manager", "technology-founder", "telecom-practice-lead",
+  ];
+  it("the new high-earning careers exist in the catalogue", () => {
+    const ids = new Set(getAllCareers().map((c) => c.id));
+    for (const id of NEW) expect(ids.has(id), `missing career ${id}`).toBe(true);
+  });
+  it("each new high-earning career resolves to realistic (non-empty) employers", () => {
+    const byId = new Map(getAllCareers().map((c) => [c.id, c]));
+    for (const id of NEW) {
+      const c = byId.get(id)!;
+      const list = getCareerEmployers(id, getCategoryForCareer(id), c.country);
+      expect(list.length, `${id} has no employers`).toBeGreaterThan(0);
+      for (const e of list) { expect(e.name).toBeTruthy(); expect(e.industry).toBeTruthy(); expect(e.size).toBeTruthy(); if (e.careersUrl) expect(e.careersUrl).toMatch(/^https:\/\//); }
+    }
+  });
+});
+
 describe("future-proof career additions (2026-06-15)", () => {
   const NEW = [
     "ai-infrastructure-engineer", "ai-systems-architect", "ai-platform-engineer",
