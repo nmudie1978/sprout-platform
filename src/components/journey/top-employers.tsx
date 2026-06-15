@@ -86,10 +86,10 @@ export function TopEmployers({ careerId, category, country }: TopEmployersProps)
       {/* Scroll arrows */}
       {employers.length > 3 && (
         <div className="flex justify-end gap-1">
-          <button type="button" onClick={() => scroll('left')} className="p-1 rounded hover:bg-muted/40 text-muted-foreground/70 hover:text-foreground transition-colors" aria-label="Scroll left">
+          <button type="button" onClick={() => scroll('left')} className="p-2.5 rounded hover:bg-muted/40 text-muted-foreground/70 hover:text-foreground transition-colors" aria-label="Scroll left">
             <ChevronLeft className="h-3.5 w-3.5" />
           </button>
-          <button type="button" onClick={() => scroll('right')} className="p-1 rounded hover:bg-muted/40 text-muted-foreground/70 hover:text-foreground transition-colors" aria-label="Scroll right">
+          <button type="button" onClick={() => scroll('right')} className="p-2.5 rounded hover:bg-muted/40 text-muted-foreground/70 hover:text-foreground transition-colors" aria-label="Scroll right">
             <ChevronRight className="h-3.5 w-3.5" />
           </button>
         </div>
