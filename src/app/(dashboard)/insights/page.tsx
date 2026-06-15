@@ -34,6 +34,7 @@ import { motion } from "framer-motion";
 
 // Lightweight components loaded eagerly
 import { WeeklyFactNudge } from "@/components/insights/weekly-fact-nudge";
+import { AiFutureOfWorkSection } from "@/components/insights/ai-future-of-work-section";
 import { CountryDataNotice } from "@/components/insights/country-data-notice";
 import { PageContext } from "@/components/ui/page-context";
 import { InsightUpdateToast } from "@/components/insights/insight-update-toast";
@@ -323,7 +324,12 @@ export default function IndustryInsightsPage() {
       </motion.section>
 
       {/* ============================================ */}
-      {/* SECTION 3: DIG DEEPER */}
+      {/* SECTION 3: AI & THE FUTURE OF WORK */}
+      {/* ============================================ */}
+      <AiFutureOfWorkSection />
+
+      {/* ============================================ */}
+      {/* SECTION 4: DIG DEEPER */}
       {/* ============================================ */}
       <motion.section
         id="dig-deeper"
