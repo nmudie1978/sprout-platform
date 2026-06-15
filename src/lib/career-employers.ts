@@ -208,6 +208,41 @@ const CAREER_EMPLOYERS: Record<string, Employer[]> = {
     { name: 'NAV', industry: 'Government (Occupational psychology)', size: '20,000+', careersUrl: 'https://www.nav.no/jobb-i-nav' },
     { name: 'Private practices', industry: 'Private Healthcare', size: 'varies' },
   ],
+  // ── Genetics / genomics clusters (added 2026-06-15) — the DNA-focused
+  //    careers would otherwise fall to the generic hospital (clinical) or
+  //    AI-consultancy (data) sector lists, neither of which is where a
+  //    geneticist or bioinformatician actually works. Each list is
+  //    Norway/Nordic-first (real local genomics & biotech employers) plus
+  //    the global companies that genuinely hire the role. Variants alias to
+  //    these via CAREER_ID_ALIASES below. ──
+  geneticist: [
+    { name: 'Oslo universitetssykehus — Medisinsk genetikk', industry: 'Clinical Genetics / Research', size: '20,000+', careersUrl: 'https://oslo-universitetssykehus.no/jobb' },
+    { name: 'Helse Bergen / Haukeland', industry: 'Clinical Genetics / Research', size: '13,000+', careersUrl: 'https://helse-bergen.no/jobb' },
+    { name: 'Universitetet i Oslo', industry: 'Genomics Research', size: '7,000+', careersUrl: 'https://www.uio.no/om/jobb/' },
+    { name: 'deCODE genetics', industry: 'Genomics (Reykjavik / Amgen)', size: '500+', careersUrl: 'https://www.decode.com/careers/' },
+    { name: 'Illumina', industry: 'DNA Sequencing (Global)', size: '9,000+', careersUrl: 'https://www.illumina.com/company/careers.html' },
+    { name: 'Thermo Fisher Scientific', industry: 'Life Sciences (Global)', size: '100,000+', careersUrl: 'https://jobs.thermofisher.com/' },
+  ],
+  'biotechnology-scientist': [
+    { name: 'Novo Nordisk', industry: 'Biotech / Pharma (Nordic)', size: '60,000+', careersUrl: 'https://www.novonordisk.com/careers.html' },
+    { name: 'Genmab', industry: 'Biotech (Copenhagen)', size: '2,000+', careersUrl: 'https://www.genmab.com/careers/' },
+    { name: 'Nykode Therapeutics', industry: 'Biotech (Oslo)', size: '100+', careersUrl: 'https://www.nykode.com/careers/' },
+    { name: 'Ultimovacs', industry: 'Biotech (Oslo)', size: '50+', careersUrl: 'https://ultimovacs.com/' },
+    { name: 'BerGenBio', industry: 'Biotech (Bergen)', size: '50+', careersUrl: 'https://www.bergenbio.com/' },
+    { name: 'Roche', industry: 'Pharma / Diagnostics (Global)', size: '100,000+', careersUrl: 'https://careers.roche.com/' },
+  ],
+  'agricultural-geneticist': [
+    { name: 'NMBU (Norges miljø- og biovitenskapelige universitet)', industry: 'Life Sciences Research', size: '1,800+', careersUrl: 'https://www.nmbu.no/om/jobb' },
+    { name: 'NIBIO', industry: 'Bioeconomy Research', size: '700+', careersUrl: 'https://www.nibio.no/' },
+    { name: 'Geno SA', industry: 'Cattle Breeding', size: '300+', careersUrl: 'https://www.geno.no/' },
+    { name: 'Graminor', industry: 'Plant Breeding', size: '100+', careersUrl: 'https://graminor.no/' },
+    { name: 'AquaGen', industry: 'Aquaculture Genetics', size: '300+', careersUrl: 'https://aquagen.no/' },
+  ],
+  'forensic-dna-analyst': [
+    { name: 'Oslo universitetssykehus — Rettsmedisinske fag', industry: 'Forensic Medicine', size: '20,000+', careersUrl: 'https://oslo-universitetssykehus.no/jobb' },
+    { name: 'Kripos', industry: 'National Criminal Investigation', size: '600+', careersUrl: 'https://www.politiet.no/om-politiet/jobb-i-politiet/' },
+    { name: 'Politiet', industry: 'Norwegian Police', size: '17,000+', careersUrl: 'https://www.politiet.no/om-politiet/jobb-i-politiet/' },
+  ],
 };
 
 // Aliases for careers that share the same employer pool.
@@ -258,6 +293,67 @@ const CAREER_ID_ALIASES: Record<string, string> = {
   'dentist': 'doctor',
   'physiotherapist': 'nurse',
   'social-worker': 'psychologist',
+  // ── DNA / genetics careers → genomics & biotech clusters (see above) ──
+  // Clinical, research + data/AI genetics → the genomics research/clinical list.
+  'clinical-geneticist': 'geneticist',
+  'medical-geneticist': 'geneticist',
+  'genomic-medicine-specialist': 'geneticist',
+  'molecular-pathologist': 'geneticist',
+  'reproductive-genetic-specialist': 'geneticist',
+  'prenatal-genetic-counsellor': 'geneticist',
+  'cancer-genomics-specialist': 'geneticist',
+  'pharmacogenomics-specialist': 'geneticist',
+  'clinical-laboratory-geneticist': 'geneticist',
+  'molecular-biologist': 'geneticist',
+  'genomics-research-scientist': 'geneticist',
+  'human-genetics-researcher': 'geneticist',
+  'population-geneticist': 'geneticist',
+  'evolutionary-biologist': 'geneticist',
+  'epigenetics-researcher': 'geneticist',
+  'computational-biologist': 'geneticist',
+  'systems-biologist': 'geneticist',
+  'synthetic-biologist': 'geneticist',
+  'stem-cell-researcher': 'geneticist',
+  'precision-medicine-specialist': 'geneticist',
+  'translational-scientist': 'geneticist',
+  'longevity-research-scientist': 'geneticist',
+  'human-enhancement-researcher': 'geneticist',
+  'digital-biology-scientist': 'geneticist',
+  'genomics-director': 'geneticist',
+  'computational-genomics-scientist': 'geneticist',
+  'bioinformatician': 'geneticist',
+  'genomic-data-scientist': 'geneticist',
+  'computational-genomics-engineer': 'geneticist',
+  'ai-genomics-researcher': 'geneticist',
+  'genetic-data-analyst': 'geneticist',
+  'precision-medicine-data-scientist': 'geneticist',
+  'clinical-genomics-analyst': 'geneticist',
+  'genomic-ai-engineer': 'geneticist',
+  'bioinformatics-director': 'geneticist',
+  // Biotech / pharma R&D → the biotech & pharma list.
+  'biotechnology-research-scientist': 'biotechnology-scientist',
+  'gene-therapy-scientist': 'biotechnology-scientist',
+  'crispr-research-scientist': 'biotechnology-scientist',
+  'drug-discovery-scientist': 'biotechnology-scientist',
+  'molecular-diagnostics-scientist': 'biotechnology-scientist',
+  'biomarker-scientist': 'biotechnology-scientist',
+  'bioprocess-scientist': 'biotechnology-scientist',
+  'gene-editing-scientist': 'biotechnology-scientist',
+  'crispr-engineer': 'biotechnology-scientist',
+  'synthetic-genomics-engineer': 'biotechnology-scientist',
+  'genomics-product-manager': 'biotechnology-scientist',
+  'pharmaceutical-research-director': 'biotechnology-scientist',
+  'biotechnology-executive': 'biotechnology-scientist',
+  // Agricultural / environmental genetics → the agri-genetics list.
+  'plant-geneticist': 'agricultural-geneticist',
+  'animal-geneticist': 'agricultural-geneticist',
+  'crop-improvement-scientist': 'agricultural-geneticist',
+  'livestock-breeding-specialist': 'agricultural-geneticist',
+  'conservation-geneticist': 'agricultural-geneticist',
+  'environmental-genomics-scientist': 'agricultural-geneticist',
+  // Forensic genetics → the forensic list.
+  'crime-laboratory-geneticist': 'forensic-dna-analyst',
+  'dna-evidence-specialist': 'forensic-dna-analyst',
 };
 
 /**
