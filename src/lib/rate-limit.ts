@@ -310,8 +310,13 @@ export const RateLimits = {
   // Questions: 3 per day (already implemented in API)
   QUESTIONS: { interval: 86400000, maxRequests: 3 },
 
-  // Timeline generation: 5 per hour (AI-generated career timelines)
-  TIMELINE_GENERATION: { interval: 3600000, maxRequests: 5 },
+  // Timeline generation: 20 per hour (AI-generated career timelines).
+  // This is a burst guard, not the cost lever — each timeline is served from
+  // the 30-day GLOBAL cache after first generation, so real OpenAI cost is
+  // bounded regardless. 5/hr was too tight for the core Clarity roadmap: a
+  // young person exploring careers can easily view >5 in one sitting and hit
+  // "Too many timeline generations" mid-journey. Matches the AI_CHAT cadence.
+  TIMELINE_GENERATION: { interval: 3600000, maxRequests: 20 },
 
   // ─── Monthly per-user OpenAI quotas (cost control) ───────────────
   // These sit on top of the short-window rate limits above. They cap
