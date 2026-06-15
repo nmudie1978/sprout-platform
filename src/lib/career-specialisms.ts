@@ -181,3 +181,19 @@ export function getSpecialisms(careerId: string): Specialism[] {
 export function hasSpecialisms(careerId: string): boolean {
   return getSpecialisms(careerId).length > 0;
 }
+
+// Shared-foundation summary per base career — the "trunk" the branches grow
+// from. Kept SEPARATE from the Specialism branch objects on purpose: branches
+// must carry only their differentiating fields (the data-integrity test guards
+// that), and the foundation is a property of the base career, not any branch.
+// One calm line: the common route everyone walks before they diverge.
+const FOUNDATIONS: Record<string, string> = {
+  psychologist: "Psychology degree → doctorate or specialist training → registration",
+  "forensic-scientist": "Science degree → specialist lab training & accreditation",
+};
+
+/** The shared training route a career's branches grow from, or null if none is
+ *  curated (the UI then shows a generic "shared foundation" label). */
+export function getFoundation(careerId: string): string | null {
+  return FOUNDATIONS[careerId] ?? null;
+}
