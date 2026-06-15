@@ -1,65 +1,75 @@
 'use client';
 
 /**
- * useCompareShortlist — local React state for the Compare Careers feature.
+ * useCompareShortlist — React access to the shared, persistent Compare
+ * shortlist (see src/lib/compare/shortlist-store.ts).
  *
- * - Max 3 careers, enforced at toggle time
- * - Temporary (not persisted) — closing the page clears it
- * - Toast feedback when the user hits the limit
+ * - Max 3 careers, enforced by the store
+ * - Persisted per user in localStorage and shared across every surface, so a
+ *   shortlist built from the career modal survives navigation and refresh
+ * - API preserved from the original in-memory version (shortlist, toggle,
+ *   isInShortlist, clear, remove, loadSet, max) so existing consumers (the
+ *   Career Radar) keep working unchanged; `add` is new for event-driven callers
  */
 
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useMemo, useSyncExternalStore } from 'react';
+import { useSession } from 'next-auth/react';
 import { toast } from '@/hooks/use-toast';
 import type { Career } from '@/lib/career-pathways';
-
-const MAX_COMPARE = 3;
+import { compareShortlistStore, type AddResult } from '@/lib/compare/shortlist-store';
 
 export function useCompareShortlist() {
-  const [shortlist, setShortlist] = useState<Career[]>([]);
+  const { data: session } = useSession();
+  const userId = session?.user?.id;
+
+  // Point the store at the current user so it loads their persisted shortlist.
+  useEffect(() => {
+    compareShortlistStore.setUser(userId);
+  }, [userId]);
+
+  const shortlist = useSyncExternalStore(
+    compareShortlistStore.subscribe,
+    compareShortlistStore.getSnapshot,
+    compareShortlistStore.getServerSnapshot,
+  );
 
   const isInShortlist = useCallback(
     (id: string) => shortlist.some((c) => c.id === id),
     [shortlist],
   );
 
-  const toggle = useCallback(
-    (career: Career) => {
-      setShortlist((prev) => {
-        const exists = prev.some((c) => c.id === career.id);
-        if (exists) {
-          return prev.filter((c) => c.id !== career.id);
-        }
-        if (prev.length >= MAX_COMPARE) {
-          toast({
-            title: `You can compare up to ${MAX_COMPARE} at a time`,
-            description: 'Remove one to add another.',
-          });
-          return prev;
-        }
-        return [...prev, career];
+  /** Add without toggling. Returns the outcome so callers can give feedback. */
+  const add = useCallback((career: Career): AddResult => compareShortlistStore.add(career), []);
+
+  const toggle = useCallback((career: Career) => {
+    if (compareShortlistStore.isInShortlist(career.id)) {
+      compareShortlistStore.remove(career.id);
+      return;
+    }
+    const result = compareShortlistStore.add(career);
+    if (result === 'full') {
+      toast({
+        title: `You can compare up to ${compareShortlistStore.MAX} at a time`,
+        description: 'Remove one to add another.',
       });
-    },
-    [],
+    }
+  }, []);
+
+  const clear = useCallback(() => compareShortlistStore.clear(), []);
+  const remove = useCallback((id: string) => compareShortlistStore.remove(id), []);
+  const loadSet = useCallback((careers: Career[]) => compareShortlistStore.loadSet(careers), []);
+
+  return useMemo(
+    () => ({
+      shortlist,
+      toggle,
+      add,
+      isInShortlist,
+      clear,
+      remove,
+      loadSet,
+      max: compareShortlistStore.MAX,
+    }),
+    [shortlist, toggle, add, isInShortlist, clear, remove, loadSet],
   );
-
-  const clear = useCallback(() => setShortlist([]), []);
-
-  const remove = useCallback((id: string) => {
-    setShortlist((prev) => prev.filter((c) => c.id !== id));
-  }, []);
-
-  /** Replace the entire shortlist (used to load saved comparisons). */
-  const loadSet = useCallback((careers: Career[]) => {
-    setShortlist(careers.slice(0, MAX_COMPARE));
-  }, []);
-
-  return {
-    shortlist,
-    toggle,
-    isInShortlist,
-    clear,
-    remove,
-    loadSet,
-    max: MAX_COMPARE,
-  };
 }
