@@ -21,6 +21,7 @@ import {
   shortDayToDay,
 } from '@/lib/compare/fit-dimensions';
 import { getValueSignals } from '@/lib/compare/value-signals';
+import { getKeyFacts } from '@/lib/compare/key-facts';
 import { getAcademicProfile, getPathwayLabel } from '@/lib/education/academic-readiness';
 import { cn } from '@/lib/utils';
 import { toast } from "@/hooks/use-toast";
@@ -109,11 +110,12 @@ export function CompareModal({ open, careers, preferences, onClose, onRemove }: 
           className={cn(
             'flex-1 overflow-auto',
             'flex sm:grid sm:gap-4 sm:p-4',
-            // 5 explicit row tracks — one per section. Cards span all 5
+            // One explicit row track per section. Cards span all of them
             // and use grid-rows-subgrid so a long description in one
             // card doesn't push that card's "Reality check" out of line
-            // with the others.
-            'sm:grid-rows-[auto_auto_auto_auto_auto_auto]',
+            // with the others. (snapshot · key facts · how-it-feels ·
+            // reality · day-to-day · things-to-consider · study-paths)
+            'sm:grid-rows-[auto_auto_auto_auto_auto_auto_auto]',
             careers.length === 2 ? 'sm:grid-cols-2' : 'sm:grid-cols-3',
           )}
         >
@@ -146,6 +148,7 @@ function CompareCard({ career, preferences, onRemove }: CompareCardProps) {
   const dims = getFitDimensions(career, cat);
   const tasks = shortDayToDay(career);
   const signals = getValueSignals(career, cat);
+  const facts = getKeyFacts(career);
   const academic = getAcademicProfile(career);
   const essentialSubjects = academic.subjects.filter(s => s.importance === 'essential');
 
@@ -158,7 +161,7 @@ function CompareCard({ career, preferences, onRemove }: CompareCardProps) {
         'snap-start shrink-0 w-[85vw] mx-2 my-4',
         // Desktop: span all 5 row tracks of the parent grid so each
         // section row aligns row-by-row with sibling cards.
-        'sm:w-auto sm:m-0 sm:grid sm:grid-rows-subgrid sm:row-span-6',
+        'sm:w-auto sm:m-0 sm:grid sm:grid-rows-subgrid sm:row-span-7',
         // Card shell — same on both sizes
         'rounded-xl border-2 border-border/70 bg-card shadow-md overflow-hidden flex flex-col sm:flex-none',
       )}
@@ -191,7 +194,30 @@ function CompareCard({ career, preferences, onRemove }: CompareCardProps) {
         </p>
       </div>
 
-      {/* Fit dimensions — row 2 */}
+      {/* Key facts — row 2 (objective, scannable: salary · qualify · work–life) */}
+      <div className="p-4 border-b border-border/30 space-y-1.5">
+        <p className={cn(titleClass, 'mb-1')}>Key facts</p>
+        <div className="flex items-baseline gap-2.5 text-[11px]">
+          <span className="w-[64px] shrink-0 text-foreground/55">Salary</span>
+          <span className="font-semibold text-foreground/90 tabular-nums">{facts.salary}</span>
+        </div>
+        <div className="flex items-baseline gap-2.5 text-[11px]">
+          <span className="w-[64px] shrink-0 text-foreground/55">To qualify</span>
+          <span className="text-foreground/85">{facts.qualify}</span>
+        </div>
+        <div className="flex items-center gap-2.5 text-[11px]">
+          <span className="w-[64px] shrink-0 text-foreground/55">Work&ndash;life</span>
+          <span className="text-foreground/85">{facts.workLifeLabel}</span>
+          <div className="relative flex-1 h-1.5 max-w-[72px] rounded-full bg-muted/30 overflow-hidden">
+            <div
+              className="absolute inset-y-0 left-0 rounded-full bg-emerald-400/50"
+              style={{ width: `${(facts.workLifeScore / 10) * 100}%` }}
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Fit dimensions — row 3 */}
       <div className="p-4 border-b border-border/30 space-y-2">
         <p className={cn(titleClass, 'mb-1')}>How it feels</p>
         {dims.map((d) => (
@@ -305,6 +331,7 @@ function buildComparisonHtml(
       const dims = getFitDimensions(career, cat);
       const tasks = shortDayToDay(career);
       const signals = getValueSignals(career, cat);
+      const facts = getKeyFacts(career);
       const ap = getAcademicProfile(career);
 
       const dimsHtml = dims
@@ -331,6 +358,13 @@ function buildComparisonHtml(
             <h2>${escapeHtml(career.title)}</h2>
           </header>
           <p class="desc">${escapeHtml(career.description)}</p>
+
+          <h3>Key facts</h3>
+          <table class="facts">
+            <tr><td>Salary</td><td><strong>${escapeHtml(facts.salary)}</strong></td></tr>
+            <tr><td>To qualify</td><td>${escapeHtml(facts.qualify)}</td></tr>
+            <tr><td>Work&ndash;life</td><td>${escapeHtml(facts.workLifeLabel)}</td></tr>
+          </table>
 
           <h3>How it feels</h3>
           <div class="dims">${dimsHtml}</div>
@@ -416,6 +450,9 @@ function buildComparisonHtml(
   .dim-fill { position: absolute; inset: 0 auto 0 0; background: rgba(251, 191, 36, 0.5); border-radius: 99px; }
   .path { font-size: 11px; color: #444; margin: 0 0 4px 0; }
   .meta { font-size: 10px; color: #777; margin: 0 0 4px 0; }
+  .facts { font-size: 11px; color: #444; border-collapse: collapse; margin: 0 0 10px 0; width: 100%; }
+  .facts td { padding: 2px 0; vertical-align: baseline; }
+  .facts td:first-child { color: #777; width: 78px; }
   .meta strong { color: #1a1a1a; }
   .card ul { margin: 0; padding-left: 16px; }
   .card ul li { font-size: 11px; color: #444; margin-bottom: 3px; line-height: 1.45; }
