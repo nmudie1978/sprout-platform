@@ -13,6 +13,7 @@
 // cycle); consulted in getTopEmployers below.
 import { REALISM_EMPLOYERS } from './career-employers-realism';
 import { REALISM_EMPLOYERS_EXTRA } from './career-employers-realism-extra';
+import { REALISM_EMPLOYERS_PHYSICAL } from './career-employers-realism-physical';
 
 export interface Employer {
   name: string;
@@ -269,6 +270,7 @@ export function getTopEmployers(careerId: string): Employer[] {
     // category fallback in getCareerEmployers.
     ?? REALISM_EMPLOYERS[careerId]
     ?? REALISM_EMPLOYERS_EXTRA[careerId]
+    ?? REALISM_EMPLOYERS_PHYSICAL[careerId]
     ?? [];
 }
 
@@ -279,7 +281,8 @@ export function hasTopEmployers(careerId: string): boolean {
   return (
     (CAREER_EMPLOYERS[careerId]?.length ?? 0) > 0 ||
     (REALISM_EMPLOYERS[careerId]?.length ?? 0) > 0 ||
-    (REALISM_EMPLOYERS_EXTRA[careerId]?.length ?? 0) > 0
+    (REALISM_EMPLOYERS_EXTRA[careerId]?.length ?? 0) > 0 ||
+    (REALISM_EMPLOYERS_PHYSICAL[careerId]?.length ?? 0) > 0
   );
 }
 
