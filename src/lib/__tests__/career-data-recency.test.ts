@@ -1,4 +1,5 @@
 import { describe, it, expect } from "vitest";
+import { SSB_VERIFIED_AT } from "@/lib/career-data/ssb-verified-salaries";
 import {
   CAREER_DATA_MAX_AGE_DAYS,
   CATALOGUE_BASELINE_VERIFIED_AT,
@@ -102,5 +103,20 @@ describe("catalogueRecencySummary", () => {
     expect(summary.fresh).toBe(3);
     expect(summary.stale).toBe(1);
     expect(summary.stalePct).toBe(25);
+  });
+});
+
+describe("SSB salary verification provenance", () => {
+  const NOW = new Date("2026-06-20");
+  it("treats an SSB-verified career as explicitly verified + not stale", () => {
+    const id = Object.keys(SSB_VERIFIED_AT)[0];
+    const c = { id, lastVerifiedAt: undefined } as any;
+    expect(isCareerExplicitlyVerified(c, NOW)).toBe(true);
+    expect(isCareerSalaryStale(c, NOW)).toBe(false);
+    expect(effectiveVerifiedAt(c)).toBe(SSB_VERIFIED_AT[id]);
+  });
+  it("leaves an unmapped career on the baseline (not explicitly verified)", () => {
+    const c = { id: "definitely-not-an-ssb-id-zzz", lastVerifiedAt: undefined } as any;
+    expect(isCareerExplicitlyVerified(c, NOW)).toBe(false);
   });
 });
