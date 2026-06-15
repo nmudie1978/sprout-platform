@@ -46,7 +46,9 @@ type PresetFilterKey =
   | "physically-demanding"
   | "highly-competitive"
   | "military"
-  | "ai-focused";
+  | "ai-focused"
+  | "genetics-biotech"
+  | "forensics-investigation";
 
 /** Menu order + labels for the Career Radar preset dropdown. */
 const PRESET_FILTER_OPTIONS: { key: PresetFilterKey; label: string }[] = [
@@ -61,6 +63,8 @@ const PRESET_FILTER_OPTIONS: { key: PresetFilterKey; label: string }[] = [
   { key: "physically-demanding", label: "Physically Demanding Roles" },
   { key: "highly-competitive", label: "Highly Competitive Careers" },
   { key: "military", label: "Military / Defence" },
+  { key: "genetics-biotech", label: "Genetics & Biotechnology" },
+  { key: "forensics-investigation", label: "Forensics & Investigation" },
 ];
 
 /**
@@ -1370,6 +1374,50 @@ const PRESET_AI_FOCUSED = new Set<string>([
   "vp-of-ai",
 ]);
 
+// Genetics & Biotechnology — the DNA/genomics/biotech cluster (clinical
+// genetics, research science, biotech & pharma, genomics data/AI, agri-genetics,
+// forensic DNA). IDs match the 2026-06-15 genetics batch in career-pathways.ts.
+const PRESET_GENETICS_BIOTECH = new Set<string>([
+  "clinical-geneticist", "medical-geneticist", "genomic-medicine-specialist",
+  "molecular-pathologist", "reproductive-genetic-specialist", "prenatal-genetic-counsellor",
+  "cancer-genomics-specialist", "pharmacogenomics-specialist", "clinical-laboratory-geneticist",
+  "geneticist", "molecular-biologist", "genomics-research-scientist", "human-genetics-researcher",
+  "population-geneticist", "evolutionary-biologist", "epigenetics-researcher", "computational-biologist",
+  "systems-biologist", "synthetic-biologist", "biotechnology-research-scientist", "stem-cell-researcher",
+  "biotechnology-scientist", "genomics-product-manager", "precision-medicine-specialist",
+  "gene-therapy-scientist", "crispr-research-scientist", "drug-discovery-scientist",
+  "molecular-diagnostics-scientist", "biomarker-scientist", "translational-scientist", "bioprocess-scientist",
+  "agricultural-geneticist", "plant-geneticist", "animal-geneticist", "crop-improvement-scientist",
+  "livestock-breeding-specialist", "conservation-geneticist", "environmental-genomics-scientist",
+  "gene-editing-scientist", "crispr-engineer", "synthetic-genomics-engineer", "longevity-research-scientist",
+  "human-enhancement-researcher", "digital-biology-scientist", "genomics-director",
+  "pharmaceutical-research-director", "biotechnology-executive", "bioinformatician", "bioinformatics-director",
+  "computational-genomics-engineer", "computational-genomics-scientist", "genomic-data-scientist",
+  "genetic-data-analyst", "clinical-genomics-analyst", "precision-medicine-data-scientist",
+  "ai-genomics-researcher", "genomic-ai-engineer",
+  "forensic-dna-analyst", "crime-laboratory-geneticist", "dna-evidence-specialist",
+]);
+
+// Forensics & Investigation — policing, detective, forensics/CSI, intelligence,
+// cyber-crime, counter-terror and border roles (the 2026-06-15 law-enforcement
+// batch ∪ the existing policing/forensic careers already in the catalogue).
+const PRESET_FORENSICS_INVESTIGATION = new Set<string>([
+  // New law-enforcement batch
+  "roads-policing-officer", "police-dog-handler", "mounted-police-officer", "armed-response-officer",
+  "public-order-officer", "homicide-detective", "financial-crime-investigator", "cybercrime-investigator",
+  "organized-crime-investigator", "counter-terrorism-officer", "anti-corruption-investigator",
+  "drug-enforcement-investigator", "human-trafficking-investigator", "wildlife-crime-investigator",
+  "crime-scene-investigator", "fingerprint-examiner", "ballistics-expert", "forensic-toxicologist",
+  "bloodstain-pattern-analyst", "intelligence-officer", "criminal-intelligence-analyst",
+  "surveillance-officer", "undercover-officer", "osint-analyst", "crime-analyst", "criminal-profiler",
+  "hostage-negotiator", "close-protection-officer", "bomb-disposal-officer",
+  "anti-money-laundering-investigator", "malware-analyst", "border-force-officer",
+  // Existing related careers already in the catalogue
+  "police-officer", "detective", "forensic-scientist", "forensic-dna-analyst",
+  "crime-laboratory-geneticist", "dna-evidence-specialist", "digital-forensics-analyst",
+  "customs-officer", "immigration-officer", "corrections-officer", "probation-officer",
+]);
+
 /** Return true if the career satisfies the chosen preset filter. */
 function matchesPreset(career: Career, preset: PresetFilterKey): boolean {
   switch (preset) {
@@ -1395,6 +1443,10 @@ function matchesPreset(career: Career, preset: PresetFilterKey): boolean {
       return career.pathType === "military";
     case "ai-focused":
       return PRESET_AI_FOCUSED.has(career.id);
+    case "genetics-biotech":
+      return PRESET_GENETICS_BIOTECH.has(career.id);
+    case "forensics-investigation":
+      return PRESET_FORENSICS_INVESTIGATION.has(career.id);
     case "vocational":
       // Curated "no-degree" hand-list (always trusted) ∪ catalogue careers
       // flagged entryLevel=true — but the entryLevel net is filtered through
