@@ -2057,7 +2057,6 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
       if (next.size === 0) next.add(t);
       return next;
     });
-    setCarouselIdx(0);
   };
   const allTiersOn = activeTiers.size === ALL_TIERS.length;
   const carouselRef = useRef<HTMLDivElement | null>(null);
@@ -2142,6 +2141,21 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
       return true;
     });
   }, [dots, activeTiers, allTiersOn, sectorFilter, presetFilter, sectorForId]);
+
+  // Land the Matches Report carousel on the band with the most matches.
+  // Without this, the carousel always opens on the "Strong match" band —
+  // which, under a preset filter, often holds only the force-shown career
+  // goal (e.g. just "Welder") while the dozens of actual filter matches sit
+  // in "Good match" on carousel page 2, making the report look empty/buggy.
+  // We keep the Strong→Good order but scroll to whichever band is larger.
+  useEffect(() => {
+    const ring0 = visibleDots.filter((d) => d.ring === 0).length;
+    const ring1 = visibleDots.filter((d) => d.ring === 1).length;
+    const idx = ring0 > 0 && ring1 > 0 && ring1 > ring0 ? 1 : 0;
+    setCarouselIdx(idx);
+    const el = carouselRef.current;
+    if (el && el.clientWidth > 0) el.scrollTo({ left: idx * el.clientWidth });
+  }, [visibleDots]);
 
   // ── "Show more matches" — a deeper ranked pool revealed on demand in
   // the Matches Report below the radar. The radar dots stay capped (calm,
@@ -2452,7 +2466,7 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
           {/* Sector filter — "Public" category removed per product decision */}
           <select
             value={sectorFilter}
-            onChange={(e) => { setSectorFilter(e.target.value as SectorFilter); setCarouselIdx(0); }}
+            onChange={(e) => { setSectorFilter(e.target.value as SectorFilter); }}
             className="h-7 px-2 rounded-md border bg-background text-[10px]"
             title="Filter by sector"
           >
@@ -2477,7 +2491,6 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
               onChange={(e) => {
                 const v = e.target.value;
                 setPresetFilter(v === "" ? null : (v as PresetFilterKey));
-                setCarouselIdx(0);
               }}
               className={cn(
                 "h-7 pl-6 rounded-md border text-[10px] transition-colors appearance-none",
@@ -2501,7 +2514,6 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
                 type="button"
                 onClick={() => {
                   setPresetFilter(null);
-                  setCarouselIdx(0);
                 }}
                 className="absolute right-1 h-5 w-5 flex items-center justify-center rounded text-teal-700 dark:text-teal-400 hover:bg-teal-500/20"
                 title="Clear preset filter"
