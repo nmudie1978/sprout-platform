@@ -176,7 +176,26 @@ export default async function LandingPage() {
                     {t('landing.hero.solution')}
                   </p>
                 </FadeReveal>
+                <FadeReveal delay={2000}>
+                  <p className="text-base sm:text-[17px] text-neutral-300 leading-relaxed">
+                    {t('landing.hero.missing')}
+                  </p>
+                </FadeReveal>
               </div>
+
+              {/* Payoff — emphasised, plain (no blockquote, per #314) */}
+              <FadeReveal delay={2200} className="mb-5 sm:mb-6">
+                <p className="text-lg sm:text-xl font-medium text-white/90 leading-snug max-w-lg">
+                  {t('landing.hero.payoff')}
+                </p>
+              </FadeReveal>
+
+              {/* Closer — calm three-beat sign-off */}
+              <FadeReveal delay={2400}>
+                <p className="text-base sm:text-lg font-medium text-neutral-200">
+                  {t('landing.hero.closer')}
+                </p>
+              </FadeReveal>
             </div>
 
             {/* Right — hero illustration */}

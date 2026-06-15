@@ -321,14 +321,17 @@
   "landing": {
     "hero": {
       "ageRange": "For 15–23 åringer",
-      "title": "Hjelp dem å finne en retning som virkelig er deres egen.",
-      "problem": "Men akkurat nå er arbeidslivet nesten usynlig. Stillingstitler du ikke forstår. Kvalifikasjoner du ikke kan se for deg. Karriereråd som høres likt ut. Ingen viser deg hvordan disse veiene faktisk føles — eller om de passer til den du er i ferd med å bli.",
-      "solution": "Endeavrly gir deg det som har manglet. Ekte karrierer. Ærlig informasjon. Et sted å reflektere over hvem du er og prøve ting selv — slik at når du velger en retning, er den din. Ingen tester. Ikke noe press. Bare klarhet.",
+      "title": "Ingen lærer deg hvordan du finner ut av fremtiden din.",
+      "subhead": "Du får beskjed om å velge fag, velge en utdanning og velge en karriere. Men hvordan skal du kunne velge noe du aldri har sett?",
+      "problem": "Det finnes tusenvis av yrker, men de fleste kjenner bare en håndfull.",
+      "solution": "Endeavrly hjelper deg å utforske ekte yrker, forstå hvordan de faktisk er, og oppdage veier du ikke visste fantes. Lær hva folk gjør, hvilke ferdigheter som betyr noe, hvordan jobber endrer seg, og hvilke muligheter som kan passe for deg.",
+      "missing": "Endeavrly gir deg det som har manglet: ekte yrker, ærlig informasjon og et rom for å utforske hvem du er og hva som betyr noe for deg.",
+      "payoff": "Så når du velger en retning, er den din.",
+      "closer": "Ingen tester. Ikke noe press. Bare klarhet.",
       "cta": "Start reisen deres",
       "ctaSecondary": "Utforsk karrierer gratis",
       "trust": "Trygt, privat og laget for aldersgruppen 15–23 — ingen reklame, ikke noe press, bare klarhet.",
-      "tagline": "Karriere-operativsystemet for unge.",
-      "subhead": "Endeavrly hjelper unge med å utforske karrierer, forstå reelle veier og finne klarheten til å gå videre med selvtillit."
+      "tagline": "Karriere-operativsystemet for unge."
     },
     "framework": {
       "title": "Tre linser. Én reise.",

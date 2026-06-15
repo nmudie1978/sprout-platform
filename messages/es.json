@@ -321,14 +321,17 @@
   "landing": {
     "hero": {
       "ageRange": "Para jóvenes de 15 a 23 años",
-      "title": "Ayúdales a encontrar un rumbo que de verdad sea suyo.",
-      "problem": "Pero ahora mismo, el mundo laboral es casi invisible. Nombres de trabajos que no entiendes. Cualificaciones que no logras imaginar. Consejos profesionales que suenan todos igual. Nadie te muestra cómo son de verdad estos caminos — ni si encajarían con la persona en la que te estás convirtiendo.",
-      "solution": "Endeavrly te da lo que faltaba. Carreras reales. Información honesta. Un espacio para reflexionar sobre quién eres y probar cosas por ti mismo/a — para que, cuando elijas una dirección, sea la tuya. Sin tests. Sin presión. Solo claridad.",
+      "title": "Nadie te enseña a descubrir tu futuro.",
+      "subhead": "Te dicen que elijas asignaturas, que elijas una carrera y que elijas una profesión. Pero ¿cómo vas a elegir algo que nunca has visto?",
+      "problem": "Existen miles de profesiones, pero la mayoría solo conoce un puñado.",
+      "solution": "Endeavrly te ayuda a explorar profesiones reales, entender cómo son de verdad y descubrir caminos que no sabías que existían. Conoce qué hace la gente, qué habilidades importan, cómo están cambiando los trabajos y qué oportunidades podrían encajar contigo.",
+      "missing": "Endeavrly te da lo que faltaba: profesiones reales, información honesta y un espacio para explorar quién eres y qué te importa.",
+      "payoff": "Así, cuando elijas un rumbo, será tuyo.",
+      "closer": "Sin tests. Sin presión. Solo claridad.",
       "cta": "Empieza su camino",
       "ctaSecondary": "Explora carreras gratis",
       "trust": "Seguro, privado y diseñado para edades de 15 a 23 — sin anuncios, sin presión, solo claridad.",
-      "tagline": "El sistema operativo de carreras para jóvenes.",
-      "subhead": "Endeavrly ayuda a los jóvenes a explorar carreras, entender los caminos reales y encontrar la claridad para avanzar con confianza."
+      "tagline": "El sistema operativo de carreras para jóvenes."
     },
     "framework": {
       "title": "Tres miradas. Un recorrido.",

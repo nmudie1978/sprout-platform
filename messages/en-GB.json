@@ -321,14 +321,17 @@
   "landing": {
     "hero": {
       "ageRange": "For 15–23 year olds",
-      "title": "Help them find a direction that's actually theirs.",
-      "problem": "But right now, the world of work is almost invisible. Job titles you don't understand. Qualifications you can't picture. Career advice that all sounds the same. Nobody shows you what these paths actually feel like — or whether they'd suit the person you're becoming.",
-      "solution": "Endeavrly gives you what's been missing. Real careers. Honest information. A space to reflect on who you are and try things for yourself — so when you do choose a direction, it's yours. No quizzes. No pressure. Just clarity.",
+      "title": "Nobody teaches you how to figure out your future.",
+      "subhead": "You're told to choose subjects, choose a degree, and choose a career. But how are you supposed to choose something you've never seen?",
+      "problem": "Thousands of jobs exist, yet most people only know a handful.",
+      "solution": "Endeavrly helps you explore real careers, understand what they're actually like, and discover paths you never knew existed. Learn what people do, what skills matter, how jobs are changing, and what opportunities might fit you.",
+      "missing": "Endeavrly gives you what's been missing: real careers, honest information, and a space to explore who you are and what matters to you.",
+      "payoff": "So when you choose a direction, it's yours.",
+      "closer": "No quizzes. No pressure. Just clarity.",
       "cta": "Start their journey",
       "ctaSecondary": "Explore careers free",
       "trust": "Safe, private, and built for ages 15–23 — no ads, no pressure, just clarity.",
-      "tagline": "The Career Operating System for young people.",
-      "subhead": "Endeavrly helps young people explore careers, understand real pathways, and find the clarity to move forward with confidence."
+      "tagline": "The Career Operating System for young people."
     },
     "framework": {
       "title": "Three lenses. One journey.",
