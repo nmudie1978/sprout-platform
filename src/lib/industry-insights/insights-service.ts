@@ -274,7 +274,9 @@ function resolveSource(channelTitle: string): VideoSource {
 // ============================================
 
 const CACHE_DURATION_MS = 6 * 60 * 60 * 1000; // 6 hours
-const RECENCY_MONTHS = 24;
+// Hard recency rule: surfaced insight content must be no older than 1 year.
+// Kept in sync with MAX_AGE_MONTHS in src/lib/insights/pool-service.ts.
+const RECENCY_MONTHS = 12;
 const MAX_VIDEOS_PER_SECTION = 30;
 
 interface CacheEntry<T> {
@@ -563,8 +565,10 @@ export async function fetchArticlesBySection(
   const section = INSIGHT_SECTIONS.find((s) => s.key === sectionKey);
   if (!section) return [];
 
+  // Hard recency rule: never surface content older than RECENCY_MONTHS. Same
+  // guarantee the dashboard insights pool enforces — stale insights erode trust.
   const articles = CURATED_ARTICLES.filter(
-    (a) => a.section === sectionKey
+    (a) => a.section === sectionKey && isWithinRecency(a.publishedAt)
   ).slice(0, maxResults);
 
   // Self-heal link rot: drop any article whose URL is definitively gone
