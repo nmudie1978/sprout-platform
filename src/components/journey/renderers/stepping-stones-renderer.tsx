@@ -1,0 +1,193 @@
+'use client';
+
+/**
+ * Stepping Stones renderer — the alternative Clarity-tab roadmap.
+ *
+ * A calm row of stones (circles) connected by a single hairline, read
+ * left→right. Foundation ("Your Starting Point") is the first stone. Each
+ * stone carries the stage icon and progress state; the stage label, title,
+ * subtitle and age sit beneath. Full detail opens in the dialog on tap.
+ * Theme-aware, scrolls on mobile.
+ *
+ * Wired to real journey data via {@link useRoadmapModel}, keeping click-to-
+ * detail, progress states, "you are here", year stamps, scenario overrides
+ * and read-only mode.
+ */
+
+import { type JourneyItem, STAGE_CONFIG } from '@/lib/journey/career-journey-types';
+import { cn } from '@/lib/utils';
+import type { RendererProps } from './types';
+import { getStepIcon, type StepState } from './shared-node';
+import { useRoadmapModel } from './shared-roadmap';
+import { Check, MapPin } from 'lucide-react';
+
+const STONE_COL = 168;
+
+export function SteppingStonesRenderer(props: RendererProps) {
+  const { onItemClick, onProgressCycle, readOnly, cardDataMap } = props;
+  const {
+    items,
+    foundationItem,
+    foundationStatus,
+    foundationState,
+    computedSteps,
+    FOUNDATION_ITEM_ID,
+  } = useRoadmapModel(props);
+
+  const colCount = items.length + 1;
+  const minWidth = colCount * STONE_COL;
+
+  return (
+    <div className="-mx-2 px-2 pb-4">
+      <div className="overflow-x-auto">
+        <div className="relative pt-2" style={{ minWidth }}>
+          {/* hairline behind the stones, centred on the stone circles */}
+          <div
+            className="pointer-events-none absolute top-[42px] h-px bg-slate-200 dark:bg-slate-700"
+            style={{ left: STONE_COL / 2, right: STONE_COL / 2 }}
+            aria-hidden
+          />
+          <ol className="relative flex">
+            <Stone
+              item={foundationItem}
+              state={foundationState}
+              progressStatus={foundationStatus}
+              label="Now"
+              isFoundation
+              onClick={() => !readOnly && onItemClick(foundationItem)}
+              onProgressCycle={
+                onProgressCycle && !readOnly
+                  ? () => onProgressCycle(FOUNDATION_ITEM_ID)
+                  : undefined
+              }
+            />
+            {computedSteps.map((step) => (
+              <Stone
+                key={step.item.id}
+                item={step.item}
+                state={step.state}
+                progressStatus={cardDataMap?.[step.item.id]?.status}
+                label={step.ageLabel}
+                scenarioAnnotation={step.scenarioAnnotation}
+                onClick={() => onItemClick(step.item)}
+                onProgressCycle={
+                  onProgressCycle ? () => onProgressCycle(step.item.id) : undefined
+                }
+              />
+            ))}
+          </ol>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Stone({
+  item,
+  state,
+  label,
+  scenarioAnnotation,
+  isFoundation,
+  onClick,
+}: {
+  item: JourneyItem;
+  state: StepState;
+  progressStatus?: 'not_started' | 'in_progress' | 'done';
+  label: string;
+  scenarioAnnotation?: string;
+  isFoundation?: boolean;
+  onClick: () => void;
+  onProgressCycle?: () => void;
+}) {
+  const accent = STAGE_CONFIG[item.stage].color;
+  const stageLabel = STAGE_CONFIG[item.stage].label;
+  const Icon = getStepIcon(item);
+  const completed = state === 'completed';
+  const emphasised = isFoundation || state === 'next'; // calm "you are here" / next emphasis
+
+  return (
+    <li
+      className="flex shrink-0 flex-col items-center px-2 text-center"
+      style={{ width: STONE_COL }}
+    >
+      <button
+        onClick={onClick}
+        className="group flex flex-col items-center rounded-2xl px-1 pb-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+      >
+        {/* stone */}
+        <span
+          className="relative flex h-[72px] w-[72px] items-center justify-center rounded-full bg-card transition-transform group-hover:-translate-y-0.5"
+          style={{
+            boxShadow: completed
+              ? `0 0 0 2px #10b981`
+              : emphasised
+                ? `0 0 0 2px ${accent}, 0 8px 22px -12px ${accent}`
+                : `0 0 0 1px ${accent}66`,
+          }}
+        >
+          <span
+            className="flex h-12 w-12 items-center justify-center rounded-full"
+            style={
+              completed
+                ? { background: '#10b981', color: '#fff' }
+                : emphasised
+                  ? { background: accent, color: '#fff' }
+                  : { background: `${accent}1f`, color: accent }
+            }
+          >
+            {completed ? (
+              <Check className="h-5 w-5" strokeWidth={3} />
+            ) : (
+              <Icon className="h-5 w-5" strokeWidth={1.9} />
+            )}
+          </span>
+          {isFoundation && (
+            <span
+              className="absolute -bottom-1.5 left-1/2 inline-flex -translate-x-1/2 items-center gap-0.5 rounded-full bg-card px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide shadow-sm"
+              style={{ color: accent }}
+            >
+              <MapPin className="h-2.5 w-2.5" /> You
+            </span>
+          )}
+        </span>
+
+        {/* stage label */}
+        <span
+          className="mt-4 text-[10px] font-semibold uppercase tracking-[0.16em]"
+          style={{ color: accent }}
+        >
+          {stageLabel}
+        </span>
+
+        {/* title + subtitle */}
+        <h3
+          className={cn(
+            'mt-1 text-sm font-bold leading-tight',
+            state === 'future' ? 'text-muted-foreground' : 'text-foreground',
+          )}
+        >
+          {item.title}
+        </h3>
+        {item.subtitle && (
+          <p
+            className="mt-0.5 text-[11px] leading-snug text-muted-foreground"
+            title={item.description ?? undefined}
+          >
+            {item.subtitle}
+          </p>
+        )}
+
+        {/* age / year chip */}
+        <span className="mt-2 rounded-full bg-muted px-2.5 py-1 text-[10px] font-medium text-muted-foreground">
+          {label}
+        </span>
+
+        {scenarioAnnotation && (
+          <span className="mt-1.5 rounded-full bg-violet-500/10 px-2.5 py-1 text-[10px] font-medium text-violet-500 dark:text-violet-300">
+            {scenarioAnnotation}
+          </span>
+        )}
+      </button>
+    </li>
+  );
+}

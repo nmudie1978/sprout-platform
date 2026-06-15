@@ -1,3 +1,3 @@
 export type { RendererProps } from './types';
-export { RailRenderer } from './rail-renderer';
-export { SteppingRenderer } from './stepping-renderer';
+export { WindingRoadRenderer } from './winding-road-renderer';
+export { SteppingStonesRenderer } from './stepping-stones-renderer';

@@ -60,6 +60,13 @@ const ICON_MAP: Record<string, LucideIcon> = {
 
 export type StepState = 'completed' | 'current' | 'next' | 'future';
 
+/** Resolve a step's lucide icon from its explicit icon or its stage default. */
+export function getStepIcon(item: JourneyItem): LucideIcon {
+  const stage = STAGE_CONFIG[item.stage];
+  const iconName = item.icon ?? stage.icon;
+  return ICON_MAP[iconName] ?? ICON_MAP[stage.icon] ?? Sparkles;
+}
+
 interface SharedNodeProps {
   item: JourneyItem;
   onClick: () => void;
