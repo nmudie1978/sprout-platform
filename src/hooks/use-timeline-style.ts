@@ -3,30 +3,43 @@
 import { useState, useEffect, useCallback } from 'react';
 
 /**
- * Roadmap layout styles. Zigzag was dropped in Apr 2026 — the rail
- * and stepping renderers now cover every use case. Anything stored
- * under the legacy 'zigzag' value silently migrates to 'rail' on the
- * next load so existing users don't lose their choice, they just
- * land on the new default.
+ * Roadmap layout styles.
+ *
+ *  • 'winding'         — Winding Road (DEFAULT): a road that snakes
+ *                        left→right with a milestone card on each bend.
+ *  • 'stepping-stones' — Stepping Stones: a calm row of connected stones.
+ *
+ * Legacy values migrate silently so existing users keep a sensible choice:
+ *   'rail'    → 'winding'          (both were the horizontal default)
+ *   'stepping'→ 'stepping-stones'  (both were the alternative)
+ *   'zigzag'  → 'winding'          (dropped long ago)
  */
-export type TimelineStyle = 'rail' | 'stepping';
+export type TimelineStyle = 'winding' | 'stepping-stones';
 
 const STORAGE_KEY = 'endeavrly-timeline-style';
-// Hard rule: the roadmap always DEFAULTS to the rail view. (A user can still
-// switch to stepping via the toggle; that explicit choice is remembered. But
-// with no stored choice — new users, cleared storage, legacy 'zigzag' — the
-// roadmap opens on rail.)
-const DEFAULT: TimelineStyle = 'rail';
-const VALID: TimelineStyle[] = ['rail', 'stepping'];
+// Hard rule: the roadmap always DEFAULTS to the Winding Road view. (A user can
+// still switch to Stepping Stones via the toggle; that explicit choice is
+// remembered. With no stored choice — new users, cleared storage, legacy
+// values — the roadmap opens on Winding Road.)
+const DEFAULT: TimelineStyle = 'winding';
+const VALID: TimelineStyle[] = ['winding', 'stepping-stones'];
+
+const LEGACY_MAP: Record<string, TimelineStyle> = {
+  rail: 'winding',
+  zigzag: 'winding',
+  stepping: 'stepping-stones',
+};
+
+function resolveStored(stored: string | null): TimelineStyle {
+  if (!stored) return DEFAULT;
+  if (VALID.includes(stored as TimelineStyle)) return stored as TimelineStyle;
+  return LEGACY_MAP[stored] ?? DEFAULT;
+}
 
 export function useTimelineStyle() {
   const [style, setStyleState] = useState<TimelineStyle>(() => {
     if (typeof window === 'undefined') return DEFAULT;
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored && VALID.includes(stored as TimelineStyle)) {
-      return stored as TimelineStyle;
-    }
-    return DEFAULT;
+    return resolveStored(localStorage.getItem(STORAGE_KEY));
   });
 
   useEffect(() => {

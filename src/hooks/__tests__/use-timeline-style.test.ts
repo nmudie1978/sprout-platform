@@ -5,20 +5,32 @@ import { useTimelineStyle } from "../use-timeline-style";
 beforeEach(() => localStorage.clear());
 
 describe("useTimelineStyle", () => {
-  it("defaults to rail when nothing is stored (hard rule)", () => {
+  it("defaults to winding when nothing is stored (hard rule)", () => {
     const { result } = renderHook(() => useTimelineStyle());
-    expect(result.current.style).toBe("rail");
+    expect(result.current.style).toBe("winding");
   });
 
-  it("respects an explicit stored stepping choice", () => {
+  it("respects an explicit stored stepping-stones choice", () => {
+    localStorage.setItem("endeavrly-timeline-style", "stepping-stones");
+    const { result } = renderHook(() => useTimelineStyle());
+    expect(result.current.style).toBe("stepping-stones");
+  });
+
+  it("migrates the legacy 'rail' value to winding", () => {
+    localStorage.setItem("endeavrly-timeline-style", "rail");
+    const { result } = renderHook(() => useTimelineStyle());
+    expect(result.current.style).toBe("winding");
+  });
+
+  it("migrates the legacy 'stepping' value to stepping-stones", () => {
     localStorage.setItem("endeavrly-timeline-style", "stepping");
     const { result } = renderHook(() => useTimelineStyle());
-    expect(result.current.style).toBe("stepping");
+    expect(result.current.style).toBe("stepping-stones");
   });
 
-  it("falls back to rail for an invalid/legacy stored value", () => {
+  it("falls back to winding for an invalid/legacy stored value", () => {
     localStorage.setItem("endeavrly-timeline-style", "zigzag");
     const { result } = renderHook(() => useTimelineStyle());
-    expect(result.current.style).toBe("rail");
+    expect(result.current.style).toBe("winding");
   });
 });

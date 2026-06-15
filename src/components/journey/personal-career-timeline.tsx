@@ -10,7 +10,7 @@ import type { JourneyItem, Journey } from '@/lib/journey/career-journey-types';
 import { generateFallbackTimeline, type EducationStage } from '@/lib/journey/generate-fallback-timeline';
 import { sanitizeJourney } from '@/lib/journey/roadmap-rules';
 import type { CardDataSummary } from './renderers/types';
-import { RailRenderer, SteppingRenderer } from './renderers';
+import { WindingRoadRenderer, SteppingStonesRenderer } from './renderers';
 import { FOUNDATION_ITEM_ID } from './renderers/foundation-banner';
 import { TimelineStyleSelector } from './timeline-style-selector';
 import { TimelineDetailDialog, loadCardData, cycleProgress, isStepUnlocked, enforceProgressChain } from './timeline';
@@ -39,8 +39,8 @@ interface PersonalCareerTimelineProps {
 }
 
 const RENDERERS = {
-  rail: RailRenderer,
-  stepping: SteppingRenderer,
+  winding: WindingRoadRenderer,
+  'stepping-stones': SteppingStonesRenderer,
 } as const;
 
 export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney, readOnly = false, onSimulationReady }: PersonalCareerTimelineProps) {
@@ -474,7 +474,7 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney, read
 
   // Show "personalising" when we're displaying fallback while AI version loads
   const isPreliminary = isFetching && !data?.cached;
-  const Renderer = RENDERERS[style] || RailRenderer;
+  const Renderer = RENDERERS[style] || WindingRoadRenderer;
 
   // Timeline summary
   const firstAge = journey.startAge;

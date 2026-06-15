@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/select';
 import { getDemoJourneys } from '@/lib/journey/demo-journeys';
 import { type JourneyItem } from '@/lib/journey/career-journey-types';
-import { RailRenderer } from '@/components/journey/renderers';
+import { WindingRoadRenderer } from '@/components/journey/renderers';
 import { TimelineDetailDialog } from '@/components/journey/timeline/timeline-detail-dialog';
 
 export default function JourneyRenderersPage() {
@@ -58,7 +58,7 @@ export default function JourneyRenderersPage() {
           </p>
         </CardHeader>
         <CardContent className="overflow-auto" style={{ maxHeight: 600 }}>
-          <RailRenderer journey={journey} onItemClick={handleItemClick} />
+          <WindingRoadRenderer journey={journey} onItemClick={handleItemClick} />
         </CardContent>
       </Card>
 

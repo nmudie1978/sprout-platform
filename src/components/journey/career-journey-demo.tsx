@@ -28,7 +28,7 @@ import {
 } from '@/lib/journey/career-journey-types';
 import { getDemoJourneys } from '@/lib/journey/demo-journeys';
 import { TimelineDetailDialog } from './timeline';
-import { RailRenderer } from './renderers';
+import { WindingRoadRenderer } from './renderers';
 
 // ============================================
 // STAGE ICON MAP (for legend)
@@ -135,7 +135,7 @@ export function CareerJourneyDemo() {
 
             {/* Visual View */}
             <TabsContent value="visual" className="mt-0">
-              <RailRenderer
+              <WindingRoadRenderer
                 journey={journey}
                 onItemClick={handleItemClick}
               />
