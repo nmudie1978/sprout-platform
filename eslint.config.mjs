@@ -9,6 +9,17 @@
 // See: https://nextjs.org/docs/app/api-reference/config/eslint
 import coreWebVitals from "eslint-config-next/core-web-vitals";
 
+// In ESLint 9 flat config, plugin namespaces do NOT cascade across config
+// objects: a config object that overrides a namespaced rule (e.g.
+// `react/no-unescaped-entities`) must itself have that plugin in `plugins`.
+// `coreWebVitals` registers react / react-hooks / @next/next / import inside
+// its own objects, so the severity-calibration block below needs the same
+// plugin objects in scope. Reuse the exact references coreWebVitals set up
+// (rather than re-importing the packages) so ESLint never sees a redefinition
+// and we stay matched to whatever plugin versions eslint-config-next ships.
+const nextPlugins =
+  coreWebVitals.find((o) => o && o.plugins)?.plugins ?? {};
+
 export default [
   // Global ignores — build output, deps, generated files, migrations.
   {
@@ -38,6 +49,7 @@ export default [
   // genuinely important correctness rules as errors. Burn the warnings down
   // over time; do not add new ones.
   {
+    plugins: nextPlugins,
     rules: {
       // Cosmetic: unescaped ' / " in JSX text.
       "react/no-unescaped-entities": "warn",
