@@ -319,7 +319,13 @@ export const RateLimits = {
   // account can't drain the monthly OpenAI budget. Numbers are
   // deliberately generous for legitimate users — tune down if budget
   // becomes tight.
-  AI_MONTHLY_TIMELINE: { interval: 30 * 24 * 3600_000, maxRequests: 20 },
+  // Timeline is the core Clarity roadmap surface — a young person genuinely
+  // exploring careers can easily view 20+ in a month, and each NEW career+age+
+  // stage combo is one AI call. Real OpenAI cost is bounded by the 30-day GLOBAL
+  // cache (see generate-timeline/route.ts), not this per-user counter, so this
+  // cap is an abuse backstop only. Keep it generous so legitimate exploration
+  // never hits a wall mid-journey.
+  AI_MONTHLY_TIMELINE: { interval: 30 * 24 * 3600_000, maxRequests: 100 },
   AI_MONTHLY_NARRATE: { interval: 30 * 24 * 3600_000, maxRequests: 600 },
   AI_MONTHLY_CAREER_PATHS: { interval: 30 * 24 * 3600_000, maxRequests: 10 },
   // Experience-the-job: each scene/step is one model call. 300/month ≈ 40
