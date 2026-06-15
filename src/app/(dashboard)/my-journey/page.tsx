@@ -66,7 +66,6 @@ import { CareerSpecialisms } from '@/components/journey/career-specialisms';
 import { RealityVideos } from '@/components/journey/reality-videos';
 import { hasSpecialisms } from '@/lib/career-specialisms';
 import { TopEmployers } from '@/components/journey/top-employers';
-import { SalaryProgressionLine } from '@/components/journey/salary-progression-line';
 import { CareerDNASection } from '@/components/career-dna/career-dna-section';
 import { hasCareerEmployers, getRepresentativeEmployers } from '@/lib/career-employers';
 import { hasMyths } from '@/lib/career-myths';
@@ -94,6 +93,12 @@ const JourneyReflectionsTray = dynamic(
 const JourneyCompaniesTray = dynamic(
   () => import('@/components/journey/journey-companies-tray').then((m) => m.JourneyCompaniesTray),
   { ssr: false }
+);
+// Salary chart pulls in recharts (~250KB). Only loaded when the salary popup
+// renders, so it stays out of the My Journey initial bundle.
+const SalaryProgressionLine = dynamic(
+  () => import('@/components/journey/salary-progression-line').then((m) => m.SalaryProgressionLine),
+  { ssr: false, loading: () => <div className="h-48 animate-pulse rounded-card bg-muted/50" /> }
 );
 // Career Twin — the first Clarity sub-tab. Opens inline within the tab so the
 // user never leaves their journey. Heavy, so it's only loaded when rendered.
