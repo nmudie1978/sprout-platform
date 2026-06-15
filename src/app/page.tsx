@@ -148,13 +148,10 @@ export default async function LandingPage() {
                 <p className="text-[11px] font-medium uppercase tracking-[0.2em] text-neutral-600">
                   {t('landing.hero.ageRange')}
                 </p>
-                <p className="mt-2 text-[12px] font-medium uppercase tracking-[0.18em] text-emerald-400/70">
-                  {t('landing.hero.tagline')}
-                </p>
               </FadeReveal>
 
               {/* Headline */}
-              <h1 className="text-3xl sm:text-4xl md:text-[2.75rem] font-semibold tracking-tight leading-snug text-white mb-5 sm:mb-6">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-semibold tracking-tight leading-snug text-white mb-5 sm:mb-6">
                 <WordRevealLine
                   text={t('landing.hero.title')}
                   startDelay={300}
