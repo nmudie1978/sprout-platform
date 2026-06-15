@@ -14,6 +14,7 @@
 import { REALISM_EMPLOYERS } from './career-employers-realism';
 import { REALISM_EMPLOYERS_EXTRA } from './career-employers-realism-extra';
 import { REALISM_EMPLOYERS_PHYSICAL } from './career-employers-realism-physical';
+import { REALISM_EMPLOYERS_FUTUREPROOF } from './career-employers-realism-futureproof';
 
 export interface Employer {
   name: string;
@@ -271,6 +272,7 @@ export function getTopEmployers(careerId: string): Employer[] {
     ?? REALISM_EMPLOYERS[careerId]
     ?? REALISM_EMPLOYERS_EXTRA[careerId]
     ?? REALISM_EMPLOYERS_PHYSICAL[careerId]
+    ?? REALISM_EMPLOYERS_FUTUREPROOF[careerId]
     ?? [];
 }
 
@@ -282,7 +284,8 @@ export function hasTopEmployers(careerId: string): boolean {
     (CAREER_EMPLOYERS[careerId]?.length ?? 0) > 0 ||
     (REALISM_EMPLOYERS[careerId]?.length ?? 0) > 0 ||
     (REALISM_EMPLOYERS_EXTRA[careerId]?.length ?? 0) > 0 ||
-    (REALISM_EMPLOYERS_PHYSICAL[careerId]?.length ?? 0) > 0
+    (REALISM_EMPLOYERS_PHYSICAL[careerId]?.length ?? 0) > 0 ||
+    (REALISM_EMPLOYERS_FUTUREPROOF[careerId]?.length ?? 0) > 0
   );
 }
 
