@@ -57,9 +57,87 @@ function qualifyYears(career: Career): number | null {
   return years.length ? Math.max(...years) : null;
 }
 
+/**
+ * Curated TOTAL time-to-fully-qualified (years, Norway) for medical roles whose
+ * education path either omits a number or only states the degree length — so a
+ * surgeon shows "~13 yrs", not "University" or the bare 6-year degree. These
+ * override the regex-parsed year because for doctors the realistic figure is
+ * degree + LIS1 + specialty training, not the degree alone.
+ */
+const MEDICAL_TRAINING_YEARS: Record<string, number> = {
+  "anesthesiologist": 13,
+  "bariatric-surgeon": 15,
+  "biomedical-scientist": 5,
+  "breast-surgeon": 15,
+  "cardiac-surgeon": 15,
+  "cardiologist": 13,
+  "cardiothoracic-surgeon": 15,
+  "clinical-scientist": 5,
+  "colorectal-surgeon": 15,
+  "cosmetic-surgeon": 15,
+  "dental-assistant": 2,
+  "dental-hygienist": 3,
+  "dental-technician": 3,
+  "dentist": 5,
+  "dermatologic-surgeon": 14,
+  "dermatologist": 12,
+  "doctor": 12,
+  "emergency-medicine-physician": 12,
+  "endocrine-surgeon": 15,
+  "endocrinologist": 13,
+  "food-scientist": 5,
+  "general-surgeon": 13,
+  "hand-surgeon": 15,
+  "healthcare-data-scientist": 5,
+  "hepatobiliary-surgeon": 15,
+  "intensive-care-physician": 14,
+  "internal-medicine-physician": 12,
+  "mental-health-counsellor": 4,
+  "mental-health-nurse": 4,
+  "midwife": 5,
+  "neurologist": 13,
+  "neurosurgeon": 15,
+  "obstetric-gynaecological-surgeon": 13,
+  "obstetrician-gynaecologist": 13,
+  "occupational-health-physician": 12,
+  "oncological-surgeon": 15,
+  "oncologist": 13,
+  "ophthalmic-surgeon": 12,
+  "ophthalmologist": 12,
+  "optometrist": 4,
+  "oral-maxillofacial-surgeon": 16,
+  "orthopaedic-surgeon": 14,
+  "otolaryngologist": 12,
+  "paediatric-surgeon": 15,
+  "pathologist": 12,
+  "patient-navigator": 3,
+  "pediatrician": 12,
+  "peripheral-nerve-surgeon": 15,
+  "pharmacist": 5,
+  "physician-assistant": 5,
+  "plastic-surgeon": 14,
+  "podiatrist": 3,
+  "psychiatrist": 12,
+  "radiologic-technologist": 3,
+  "radiologist": 12,
+  "reconstructive-surgeon": 15,
+  "rheumatologist": 13,
+  "spinal-surgeon": 15,
+  "sports-medicine-physician": 12,
+  "sports-medicine-surgeon": 15,
+  "surgeon": 13,
+  "thoracic-surgeon": 14,
+  "transplant-surgeon": 16,
+  "trauma-surgeon": 15,
+  "urological-surgeon": 14,
+  "vascular-surgeon": 14,
+  "veterinarian": 6,
+  "veterinary-assistant": 2,
+};
+
 export function getKeyFacts(career: Career): KeyFacts {
   const route = inferEducationRoute(career);
-  const years = qualifyYears(career);
+  const years = MEDICAL_TRAINING_YEARS[career.id] ?? qualifyYears(career);
   const routeLabel = ROUTE_LABEL[route] ?? 'Varies';
   const qualify =
     route === 'on-the-job'
