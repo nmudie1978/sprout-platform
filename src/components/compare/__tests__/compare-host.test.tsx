@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, act } from "@testing-library/react";
 import { CompareHost } from "../compare-host";
 import type { Career } from "@/lib/career-pathways";
 
@@ -25,7 +25,16 @@ vi.mock("@/hooks/use-compare-shortlist", () => ({
   }),
 }));
 
-// Stub the heavy children so we test the host's own behaviour.
+// The "you now have 3 — compare?" nudge is a NON-BLOCKING toast (not a modal),
+// so it can't deadlock on top of the open career detail dialog.
+const toast = vi.fn();
+vi.mock("@/hooks/use-toast", () => ({ toast: (...args: unknown[]) => toast(...args) }));
+vi.mock("@/components/ui/toast", () => ({
+  ToastAction: (props: { onClick?: () => void; children?: React.ReactNode }) => (
+    <button onClick={props.onClick}>{props.children}</button>
+  ),
+}));
+
 vi.mock("@/components/compare/compare-modal", () => ({
   CompareModal: ({ open }: { open: boolean }) => (open ? <div>MODAL_OPEN</div> : null),
 }));
@@ -39,7 +48,7 @@ function career(id: string): Career {
   return { id, title: id, emoji: "🧭" } as unknown as Career;
 }
 
-const PROMPT = "You now have 3 careers to compare.";
+const PROMPT_TITLE = /3 careers to compare/i;
 
 describe("CompareHost", () => {
   beforeEach(() => {
@@ -48,31 +57,42 @@ describe("CompareHost", () => {
     add.mockClear();
     remove.mockClear();
     clear.mockClear();
+    toast.mockClear();
   });
 
-  it("prompts when an add crosses up to 3", () => {
+  it("toasts when a single add crosses up to 3", () => {
     shortlist = [career("a"), career("b")];
     const { rerender } = render(<CompareHost />);
-    expect(screen.queryByText(PROMPT)).not.toBeInTheDocument();
+    expect(toast).not.toHaveBeenCalled();
 
     shortlist = [career("a"), career("b"), career("c")];
     rerender(<CompareHost />);
-    expect(screen.getByText(PROMPT)).toBeInTheDocument();
+    expect(toast).toHaveBeenCalledTimes(1);
+    expect(toast.mock.calls[0][0].title).toMatch(PROMPT_TITLE);
   });
 
-  it("does NOT prompt when the shortlist is already full on mount", () => {
+  it("does NOT toast when the shortlist is already full on mount", () => {
     shortlist = [career("a"), career("b"), career("c")];
     render(<CompareHost />);
-    expect(screen.queryByText(PROMPT)).not.toBeInTheDocument();
+    expect(toast).not.toHaveBeenCalled();
   });
 
-  it("opens the compare modal on 'Yes, compare'", () => {
+  it("does NOT toast on a bulk 0→3 jump (localStorage hydration / loadSet on refresh)", () => {
+    shortlist = [];
+    const { rerender } = render(<CompareHost />);
+    shortlist = [career("a"), career("b"), career("c")];
+    rerender(<CompareHost />);
+    expect(toast).not.toHaveBeenCalled();
+  });
+
+  it("the toast's Compare action opens the compare modal", () => {
     shortlist = [career("a"), career("b")];
     const { rerender } = render(<CompareHost />);
     shortlist = [career("a"), career("b"), career("c")];
     rerender(<CompareHost />);
 
-    fireEvent.click(screen.getByRole("button", { name: /yes, compare/i }));
+    const action = toast.mock.calls[0][0].action as React.ReactElement<{ onClick: () => void }>;
+    act(() => action.props.onClick());
     expect(screen.getByText("MODAL_OPEN")).toBeInTheDocument();
   });
 

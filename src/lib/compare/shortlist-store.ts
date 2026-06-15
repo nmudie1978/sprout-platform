@@ -21,11 +21,16 @@ const STORAGE_PREFIX = "endeavrly:compare-shortlist";
 export type AddResult = "added" | "duplicate" | "full";
 
 /**
- * Pure up-crossing detector: true only when an add takes the count from below
- * the max to exactly the max. Drives the "you now have 3 — compare?" prompt.
+ * Pure up-crossing detector for the "you now have 3 — compare?" nudge.
+ *
+ * Fires ONLY on a genuine single-step add that lands on the max (max-1 → max).
+ * Deliberately NOT `prev < max` — a bulk jump like 0 → max happens when the
+ * persisted shortlist hydrates from localStorage on page load (or loadSet
+ * replaces the whole set), and must NOT be read as "the user just added the
+ * third", which previously made the prompt fire randomly on refresh.
  */
 export function shouldPromptForCompare(prev: number, next: number, max: number): boolean {
-  return prev < max && next === max;
+  return prev === max - 1 && next === max;
 }
 
 function storageKey(userKey: string): string {

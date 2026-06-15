@@ -26,16 +26,7 @@ import { CompareModal } from "@/components/compare/compare-modal";
 import { FloatingCompareCTA } from "@/components/compare/floating-compare-cta";
 import { shouldPromptForCompare } from "@/lib/compare/shortlist-store";
 import { toast } from "@/hooks/use-toast";
-import {
-  AlertDialog,
-  AlertDialogContent,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogCancel,
-  AlertDialogAction,
-} from "@/components/ui/alert-dialog";
+import { ToastAction } from "@/components/ui/toast";
 import type { Career } from "@/lib/career-pathways";
 
 const RADAR_PATH = "/careers/radar";
@@ -46,15 +37,26 @@ export function CompareHost() {
 
   const { shortlist, add, remove, clear, max, isInShortlist } = useCompareShortlist();
   const [modalOpen, setModalOpen] = useState(false);
-  const [promptOpen, setPromptOpen] = useState(false);
 
   // Seeded to the current count so a pre-filled shortlist never prompts on load.
   const prevCount = useRef(shortlist.length);
 
+  // When an add lands on the max, nudge with a NON-BLOCKING toast (not a modal
+  // dialog). A toast can't trap focus, so it never deadlocks on top of the
+  // already-open career detail dialog the add came from — which previously
+  // froze the whole tab when two trapped Radix focus scopes fought.
   useEffect(() => {
     const next = shortlist.length;
     if (shouldPromptForCompare(prevCount.current, next, max)) {
-      setPromptOpen(true);
+      toast({
+        title: `You now have ${max} careers to compare.`,
+        description: "Want to see them side by side?",
+        action: (
+          <ToastAction altText="Open the compare view" onClick={() => setModalOpen(true)}>
+            Compare
+          </ToastAction>
+        ),
+      });
     }
     prevCount.current = next;
   }, [shortlist.length, max]);
@@ -112,28 +114,6 @@ export function CompareHost() {
         onClose={() => setModalOpen(false)}
         onRemove={remove}
       />
-
-      <AlertDialog open={promptOpen} onOpenChange={setPromptOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>You now have {max} careers to compare.</AlertDialogTitle>
-            <AlertDialogDescription>
-              Do you want to go to the compare section to look at these?
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Not now</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={() => {
-                setPromptOpen(false);
-                setModalOpen(true);
-              }}
-            >
-              Yes, compare
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
     </>
   );
 }
