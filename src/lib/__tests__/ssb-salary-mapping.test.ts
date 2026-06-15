@@ -27,7 +27,7 @@ describe("findStyrkForCareer", () => {
     expect(m?.styrkCode).toBe("2211");
   });
 
-  it("returns undefined for an unmapped career", () => {
-    expect(findStyrkForCareer("astrophysicist")).toBeUndefined();
+  it("returns undefined for an id that is not in the map", () => {
+    expect(findStyrkForCareer("this-career-id-does-not-exist")).toBeUndefined();
   });
 });

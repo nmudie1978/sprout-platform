@@ -13,6 +13,19 @@
  */
 
 import type { Career } from "@/lib/career-pathways";
+import { SSB_VERIFIED_AT, SSB_SALARY_SOURCE_URL } from "@/lib/career-data/ssb-verified-salaries";
+
+/**
+ * The per-career verification date, resolving the explicit `lastVerifiedAt`
+ * field first, then the SSB salary-refresh provenance (2026-06-15 sweep that
+ * confirmed ~726 careers within 25% of Statistics Norway wage data). `id` is
+ * optional so callers passing a bare `{ lastVerifiedAt }` still work.
+ */
+function resolvedVerifiedAt(
+  career: Pick<Career, "lastVerifiedAt"> & { id?: string },
+): string | undefined {
+  return career.lastVerifiedAt ?? (career.id ? SSB_VERIFIED_AT[career.id] : undefined);
+}
 
 /** Age cap for catalogue salaries to be considered "fresh". */
 export const CAREER_DATA_MAX_AGE_DAYS = 365;
@@ -34,15 +47,15 @@ export const CATALOGUE_BASELINE_VERIFIED_AT = "2026-04-15";
 /** Resolve the effective lastVerifiedAt for a career, falling back
  *  to the catalogue baseline when no per-career timestamp is set. */
 export function effectiveVerifiedAt(
-  career: Pick<Career, "lastVerifiedAt">,
+  career: Pick<Career, "lastVerifiedAt"> & { id?: string },
 ): string {
-  return career.lastVerifiedAt ?? CATALOGUE_BASELINE_VERIFIED_AT;
+  return resolvedVerifiedAt(career) ?? CATALOGUE_BASELINE_VERIFIED_AT;
 }
 
 /** True if the effective verified date is more than
  *  CAREER_DATA_MAX_AGE_DAYS ago. */
 export function isCareerSalaryStale(
-  career: Pick<Career, "lastVerifiedAt">,
+  career: Pick<Career, "lastVerifiedAt"> & { id?: string },
   now: Date = new Date(),
 ): boolean {
   const verifiedRaw = effectiveVerifiedAt(career);
@@ -57,11 +70,12 @@ export function isCareerSalaryStale(
  *  inheriting the catalogue baseline). Use this to surface a
  *  positive "✓ Verified" pill in the UI. */
 export function isCareerExplicitlyVerified(
-  career: Pick<Career, "lastVerifiedAt" | "sourceUrl">,
+  career: Pick<Career, "lastVerifiedAt" | "sourceUrl"> & { id?: string },
   now: Date = new Date(),
 ): boolean {
-  if (!career.lastVerifiedAt) return false;
-  const verified = new Date(career.lastVerifiedAt).getTime();
+  const v = resolvedVerifiedAt(career);
+  if (!v) return false;
+  const verified = new Date(v).getTime();
   if (Number.isNaN(verified)) return false;
   const ageDays = (now.getTime() - verified) / (1000 * 60 * 60 * 24);
   return ageDays <= CAREER_DATA_MAX_AGE_DAYS;
@@ -117,15 +131,19 @@ function hostOf(url: string | undefined): string | undefined {
  * own labelling already conveys.
  */
 export function getSalaryProvenance(
-  career: Pick<Career, "lastVerifiedAt" | "sourceUrl">,
+  career: Pick<Career, "lastVerifiedAt" | "sourceUrl"> & { id?: string },
   opts: { estimated?: boolean; now?: Date } = {},
 ): SalaryProvenance {
   const now = opts.now ?? new Date();
-  const sourceUrl = career.sourceUrl || undefined;
+  const verifiedAt = resolvedVerifiedAt(career);
+  // SSB-verified careers (no inline sourceUrl) cite the SSB wage table.
+  const sourceUrl =
+    career.sourceUrl ||
+    (career.id && SSB_VERIFIED_AT[career.id] ? SSB_SALARY_SOURCE_URL : undefined);
   const sourceHost = hostOf(sourceUrl);
 
-  if (isCareerExplicitlyVerified(career, now) && career.lastVerifiedAt) {
-    const d = new Date(career.lastVerifiedAt);
+  if (isCareerExplicitlyVerified(career, now) && verifiedAt) {
+    const d = new Date(verifiedAt);
     const stamp = `${MONTHS[d.getUTCMonth()]} ${d.getUTCFullYear()}`;
     return {
       tier: "verified",
