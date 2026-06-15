@@ -198,7 +198,7 @@ export function SavedCareersTray({ topOffsetPx = 80, className }: SavedCareersTr
                   </div>
                   <button
                     onClick={(e) => handleRemove(e, c.careerId)}
-                    className="p-1 rounded opacity-0 group-hover:opacity-100 hover:bg-red-500/10 text-muted-foreground/60 hover:text-red-400 transition-all shrink-0"
+                    className="p-2 rounded opacity-60 group-hover:opacity-100 hover:bg-red-500/10 text-muted-foreground/60 hover:text-red-400 transition-all shrink-0"
                     aria-label={`Remove ${c.careerTitle}`}
                     title="Remove"
                   >

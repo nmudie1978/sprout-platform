@@ -250,7 +250,7 @@ export function SkillLongevityIndex({
                   href={skill.quickStartUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 text-[10px] text-primary hover:underline opacity-0 group-hover:opacity-100 transition-opacity"
+                  className="inline-flex items-center gap-1 text-[10px] text-primary hover:underline opacity-70 group-hover:opacity-100 transition-opacity"
                 >
                   <span>{skill.quickStartTime}</span>
                   <ExternalLink className="h-2.5 w-2.5" />
@@ -260,7 +260,7 @@ export function SkillLongevityIndex({
                     variant="ghost"
                     size="sm"
                     onClick={() => onAddToJourney(skill)}
-                    className="h-5 px-1.5 text-[9px] opacity-0 group-hover:opacity-100 transition-opacity"
+                    className="h-7 px-2 text-[9px] opacity-70 group-hover:opacity-100 transition-opacity"
                   >
                     <Plus className="h-2.5 w-2.5" />
                   </Button>

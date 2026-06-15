@@ -54,8 +54,8 @@ export function TaskItem({ task, onToggle, onRemove }: TaskItemProps) {
       <button
         onClick={() => onRemove(task.id)}
         className={cn(
-          'flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity',
-          'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 rounded p-0.5',
+          'flex-shrink-0 opacity-60 group-hover:opacity-100 transition-opacity',
+          'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 rounded p-1.5',
           'text-muted-foreground/65 hover:text-destructive'
         )}
         aria-label={`Remove "${task.title}"`}

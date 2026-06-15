@@ -112,7 +112,7 @@ function MonthlyActionItem({ action }: { action: MonthlyAction }) {
       {action.isCompleted ? (
         <CheckCircle2 className="h-4 w-4 text-success" />
       ) : (
-        <ArrowRight className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+        <ArrowRight className="h-4 w-4 text-muted-foreground opacity-40 group-hover:opacity-100 transition-opacity" />
       )}
     </Link>
   );

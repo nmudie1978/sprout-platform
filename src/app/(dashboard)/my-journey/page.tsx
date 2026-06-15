@@ -2048,9 +2048,9 @@ function CareerNotes({ careerTitle, collapsed, onToggle }: { careerTitle: string
                     <div className="flex items-center gap-2">
                       <span className={cn('shrink-0 rounded px-1.5 py-0.5 text-[9px] font-medium', cat.color)}>{cat.label}</span>
                       <p className="text-xs text-foreground/65 flex-1 truncate">{note.text}</p>
-                      <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
-                        <button onClick={() => startEdit(note)} className="p-1 rounded text-muted-foreground/60 hover:text-foreground/60"><Pencil className="h-2.5 w-2.5" /></button>
-                        <button onClick={() => deleteNote(note.id)} className="p-1 rounded text-muted-foreground/60 hover:text-red-400"><Trash2 className="h-2.5 w-2.5" /></button>
+                      <div className="flex items-center gap-0.5 opacity-60 group-hover:opacity-100 transition-opacity shrink-0">
+                        <button onClick={() => startEdit(note)} aria-label="Edit note" className="p-2 rounded text-muted-foreground/60 hover:text-foreground/60"><Pencil className="h-3.5 w-3.5" /></button>
+                        <button onClick={() => deleteNote(note.id)} aria-label="Delete note" className="p-2 rounded text-muted-foreground/60 hover:text-red-400"><Trash2 className="h-3.5 w-3.5" /></button>
                       </div>
                     </div>
                   )}
@@ -2740,10 +2740,10 @@ function ClarityTab({ goalTitle, career }: { goalTitle: string | null; career: C
                         {/* Delete — top-right, appears on hover */}
                         <button
                           onClick={() => deleteAction(a.id)}
-                          className="absolute top-1.5 right-1.5 opacity-0 group-hover:opacity-100 text-muted-foreground/65 hover:text-rose-400 transition-all"
+                          className="absolute top-1 right-1 p-1.5 opacity-60 group-hover:opacity-100 text-muted-foreground/65 hover:text-rose-400 transition-all"
                           aria-label="Delete step"
                         >
-                          <X className="h-2.5 w-2.5" />
+                          <X className="h-3.5 w-3.5" />
                         </button>
 
                         {/* Status toggle */}
