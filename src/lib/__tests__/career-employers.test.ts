@@ -35,6 +35,34 @@ describe("country-localised employers", () => {
     expect(hasCareerEmployers("doctor", "HEALTHCARE_LIFE_SCIENCES", "Italy")).toBe(false);
   });
 
+  it("phase-2 realism corrects professional roles mis-served by the category fallback", () => {
+    // A vet must NOT show a hospital; a fashion designer must NOT show a broadcaster;
+    // an auditor must NOT show DNB/Equinor — these were the category-fallback mismatches.
+    const vet = getCareerEmployers("veterinarian", "HEALTHCARE_LIFE_SCIENCES").map((e) => e.name).join(" ");
+    expect(vet).not.toMatch(/universitetssykehus|Haukeland|St\. Olavs/);
+    expect(vet).toMatch(/AniCura|Evidensia|Mattilsynet|klinikk/i);
+
+    const fashion = getCareerEmployers("fashion-designer", "CREATIVE_MEDIA").map((e) => e.name).join(" ");
+    expect(fashion).not.toMatch(/NRK|Schibsted|TV 2/);
+    expect(fashion).toMatch(/Holzweiler|Helly Hansen|Varner|Norrøna|self-employed/i);
+
+    const auditor = getCareerEmployers("auditor", "FINANCE_BANKING").map((e) => e.name).join(" ");
+    expect(auditor).toMatch(/PwC|EY|Deloitte|KPMG|BDO/);
+  });
+
+  it("every phase-2 realism employer is well-formed (name/industry/size; valid https link when present)", () => {
+    for (const id of ["veterinarian", "fashion-designer", "auditor", "real-estate-agent", "sports-journalist"]) {
+      const list = getCareerEmployers(id, undefined);
+      expect(list.length).toBeGreaterThan(0);
+      for (const e of list) {
+        expect(e.name).toBeTruthy();
+        expect(e.industry).toBeTruthy();
+        expect(e.size).toBeTruthy();
+        if (e.careersUrl) expect(e.careersUrl).toMatch(/^https:\/\//);
+      }
+    }
+  });
+
   it("realism overrides win over the coarse category fallback for trade/service roles", () => {
     // A welder must NOT show oil/energy majors; a hairdresser must NOT show hotels;
     // a taxi driver must NOT show freight/postal — these were the broken defaults.
