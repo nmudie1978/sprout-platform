@@ -11,8 +11,10 @@
  */
 
 import type { Career, CareerCategory } from '@/lib/career-pathways';
+import { inferEducationRoute } from '@/lib/career-pathways';
 // Pure, catalog-free resolvers — keeps this module out of the radar bundle.
 import { workSettingFor, peopleIntensityFor } from '@/lib/matching/lookups';
+import { resolveTrainingYears } from '@/lib/compare/key-facts';
 
 export type FitDimensionId =
   | 'creativity'
@@ -49,14 +51,14 @@ const STRUCTURE_KEYWORDS = [
   'process', 'maintain', 'regulat', 'policy',
 ];
 
-const ACADEMIC_KEYWORDS = [
-  'phd', 'doctor', 'master', 'research', 'theory', 'analyse', 'analys',
-  'science', 'mathemat', 'engineer', 'medic',
-];
 
+// Strict — only words that genuinely imply being outside. Ambiguous terms
+// (site, field, travel, mission, patrol) were removed: they over-fired on
+// indoor desk/clinical roles. Genuinely-outdoor careers carry an "outdoors"
+// work-setting, which is the primary signal.
 const OUTDOOR_KEYWORDS = [
-  'outdoor', 'site', 'field', 'wild', 'farm', 'forest', 'sea',
-  'mountain', 'patrol', 'climb', 'travel', 'rescue', 'mission',
+  'outdoor', 'outdoors', 'wilderness', 'farm', 'forest', 'offshore',
+  'marine', 'mountain', 'glacier', 'trail', 'fieldwork', 'open air',
 ];
 
 function countKeywordHits(haystack: string, keywords: string[]): number {
@@ -104,26 +106,38 @@ function scoreVariety(career: Career, text: string): number {
   return clamp(s);
 }
 
-function scoreAcademic(career: Career, text: string): number {
-  let s = 1;
-  const path = career.educationPath.toLowerCase();
-  if (path.includes('phd') || path.includes('doctor')) s += 4;
-  else if (path.includes('master')) s += 3;
-  else if (path.includes('bachelor')) s += 2;
-  else if (path.includes('vocational') || path.includes('apprentice') || path.includes('fagbrev')) s += 1;
-  else if (path.includes('self-taught') || path.includes('no formal')) s += 0;
-  s += Math.min(1, countKeywordHits(text, ACADEMIC_KEYWORDS));
+function scoreAcademic(career: Career): number {
+  // Drive Academic off the actual training route + length, not literal
+  // "bachelor/master" keywords — a surgeon's path reads "Medical Degree +
+  // Specialisation" (no such keyword) yet is the most academic of all.
+  const route = inferEducationRoute(career);
+  const years = resolveTrainingYears(career);
+  let s: number;
+  if (route === 'on-the-job') s = 1;
+  else if (route === 'vocational') s = 2;
+  else if (route === 'mixed') s = 3;
+  else s = 4; // university
+  if (years != null) {
+    if (years >= 8) s = 5; // long professional / medical / doctoral
+    else if (years >= 5) s = Math.max(s, 4);
+    else if (years <= 1) s = Math.min(s, 1);
+  }
+  // Doctoral / specialist study is unambiguously top of the scale.
+  if (/\b(phd|doctorate)\b|profesjonsstudium|specialis|fellowship|residency/i.test(career.educationPath))
+    s = 5;
   return clamp(s);
 }
 
 function scoreOutdoor(career: Career, cat: CareerCategory | undefined, text: string): number {
+  // Outdoor work is genuinely rare. Only an outdoors work-setting (or an
+  // explicit outdoor signal) should lift it — being "hands-on" indoors
+  // (surgery, welding, a lab, a kitchen) is NOT outdoor work.
   const setting = workSettingFor(career, cat);
-  let s = 0;
-  if (setting === 'outdoors') s += 5;
-  else if (setting === 'hands-on') s += 2;
-  else if (setting === 'mixed') s += 2;
-  else if (setting === 'creative') s += 1;
-  s += Math.min(2, countKeywordHits(text, OUTDOOR_KEYWORDS));
+  if (setting === 'outdoors') return 5;
+  let s = countKeywordHits(text, OUTDOOR_KEYWORDS);
+  // A "mixed" setting may include some field/site time, but no more than a hint
+  // unless the text actually says so.
+  if (setting === 'mixed') s = Math.max(s, 1);
   return clamp(s);
 }
 
@@ -164,7 +178,7 @@ export function getFitDimensions(
     {
       id: 'academic',
       label: 'Academic',
-      score: scoreAcademic(career, text),
+      score: scoreAcademic(career),
       highMeans: 'Long study, deep theory, formal qualifications.',
     },
     {

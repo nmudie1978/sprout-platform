@@ -135,9 +135,19 @@ const MEDICAL_TRAINING_YEARS: Record<string, number> = {
   "veterinary-assistant": 2,
 };
 
+/**
+ * Resolved total years of training (Norway). Curated medical estimate wins;
+ * otherwise the longest year-count parsed from the education path; null when
+ * neither is available. Shared so the Compare "Academic" feel-bar matches the
+ * "To qualify" fact.
+ */
+export function resolveTrainingYears(career: Career): number | null {
+  return MEDICAL_TRAINING_YEARS[career.id] ?? qualifyYears(career);
+}
+
 export function getKeyFacts(career: Career): KeyFacts {
   const route = inferEducationRoute(career);
-  const years = MEDICAL_TRAINING_YEARS[career.id] ?? qualifyYears(career);
+  const years = resolveTrainingYears(career);
   const routeLabel = ROUTE_LABEL[route] ?? 'Varies';
   const qualify =
     route === 'on-the-job'
