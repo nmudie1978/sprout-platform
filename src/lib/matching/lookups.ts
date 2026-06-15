@@ -16,6 +16,11 @@ import type {
   EntryRoute,
   DiscoveryPreferences,
 } from "@/lib/career-pathways";
+import {
+  AUDIT_WORK_SETTING,
+  AUDIT_PEOPLE_INTENSITY,
+  AUDIT_SECTOR,
+} from "./setting-overrides-audit";
 
 export const CATEGORY_SECTOR_DEFAULTS: Partial<Record<CareerCategory, "public" | "private" | "mixed">> = {
   HEALTHCARE_LIFE_SCIENCES: "public",
@@ -87,6 +92,9 @@ export const PEOPLE_INTENSITY_DEFAULTS: Record<CareerCategory, PeopleIntensity> 
 };
 
 export const WORK_SETTING_OVERRIDES: Record<string, WorkSetting> = {
+  // Per-career corrections from the 2026-06-15 data-quality sweep. Listed first
+  // so any hand-curated entry below still takes precedence on conflict.
+  ...AUDIT_WORK_SETTING,
   // Tech that is genuinely creative
   "ux-designer": "creative",
   "frontend-developer": "creative",
@@ -110,6 +118,9 @@ export const WORK_SETTING_OVERRIDES: Record<string, WorkSetting> = {
 };
 
 export const PEOPLE_INTENSITY_OVERRIDES: Record<string, PeopleIntensity> = {
+  // Per-career corrections from the 2026-06-15 data-quality sweep (hand-curated
+  // entries below win on conflict).
+  ...AUDIT_PEOPLE_INTENSITY,
   // Solo/low-people tech roles
   "machine-learning-engineer": "low",
   "data-scientist": "low",
@@ -490,5 +501,6 @@ export function sectorFor(
   category: CareerCategory | null | undefined,
 ): "public" | "private" | "mixed" {
   if (career?.sector) return career.sector;
+  if (career && AUDIT_SECTOR[career.id]) return AUDIT_SECTOR[career.id];
   return (category && CATEGORY_SECTOR_DEFAULTS[category]) ?? "mixed";
 }
