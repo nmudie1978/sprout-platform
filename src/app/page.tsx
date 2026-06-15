@@ -176,13 +176,25 @@ export default async function LandingPage() {
                     {t('landing.hero.solution')}
                   </p>
                 </FadeReveal>
+                <FadeReveal delay={2000}>
+                  <p className="text-base sm:text-[17px] text-neutral-300 leading-relaxed">
+                    {t('landing.hero.missing')}
+                  </p>
+                </FadeReveal>
               </div>
 
               {/* Earned emotional payoff — the moment, placed AFTER the problem
                   so the reader has felt the tension and the quote lands. */}
-              <FadeReveal delay={2100} className="mb-10 sm:mb-12">
+              <FadeReveal delay={2300} className="mb-6 sm:mb-7">
                 <p className="border-l-2 border-emerald-500/50 pl-4 text-lg sm:text-xl font-medium text-white/90 leading-snug max-w-lg">
                   {t('landing.hero.payoff')}
+                </p>
+              </FadeReveal>
+
+              {/* Closer — calm three-beat sign-off */}
+              <FadeReveal delay={2500}>
+                <p className="text-base sm:text-lg font-medium text-neutral-200">
+                  {t('landing.hero.closer')}
                 </p>
               </FadeReveal>
             </div>
