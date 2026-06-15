@@ -12,7 +12,7 @@
  */
 
 import { describe, it, expect } from "vitest";
-import { getSpecialisms, hasSpecialisms } from "../career-specialisms";
+import { getSpecialisms, hasSpecialisms, getFoundation } from "../career-specialisms";
 import { getCareerById } from "../career-pathways";
 
 describe("career-specialisms", () => {
@@ -73,5 +73,11 @@ describe("career-specialisms", () => {
         expect(branch.specialisationStep.length).toBeGreaterThan(0);
       }
     }
+  });
+
+  it("returns a shared foundation for seeded careers, null otherwise", () => {
+    expect(getFoundation("psychologist")).toMatch(/psychology/i);
+    expect(getFoundation("forensic-scientist")).toBeTruthy();
+    expect(getFoundation("definitely-not-a-career")).toBeNull();
   });
 });
