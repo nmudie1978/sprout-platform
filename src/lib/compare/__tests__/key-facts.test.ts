@@ -38,6 +38,13 @@ describe('getKeyFacts', () => {
     expect(['Predictable hours', 'Manageable', 'Demanding']).toContain(f.workLifeLabel);
   });
 
+it("uses curated total-training years for medical roles, overriding the degree-only figure", () => {
+    // surgeon educationPath mentions a 6-year degree, but the realistic total
+    // (degree + LIS1 + specialty) is curated — must show the curated figure.
+    const f = getKeyFacts(base({ id: "surgeon", title: "Surgeon", educationPath: "Medical Degree (6 years) + Surgical Specialisation (6+ years)" }));
+    expect(f.qualify).toMatch(/~13 yrs · University/);
+  });
+
   it('labels a vocational, no-year path as the route only', () => {
     const f = getKeyFacts(base({ educationPath: 'Fagbrev (vocational) + apprenticeship', avgSalary: '420,000 - 600,000 kr/year' }));
     expect(f.qualify).toMatch(/Vocational/);
