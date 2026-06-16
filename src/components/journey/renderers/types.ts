@@ -1,5 +1,6 @@
 import type { Journey, JourneyItem } from '@/lib/journey/career-journey-types';
 import type { NodeOverlayData, OverlayLayerId } from '@/lib/journey/overlay-types';
+import type { RoleEvolutionTail } from '@/lib/journey/role-evolution-tail';
 
 export interface CardDataSummary {
   status: 'not_started' | 'in_progress' | 'done';
@@ -49,4 +50,13 @@ export interface RendererProps {
   showYears?: boolean;
   /** User's approximate birth year — current calendar year minus userAge. */
   birthYear?: number;
+  /**
+   * Deterministic "how the role grows from here" coda, derived from the
+   * career's progression data. When present, the Winding Road continues past
+   * the last milestone into the core → senior evolution (branching when the
+   * career diverges into specialisms / tracks). Absent for careers with no
+   * progression data — the roadmap then renders exactly as before. Not counted
+   * against the ≤6 step cap (it's a projection, not a journey step).
+   */
+  evolutionTail?: RoleEvolutionTail | null;
 }

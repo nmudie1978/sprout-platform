@@ -13,6 +13,11 @@ import { getDemoJourneys } from '@/lib/journey/demo-journeys';
 import { type JourneyItem } from '@/lib/journey/career-journey-types';
 import { WindingRoadRenderer } from '@/components/journey/renderers';
 import { TimelineDetailDialog } from '@/components/journey/timeline/timeline-detail-dialog';
+import { deriveRoleEvolutionTail, type RoleEvolutionTail } from '@/lib/journey/role-evolution-tail';
+
+// Forced sample codas so the dev harness always shows both shapes.
+const FORKED_TAIL: RoleEvolutionTail = deriveRoleEvolutionTail('psychologist', 23)!;
+const LINEAR_TAIL: RoleEvolutionTail = deriveRoleEvolutionTail('solicitor', 24)!;
 
 export default function JourneyRenderersPage() {
   const journeys = useMemo(() => getDemoJourneys(), []);
@@ -21,6 +26,8 @@ export default function JourneyRenderersPage() {
   const [dialogOpen, setDialogOpen] = useState(false);
 
   const journey = journeys.find((j) => j.id === selectedJourneyId) ?? journeys[0];
+  // Short journey for the coda demos so the evolution tail sits near the left.
+  const shortJourney = { ...journey, items: journey.items.slice(0, 2) };
 
   const handleItemClick = (item: JourneyItem) => {
     setSelectedItem(item);
@@ -59,6 +66,26 @@ export default function JourneyRenderersPage() {
         </CardHeader>
         <CardContent className="overflow-auto" style={{ maxHeight: 600 }}>
           <WindingRoadRenderer journey={journey} onItemClick={handleItemClick} />
+        </CardContent>
+      </Card>
+
+      <Card className="mt-6 overflow-hidden">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-base">+ Role-evolution coda — FORKED (psychologist)</CardTitle>
+          <p className="text-xs text-muted-foreground">core → decision → specialisms</p>
+        </CardHeader>
+        <CardContent className="overflow-auto" style={{ maxHeight: 600 }}>
+          <WindingRoadRenderer journey={shortJourney} onItemClick={handleItemClick} evolutionTail={FORKED_TAIL} />
+        </CardContent>
+      </Card>
+
+      <Card className="mt-6 overflow-hidden">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-base">+ Role-evolution coda — LINEAR (solicitor)</CardTitle>
+          <p className="text-xs text-muted-foreground">core → single senior node</p>
+        </CardHeader>
+        <CardContent className="overflow-auto" style={{ maxHeight: 600 }}>
+          <WindingRoadRenderer journey={shortJourney} onItemClick={handleItemClick} evolutionTail={LINEAR_TAIL} />
         </CardContent>
       </Card>
 
