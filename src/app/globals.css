@@ -4,24 +4,24 @@
 
 @layer base {
   :root {
-    /* ── Light mode theme tokens — Cool Stone (variant 4) ──
-       A calmer, ~20% darker blue-grey paper that no longer reads
-       washed-out / near-white. Surfaces went cool (hue ~210); the teal
-       brand, achievement gold and semantic hues are retained.
+    /* ── Light mode theme tokens — Indigo Dusk (variant 25) ──
+       A rich, calm blue-purple paper — the deepest cool variant, well
+       below washed-out / near-white. Surfaces went indigo (hue ~243–247);
+       the teal brand, achievement gold and semantic hues are retained.
        No pure-white surfaces, no harsh contrast, no neon.
        Dark mode (.dark) is the app DEFAULT and is left untouched. */
-    --background: 210 12% 87%;          /* Cool Stone — toned blue-grey paper canvas */
-    --foreground: 215 24% 15%;          /* cool primary ink, never harsh black */
-    --card: 210 16% 93%;                /* primary surface, a tonal step up from canvas, NOT pure white */
-    --card-foreground: 215 24% 15%;
-    --popover: 210 16% 93%;
-    --popover-foreground: 215 24% 15%;
+    --background: 245 24% 82%;          /* Indigo Dusk — toned blue-purple paper canvas */
+    --foreground: 246 28% 15%;          /* deep indigo ink, never harsh black */
+    --card: 247 28% 88%;                /* primary surface, a tonal step up from canvas, NOT pure white */
+    --card-foreground: 246 28% 15%;
+    --popover: 247 28% 88%;
+    --popover-foreground: 246 28% 15%;
     --primary: 178 69% 29%;             /* #177D7A — grounded teal brand (retained) */
     --primary-foreground: 0 0% 100%;
-    --secondary: 210 13% 90%;           /* secondary cool-stone surface */
-    --secondary-foreground: 215 24% 15%;
-    --muted: 210 13% 90%;               /* muted cool-stone surface */
-    --muted-foreground: 210 9% 35%;     /* calm secondary text; faint /50–/40 variants stay legible */
+    --secondary: 245 18% 85%;           /* secondary indigo surface */
+    --secondary-foreground: 246 28% 15%;
+    --muted: 245 18% 85%;               /* muted indigo surface */
+    --muted-foreground: 244 14% 32%;    /* calm secondary text; faint /50–/40 variants stay legible */
     --accent: 40 61% 57%;               /* #D4A84F — soft achievement gold highlight (retained) */
     --accent-foreground: 30 30% 18%;    /* warm ink — reads on the gold accent */
     /* Restrained semantic palette — the ONLY non-teal/gold hues allowed.
@@ -32,13 +32,13 @@
     --info: 205 21% 37%;                /* #4A6172 — warm slate (DS "secondary") */
     --destructive: 0 72% 50%;           /* calm danger */
     --destructive-foreground: 0 0% 100%;
-    --border: 210 10% 79%;              /* soft cool-stone border */
-    --input: 210 10% 79%;
+    --border: 243 18% 74%;              /* soft indigo border */
+    --input: 243 18% 74%;
     --ring: 178 69% 29%;
     --radius: 0.75rem;
-    --sidebar: 210 11% 85%;             /* cool-stone sidebar — tuned to the canvas */
-    --sidebar-foreground: 215 24% 15%;
-    --sidebar-border: 210 10% 78%;
+    --sidebar: 243 20% 80%;             /* indigo sidebar — tuned to the canvas */
+    --sidebar-foreground: 246 28% 15%;
+    --sidebar-border: 241 17% 73%;
     /* Glow brand — teal, used by the Glow component in light mode */
     --brand: 178 69% 32%;
     --brand-foreground: 178 60% 38%;
