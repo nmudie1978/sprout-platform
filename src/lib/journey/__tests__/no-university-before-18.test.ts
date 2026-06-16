@@ -37,10 +37,11 @@ describe('no-university-before-18 rule', () => {
     const begin = out.items.find((it) => /begin\s+university/i.test(it.title));
     const apply = out.items.find((it) => /apply\s+for\s+university/i.test(it.title));
     expect(begin?.startAge).toBeGreaterThanOrEqual(HIGHER_EDUCATION_MIN_AGE);
-    expect(apply?.startAge).toBeGreaterThanOrEqual(HIGHER_EDUCATION_MIN_AGE);
+    // Apply is merged into Begin (slim roadmap) — no standalone apply step.
+    expect(apply).toBeUndefined();
   });
 
-  it('Apply and Begin pair stay at the same age after the bump', () => {
+  it('merges the Apply step into Begin and bumps the combined step to 18', () => {
     const j = makeJourney([
       { id: '1', stage: 'education', title: 'Apply for university studies', startAge: 16, isMilestone: true },
       { id: '2', stage: 'education', title: 'Begin university studies', startAge: 16, endAge: 19, isMilestone: false },
@@ -48,7 +49,8 @@ describe('no-university-before-18 rule', () => {
     const out = sanitizeJourney(j);
     const apply = out.items.find((it) => /apply\s+for\s+university/i.test(it.title));
     const begin = out.items.find((it) => /begin\s+university/i.test(it.title));
-    expect(apply?.startAge).toBe(begin?.startAge);
+    // Apply is merged into Begin (slim roadmap) — no standalone apply step.
+    expect(apply).toBeUndefined();
     expect(begin?.startAge).toBeGreaterThanOrEqual(HIGHER_EDUCATION_MIN_AGE);
   });
 
