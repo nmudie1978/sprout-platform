@@ -56,17 +56,22 @@ describe("AiFutureOfWorkSection", () => {
     expect(screen.getByText(/Safety-focused; strong at writing/)).toBeInTheDocument();
   });
 
-  it("renders exactly two careers-in-AI videos (reduced set)", () => {
+  it("renders the careers-in-AI videos (expanded set across roles)", () => {
     render(<AiFutureOfWorkSection />);
     expect(screen.getByText("Watch: careers in AI")).toBeInTheDocument();
     expect(
       screen.getByText("Life as an AI Researcher & Machine Learning Engineer"),
     ).toBeInTheDocument();
-    expect(screen.getByText("Day in the Life of an AI Engineer")).toBeInTheDocument();
-    // The third video was trimmed.
+    // AI engineer (two real videos share this exact title), ML engineer & data scientist.
     expect(
-      screen.queryByText("A Practical Guide to Becoming an AI Engineer"),
-    ).not.toBeInTheDocument();
+      screen.getAllByText("Day in the Life of an AI Engineer").length,
+    ).toBeGreaterThan(0);
+    expect(
+      screen.getByText("A Day in the Life of a Machine Learning Engineer (Berlin)"),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText("Day in the Life of a Data Scientist in San Francisco"),
+    ).toBeInTheDocument();
   });
 
   it("opens the examples modal (incl. RAG) from the first card", () => {
