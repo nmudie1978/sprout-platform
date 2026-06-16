@@ -113,11 +113,11 @@ describe("physically-demanding career additions (2026-06-15)", () => {
 });
 
 describe("country-localised employers", () => {
-  it("employersApplyTo: true for Norway/Spain/unknown, false for countries without data", () => {
-    for (const c of ["Norway", "NO", "no", "Norge", "Spain", "ES", "España"]) expect(employersApplyTo(c)).toBe(true);
+  it("employersApplyTo: true for Norway/Spain/Sweden/Denmark/unknown, false otherwise", () => {
+    for (const c of ["Norway", "NO", "no", "Norge", "Spain", "ES", "España", "Sweden", "SE", "Sverige", "Denmark", "DK", "Danmark"]) expect(employersApplyTo(c)).toBe(true);
     expect(employersApplyTo(undefined)).toBe(true); // app default is Norway
     expect(employersApplyTo(null)).toBe(true);
-    for (const c of ["Sweden", "SE", "Italy", "IT"]) expect(employersApplyTo(c)).toBe(false);
+    for (const c of ["Italy", "IT", "France"]) expect(employersApplyTo(c)).toBe(false);
   });
 
   it("returns Spanish employers (not Norwegian) for a Spain user", () => {
@@ -136,9 +136,18 @@ describe("country-localised employers", () => {
     expect(hasCareerEmployers("software-developer", "TECHNOLOGY_IT", "NO")).toBe(true);
   });
 
+  it("returns Swedish / Danish employers for SE / DK users", () => {
+    const se = getCareerEmployers("software-developer", "TECHNOLOGY_IT", "Sweden").map((e) => e.name).join(" ");
+    expect(se).toMatch(/Ericsson|Spotify|Tietoevry/);
+    expect(se).not.toMatch(/Bekk|Visma|Telenor/);
+    const dk = getCareerEmployers("doctor", "HEALTHCARE_LIFE_SCIENCES", "Denmark").map((e) => e.name).join(" ");
+    expect(dk).toMatch(/Rigshospitalet|Region Hovedstaden|Novo Nordisk/);
+    expect(hasCareerEmployers("nurse", "HEALTHCARE_LIFE_SCIENCES", "DK")).toBe(true);
+  });
+
   it("returns [] for a country we have no employer data for", () => {
-    expect(getCareerEmployers("software-developer", "TECHNOLOGY_IT", "Sweden")).toEqual([]);
-    expect(hasCareerEmployers("doctor", "HEALTHCARE_LIFE_SCIENCES", "Italy")).toBe(false);
+    expect(getCareerEmployers("software-developer", "TECHNOLOGY_IT", "Italy")).toEqual([]);
+    expect(hasCareerEmployers("doctor", "HEALTHCARE_LIFE_SCIENCES", "France")).toBe(false);
   });
 
   it("phase-2 realism corrects professional roles mis-served by the category fallback", () => {
@@ -406,9 +415,9 @@ describe("emergency / law-enforcement employers", () => {
     expect(getCareerEmployers("corrections-officer", "PUBLIC_SERVICE_SAFETY", "Spain")[0].name).toMatch(/Penitenciarias/);
   });
 
-  it("every safety employer has a valid https link, both countries", () => {
-    for (const c of ["police-officer", "firefighter", "coast-guard-officer", "immigration-officer"]) {
-      for (const country of ["Norway", "Spain"]) {
+  it("every safety employer has a valid https link, all four countries", () => {
+    for (const c of ["police-officer", "firefighter", "coast-guard-officer", "immigration-officer", "customs-officer", "corrections-officer"]) {
+      for (const country of ["Norway", "Spain", "Sweden", "Denmark"]) {
         const e = getCareerEmployers(c, "PUBLIC_SERVICE_SAFETY", country);
         expect(e.length).toBeGreaterThan(0);
         for (const emp of e) expect(emp.careersUrl as string).toMatch(/^https:\/\//);

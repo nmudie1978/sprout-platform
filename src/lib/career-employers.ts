@@ -691,11 +691,13 @@ const TELCO_CONSULTING_CAREERS = new Set([
   'telco-pmo-analyst',
 ]);
 
-function employerCountry(country?: string | null): 'NO' | 'ES' | null {
+function employerCountry(country?: string | null): 'NO' | 'ES' | 'SE' | 'DK' | null {
   if (!country) return 'NO'; // unknown → app default is Norway
   const c = country.trim().toLowerCase();
   if (c === 'no' || c === 'norway' || c === 'norge') return 'NO';
   if (c === 'es' || c === 'spain' || c === 'españa' || c === 'espana') return 'ES';
+  if (c === 'se' || c === 'sweden' || c === 'sverige') return 'SE';
+  if (c === 'dk' || c === 'denmark' || c === 'danmark') return 'DK';
   return null;
 }
 
@@ -1034,6 +1036,288 @@ function getAiRoleEmployers(careerId: string): Employer[] | null {
   );
 }
 
+/**
+ * Sweden / Denmark institutions for the emergency / law-enforcement careers —
+ * a parallel to SAFETY_EMPLOYERS (which holds NO + ES). Same careers, same
+ * "real institution, not the generic public-sector list" rule. Stable
+ * main-site links.
+ */
+const SAFETY_EMPLOYERS_SE_DK: Record<string, { SE: Employer[]; DK: Employer[] }> = {
+  'police-officer': {
+    SE: [{ name: 'Polismyndigheten', industry: 'Police', size: '36,000+', careersUrl: 'https://polisen.se/jobb-och-utbildning/' }],
+    DK: [{ name: 'Politiet (Rigspolitiet)', industry: 'Police', size: '16,000+', careersUrl: 'https://politi.dk/job-i-politiet' }],
+  },
+  firefighter: {
+    SE: [
+      { name: 'Storstockholms brandförsvar', industry: 'Fire & Rescue', size: '900+', careersUrl: 'https://www.storstockholm.brand.se' },
+      { name: 'MSB (Myndigheten för samhällsskydd och beredskap)', industry: 'Civil Protection', size: '1,000+', careersUrl: 'https://www.msb.se' },
+    ],
+    DK: [
+      { name: 'Hovedstadens Beredskab', industry: 'Fire & Rescue', size: '800+', careersUrl: 'https://www.hbr.dk' },
+      { name: 'Beredskabsstyrelsen', industry: 'Civil Protection', size: '600+', careersUrl: 'https://www.brs.dk' },
+    ],
+  },
+  'customs-officer': {
+    SE: [{ name: 'Tullverket', industry: 'Customs', size: '2,400+', careersUrl: 'https://www.tullverket.se' }],
+    DK: [{ name: 'Toldstyrelsen', industry: 'Customs', size: '2,500+', careersUrl: 'https://www.toldst.dk' }],
+  },
+  'corrections-officer': {
+    SE: [{ name: 'Kriminalvården', industry: 'Correctional Service', size: '15,000+', careersUrl: 'https://www.kriminalvarden.se' }],
+    DK: [{ name: 'Kriminalforsorgen', industry: 'Prison & Probation', size: '4,500+', careersUrl: 'https://www.kriminalforsorgen.dk' }],
+  },
+  'probation-officer': {
+    SE: [{ name: 'Kriminalvården (frivård)', industry: 'Probation Service', size: '15,000+', careersUrl: 'https://www.kriminalvarden.se' }],
+    DK: [{ name: 'Kriminalforsorgen', industry: 'Prison & Probation', size: '4,500+', careersUrl: 'https://www.kriminalforsorgen.dk' }],
+  },
+  'coast-guard-officer': {
+    SE: [{ name: 'Kustbevakningen', industry: 'Coast Guard', size: '800+', careersUrl: 'https://www.kustbevakningen.se' }],
+    DK: [{ name: 'Søværnet (Forsvaret)', industry: 'Navy / Coast Guard', size: '20,000+', careersUrl: 'https://www.forsvaret.dk/da/job/' }],
+  },
+  'immigration-officer': {
+    SE: [{ name: 'Migrationsverket', industry: 'Immigration', size: '6,000+', careersUrl: 'https://www.migrationsverket.se' }],
+    DK: [
+      { name: 'Udlændingestyrelsen', industry: 'Immigration', size: '1,200+', careersUrl: 'https://www.nyidanmark.dk' },
+      { name: 'SIRI (Styrelsen for International Rekruttering og Integration)', industry: 'Immigration', size: '600+', careersUrl: 'https://www.nyidanmark.dk' },
+    ],
+  },
+  'civil-defence-officer': {
+    SE: [{ name: 'MSB (Myndigheten för samhällsskydd och beredskap)', industry: 'Civil Protection', size: '1,000+', careersUrl: 'https://www.msb.se' }],
+    DK: [{ name: 'Beredskabsstyrelsen', industry: 'Civil Protection', size: '600+', careersUrl: 'https://www.brs.dk' }],
+  },
+};
+
+/**
+ * Sweden — sector-level employers per CareerCategory (mirrors
+ * CATEGORY_EMPLOYERS_ES). A Sweden user sees Volvo / Ericsson / SEB rather
+ * than Telenor / DNB. Stable main-site links.
+ */
+const CATEGORY_EMPLOYERS_SE: Record<string, Employer[]> = {
+  HEALTHCARE_LIFE_SCIENCES: [
+    { name: 'Karolinska Universitetssjukhuset', industry: 'Public Healthcare', size: '15,000+', careersUrl: 'https://www.karolinska.se' },
+    { name: 'Region Stockholm', industry: 'Regional Health', size: '45,000+', careersUrl: 'https://www.regionstockholm.se' },
+    { name: 'Capio', industry: 'Private Healthcare', size: '12,000+', careersUrl: 'https://www.capio.se' },
+    { name: 'AstraZeneca', industry: 'Pharmaceuticals', size: '10,000+ (SE)', careersUrl: 'https://www.astrazeneca.com/careers.html' },
+  ],
+  EDUCATION_TRAINING: [
+    { name: 'Stockholms stad (utbildning)', industry: 'Public Education', size: '40,000+', careersUrl: 'https://www.stockholm.se' },
+    { name: 'AcadeMedia', industry: 'Private Education', size: '18,000+', careersUrl: 'https://www.academedia.se' },
+    { name: 'Lunds universitet', industry: 'Higher Education', size: '8,000+', careersUrl: 'https://www.lu.se' },
+    { name: 'Karolinska Institutet', industry: 'Higher Education', size: '5,000+', careersUrl: 'https://ki.se' },
+  ],
+  TECHNOLOGY_IT: [
+    { name: 'Ericsson', industry: 'Technology / Telecom', size: '100,000+', careersUrl: 'https://www.ericsson.com/careers' },
+    { name: 'Spotify', industry: 'Technology / Music', size: '9,000+', careersUrl: 'https://www.lifeatspotify.com' },
+    { name: 'Tietoevry', industry: 'IT Services', size: '24,000+', careersUrl: 'https://www.tietoevry.com' },
+    { name: 'Knowit', industry: 'IT Consulting', size: '4,000+', careersUrl: 'https://www.knowit.se' },
+  ],
+  ARTIFICIAL_INTELLIGENCE: [
+    { name: 'Ericsson Research', industry: 'AI / Telecom', size: '100,000+', careersUrl: 'https://www.ericsson.com/careers' },
+    { name: 'Spotify', industry: 'AI / Music Tech', size: '9,000+', careersUrl: 'https://www.lifeatspotify.com' },
+    { name: 'King', industry: 'AI / Games', size: '2,000+', careersUrl: 'https://www.king.com' },
+    { name: 'Sana Labs', industry: 'AI', size: '300+', careersUrl: 'https://www.sanalabs.com' },
+  ],
+  BUSINESS_MANAGEMENT: [
+    { name: 'IKEA', industry: 'Retail', size: '160,000+', careersUrl: 'https://www.ikea.com/global/en/careers/' },
+    { name: 'H&M Group', industry: 'Retail', size: '100,000+', careersUrl: 'https://career.hm.com' },
+    { name: 'Volvo Group', industry: 'Manufacturing', size: '100,000+', careersUrl: 'https://www.volvogroup.com/en/careers.html' },
+    { name: 'Ericsson', industry: 'Technology', size: '100,000+', careersUrl: 'https://www.ericsson.com/careers' },
+  ],
+  FINANCE_BANKING: [
+    { name: 'SEB', industry: 'Banking', size: '17,000+', careersUrl: 'https://seb.se' },
+    { name: 'Swedbank', industry: 'Banking', size: '17,000+', careersUrl: 'https://www.swedbank.se' },
+    { name: 'Handelsbanken', industry: 'Banking', size: '12,000+', careersUrl: 'https://www.handelsbanken.se' },
+    { name: 'Nordea', industry: 'Banking', size: '29,000+', careersUrl: 'https://www.nordea.com' },
+  ],
+  SALES_MARKETING: [
+    { name: 'H&M Group', industry: 'Retail', size: '100,000+', careersUrl: 'https://career.hm.com' },
+    { name: 'IKEA', industry: 'Retail', size: '160,000+', careersUrl: 'https://www.ikea.com/global/en/careers/' },
+    { name: 'ICA Gruppen', industry: 'Retail / FMCG', size: '23,000+', careersUrl: 'https://www.ica.se' },
+    { name: 'Telia Company', industry: 'Telecom', size: '20,000+', careersUrl: 'https://www.telia.se' },
+  ],
+  MANUFACTURING_ENGINEERING: [
+    { name: 'Volvo Group', industry: 'Automotive', size: '100,000+', careersUrl: 'https://www.volvogroup.com/en/careers.html' },
+    { name: 'Scania', industry: 'Automotive', size: '57,000+', careersUrl: 'https://www.scania.com/group/en/home/careers.html' },
+    { name: 'ABB', industry: 'Industrial Automation', size: '105,000+', careersUrl: 'https://careers.abb' },
+    { name: 'Sandvik', industry: 'Engineering', size: '40,000+', careersUrl: 'https://www.sandvik.com' },
+  ],
+  LOGISTICS_TRANSPORT: [
+    { name: 'PostNord', industry: 'Postal / Logistics', size: '28,000+', careersUrl: 'https://www.postnord.se' },
+    { name: 'SJ', industry: 'Rail', size: '5,000+', careersUrl: 'https://www.sj.se' },
+    { name: 'DB Schenker', industry: 'Logistics', size: '4,000+ (SE)', careersUrl: 'https://www.dbschenker.com/se-sv' },
+    { name: 'DHL', industry: 'Logistics', size: '4,000+ (SE)', careersUrl: 'https://www.dhl.com/se-sv' },
+  ],
+  HOSPITALITY_TOURISM: [
+    { name: 'Scandic Hotels', industry: 'Hotels', size: '18,000+', careersUrl: 'https://www.scandichotels.se' },
+    { name: 'Strawberry', industry: 'Hotels', size: '20,000+', careersUrl: 'https://career.strawberry.no' },
+    { name: 'SAS', industry: 'Aviation', size: '10,000+', careersUrl: 'https://www.sasgroup.net' },
+    { name: 'Elite Hotels of Sweden', industry: 'Hotels', size: '2,000+', careersUrl: 'https://www.elite.se' },
+  ],
+  TELECOMMUNICATIONS: [
+    { name: 'Telia Company', industry: 'Telecom', size: '20,000+', careersUrl: 'https://www.telia.se' },
+    { name: 'Tele2', industry: 'Telecom', size: '4,000+', careersUrl: 'https://www.tele2.se' },
+    { name: 'Telenor Sverige', industry: 'Telecom', size: '2,000+', careersUrl: 'https://www.telenor.se' },
+    { name: 'Tre (Hi3G)', industry: 'Telecom', size: '2,000+', careersUrl: 'https://www.tre.se' },
+  ],
+  CREATIVE_MEDIA: [
+    { name: 'SVT (Sveriges Television)', industry: 'Public Broadcasting', size: '2,500+', careersUrl: 'https://www.svt.se' },
+    { name: 'Sveriges Radio', industry: 'Public Radio', size: '1,800+', careersUrl: 'https://sverigesradio.se' },
+    { name: 'Bonnier', industry: 'Media / Publishing', size: '7,000+', careersUrl: 'https://www.bonnier.com' },
+    { name: 'Viaplay Group', industry: 'Media / Streaming', size: '2,000+', careersUrl: 'https://www.viaplaygroup.com' },
+  ],
+  PUBLIC_SERVICE_SAFETY: [
+    { name: 'Polismyndigheten', industry: 'Police', size: '36,000+', careersUrl: 'https://polisen.se/jobb-och-utbildning/' },
+    { name: 'Stockholms stad', industry: 'Municipal', size: '40,000+', careersUrl: 'https://www.stockholm.se' },
+    { name: 'Försäkringskassan', industry: 'Public Sector', size: '14,000+', careersUrl: 'https://www.forsakringskassan.se' },
+    { name: 'Skatteverket', industry: 'Tax Authority', size: '10,000+', careersUrl: 'https://www.skatteverket.se' },
+  ],
+  MILITARY_DEFENCE: [
+    { name: 'Försvarsmakten', industry: 'Armed Forces', size: '60,000+', careersUrl: 'https://jobb.forsvarsmakten.se' },
+    { name: 'Saab', industry: 'Defence / Aerospace', size: '24,000+', careersUrl: 'https://www.saab.com' },
+    { name: 'FMV', industry: 'Defence Materiel', size: '4,000+', careersUrl: 'https://www.fmv.se' },
+    { name: 'FOI', industry: 'Defence Research', size: '1,000+', careersUrl: 'https://www.foi.se' },
+  ],
+  SPORT_FITNESS: [
+    { name: 'SATS', industry: 'Fitness', size: '11,000+', careersUrl: 'https://www.sats.se' },
+    { name: 'Nordic Wellness', industry: 'Fitness', size: '5,000+', careersUrl: 'https://www.nordicwellness.se' },
+    { name: 'Friskis&Svettis', industry: 'Fitness', size: '6,000+', careersUrl: 'https://www.friskissvettis.se' },
+    { name: 'Riksidrottsförbundet', industry: 'Sport Federation', size: '300+', careersUrl: 'https://www.rf.se' },
+  ],
+  REAL_ESTATE_PROPERTY: [
+    { name: 'Vasakronan', industry: 'Property', size: '300+', careersUrl: 'https://vasakronan.se' },
+    { name: 'Castellum', industry: 'Property', size: '700+', careersUrl: 'https://www.castellum.se' },
+    { name: 'JM', industry: 'Property Developer', size: '2,500+', careersUrl: 'https://www.jm.se' },
+    { name: 'Fastighets AB Balder', industry: 'Property', size: '1,500+', careersUrl: 'https://www.balder.se' },
+  ],
+  SOCIAL_CARE_COMMUNITY: [
+    { name: 'Svenska Röda Korset', industry: 'Humanitarian', size: '2,000+', careersUrl: 'https://www.rodakorset.se' },
+    { name: 'Stockholms Stadsmission', industry: 'Social Care', size: '1,000+', careersUrl: 'https://www.stadsmissionen.se' },
+    { name: 'Attendo', industry: 'Care Services', size: '30,000+', careersUrl: 'https://www.attendo.se' },
+    { name: 'Stockholms stad (socialtjänst)', industry: 'Municipal Care', size: '40,000+', careersUrl: 'https://www.stockholm.se' },
+  ],
+  CONSTRUCTION_TRADES: [
+    { name: 'Skanska', industry: 'Construction', size: '28,000+', careersUrl: 'https://www.skanska.se' },
+    { name: 'NCC', industry: 'Construction', size: '13,000+', careersUrl: 'https://www.ncc.se' },
+    { name: 'Peab', industry: 'Construction', size: '15,000+', careersUrl: 'https://www.peab.se' },
+    { name: 'JM', industry: 'Construction / Property', size: '2,500+', careersUrl: 'https://www.jm.se' },
+  ],
+};
+
+/**
+ * Denmark — sector-level employers per CareerCategory (mirrors
+ * CATEGORY_EMPLOYERS_ES). A Denmark user sees Maersk / Novo Nordisk / Danske
+ * Bank rather than Telenor / DNB. Stable main-site links.
+ */
+const CATEGORY_EMPLOYERS_DK: Record<string, Employer[]> = {
+  HEALTHCARE_LIFE_SCIENCES: [
+    { name: 'Rigshospitalet', industry: 'Public Healthcare', size: '11,000+', careersUrl: 'https://www.rigshospitalet.dk' },
+    { name: 'Region Hovedstaden', industry: 'Regional Health', size: '40,000+', careersUrl: 'https://www.regionh.dk' },
+    { name: 'Novo Nordisk', industry: 'Pharmaceuticals', size: '70,000+', careersUrl: 'https://www.novonordisk.com/careers.html' },
+    { name: 'Lundbeck', industry: 'Pharmaceuticals', size: '5,000+', careersUrl: 'https://www.lundbeck.com' },
+  ],
+  EDUCATION_TRAINING: [
+    { name: 'Københavns Kommune (skole)', industry: 'Public Education', size: '45,000+', careersUrl: 'https://www.kk.dk' },
+    { name: 'Københavns Universitet', industry: 'Higher Education', size: '10,000+', careersUrl: 'https://www.ku.dk' },
+    { name: 'Aarhus Universitet', industry: 'Higher Education', size: '8,000+', careersUrl: 'https://www.au.dk' },
+    { name: 'VIA University College', industry: 'Higher Education', size: '2,100+', careersUrl: 'https://www.via.dk' },
+  ],
+  TECHNOLOGY_IT: [
+    { name: 'Netcompany', industry: 'IT Consulting', size: '8,000+', careersUrl: 'https://www.netcompany.com' },
+    { name: 'KMD', industry: 'IT Services', size: '3,000+', careersUrl: 'https://www.kmd.dk' },
+    { name: 'Systematic', industry: 'Software', size: '1,500+', careersUrl: 'https://systematic.com' },
+    { name: 'Microsoft Development Center Copenhagen', industry: 'Software', size: '800+', careersUrl: 'https://www.microsoft.com/da-dk' },
+  ],
+  ARTIFICIAL_INTELLIGENCE: [
+    { name: 'Netcompany', industry: 'AI / IT', size: '8,000+', careersUrl: 'https://www.netcompany.com' },
+    { name: 'Corti', industry: 'AI / Healthcare', size: '150+', careersUrl: 'https://www.corti.ai' },
+    { name: 'Novo Nordisk', industry: 'AI / Pharma', size: '70,000+', careersUrl: 'https://www.novonordisk.com/careers.html' },
+    { name: 'Microsoft Development Center Copenhagen', industry: 'AI / Software', size: '800+', careersUrl: 'https://www.microsoft.com/da-dk' },
+  ],
+  BUSINESS_MANAGEMENT: [
+    { name: 'A.P. Moller - Maersk', industry: 'Logistics / Shipping', size: '100,000+', careersUrl: 'https://www.maersk.com/careers' },
+    { name: 'Novo Nordisk', industry: 'Pharmaceuticals', size: '70,000+', careersUrl: 'https://www.novonordisk.com/careers.html' },
+    { name: 'Danfoss', industry: 'Engineering', size: '40,000+', careersUrl: 'https://www.danfoss.com' },
+    { name: 'LEGO Group', industry: 'Consumer Goods', size: '28,000+', careersUrl: 'https://www.lego.com/en-us/careers' },
+  ],
+  FINANCE_BANKING: [
+    { name: 'Danske Bank', industry: 'Banking', size: '21,000+', careersUrl: 'https://danskebank.com/careers' },
+    { name: 'Nordea', industry: 'Banking', size: '29,000+', careersUrl: 'https://www.nordea.com' },
+    { name: 'Nykredit', industry: 'Banking / Mortgage', size: '4,000+', careersUrl: 'https://www.nykredit.dk' },
+    { name: 'Tryg', industry: 'Insurance', size: '7,000+', careersUrl: 'https://www.tryg.com' },
+  ],
+  SALES_MARKETING: [
+    { name: 'Salling Group', industry: 'Retail', size: '60,000+', careersUrl: 'https://sallinggroup.com' },
+    { name: 'Carlsberg Group', industry: 'Consumer Goods', size: '40,000+', careersUrl: 'https://www.carlsberggroup.com' },
+    { name: 'LEGO Group', industry: 'Consumer Goods', size: '28,000+', careersUrl: 'https://www.lego.com/en-us/careers' },
+    { name: 'Coloplast', industry: 'Medtech', size: '16,000+', careersUrl: 'https://www.coloplast.com' },
+  ],
+  MANUFACTURING_ENGINEERING: [
+    { name: 'Danfoss', industry: 'Engineering', size: '40,000+', careersUrl: 'https://www.danfoss.com' },
+    { name: 'Grundfos', industry: 'Pumps / Engineering', size: '20,000+', careersUrl: 'https://www.grundfos.com' },
+    { name: 'Vestas', industry: 'Wind Energy', size: '30,000+', careersUrl: 'https://www.vestas.com' },
+    { name: 'Rockwool', industry: 'Building Materials', size: '12,000+', careersUrl: 'https://www.rockwool.com' },
+  ],
+  LOGISTICS_TRANSPORT: [
+    { name: 'A.P. Moller - Maersk', industry: 'Shipping / Logistics', size: '100,000+', careersUrl: 'https://www.maersk.com/careers' },
+    { name: 'DSV', industry: 'Transport / Logistics', size: '75,000+', careersUrl: 'https://www.dsv.com' },
+    { name: 'DSB', industry: 'Rail', size: '7,000+', careersUrl: 'https://www.dsb.dk' },
+    { name: 'PostNord Danmark', industry: 'Postal / Logistics', size: '8,000+', careersUrl: 'https://www.postnord.dk' },
+  ],
+  HOSPITALITY_TOURISM: [
+    { name: 'Scandic Hotels', industry: 'Hotels', size: '4,000+ (DK)', careersUrl: 'https://www.scandichotels.dk' },
+    { name: 'Arp-Hansen Hotel Group', industry: 'Hotels', size: '1,500+', careersUrl: 'https://www.arp-hansen.dk' },
+    { name: 'Tivoli', industry: 'Leisure / Tourism', size: '3,000+', careersUrl: 'https://www.tivoli.dk' },
+    { name: 'SAS', industry: 'Aviation', size: '10,000+', careersUrl: 'https://www.sasgroup.net' },
+  ],
+  TELECOMMUNICATIONS: [
+    { name: 'Nuuday (TDC)', industry: 'Telecom', size: '4,000+', careersUrl: 'https://nuuday.com' },
+    { name: 'Telenor Danmark', industry: 'Telecom', size: '1,500+', careersUrl: 'https://www.telenor.dk' },
+    { name: 'Telia Danmark', industry: 'Telecom', size: '1,000+', careersUrl: 'https://www.telia.dk' },
+    { name: '3 (Hi3G)', industry: 'Telecom', size: '1,000+', careersUrl: 'https://www.3.dk' },
+  ],
+  CREATIVE_MEDIA: [
+    { name: 'DR (Danmarks Radio)', industry: 'Public Broadcasting', size: '3,000+', careersUrl: 'https://www.dr.dk' },
+    { name: 'TV 2 Danmark', industry: 'Broadcasting', size: '1,200+', careersUrl: 'https://tv2.dk' },
+    { name: 'Egmont', industry: 'Media / Publishing', size: '6,600+', careersUrl: 'https://www.egmont.com' },
+    { name: 'JP/Politikens Hus', industry: 'Media / Publishing', size: '2,000+', careersUrl: 'https://www.jppol.dk' },
+  ],
+  PUBLIC_SERVICE_SAFETY: [
+    { name: 'Politiet (Rigspolitiet)', industry: 'Police', size: '16,000+', careersUrl: 'https://politi.dk/job-i-politiet' },
+    { name: 'Københavns Kommune', industry: 'Municipal', size: '45,000+', careersUrl: 'https://www.kk.dk' },
+    { name: 'Skattestyrelsen', industry: 'Tax Authority', size: '7,000+', careersUrl: 'https://www.sktst.dk' },
+    { name: 'Region Hovedstaden', industry: 'Public Sector', size: '40,000+', careersUrl: 'https://www.regionh.dk' },
+  ],
+  MILITARY_DEFENCE: [
+    { name: 'Forsvaret', industry: 'Armed Forces', size: '20,000+', careersUrl: 'https://www.forsvaret.dk/da/job/' },
+    { name: 'Terma', industry: 'Defence / Aerospace', size: '1,800+', careersUrl: 'https://www.terma.com' },
+    { name: 'Forsvarsministeriets Materiel- og Indkøbsstyrelse', industry: 'Defence Materiel', size: '2,000+', careersUrl: 'https://www.fmi.dk' },
+    { name: 'Systematic (Defence)', industry: 'Defence Software', size: '1,500+', careersUrl: 'https://systematic.com' },
+  ],
+  SPORT_FITNESS: [
+    { name: 'Fitness World', industry: 'Fitness', size: '3,000+', careersUrl: 'https://www.fitnessworld.com' },
+    { name: 'SATS', industry: 'Fitness', size: '2,000+ (DK)', careersUrl: 'https://www.sats.dk' },
+    { name: 'Danmarks Idrætsforbund (DIF)', industry: 'Sport Federation', size: '300+', careersUrl: 'https://www.dif.dk' },
+    { name: 'Loop Fitness', industry: 'Fitness', size: '500+', careersUrl: 'https://www.loopfitness.dk' },
+  ],
+  REAL_ESTATE_PROPERTY: [
+    { name: 'Jeudan', industry: 'Property', size: '600+', careersUrl: 'https://www.jeudan.dk' },
+    { name: 'DEAS', industry: 'Property Services', size: '900+', careersUrl: 'https://www.deas.dk' },
+    { name: 'Newsec', industry: 'Property Services', size: '500+', careersUrl: 'https://www.newsec.dk' },
+    { name: 'EDC', industry: 'Estate Agency', size: '1,500+', careersUrl: 'https://www.edc.dk' },
+  ],
+  SOCIAL_CARE_COMMUNITY: [
+    { name: 'Røde Kors', industry: 'Humanitarian', size: '1,500+', careersUrl: 'https://www.rodekors.dk' },
+    { name: 'Kirkens Korshær', industry: 'Social Care', size: '1,000+', careersUrl: 'https://www.kirkenskorshaer.dk' },
+    { name: 'Mødrehjælpen', industry: 'Social Care', size: '300+', careersUrl: 'https://moedrehjaelpen.dk' },
+    { name: 'Københavns Kommune (socialforvaltning)', industry: 'Municipal Care', size: '45,000+', careersUrl: 'https://www.kk.dk' },
+  ],
+  CONSTRUCTION_TRADES: [
+    { name: 'MT Højgaard', industry: 'Construction', size: '4,000+', careersUrl: 'https://www.mthojgaard.dk' },
+    { name: 'Per Aarsleff', industry: 'Construction / Civil', size: '7,000+', careersUrl: 'https://www.aarsleff.com' },
+    { name: 'NCC Danmark', industry: 'Construction', size: '2,000+', careersUrl: 'https://www.ncc.dk' },
+    { name: 'Enemærke & Petersen', industry: 'Construction', size: '1,000+', careersUrl: 'https://eogp.dk' },
+  ],
+};
+
 export function getCareerEmployers(
   careerId: string,
   category?: string | null,
@@ -1057,10 +1341,22 @@ export function getCareerEmployers(
 
   // Emergency / law-enforcement careers → their real institutions (per
   // country), not the generic public-sector list (NAV/Skatteetaten…).
-  if (SAFETY_EMPLOYERS[careerId]) return SAFETY_EMPLOYERS[careerId][ec];
+  const safety = SAFETY_EMPLOYERS[careerId];
+  if (safety) {
+    if (ec === 'NO' || ec === 'ES') return safety[ec];
+    // ec is 'SE' | 'DK' — Nordic institutions live in a parallel map.
+    const nordic = SAFETY_EMPLOYERS_SE_DK[careerId];
+    if (nordic) return nordic[ec];
+  }
 
   if (ec === 'ES') {
     return (category && CATEGORY_EMPLOYERS_ES[category]) ? CATEGORY_EMPLOYERS_ES[category] : [];
+  }
+  if (ec === 'SE') {
+    return (category && CATEGORY_EMPLOYERS_SE[category]) ? CATEGORY_EMPLOYERS_SE[category] : [];
+  }
+  if (ec === 'DK') {
+    return (category && CATEGORY_EMPLOYERS_DK[category]) ? CATEGORY_EMPLOYERS_DK[category] : [];
   }
   // ec === 'NO'
   const curated = getTopEmployers(careerId);
