@@ -63,6 +63,7 @@ import { FreshnessPillAggregate } from '@/components/education-browser/freshness
 import { getRoutesForCareer } from '@/lib/education/routes';
 import { CareerMythBuster } from '@/components/journey/career-myth-buster';
 import { CareerSpecialisms } from '@/components/journey/career-specialisms';
+import { RealityVideos } from '@/components/journey/reality-videos';
 import { hasSpecialisms } from '@/lib/career-specialisms';
 import { TopEmployers } from '@/components/journey/top-employers';
 import { SalaryProgressionLine } from '@/components/journey/salary-progression-line';
@@ -1128,35 +1129,7 @@ function UnderstandTab({
                           </div>
                         );
                       })()}
-                      {realityData.videos.length > 0 && (
-                        <div className="pt-1">
-                          <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground/65 mb-1.5">Real voices</p>
-                          {/* Embed the clips inline, just like Discover's "A Day
-                              in the Life" — but smaller: a 2-up grid keeps each
-                              player well under Discover's hero size. */}
-                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                            {realityData.videos.map((video) => (
-                              <div key={video.videoId} className="space-y-1.5 sm:max-w-[70%]">
-                                <div className="rounded-control overflow-hidden">
-                                  <iframe
-                                    src={`https://www.youtube.com/embed/${video.videoId}`}
-                                    className="w-full aspect-video"
-                                    loading="lazy"
-                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                    allowFullScreen
-                                    title={video.title.replace(/&amp;/g, '&')}
-                                  />
-                                </div>
-                                <div className="flex items-center gap-1.5 px-0.5">
-                                  <Play className="h-3 w-3 text-muted-foreground/65 shrink-0" />
-                                  <span className="text-xs text-foreground/70 truncate flex-1">{video.title.replace(/&amp;/g, '&')}</span>
-                                  <span className="text-xs text-muted-foreground/65 shrink-0 hidden sm:inline">{video.channel}</span>
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
+                      <RealityVideos videos={realityData.videos} />
                     </>
                   ) : details?.realityCheck ? (
                     <div className="rounded-control border border-warning/15 bg-warning/5 p-3">
