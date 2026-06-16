@@ -13,27 +13,16 @@ import { Navigation2, Loader2 } from "lucide-react";
 
 export default function SignInPage() {
   const router = useRouter();
-  const { data: session, status, update } = useSession();
+  const { data: session, status } = useSession();
   const { toast } = useToast();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [redirecting, setRedirecting] = useState(false);
-
-  // Handle redirect when session becomes available
-  useEffect(() => {
-    if (redirecting && status === "authenticated" && session?.user?.role) {
-      const destination = "/dashboard";
-      router.push(destination);
-      router.refresh();
-    }
-  }, [session, status, redirecting, router]);
 
   // If already authenticated, redirect immediately
   useEffect(() => {
     if (status === "authenticated" && session?.user?.role && !loading) {
-      const destination = "/dashboard";
-      router.push(destination);
+      router.push("/dashboard");
     }
   }, [session, status, loading, router]);
 
@@ -58,30 +47,13 @@ export default function SignInPage() {
           description: "You have successfully signed in.",
         });
 
-        // Trigger session update and set redirecting flag
-        setRedirecting(true);
-
-        // Force session update - this is key to getting fresh session data
-        await update();
-
-        // Give a small delay for the session to propagate
-        await new Promise(resolve => setTimeout(resolve, 100));
-
-        // Fetch fresh session to get role
-        const response = await fetch("/api/auth/session", {
-          cache: "no-store",
-          headers: { "Cache-Control": "no-cache" }
-        });
-        const sessionData = await response.json();
-
-        if (sessionData?.user?.role) {
-          const destination = "/dashboard";
-          router.push(destination);
-          router.refresh();
-        } else {
-          // Fallback: if we still don't have role, do a hard refresh
-          window.location.href = "/dashboard";
-        }
+        // signIn() has already set the session cookie by the time it
+        // resolves ok, so navigate straight to the dashboard. A hard
+        // navigation guarantees the server renders with the fresh cookie
+        // — no need to refetch the session client-side first. Keep
+        // `loading` true so the form stays disabled through the redirect.
+        window.location.assign("/dashboard");
+        return;
       }
     } catch (error: any) {
       toast({
@@ -89,8 +61,6 @@ export default function SignInPage() {
         description: error.message || "Something went wrong. Please try again.",
         variant: "destructive",
       });
-      setRedirecting(false);
-    } finally {
       setLoading(false);
     }
   };

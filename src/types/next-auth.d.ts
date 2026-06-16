@@ -51,6 +51,18 @@ declare module "next-auth/jwt" {
     // never accidental access). See src/middleware.ts guardian gate.
     ageBracket?: AgeBracket | null;
     guardianConsent?: boolean;
+    isVerifiedAdult?: boolean;
+    // Full user fields cached on the token so the session() callback needs no
+    // per-request DB query. Refreshed on a throttle in the jwt() callback.
+    youthProfile?: {
+      displayName: string;
+      profileVisibility: boolean;
+      guardianConsent: boolean;
+      country?: string | null;
+    } | null;
+    // Set when the account is soft-deleted/missing at the last refresh — the
+    // session() callback blanks the user id so the request reads as signed-out.
+    revoked?: boolean;
     // VIPPS OAuth fields
     isNewVippsUser?: boolean;
     vippsProfile?: VippsProfileData;

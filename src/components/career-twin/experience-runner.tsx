@@ -73,6 +73,10 @@ export function ExperienceRunner({
   const [fitInsights, setFitInsights] = useState<FitInsights | null>(null);
   const [reply, setReply] = useState("");
   const [loading, setLoading] = useState(false);
+  // The just-submitted scene + reply, shown immediately (with a "responding"
+  // indicator) while the model works — so the user sees their choice committed
+  // instead of staring at a disabled button. Cleared once the turn resolves.
+  const [pending, setPending] = useState<{ scenario: Scenario; reply: string } | null>(null);
   const [error, setError] = useState<string | null>(null);
   // Shown when a reply trips the distress guard — a supportive message in
   // place of an in-character continuation. The current scene stays so the
@@ -107,6 +111,7 @@ export function ExperienceRunner({
       setFitInsights(null);
       setReply("");
       setError(null);
+      setPending(null);
       setLoading(true);
       try {
         const res = await fetch("/api/career-twin/experience", {
@@ -133,22 +138,28 @@ export function ExperienceRunner({
     setLoading(true);
     setError(null);
     setSupportMessage(null);
+    // Commit the reply to the UI immediately — the answered scene + reply move
+    // into a "responding" state while the model call (a few seconds) runs.
+    setPending({ scenario: answered, reply: myReply });
+    setReply("");
+    requestAnimationFrame(() => endRef.current?.scrollIntoView({ behavior: "smooth", block: "end" }));
     try {
       const data = await post({ action: "respond", currentIndex: answered.index, userReply: myReply });
       // Distress guard tripped server-side: show support, keep the scene.
       if (data.support) {
         setSupportMessage(data.support);
+        setReply(myReply);
         return;
       }
       if (!data.consequence) {
         setError(messageFor(data));
+        setReply(myReply);
         return;
       }
       setTurns((prev) => [
         ...prev,
         { scenario: answered, userReply: myReply, consequence: data.consequence, reflection: data.reflection },
       ]);
-      setReply("");
       // Drive terminal state off the server's `complete` flag — NOT off the
       // presence of fitInsights (which is optional and the model can omit).
       // Without this, a "complete but no insights" reply left the screen
@@ -167,8 +178,10 @@ export function ExperienceRunner({
       requestAnimationFrame(() => endRef.current?.scrollIntoView({ behavior: "smooth", block: "end" }));
     } catch {
       setError("Something went wrong. Please try again.");
+      setReply(myReply);
     } finally {
       setLoading(false);
+      setPending(null);
     }
   }, [current, reply, loading, post]);
 
@@ -180,6 +193,7 @@ export function ExperienceRunner({
     setReply("");
     setError(null);
     setSupportMessage(null);
+    setPending(null);
   };
 
   // ── Length picker ──
@@ -261,8 +275,25 @@ export function ExperienceRunner({
         </div>
       )}
 
+      {/* In-progress turn: the reply is committed and the future self is
+          reacting — shown immediately so the wait feels active, not frozen. */}
+      {pending && (
+        <div className="space-y-2.5">
+          <SceneCard scenario={pending.scenario} />
+          <div className="ml-3 rounded-2xl bg-primary/10 border border-primary/15 px-3.5 py-2.5 text-sm">
+            {pending.reply}
+          </div>
+          <Card className="p-3.5">
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <Loader2 className="h-4 w-4 animate-spin text-primary" />
+              Your future self is reacting&hellip;
+            </div>
+          </Card>
+        </div>
+      )}
+
       {/* Current unanswered scene + input */}
-      {current && (
+      {current && !pending && (
         <div className="space-y-3">
           <SceneCard scenario={current} active />
           <Textarea

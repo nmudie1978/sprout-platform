@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { after } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
@@ -17,6 +18,11 @@ export const maxDuration = 60;
 const KNOWN_CAREER_TITLES = new Set(
   getAllCareers().map((c) => c.title.toLowerCase().trim()),
 );
+
+// Cache keys currently being generated in the background on THIS instance —
+// dedupes the work so a client polling every few seconds doesn't kick off a
+// fresh OpenAI + YouTube generation on each poll. Best-effort (per-instance).
+const inFlightGenerations = new Set<string>();
 
 /**
  * GET /api/career-reality?career=Network+Engineer
@@ -439,35 +445,59 @@ export async function GET(req: NextRequest) {
     );
   }
 
-  // Generate summary + find videos in parallel
-  const [aiResult, videos] = await Promise.all([
-    generateRealitySummary(career),
-    findBestVideos(career),
-  ]);
+  // Cold cache. The AI summary + YouTube search take ~5-15s, which previously
+  // blocked the whole request (and the Understand "Reality" tab) for that long.
+  // Instead: kick off the generation in the BACKGROUND (Next `after()` keeps it
+  // alive after the response is sent) and return immediately with a `pending`
+  // flag. The client shows curated/placeholder content and polls until the
+  // generated result is cached. Deduped per-instance so polling doesn't spawn
+  // repeated generations.
+  if (!inFlightGenerations.has(cacheKey)) {
+    inFlightGenerations.add(cacheKey);
+    after(async () => {
+      let generated: RealityCheckResult;
+      try {
+        const [aiResult, videos] = await Promise.all([
+          generateRealitySummary(career),
+          findBestVideos(career),
+        ]);
+        const summary = aiResult ?? fallbackSummary(career);
+        generated = {
+          career,
+          realitySummary: summary.realitySummary,
+          realityPoints: summary.realityPoints,
+          fitSignal: summary.fitSignal,
+          videos,
+        };
+      } catch (err) {
+        // Always write SOMETHING so the client's poll terminates.
+        logAndSwallow('careerReality:bg-generate')(err);
+        generated = { career, ...fallbackSummary(career), videos: [] };
+      }
+      // Cache 7 days when we found videos; 1 hour otherwise (e.g. YouTube quota
+      // exhausted) so it retries soon rather than locking in a thin result.
+      const ttl = generated.videos.length > 0 ? 7 * 24 * 60 * 60 * 1000 : 60 * 60 * 1000;
+      try {
+        await prisma.videoCache.upsert({
+          where: { cacheKey },
+          create: { cacheKey, data: generated as any, expiresAt: new Date(Date.now() + ttl) },
+          update: { data: generated as any, expiresAt: new Date(Date.now() + ttl) },
+        });
+      } catch (err) {
+        logAndSwallow('careerReality:cache:write')(err);
+      } finally {
+        inFlightGenerations.delete(cacheKey);
+      }
+    });
+  }
 
-  const summary = aiResult ?? fallbackSummary(career);
-
-  const response: RealityCheckResult = {
-    career,
-    realitySummary: summary.realitySummary,
-    realityPoints: summary.realityPoints,
-    fitSignal: summary.fitSignal,
-    videos,
-  };
-
-  // Cache for 7 days — but only if we found videos.
-  // If videos are empty (e.g. YouTube quota exhausted), use a short 1-hour cache
-  // so it retries soon rather than locking in a bad result for a week.
-  const ttl = videos.length > 0 ? 7 * 24 * 60 * 60 * 1000 : 60 * 60 * 1000;
-  prisma.videoCache.upsert({
-    where: { cacheKey },
-    create: { cacheKey, data: response as any, expiresAt: new Date(Date.now() + ttl) },
-    update: { data: response as any, expiresAt: new Date(Date.now() + ttl) },
-  }).catch(logAndSwallow('careerReality:cache:write'));
-
-  // Shorter edge cache when videos are missing so retries happen sooner
-  const edgeTtl = videos.length > 0 ? 86400 : 300;
-  return NextResponse.json(response, {
-    headers: { 'Cache-Control': `public, s-maxage=${edgeTtl}, stale-while-revalidate=${edgeTtl}` },
-  });
+  return NextResponse.json(
+    {
+      career,
+      ...fallbackSummary(career),
+      videos: [],
+      pending: true,
+    } satisfies RealityCheckResult,
+    { headers: { 'Cache-Control': 'no-store' } },
+  );
 }

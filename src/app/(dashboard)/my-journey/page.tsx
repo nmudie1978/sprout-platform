@@ -172,7 +172,9 @@ function useYouTubeVideo(careerTitle: string | null) {
       if (!res.ok) return {};
       return res.json();
     },
-    staleTime: 60 * 1000,
+    // Country rarely changes; a long staleTime keeps it a cache hit on re-open
+    // so the YouTube fetch (gated on this) never waits on a fresh request.
+    staleTime: 30 * 60 * 1000,
   });
   const country = countryQuery.data?.country ?? null;
 
@@ -200,7 +202,9 @@ function useCareerDetails(careerId: string | null) {
       return res.json();
     },
     enabled: !!careerId,
-    staleTime: 5 * 60 * 1000,
+    // Career details are a deterministic in-memory lookup keyed by careerId —
+    // they never change within a session, so a re-opened career is instant.
+    staleTime: Infinity,
   });
 }
 
@@ -216,7 +220,9 @@ function useLearningRecommendations(careerTitle: string | null) {
       return res.json();
     },
     enabled: !!careerTitle,
-    staleTime: 10 * 60 * 1000,
+    // Course/learning lists are curated static content — no need to refetch on
+    // every re-open within the session.
+    staleTime: 60 * 60 * 1000,
   });
 }
 
@@ -246,7 +252,7 @@ function useCourseSearch(careerTitle: string | null) {
       return res.json();
     },
     enabled: !!careerTitle,
-    staleTime: 30 * 60 * 1000,
+    staleTime: 60 * 60 * 1000,
   });
 }
 
@@ -259,8 +265,13 @@ function useCareerReality(careerTitle: string | null) {
       return res.json();
     },
     enabled: !!careerTitle,
-    // If videos are missing (quota was exhausted), refetch sooner
-    staleTime: 5 * 60 * 1000,
+    // Server-side this is DB-cached for 7 days, so a 30-min client staleTime
+    // avoids needless refetches when re-opening a career without going stale.
+    staleTime: 30 * 60 * 1000,
+    // On a cold cache the server returns a `pending` placeholder immediately and
+    // generates the real summary + videos in the background — poll until it's
+    // ready, then stop.
+    refetchInterval: (query) => (query.state.data?.pending ? 2500 : false),
   });
 }
 
@@ -576,7 +587,7 @@ function DiscoverTab({
       if (!res.ok) return {};
       return res.json();
     },
-    staleTime: 30 * 1000,
+    staleTime: 30 * 60 * 1000,
   });
   const userAge: number | undefined = useMemo(() => {
     const dob = profileData?.user?.dateOfBirth;
@@ -599,7 +610,9 @@ function DiscoverTab({
       if (!res.ok) return {};
       return res.json();
     },
-    staleTime: 60 * 1000,
+    // Country rarely changes; a long staleTime keeps it a cache hit on re-open
+    // so the YouTube fetch (gated on this) never waits on a fresh request.
+    staleTime: 30 * 60 * 1000,
   });
   const country = countryData?.country ?? null;
 
@@ -981,7 +994,9 @@ function UnderstandTab({
       if (!res.ok) return {};
       return res.json();
     },
-    staleTime: 60 * 1000,
+    // Country rarely changes; a long staleTime keeps it a cache hit on re-open
+    // so the YouTube fetch (gated on this) never waits on a fresh request.
+    staleTime: 30 * 60 * 1000,
   });
   const educationCountry = useMemo<NordicCountry | undefined>(() => {
     const code = countryToCode(countryData?.country ?? DEFAULT_COUNTRY);
@@ -1081,13 +1096,14 @@ function UnderstandTab({
 
               <TabsContent value="reality" className="mt-6">
                 <div className="space-y-3">
-                  {realityLoading ? (
+                  {(realityLoading || realityData?.pending) && !details?.realityCheck ? (
                     <div className="space-y-2.5">
                       <div className="h-3 w-full rounded bg-muted-foreground/5 animate-pulse" />
                       <div className="h-3 w-4/5 rounded bg-muted-foreground/5 animate-pulse" />
                       <div className="h-3 w-3/5 rounded bg-muted-foreground/5 animate-pulse" />
+                      <p className="text-[11px] text-muted-foreground/55 pt-0.5">Gathering honest insights about this career…</p>
                     </div>
-                  ) : realityData ? (
+                  ) : realityData && !realityData.pending ? (
                     <>
                       <p className="text-xs text-foreground/60 leading-relaxed">{realityData.realitySummary}</p>
                       {/* AI-generated content can be inaccurate — same disclaimer the
@@ -2145,7 +2161,7 @@ function ClarityTab({ goalTitle, career }: { goalTitle: string | null; career: C
       if (!res.ok) return { educationContext: null };
       return res.json();
     },
-    staleTime: 5 * 60 * 1000,
+    staleTime: 30 * 60 * 1000,
   });
   const hasFoundation = !!eduCtxData?.educationContext?.stage;
   // The education-context query is undefined until it resolves; the
@@ -3144,6 +3160,12 @@ export default function MyJourneyPage() {
 
 
   const [activeTab, setActiveTab] = useState<V2Tab>('discover');
+  // Phase tabs are mounted lazily on first visit, then KEPT mounted (just
+  // hidden when inactive) so switching Discover/Understand/Clarity is instant
+  // and preserves each tab's sub-state (active sub-tab, scroll, video index)
+  // instead of unmounting + remounting (which re-ran the tab's data hooks).
+  const visitedTabsRef = useRef<Set<V2Tab>>(new Set());
+  visitedTabsRef.current.add(activeTab);
 
   // ── Tab gating ─────────────────────────────────────────────────────
   // The three tabs are Discover → Understand → Clarity, and the user MUST
@@ -3427,37 +3449,48 @@ export default function MyJourneyPage() {
         </div>
 
 
-        {/* Tab content */}
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={activeTab}
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.15 }}
+        {/* Tab content. Each phase is rendered once visited and then kept
+            mounted (hidden when inactive) — switching is instant and each tab
+            keeps its own sub-state. A light fade-in plays when a tab becomes
+            active. */}
+        {visitedTabsRef.current.has('discover') && (
+          <div
+            key="discover"
+            hidden={activeTab !== 'discover'}
+            className={activeTab === 'discover' ? 'animate-in fade-in duration-150' : undefined}
           >
-            {activeTab === 'discover' && (
-              <DiscoverTab
-                career={career}
-                goalTitle={goalTitle}
-                onContinue={() => goToTab('understand')}
-                onConfirmChange={setDiscoverConfirmedState}
-                onGoToUnderstand={() => goToTab('understand')}
-              />
-            )}
-            {activeTab === 'understand' && (
-              <UnderstandTab
-                career={career}
-                goalTitle={goalTitle}
-                onContinue={() => goToTab('clarity')}
-                onConfirmChange={setUnderstandConfirmedState}
-              />
-            )}
-            {activeTab === 'clarity' && (
-              <ClarityTab goalTitle={goalTitle} career={career} />
-            )}
-          </motion.div>
-        </AnimatePresence>
+            <DiscoverTab
+              career={career}
+              goalTitle={goalTitle}
+              onContinue={() => goToTab('understand')}
+              onConfirmChange={setDiscoverConfirmedState}
+              onGoToUnderstand={() => goToTab('understand')}
+            />
+          </div>
+        )}
+        {visitedTabsRef.current.has('understand') && (
+          <div
+            key="understand"
+            hidden={activeTab !== 'understand'}
+            className={activeTab === 'understand' ? 'animate-in fade-in duration-150' : undefined}
+          >
+            <UnderstandTab
+              career={career}
+              goalTitle={goalTitle}
+              onContinue={() => goToTab('clarity')}
+              onConfirmChange={setUnderstandConfirmedState}
+            />
+          </div>
+        )}
+        {visitedTabsRef.current.has('clarity') && (
+          <div
+            key="clarity"
+            hidden={activeTab !== 'clarity'}
+            className={activeTab === 'clarity' ? 'animate-in fade-in duration-150' : undefined}
+          >
+            <ClarityTab goalTitle={goalTitle} career={career} />
+          </div>
+        )}
       </div>
 
       <JourneyReflectionsTray

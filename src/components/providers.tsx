@@ -81,7 +81,8 @@ export function Providers({ children, session }: { children: React.ReactNode; se
         defaultOptions: {
           queries: {
             staleTime: 3 * 60 * 1000, // 3 min before refetch
-            gcTime: 10 * 60 * 1000, // Keep unused data in cache for 10 min
+            gcTime: 60 * 60 * 1000, // Keep unused data cached 60 min so re-opening a previously explored career is instant
+
             refetchOnWindowFocus: false,
             refetchOnReconnect: false,
             retry: 1, // Reduce retries from default 3 to 1
