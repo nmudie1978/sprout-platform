@@ -49,7 +49,6 @@ import { useCuriositySaves } from "@/hooks/use-curiosity-saves";
 import { useAllInterestLevels } from "@/hooks/use-interest-level";
 import { InterestLevelStars } from "@/components/interest-level/interest-level-rating";
 import { WorthALook } from "@/components/dashboard/worth-a-look";
-import { WhereYoureLeaning } from "@/components/dashboard/where-youre-leaning";
 import type { GoalsResponse } from "@/lib/goals/types";
 import { computeLensProgress, isJourneySnapshotWorthy, journeyStageLabel } from "@/lib/journey/lens-progress";
 import { useLensProgressSync } from "@/hooks/use-lens-progress-sync";
@@ -1135,11 +1134,6 @@ export default function DashboardPage() {
             className="mb-4"
           />
         )}
-
-        {/* Decision Board teaser — the synthesis of all explored journeys. */}
-        <div className="reveal-up" style={{ animationDelay: "70ms" }}>
-          <WhereYoureLeaning />
-        </div>
 
         {/* ── 4. My Explored Journeys + Saved Careers ─────────────── */}
         {/* mb-8 (not mb-4): give a clear gap before the Saved Resources /
