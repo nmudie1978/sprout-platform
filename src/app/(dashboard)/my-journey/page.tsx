@@ -3044,19 +3044,27 @@ function ClarityCompletionCard({
           </div>
 
           <div className="flex items-center gap-1">
-            {/* PDF export — icon only, loading spinner + error state. */}
+            {/* PDF export — labelled so it stays an obvious, always-available
+                download at the bottom of Clarity, even after the one-time
+                celebration modal has been dismissed. */}
             <button
               type="button"
               onClick={handleDownloadReport}
               disabled={isGeneratingReport}
-              aria-label={`Export my career journey PDF${careerTitle ? ` for ${careerTitle}` : ''}`}
-              title={isGeneratingReport ? 'Preparing your report…' : 'Export PDF'}
-              className="inline-flex h-8 w-8 items-center justify-center rounded-md bg-emerald-500 hover:bg-emerald-400 disabled:opacity-60 disabled:cursor-not-allowed text-emerald-950 transition-colors"
+              aria-label={`Download my career journey PDF${careerTitle ? ` for ${careerTitle}` : ''}`}
+              title={isGeneratingReport ? 'Preparing your report…' : 'Download PDF'}
+              className="inline-flex items-center gap-1.5 rounded-md bg-emerald-500 hover:bg-emerald-400 disabled:opacity-60 disabled:cursor-not-allowed text-emerald-950 px-3 py-1.5 text-xs font-semibold transition-colors"
             >
               {isGeneratingReport ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
+                <>
+                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                  Preparing…
+                </>
               ) : (
-                <Download className="h-4 w-4" strokeWidth={2.25} />
+                <>
+                  <Download className="h-3.5 w-3.5" strokeWidth={2.25} />
+                  Download PDF
+                </>
               )}
             </button>
           </div>
