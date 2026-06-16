@@ -1,12 +1,12 @@
 {
-  "lastRefreshISO": "2026-06-16T06:59:56.568Z",
-  "totalItems": 31,
-  "totalVerified": 31,
+  "lastRefreshISO": "2026-06-16T07:04:50.393Z",
+  "totalItems": 34,
+  "totalVerified": 34,
   "totalFailed": 0,
   "totalPending": 0,
-  "duplicatesRejected": 28,
+  "duplicatesRejected": 31,
   "byType": {
-    "article": 21,
+    "article": 24,
     "video": 5,
     "stat_report": 5,
     "pdf": 0
@@ -25,7 +25,7 @@
     "ted.com": 1,
     "ourworldindata.org": 1,
     "visualcapitalist.com": 4,
-    "news.mit.edu": 3
+    "news.mit.edu": 6
   },
   "verificationHealth": [
     {
@@ -121,10 +121,10 @@
     },
     {
       "domain": "news.mit.edu",
-      "checked": 3,
-      "passed": 3,
+      "checked": 6,
+      "passed": 6,
       "failed": 0,
-      "lastCheckedAt": "2026-06-16T06:59:56.378Z"
+      "lastCheckedAt": "2026-06-16T07:04:50.298Z"
     }
   ]
 }

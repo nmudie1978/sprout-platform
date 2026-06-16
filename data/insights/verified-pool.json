@@ -587,5 +587,61 @@
     "lastVerifiedAt": "2026-06-16T06:59:56.378Z",
     "verificationStatus": "verified",
     "canonicalUrlHash": "e081f5ee6e7c58b832f05cbdbe6d20fb81cfad804ea9e654761682064dda6963"
+  },
+  {
+    "id": "cfbb347d-3214-499b-b2df-2d85a0bfc26d",
+    "title": "Turning curiosity about engineering into careers",
+    "summary": "A collaboration between MIT’s Leaders for Global Operations, Boeing, and Engineering Tomorrow brings aspiring engineers from the classroom to the factory floor.",
+    "sourceName": "MIT News",
+    "sourceUrl": "https://news.mit.edu/2026/turning-curiosity-about-engineering-into-careers-0227",
+    "contentType": "article",
+    "tags": [
+      "jobs",
+      "future-of-work",
+      "career-planning"
+    ],
+    "domain": "news.mit.edu",
+    "publishDate": "2026-02-27",
+    "addedAt": "2026-06-16T07:04:50.037Z",
+    "lastVerifiedAt": "2026-06-16T07:04:50.037Z",
+    "verificationStatus": "verified",
+    "canonicalUrlHash": "46c23449bcdee1671f10d0b1694bcdaa03e790386abf030a55bcca1e23da1376"
+  },
+  {
+    "id": "07385365-07b7-45e1-b1d2-a2e061c94b0e",
+    "title": "Stone Center on Inequality and Shaping the Future of Work Launches at MIT",
+    "summary": "Recent launch event for the center featured discussions on pro-worker AI, wealth inequality, and the future of liberal democracy.",
+    "sourceName": "MIT News",
+    "sourceUrl": "https://news.mit.edu/2026/stone-center-inequality-shaping-future-work-launches-0107",
+    "contentType": "article",
+    "tags": [
+      "jobs",
+      "future-of-work",
+      "ai"
+    ],
+    "domain": "news.mit.edu",
+    "publishDate": "2026-01-07",
+    "addedAt": "2026-06-16T07:04:50.195Z",
+    "lastVerifiedAt": "2026-06-16T07:04:50.195Z",
+    "verificationStatus": "verified",
+    "canonicalUrlHash": "d5e3fdc7b5d5207a5391a5c423c7058c3792084f2ea4eff66bd9e0f08fc6a5d8"
+  },
+  {
+    "id": "c250efd3-d959-4bc4-8b60-2fcc986cc03e",
+    "title": "A day in the life of MIT PhD student Alex Busch",
+    "summary": "With an interest in trade unions and employer associations shaping the labor market, Busch is exploring how employee voices and economic democracy affect the future of work.",
+    "sourceName": "MIT News",
+    "sourceUrl": "https://news.mit.edu/2025/day-in-the-life-phd-student-alex-busch-1210",
+    "contentType": "article",
+    "tags": [
+      "jobs",
+      "future-of-work"
+    ],
+    "domain": "news.mit.edu",
+    "publishDate": "2025-12-10",
+    "addedAt": "2026-06-16T07:04:50.298Z",
+    "lastVerifiedAt": "2026-06-16T07:04:50.298Z",
+    "verificationStatus": "verified",
+    "canonicalUrlHash": "db1d587f68e1d08e5966ad13f8002f54f5a575d4792cfcf88fae08a29536adff"
   }
 ]
