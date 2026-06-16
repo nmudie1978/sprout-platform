@@ -5,7 +5,23 @@ import { buildDecisionBoard } from "@/lib/decision-board/build";
 import type { DecisionRow } from "@/lib/decision-board/types";
 import { useDecisionInputs } from "@/hooks/use-decision-inputs";
 import { useDecisionBoard } from "@/hooks/use-decision-board";
-import { DecisionRowView } from "./decision-row";
+import { DecisionRowView, DB_ROW_GRID } from "./decision-row";
+
+/** Column header — mirrors DB_ROW_GRID so labels sit over their columns. */
+function BoardHeader() {
+  return (
+    <div
+      className={`${DB_ROW_GRID} rounded-t-card border border-b-0 border-border/60 bg-foreground/[0.06] py-1.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/70 dark:bg-muted/30`}
+    >
+      <span className="text-center">#</span>
+      <span>Career</span>
+      <span className="md:text-center">Rating</span>
+      <span className="hidden text-center md:block">Status</span>
+      <span className="hidden text-right md:block">Salary</span>
+      <span className="text-right">{/* actions */}</span>
+    </div>
+  );
+}
 
 const STAGE_LABEL = ["Not started", "Discover", "Understand", "Complete"];
 
@@ -101,30 +117,36 @@ export function DecisionBoardTab() {
         </div>
       )}
 
-      {/* Standings */}
-      <div className="space-y-1.5">
-        {ranked.map((row, i) => (
-          <div
-            key={row.careerId}
-            draggable
-            onDragStart={() => setDragId(row.careerId)}
-            onDragOver={(e) => e.preventDefault()}
-            onDrop={() => onDrop(row.careerId)}
-          >
-            <DecisionRowView
-              row={row}
-              career={getCareerById(row.careerId)}
-              stageLabel={STAGE_LABEL[row.progress] ?? ""}
-              reflections={reflections[row.careerId] ?? []}
-              expanded={expanded.has(row.careerId)}
-              onToggle={() => toggle(row.careerId)}
-              onUp={i > 0 ? () => move(i, -1) : undefined}
-              onDown={i < ranked.length - 1 ? () => move(i, 1) : undefined}
-              onRelegate={() => relegate(row.careerId)}
-            />
+      {/* Standings — structured table (header + bordered body), mirroring the
+          Explore Careers list view. */}
+      {ranked.length > 0 && (
+        <div>
+          <BoardHeader />
+          <div className="overflow-hidden rounded-b-card border border-border/60 bg-card/40">
+            {ranked.map((row, i) => (
+              <div
+                key={row.careerId}
+                draggable
+                onDragStart={() => setDragId(row.careerId)}
+                onDragOver={(e) => e.preventDefault()}
+                onDrop={() => onDrop(row.careerId)}
+              >
+                <DecisionRowView
+                  row={row}
+                  career={getCareerById(row.careerId)}
+                  stageLabel={STAGE_LABEL[row.progress] ?? ""}
+                  reflections={reflections[row.careerId] ?? []}
+                  expanded={expanded.has(row.careerId)}
+                  onToggle={() => toggle(row.careerId)}
+                  onUp={i > 0 ? () => move(i, -1) : undefined}
+                  onDown={i < ranked.length - 1 ? () => move(i, 1) : undefined}
+                  onRelegate={() => relegate(row.careerId)}
+                />
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
+        </div>
+      )}
 
       {/* Out of the running */}
       {ruledOut.length > 0 && (
@@ -132,18 +154,20 @@ export function DecisionBoardTab() {
           <p className="text-center text-[10px] uppercase tracking-wide text-muted-foreground/70">
             Out of the running
           </p>
-          {ruledOut.map((row) => (
-            <DecisionRowView
-              key={row.careerId}
-              row={row}
-              career={getCareerById(row.careerId)}
-              stageLabel={STAGE_LABEL[row.progress] ?? ""}
-              reflections={reflections[row.careerId] ?? []}
-              expanded={expanded.has(row.careerId)}
-              onToggle={() => toggle(row.careerId)}
-              onRestore={() => restore(row.careerId)}
-            />
-          ))}
+          <div className="overflow-hidden rounded-card border border-border/60 bg-card/40">
+            {ruledOut.map((row) => (
+              <DecisionRowView
+                key={row.careerId}
+                row={row}
+                career={getCareerById(row.careerId)}
+                stageLabel={STAGE_LABEL[row.progress] ?? ""}
+                reflections={reflections[row.careerId] ?? []}
+                expanded={expanded.has(row.careerId)}
+                onToggle={() => toggle(row.careerId)}
+                onRestore={() => restore(row.careerId)}
+              />
+            ))}
+          </div>
         </div>
       )}
 
