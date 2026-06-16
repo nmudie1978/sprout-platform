@@ -1136,7 +1136,7 @@ function UnderstandTab({
                               player well under Discover's hero size. */}
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             {realityData.videos.map((video) => (
-                              <div key={video.videoId} className="space-y-1.5">
+                              <div key={video.videoId} className="space-y-1.5 max-w-[70%]">
                                 <div className="rounded-control overflow-hidden">
                                   <iframe
                                     src={`https://www.youtube.com/embed/${video.videoId}`}
