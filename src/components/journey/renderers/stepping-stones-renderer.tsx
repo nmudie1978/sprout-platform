@@ -30,6 +30,7 @@ export function SteppingStonesRenderer(props: RendererProps) {
     foundationItem,
     foundationStatus,
     foundationState,
+    foundationEmpty,
     computedSteps,
     FOUNDATION_ITEM_ID,
   } = useRoadmapModel(props);
@@ -54,6 +55,7 @@ export function SteppingStonesRenderer(props: RendererProps) {
               progressStatus={foundationStatus}
               label="Now"
               isFoundation
+              glow={foundationEmpty}
               onClick={() => !readOnly && onItemClick(foundationItem)}
               onProgressCycle={
                 onProgressCycle && !readOnly
@@ -88,6 +90,7 @@ function Stone({
   label,
   scenarioAnnotation,
   isFoundation,
+  glow,
   onClick,
 }: {
   item: JourneyItem;
@@ -96,6 +99,7 @@ function Stone({
   label: string;
   scenarioAnnotation?: string;
   isFoundation?: boolean;
+  glow?: boolean;
   onClick: () => void;
   onProgressCycle?: () => void;
 }) {
@@ -116,7 +120,10 @@ function Stone({
       >
         {/* stone */}
         <span
-          className="relative flex h-[72px] w-[72px] items-center justify-center rounded-full bg-card transition-transform group-hover:-translate-y-0.5"
+          className={cn(
+            'relative flex h-[72px] w-[72px] items-center justify-center rounded-full bg-card transition-transform group-hover:-translate-y-0.5',
+            glow && 'foundation-attn-glow',
+          )}
           style={{
             boxShadow: completed
               ? `0 0 0 2px #10b981`

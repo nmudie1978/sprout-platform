@@ -1018,6 +1018,24 @@
     animation: spotlight 2s ease 0.2s 1 forwards;
   }
 
+  /* Starting-point attention glow — a soft teal ring that pulses on the
+     Clarity roadmap's "Your Starting Point" card/stone while the user hasn't
+     added their details yet, then stops once they have (the class is removed).
+     box-shadow follows the element's own border-radius, so it hugs both the
+     rounded winding-road card and the round stepping stone. */
+  @keyframes foundation-attn-glow {
+    0%, 100% {
+      box-shadow: 0 0 0 1px rgba(45, 212, 191, 0.45), 0 0 10px 1px rgba(45, 212, 191, 0.2);
+    }
+    50% {
+      box-shadow: 0 0 0 2px rgba(45, 212, 191, 0.8), 0 0 18px 4px rgba(45, 212, 191, 0.42);
+    }
+  }
+
+  .foundation-attn-glow {
+    animation: foundation-attn-glow 2.4s ease-in-out infinite;
+  }
+
 }
 
 /* Respect reduced-motion: the active-stage pulse is decorative, so disable it
@@ -1025,5 +1043,11 @@
 @media (prefers-reduced-motion: reduce) {
   .animate-stage-pulse {
     animation: none !important;
+  }
+  /* Keep a static teal ring so the "add your details" cue still reads, just
+     without motion. */
+  .foundation-attn-glow {
+    animation: none !important;
+    box-shadow: 0 0 0 1.5px rgba(45, 212, 191, 0.6), 0 0 12px 2px rgba(45, 212, 191, 0.3) !important;
   }
 }

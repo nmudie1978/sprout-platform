@@ -69,6 +69,7 @@ export function WindingRoadRenderer(props: RendererProps) {
     foundationItem,
     foundationStatus,
     foundationState,
+    foundationEmpty,
     computedSteps,
     educationIndex,
     alignmentGate,
@@ -229,6 +230,7 @@ export function WindingRoadRenderer(props: RendererProps) {
             progressStatus={foundationStatus}
             cardAbove
             isFoundation
+            glow={foundationEmpty}
             onClick={() => !readOnly && onItemClick(foundationItem)}
             onProgressCycle={
               onProgressCycle && !readOnly ? () => onProgressCycle(FOUNDATION_ITEM_ID) : undefined
@@ -387,6 +389,7 @@ function RoadStop({
   scenarioAnnotation,
   cardAbove,
   isFoundation,
+  glow,
   onClick,
   onProgressCycle,
   subjects,
@@ -399,6 +402,7 @@ function RoadStop({
   scenarioAnnotation?: string;
   cardAbove: boolean;
   isFoundation?: boolean;
+  glow?: boolean;
   onClick: () => void;
   onProgressCycle?: () => void;
   subjects?: string[];
@@ -435,6 +439,7 @@ function RoadStop({
           ageLabel={ageLabel}
           scenarioAnnotation={scenarioAnnotation}
           isFoundation={isFoundation}
+          glow={glow}
           onClick={onClick}
         />
         {isFoundation && subjects && subjects.length > 0 && (
@@ -455,6 +460,7 @@ function RoadCard({
   ageLabel,
   scenarioAnnotation,
   isFoundation,
+  glow,
   onClick,
 }: {
   item: JourneyItem;
@@ -463,6 +469,7 @@ function RoadCard({
   ageLabel?: string;
   scenarioAnnotation?: string;
   isFoundation?: boolean;
+  glow?: boolean;
   onClick: () => void;
 }) {
   const stateClasses: Record<StepState, string> = {
@@ -478,6 +485,7 @@ function RoadCard({
         'relative w-full rounded-xl border bg-card p-2.5 text-center transition-colors',
         'hover:border-amber-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
         stateClasses[state],
+        glow && 'foundation-attn-glow',
       )}
       style={{ borderTopWidth: 3, borderTopColor: accent }}
     >
