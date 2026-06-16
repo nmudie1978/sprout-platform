@@ -9,6 +9,7 @@ import { toast } from '@/hooks/use-toast';
 import type { JourneyItem, Journey } from '@/lib/journey/career-journey-types';
 import { generateFallbackTimeline, type EducationStage } from '@/lib/journey/generate-fallback-timeline';
 import { sanitizeJourney } from '@/lib/journey/roadmap-rules';
+import { deriveRoleEvolutionTail } from '@/lib/journey/role-evolution-tail';
 import type { CardDataSummary } from './renderers/types';
 import { WindingRoadRenderer, SteppingStonesRenderer } from './renderers';
 import { FOUNDATION_ITEM_ID } from './renderers/foundation-banner';
@@ -308,6 +309,26 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney, read
       })(),
     };
   }, [journey, primaryGoalTitle, profileData, userAge, educationContextData, getCareerById, getAllCareers]);
+
+  // ── Role-evolution coda ───────────────────────────────────────────
+  // Deterministic "how the role grows from here" tail, derived purely from
+  // bundled progression data (no fetch). The career id is the goal title's
+  // slug (career ids ARE title slugs), refined via the catalog when loaded.
+  // entry-role age = the roadmap's end age (its last milestone), which the
+  // coda grows from. Null for careers with no progression data → no coda.
+  const evolutionTail = useMemo(() => {
+    if (!journey || !primaryGoalTitle) return null;
+    const slug = primaryGoalTitle.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+    const careerId =
+      getCareerById(slug)?.id ??
+      getAllCareers().find((c) => c.title === primaryGoalTitle)?.id ??
+      slug;
+    const entryRoleAge =
+      journey.items.length > 0
+        ? Math.max(...journey.items.map((i) => i.endAge ?? i.startAge))
+        : journey.startAge;
+    return deriveRoleEvolutionTail(careerId, entryRoleAge);
+  }, [journey, primaryGoalTitle, getCareerById, getAllCareers]);
 
   const [simState, simControls] = useRoadmapSimulation(journey, narrationCtx);
 
@@ -616,6 +637,7 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney, read
               : undefined
           }
           scenarioOverrides={scenarioOverlay?.stepOverrides}
+          evolutionTail={readOnly || simState.isPlaying ? null : evolutionTail}
         />
       </div>
 

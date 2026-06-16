@@ -14,7 +14,7 @@
  * subject-alignment gate, year stamps, scenario overrides and read-only mode.
  */
 
-import { useMemo } from 'react';
+import { useMemo, type ReactNode } from 'react';
 import { type JourneyItem, STAGE_CONFIG } from '@/lib/journey/career-journey-types';
 import { cn } from '@/lib/utils';
 import type { RendererProps } from './types';
@@ -27,6 +27,8 @@ import {
   ShieldCheck,
   ShieldAlert,
   AlertCircle,
+  TrendingUp,
+  Briefcase,
 } from 'lucide-react';
 
 const NODE_SIZE = 40;
@@ -36,6 +38,10 @@ const LOW_Y = 196; // node sits low → card above
 const HIGH_Y = 116; // node sits high → card below
 const CARD_WIDTH = 176;
 const CANVAS_H = 432;
+// Role-evolution coda — a calm continuation of the road into core → senior.
+const CODA_Y = 156; // fixed mid-height so the branch fan is predictable
+const CODA_CARD_W = 150;
+const CODA_FAN = 96; // vertical gap between fanned branch nodes
 
 interface Pt {
   x: number;
@@ -84,13 +90,47 @@ export function WindingRoadRenderer(props: RendererProps) {
   const totalWidth = MARGIN_X * 2 + (nodeCount - 1) * H_SPACING;
   const roadPath = buildRoadPath(points);
 
+  // ── Role-evolution coda geometry ─────────────────────────────────────
+  // Continues the road past the last milestone into the core role, then either
+  // forks (specialisms / tracks / grows-into) or runs to a single senior node.
+  const tail = props.evolutionTail ?? null;
+  const lastPoint = points[points.length - 1];
+  const coda = useMemo(() => {
+    if (!tail || !lastPoint) return null;
+    const coreX = lastPoint.x + H_SPACING;
+    const corePt: Pt = { x: coreX, y: CODA_Y };
+    const connect = buildRoadPath([lastPoint, corePt]);
+    if (tail.forked) {
+      const forkX = coreX + Math.round(H_SPACING * 0.5);
+      const branchX = coreX + H_SPACING + 24;
+      const n = tail.branches.length;
+      const branchPts = tail.branches.map((branch, i) => ({
+        x: branchX,
+        y: CODA_Y + (i - (n - 1) / 2) * CODA_FAN,
+        branch,
+      }));
+      const branchPaths = branchPts.map((bp) =>
+        buildRoadPath([corePt, { x: forkX, y: CODA_Y }, { x: bp.x, y: bp.y }]),
+      );
+      const rightEdge = branchX + NODE_SIZE / 2 + CODA_CARD_W + 28;
+      return { forked: true as const, corePt, forkX, connect, branchPts, branchPaths, rightEdge };
+    }
+    const seniorX = coreX + H_SPACING;
+    const seniorPt = { x: seniorX, y: CODA_Y, branch: tail.branches[0] };
+    const seniorPath = buildRoadPath([corePt, { x: seniorX, y: CODA_Y }]);
+    const rightEdge = seniorX + CODA_CARD_W / 2 + MARGIN_X;
+    return { forked: false as const, corePt, connect, seniorPt, seniorPath, rightEdge };
+  }, [tail, lastPoint]);
+
+  const canvasWidth = coda ? Math.max(totalWidth, coda.rightEdge) : totalWidth;
+
   return (
     <div className="-mx-2 px-2 pb-4">
       <div className="overflow-x-auto">
-        <div className="relative" style={{ width: totalWidth, height: CANVAS_H }}>
+        <div className="relative" style={{ width: canvasWidth, height: CANVAS_H }}>
           <svg
             className="pointer-events-none absolute inset-0"
-            width={totalWidth}
+            width={canvasWidth}
             height={CANVAS_H}
             aria-hidden
           >
@@ -122,8 +162,30 @@ export function WindingRoadRenderer(props: RendererProps) {
               strokeWidth={2.5}
               strokeDasharray="9 12"
               strokeLinecap="round"
-              markerEnd="url(#wr-arrow)"
+              markerEnd={coda ? undefined : 'url(#wr-arrow)'}
             />
+
+            {/* ── Role-evolution coda roads ─────────────────────────── */}
+            {coda && (
+              <>
+                {/* connector: last milestone → core role */}
+                <path d={coda.connect} fill="none" className="stroke-slate-200 dark:stroke-slate-800" strokeWidth={30} strokeLinecap="round" />
+                <path d={coda.connect} fill="none" className="stroke-slate-300 dark:stroke-slate-600" strokeWidth={2.5} strokeDasharray="9 12" strokeLinecap="round" />
+                {coda.forked ? (
+                  coda.branchPaths.map((d, i) => (
+                    <g key={i}>
+                      <path d={d} fill="none" className="stroke-slate-200 dark:stroke-slate-800" strokeWidth={26} strokeLinecap="round" />
+                      <path d={d} fill="none" className="stroke-slate-300 dark:stroke-slate-600" strokeWidth={2.5} strokeDasharray="9 12" strokeLinecap="round" markerEnd="url(#wr-arrow)" />
+                    </g>
+                  ))
+                ) : (
+                  <>
+                    <path d={coda.seniorPath} fill="none" className="stroke-slate-200 dark:stroke-slate-800" strokeWidth={30} strokeLinecap="round" />
+                    <path d={coda.seniorPath} fill="none" className="stroke-slate-300 dark:stroke-slate-600" strokeWidth={2.5} strokeDasharray="9 12" strokeLinecap="round" markerEnd="url(#wr-arrow)" />
+                  </>
+                )}
+              </>
+            )}
           </svg>
 
           {/* Alignment gate — on the road just before the first education step. */}
@@ -195,8 +257,123 @@ export function WindingRoadRenderer(props: RendererProps) {
               />
             );
           })}
+
+          {/* ── Role-evolution coda: core → (decision) → senior ─────── */}
+          {coda && (
+            <>
+              {/* CORE role — card above the node */}
+              <EvoStop point={coda.corePt} cardPlacement="above">
+                <EvoCard tag="Core role" title={tail!.core.title} approxAge={tail!.core.approxAge} />
+              </EvoStop>
+
+              {coda.forked ? (
+                <>
+                  {/* decision marker at the fork */}
+                  <DecisionMarker x={coda.forkX} y={CODA_Y} />
+                  {coda.branchPts.map((bp) => (
+                    <EvoStop key={bp.branch.title} point={bp} cardPlacement="right">
+                      <EvoCard
+                        tag="Grows into"
+                        title={bp.branch.title}
+                        approxAge={bp.branch.approxAge}
+                        subLabel={bp.branch.trackLabel}
+                      />
+                    </EvoStop>
+                  ))}
+                </>
+              ) : (
+                <EvoStop point={coda.seniorPt} cardPlacement="above">
+                  <EvoCard
+                    tag="Grows into"
+                    title={coda.seniorPt.branch.title}
+                    approxAge={coda.seniorPt.branch.approxAge}
+                  />
+                </EvoStop>
+              )}
+            </>
+          )}
         </div>
       </div>
+    </div>
+  );
+}
+
+/** A non-interactive node on the evolution coda, with its card placed above the
+ * node or to its right (used for the fanned branch nodes). */
+function EvoStop({
+  point,
+  cardPlacement,
+  children,
+}: {
+  point: Pt;
+  cardPlacement: 'above' | 'right';
+  children: ReactNode;
+}) {
+  return (
+    <div className="absolute -translate-x-1/2 -translate-y-1/2" style={{ left: point.x, top: point.y }}>
+      <div className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-slate-300 bg-background text-slate-400 shadow-sm dark:border-slate-600 dark:text-slate-500">
+        <Briefcase className="h-4 w-4" />
+      </div>
+      {cardPlacement === 'above' ? (
+        <div
+          className="absolute bottom-[calc(50%+14px)] left-1/2 flex -translate-x-1/2 flex-col items-center"
+          style={{ width: CODA_CARD_W }}
+        >
+          {children}
+          <span className="h-3.5 w-px bg-slate-300 dark:bg-slate-600" />
+        </div>
+      ) : (
+        <div
+          className="absolute left-[calc(50%+24px)] top-1/2 -translate-y-1/2"
+          style={{ width: CODA_CARD_W }}
+        >
+          {children}
+        </div>
+      )}
+    </div>
+  );
+}
+
+/** The "where the path opens up" decision diamond. */
+function DecisionMarker({ x, y }: { x: number; y: number }) {
+  return (
+    <div
+      className="absolute z-20 -translate-x-1/2 -translate-y-1/2"
+      style={{ left: x, top: y }}
+      title="Where the path opens up — choose a direction"
+      aria-label="Decision point — the role branches here"
+    >
+      <div className="h-4 w-4 rotate-45 rounded-[3px] border-2 border-amber-500 bg-background shadow-sm dark:bg-card" />
+    </div>
+  );
+}
+
+/** A calm coda card — stage tag + real role title + approximate age. */
+function EvoCard({
+  tag,
+  title,
+  approxAge,
+  subLabel,
+}: {
+  tag: string;
+  title: string;
+  approxAge: number;
+  subLabel?: string;
+}) {
+  return (
+    <div
+      className="w-full rounded-xl border border-dashed border-slate-300 bg-card/60 p-2.5 text-center dark:border-slate-600"
+      style={{ borderTopWidth: 3, borderTopColor: 'rgb(148 163 184)' }}
+    >
+      <div className="flex items-center justify-center gap-1">
+        <TrendingUp className="h-2.5 w-2.5 text-slate-400" />
+        <span className="text-[8px] font-semibold uppercase tracking-wider text-muted-foreground">{tag}</span>
+        <span className="text-[10px] font-medium text-muted-foreground">· ~age {approxAge}</span>
+      </div>
+      <p className="mt-1 text-xs font-semibold leading-tight text-foreground/85">{title}</p>
+      {subLabel && (
+        <p className="mt-0.5 text-[10px] font-medium leading-snug text-muted-foreground/80">{subLabel}</p>
+      )}
     </div>
   );
 }
