@@ -50,7 +50,7 @@ export function useRoadmapModel(props: RendererProps) {
   const schoolTrack = journey.schoolTrack;
   const firstSchool = schoolTrack && schoolTrack.length > 0 ? schoolTrack[0] : null;
 
-  const { foundationItem, subjectHint } = useFoundationData({
+  const { foundationItem, subjectHint, foundationEmpty } = useFoundationData({
     careerTitle,
     userAge,
     journeyStartAge: journey.startAge,
@@ -122,6 +122,7 @@ export function useRoadmapModel(props: RendererProps) {
     foundationItem,
     foundationStatus,
     foundationState,
+    foundationEmpty,
     youAreHereIndex,
     computedSteps,
     educationIndex,

@@ -117,5 +117,9 @@ export function useFoundationData({
     microActions: FOUNDATION_MICRO_ACTIONS[eduContext?.stage ?? 'school'],
   }), [eduContext, userAge, journeyStartAge]);
 
-  return { eduContext, subjectHint, foundationItem };
+  // "Not filled in yet" — no saved education context. Drives the attention
+  // glow on the Starting Point card until the user adds their details.
+  const foundationEmpty = !eduContext;
+
+  return { eduContext, subjectHint, foundationItem, foundationEmpty };
 }
