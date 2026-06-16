@@ -2793,8 +2793,8 @@ function ClarityTab({ goalTitle, career }: { goalTitle: string | null; career: C
                         className={cn(
                           'group relative shrink-0 w-[180px] rounded-lg border p-2.5 transition-colors',
                           isDone
-                            ? 'border-emerald-500/30 bg-emerald-500/[0.04]'
-                            : 'border-border/30 bg-background/30 hover:border-amber-500/30',
+                            ? 'border-emerald-500/40 bg-emerald-500/[0.04]'
+                            : 'border-border/70 bg-background/30 hover:border-amber-500/50',
                         )}
                       >
                         {/* Delete — top-right, appears on hover */}
@@ -2840,7 +2840,7 @@ function ClarityTab({ goalTitle, career }: { goalTitle: string | null; career: C
                   })}
 
                   {/* Inline add — last card in the carousel */}
-                  <div className="shrink-0 w-[180px] rounded-lg border border-dashed border-border/30 bg-background/20 p-2.5 flex flex-col justify-center">
+                  <div className="shrink-0 w-[180px] rounded-lg border border-dashed border-border/70 bg-background/20 p-2.5 flex flex-col justify-center">
                     <input
                       value={newAction}
                       onChange={(e) => setNewAction(e.target.value)}
@@ -2851,7 +2851,7 @@ function ClarityTab({ goalTitle, career }: { goalTitle: string | null; career: C
                         }
                       }}
                       placeholder="Add a step…"
-                      className="w-full rounded-md border border-border/25 bg-background/40 px-2 py-1 text-[10px] text-foreground/80 placeholder:text-muted-foreground/65 focus:outline-none focus:border-amber-500/40 mb-1.5"
+                      className="w-full rounded-md border border-border/60 bg-background/40 px-2 py-1 text-[10px] text-foreground/80 placeholder:text-muted-foreground/65 focus:outline-none focus:border-amber-500/40 mb-1.5"
                     />
                     <button
                       onClick={addAction}
@@ -2877,7 +2877,7 @@ function ClarityTab({ goalTitle, career }: { goalTitle: string | null; career: C
                     }
                   }}
                   placeholder="Add your first step…"
-                  className="flex-1 rounded-lg border border-border/30 bg-background/40 px-3 py-1.5 text-xs text-foreground/85 placeholder:text-muted-foreground/65 focus:outline-none focus:border-amber-500/40"
+                  className="flex-1 rounded-lg border border-border/60 bg-background/40 px-3 py-1.5 text-xs text-foreground/85 placeholder:text-muted-foreground/65 focus:outline-none focus:border-amber-500/40"
                 />
                 <button
                   onClick={addAction}
