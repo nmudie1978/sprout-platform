@@ -1131,20 +1131,28 @@ function UnderstandTab({
                       {realityData.videos.length > 0 && (
                         <div className="pt-1">
                           <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground/65 mb-1.5">Real voices</p>
-                          <div className="rounded-control border border-border/20 divide-y divide-border/15 overflow-hidden">
+                          {/* Embed the clips inline, just like Discover's "A Day
+                              in the Life" — but smaller: a 2-up grid keeps each
+                              player well under Discover's hero size. */}
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             {realityData.videos.map((video) => (
-                              <a
-                                key={video.videoId}
-                                href={`https://www.youtube.com/watch?v=${video.videoId}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="group flex items-center gap-2 px-2.5 py-1.5 hover:bg-muted/10 transition-colors"
-                              >
-                                <Play className="h-3 w-3 text-muted-foreground/65 group-hover:text-accent shrink-0" />
-                                <span className="text-xs text-foreground/70 group-hover:text-foreground truncate flex-1">{video.title.replace(/&amp;/g, '&')}</span>
-                                <span className="text-xs text-muted-foreground/65 shrink-0 hidden sm:inline">{video.channel}</span>
-                                <ExternalLink className="h-2.5 w-2.5 text-muted-foreground/25 group-hover:text-muted-foreground/70 shrink-0" />
-                              </a>
+                              <div key={video.videoId} className="space-y-1.5">
+                                <div className="rounded-control overflow-hidden">
+                                  <iframe
+                                    src={`https://www.youtube.com/embed/${video.videoId}`}
+                                    className="w-full aspect-video"
+                                    loading="lazy"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                    allowFullScreen
+                                    title={video.title.replace(/&amp;/g, '&')}
+                                  />
+                                </div>
+                                <div className="flex items-center gap-1.5 px-0.5">
+                                  <Play className="h-3 w-3 text-muted-foreground/65 shrink-0" />
+                                  <span className="text-xs text-foreground/70 truncate flex-1">{video.title.replace(/&amp;/g, '&')}</span>
+                                  <span className="text-xs text-muted-foreground/65 shrink-0 hidden sm:inline">{video.channel}</span>
+                                </div>
+                              </div>
                             ))}
                           </div>
                         </div>
@@ -2542,9 +2550,9 @@ function ClarityTab({ goalTitle, career }: { goalTitle: string | null; career: C
       <div
         className="rounded-xl border-2 p-5"
         style={{
-          borderColor: 'rgba(245,158,11,0.3)',
-          boxShadow: '0 0 20px rgba(245,158,11,0.06)',
-          background: 'linear-gradient(135deg, rgba(245,158,11,0.04) 0%, transparent 50%)',
+          borderColor: 'rgba(234,88,12,0.4)',
+          boxShadow: '0 0 20px rgba(234,88,12,0.08)',
+          background: 'linear-gradient(135deg, rgba(234,88,12,0.05) 0%, transparent 50%)',
         }}
       >
         <p className="text-sm text-foreground/70 leading-[1.8]">
@@ -2558,8 +2566,8 @@ function ClarityTab({ goalTitle, career }: { goalTitle: string | null; career: C
           Amber edge border + faint amber glow so it reads as part of the
           orange Clarity section. */}
       <SectionCard
-        className="border-amber-500/30"
-        style={{ boxShadow: '0 0 20px rgba(245,158,11,0.06)' }}
+        className="border-orange-500/40"
+        style={{ boxShadow: '0 0 20px rgba(234,88,12,0.08)' }}
       >
         {/* Tab bar */}
         <div className="flex border-b border-border/20">
@@ -2569,7 +2577,7 @@ function ClarityTab({ goalTitle, career }: { goalTitle: string | null; career: C
             className={cn(
               "flex-1 flex items-center justify-center gap-2 px-4 py-3 text-xs font-medium transition-colors",
               claritySubTab === 'roadmap'
-                ? "text-amber-400 border-b-2 border-amber-400 -mb-px"
+                ? "text-orange-500 border-b-2 border-orange-500 -mb-px"
                 : "text-muted-foreground/70 hover:text-muted-foreground"
             )}
           >
@@ -2582,7 +2590,7 @@ function ClarityTab({ goalTitle, career }: { goalTitle: string | null; career: C
             className={cn(
               "flex-1 flex items-center justify-center gap-2 px-4 py-3 text-xs font-medium transition-colors",
               claritySubTab === 'ask-future-me'
-                ? "text-amber-400 border-b-2 border-amber-400 -mb-px"
+                ? "text-orange-500 border-b-2 border-orange-500 -mb-px"
                 : "text-muted-foreground/70 hover:text-muted-foreground"
             )}
           >
@@ -2595,7 +2603,7 @@ function ClarityTab({ goalTitle, career }: { goalTitle: string | null; career: C
             className={cn(
               "flex-1 flex items-center justify-center gap-2 px-4 py-3 text-xs font-medium transition-colors",
               claritySubTab === 'momentum'
-                ? "text-amber-400 border-b-2 border-amber-400 -mb-px"
+                ? "text-orange-500 border-b-2 border-orange-500 -mb-px"
                 : "text-muted-foreground/70 hover:text-muted-foreground"
             )}
           >
@@ -3067,34 +3075,6 @@ function ClarityCompletionCard({
         </div>
       )}
 
-      {/* Completion cue — restores the guidance that told users what's left to
-          finish Clarity (and unlock the "moment of arrival"). Clarity needs BOTH
-          an interest rating AND a Foundation; without this nudge a user who
-          hasn't set their Foundation never completes and never sees why. Shown
-          only once both halves have loaded and it's genuinely incomplete — no
-          rating picker (that lives in the ConfidenceTracker above). */}
-      {foundationReady && interestHydrated && !clarityComplete && (
-        <div className="rounded-lg border border-amber-500/20 bg-amber-500/[0.04] px-3.5 py-3">
-          <p className="text-[11px] font-semibold text-amber-300/90">
-            One step left to finish Clarity{careerTitle ? ` for ${careerTitle}` : ''}
-          </p>
-          <ul className="mt-1.5 space-y-1 text-[10.5px] text-muted-foreground/80 leading-relaxed">
-            {!hasSetInterest && (
-              <li>• Rate how interested you are in “How interested are you?” above.</li>
-            )}
-            {!hasFoundation && (
-              <li>
-                • Add your Foundation — school, subjects and finish year — in the{' '}
-                <span className="font-medium text-foreground/85">Your Roadmap</span> tab.
-              </li>
-            )}
-          </ul>
-          <p className="mt-2 text-[10px] text-muted-foreground/55">
-            Do both and your journey-complete moment unlocks. ✨
-          </p>
-        </div>
-      )}
-
       <JourneyCompleteCelebration
         open={showCelebration}
         onClose={() => setShowCelebration(false)}
@@ -3253,7 +3233,7 @@ export default function MyJourneyPage() {
   const tabs: { id: V2Tab; label: string; subtitle: string; icon: typeof Search; color: string; glow: string; tooltip: string; lockedTooltip: string }[] = [
     { id: 'discover', label: t('journey.discover.label'), subtitle: t('journey.discover.subtitle'), icon: Search, color: 'text-teal-400', glow: 'rgba(20,184,166,0.25)', tooltip: t('journey.discover.tooltip'), lockedTooltip: '' },
     { id: 'understand', label: t('journey.understand.label'), subtitle: t('journey.understand.subtitle'), icon: Globe, color: 'text-blue-400', glow: 'rgba(59,130,246,0.25)', tooltip: t('journey.understand.tooltip'), lockedTooltip: t('journey.understand.lockedTooltip') },
-    { id: 'clarity', label: t('journey.clarity.label'), subtitle: t('journey.clarity.subtitle'), icon: Rocket, color: 'text-amber-400', glow: 'rgba(245,158,11,0.25)', tooltip: t('journey.clarity.tooltip'), lockedTooltip: t('journey.clarity.lockedTooltip') },
+    { id: 'clarity', label: t('journey.clarity.label'), subtitle: t('journey.clarity.subtitle'), icon: Rocket, color: 'text-orange-500', glow: 'rgba(234,88,12,0.3)', tooltip: t('journey.clarity.tooltip'), lockedTooltip: t('journey.clarity.lockedTooltip') },
   ];
 
   // While goals are loading, show a skeleton to avoid flashing the onboarding

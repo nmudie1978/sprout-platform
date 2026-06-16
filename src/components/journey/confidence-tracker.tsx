@@ -101,7 +101,7 @@ export function ConfidenceTracker({ careerId, careerTitle }: ConfidenceTrackerPr
       <div className="flex items-center gap-2">
         <Gauge className="h-3.5 w-3.5 text-primary" />
         <h3 className="text-[12px] font-semibold text-foreground/85">
-          How interested are you?
+          Register how interested you are in this career to complete your journey
         </h3>
         {trend === 'up' && <TrendingUp className="h-3 w-3 text-emerald-400" />}
         {trend === 'down' && <TrendingDown className="h-3 w-3 text-red-400" />}
