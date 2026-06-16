@@ -20,6 +20,7 @@
     "db:studio": "prisma studio",
     "refresh:research-facts": "tsx scripts/refresh-research-facts.ts",
     "events:refresh": "tsx scripts/events-refresh.ts",
+    "insights:ingest": "tsx scripts/ingest-insights-rss.ts",
     "insights:refresh": "tsx scripts/refresh-insights-pool.ts",
     "programmes:validate": "tsx scripts/validate-programmes.ts",
     "programmes:validate:dry": "tsx scripts/validate-programmes.ts --dry-run --verbose",
