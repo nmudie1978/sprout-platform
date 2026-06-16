@@ -85,6 +85,7 @@ export interface AiTimelineItem {
 
 export interface AiFutureOfWork {
   header: { badge: string; title: string; subtitle: string };
+  funFact: { label: string; body: string };
   cards: AiCard[];
   models: { heading: string; subheading: string; note: string; items: AiModel[] };
   certifications: { heading: string; subheading: string; items: AiCertification[] };
@@ -103,6 +104,11 @@ export const aiFutureOfWork: AiFutureOfWork = {
     title: "AI & The Future of Work",
     subtitle:
       "How AI is changing careers, creating new roles, and reshaping the skills young people will need.",
+  },
+
+  funFact: {
+    label: "Fun fact",
+    body: "Endeavrly itself was built with AI — much of this platform was written hand-in-hand with Claude Code, Anthropic's AI coding assistant. The future of work isn't far away; you're using a piece of it right now.",
   },
 
   cards: [

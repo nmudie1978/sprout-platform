@@ -13,6 +13,13 @@ describe("AiFutureOfWorkSection", () => {
     expect(screen.getByRole("heading", { name: "Human Skills Still Matter" })).toBeInTheDocument();
   });
 
+  it("renders the fun fact that Endeavrly was built with AI (Claude Code)", () => {
+    render(<AiFutureOfWorkSection />);
+    expect(screen.getByText("Fun fact:")).toBeInTheDocument();
+    expect(screen.getByText(/built with AI/)).toBeInTheDocument();
+    expect(screen.getByText(/Claude Code/)).toBeInTheDocument();
+  });
+
   it("does NOT render the removed 'AI impact at a glance' chips", () => {
     render(<AiFutureOfWorkSection />);
     expect(screen.queryByText(/AI impact at a glance/i)).not.toBeInTheDocument();

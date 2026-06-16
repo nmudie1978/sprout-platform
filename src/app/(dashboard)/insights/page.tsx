@@ -24,11 +24,9 @@ import {
   TrendingUp,
   Globe2,
   Sparkles,
-  Lightbulb,
   Calendar,
   CheckCircle2,
   Target,
-  Layers,
 } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -45,10 +43,6 @@ import { useInsightUpdates } from "@/hooks/use-insight-updates";
 const JobMarketStatsCarousel = dynamic(
   () => import("@/components/insights/job-market-stats-carousel").then((m) => m.JobMarketStatsCarousel),
   { ssr: false, loading: () => <div className="h-64 animate-pulse rounded-control bg-muted/50" /> }
-);
-const SkillsGallery = dynamic(
-  () => import("@/components/insights/skills-gallery").then((m) => m.SkillsGallery),
-  { ssr: false, loading: () => <div className="h-48 animate-pulse rounded-control bg-muted/50" /> }
 );
 const WhyThisMatters = dynamic(
   () => import("@/components/insights/why-this-matters").then((m) => m.WhyThisMatters),
@@ -208,9 +202,6 @@ export default function IndustryInsightsPage() {
           <a href="#youth-lens" className="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-pill bg-warning/10 text-warning hover:bg-warning/20 transition-colors">
             <Sparkles className="h-3 w-3" /> Youth Lens
           </a>
-          <a href="#dig-deeper" className="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-pill bg-success/10 text-success hover:bg-success/20 transition-colors">
-            <Lightbulb className="h-3 w-3" /> Explore
-          </a>
         </div>
       </motion.div>
 
@@ -327,40 +318,6 @@ export default function IndustryInsightsPage() {
       {/* SECTION 3: AI & THE FUTURE OF WORK */}
       {/* ============================================ */}
       <AiFutureOfWorkSection />
-
-      {/* ============================================ */}
-      {/* SECTION 4: DIG DEEPER */}
-      {/* ============================================ */}
-      <motion.section
-        id="dig-deeper"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.5 }}
-        className="mb-3 scroll-mt-20"
-      >
-        <div className="rounded-card border-2 border-primary/20 dark:border-primary/30 bg-card p-3 sm:p-4">
-          <SectionHeader
-            icon={Layers}
-            label="Explore"
-            title="Skills That Matter"
-            subtitle="Articles, podcasts, and videos on the skills that matter most — drag the gallery to explore"
-            gradient="bg-primary"
-            iconBg="bg-primary/10 dark:bg-primary/20"
-            iconColor="text-primary"
-            labelColor="text-primary/80"
-          />
-
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: 0.55 }}
-            id="skills-that-matter"
-            className="scroll-mt-20"
-          >
-            <SkillsGallery />
-          </motion.div>
-        </div>
-      </motion.section>
 
       {/* ============================================ */}
       {/* DATA SOURCE NOTE */}
