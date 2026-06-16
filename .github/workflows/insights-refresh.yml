@@ -1,13 +1,21 @@
 name: Refresh insights pool
 
 # Runs every Sunday at 04:00 UTC (staggered after events 02:00 and
-# provider-URL validation 03:00), or on manual trigger. Re-verifies every
-# URL in the Industry Insights pool and re-checks stale items via
-# `scripts/refresh-insights-pool.ts`, then opens a PR with the updated
-# data/insights/*.json. Without this the pool decays silently — it last
-# ran manually on 2026-02-12 and ~49% of items had drifted to "failed"
-# (mostly tier-1 sources bot-blocking the old verifier; see
-# src/lib/insights/verify-classify.ts).
+# provider-URL validation 03:00), or on manual trigger. Two phases:
+#
+#   1. INGEST  (scripts/ingest-insights-rss.ts) — pulls RECENT items from a
+#      curated set of tier-1 RSS/Atom feeds, keeps only youth-career-relevant
+#      ones published within the last 12 months, dedupes, and appends them to
+#      data/insights/seed-candidates.json (pruning seeds that have aged out).
+#      This keeps the pool fresh under the 1-year recency rule (MAX_AGE_MONTHS
+#      in src/lib/insights/pool-service.ts) — without it the pool slowly empties
+#      as items age past the cutoff.
+#   2. REFRESH (scripts/refresh-insights-pool.ts) — verifies new seeds + re-
+#      verifies every existing pool URL, writing data/insights/*.json.
+#
+# Then it opens a single PR with the updated data. Without this the pool decays
+# silently — it last drifted to ~49% "failed" before the refresh was automated
+# (mostly tier-1 sources bot-blocking the old verifier; see verify-classify.ts).
 #
 # Zero manual effort — just review and merge the PR.
 
@@ -35,6 +43,14 @@ jobs:
 
       - run: npm ci
 
+      # Phase 1: pull fresh, in-window items from tier-1 RSS feeds into the seed
+      # list. Non-fatal — a blocked/dead feed yields nothing; the refresh below
+      # still runs and re-verifies the existing pool.
+      - name: Ingest fresh insights from RSS
+        run: npm run insights:ingest
+        continue-on-error: true
+
+      # Phase 2: verify new seeds + re-verify the existing pool.
       - name: Refresh insights pool
         run: npm run insights:refresh
 
@@ -43,23 +59,29 @@ jobs:
         with:
           title: 'chore: refresh industry insights pool'
           body: |
-            Automated weekly refresh of `data/insights/verified-pool.json`
-            and `data/insights/pool-metadata.json`.
+            Automated weekly refresh of `data/insights/seed-candidates.json`,
+            `data/insights/verified-pool.json`, and `pool-metadata.json`.
 
-            Every pool URL was re-verified (HEAD → GET fallback) and stale
-            items (>7 days) re-checked via `scripts/refresh-insights-pool.ts`.
+            **Phase 1 — RSS ingest** (`scripts/ingest-insights-rss.ts`): pulled
+            recent, youth-career-relevant items (published within the last 12
+            months) from curated tier-1 feeds, deduped, and appended new seed
+            candidates while pruning any that aged out of the window.
+
+            **Phase 2 — verify** (`scripts/refresh-insights-pool.ts`): verified
+            new seeds and re-verified every existing pool URL (HEAD → GET).
             Classification lives in `src/lib/insights/verify-classify.ts`:
             tier-1 domains that bot-block (401/403/429) or hiccup (5xx) are
             kept as reachable; only 404/410, soft-404 stubs, and unreachable
             hosts are marked failed.
 
             **Review checklist:**
+            - Skim the newly-ingested items (diff in `seed-candidates.json`) for
+              tone/quality fit — they're auto-selected, so this PR is the human
+              gate before they reach users.
             - If `totalFailed` jumped sharply, a host likely changed its URL
               scheme — spot-check 2–3 failed items before merging.
             - If > 30% of items failed, investigate first (likely a network
               hiccup from the CI runner, not real link rot).
-            - New seed candidates in `data/insights/seed-candidates.json` are
-              promoted into the pool only if they verify.
           branch: chore/refresh-insights-pool
           commit-message: 'chore: refresh industry insights pool'
           labels: automated, data

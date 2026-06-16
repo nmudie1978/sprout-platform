@@ -530,5 +530,62 @@
     "lastVerifiedAt": "2026-06-15T22:06:51.094Z",
     "verificationStatus": "verified",
     "canonicalUrlHash": "e09d0113488e95cb5d0495e389760be885ed88280590e4cecf4e5e1339e07fe1"
+  },
+  {
+    "id": "ac40ed90-1032-4b48-adc9-fe883ba6fa9e",
+    "title": "PATH to boost AI training and career opportunities for industry-aligned jobs",
+    "summary": "MIT RAISE and Georgia State University announce an initiative to connect universities, community colleges, industry, and government to expand industry-aligned AI training and career pathways.",
+    "sourceName": "MIT News",
+    "sourceUrl": "https://news.mit.edu/2026/mit-raise-georgia-state-university-announce-path-0604",
+    "contentType": "article",
+    "tags": [
+      "jobs",
+      "future-of-work",
+      "ai"
+    ],
+    "domain": "news.mit.edu",
+    "publishDate": "2026-06-04",
+    "addedAt": "2026-06-16T06:59:56.074Z",
+    "lastVerifiedAt": "2026-06-16T06:59:56.075Z",
+    "verificationStatus": "verified",
+    "canonicalUrlHash": "e94b2e945c229420433077d2393c2a70ce8f82b7f04c00009cd42a231fffb0df"
+  },
+  {
+    "id": "aa52cc08-d955-4dad-8af9-a3c0633bd59f",
+    "title": "Technology usually creates jobs for young, skilled workers. Will AI do the same?",
+    "summary": "A new study of the postwar U.S. shows which kinds of workers historically filled new tech-enabled jobs.",
+    "sourceName": "MIT News",
+    "sourceUrl": "https://news.mit.edu/2026/technology-creates-jobs-young-skilled-workers-ai-0521",
+    "contentType": "article",
+    "tags": [
+      "jobs",
+      "future-of-work",
+      "ai"
+    ],
+    "domain": "news.mit.edu",
+    "publishDate": "2026-05-21",
+    "addedAt": "2026-06-16T06:59:56.246Z",
+    "lastVerifiedAt": "2026-06-16T06:59:56.246Z",
+    "verificationStatus": "verified",
+    "canonicalUrlHash": "d3d0f91725e77d6083cf9bb135bc6769bef1b23494538b50ff66e586d2a9a45c"
+  },
+  {
+    "id": "92b4f4b5-0666-4b76-9bfe-5641f1b86376",
+    "title": "Study: Firms often use automation to control certain workers’ wages",
+    "summary": "MIT economists found US companies tend to target employees earning a “wage premium,” which increases inequality but not necessarily productivity.",
+    "sourceName": "MIT News",
+    "sourceUrl": "https://news.mit.edu/2026/study-firms-often-use-automation-control-certain-workers-wages-0507",
+    "contentType": "article",
+    "tags": [
+      "jobs",
+      "future-of-work",
+      "automation"
+    ],
+    "domain": "news.mit.edu",
+    "publishDate": "2026-05-07",
+    "addedAt": "2026-06-16T06:59:56.378Z",
+    "lastVerifiedAt": "2026-06-16T06:59:56.378Z",
+    "verificationStatus": "verified",
+    "canonicalUrlHash": "e081f5ee6e7c58b832f05cbdbe6d20fb81cfad804ea9e654761682064dda6963"
   }
 ]
