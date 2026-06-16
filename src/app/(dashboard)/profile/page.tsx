@@ -39,6 +39,7 @@ import {
 import { Avatar } from "@/components/avatar";
 import Link from "next/link";
 import type { GoalSlot } from "@/lib/goals/types";
+import { PLATFORM_MIN_AGE, PLATFORM_MAX_AGE } from "@/lib/safety/age";
 
 const INTEREST_OPTIONS = [
   "Technology",
@@ -55,8 +56,12 @@ const INTEREST_OPTIONS = [
 
 // Date of birth dropdown helpers
 const currentYear = new Date().getFullYear();
-// Youth platform: allow ages 13-24
-const DOB_YEARS = Array.from({ length: 12 }, (_, i) => currentYear - 13 - i);
+// Youth platform: ages 15–30 (one extra year each side as a safe buffer for
+// birthdays not yet reached this calendar year).
+const DOB_YEARS = Array.from(
+  { length: PLATFORM_MAX_AGE - PLATFORM_MIN_AGE + 2 },
+  (_, i) => currentYear - PLATFORM_MIN_AGE - i,
+);
 const DOB_MONTHS = [
   { value: "01", label: "January" },
   { value: "02", label: "February" },

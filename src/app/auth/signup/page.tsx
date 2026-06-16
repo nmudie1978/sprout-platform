@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { LAUNCHED_COUNTRIES, DEFAULT_COUNTRY } from "@/lib/countries";
+import { PLATFORM_MIN_AGE, PLATFORM_MAX_AGE } from "@/lib/safety/age";
 import { Sparkles, Loader2, ArrowLeft, ArrowRight } from "lucide-react";
 
 /**
@@ -80,16 +81,18 @@ function SignUpForm() {
       age--;
     }
     let bracket: string | null = null;
-    if (age >= 15 && age <= 17) bracket = "SIXTEEN_SEVENTEEN";
-    else if (age >= 18 && age <= 23) bracket = "EIGHTEEN_TWENTY";
+    if (age >= PLATFORM_MIN_AGE && age <= 17) bracket = "SIXTEEN_SEVENTEEN";
+    else if (age >= 18 && age <= PLATFORM_MAX_AGE) bracket = "EIGHTEEN_TWENTY";
     return { age, bracket };
   };
 
   const ageInfo = calculateAgeInfo(dateOfBirth);
-  const isUnder15 = ageInfo.age !== null && ageInfo.age < 15;
-  const isOver23 = ageInfo.age !== null && ageInfo.age > 23;
+  const isUnderMinAge = ageInfo.age !== null && ageInfo.age < PLATFORM_MIN_AGE;
+  const isAboveMaxAge = ageInfo.age !== null && ageInfo.age > PLATFORM_MAX_AGE;
   const isEligible =
-    ageInfo.age !== null && ageInfo.age >= 15 && ageInfo.age <= 23;
+    ageInfo.age !== null &&
+    ageInfo.age >= PLATFORM_MIN_AGE &&
+    ageInfo.age <= PLATFORM_MAX_AGE;
 
   // ── Submit ────────────────────────────────────────────────────────
   const handleSubmit = async (e: React.FormEvent) => {
@@ -205,7 +208,7 @@ function SignUpForm() {
                 </div>
                 <h1 className="text-2xl font-bold tracking-tight">First, when were you born?</h1>
                 <p className="text-sm text-muted-foreground mt-1">
-                  Endeavrly is built for 15&ndash;23 year olds. We just need this so we can set things up properly.
+                  Endeavrly is built for 15&ndash;30 year olds. We just need this so we can set things up properly.
                 </p>
               </div>
 
@@ -225,14 +228,14 @@ function SignUpForm() {
                 {/* Live age feedback */}
                 {dateOfBirth && ageInfo.age !== null && (
                   <div className="pt-1">
-                    {isUnder15 && (
+                    {isUnderMinAge && (
                       <p className="text-xs text-rose-500 leading-relaxed">
                         Endeavrly is for ages 15 and up. We hope to see you when you&rsquo;re a bit older.
                       </p>
                     )}
-                    {isOver23 && (
+                    {isAboveMaxAge && (
                       <p className="text-xs text-rose-500 leading-relaxed">
-                        Endeavrly is for 15&ndash;23 year olds. If you&rsquo;re a{" "}
+                        Endeavrly is for 15&ndash;30 year olds. If you&rsquo;re a{" "}
                         <Link
                           href="/auth/signup?role=teacher"
                           className="text-teal-500 hover:underline"
@@ -242,7 +245,7 @@ function SignUpForm() {
                         , sign up via that link instead.
                       </p>
                     )}
-                    {isOver23 && (
+                    {isAboveMaxAge && (
                       <p className="text-xs text-muted-foreground leading-relaxed mt-2">
                         Are you a parent or professional who&rsquo;d like to share your career path to help young people?{" "}
                         <Link href="/for-parents" className="text-teal-500 hover:underline">
