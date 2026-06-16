@@ -16,8 +16,8 @@ import {
   StageLegend,
   StatStrip,
   TagList,
-  TimelineItem,
 } from "./primitives";
+import { WindingRoad } from "./winding-road";
 import type {
   ClaritySummary,
   DiscoverSummary,
@@ -640,13 +640,12 @@ function capitalise(s: string): string {
 //  Roadmap
 // ═══════════════════════════════════════════════════════════════════
 
-const ITEMS_PER_ROADMAP_PAGE = 7;
-
 /**
- * A true vertical timeline. Each step is a TimelineItem (stage dot +
- * connector rail + content column); @react-pdf auto-breaks across
- * pages if the step count would overflow, and TimelineItem is
- * wrap={false} so no single step splits mid-row.
+ * The roadmap page. The steps render as the Clarity-tab "Winding Road"
+ * (see `WindingRoad`): a serpentine path that wraps across rows so the whole
+ * journey fits on a single page — never chopped. An optional "Learning track"
+ * (school subjects) follows beneath it. Planned as one page upstream
+ * (`roadmapPageCount = 1`), so there is no pagination here.
  */
 export function RoadmapPages({
   data,
@@ -659,12 +658,13 @@ export function RoadmapPages({
   education: EducationContext;
   startingPageNumber: number;
   totalPages: number;
+  /** Legacy — retained for the Document call site; pagination is gone. */
   itemsPerPage?: number;
 }): React.ReactElement[] {
-  const perPage = itemsPerPage ?? ITEMS_PER_ROADMAP_PAGE;
   const hasItems = data.items.length > 0;
   const hasSchoolTrack = data.schoolTrack.length > 0;
   void education;
+  void itemsPerPage;
 
   if (!hasItems && !hasSchoolTrack) {
     return [
@@ -684,100 +684,43 @@ export function RoadmapPages({
     ];
   }
 
-  const pageCount = Math.max(1, Math.ceil(data.items.length / perPage));
-  const out: React.ReactElement[] = [];
+  return [
+    <PageFrame
+      key="rm"
+      sectionLabel="Your Roadmap"
+      pageNumber={startingPageNumber}
+      totalPages={totalPages}
+    >
+      <SectionHeader
+        eyebrow="Your Roadmap"
+        title={
+          data.career
+            ? `Your personal roadmap to ${data.career}`
+            : "Your personal roadmap"
+        }
+        lead={
+          data.isFallback
+            ? "A draft roadmap built from the career's real requirements and your current age. Open the Clarity tab in-app to refine it."
+            : "An age-anchored timeline from today to a senior role — the version captured on the day this report was generated."
+        }
+      />
 
-  for (let p = 0; p < pageCount; p++) {
-    const slice = data.items.slice(p * perPage, (p + 1) * perPage);
-    const isFirst = p === 0;
-    const isLastRoadmapPage = p === pageCount - 1;
-    const pageNumber = startingPageNumber + p;
-    const sliceLastIdx = slice.length - 1;
+      {hasItems && (
+        <StageLegend
+          stages={[
+            { label: "Foundation", color: stageColors.foundation.accent },
+            { label: "Education", color: stageColors.education.accent },
+            { label: "Certification", color: stageColors.certification.accent },
+            { label: "Experience", color: stageColors.experience.accent },
+            { label: "Career", color: stageColors.career.accent },
+          ]}
+        />
+      )}
 
-    out.push(
-      <PageFrame
-        key={`rm-${p}`}
-        sectionLabel="Your Roadmap"
-        pageNumber={pageNumber}
-        totalPages={totalPages}
-      >
-        {isFirst ? (
-          <SectionHeader
-            eyebrow="Your Roadmap"
-            title={
-              data.career
-                ? `Your personal roadmap to ${data.career}`
-                : "Your personal roadmap"
-            }
-            lead={
-              data.isFallback
-                ? "A draft roadmap built from the career's real requirements and your current age. Open the Clarity tab in-app to refine it."
-                : "An age-anchored timeline from today to a senior role — the version captured on the day this report was generated."
-            }
-          />
-        ) : (
-          <View style={{ marginBottom: 20 }}>
-            <Text style={styles.h1}>Your roadmap, continued</Text>
-            <View style={{ height: 14 }} />
-            <View style={styles.rule} />
-          </View>
-        )}
+      {hasItems && <WindingRoad data={data} />}
 
-        {isFirst && hasItems && (
-          <StageLegend
-            stages={[
-              { label: "Foundation", color: stageColors.foundation.accent },
-              { label: "Education", color: stageColors.education.accent },
-              { label: "Certification", color: stageColors.certification.accent },
-              { label: "Experience", color: stageColors.experience.accent },
-              { label: "Career", color: stageColors.career.accent },
-            ]}
-          />
-        )}
-
-        {slice.length > 0 && (
-          <View>
-            {slice.map((step, i) => {
-              const stage = stageColors[step.stage];
-              const stageLabel = step.stage[0].toUpperCase() + step.stage.slice(1);
-              const startYear =
-                data.birthYear != null ? data.birthYear + step.startAge : null;
-              const endYear =
-                data.birthYear != null && step.endAge != null
-                  ? data.birthYear + step.endAge
-                  : null;
-              const ageLabel = step.endAge
-                ? `Age ${step.startAge}–${step.endAge}`
-                : `Age ${step.startAge}`;
-              const yearLabel = startYear
-                ? endYear && endYear !== startYear
-                  ? `${startYear}–${endYear}`
-                  : `${startYear}`
-                : undefined;
-              const isLast = i === sliceLastIdx && isLastRoadmapPage && !hasSchoolTrack;
-              const summary = step.subtitle || step.description || undefined;
-              return (
-                <TimelineItem
-                  key={i}
-                  stage={step.stage}
-                  stageLabel={stageLabel}
-                  stageColor={stage.accent}
-                  stageBg={stage.bg}
-                  stageInk={stage.ink}
-                  title={step.title}
-                  summary={summary}
-                  ageLabel={ageLabel}
-                  yearLabel={yearLabel}
-                  isMilestone={step.isMilestone}
-                  isLast={isLast}
-                />
-              );
-            })}
-          </View>
-        )}
-
-        {isLastRoadmapPage && hasSchoolTrack && (
-          <View style={{ marginTop: 24 }}>
+      {hasSchoolTrack && (
+        <View style={{ marginTop: 24 }}>
             <View style={styles.rule} />
             <View style={{ height: 18 }} />
             <Text style={[styles.h2, { marginBottom: 6 }]}>Learning track</Text>
@@ -847,10 +790,7 @@ export function RoadmapPages({
           </View>
         )}
       </PageFrame>,
-    );
-  }
-
-  return out;
+  ];
 }
 
 // ═══════════════════════════════════════════════════════════════════
