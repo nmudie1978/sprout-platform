@@ -240,13 +240,6 @@ const STAGE_OPTIONS = [
   { value: 'other' as const, label: 'Other' },
 ];
 
-const EDUCATION_STAGE_LABEL: Record<'school' | 'college' | 'university' | 'other', string> = {
-  school: 'school',
-  college: 'college',
-  university: 'university',
-  other: 'current',
-};
-
 export function TimelineDetailDialog({
   item,
   allItems,
@@ -488,80 +481,56 @@ export function TimelineDetailDialog({
                   re-pick a stage. */}
               {(() => {
                 const isAdult = typeof userAge === 'number' && userAge >= 18;
-                const isMinor = typeof userAge === 'number' && userAge < 18;
 
-                // Under-18: only School — they're in school, no need to choose.
-                // 18+: University first, School last with Vg3 hint.
-                // Age unknown: show all options (safe default).
-                const orderedOptions = isMinor
-                  ? [{ value: 'school' as const, label: 'School' }]
-                  : isAdult
-                    ? [
-                        { value: 'university' as const, label: 'University' },
-                        { value: 'college' as const, label: 'College' },
-                        { value: 'other' as const, label: 'Other' },
-                        { value: 'school' as const, label: 'School' },
-                      ]
-                    : STAGE_OPTIONS;
-                const hasDetails =
-                  schoolName.trim().length > 0 ||
-                  studyProgram.trim().length > 0 ||
-                  expectedCompletion.trim().length > 0 ||
-                  subjects.length > 0;
+                // Always offer ALL four stages so the user can freely change
+                // their starting point at any time — including after they've
+                // already saved details. Order is age-aware: adults see
+                // University first (most common), under-18s / unknown age see
+                // School first.
+                const orderedOptions = isAdult
+                  ? [
+                      { value: 'university' as const, label: 'University' },
+                      { value: 'college' as const, label: 'College' },
+                      { value: 'other' as const, label: 'Other' },
+                      { value: 'school' as const, label: 'School' },
+                    ]
+                  : STAGE_OPTIONS;
                 return (
-                  <>
-                    {/* Only show the stage picker if there's more than one option */}
-                    {orderedOptions.length > 1 && (
-                      <div className="flex gap-1.5">
-                        {orderedOptions.map(opt => {
-                          const isSchoolForAdult = isAdult && opt.value === 'school';
-                          const isLocked = hasDetails && opt.value !== eduStage;
-                          return (
-                            <button
-                              key={opt.value}
-                              onClick={() => {
-                                if (isLocked) return;
-                                setEduStage(opt.value);
-                                // Refresh the finish year default for the
-                                // new stage — keeps it in sync with what the
-                                // user just picked (e.g. School → 18, Uni → age+3).
-                                setExpectedCompletion(defaultFinishYearFor(userAge, opt.value));
-                                setDirty(true);
-                              }}
-                              disabled={isLocked}
-                              title={
-                                isLocked
-                                  ? 'Clear your current education details first to switch stage'
-                                  : isSchoolForAdult
-                                    ? "Only if you're still in Vg3"
-                                    : undefined
-                              }
-                              className={cn(
-                                'flex-1 rounded-lg px-2 py-2 text-[11px] font-medium transition-all border flex flex-col items-center justify-center leading-tight',
-                                eduStage === opt.value
-                                  ? 'border-teal-500/30 bg-teal-500/10 text-teal-400'
-                                  : isLocked
-                                    ? 'border-transparent bg-muted/10 text-muted-foreground/55 cursor-not-allowed'
-                                    : 'border-transparent bg-muted/20 text-muted-foreground/75 hover:bg-muted/40'
-                              )}
-                            >
-                              <span>{opt.label}</span>
-                              {isSchoolForAdult && !isLocked && (
-                                <span className="text-[8px] text-muted-foreground/70 font-normal mt-0.5">
-                                  if you&apos;re still in Vg3
-                                </span>
-                              )}
-                            </button>
-                          );
-                        })}
-                      </div>
-                    )}
-                    {hasDetails && orderedOptions.length > 1 && (
-                      <p className="text-[9px] text-muted-foreground/75 mt-1 leading-snug">
-                        Other stages are locked while your {EDUCATION_STAGE_LABEL[eduStage]} details are filled in. Clear them to switch.
-                      </p>
-                    )}
-                  </>
+                  <div className="flex gap-1.5">
+                    {orderedOptions.map(opt => {
+                      const isSchoolForAdult = isAdult && opt.value === 'school';
+                      return (
+                        <button
+                          key={opt.value}
+                          type="button"
+                          onClick={() => {
+                            setEduStage(opt.value);
+                            // School has no study programme — clear any stale
+                            // value carried over from a previous stage.
+                            if (opt.value === 'school') setStudyProgram('');
+                            // Refresh the finish-year default for the new stage
+                            // (e.g. School → 18, University → age + 3).
+                            setExpectedCompletion(defaultFinishYearFor(userAge, opt.value));
+                            setDirty(true);
+                          }}
+                          title={isSchoolForAdult ? "Only if you're still in Vg3" : undefined}
+                          className={cn(
+                            'flex-1 rounded-lg px-2 py-2 text-[11px] font-medium transition-all border flex flex-col items-center justify-center leading-tight',
+                            eduStage === opt.value
+                              ? 'border-teal-500/30 bg-teal-500/10 text-teal-400'
+                              : 'border-transparent bg-muted/20 text-muted-foreground/75 hover:bg-muted/40'
+                          )}
+                        >
+                          <span>{opt.label}</span>
+                          {isSchoolForAdult && (
+                            <span className="text-[8px] text-muted-foreground/70 font-normal mt-0.5">
+                              if you&apos;re still in Vg3
+                            </span>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
                 );
               })()}
 

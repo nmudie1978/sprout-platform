@@ -40,6 +40,44 @@ function id(): string {
 }
 
 /**
+ * Insert a "Grow into the core role" step between the entry-level step and
+ * the first career (senior) step, so the roadmap shows the role's evolution:
+ * entry-level position STARTS → CORE/established role → GROWS (senior/lead).
+ * No-op when there's no career step or no room between entry and senior.
+ */
+function withCoreRoleStep<T extends { stage: string; title: string; startAge: number; endAge?: number | null }>(
+  items: T[],
+  career: string,
+): T[] {
+  const careerIdx = items.findIndex((i) => i.stage === 'career');
+  if (careerIdx <= 0) return items;
+  const seniorStep = items[careerIdx];
+  // Don't duplicate an existing core/mid step.
+  if (/\bcore\b|grow into/i.test(seniorStep.title)) return items;
+  const entryStep = items[careerIdx - 1];
+  const entryEnd = entryStep.endAge ?? entryStep.startAge;
+  const coreStart = entryEnd + 1;
+  if (coreStart >= seniorStep.startAge) return items; // no room
+  const core = {
+    id: id(),
+    stage: 'career',
+    title: 'Grow into the core role',
+    subtitle: 'Where the role really takes shape',
+    startAge: coreStart,
+    endAge: Math.max(coreStart + 1, seniorStep.startAge - 1),
+    isMilestone: false,
+    icon: 'Briefcase',
+    description: `A few years in, you move past entry-level into the core ${career} role — owning your work end-to-end and building the deep expertise that the role is really about, before stepping up further.`,
+    microActions: [
+      'Take ownership of bigger pieces of work end-to-end',
+      'Deepen the specialist skills the role is built on',
+      'Build a track record colleagues rely on',
+    ],
+  } as unknown as T;
+  return [...items.slice(0, careerIdx), core, ...items.slice(careerIdx)];
+}
+
+/**
  * Build certification-stage items for a career. When the career matches
  * a known certification path (e.g. "network" → CCNA/CCNP/CCIE, "ai-
  * engineer" → AWS ML, TensorFlow Developer, etc.), we emit one
@@ -672,7 +710,13 @@ export function generateFallbackTimeline(
   // Filter out items that start before the user's age (defensive — the
   // branches above already anchor to `a`, but a stage like 'school' for
   // a much older user could leave stale entries).
-  const filteredItems = items.filter(item => item.startAge >= a);
+  let filteredItems = items.filter(item => item.startAge >= a);
+
+  // Show the role's evolution explicitly: where the entry-level position
+  // STARTS → the CORE/established role → how it GROWS (senior/lead). The
+  // branches above jump straight from entry-level to senior, so insert a
+  // "core role" step in between when there's room.
+  filteredItems = withCoreRoleStep(filteredItems, career);
 
   const schoolTrack: SchoolTrackItem[] = [
     {
