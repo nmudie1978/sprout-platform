@@ -317,7 +317,7 @@ const DID_YOU_KNOW_FACTS = [
   { text: '43% of students don\'t feel prepared for their future.', source: 'Gallup', href: '/about/research#gallup-preparedness' },
   { text: 'Only 45% of students have any real-world career exposure before leaving school.', source: 'OECD', href: '/about/research#oecd-job-shadowing' },
   { text: 'Career exploration leads to better employment outcomes later in life.', source: 'OECD', href: '/about/research#oecd-career-outcomes' },
-  { text: 'Healthcare is one of the fastest-growing sectors in Norway.', source: 'SSB', href: '/insights#dig-deeper' },
+  { text: 'Healthcare is one of the fastest-growing sectors in Norway.', source: 'SSB', href: '/insights' },
   { text: 'Over half of students plan to work in just 10 occupations.', source: 'OECD', href: '/about/research#oecd-top-ten-jobs' },
   { text: 'Only 35% of students have undertaken an internship before finishing education.', source: 'OECD', href: '/about/research#oecd-internships' },
 ];

@@ -71,7 +71,7 @@ const ICONS: Record<AiIconKey, LucideIcon> = {
 };
 
 export function AiFutureOfWorkSection() {
-  const { header, cards, models, certifications, videos, modals, timeline } =
+  const { header, funFact, cards, models, certifications, videos, modals, timeline } =
     aiFutureOfWork;
   const [openModal, setOpenModal] = useState<AiModalId | null>(null);
   const [openVideo, setOpenVideo] = useState<AiVideo | null>(null);
@@ -102,6 +102,19 @@ export function AiFutureOfWorkSection() {
               <p className="mt-1 text-xs text-muted-foreground sm:text-sm">{header.subtitle}</p>
             </div>
           </div>
+        </div>
+
+        {/* Fun fact — Endeavrly itself was built with AI */}
+        <div className="mb-4 flex items-start gap-3 rounded-card border border-violet-500/20 bg-violet-500/[0.06] p-3 sm:mb-6 sm:p-4 dark:bg-violet-500/10">
+          <div className="mt-0.5 inline-flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-card bg-violet-500/15 text-violet-500">
+            <Code2 className="h-4 w-4" aria-hidden="true" />
+          </div>
+          <p className="text-xs leading-relaxed text-muted-foreground sm:text-sm">
+            <span className="font-semibold text-violet-600 dark:text-violet-300">
+              {funFact.label}:
+            </span>{" "}
+            {funFact.body}
+          </p>
         </div>
 
         {/* Three pillar cards */}
@@ -272,14 +285,14 @@ export function AiFutureOfWorkSection() {
         {/* Watch: careers in AI */}
         <div className="mt-5">
           <SubHeading title={videos.heading} subtitle={videos.subheading} />
-          {/* Tiles capped to 50% width (centered) so each video renders ~50% smaller. */}
-          <div className="mx-auto grid max-w-[50%] grid-cols-1 gap-3 sm:grid-cols-2">
+          {/* Horizontal carousel — videos flow left → right; scroll/swipe to explore. */}
+          <div className="-mx-1 flex snap-x snap-mandatory gap-3 overflow-x-auto px-1 pb-2 [scrollbar-width:thin]">
             {videos.items.map((v) => (
               <button
                 key={v.id}
                 type="button"
                 onClick={() => setOpenVideo(v)}
-                className="group overflow-hidden rounded-card border border-border/40 bg-card/40 text-left transition-all hover:-translate-y-0.5 hover:border-violet-500/40 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/50"
+                className="group w-64 flex-shrink-0 snap-start overflow-hidden rounded-card border border-border/40 bg-card/40 text-left transition-all hover:-translate-y-0.5 hover:border-violet-500/40 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/50"
               >
                 <div className="relative aspect-video w-full overflow-hidden bg-muted">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
