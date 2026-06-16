@@ -36,7 +36,11 @@ export const DEFAULT_COUNTRY = "Norway";
  * SUPPORTED_COUNTRIES (the roadmap list).
  */
 export const LAUNCHED_COUNTRIES: Country[] = SUPPORTED_COUNTRIES.filter(
-  (c) => c.name === "Norway" || c.name === "Spain",
+  (c) =>
+    c.name === "Norway" ||
+    c.name === "Spain" ||
+    c.name === "Sweden" ||
+    c.name === "Denmark",
 );
 
 /** True only for countries we have fully localised (offered in the picker). */
@@ -59,10 +63,20 @@ export function countryToCode(name?: string | null): string | null {
 }
 
 /**
- * The UI locale a country should default to. Only Spain currently diverges
- * from the platform default (en-GB). Norway intentionally stays en-GB unless
- * the user picks Norsk — see CLAUDE.md / existing locale behaviour.
+ * The UI locale a country should default to. Spain → Spanish, Sweden →
+ * Swedish, Denmark → Danish. Norway intentionally stays en-GB unless the user
+ * picks Norsk — see CLAUDE.md / existing locale behaviour. (AI chat output
+ * still stays English per the english-only policy; this only sets the UI.)
  */
 export function defaultLocaleForCountry(name?: string | null): string | null {
-  return name === "Spain" ? "es" : null;
+  switch (name) {
+    case "Spain":
+      return "es";
+    case "Sweden":
+      return "sv";
+    case "Denmark":
+      return "da";
+    default:
+      return null;
+  }
 }

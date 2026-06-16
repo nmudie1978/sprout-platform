@@ -1,10 +1,14 @@
 import type { Career } from "@/lib/career-pathways";
 import type { CareerLocalizationEntry, LocalizedCareerView } from "./types";
 import { ES_CAREER_LOCALIZATION } from "./es";
+import { SV_CAREER_LOCALIZATION } from "./sv";
+import { DA_CAREER_LOCALIZATION } from "./da";
 
 /** Country name → (careerId → overrides). Extend per launched country. */
 const LOCALIZATION: Record<string, Record<string, CareerLocalizationEntry>> = {
   Spain: ES_CAREER_LOCALIZATION,
+  Sweden: SV_CAREER_LOCALIZATION,
+  Denmark: DA_CAREER_LOCALIZATION,
 };
 
 /**

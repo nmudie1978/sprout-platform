@@ -13,6 +13,8 @@ describe('AI Guardrails', () => {
       expect(localeToLanguage('en-GB')).toBe('English')
       expect(localeToLanguage('nb-NO')).toBe('Norwegian')
       expect(localeToLanguage('es')).toBe('Spanish')
+      expect(localeToLanguage('sv')).toBe('Swedish')
+      expect(localeToLanguage('da')).toBe('Danish')
       expect(localeToLanguage(undefined)).toBe('English')
       expect(localeToLanguage('zz')).toBe('English')
     })
