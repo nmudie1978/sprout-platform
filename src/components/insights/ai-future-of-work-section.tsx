@@ -272,8 +272,8 @@ export function AiFutureOfWorkSection() {
         {/* Watch: careers in AI */}
         <div className="mt-5">
           <SubHeading title={videos.heading} subtitle={videos.subheading} />
-          {/* Tiles capped to 75% width (centered) so each video renders ~25% smaller. */}
-          <div className="mx-auto grid max-w-[75%] grid-cols-1 gap-3 sm:grid-cols-2">
+          {/* Tiles capped to 50% width (centered) so each video renders ~50% smaller. */}
+          <div className="mx-auto grid max-w-[50%] grid-cols-1 gap-3 sm:grid-cols-2">
             {videos.items.map((v) => (
               <button
                 key={v.id}
