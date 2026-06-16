@@ -1,4 +1,4 @@
-import { ExternalLink, Compass, BarChart3, Briefcase, Route, Target, Shield } from "lucide-react";
+import { ExternalLink, Compass, BarChart3, Briefcase, Route, Target, Shield, ChevronRight } from "lucide-react";
 import { BrandMark } from "@/components/brand-mark";
 import Link from "next/link";
 import { getAboutPageStats, type ResearchStatWithYear } from "@/lib/researchEvidence";
@@ -56,47 +56,64 @@ export default function InfoPage() {
           first, then Understand, then Clarity. Dynamic colour classes
           unrolled to fixed strings so Tailwind's JIT keeps them. */}
       <div className="pt-6 border-t border-border mb-8">
-        <h2 className="text-lg font-semibold mb-3">Discover, Understand, Clarity</h2>
-        <p className="text-sm text-muted-foreground mb-4">Three lenses, sequential on purpose — each gives you what you need for the next.</p>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-          <div
-            className="p-3 rounded-lg bg-teal-50/50 dark:bg-teal-950/20 border border-teal-200/50 dark:border-teal-800/30 flex flex-col motion-safe:animate-fade-in-up motion-safe:opacity-0"
-            style={{ animationDelay: "0s" }}
-          >
-            <div className="flex items-center gap-2 mb-1.5">
-              <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-teal-500/20 text-teal-600 dark:text-teal-400 text-[10px] font-bold shrink-0">1</span>
-              <h3 className="text-sm font-semibold">Discover — Explore the career</h3>
+        <h2 className="text-lg font-semibold mb-1.5">Discover, Understand, Clarity</h2>
+        <p className="text-sm text-muted-foreground mb-5">Three lenses, sequential on purpose — each gives you what you need for the next.</p>
+        {/* Three lenses rendered L-to-R as a connected sequence: a gradient
+            accent bar + glowing numbered node per lens, with flow chevrons in
+            the gaps (desktop). Colour classes are full static strings so
+            Tailwind's JIT keeps them. */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+          {[
+            {
+              n: "1", name: "Discover", tagline: "Explore the career", delay: "0s",
+              desc: "See what a career looks like at a glance — salary, growth, typical day, and the school subjects you need. Enough to know if it sparks your interest.",
+              card: "border-teal-500/25 from-teal-500/[0.07] hover:border-teal-500/45",
+              bar: "from-teal-400 to-teal-500",
+              node: "from-teal-400 to-teal-500 shadow-[0_0_16px_-2px_rgba(20,184,166,0.65)]",
+              eyebrow: "text-teal-600 dark:text-teal-400",
+            },
+            {
+              n: "2", name: "Understand", tagline: "Know the reality", delay: "0.4s",
+              desc: "Go deeper into education paths, real entry requirements, university programmes, and honest reality checks. This is where curiosity becomes clarity.",
+              card: "border-emerald-500/25 from-emerald-500/[0.07] hover:border-emerald-500/45",
+              bar: "from-emerald-400 to-emerald-500",
+              node: "from-emerald-400 to-emerald-500 shadow-[0_0_16px_-2px_rgba(16,185,129,0.65)]",
+              eyebrow: "text-emerald-600 dark:text-emerald-400",
+            },
+            {
+              n: "3", name: "Clarity", tagline: "See your full journey", delay: "0.8s",
+              desc: "Everything comes together here — your personalised roadmap, voice-guided narration of your path, a Momentum list of concrete next moves, and the full timeline of what it takes to get there.",
+              card: "border-amber-500/25 from-amber-500/[0.07] hover:border-amber-500/45",
+              bar: "from-amber-400 to-amber-500",
+              node: "from-amber-400 to-amber-500 shadow-[0_0_16px_-2px_rgba(245,158,11,0.65)]",
+              eyebrow: "text-amber-600 dark:text-amber-400",
+            },
+          ].map((lens, i) => (
+            <div key={lens.name} className="relative">
+              <article
+                className={`relative flex h-full flex-col overflow-hidden rounded-2xl border bg-gradient-to-b to-transparent p-4 transition-all duration-300 hover:-translate-y-0.5 motion-safe:animate-fade-in-up motion-safe:opacity-0 ${lens.card}`}
+                style={{ animationDelay: lens.delay }}
+              >
+                <div className={`absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r ${lens.bar}`} />
+                <div className="mb-2.5 flex items-center gap-2.5">
+                  <span className={`inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br text-sm font-bold text-white ${lens.node}`}>
+                    {lens.n}
+                  </span>
+                  <div className="min-w-0">
+                    <p className={`text-[10px] font-semibold uppercase tracking-[0.16em] ${lens.eyebrow}`}>{lens.name}</p>
+                    <h3 className="text-sm font-semibold leading-tight text-foreground">{lens.tagline}</h3>
+                  </div>
+                </div>
+                <p className="text-xs text-muted-foreground leading-relaxed">{lens.desc}</p>
+              </article>
+              {i < 2 && (
+                <ChevronRight
+                  aria-hidden
+                  className="pointer-events-none absolute -right-[11px] top-[34px] z-10 hidden h-5 w-5 text-muted-foreground/35 md:block"
+                />
+              )}
             </div>
-            <p className="text-xs text-muted-foreground leading-relaxed">
-              See what a career looks like at a glance — salary, growth, typical day, and the school subjects you need. Enough to know if it sparks your interest.
-            </p>
-          </div>
-
-          <div
-            className="p-3 rounded-lg bg-emerald-50/50 dark:bg-emerald-950/20 border border-emerald-200/50 dark:border-emerald-800/30 flex flex-col motion-safe:animate-fade-in-up motion-safe:opacity-0"
-            style={{ animationDelay: "0.4s" }}
-          >
-            <div className="flex items-center gap-2 mb-1.5">
-              <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold shrink-0">2</span>
-              <h3 className="text-sm font-semibold">Understand — Know the reality</h3>
-            </div>
-            <p className="text-xs text-muted-foreground leading-relaxed">
-              Go deeper into education paths, real entry requirements, university programmes, and honest reality checks. This is where curiosity becomes clarity.
-            </p>
-          </div>
-
-          <div
-            className="p-3 rounded-lg bg-amber-50/50 dark:bg-amber-950/20 border border-amber-200/50 dark:border-amber-800/30 flex flex-col motion-safe:animate-fade-in-up motion-safe:opacity-0"
-            style={{ animationDelay: "0.8s" }}
-          >
-            <div className="flex items-center gap-2 mb-1.5">
-              <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-amber-500/20 text-amber-600 dark:text-amber-400 text-[10px] font-bold shrink-0">3</span>
-              <h3 className="text-sm font-semibold">Clarity — See your full journey</h3>
-            </div>
-            <p className="text-xs text-muted-foreground leading-relaxed">
-              Everything comes together here — your personalised roadmap, voice-guided narration of your path, a Momentum list of concrete next moves, and the full timeline of what it takes to get there.
-            </p>
-          </div>
+          ))}
         </div>
       </div>
 
