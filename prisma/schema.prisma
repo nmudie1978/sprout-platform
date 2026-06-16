@@ -1420,6 +1420,26 @@ model IndustryInsightsModule {
   @@index([key])
 }
 
+/// Weekly RSS-ingested insight items (articles/videos) from allow-listed
+/// orgs. Written by the /api/cron/ingest-insights cron and merged over the
+/// static verified-pool.json seed at serve time. Self-pruned when a URL dies.
+model IngestedInsight {
+  id          String    @id @default(uuid())
+  urlHash     String    @unique // SHA-256 of canonicalized URL — dedupe key
+  url         String
+  title       String
+  summary     String?   @db.Text
+  sourceName  String
+  contentType String // "article" | "video"
+  tags        String[]
+  publishDate DateTime?
+  verifiedAt  DateTime  @default(now())
+  createdAt   DateTime  @default(now())
+
+  @@index([contentType])
+  @@index([verifiedAt])
+}
+
 // ============================================
 // VERIFIED LEARNING RESOURCES
 // ============================================

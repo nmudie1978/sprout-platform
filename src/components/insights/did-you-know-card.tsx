@@ -33,6 +33,7 @@ import {
   type ResearchFact,
 } from "@/lib/researchFacts";
 import { useTranslateContent } from "@/hooks/use-translate-content";
+import { getISOWeekSeed } from "@/lib/insights/weekly-rotation";
 
 type ViewMode = "compact" | "list" | "grid";
 
@@ -254,12 +255,11 @@ export function DidYouKnowCard({
   // Initialize seed from localStorage
   useEffect(() => {
     if (typeof window === "undefined") return;
-    let storedSeed = localStorage.getItem(SEED_KEY);
-    if (!storedSeed) {
-      storedSeed = String(Date.now());
-      localStorage.setItem(SEED_KEY, storedSeed);
-    }
-    setSeed(Number(storedSeed));
+    // Seed the deck by ISO week so the featured fact rotates every Monday
+    // (stable within the week), instead of freezing to a one-time timestamp.
+    const weekSeed = getISOWeekSeed(new Date());
+    setSeed(weekSeed);
+    localStorage.setItem(SEED_KEY, String(weekSeed));
 
     // Restore last index
     const storedIndex = localStorage.getItem(STORAGE_KEY);

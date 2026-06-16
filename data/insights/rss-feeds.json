@@ -1,0 +1,26 @@
+[
+  {
+    "source": "World Economic Forum",
+    "feedUrl": "https://www.weforum.org/agenda/feed/",
+    "contentType": "article",
+    "defaultTags": ["future-of-work", "global"]
+  },
+  {
+    "source": "OECD",
+    "feedUrl": "https://www.oecd.org/newsroom/index.xml",
+    "contentType": "article",
+    "defaultTags": ["economy", "skills"]
+  },
+  {
+    "source": "McKinsey",
+    "feedUrl": "https://www.mckinsey.com/insights/rss",
+    "contentType": "article",
+    "defaultTags": ["industry", "future-of-work"]
+  },
+  {
+    "source": "ILO",
+    "feedUrl": "https://www.ilo.org/rss/news.xml",
+    "contentType": "article",
+    "defaultTags": ["jobs", "youth"]
+  }
+]

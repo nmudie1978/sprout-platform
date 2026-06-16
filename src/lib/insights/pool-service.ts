@@ -15,6 +15,8 @@ import type {
   PoolContentType,
 } from "./pool-types";
 import { canonicalizeUrl, hashUrl } from "./canonicalize";
+import { getISOWeekSeed } from "./weekly-rotation";
+import { readIngestedPool } from "./ingested-source";
 
 // ---------------------------------------------------------------------------
 // Paths
@@ -36,15 +38,26 @@ async function ensureDir(): Promise<void> {
   }
 }
 
-/** Read the pool, returning only verified items */
+/**
+ * Read the served pool: the static verified seed merged with the live
+ * DB-ingested items (deduped by canonical URL hash, seed wins). Returns only
+ * verified items. The DB read is best-effort — on any failure we serve the
+ * seed alone so the page never breaks.
+ */
 export async function readPool(): Promise<PoolItem[]> {
+  let seed: PoolItem[] = [];
   try {
     const raw = await fs.readFile(POOL_FILE, "utf-8");
     const items: PoolItem[] = JSON.parse(raw);
-    return items.filter((i) => i.verificationStatus === "verified");
+    seed = items.filter((i) => i.verificationStatus === "verified");
   } catch {
-    return [];
+    seed = [];
   }
+
+  const ingested = await readIngestedPool();
+  const seenHashes = new Set(seed.map((i) => i.canonicalUrlHash));
+  const fresh = ingested.filter((i) => !seenHashes.has(i.canonicalUrlHash));
+  return [...seed, ...fresh];
 }
 
 /** Read all items including non-verified (for refresh script) */
@@ -144,6 +157,7 @@ export function getNextBatch(
   }
 
   // 4. Score candidates
+  const weekSeed = getISOWeekSeed(new Date());
   const scored = candidates.map((item) => {
     let score = 0;
 
@@ -160,8 +174,14 @@ export function getNextBatch(
       score += Math.max(0, 5 - daysOld / 90); // Up to +5 for items < 90 days old
     }
 
-    // Small random factor to vary batches
-    score += Math.random() * 3;
+    // Week-seeded deterministic factor: the baseline featured set is stable
+    // within the ISO week (cache-friendly) and rotates each week. Per-user
+    // `exclude` anti-repeat still personalises within the week.
+    const idHash = Array.from(item.id).reduce(
+      (h, c) => (h * 31 + c.charCodeAt(0)) | 0,
+      weekSeed
+    );
+    score += (((idHash >>> 0) % 1000) / 1000) * 3; // 0..3, deterministic per week+item
 
     return { item, score };
   });

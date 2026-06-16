@@ -28,6 +28,7 @@ import {
   type ResearchTag,
 } from "@/lib/researchEvidence";
 import { useTranslateContent } from "@/hooks/use-translate-content";
+import { getISOWeekSeed, rotateWeekly } from "@/lib/insights/weekly-rotation";
 
 type ViewMode = "compact" | "grid" | "list";
 
@@ -191,7 +192,9 @@ function ViewToggle({
 
 // ── Main Component ──────────────────────────────────────
 export function WhyThisMatters() {
-  const stats = getWhyThisMattersStats();
+  // Rotate the order of the research stats by ISO week so the section
+  // visibly changes each Monday (stable within the week).
+  const stats = rotateWeekly(getWhyThisMattersStats(), getISOWeekSeed(new Date()));
   const [view, setView] = useState<ViewMode>("compact");
   const locale = useLocale();
   const t = useTranslations("common");
