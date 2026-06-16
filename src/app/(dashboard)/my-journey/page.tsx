@@ -3160,6 +3160,12 @@ export default function MyJourneyPage() {
 
 
   const [activeTab, setActiveTab] = useState<V2Tab>('discover');
+  // Phase tabs are mounted lazily on first visit, then KEPT mounted (just
+  // hidden when inactive) so switching Discover/Understand/Clarity is instant
+  // and preserves each tab's sub-state (active sub-tab, scroll, video index)
+  // instead of unmounting + remounting (which re-ran the tab's data hooks).
+  const visitedTabsRef = useRef<Set<V2Tab>>(new Set());
+  visitedTabsRef.current.add(activeTab);
 
   // ── Tab gating ─────────────────────────────────────────────────────
   // The three tabs are Discover → Understand → Clarity, and the user MUST
@@ -3443,37 +3449,48 @@ export default function MyJourneyPage() {
         </div>
 
 
-        {/* Tab content */}
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={activeTab}
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.15 }}
+        {/* Tab content. Each phase is rendered once visited and then kept
+            mounted (hidden when inactive) — switching is instant and each tab
+            keeps its own sub-state. A light fade-in plays when a tab becomes
+            active. */}
+        {visitedTabsRef.current.has('discover') && (
+          <div
+            key="discover"
+            hidden={activeTab !== 'discover'}
+            className={activeTab === 'discover' ? 'animate-in fade-in duration-150' : undefined}
           >
-            {activeTab === 'discover' && (
-              <DiscoverTab
-                career={career}
-                goalTitle={goalTitle}
-                onContinue={() => goToTab('understand')}
-                onConfirmChange={setDiscoverConfirmedState}
-                onGoToUnderstand={() => goToTab('understand')}
-              />
-            )}
-            {activeTab === 'understand' && (
-              <UnderstandTab
-                career={career}
-                goalTitle={goalTitle}
-                onContinue={() => goToTab('clarity')}
-                onConfirmChange={setUnderstandConfirmedState}
-              />
-            )}
-            {activeTab === 'clarity' && (
-              <ClarityTab goalTitle={goalTitle} career={career} />
-            )}
-          </motion.div>
-        </AnimatePresence>
+            <DiscoverTab
+              career={career}
+              goalTitle={goalTitle}
+              onContinue={() => goToTab('understand')}
+              onConfirmChange={setDiscoverConfirmedState}
+              onGoToUnderstand={() => goToTab('understand')}
+            />
+          </div>
+        )}
+        {visitedTabsRef.current.has('understand') && (
+          <div
+            key="understand"
+            hidden={activeTab !== 'understand'}
+            className={activeTab === 'understand' ? 'animate-in fade-in duration-150' : undefined}
+          >
+            <UnderstandTab
+              career={career}
+              goalTitle={goalTitle}
+              onContinue={() => goToTab('clarity')}
+              onConfirmChange={setUnderstandConfirmedState}
+            />
+          </div>
+        )}
+        {visitedTabsRef.current.has('clarity') && (
+          <div
+            key="clarity"
+            hidden={activeTab !== 'clarity'}
+            className={activeTab === 'clarity' ? 'animate-in fade-in duration-150' : undefined}
+          >
+            <ClarityTab goalTitle={goalTitle} career={career} />
+          </div>
+        )}
       </div>
 
       <JourneyReflectionsTray
