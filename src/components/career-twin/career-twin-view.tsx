@@ -11,6 +11,7 @@
  * prediction.
  */
 import { useState, useEffect, useRef, useMemo, useCallback } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 // Analytics removed — no third-party tracking (see Cookie Policy). This
@@ -80,6 +81,17 @@ export function CareerTwinView({
   const [messages, setMessages] = useState<TwinMessage[]>([]);
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
+  // Id of the assistant message currently streaming in (null when idle). While
+  // a message is streaming we hide the "thinking" indicator — the live bubble
+  // is the indicator.
+  const [streamingId, setStreamingId] = useState<string | null>(null);
+  // Cache the Twin GET (persona/modes/opener/history — ~12 DB queries) so
+  // re-opening the Twin sub-tab is instant instead of re-querying every time.
+  const queryClient = useQueryClient();
+  const twinGetKey = useMemo(
+    () => ["career-twin-get", initialCareerId ?? null] as const,
+    [initialCareerId],
+  );
   const [returningDays, setReturningDays] = useState<number | null>(null);
   // Opt-in text-to-speech ("Listen") — browser SpeechSynthesis only, no deps,
   // no network, no cost. Tracks which message is currently being read.
@@ -119,13 +131,23 @@ export function CareerTwinView({
     [speakingId],
   );
 
-  // Load persona + modes for the resolved career.
+  // Load persona + modes for the resolved career. Served through React Query's
+  // cache (staleTime 5min) so re-opening the Twin within the session skips the
+  // server's ~12 DB queries and renders instantly. Only show the full-card
+  // spinner when there's nothing cached yet.
   useEffect(() => {
     let cancelled = false;
-    setLoading(true);
-    const qs = initialCareerId ? `?careerId=${encodeURIComponent(initialCareerId)}` : "";
-    fetch(`/api/career-twin${qs}`)
-      .then((r) => r.json())
+    if (!queryClient.getQueryData(twinGetKey)) setLoading(true);
+    queryClient
+      .fetchQuery({
+        queryKey: twinGetKey,
+        queryFn: async () => {
+          const qs = initialCareerId ? `?careerId=${encodeURIComponent(initialCareerId)}` : "";
+          const r = await fetch(`/api/career-twin${qs}`);
+          return r.json();
+        },
+        staleTime: 5 * 60 * 1000,
+      })
       .then((data) => {
         if (cancelled) return;
         if (data.needsCareer || !data.career) {
@@ -179,7 +201,7 @@ export function CareerTwinView({
     return () => {
       cancelled = true;
     };
-  }, [initialCareerId]);
+  }, [initialCareerId, queryClient, twinGetKey]);
 
   // Load the user's current Primary Goal so we can show whether THIS career
   // is already their goal (and warn before replacing a different one).
@@ -242,6 +264,21 @@ export function CareerTwinView({
       markTwinAsked(career.id);
       track("career_twin_message_sent", { mode: modeId, career: career.title });
 
+      const defaultMsg =
+        "I'm here — ask me anything about this path, and remember it's just one possible version of your future.";
+      let assistantId: string | null = null;
+      const upsertAssistant = (content: string) => {
+        if (assistantId === null) {
+          assistantId = `a-${Date.now()}`;
+          const id = assistantId;
+          setStreamingId(id);
+          setMessages((prev) => [...prev, { id, role: "assistant", content }]);
+        } else {
+          const id = assistantId;
+          setMessages((prev) => prev.map((m) => (m.id === id ? { ...m, content } : m)));
+        }
+      };
+
       try {
         const res = await fetch("/api/career-twin", {
           method: "POST",
@@ -252,30 +289,84 @@ export function CareerTwinView({
             message: trimmed,
           }),
         });
-        const data = await res.json();
-        const assistant: TwinMessage = {
-          id: `a-${Date.now()}`,
-          role: "assistant",
-          content:
-            data.message ||
-            "I'm here — ask me anything about this path, and remember it's just one possible version of your future.",
+
+        // Non-streaming control responses (auth, rate limit, fallback,
+        // needsCareer) still come back as plain JSON — render them as one bubble.
+        const contentType = res.headers.get("content-type") || "";
+        if (!contentType.includes("ndjson")) {
+          const data = await res.json();
+          upsertAssistant(data.message || defaultMsg);
+          return;
+        }
+
+        // Streaming NDJSON: each line is {delta} | {replace} | {done}.
+        const reader = res.body?.getReader();
+        if (!reader) {
+          upsertAssistant(defaultMsg);
+          return;
+        }
+        const decoder = new TextDecoder();
+        let buf = "";
+        let acc = "";
+        // Server emits {done} only when it persisted the turn (a {replace}
+        // fallback is NOT persisted). Mirror that into the cached GET history so
+        // a quick re-open shows this turn without a refetch.
+        let persistedTurn = false;
+        const handleLine = (line: string) => {
+          const trimmedLine = line.trim();
+          if (!trimmedLine) return;
+          let obj: { delta?: string; replace?: string; done?: boolean };
+          try {
+            obj = JSON.parse(trimmedLine);
+          } catch {
+            return;
+          }
+          if (typeof obj.delta === "string") {
+            acc += obj.delta;
+            upsertAssistant(acc);
+          } else if (typeof obj.replace === "string") {
+            acc = obj.replace;
+            upsertAssistant(acc);
+          } else if (obj.done) {
+            persistedTurn = true;
+          }
         };
-        setMessages((prev) => [...prev, assistant]);
+        for (;;) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          buf += decoder.decode(value, { stream: true });
+          const lines = buf.split("\n");
+          buf = lines.pop() ?? "";
+          for (const line of lines) handleLine(line);
+        }
+        if (buf) handleLine(buf);
+        // Stream ended without ever producing content (e.g. the body closed
+        // early) — make sure the user isn't left with no reply.
+        if (assistantId === null) upsertAssistant(defaultMsg);
+        if (persistedTurn && acc) {
+          queryClient.setQueryData(twinGetKey, (old: unknown) => {
+            const prev = old as { history?: { role: string; content: string }[] } | undefined;
+            if (!prev || !Array.isArray(prev.history)) return old;
+            return {
+              ...prev,
+              history: [
+                ...prev.history,
+                { role: "user", content: trimmed },
+                { role: "assistant", content: acc },
+              ],
+            };
+          });
+        }
       } catch {
-        setMessages((prev) => [
-          ...prev,
-          {
-            id: `a-${Date.now()}`,
-            role: "assistant",
-            content:
-              "Something glitched on my end — try asking again in a moment. (And remember, this is one possible future, not a promise.)",
-          },
-        ]);
+        upsertAssistant(
+          "Something glitched on my end — try asking again in a moment. (And remember, this is one possible future, not a promise.)",
+        );
       } finally {
+        setStreamingId(null);
         setSending(false);
       }
     },
-    [career, modeId, sending],
+    [career, modeId, sending, queryClient, twinGetKey],
   );
 
   // ── Loading ──────────────────────────────────────────────────────────
@@ -582,7 +673,7 @@ export function CareerTwinView({
                   )}
                 </motion.div>
               ))}
-              {sending && (
+              {sending && !streamingId && (
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex gap-2.5">
                   <div className={cn("shrink-0 p-2 rounded-full", accentGradient)}>
                     <Sparkles className="h-4 w-4 text-white" />

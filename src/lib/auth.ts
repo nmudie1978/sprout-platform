@@ -5,7 +5,8 @@ import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import type { Adapter } from "next-auth/adapters";
 import { logAuditAction } from "@/lib/safety";
-import { AuditAction } from "@prisma/client";
+import { AuditAction, UserRole } from "@prisma/client";
+import type { JWT } from "next-auth/jwt";
 
 // Helper to calculate age from birthdate
 function calculateAge(birthDate: Date): number {
@@ -30,6 +31,70 @@ interface VippsProfile {
     region?: string;
     country?: string;
   };
+}
+
+// ── Session user-field cache ────────────────────────────────────────────────
+// The session() callback used to run a nested user.findUnique on EVERY
+// authenticated request (every useSession()/getServerSession()/`/api/auth/
+// session`). We now serve those fields from the JWT, refreshed from the DB at
+// most once per SESSION_REFRESH_MS per user per server instance via this tiny
+// in-memory cache. A soft-deleted/suspended account therefore loses its session
+// within that window rather than instantly — an acceptable trade for removing a
+// per-request query. Explicit changes (the client `update()` trigger) force a
+// fresh read so they surface immediately.
+const SESSION_REFRESH_MS = 60 * 1000;
+
+async function loadSessionFields(userId: string) {
+  return prisma.user.findUnique({
+    where: { id: userId },
+    select: {
+      role: true,
+      ageBracket: true,
+      accountStatus: true,
+      isVerifiedAdult: true,
+      deletedAt: true,
+      youthProfile: {
+        select: {
+          displayName: true,
+          profileVisibility: true,
+          guardianConsent: true,
+        },
+      },
+    },
+  });
+}
+
+type SessionUserFields = Awaited<ReturnType<typeof loadSessionFields>>;
+
+const sessionFieldCache = new Map<string, { at: number; data: SessionUserFields }>();
+
+async function getSessionFields(userId: string, forceFresh = false): Promise<SessionUserFields> {
+  const now = Date.now();
+  if (!forceFresh) {
+    const cached = sessionFieldCache.get(userId);
+    if (cached && now - cached.at < SESSION_REFRESH_MS) return cached.data;
+  }
+  const data = await loadSessionFields(userId);
+  // Bound memory under unexpected load — entries are tiny, but never unbounded.
+  if (sessionFieldCache.size > 10_000) sessionFieldCache.clear();
+  sessionFieldCache.set(userId, { at: now, data });
+  return data;
+}
+
+// Writes the freshly-loaded (or cached) user fields onto the JWT. A missing or
+// soft-deleted user marks the token revoked so the session callback blanks the id.
+function applySessionFieldsToToken(token: JWT, dbUser: SessionUserFields): void {
+  if (!dbUser || dbUser.deletedAt) {
+    token.revoked = true;
+    return;
+  }
+  token.revoked = false;
+  token.role = dbUser.role;
+  token.ageBracket = dbUser.ageBracket;
+  token.accountStatus = dbUser.accountStatus;
+  token.isVerifiedAdult = dbUser.isVerifiedAdult;
+  token.guardianConsent = dbUser.youthProfile?.guardianConsent ?? false;
+  token.youthProfile = dbUser.youthProfile ?? null;
 }
 
 export const authOptions: NextAuthOptions = {
@@ -198,51 +263,25 @@ export const authOptions: NextAuthOptions = {
       return baseUrl;
     },
     async jwt({ token, user, account, profile, trigger }) {
-      // On sign in, add user data to token
       if (user) {
+        // Sign-in: seed identity and load all session fields once (force-fresh
+        // so the cache reflects this login). These also feed the edge
+        // middleware, which can't hit the DB and reads them from the JWT.
         token.id = user.id;
-        token.role = user.role;
         token.email = user.email;
-
-        // Populate guardian-gate fields at sign-in time. The
-        // middleware (edge runtime) can't hit the DB, so it reads
-        // these from the JWT. Fetching youthProfile only when the
-        // role looks like YOUTH to avoid a wasted query for adults.
-        if (user.role === "YOUTH" || !user.role) {
-          const dbUser = await prisma.user.findUnique({
-            where: { id: user.id },
-            select: {
-              ageBracket: true,
-              youthProfile: { select: { guardianConsent: true } },
-            },
-          });
-          if (dbUser) {
-            token.ageBracket = dbUser.ageBracket;
-            token.guardianConsent = dbUser.youthProfile?.guardianConsent ?? false;
-          }
-        }
+        applySessionFieldsToToken(token, await getSessionFields(user.id, true));
+      } else if (trigger === "update" && token.id) {
+        // Explicit client update() (e.g. after a guardian grants consent or a
+        // profile change) — refresh immediately so new values surface without
+        // requiring a re-login.
+        applySessionFieldsToToken(token, await getSessionFields(token.id as string, true));
+      } else if (token.id) {
+        // Every other authenticated request: serve from the cache, which hits
+        // the DB at most once per SESSION_REFRESH_MS per user.
+        applySessionFieldsToToken(token, await getSessionFields(token.id as string));
       }
 
-      // On session update trigger (e.g. after guardian grants consent
-      // and the client calls next-auth's `update()` helper), refresh
-      // the guardian-gate fields without requiring a full sign-out.
-      if (trigger === "update" && token.id) {
-        const dbUser = await prisma.user.findUnique({
-          where: { id: token.id as string },
-          select: {
-            ageBracket: true,
-            accountStatus: true,
-            youthProfile: { select: { guardianConsent: true } },
-          },
-        });
-        if (dbUser) {
-          token.ageBracket = dbUser.ageBracket;
-          token.accountStatus = dbUser.accountStatus;
-          token.guardianConsent = dbUser.youthProfile?.guardianConsent ?? false;
-        }
-      }
-
-      // Store VIPPS profile data for new users
+      // Store VIPPS profile data for new users (sign-in only).
       if (account?.provider === "vipps" && profile) {
         const vippsProfile = profile as VippsProfile & { sub: string };
         token.vippsProfile = {
@@ -250,14 +289,8 @@ export const authOptions: NextAuthOptions = {
           phone: vippsProfile.phone_number,
           birthdate: vippsProfile.birthdate,
         };
-
-        // Check if this is a new user (no role set yet)
-        const dbUser = await prisma.user.findUnique({
-          where: { id: user.id },
-          select: { accountStatus: true },
-        });
-
-        if (dbUser?.accountStatus === "ONBOARDING") {
+        // accountStatus was just loaded above for the signing-in user.
+        if (token.accountStatus === "ONBOARDING") {
           token.isNewVippsUser = true;
         }
       }
@@ -282,39 +315,20 @@ export const authOptions: NextAuthOptions = {
           };
         }
 
-        // Fetch fresh user data from database
-        const dbUser = await prisma.user.findUnique({
-          where: { id: token.id as string },
-          select: {
-            role: true,
-            ageBracket: true,
-            accountStatus: true,
-            isVerifiedAdult: true,
-            deletedAt: true,
-            youthProfile: {
-              select: {
-                displayName: true,
-                profileVisibility: true,
-                guardianConsent: true,
-                guardianEmail: true,
-              },
-            },
-          },
-        });
-
-        // Reject sessions for accounts that are soft-deleted (deletion
-        // pending) or already purged (no row). Blanking the id makes every
-        // `!session.user.id` guard treat the request as unauthenticated, so
-        // a lingering JWT can't keep a deleted account alive. Signing in
-        // again restores a soft-deleted account (see authorize()).
-        if (!dbUser || dbUser.deletedAt) {
+        // All user fields are served from the JWT (refreshed on a throttle in
+        // the jwt callback via the session-field cache) — no per-request DB
+        // query. A revoked token (account soft-deleted or missing at the last
+        // check) blanks the id so every `!session.user.id` guard treats the
+        // request as unauthenticated; signing in again restores a soft-deleted
+        // account (see authorize()).
+        if (token.revoked) {
           session.user.id = "";
         } else {
-          session.user.role = dbUser.role;
-          session.user.ageBracket = dbUser.ageBracket;
-          session.user.accountStatus = dbUser.accountStatus;
-          session.user.isVerifiedAdult = dbUser.isVerifiedAdult;
-          session.user.youthProfile = dbUser.youthProfile || null;
+          session.user.role = token.role as UserRole;
+          session.user.ageBracket = token.ageBracket;
+          session.user.accountStatus = token.accountStatus;
+          session.user.isVerifiedAdult = token.isVerifiedAdult;
+          session.user.youthProfile = token.youthProfile ?? null;
         }
       }
       return session;

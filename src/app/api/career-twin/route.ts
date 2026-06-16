@@ -177,9 +177,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ message: getFallbackResponse("unsafe"), intent: "unsafe" });
     }
 
-    const profile = await loadProfileContext(session.user.id);
-    const persona = buildPersona({ userId: session.user.id, career, profile });
-    const mode = getMode(modeId);
     const replyLanguage = localeToLanguage(req.cookies.get("NEXT_LOCALE")?.value);
 
     const openai = getOpenAIClient();
@@ -187,10 +184,15 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ message: twinFallback(career.title), fallback: true });
     }
 
-    const [memory, dbHistory] = await Promise.all([
+    // Load profile + memory + history together (independent once the career is
+    // resolved) so the model call isn't waiting on a chain of round-trips.
+    const [profile, memory, dbHistory] = await Promise.all([
+      loadProfileContext(session.user.id),
       loadTwinMemory(session.user.id, career.id),
       loadTwinHistory(session.user.id, career.id),
     ]);
+    const persona = buildPersona({ userId: session.user.id, career, profile });
+    const mode = getMode(modeId);
     const systemPrompt = buildCareerTwinSystemPrompt({ persona, mode, career, profile, language: replyLanguage, memory });
 
     const messages: OpenAI.Chat.ChatCompletionMessageParam[] = [
@@ -199,36 +201,84 @@ export async function POST(req: NextRequest) {
     toPromptHistory(dbHistory, TWIN_CONTEXT_TURNS).forEach((m) => messages.push({ role: m.role, content: m.content }));
     messages.push({ role: "user", content: message.slice(0, 2000) });
 
-    const completion = await openai.chat.completions.create(
-      { model: "gpt-4o-mini", messages, temperature: 0.8, max_tokens: 500 },
+    // Stream the reply token-by-token. The user sees text within a few hundred
+    // ms instead of waiting for the whole completion (~3-8s). Safety is
+    // preserved: the running buffer is checked against the output guardrail on
+    // every chunk (so a blocked term never finishes rendering), and the
+    // completed text gets the non-English backstop — either failure emits a
+    // `replace` event telling the client to swap in the grounded fallback.
+    const openaiStream = await openai.chat.completions.create(
+      { model: "gpt-4o-mini", messages, temperature: 0.8, max_tokens: 500, stream: true },
       { timeout: 25_000 },
     );
 
-    let assistantMessage = completion.choices[0]?.message?.content?.trim() || "";
+    const encoder = new TextEncoder();
+    const userId = session.user.id;
+    const careerId = career.id;
+    const fallbackText = twinFallback(career.title);
+    const modeForTurn = mode.id;
 
-    // Output safety net (reuses the platform guardrails)
-    const safety = isResponseSafe(assistantMessage);
-    if (!assistantMessage || !safety.safe) {
-      return NextResponse.json({ message: twinFallback(career.title), fallback: true });
-    }
-    // Only enforce English when English is the target language — Norwegian
-    // and Spanish users are meant to get non-English replies.
-    if (replyLanguage === "English") {
-      const lang = detectNonEnglishResponse(assistantMessage);
-      if (lang.isNonEnglish) {
-        return NextResponse.json({ message: twinFallback(career.title), fallback: true });
-      }
-    }
+    const responseStream = new ReadableStream<Uint8Array>({
+      async start(controller) {
+        const emit = (obj: unknown) =>
+          controller.enqueue(encoder.encode(JSON.stringify(obj) + "\n"));
+        let full = "";
+        let replaced = false;
+        try {
+          for await (const chunk of openaiStream) {
+            const delta = chunk.choices[0]?.delta?.content ?? "";
+            if (!delta) continue;
+            const next = full + delta;
+            // Output safety net (reuses the platform guardrails): only `full`
+            // (already forwarded) is ever shown, so stopping before forwarding
+            // the chunk that completes a blocked keyword means it never fully
+            // renders. The client discards what it has on `replace`.
+            if (!isResponseSafe(next).safe) {
+              replaced = true;
+              emit({ replace: fallbackText, fallback: true });
+              break;
+            }
+            full = next;
+            emit({ delta });
+          }
 
-    try {
-      await appendTwinTurns(session.user.id, career.id, [
-        { role: "user", content: message, mode: mode.id },
-        { role: "assistant", content: assistantMessage, mode: mode.id },
-      ]);
-    } catch (persistErr) {
-      logAndSwallow("career-twin:POST:persist")(persistErr);
-    }
-    return NextResponse.json({ message: assistantMessage, mode: mode.id });
+          if (!replaced) {
+            const finalText = full.trim();
+            // Only enforce English when English is the target language —
+            // Norwegian and Spanish users are meant to get non-English replies.
+            const nonEnglishBad =
+              replyLanguage === "English" && detectNonEnglishResponse(finalText).isNonEnglish;
+            if (!finalText || nonEnglishBad) {
+              emit({ replace: fallbackText, fallback: true });
+            } else {
+              emit({ done: true, mode: modeForTurn });
+              try {
+                await appendTwinTurns(userId, careerId, [
+                  { role: "user", content: message, mode: modeForTurn },
+                  { role: "assistant", content: finalText, mode: modeForTurn },
+                ]);
+              } catch (persistErr) {
+                logAndSwallow("career-twin:POST:persist")(persistErr);
+              }
+            }
+          }
+        } catch (streamErr) {
+          captureServerError("career-twin:POST:stream", streamErr);
+          emit({ replace: fallbackText, fallback: true });
+        } finally {
+          controller.close();
+        }
+      },
+    });
+
+    return new Response(responseStream, {
+      headers: {
+        "Content-Type": "application/x-ndjson; charset=utf-8",
+        "Cache-Control": "no-store",
+        // Disable proxy buffering so chunks reach the client as produced.
+        "X-Accel-Buffering": "no",
+      },
+    });
   } catch (error) {
     captureServerError("career-twin:POST", error);
     return NextResponse.json({ message: twinFallback(careerTitle), fallback: true });
