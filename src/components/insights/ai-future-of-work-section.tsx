@@ -71,10 +71,11 @@ const ICONS: Record<AiIconKey, LucideIcon> = {
 };
 
 export function AiFutureOfWorkSection() {
-  const { header, cards, usesToday, models, certifications, videos, modals, timeline } =
+  const { header, cards, models, certifications, videos, modals, timeline } =
     aiFutureOfWork;
   const [openModal, setOpenModal] = useState<AiModalId | null>(null);
   const [openVideo, setOpenVideo] = useState<AiVideo | null>(null);
+  const [credTab, setCredTab] = useState<"models" | "certs">("models");
 
   return (
     <section id="ai-future-of-work" className="mb-3 scroll-mt-20">
@@ -130,85 +131,148 @@ export function AiFutureOfWorkSection() {
           })}
         </div>
 
-        {/* How people use AI today */}
+        {/* AI models & certifications — one slick tabbed, tabulated block
+            (replaces the old chips + card grid to cut visual noise). */}
         <div className="mt-5">
-          <SubHeading title={usesToday.heading} subtitle={usesToday.subheading} />
-          <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
-            {usesToday.items.map((use) => {
-              const Icon = ICONS[use.icon];
-              return (
-                <div
-                  key={use.id}
-                  className="flex items-start gap-3 rounded-card border border-border/40 bg-card/40 p-3"
-                >
-                  <span className="mt-0.5 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-card bg-violet-500/10 text-violet-500">
-                    <Icon className="h-4 w-4" aria-hidden="true" />
-                  </span>
-                  <div>
-                    <p className="text-sm font-semibold text-foreground/90">{use.title}</p>
-                    <p className="mt-0.5 text-xs leading-relaxed text-muted-foreground">
-                      {use.body}
-                    </p>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
+          <SubHeading
+            title="AI models & certifications"
+            subtitle="The leading model families — and recognised ways to prove your skills."
+          />
 
-        {/* Today's leading AI models */}
-        <div className="mt-5">
-          <SubHeading title={models.heading} subtitle={models.subheading} />
-          <div className="flex flex-wrap gap-2">
-            {models.items.map((m) => (
+          {/* Tab switcher */}
+          <div
+            role="tablist"
+            aria-label="AI models and certifications"
+            className="mb-3 inline-flex rounded-pill border border-border/40 bg-card/40 p-0.5 text-xs font-medium"
+          >
+            <button
+              type="button"
+              role="tab"
+              aria-selected={credTab === "models"}
+              onClick={() => setCredTab("models")}
+              className={
+                "rounded-pill px-3 py-1 transition-colors " +
+                (credTab === "models"
+                  ? "bg-violet-500/15 text-violet-600 dark:text-violet-300"
+                  : "text-muted-foreground hover:text-foreground/80")
+              }
+            >
+              Models
+            </button>
+            <button
+              type="button"
+              role="tab"
+              aria-selected={credTab === "certs"}
+              onClick={() => setCredTab("certs")}
+              className={
+                "rounded-pill px-3 py-1 transition-colors " +
+                (credTab === "certs"
+                  ? "bg-violet-500/15 text-violet-600 dark:text-violet-300"
+                  : "text-muted-foreground hover:text-foreground/80")
+              }
+            >
+              Certifications
+            </button>
+          </div>
+
+          {credTab === "models" ? (
+            <>
+              <div className="overflow-x-auto rounded-card border border-border/40">
+                <table className="w-full text-left text-xs">
+                  <thead className="bg-card/50 text-[10px] uppercase tracking-wider text-muted-foreground/70">
+                    <tr>
+                      <th className="px-3 py-2 font-semibold">Model</th>
+                      <th className="px-3 py-2 font-semibold">Maker</th>
+                      <th className="px-3 py-2 font-semibold">Origin</th>
+                      <th className="px-3 py-2 text-right font-semibold">Access</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {models.items.map((m) => (
+                      <tr key={m.name} title={m.note} className="border-t border-border/30">
+                        <td className="whitespace-nowrap px-3 py-2 font-semibold text-foreground/90">
+                          {m.name}
+                        </td>
+                        <td className="whitespace-nowrap px-3 py-2 text-muted-foreground">
+                          {m.provider}
+                        </td>
+                        <td className="whitespace-nowrap px-3 py-2 text-muted-foreground">
+                          {m.origin}
+                        </td>
+                        <td className="px-3 py-2 text-right">
+                          <span
+                            className={
+                              "rounded-pill px-1.5 py-0.5 text-[10px] font-medium " +
+                              (m.access === "open"
+                                ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-300"
+                                : "bg-violet-500/15 text-violet-600 dark:text-violet-300")
+                            }
+                          >
+                            {m.access === "open" ? "Open" : "Closed"}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
               <button
-                key={m.name}
                 type="button"
                 onClick={() => setOpenModal("models")}
-                className="group inline-flex items-center gap-2 rounded-pill border border-border/40 bg-card/40 py-1.5 pl-2.5 pr-3 text-left transition-colors hover:border-violet-500/40 hover:bg-violet-500/[0.04]"
+                className="mt-2 inline-flex items-center gap-1 text-[11px] font-medium text-violet-500 transition-colors hover:text-violet-400"
               >
-                <Bot className="h-3.5 w-3.5 text-violet-500/80" aria-hidden="true" />
-                <span className="text-[11px] font-semibold text-foreground/85">{m.name}</span>
-                <span className="text-[11px] text-muted-foreground/75">· {m.provider}</span>
+                What sets each model apart
+                <ArrowRight className="h-3 w-3" aria-hidden="true" />
               </button>
-            ))}
-          </div>
-          <p className="mt-2 text-[10px] italic text-muted-foreground/55">{models.note}</p>
-        </div>
-
-        {/* AI certification tracks */}
-        <div className="mt-5">
-          <SubHeading title={certifications.heading} subtitle={certifications.subheading} />
-          <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
-            {certifications.items.map((cert) => (
-              <a
-                key={cert.name}
-                href={cert.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group flex items-start gap-3 rounded-card border border-border/40 bg-card/40 p-3 transition-colors hover:border-violet-500/40 hover:bg-violet-500/[0.04]"
-              >
-                <span className="mt-0.5 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-card bg-violet-500/10 text-violet-500">
-                  <Award className="h-4 w-4" aria-hidden="true" />
-                </span>
-                <div className="min-w-0 flex-1">
-                  <p className="flex items-center gap-1 text-sm font-semibold text-foreground/90">
-                    <span className="truncate">{cert.name}</span>
-                    <ExternalLink className="h-3 w-3 shrink-0 text-muted-foreground/50 transition-colors group-hover:text-violet-500" />
-                  </p>
-                  <p className="mt-0.5 text-xs text-muted-foreground">
-                    {cert.provider} · {cert.level}
-                  </p>
-                </div>
-              </a>
-            ))}
-          </div>
+            </>
+          ) : (
+            <div className="overflow-x-auto rounded-card border border-border/40">
+              <table className="w-full text-left text-xs">
+                <thead className="bg-card/50 text-[10px] uppercase tracking-wider text-muted-foreground/70">
+                  <tr>
+                    <th className="px-3 py-2 font-semibold">Certification</th>
+                    <th className="px-3 py-2 font-semibold">Provider</th>
+                    <th className="px-3 py-2 font-semibold">Level</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {certifications.items.map((cert) => (
+                    <tr
+                      key={cert.name}
+                      className="border-t border-border/30 transition-colors hover:bg-violet-500/[0.04]"
+                    >
+                      <td className="px-3 py-2">
+                        <a
+                          href={cert.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="group inline-flex items-center gap-1 font-semibold text-foreground/90 transition-colors hover:text-violet-500"
+                        >
+                          {cert.name}
+                          <ExternalLink
+                            className="h-3 w-3 shrink-0 text-muted-foreground/50 transition-colors group-hover:text-violet-500"
+                            aria-hidden="true"
+                          />
+                        </a>
+                      </td>
+                      <td className="whitespace-nowrap px-3 py-2 text-muted-foreground">
+                        {cert.provider}
+                      </td>
+                      <td className="whitespace-nowrap px-3 py-2 text-muted-foreground">
+                        {cert.level}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
 
         {/* Watch: careers in AI */}
         <div className="mt-5">
           <SubHeading title={videos.heading} subtitle={videos.subheading} />
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             {videos.items.map((v) => (
               <button
                 key={v.id}

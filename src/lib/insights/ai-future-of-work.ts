@@ -40,13 +40,6 @@ export interface AiCard {
   modal: AiModalId;
 }
 
-export interface AiUse {
-  id: string;
-  icon: AiIconKey;
-  title: string;
-  body: string;
-}
-
 export interface AiRole {
   label: string;
   /** Catalogue career id → deep-links to /careers?open=<id>. */
@@ -93,7 +86,6 @@ export interface AiTimelineItem {
 export interface AiFutureOfWork {
   header: { badge: string; title: string; subtitle: string };
   cards: AiCard[];
-  usesToday: { heading: string; subheading: string; items: AiUse[] };
   models: { heading: string; subheading: string; note: string; items: AiModel[] };
   certifications: { heading: string; subheading: string; items: AiCertification[] };
   videos: { heading: string; subheading: string; items: AiVideo[] };
@@ -139,37 +131,6 @@ export const aiFutureOfWork: AiFutureOfWork = {
       modal: "skills",
     },
   ],
-
-  usesToday: {
-    heading: "How people use AI today",
-    subheading: "Real, everyday uses — AI helping people do more, faster.",
-    items: [
-      {
-        id: "rag",
-        icon: "rag",
-        title: "Answers from messy data",
-        body: "RAG systems let AI search documents, PDFs, emails and wikis — turning unstructured data into instant answers.",
-      },
-      {
-        id: "generate",
-        icon: "generate",
-        title: "Decks & reports in minutes",
-        body: "People use Claude, ChatGPT and Gemini to draft slide decks, reports and documents from a few good prompts.",
-      },
-      {
-        id: "build",
-        icon: "build",
-        title: "Build apps by describing them",
-        body: "Describe what you want and AI writes the JavaScript app, script or website — coding for non-coders too.",
-      },
-      {
-        id: "automate",
-        icon: "automate",
-        title: "Automate business processes",
-        body: "Businesses automate support replies, data entry, summaries and onboarding — freeing people for higher-value work.",
-      },
-    ],
-  },
 
   models: {
     heading: "Today's leading AI models",
@@ -245,12 +206,6 @@ export const aiFutureOfWork: AiFutureOfWork = {
         title: "Day in the Life of an AI Engineer",
         channel: "YouTube",
         blurb: "From working with data to building models and shipping features.",
-      },
-      {
-        id: "uAOIlkr0aVk",
-        title: "A Practical Guide to Becoming an AI Engineer",
-        channel: "YouTube",
-        blurb: "The skills, tools and steps to break into AI engineering.",
       },
     ],
   },
