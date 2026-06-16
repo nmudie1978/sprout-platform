@@ -62,17 +62,24 @@ export const ROADMAP_RULES: RoadmapRule[] = [
     enforcedAt: ['prompt', 'client'],
   },
   {
-    id: 'application-before-entry',
-    title: 'Apply-before-Begin for every formal opportunity',
+    id: 'merge-apply-into-entry',
+    title: 'Combine applying and starting into ONE step',
     description:
-      'Every apprenticeship, university place, college course, vocational programme, internship, or job MUST be preceded by an explicit "Apply for X" step. Never collapse the application phase into the entry step.',
-    enforcedAt: ['prompt'],
+      'Keep the roadmap slim. Do NOT split applying and starting into two steps. Express each formal opportunity (university, college, apprenticeship, first job) as a single combined step — e.g. "Begin university studies", "Land your first entry-level role" — with the application folded into that step\'s detail, not its own milestone.',
+    enforcedAt: ['prompt', 'fallback', 'client'],
   },
   {
-    id: 'two-step-entry-to-work',
-    title: 'Two distinct steps for getting into work',
+    id: 'slim-roadmap',
+    title: 'At most six steps — keep it slim',
     description:
-      'Always include "Apply for entry-level roles" (the job-search milestone) AND a separate "Accept your first entry-level role" (the actual job). Never jump straight from graduation into a role.',
+      'The whole roadmap (excluding the Foundation starting point) must be SIX steps or fewer. Prefer a tight arc: begin study → graduate → first (entry-level) role → grow into the core role → the role grows further. Cut intermediate noise (extra certifications, multiple internships) to stay within six.',
+    enforcedAt: ['prompt', 'fallback', 'client'],
+  },
+  {
+    id: 'role-evolution-tail',
+    title: 'End on the evolution of the role',
+    description:
+      'The final steps must show how the role itself evolves: where the entry-level position starts → the core/established role → how it grows from there (senior / lead / specialist). Frame these as the natural progression of the career, not separate jobs.',
     enforcedAt: ['prompt', 'fallback'],
   },
   {
@@ -126,18 +133,11 @@ export const ROADMAP_RULES: RoadmapRule[] = [
     enforcedAt: ['prompt', 'client'],
   },
   {
-    id: 'apply-before-begin-pairing',
-    title: 'Every Begin/Accept must be preceded by an Apply',
+    id: 'no-standalone-apply-steps',
+    title: 'No standalone "Apply for…" steps',
     description:
-      'A Begin/Accept/Start step for a formal opportunity (apprenticeship, university, college, internship, job) must be immediately preceded by a matching "Apply for…" step. If missing, the apply step is synthesised at the same age and stage.',
-    enforcedAt: ['prompt', 'client'],
-  },
-  {
-    id: 'apply-and-accept-same-year',
-    title: 'Apply and acquire happen in the same year',
-    description:
-      'For jobs and university (and other formal opportunities), the "Apply for X" step and the matching "Accept/Begin X" step MUST occur at the same age — i.e. application and acquisition happen in the same year. Never spread an apply→accept pair across different ages.',
-    enforcedAt: ['prompt', 'fallback', 'client'],
+      'Applying is part of starting, not its own milestone. Any standalone "Apply for X" step is merged into the following "Begin/Accept X" step (same age) so the pair becomes one slim step.',
+    enforcedAt: ['client'],
   },
   {
     id: 'safeguarding-content-filter',
@@ -331,35 +331,87 @@ const BEGIN_VERBS_RE = /^(?:begin|accept|start)\b/i;
 const FORMAL_OPP_RE =
   /\b(?:apprenticeship|internship|university|college|degree|programme|program|course|training|role|job|position)\b/i;
 
-function makeId(): string {
-  return `synth-${Math.random().toString(36).slice(2, 9)}`;
-}
-
-/** Insert a synthetic "Apply for X" step before any Begin/Accept that lacks one. */
-function ensureApplyBeforeBegin(items: JourneyItem[]): JourneyItem[] {
+/**
+ * Merge an "Apply for X" step into the immediately-following
+ * "Begin/Accept/Start X" step, collapsing the pair into a single combined
+ * step anchored at the apply step's start age. This keeps the roadmap slim
+ * — application + entry read as one milestone:
+ *   "Apply for university" + "Begin university studies" → "Begin university studies"
+ *   "Apply for entry-level roles" + "Accept your first entry-level role"
+ *        → "Accept your first entry-level role"
+ * (Replaces the old split-into-two behaviour.)
+ */
+function mergeApplyPairs(items: JourneyItem[]): JourneyItem[] {
   const out: JourneyItem[] = [];
   for (let i = 0; i < items.length; i++) {
     const cur = items[i];
-    const isBegin = BEGIN_VERBS_RE.test(cur.title) && FORMAL_OPP_RE.test(cur.title);
-    if (isBegin) {
-      const prev = out[out.length - 1];
-      const prevHasApply = prev && /^apply\b/i.test(prev.title);
-      if (!prevHasApply) {
-        const noun = cur.title.replace(BEGIN_VERBS_RE, '').trim();
-        out.push({
-          ...cur,
-          id: makeId(),
-          title: `Apply for ${noun.charAt(0).toLowerCase()}${noun.slice(1)}`,
-          subtitle: undefined,
-          isMilestone: true,
-          // Apply at the same start age — application happens just before entry
-          endAge: cur.startAge,
-        });
-      }
+    const next = items[i + 1];
+    const curIsApply = /^apply\b/i.test(cur.title);
+    const nextIsEntry =
+      !!next && BEGIN_VERBS_RE.test(next.title) && FORMAL_OPP_RE.test(next.title);
+    if (curIsApply && nextIsEntry && next) {
+      // Keep the entry step (the action that matters), anchored at the
+      // apply step's start age so the timeline doesn't jump.
+      out.push({
+        ...next,
+        startAge: cur.startAge,
+        endAge: next.endAge ?? cur.endAge ?? next.startAge,
+        isMilestone: next.isMilestone ?? cur.isMilestone,
+      });
+      i++; // consume the begin/accept step we just merged in
+    } else {
+      out.push(cur);
     }
-    out.push(cur);
   }
   return out;
+}
+
+// ────────────────────────────────────────────────────────────────────
+// Slim cap — keep the roadmap to at most MAX_ROADMAP_STEPS (rule: slim-roadmap)
+// ────────────────────────────────────────────────────────────────────
+
+/** Hard cap on post-foundation roadmap steps. The Foundation anchor is
+ *  rendered separately by the renderers, so the user sees at most this
+ *  many numbered steps plus their starting point. */
+export const MAX_ROADMAP_STEPS = 6;
+
+/**
+ * Priority of a step for the slim cap. Higher = more important to keep.
+ * The kept steps must still read as a coherent arc:
+ *   education entry → graduation → first (entry-level) role → core role → growth.
+ * Lowest-priority steps (extra certifications, internships, generic
+ * intermediates) are dropped first.
+ */
+function stepPriority(title: string): number {
+  const t = title.toLowerCase();
+  // Role evolution tail (core role → grows into senior/lead) and entry point.
+  if (/\b(senior|lead|principal|head of|manage|advance|expert|core\s+role|established|grow)\b/.test(t)) return 5;
+  if (/entry[-\s]?level|first\s+(role|job|position)|\baccept\b|graduat/.test(t)) return 5;
+  // Primary education entry.
+  if (/universit|degree|bachelor|master|begin .*stud|apprenticeship|fagbrev|l[æa]retid/.test(t)) return 4;
+  if (/college|diploma|vocational/.test(t)) return 3;
+  // First to drop when over the cap.
+  if (/intern|volunteer|shadow|placement|portfolio|network/.test(t)) return 1;
+  if (/certif|qualif|licen[cs]e|accredit/.test(t)) return 1;
+  return 2;
+}
+
+/**
+ * Cap the roadmap to at most `max` steps. When over the cap, drop the
+ * lowest-priority steps first (ties broken by keeping earlier steps), then
+ * restore original chronological order — so the slimmed roadmap still flows
+ * education → entry → core → growth.
+ */
+function capRoadmapSteps(items: JourneyItem[], max: number): JourneyItem[] {
+  if (items.length <= max) return items;
+  const indexed = items.map((it, i) => ({ i, p: stepPriority(it.title) }));
+  const keep = new Set(
+    [...indexed]
+      .sort((a, b) => b.p - a.p || a.i - b.i)
+      .slice(0, max)
+      .map((x) => x.i),
+  );
+  return items.filter((_, i) => keep.has(i));
 }
 
 // ────────────────────────────────────────────────────────────────────
@@ -610,10 +662,9 @@ export function sanitizeJourney(
 
   // Stage 2: structural rules in fixed order:
   //
-  //   1. Apply→Begin pairing — synthesise the missing apply step so
-  //      every entry into a formal opportunity has its application step.
-  //      Must run BEFORE any age shift so the apply step gets shifted
-  //      alongside its matching begin step.
+  //   1. Merge Apply→Begin/Accept pairs — collapse "Apply for X" + the
+  //      following "Begin/Accept X" into a single slim step at the apply
+  //      step's age. Keeps the roadmap compact.
   //
   //   2. Finish-year anchor — shift the first post-foundation step (and
   //      everything after) to the user's age at their stated finish
@@ -624,10 +675,15 @@ export function sanitizeJourney(
   //      step that still starts before 18 up to 18, cascading.
   //
   //   4. Final age band clamps + non-overlap.
-  const paired = ensureApplyBeforeBegin(cleaned);
-  const anchored = enforceFinishYearAnchor(paired, ctx);
+  //
+  //   5. Slim cap — keep at most MAX_ROADMAP_STEPS, dropping the
+  //      lowest-priority steps so the arc stays education → entry →
+  //      core → growth.
+  const merged = mergeApplyPairs(cleaned);
+  const anchored = enforceFinishYearAnchor(merged, ctx);
   const ageSafe = enforceHigherEdMinAge(anchored);
   const aged = enforceAgeRules(ageSafe);
+  const slim = capRoadmapSteps(aged, MAX_ROADMAP_STEPS);
 
-  return { ...journey, items: aged };
+  return { ...journey, items: slim };
 }

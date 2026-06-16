@@ -62,15 +62,14 @@ describe('finish-year anchor', () => {
     const entryApply = out.items.find((it) => /apply\s+for\s+entry/i.test(it.title));
     const entryAccept = out.items.find((it) => /accept\s+your\s+first/i.test(it.title));
 
+    // Apply steps are merged into their Begin/Accept partner (slim roadmap).
+    expect(apply).toBeUndefined();
+    expect(entryApply).toBeUndefined();
     // Begin uni anchored to age 25 (2034 - 2026 + 17)
     expect(begin?.startAge).toBe(25);
-    // Apply pair locked to begin
-    expect(apply?.startAge).toBe(25);
-    // Cascading: grad was 3 yrs after apply (17 → 20) → still 3 yrs after (25 → 28)
+    // Cascading: grad was 3 yrs after begin (17 → 20) → still 3 yrs after (25 → 28)
     expect(grad?.startAge).toBe(28);
-    // entry apply was 1 year after grad → still 1 year after
-    expect(entryApply?.startAge).toBe(29);
-    // entry accept locked to entryApply pair
+    // entry accept (apply merged in) was 1 year after grad → still 1 year after
     expect(entryAccept?.startAge).toBe(29);
   });
 
