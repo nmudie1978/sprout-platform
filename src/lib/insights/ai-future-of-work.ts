@@ -54,12 +54,10 @@ export interface AiRoleCluster {
 export interface AiModel {
   name: string;
   provider: string;
-  /** Country / region of the provider. */
-  origin: string;
   /** One-line, neutral note. */
   note: string;
-  /** Open weights vs closed/hosted. */
-  access: "open" | "closed";
+  /** Official product / model website. */
+  url: string;
 }
 
 export interface AiCertification {
@@ -143,14 +141,14 @@ export const aiFutureOfWork: AiFutureOfWork = {
     subheading: "The big model families — and who builds them.",
     note: "AI moves fast — this is a snapshot, not a ranking. Capabilities change month to month.",
     items: [
-      { name: "Claude", provider: "Anthropic", origin: "USA", note: "Safety-focused; strong at writing, reasoning and code.", access: "closed" },
-      { name: "ChatGPT / GPT", provider: "OpenAI", origin: "USA", note: "The most widely used assistant; broad general ability.", access: "closed" },
-      { name: "Gemini", provider: "Google DeepMind", origin: "USA", note: "Multimodal; built into Google products.", access: "closed" },
-      { name: "Llama", provider: "Meta", origin: "USA", note: "Open weights — popular for building your own AI.", access: "open" },
-      { name: "Mistral", provider: "Mistral AI", origin: "France", note: "Efficient European models, many open.", access: "open" },
-      { name: "Grok", provider: "xAI", origin: "USA", note: "Conversational model integrated with X.", access: "closed" },
-      { name: "DeepSeek", provider: "DeepSeek", origin: "China", note: "Strong open reasoning models at low cost.", access: "open" },
-      { name: "Qwen", provider: "Alibaba", origin: "China", note: "Open, highly multilingual model family.", access: "open" },
+      { name: "Claude", provider: "Anthropic", note: "Safety-focused; strong at writing, reasoning and code.", url: "https://claude.ai" },
+      { name: "ChatGPT / GPT", provider: "OpenAI", note: "The most widely used assistant; broad general ability.", url: "https://chatgpt.com" },
+      { name: "Gemini", provider: "Google DeepMind", note: "Multimodal; built into Google products.", url: "https://gemini.google.com" },
+      { name: "Llama", provider: "Meta", note: "Open weights — popular for building your own AI.", url: "https://www.llama.com" },
+      { name: "Mistral", provider: "Mistral AI", note: "Efficient European models, many open.", url: "https://mistral.ai" },
+      { name: "Grok", provider: "xAI", note: "Conversational model integrated with X.", url: "https://grok.com" },
+      { name: "DeepSeek", provider: "DeepSeek", note: "Strong open reasoning models at low cost.", url: "https://www.deepseek.com" },
+      { name: "Qwen", provider: "Alibaba", note: "Open, highly multilingual model family.", url: "https://chat.qwen.ai" },
     ],
   },
 

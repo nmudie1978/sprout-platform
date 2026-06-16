@@ -177,8 +177,8 @@ export function WorthALook({ careerIds }: { careerIds: string[] }) {
         <RefreshCw className={cn('h-3.5 w-3.5', isLoading && 'animate-spin')} />
       </button>
 
-      <ul className="divide-y divide-border/30 pr-7">
-        {items.map((item) => {
+      <ul className="divide-y divide-border/60 overflow-hidden rounded-control border border-border/60 bg-muted/10">
+        {items.map((item, idx) => {
           const Icon = TYPE_ICON[item.contentType] ?? FileText;
           const fresh = relTime(item.publishDate);
           return (
@@ -188,7 +188,8 @@ export function WorthALook({ careerIds }: { careerIds: string[] }) {
                 target="_blank"
                 rel="noopener noreferrer"
                 className={cn(
-                  'group flex items-start gap-2 py-2 first:pt-0',
+                  'group flex items-start gap-2 px-2.5 py-2 transition-colors hover:bg-muted/40',
+                  idx === 0 && 'pr-7',
                   prefersReducedMotion ? '' : 'transition-opacity duration-300',
                 )}
               >

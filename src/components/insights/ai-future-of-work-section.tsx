@@ -196,33 +196,24 @@ export function AiFutureOfWorkSection() {
                     <tr>
                       <th className="px-3 py-2 font-semibold">Model</th>
                       <th className="px-3 py-2 font-semibold">Maker</th>
-                      <th className="px-3 py-2 font-semibold">Origin</th>
-                      <th className="px-3 py-2 text-right font-semibold">Access</th>
                     </tr>
                   </thead>
                   <tbody>
                     {models.items.map((m) => (
                       <tr key={m.name} title={m.note} className="border-t border-border/30">
-                        <td className="whitespace-nowrap px-3 py-2 font-semibold text-foreground/90">
-                          {m.name}
+                        <td className="whitespace-nowrap px-3 py-2 font-semibold">
+                          <a
+                            href={m.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1 text-foreground/90 transition-colors hover:text-violet-500"
+                          >
+                            {m.name}
+                            <ExternalLink className="h-3 w-3 text-muted-foreground/50" aria-hidden="true" />
+                          </a>
                         </td>
                         <td className="whitespace-nowrap px-3 py-2 text-muted-foreground">
                           {m.provider}
-                        </td>
-                        <td className="whitespace-nowrap px-3 py-2 text-muted-foreground">
-                          {m.origin}
-                        </td>
-                        <td className="px-3 py-2 text-right">
-                          <span
-                            className={
-                              "rounded-pill px-1.5 py-0.5 text-[10px] font-medium " +
-                              (m.access === "open"
-                                ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-300"
-                                : "bg-violet-500/15 text-violet-600 dark:text-violet-300")
-                            }
-                          >
-                            {m.access === "open" ? "Open" : "Closed"}
-                          </span>
                         </td>
                       </tr>
                     ))}
@@ -426,21 +417,16 @@ export function AiFutureOfWorkSection() {
                     <Bot className="mt-0.5 h-4 w-4 shrink-0 text-violet-500/80" aria-hidden="true" />
                     <div className="min-w-0 flex-1">
                       <p className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-sm">
-                        <span className="font-semibold text-foreground/90">{m.name}</span>
-                        <span className="text-muted-foreground">· {m.provider}</span>
-                        <span className="rounded-pill bg-muted px-1.5 py-0.5 text-[10px] text-muted-foreground">
-                          {m.origin}
-                        </span>
-                        <span
-                          className={
-                            "rounded-pill px-1.5 py-0.5 text-[10px] font-medium " +
-                            (m.access === "open"
-                              ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-300"
-                              : "bg-violet-500/15 text-violet-600 dark:text-violet-300")
-                          }
+                        <a
+                          href={m.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 font-semibold text-foreground/90 transition-colors hover:text-violet-500"
                         >
-                          {m.access === "open" ? "Open weights" : "Closed / hosted"}
-                        </span>
+                          {m.name}
+                          <ExternalLink className="h-3 w-3 text-muted-foreground/50" aria-hidden="true" />
+                        </a>
+                        <span className="text-muted-foreground">· {m.provider}</span>
                       </p>
                       <p className="mt-0.5 text-xs text-muted-foreground">{m.note}</p>
                     </div>
