@@ -55,6 +55,10 @@ export function localeToLanguage(locale?: string | null): string {
       return "Norwegian";
     case "es":
       return "Spanish";
+    case "sv":
+      return "Swedish";
+    case "da":
+      return "Danish";
     default:
       return "English";
   }

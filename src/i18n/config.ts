@@ -1,4 +1,4 @@
-export const locales = ["en-GB", "nb-NO", "es"] as const;
+export const locales = ["en-GB", "nb-NO", "es", "sv", "da"] as const;
 export type Locale = (typeof locales)[number];
 export const defaultLocale: Locale = "en-GB";
 export const LOCALE_COOKIE = "NEXT_LOCALE";
@@ -8,4 +8,6 @@ export const LOCALE_META: Record<Locale, { flag: string; label: string; title: s
   "en-GB": { flag: "🇬🇧", label: "English", title: "Switch to English" },
   "nb-NO": { flag: "🇳🇴", label: "Norsk", title: "Bytt til norsk" },
   es: { flag: "🇪🇸", label: "Español", title: "Cambiar a español" },
+  sv: { flag: "🇸🇪", label: "Svenska", title: "Byt till svenska" },
+  da: { flag: "🇩🇰", label: "Dansk", title: "Skift til dansk" },
 };

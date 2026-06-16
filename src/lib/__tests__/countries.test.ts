@@ -23,16 +23,23 @@ describe("countries helpers", () => {
     expect(countryToCode(null)).toBeNull();
   });
 
-  it("defaultLocaleForCountry only diverges for Spain", () => {
+  it("defaultLocaleForCountry maps Spain/Sweden/Denmark; Norway stays en-GB", () => {
     expect(defaultLocaleForCountry("Spain")).toBe("es");
+    expect(defaultLocaleForCountry("Sweden")).toBe("sv");
+    expect(defaultLocaleForCountry("Denmark")).toBe("da");
     expect(defaultLocaleForCountry("Norway")).toBeNull();
     expect(defaultLocaleForCountry(undefined)).toBeNull();
   });
 });
 
 describe("launched countries", () => {
-  it("launches exactly Norway and Spain", () => {
-    expect(LAUNCHED_COUNTRIES.map((c) => c.name)).toEqual(["Norway", "Spain"]);
+  it("launches exactly Norway, Spain, Sweden and Denmark", () => {
+    expect(LAUNCHED_COUNTRIES.map((c) => c.name)).toEqual([
+      "Norway",
+      "Spain",
+      "Sweden",
+      "Denmark",
+    ]);
   });
   it("is a subset of SUPPORTED_COUNTRIES", () => {
     const supported = new Set(SUPPORTED_COUNTRIES.map((c) => c.name));

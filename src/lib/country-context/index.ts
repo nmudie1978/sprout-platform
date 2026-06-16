@@ -12,6 +12,8 @@
  */
 import { norwayContext } from "./norway";
 import { spainContext } from "./spain";
+import { swedenContext } from "./sweden";
+import { denmarkContext } from "./denmark";
 import { internationalContext } from "./international";
 
 export interface CountryContext {
@@ -36,6 +38,8 @@ export interface CountryContext {
 const REGISTRY: Record<string, CountryContext> = {
   Norway: norwayContext,
   Spain: spainContext,
+  Sweden: swedenContext,
+  Denmark: denmarkContext,
 };
 
 /**

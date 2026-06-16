@@ -1,0 +1,494 @@
+{
+  "arrival": {
+    "prompt": "Hvordan har du det i dag?",
+    "subtitle": "Et enkelt tryk, bare for dig. Der er intet forkert svar.",
+    "skip": "Spring over for nu",
+    "moods": {
+      "lost": "Lidt fortabt",
+      "curious": "Nysgerrig",
+      "pressured": "Under pres",
+      "motivated": "Motiveret"
+    },
+    "ack": {
+      "lost": "Det er okay. Vi tager det næste skridt sammen, roligt og småt.",
+      "curious": "Fedt! Lad os følge det, du er nysgerrig på.",
+      "pressured": "Ingen stress her. Der er intet forkert tempo — vælg én lille ting.",
+      "motivated": "Godt — lad os få det til at rykke lidt."
+    }
+  },
+  "clarityShift": {
+    "sectionTitle": "Din klarhed om denne vej",
+    "afterCta": "Jeg har udforsket dette — hvor klar føler du dig nu?",
+    "prompt": {
+      "before": "Inden du dykker ned — hvor klar er du på, om denne vej er den rigtige for dig?",
+      "after": "Nu har du udforsket det — hvor klar føler du dig?"
+    },
+    "levels": {
+      "veryUnsure": "Meget usikker",
+      "unsure": "Usikker",
+      "gettingClearer": "Bliver klarere",
+      "fairlyClear": "Ret klar",
+      "clear": "Klar"
+    },
+    "narrative": {
+      "steady": "Din fornemmelse for denne vej holdt sig stabil. Det er okay — klarhed kommer ofte et skridt ad gangen.",
+      "clearer": {
+        "small": "Lidt klarere end da du startede. Det er reel fremgang.",
+        "big": "Meget klarere end da du startede — det er et rigtigt skridt fremad."
+      },
+      "lessSure": {
+        "small": "Lidt mere usikker end da du startede. Det er også nyttigt — udforskning rejser ofte gode spørgsmål.",
+        "big": "Mere usikker end da du startede — og det er faktisk nyttigt. Nogle gange hjælper udforskning med at udelukke en vej, og det er sin egen slags fremgang."
+      }
+    }
+  },
+  "common": {
+    "save": "Gem",
+    "cancel": "Annuller",
+    "close": "Luk",
+    "loading": "Indlæser…",
+    "change": "skift",
+    "yes": "Ja",
+    "set": "Angiv",
+    "delete": "Slet",
+    "error": "Fejl",
+    "showOriginal": "Vis original",
+    "translateToNorwegian": "Oversæt til norsk",
+    "translating": "Oversætter…",
+    "noResults": "Ingen resultater fundet",
+    "previousPage": "Forrige side",
+    "nextPage": "Næste side"
+  },
+  "nav": {
+    "dashboard": "Oversigt",
+    "jobs": "Småjobs",
+    "insights": "Brancheindsigt",
+    "myJourney": "Min rejse",
+    "explore": "Udforsk karrierer",
+    "feedback": "Feedback",
+    "about": "Om"
+  },
+  "greeting": {
+    "morning": "God morgen",
+    "afternoon": "God eftermiddag",
+    "evening": "God aften",
+    "welcome": "Velkommen"
+  },
+  "dashboard": {
+    "pageContext": "Et overblik over dine rejser, aktivitet og gemt indhold.",
+    "replayWalkthrough": "Gennemgå app-introduktion igen",
+    "guardianPending": "Venter på bekræftelse fra forælder/værge — tryk for at sende igen eller skifte",
+    "profileComplete": "Profil fuldført",
+    "profilePercent": "Profil {pct}% fuldført",
+    "startHint": "Start her",
+    "journeyComplete": "Fuldført",
+    "exploredTitle": "Mine udforsket rejser",
+    "recommendedTitle": "Anbefalet til dig",
+    "recommendedTooltip": "Karrierer vi tror, du vil synes om, baseret på dem du har udforsket, gemt og bedømt.",
+    "worthALookTitle": "Værd at kigge på",
+    "worthALookTooltip": "Friske, verificerede læsestykker fra arbejdsverdenen — tilpasset de karrierer, du udforsker.",
+    "seeAll": "Se alle",
+    "more": "Mere",
+    "mainFocus": "Dit primære karrierefokus er:",
+    "stageDiscoverTooltip": "Opdag — udforsker hvad denne karriere handler om",
+    "stageUnderstandTooltip": "Forstå — udforsker rollen i dybden",
+    "stageCompleteTooltip": "Rejse fuldført",
+    "reloadTitle": "Genindlæs denne rejse?",
+    "reloadBodyPrefix": "Dette gør",
+    "reloadBodySuffix": "til din aktive rejse og tager dig til Min rejse. Din nuværende rejse forbliver gemt i Udforsket rejser, så du kan skifte tilbage når som helst.",
+    "reloadConfirm": "Genindlæs rejse"
+  },
+  "journey": {
+    "title": "Min rejse",
+    "cardTitle": "Min rejse",
+    "cardTitleWithGoal": "Min rejse mod at blive",
+    "chooseGoalPrompt": "Vælg et primært mål for at starte",
+    "continueJourney": "Fortsæt din rejse",
+    "completeIndicator": "Du har udforsket denne mulige fremtid",
+    "completeNudge": "Prøv nu at skifte til en alternativ karriere for at udforske videre.",
+    "exploreAnother": "Udforsk en anden karriere",
+    "progressTooltip": "Din rejse sporer din fremgang gennem Opdag, Forstå og Klarhed — og hjælper dig med at se det fulde billede af en karrierevej.",
+    "hint": "Dette er din vej",
+    "discover": {
+      "label": "Opdag",
+      "subtitle": "Udforsk karrieren",
+      "description": "Få et overblik: hvad det er, hvem der gør det, løninterval og om det er værd at se nærmere på.",
+      "tooltip": "Få en fornemmelse for karrieren — hvad en typisk dag ser ud, løn, vækstperspektiv og de vigtigste færdigheder.",
+      "confirmQuestion": "Har du udforsket, hvad denne rolle handler om?",
+      "confirmYes": "Ja",
+      "confirmNotYet": "Ja",
+      "videoSection": "En dag i livet",
+      "overviewSection": "Karriereoverblik",
+      "annualSalary": "Årsløn",
+      "growth": "Vækst",
+      "sector": "Sektor",
+      "pension": "Pension"
+    },
+    "understand": {
+      "label": "Forstå",
+      "subtitle": "Virkelighed, uddannelse og færdigheder",
+      "description": "Gå dybere ind i det daglige arbejde, kvalifikationer og de svære dele.",
+      "tooltip": "Gå dybere ind i, hvad rollen faktisk indebærer — reelle uddannelsesveje, adgangskrav, kurser og ærlige realitetstjek.",
+      "lockedTooltip": "Besvar bekræftelsen nederst i Opdag for at låse Forstå op",
+      "confirmQuestion": "Har du forstået rollen mere detaljeret?",
+      "confirmYes": "Ja",
+      "confirmNotYet": "Ja",
+      "tasksSection": "Hvad du faktisk kommer til at lave",
+      "tasksTooltip": "De centrale ansvarsområder og daglige opgaver, der definerer denne rolle — hvad du faktisk vil bruge din tid på.",
+      "realitySection": "Virkeligheden",
+      "realityTooltip": "Et ærligt blik på, hvad denne karriere virkelig er som — udfordringerne, afvejningerne og hvad der gør nogen til et godt match.",
+      "typicalDaySection": "En typisk dag",
+      "typicalDayTooltip": "Hvad en rigtig arbejdsdag ser ud i denne rolle — morgen, middag og eftermiddag — så du kan forestille dig selv i den.",
+      "schoolReadiness": "Skoleparathed",
+      "studyPath": "Studievej",
+      "studyPathTooltip": "Rigtige universiteter, uddannelsesinstitutioner og erhvervsskoler, der fører til denne karriere — filtreret efter din placering og fag.",
+      "careerPresence": "Karrieretilstedeværelse og værktøjer",
+      "careerPresenceTooltip": "Hvor tilgængelig denne karriere er i Norge og nabolandene, og de værktøjer fagfolk bruger hver dag."
+    },
+    "clarity": {
+      "label": "Klarhed",
+      "subtitle": "Se din fulde rejse",
+      "description": "Se den fulde tidslinje, milepæle og hvad der skal til for at komme dertil.",
+      "tooltip": "Dette afsnit samler alt — viser dig den fulde rejse, tidslinje og hvad der skal til for at blive dette.",
+      "lockedTooltip": "Besvar bekræftelsen nederst i Forstå for at låse Klarhed op",
+      "addMomentumStep": "Tilføj dette som et af dine fremskridtskridt",
+      "deleteStep": "Slet trin",
+      "addStepPlaceholder": "Tilføj et trin…",
+      "addFirstStepPlaceholder": "Tilføj dit første trin…"
+    },
+    "notes": {
+      "title": "Dine noter",
+      "placeholder": "Tilføj en note..."
+    },
+    "fromField": {
+      "title": "Reelle veje fra rigtige mennesker",
+      "sectionTitle": "Fra feltet",
+      "tooltip": "Rigtige karrieretidslinjer bidraget af forældre og fagfolk — der viser, at der er mere end én vej hertil."
+    },
+    "empty": {
+      "description": "Vælg et primært mål — den karriere du vil udforske ordentligt først. Vi guider dig fra nysgerrighed til en reel plan, et skridt ad gangen. Du kan ændre det når som helst.",
+      "choosePrimary": "Vælg dit karrieremål",
+      "exploreRadar": "Eller udforsk karrierer i Karriereradar først"
+    }
+  },
+  "careers": {
+    "notTailored": "Endnu ikke tilpasset dit land",
+    "titlePrefix": "Udforsk",
+    "titleGradient": "Karrierer",
+    "description": "Lær hvad forskellige jobs faktisk er som, inden du beslutter noget",
+    "infoTooltip": "Gennemse karrierer efter kategori, søg efter navn, eller filtrer efter løn, vækst og mere. Klik på en karriere for at se en fuld gennemgang inkl. en typisk dag, uddannelsesveje og løninfo.",
+    "stats": {
+      "careers": "Karrierer",
+      "showing": "Viser",
+      "categories": "Kategorier"
+    },
+    "table": {
+      "career": "Karriere",
+      "salary": "Løn",
+      "growth": "Vækst",
+      "sector": "Sektor",
+      "path": "Vej",
+      "demand": "Efterspørgsel",
+      "match": "Match",
+      "learnMore": "Lær mere"
+    },
+    "personalised": "Personaliseret",
+    "empty": {
+      "title": "Ingen karrierer fundet",
+      "description": "Prøv at justere din søgning eller filtre",
+      "clearFilters": "Ryd filtre"
+    },
+    "recommended": {
+      "title": "Anbefalet til dig",
+      "subtitle": "Baseret på dit primære mål"
+    },
+    "loading": "Indlæser karrierer...",
+    "pagination": {
+      "showing": "Viser {start}–{end} af {total}",
+      "total": "{total} karrierer"
+    }
+  },
+  "radar": {
+    "titlePrefix": "Min",
+    "titleGradient": "Karriereradar",
+    "description": "Karrierer matchet til dine interesser, arbejdsstil og styrker. Jo tættere en prik er på centrum, desto stærkere er matchet. Tryk på en prik for at udforske den karriere i detaljer.",
+    "loading": "Indlæser din radar…",
+    "notYouth": "Log ind som ungdomskonto for at bruge Karriereradar.",
+    "hint": "Tryk på en karriere for at udforske den"
+  },
+  "careerSnapshot": {
+    "title": "Karrieresnapshot",
+    "tooltip": "Nøgleoplysninger om din valgte karriere — løn, vækst, sektor og pension.",
+    "salary": "Løn",
+    "growth": "Vækst",
+    "sector": "Sektor",
+    "pension": "Pension",
+    "emptyState": "Vælg et primært mål for at se karriereinfo"
+  },
+  "exploredJourneys": {
+    "title": "Tidligere udforsket rejser",
+    "tooltip": "Alle rejser du starter, gemmes her. Skift mellem dem når som helst.",
+    "emptyState": "Ingen rejser endnu.",
+    "career": "Karriere",
+    "stage": "Trin",
+    "status": "Status",
+    "primaryGoal": "Primært mål",
+    "saved": "Gemt",
+    "interest": "Interesse"
+  },
+  "savedCareers": {
+    "title": "Gemte karrierer",
+    "tooltip": "Alle karrierer du har gemt — hvad enten det er fra Udforsk karrierer eller fra din Karriereradar — samlet på ét sted. Ingen dubletter.",
+    "emptyState": "Ingen gemte karrierer endnu."
+  },
+  "smallJobs": {
+    "title": "Mine småjobs",
+    "tooltip": "Virkelige småjobs, du har søgt. Hvert job opbygger erfaring, ansvar og selvtillid.",
+    "applied": "Ansøgt",
+    "waiting": "Venter",
+    "accepted": "Accepteret",
+    "done": "Udført"
+  },
+  "library": {
+    "title": "Mit bibliotek",
+    "tooltip": "Artikler, videoer og ressourcer, du har gemt fra Brancheindsigt.",
+    "emptyState": "Dit bibliotek er tomt.",
+    "listView": "Listevisning",
+    "gridView": "Gittervisning"
+  },
+  "switchGoal": {
+    "title": "Skift primært mål til {goalTitle}?",
+    "description": "Din nuværende fremgang gemmes. Du kan skifte tilbage når som helst.",
+    "whatHappens": "Hvad sker der:",
+    "journeySaved": "Din rejse for {currentGoal} gemmes",
+    "canReload": "Du kan genindlæse den fra Tidligere udforsket rejser på dit overblik",
+    "dataPreserved": "Alle data — køreplan, fundament, præferencer — bevares",
+    "confirm": "Skift primært mål",
+    "toastDescription": "Din tidligere rejse er gemt i Tidligere udforsket rejser og kan genindlæses når som helst. Gå til Min rejse for at begynde at udforske dit nye primære mål.",
+    "goToJourney": "Gå til Min rejse"
+  },
+  "dyk": {
+    "header": "Vidste du?",
+    "nextFact": "Vis en anden kendsgerning"
+  },
+  "firstLogin": {
+    "cardTitle": "Ny her? Tag et hurtigt kig rundt",
+    "cardDescription": "En kort gennemgang, der viser dig, hvad hver del af platformen gør — tager ca. 30 sekunder.",
+    "startWalkthrough": "Vis mig rundt"
+  },
+  "profile": {
+    "title": "Profil",
+    "youthOnly": "Kun ungdomsbrugere kan tilgå profiler.",
+    "loading": "Indlæser profil...",
+    "firstName": "Fornavn",
+    "surname": "Efternavn",
+    "age": "Alder",
+    "yearsOld": "år gammel",
+    "born": "Født",
+    "dobNote": "Fødselsdato · angivet ved tilmelding",
+    "dobNotSet": "Fødselsdato ikke angivet",
+    "bio": "Om mig",
+    "bioPlaceholder": "Fortæl lidt om dig selv...",
+    "phone": "Telefon",
+    "city": "By",
+    "guardianEmail": "Forælders/værges e-mail",
+    "saveButton": "Gem profil",
+    "savingButton": "Gemmer...",
+    "savedToast": "Profil gemt!",
+    "savedToastDesc": "Din profil er blevet opdateret.",
+    "careerDirection": "Karriereretning",
+    "primaryGoal": "Primært mål",
+    "secondaryGoal": "Sekundært mål",
+    "noGoalSet": "Intet karrieremål sat endnu",
+    "noBackupGoal": "Intet reservemål sat",
+    "availability": {
+      "title": "Job-tilgængelighed",
+      "available": "Tilgængelig",
+      "busy": "Optaget",
+      "notLooking": "Søger ikke"
+    },
+    "privacy": {
+      "visibility": "Profilsynlighed",
+      "visibilityPublic": "Jobopslag kan se din profil",
+      "visibilityPrivate": "Din profil er privat",
+      "dnd": "Forstyr ikke",
+      "dndEnabled": "Andre kan ikke starte nye samtaler",
+      "dndDisabled": "Andre kan sende dig beskeder"
+    },
+    "deleteAccount": "Slet konto permanent",
+    "deleting": "Sletter..."
+  },
+  "landing": {
+    "hero": {
+      "ageRange": "For 15–23-årige",
+      "title": "Ingen underviser dig i, hvordan du finder ud af din fremtid.",
+      "subhead": "Du bliver bedt om at vælge fag, vælge en uddannelse og vælge en karriere. Men hvordan skal du vælge noget, du aldrig har set?",
+      "problem": "Tusindvis af jobs findes, men de fleste kender kun en håndfuld.",
+      "solution": "Endeavrly hjælper dig med at udforske rigtige karrierer, forstå hvad de faktisk er som, og opdage veje du aldrig vidste eksisterede. Lær hvad folk laver, hvilke færdigheder der betyder noget, hvordan jobs ændrer sig, og hvilke muligheder der måske passer til dig.",
+      "missing": "Endeavrly giver dig det, der har manglet: rigtige karrierer, ærlig information og et rum til at udforske, hvem du er og hvad der betyder noget for dig.",
+      "payoff": "Så når du vælger en retning, er det din.",
+      "closer": "Ingen quizzer. Intet pres. Bare klarhed.",
+      "cta": "Start din rejse",
+      "ctaSecondary": "Udforsk karrierer gratis",
+      "trust": "Sikker, privat og bygget til 15–23-årige — ingen reklamer, intet pres, bare klarhed.",
+      "tagline": "Karriere-operativsystemet for unge mennesker."
+    },
+    "framework": {
+      "title": "Tre linser. Én rejse.",
+      "subtitle": "Hvert trin bygger på det forrige. Nysgerrighed bliver til klarhed, klarhed bliver til retning — i dit eget tempo, på dine egne vilkår."
+    },
+    "timeline": {
+      "label": "Din tidslinje",
+      "title": "Din rejse, dit tempo.",
+      "subtitle": "Alle vokser forskelligt. Se din fremgang som en blid udfoldning, ikke et løb."
+    },
+    "contrast": {
+      "notThis": "Ikke dette",
+      "thisInstead": "Dette i stedet",
+      "not1": "En karrierequiz, der fortæller dig, hvad du skal være.",
+      "instead1": "Et rum til at arbejde tingene ud for dig selv — gennem rigtige oplevelser og ærlig refleksion.",
+      "not2": "En motivationsapp, der pumper dig op.",
+      "instead2": "Ligetil information om, hvad forskellige veje faktisk er som.",
+      "not3": "En platform, der sporer, scorer eller rangerer din fremtid.",
+      "instead3": "Et privat sted at udforske, prøve ting og vokse i det tempo, der føles rigtigt."
+    },
+    "trust": {
+      "noAds": "Ingen reklamer",
+      "noTracking": "Ingen sporing",
+      "noPayments": "Ingen betalinger",
+      "noPublicProfiles": "Ingen offentlige profiler",
+      "safetyByDesign": "Sikkerhed by design"
+    },
+    "cta": {
+      "title": "Kom i gang.",
+      "subtitle": "Gratis. Intet kreditkort. Ingen forpligtelser.",
+      "button": "Tilmeld dig gratis"
+    }
+  },
+  "footer": {
+    "research": "Forskning",
+    "terms": "Vilkår",
+    "privacy": "Privatliv",
+    "safety": "Sikkerhed",
+    "eligibility": "Adgangskrav",
+    "disclaimer": "Ansvarsfraskrivelse",
+    "copyright": "© {year} Endeavrly. Hjælper unge mennesker med at opbygge livsfærdigheder og vokse i selvtillid."
+  },
+  "signup": {
+    "firstName": "Fornavn",
+    "surname": "Efternavn",
+    "email": "Din e-mail",
+    "password": "Adgangskode",
+    "guardianEmail": "Forælders eller værges e-mail",
+    "createAccount": "Opret konto",
+    "creating": "Opretter din konto…",
+    "alreadyHaveAccount": "Har du allerede en konto?",
+    "signIn": "Log ind",
+    "acceptTerms": "Jeg accepterer vilkårene og privatlivspolitikken"
+  },
+  "insights": {
+    "countryNotice": "Disse indsigter er baseret på det norske arbejdsmarked — vi har endnu ikke tilpasset dem til {country}.",
+    "pageTitle": "Branche",
+    "pageTitleGradient": "Indsigt",
+    "pageDescription": "Reelle data om karrierer, brancher og jobmarkedet",
+    "trustLine": "Karrieretendenser og indsigter opdelt for din aldersgruppe — fra globale mønstre til hvad der betyder noget for dig lige nu.",
+    "verifiedSources": "Data fra OECD, ILO, WEF og mere · Opdateres kvartalsvist",
+    "showContextHints": "Vis konteksttip",
+    "globalLens": "Globalt perspektiv",
+    "globalTitle": "Global branche- og karrierelandskab",
+    "globalSubtitle": "Makrotendenser der former jobs verden over — datadrevet, ikke ungdomsspecifik",
+    "jobMarketStats": "Jobmarkedsstatistik",
+    "jobMarketStatsDesc": "Nøgledatapunkter fra global beskæftigelsesforskning",
+    "youthLens": "Ungdomsperspektiv",
+    "youthTitle": "Hvad det betyder for dig (15–23)",
+    "youthSubtitle": "Hvordan det globale landskab hænger sammen med dine valg — varmt, handlingsorienteret og jordbundet",
+    "aboutData": "Om dataene",
+    "aboutDataDesc": "Alle indsigter er baseret på Tier-1-kilder og gennemgås kvartalsvist. Indholdet er opsummeret for klarhedens skyld.",
+    "refreshed": "Opdateret {quarter}",
+    "reviewedRegularly": "Gennemgås regelmæssigt",
+    "verified": "Verificeret"
+  },
+  "userMenu": {
+    "account": "Konto",
+    "profile": "Profil",
+    "settings": "Indstillinger",
+    "tools": "Værktøjer",
+    "aiCareerAdvisor": "AI-karriererådgiver",
+    "safety": "Sikkerhed",
+    "healthSafety": "Helbred og sikkerhed",
+    "reportConcern": "Rapportér en bekymring",
+    "aboutEndeavrly": "Om Endeavrly",
+    "lightMode": "Lys tilstand",
+    "darkMode": "Mørk tilstand",
+    "logOut": "Log ud",
+    "language": "Sprog",
+    "english": "English",
+    "norwegian": "Norsk"
+  },
+  "careerTwin": {
+    "title": "Career Twin",
+    "subtitle": "Tal med én mulig fremtidig version af dig selv i denne karriere.",
+    "disclaimer": "Dette er en AI-genereret simulation, der hjælper dig med at udforske muligheder — ikke en forudsigelse og ikke professionel karriererådgivning. Den kan være unøjagtig, så dobbelttjek alt vigtigt.",
+    "realityCheck": "Realitetstjek",
+    "tabAdvisor": "Karriererådgiver",
+    "tabTwin": "Career Twin",
+    "loading": "Vækker dit fremtidige jeg…",
+    "emptyTitle": "Vælg en karriere først",
+    "emptyBody": "Vælg en karriere, så din Career Twin ved, hvilken fremtid der skal simuleres.",
+    "exploreCareers": "Udforsk karrierer",
+    "useRadar": "Brug Karriereradar",
+    "generalNote": "Jeg holder det generelt, fordi jeg endnu ikke ved meget om dine interesser.",
+    "modesLabel": "Hvad vil du tale om?",
+    "suggested": "Prøv at spørge:",
+    "inputPlaceholder": "Spørg dit fremtidige jeg om hvad som helst…",
+    "send": "Send",
+    "thinking": "Tænker…",
+    "saveToLibrary": "Gem til Mit bibliotek",
+    "saved": "Gemt",
+    "addNextStep": "Tilføj til Min rejse",
+    "added": "Tilføjet",
+    "confirmAddTitle": "Tilføj dette til Min rejse?",
+    "confirmAddBody": "Vi tilføjer dette som et næste trin på din rejse. Intet tilføjes uden din godkendelse.",
+    "confirmAdd": "Tilføj næste trin",
+    "cancel": "Annuller",
+    "noActiveGoal": "Vælg et rejsemål først, så kan din Career Twin tilføje trin til det.",
+    "meetFutureYou": "Mød dit fremtidige jeg",
+    "meetFutureYouBody": "Spørg din Career Twin, hvad denne vej kunne føles som.",
+    "checkInFutureYou": "Tjek ind med dit fremtidige jeg",
+    "checkInFutureYouBody": "Det er et stykke tid siden — se, hvordan dit fremtidige jeg svarer nu.",
+    "askFutureMe": "Spørg mit fremtidige jeg",
+    "clarityIntroBody": "Nu hvor du har en retning inden for {career}, tal det igennem med en version af dig, der allerede lever det — hvad det føles som, hvad det kræver, og dit næste skridt. De husker, hvad du noterer her.",
+    "maybeLater": "Måske senere",
+    "reflectionTip": "Tip: skriv en refleksion ovenfor, og dit fremtidige jeg vil tage den op.",
+    "talkToFutureSelfAs": "Tal med dit fremtidige jeg som {career}",
+    "journeyComplete": "Rejse fuldført",
+    "meetFutureSelfAs": "Mød dit fremtidige jeg som {career}",
+    "talk": "Snak",
+    "setPrimaryGoal": "Angiv som primært mål",
+    "primaryGoalActive": "Dit primære mål",
+    "changeGoal": "Skift mål",
+    "setGoalTitle": "Angiv dette som dit primære mål?",
+    "setGoalBody": "Vi gør {career} til dit primære mål på Min rejse. Du kan ændre eller tilpasse det når som helst.",
+    "setGoalReplace": "Dette erstatter dit nuværende primære mål: {current}.",
+    "confirmSetGoal": "Angiv som primært mål",
+    "goalSetToast": "Angivet som primært mål!",
+    "goalSetToastBody": "Se og tilpas det på Min rejse.",
+    "goalSetError": "Kunne ikke angive dit mål",
+    "goalSetErrorBody": "Prøv igen om et øjeblik.",
+    "welcomeBack": "Velkommen tilbage — det er nu ca. {weeks, plural, one {# uge} other {# uger}} siden. Dit fremtidige jeg har ventet. Fortsæt hvor du slap."
+  },
+  "recommendations": {
+    "becauseExplored": "Fordi du udforsket {title}",
+    "becauseSaved": "Fordi du gemte {title}",
+    "coldStart": "Udforsk en karriere, og vi foreslår andre, der passer til det, du tiltrækkes af."
+  },
+  "worthALook": {
+    "emptyState": "Friske læsestykker fra arbejdsverdenen vil dukke op her."
+  },
+  "pageContext": {
+    "whatsThis": "Hvad er denne side?",
+    "whyHere": "Hvorfor du er her:",
+    "learnMore": "Lær mere",
+    "gotIt": "Forstået"
+  }
+}

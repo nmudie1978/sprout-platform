@@ -17,6 +17,24 @@ describe("getCountryContext", () => {
     expect(ctx.crisisLine).toMatch(/116 111/);
   });
 
+  it("returns Sweden context for Sweden", () => {
+    const ctx = getCountryContext("Sweden");
+    expect(ctx.code).toBe("SE");
+    expect(ctx.currency).toBe("SEK");
+    expect(ctx.crisisLine).toMatch(/90101|112/); // Swedish helpline, not Norwegian
+    expect(ctx.crisisLine).not.toMatch(/116 111/);
+    expect(ctx.condensedAiContext()).toMatch(/gymnasium|Högskoleprovet|CSN/);
+  });
+
+  it("returns Denmark context for Denmark", () => {
+    const ctx = getCountryContext("Denmark");
+    expect(ctx.code).toBe("DK");
+    expect(ctx.currency).toBe("DKK");
+    expect(ctx.crisisLine).toMatch(/70 201 201|112/); // Danish helpline, not Norwegian
+    expect(ctx.crisisLine).not.toMatch(/116 111/);
+    expect(ctx.condensedAiContext()).toMatch(/7-trins-skala|optagelse\.dk|SU/);
+  });
+
   it("falls back to a NEUTRAL international context — never silently Norway", () => {
     // Safety: an unlocalised country must NOT inherit Norway's currency or
     // (critically) its crisis number. See international.ts.
