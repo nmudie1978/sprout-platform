@@ -23,8 +23,8 @@ export function AmbientLightBackground() {
           "radial-gradient(120% 90% at 88% 6%, hsl(178 69% 29% / 0.07) 0%, transparent 42%)," +
           // faint soft-gold warmth, lower-left (keeps it from feeling clinical)
           "radial-gradient(90% 80% at 8% 100%, hsl(40 55% 60% / 0.045) 0%, transparent 46%)," +
-          // Cool Stone base — toned blue-grey paper
-          "linear-gradient(160deg, hsl(210 13% 88%) 0%, hsl(212 12% 87%) 55%, hsl(210 12% 86%) 100%)",
+          // Indigo Dusk base — toned blue-purple paper
+          "linear-gradient(160deg, hsl(245 24% 83%) 0%, hsl(245 24% 82%) 55%, hsl(246 24% 81%) 100%)",
       }}
     />
   )
