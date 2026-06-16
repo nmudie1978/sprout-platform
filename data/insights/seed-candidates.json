@@ -1,5 +1,43 @@
 [
   {
+    "title": "Turning curiosity about engineering into careers",
+    "summary": "A collaboration between MIT’s Leaders for Global Operations, Boeing, and Engineering Tomorrow brings aspiring engineers from the classroom to the factory floor.",
+    "sourceName": "MIT News",
+    "sourceUrl": "https://news.mit.edu/2026/turning-curiosity-about-engineering-into-careers-0227",
+    "contentType": "article",
+    "tags": [
+      "jobs",
+      "future-of-work",
+      "career-planning"
+    ],
+    "publishDate": "2026-02-27"
+  },
+  {
+    "title": "Stone Center on Inequality and Shaping the Future of Work Launches at MIT",
+    "summary": "Recent launch event for the center featured discussions on pro-worker AI, wealth inequality, and the future of liberal democracy.",
+    "sourceName": "MIT News",
+    "sourceUrl": "https://news.mit.edu/2026/stone-center-inequality-shaping-future-work-launches-0107",
+    "contentType": "article",
+    "tags": [
+      "jobs",
+      "future-of-work",
+      "ai"
+    ],
+    "publishDate": "2026-01-07"
+  },
+  {
+    "title": "A day in the life of MIT PhD student Alex Busch",
+    "summary": "With an interest in trade unions and employer associations shaping the labor market, Busch is exploring how employee voices and economic democracy affect the future of work.",
+    "sourceName": "MIT News",
+    "sourceUrl": "https://news.mit.edu/2025/day-in-the-life-phd-student-alex-busch-1210",
+    "contentType": "article",
+    "tags": [
+      "jobs",
+      "future-of-work"
+    ],
+    "publishDate": "2025-12-10"
+  },
+  {
     "title": "PATH to boost AI training and career opportunities for industry-aligned jobs",
     "summary": "MIT RAISE and Georgia State University announce an initiative to connect universities, community colleges, industry, and government to expand industry-aligned AI training and career pathways.",
     "sourceName": "MIT News",
