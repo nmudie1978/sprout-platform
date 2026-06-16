@@ -9,6 +9,17 @@
 // See: https://nextjs.org/docs/app/api-reference/config/eslint
 import coreWebVitals from "eslint-config-next/core-web-vitals";
 
+// ESLint flat config scopes plugins PER config object: a rules-only object
+// cannot reference `react/*`, `react-hooks/*`, `@next/next/*` or `import/*`
+// unless those plugins are declared in the SAME object. Re-export the exact
+// plugin instances registered by eslint-config-next so our severity-override
+// object below can address their rules. (Merging every plugin map keeps this
+// resilient to eslint-config-next reshuffling which object owns which plugin.)
+const nextPlugins = Object.assign(
+  {},
+  ...coreWebVitals.map((c) => c.plugins).filter(Boolean),
+);
+
 export default [
   // Global ignores — build output, deps, generated files, migrations.
   {
@@ -38,6 +49,7 @@ export default [
   // genuinely important correctness rules as errors. Burn the warnings down
   // over time; do not add new ones.
   {
+    plugins: nextPlugins,
     rules: {
       // Cosmetic: unescaped ' / " in JSX text.
       "react/no-unescaped-entities": "warn",
