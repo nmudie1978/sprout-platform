@@ -20,36 +20,53 @@ describe("AiFutureOfWorkSection", () => {
     expect(screen.queryByText("Lower-risk human work")).not.toBeInTheDocument();
   });
 
-  it("renders the 'How people use AI today' uses, including RAG", () => {
+  it("does NOT render the removed 'How people use AI today' section", () => {
     render(<AiFutureOfWorkSection />);
-    expect(screen.getByText("How people use AI today")).toBeInTheDocument();
-    expect(screen.getByText("Answers from messy data")).toBeInTheDocument();
-    expect(screen.getByText(/RAG systems/)).toBeInTheDocument();
-    expect(screen.getByText("Automate business processes")).toBeInTheDocument();
+    // The pillar-card CTA still opens an "examples" modal of the same name, but
+    // the standalone on-page uses grid (with "Answers from messy data") is gone.
+    expect(screen.queryByText("Answers from messy data")).not.toBeInTheDocument();
+    expect(screen.queryByText("Build apps by describing them")).not.toBeInTheDocument();
   });
 
-  it("renders leading AI models with their providers", () => {
+  it("renders the leading AI models in the tabbed table (Models default)", () => {
     render(<AiFutureOfWorkSection />);
-    expect(screen.getByText("Today's leading AI models")).toBeInTheDocument();
-    expect(screen.getAllByText(/Anthropic/).length).toBeGreaterThan(0);
-    expect(screen.getAllByText(/OpenAI/).length).toBeGreaterThan(0);
-    expect(screen.getAllByText(/DeepSeek/).length).toBeGreaterThan(0);
+    expect(screen.getByText("AI models & certifications")).toBeInTheDocument();
+    // Models tab is shown by default.
+    expect(screen.getByText("Anthropic")).toBeInTheDocument();
+    expect(screen.getByText("OpenAI")).toBeInTheDocument();
+    // "DeepSeek" is both the model name and its maker → appears twice.
+    expect(screen.getAllByText("DeepSeek").length).toBeGreaterThan(0);
   });
 
-  it("renders the AI certification tracks as external links", () => {
+  it("renders the certification tracks as external links under the Certifications tab", () => {
     render(<AiFutureOfWorkSection />);
-    expect(screen.getByText("AI certification tracks")).toBeInTheDocument();
+    // Certs live behind the tab — not shown until selected (keeps the noise down).
+    expect(
+      screen.queryByText("Professional Machine Learning Engineer"),
+    ).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole("tab", { name: "Certifications" }));
     const cert = screen.getByText("Professional Machine Learning Engineer").closest("a");
     expect(cert).toHaveAttribute("href", expect.stringContaining("cloud.google.com"));
     expect(cert).toHaveAttribute("target", "_blank");
   });
 
-  it("renders the careers-in-AI videos", () => {
+  it("opens the model-detail modal from the 'what sets each model apart' link", () => {
+    render(<AiFutureOfWorkSection />);
+    fireEvent.click(screen.getByRole("button", { name: /what sets each model apart/i }));
+    expect(screen.getByText(/Safety-focused; strong at writing/)).toBeInTheDocument();
+  });
+
+  it("renders exactly two careers-in-AI videos (reduced set)", () => {
     render(<AiFutureOfWorkSection />);
     expect(screen.getByText("Watch: careers in AI")).toBeInTheDocument();
     expect(
       screen.getByText("Life as an AI Researcher & Machine Learning Engineer"),
     ).toBeInTheDocument();
+    expect(screen.getByText("Day in the Life of an AI Engineer")).toBeInTheDocument();
+    // The third video was trimmed.
+    expect(
+      screen.queryByText("A Practical Guide to Becoming an AI Engineer"),
+    ).not.toBeInTheDocument();
   });
 
   it("opens the examples modal (incl. RAG) from the first card", () => {
