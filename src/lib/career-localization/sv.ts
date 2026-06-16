@@ -308,4 +308,316 @@ export const SV_CAREER_LOCALIZATION: Record<string, CareerLocalizationEntry> = {
       source: "https://www.umu.se/utbildning/program/forskollararprogrammet/",
     },
   },
+
+  // ── Batch 2 ──────────────────────────────────────────────────────────
+  physiotherapist: {
+    description:
+      "Som fysioterapeut hjälper du människor att återfå och bevara rörelseförmåga – ett meningsfullt yrke inom vård och hälsa.",
+    salary: { value: "35 000–42 200 kr/mån", source: "https://allaloner.se/yrken/fysioterapeut" },
+    educationPath: {
+      value:
+        "Gymnasium (naturkunskap) följt av fysioterapeutprogrammet (180 hp, 3 år) och legitimation hos Socialstyrelsen.",
+      source: "https://www.saco.se/studier/studieval/yrken-a-o/fysioterapeut/",
+    },
+  },
+  veterinarian: {
+    description:
+      "Du värnar djurs hälsa och välmående – från husdjur till lantbruksdjur – och arbetar även med livsmedelssäkerhet och smittskydd.",
+    salary: { value: "ca 51 500 kr/mån (genomsnitt 2025)", source: "https://lonstatistik.se/veterinar-lon/" },
+    educationPath: {
+      value:
+        "Gymnasium (naturvetenskap) följt av veterinärprogrammet (330 hp, 5,5 år) vid SLU i Uppsala och legitimation hos Jordbruksverket.",
+      source: "https://www.slu.se/utbildning/studera/program-pa-grundniva/veterinar/",
+    },
+  },
+  "mechanical-engineer": {
+    description:
+      "Du konstruerar och förbättrar tekniska system och produkter – en bred roll med möjligheter inom allt från fordon till energi.",
+    salary: {
+      value: "36 000–54 900 kr/mån",
+      source: "https://www.unionen.se/rad-och-stod/om-lon/marknadsloner/ingenjor-tekniker-maskinteknik",
+    },
+    educationPath: {
+      value:
+        "Gymnasiets teknik- eller naturvetenskapsprogram följt av högskoleingenjör (180 hp) eller civilingenjör (300 hp) i maskinteknik.",
+      source: "https://www.gymnasium.se/yrkesguiden/maskiningenjor-11176",
+    },
+  },
+  "electrical-engineer": {
+    description:
+      "Du gestaltar framtidens energisystem, elnät och inbyggda system – ett yrke i stark tillväxt drivet av elektrifiering.",
+    salary: { value: "40 700–54 500 kr/mån", source: "https://allaloner.se/yrken/elingenjor" },
+    educationPath: {
+      value:
+        "Gymnasiets teknikprogram följt av högskoleingenjör (180 hp) eller civilingenjör i elektroteknik vid t.ex. KTH eller Chalmers.",
+      source:
+        "https://www.kth.se/utbildning/hogskoleingenjor/elektroteknik/elektroteknik-hogskoleingenjor-180-hp-1.53990",
+    },
+  },
+  "web-developer": {
+    description:
+      "Du bygger de digitala upplevelser som miljontals människor använder varje dag – ett kreativt och tekniskt yrke med stor frihet.",
+    salary: {
+      value: "36 000–60 800 kr/mån",
+      source: "https://www.unionen.se/rad-och-stod/om-lon/marknadsloner/systemutvecklare",
+    },
+    educationPath: {
+      value:
+        "Gymnasieexamen följt av en 2-årig YH-utbildning inom webbutveckling eller en högskoleutbildning i systemutveckling.",
+      source: "https://allastudier.se/utbildningar/webbutvecklare-utbildning",
+    },
+  },
+  "cybersecurity-analyst": {
+    description:
+      "Du skyddar organisationer mot cyberhot och intrång – ett av marknadens hetaste yrken med stark och växande efterfrågan.",
+    salary: { value: "44 400–62 000 kr/mån", source: "https://allaloner.se/yrken/it-sakerhetsanalytiker" },
+    educationPath: {
+      value:
+        "Gymnasieexamen följt av en 2-årig YH-utbildning som IT-säkerhetsspecialist eller akademisk utbildning i informationssäkerhet.",
+      source: "https://kyh.se/utbildningar/it-sakerhetsanalytiker-soc/",
+    },
+  },
+  "cloud-engineer": {
+    description:
+      "Du bygger och förvaltar skalbar molninfrastruktur – en roll i hjärtat av företagens digitala transformation.",
+    salary: { value: "35 000–65 000 kr/mån", source: "https://www.randstad.se/arbetssokande/yrkesroller/cloud-utvecklare/" },
+    educationPath: {
+      value:
+        "Gymnasieexamen följt av en 2-årig YH-utbildning som molnutvecklare eller högskoleexamen i datateknik, ofta kompletterad med molncertifieringar (AWS/Azure).",
+      source: "https://www.lernia.se/utbildning/yrkeshogskoleutbildning/cloud-ict-engineer/",
+    },
+  },
+  "ux-designer": {
+    description:
+      "Du skapar digitala upplevelser som känns självklara och enkla att använda – där empati och kreativitet möter teknik.",
+    salary: { value: "38 900–67 000 kr/mån", source: "https://www.unionen.se/rad-och-stod/om-lon/marknadsloner/ux-designer" },
+    educationPath: {
+      value:
+        "Gymnasieexamen följt av en 2-årig YH-utbildning inom UX-design eller högskoleutbildning i människa–datorinteraktion eller kognitionsvetenskap.",
+      source: "https://kyh.se/utbildningar/ux-designer/",
+    },
+  },
+  "product-manager": {
+    description:
+      "Du leder utvecklingen av digitala produkter från idé till lansering och balanserar användarbehov, affärsmål och teknik.",
+    salary: { value: "44 950–84 400 kr/mån", source: "https://www.unionen.se/rad-och-stod/om-lon/marknadsloner/produktchef" },
+    educationPath: {
+      value:
+        "Gymnasieexamen följt av högskoleutbildning i t.ex. industriell ekonomi, systemvetenskap eller företagsekonomi (3–5 år).",
+      source: "https://ledningsjobb.se/sv/guide/produktchef-utbildningsvagar-och-specialiseringar",
+    },
+  },
+  "project-manager": {
+    description:
+      "Du driver komplexa uppdrag från start till mål och samordnar team, resurser och intressenter för att leverera i tid.",
+    salary: { value: "40 000–70 000 kr/mån", source: "https://lonstatistik.se/projektledare-lon/" },
+    educationPath: {
+      value:
+        "Gymnasieexamen följt av högskoleutbildning (3–5 år) eller en 2-årig YH-utbildning inom projektledning; certifieringar som PMP eller PRINCE2 stärker karriären.",
+      source: "https://www.yhutbildningar.se/utbildning/yh-utbildning-projektledning",
+    },
+  },
+  "sales-representative": {
+    description:
+      "Du bygger relationer och hjälper kunder att hitta rätt lösningar – ett yrke med stor frihet och tydliga resultat.",
+    salary: { value: "39 000–58 900 kr/mån", source: "https://www.astaagency.se/verktyg/lonekoll/saljare" },
+    educationPath: {
+      value:
+        "Gymnasieexamen är grunden; många vidareutbildar sig via en 2-årig YH-utbildning inom försäljning och account management.",
+      source: "https://www.yrkeshogskolan.se/hitta-utbildning/sok/utbildning/?id=10255",
+    },
+  },
+  "real-estate-agent": {
+    description:
+      "Du hjälper människor att köpa och sälja hem – ett ansvarsfyllt yrke som kräver juridisk kunskap och social skicklighet.",
+    salary: { value: "42 000–48 000 kr/mån", source: "https://raknalon.se/lon/fastighetsmaklare" },
+    educationPath: {
+      value:
+        "Högskoleutbildning (minst 120 hp) inom fastighetsförmedling, juridik och ekonomi, följt av tio veckors praktik och registrering hos Fastighetsmäklarinspektionen.",
+      source: "https://www.maklarsamfundet.se/utbildning/hur-blir-jag-fastighetsmaklare",
+    },
+  },
+  "bus-driver": {
+    description:
+      "Du transporterar passagerare säkert varje dag och är en viktig del av samhällets kollektivtrafik.",
+    salary: { value: "29 800–35 600 kr/mån", source: "https://jobbland.se/lon/bussforare" },
+    educationPath: {
+      value:
+        "Efter gymnasiet en yrkesförarutbildning via komvux/yrkesvux som ger körkortsbehörighet D och yrkeskompetensbevis (YKB); minst 21 år.",
+      source:
+        "https://www.transportstyrelsen.se/sv/vagtrafik/Yrkestrafik/Gods-och-buss/Yrkesforarkompetens/Speciella-regler-for-den-som-genomgar-yrkesforarutbildning/",
+    },
+  },
+  "truck-driver": {
+    description:
+      "Du håller Sveriges logistikflöden igång och kör gods till alla delar av landet.",
+    salary: { value: "30 000–37 000 kr/mån", source: "https://jobbland.se/lon/lastbilschauffor" },
+    educationPath: {
+      value:
+        "Via gymnasiets fordons- och transportprogram eller yrkesvux tar du C/CE-körkort och yrkeskompetensbevis (YKB), som krävs för yrkestrafik.",
+      source: "https://www.akeri.se/kunskapsbank/lastbilschauffor-ett-framtidsyrke/sa-blir-du-lastbilschauffor",
+    },
+  },
+  "flight-attendant": {
+    description:
+      "Du skapar en trygg och trevlig reseupplevelse och ansvarar för passagerarnas säkerhet ombord.",
+    salary: { value: "23 300–42 500 kr/mån", source: "https://jobbland.se/lon/kabinpersonal" },
+    educationPath: {
+      value:
+        "Gymnasieexamen krävs; ingen specifik högskoleutbildning – flygbolaget utbildar antagen personal i säkerhet och service (Cabin Crew Attestation enligt EASA).",
+      source: "https://se.indeed.com/karriarrad/karriarutveckling/hur-blir-flygvardinna",
+    },
+  },
+  firefighter: {
+    description:
+      "Du räddar liv och egendom vid olyckor och bränder och är en av samhällets viktigaste yrkesgrupper.",
+    salary: { value: "32 500–44 000 kr/mån", source: "https://jobbland.se/lon/brandman" },
+    educationPath: {
+      value:
+        "Efter gymnasiet söker du den tvååriga utbildningen Skydd mot olyckor (SMO) vid MSB; B-körkort och simkunnighet krävs.",
+      source: "https://www.skolinitiativet.se/yrken/brandman-utbildning-krav/",
+    },
+  },
+  paramedic: {
+    description:
+      "Du ger akut vård utanför sjukhuset och är ofta den första vårdpersonal som möter en patient i kris.",
+    salary: { value: "32 100–43 700 kr/mån (median ca 36 900)", source: "https://allaloner.se/yrken/ambulanssjukvardare" },
+    educationPath: {
+      value:
+        "Först undersköterskeutbildning (gymnasium/vuxenutbildning), sedan en ettårig YH-utbildning till ambulanssjukvårdare med krav på erfarenhet inom akut-/slutenvård.",
+      source: "https://www.lerniautbildning.se/utbildning/yrkeshogskoleutbildning/ambulanssjukvardare/",
+    },
+  },
+  midwife: {
+    description:
+      "Du stöttar kvinnor och familjer genom graviditet, förlossning och eftervård med medicinsk kunskap och empati.",
+    salary: { value: "40 500–58 900 kr/mån", source: "https://jobbland.se/lon/barnmorska" },
+    educationPath: {
+      value:
+        "Sjuksköterskeexamen (180 hp) och legitimation, följt av barnmorskeprogrammet på avancerad nivå (90 hp) och barnmorskelegitimation hos Socialstyrelsen.",
+      source: "https://se.indeed.com/karriarrad/karriarutveckling/barnmorska-behorighet",
+    },
+  },
+  "dental-hygienist": {
+    description:
+      "Du arbetar förebyggande med munhälsa och möter patienter i alla åldrar för att förhindra tandsjukdomar.",
+    salary: { value: "40 200–40 900 kr/mån", source: "https://allaloner.se/yrken/tandhygienist" },
+    educationPath: {
+      value:
+        "Treårig högskoleutbildning (180 hp) till tandhygienistexamen, följt av legitimation hos Socialstyrelsen.",
+      source: "https://www.studentum.se/yrkesguiden/tandhygienist-23232",
+    },
+  },
+  "occupational-therapist": {
+    description:
+      "Du hjälper människor att klara vardagen trots sjukdom eller funktionsnedsättning och skapar förutsättningar för ett aktivt liv.",
+    salary: { value: "33 000–42 800 kr/mån", source: "https://jobbland.se/lon/arbetsterapeut" },
+    educationPath: {
+      value:
+        "Treårig högskoleutbildning (180 hp) till arbetsterapeutexamen, följt av legitimation hos Socialstyrelsen.",
+      source: "https://www.studentum.se/yrkesguiden/arbetsterapeut-23247",
+    },
+  },
+  radiographer: {
+    description:
+      "Du utför bilddiagnostiska undersökningar och ger läkare det underlag de behöver för att ställa rätt diagnos.",
+    salary: { value: "33 500–51 900 kr/mån", source: "https://allaloner.se/yrken/rontgensjukskoterska" },
+    educationPath: {
+      value:
+        "Röntgensjuksköterskeprogrammet (180 hp, 3 år) vid t.ex. KI, LU eller GU, följt av legitimation hos Socialstyrelsen.",
+      source: "https://utbildning.ki.se/program/1rs13-rontgensjukskoterskeprogrammet",
+    },
+  },
+  dietitian: {
+    description:
+      "Du förebygger och behandlar sjukdomar genom kostbehandling och nutritionsrådgivning, ofta inom vården.",
+    salary: { value: "31 100–43 300 kr/mån", source: "https://allaloner.se/yrken/dietist" },
+    educationPath: {
+      value:
+        "Dietistprogrammet (180–240 hp) vid t.ex. GU, Umeå eller Uppsala, följt av dietistexamen och legitimation hos Socialstyrelsen.",
+      source: "https://www.gu.se/studera/hitta-utbildning/dietistprogrammet-m1dip",
+    },
+  },
+  optician: {
+    description:
+      "Du undersöker syn och anpassar glasögon och kontaktlinser – ett legitimationsyrke där vetenskap möter omsorg om ögonhälsan.",
+    salary: { value: "39 100–56 300 kr/mån", source: "https://jobbland.se/lon/optiker" },
+    educationPath: {
+      value:
+        "Gymnasium (naturvetenskap) följt av treårig optikerexamen (KI eller Linnéuniversitetet) och legitimation hos Socialstyrelsen.",
+      source: "https://www.studentum.se/yrkesguiden/sa-blir-du-optiker-23480",
+    },
+  },
+  "personal-trainer": {
+    description:
+      "Du skapar individanpassade träningsprogram och coachar klienter mot sina hälso- och fitnessmål, ofta i gym eller utomhus.",
+    salary: { value: "28 700–41 500 kr/mån", source: "https://jobbland.se/lon/personlig-tranare" },
+    educationPath: {
+      value:
+        "Gymnasieexamen följt av PT-utbildning (yrkeshögskola, folkhögskola eller certifieringsprogram, t.ex. GIH Tränarprogrammet); inget legitimationskrav, men branschcertifiering rekommenderas.",
+      source: "https://www.studentum.se/jobb-lon/personlig-tranare",
+    },
+  },
+  welder: {
+    description:
+      "Du sammanfogar metall med precision och skicklighet – ett yrke med stark efterfrågan inom industri, offshore och tillverkning.",
+    salary: { value: "29 000–43 000 kr/mån", source: "https://xn--lnestatistik-4ib.se/svetsare-lon" },
+    educationPath: {
+      value:
+        "Gymnasiets Industritekniska program (inriktning Svetsteknik, 3 år); vidare möjligheter via YH inom avancerad svetsteknik eller svetsinspektion.",
+      source: "https://syllabuswebb.skolverket.se/syllabuscw/jsp/program.htm?programCode=IN001",
+    },
+  },
+  baker: {
+    description:
+      "Du skapar allt från dagligt bröd till hantverksmässiga specialiteter – ett kreativt hantverk med stark lokal efterfrågan.",
+    salary: { value: "24 000–35 000 kr/mån", source: "https://raknalon.se/lon/bagare" },
+    educationPath: {
+      value:
+        "Gymnasiets Restaurang- och livsmedelsprogram (inriktning Bageri och konditori, 3 år) ger direkt inträde på arbetsmarknaden.",
+      source: "https://bageri.se/utbildning/bli-bagare/grundutbildning-gymnasieniva/",
+    },
+  },
+  painter: {
+    description:
+      "Du behandlar och målar både invändiga och utvändiga ytor, från bostäder till industrilokaler, och skyddar och förskönar byggnader.",
+    salary: { value: "32 300–40 000 kr/mån", source: "https://allaloner.se/yrken/malare" },
+    educationPath: {
+      value:
+        "Gymnasiets Bygg- och anläggningsprogram (inriktning Måleri, 3 år inkl. APL), ev. följt av lärlingsprogram med yrkesbevis via gesällprov.",
+      source:
+        "https://utbildningsguiden.skolverket.se/gymnasieskolan/gymnasieskolans-program/bygg--och-anlaggningsprogrammet",
+    },
+  },
+  bricklayer: {
+    description:
+      "Du uppför och renoverar väggar, skorstenar och konstruktioner i tegel, lättbetong och natursten – ett hantverksyrke med god efterfrågan.",
+    salary: { value: "33 000–42 000 kr/mån", source: "https://jobbland.se/lon/murare" },
+    educationPath: {
+      value:
+        "Gymnasiets Bygg- och anläggningsprogram (inriktning Husbyggnad, 3 år inkl. APL), med mureriinriktning via lärlingsprogram eller yrkeskurs.",
+      source:
+        "https://utbildningsguiden.skolverket.se/gymnasieskolan/gymnasieskolans-program/bygg--och-anlaggningsprogrammet",
+    },
+  },
+  "financial-analyst": {
+    description:
+      "Du analyserar företags och marknaders ekonomiska data för att ge investeringsrekommendationer och stödja strategiska beslut.",
+    salary: { value: "45 000–80 000 kr/mån", source: "https://www.studentum.se/jobb-lon/finansanalytiker" },
+    educationPath: {
+      value:
+        "Gymnasieexamen (ekonomi/matematik) följt av ekonomprogrammet (180 hp) eller civilekonomprogrammet (240 hp); valfri vidareutbildning som CFA.",
+      source: "https://www.studentum.se/yrkesguiden/finansanalytiker-25510",
+    },
+  },
+  auditor: {
+    description:
+      "Du granskar och intygar företags årsredovisningar och räkenskaper, med lagstadgat ansvar för korrekt ekonomisk rapportering.",
+    salary: { value: "65 000–80 000 kr/mån (auktoriserad)", source: "https://xn--lnestatistik-4ib.se/revisor-lon" },
+    educationPath: {
+      value:
+        "Kandidatexamen (180 hp) med ekonomi/revisionsämnen, minst 3 års praktik på revisionsbyrå, revisorsexamen hos Revisorsinspektionen och auktorisation.",
+      source: "https://www.far.se/utbildning/auktorisation/auktorisation-revisor/",
+    },
+  },
 };
