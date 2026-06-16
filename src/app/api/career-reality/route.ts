@@ -271,6 +271,12 @@ async function searchYouTube(query: string, apiKey: string, career: string): Pro
   }
 }
 
+// The Understand-tab "Reality" UI shows 3 videos side by side and lets the
+// user reveal the rest on demand, so we return a pool rather than just the
+// top 1–2. Generated once per career and cached, so the extra YouTube reads
+// only happen on a cold miss.
+const REALITY_VIDEO_POOL = 8;
+
 async function findBestVideos(career: string): Promise<RealityVideo[]> {
   const apiKey = process.env.YOUTUBE_API_KEY;
   if (!apiKey) return [];
@@ -287,8 +293,9 @@ async function findBestVideos(career: string): Promise<RealityVideo[]> {
         candidates.push(r as any);
       }
     }
-    // Strong match found — save API quota
-    if (candidates.some(c => c.score >= 5)) break;
+    // Stop once we have a healthy pool that includes a strong match — gathers
+    // enough to fill the "show more" pool while still bounding API quota.
+    if (candidates.length >= REALITY_VIDEO_POOL + 4 && candidates.some(c => c.score >= 5)) break;
   }
 
   // Fallback for niche careers
@@ -305,13 +312,23 @@ async function findBestVideos(career: string): Promise<RealityVideo[]> {
   // Sort by score descending
   candidates.sort((a, b) => b.score - a.score);
 
-  // Take up to 2, but only if the second video is genuinely strong (score >= 3)
-  const selected = candidates.slice(0, 2).filter((c, i) => i === 0 || c.score >= 3);
+  // Build a pool of up to REALITY_VIDEO_POOL videos: the UI shows 3 and lets
+  // the user reveal the rest on demand. All candidates have already passed the
+  // rejection + country filters; we keep them ordered by score so the strongest
+  // reality clips lead and weaker (but still on-topic) ones fill the pool.
+  const selected = candidates.slice(0, REALITY_VIDEO_POOL);
 
-  // Try to diversify video types — if both are same type and there's an alternative, swap #2
-  if (selected.length === 2 && selected[0]._videoType === selected[1]._videoType) {
-    const alt = candidates.find(c => c._videoType !== selected[0]._videoType && c.score >= 3 && c.videoId !== selected[0].videoId);
-    if (alt) selected[1] = alt;
+  // Diversify the lead pair by video type when possible, so the first two
+  // shown aren't both (e.g.) "harsh_truth".
+  if (selected.length >= 2 && selected[0]._videoType === selected[1]._videoType) {
+    const altIdx = selected.findIndex(
+      (c, i) => i >= 2 && c._videoType !== selected[0]._videoType && c.videoId !== selected[0].videoId,
+    );
+    if (altIdx > 1) {
+      const tmp = selected[1];
+      selected[1] = selected[altIdx];
+      selected[altIdx] = tmp;
+    }
   }
 
   return selected.map(v => ({
