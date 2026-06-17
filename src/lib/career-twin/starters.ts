@@ -51,6 +51,20 @@ const STRINGS: Record<TwinLang, StarterStrings> = {
     discover: (t) => `¿Cómo paso de la escuela a ${t}?`,
     waysIn: (t) => `¿Cuál es la forma más realista de llegar a ${t} desde donde estoy?`,
   },
+  sv: {
+    compare: (t, o) => `Hur står ${t} sig mot ${o}?`,
+    clarity: (t) => `Vilket litet steg mot ${t} kan jag ta den här veckan?`,
+    understand: (t) => `Vad är det svåraste med att faktiskt vara ${t}?`,
+    discover: (t) => `Hur tar jag mig från skolan till ${t}?`,
+    waysIn: (t) => `Vilken är den mest realistiska vägen in i ${t} från där jag är nu?`,
+  },
+  da: {
+    compare: (t, o) => `Hvordan står ${t} sig mod ${o}?`,
+    clarity: (t) => `Hvilket lille skridt mod ${t} kan jeg tage i denne uge?`,
+    understand: (t) => `Hvad er det sværeste ved faktisk at være ${t}?`,
+    discover: (t) => `Hvordan kommer jeg fra skolen til ${t}?`,
+    waysIn: (t) => `Hvad er den mest realistiske vej ind i ${t} fra der, hvor jeg er nu?`,
+  },
 };
 
 /**
