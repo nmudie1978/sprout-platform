@@ -13,9 +13,9 @@
        Dark mode (.dark) is the app DEFAULT and is left untouched. */
     --background: 189 40% 72%;          /* X · Decent — airy pale-teal paper canvas */
     --foreground: 200 30% 18%;          /* deep teal-slate ink, never harsh black */
-    --card: 186 36% 92%;                /* soft green-blue surface — tinted, never white, lifts off the canvas */
+    --card: 187 44% 87%;                /* green-blue surface — clearly tinted (stronger), never white */
     --card-foreground: 200 30% 18%;
-    --popover: 186 36% 93%;             /* matching green-blue popover surface */
+    --popover: 187 44% 88%;             /* matching green-blue popover surface */
     --popover-foreground: 200 30% 18%;
     --primary: 178 69% 29%;             /* #177D7A — grounded teal brand (retained) */
     --primary-foreground: 0 0% 100%;
