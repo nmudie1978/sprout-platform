@@ -339,6 +339,7 @@ function deriveSnapshot(
     vocational: 'Vocational training or apprenticeship',
     university: 'University degree',
     mixed: 'Several viable routes',
+    certification: 'Professional certifications + experience',
     'on-the-job': 'On-the-job or entry-level',
   };
   // Always resolve the route (keyword + category default) rather than relying
