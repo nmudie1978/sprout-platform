@@ -181,7 +181,7 @@ const config: Config = {
         shimmer: "shimmer 2s linear infinite",
         "fade-in": "fade-in 0.5s ease-out",
         "slide-up": "slide-up 0.5s ease-out",
-        grid: "grid 15s linear infinite",
+        grid: "grid 30s linear infinite",
         shine: "shine var(--duration) infinite linear",
         "glow-spin": "glow-spin 12s linear infinite",
         "glow-pulse": "glow-pulse 3s ease-in-out infinite",
