@@ -462,7 +462,7 @@ export default function DashboardPage() {
     }
   }, [isFirstLogin]);
 
-  const { data: goalsData } = useQuery<GoalsResponse>({
+  const { data: goalsData, isLoading: goalsLoading } = useQuery<GoalsResponse>({
     queryKey: ["goals"],
     queryFn: async () => {
       const response = await fetch("/api/goals");
@@ -585,10 +585,14 @@ export default function DashboardPage() {
   const { discoverDone, understandDone, clarityDone, currentLens, completedCount: completedLensCount } =
     lensProgress;
 
-  // Subtle hint — shows once when user has no goal, after 3s idle
+  // Subtle hint — shows once for a brand-new user who hasn't chosen a goal.
+  // Gated on the goals query being LOADED (not just the session): otherwise it
+  // fires in the window where the session is ready but the goal is still
+  // fetching, briefly seeing goalTitle=null and prompting a user who already
+  // has an active journey (e.g. "My Journey — Chef").
   const dashboardHint = useSubtleHint({
     hintKey: "dashboard-goal-v3",
-    enabled: !goalTitle && status !== "loading",
+    enabled: !goalsLoading && !goalTitle && status !== "loading",
     delayMs: 3000,
     durationMs: 4000,
   });
