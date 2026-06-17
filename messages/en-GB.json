@@ -72,6 +72,9 @@
     "morning": "Good morning",
     "afternoon": "Good afternoon",
     "evening": "Good evening",
+    "welcomeBack": "Welcome back",
+    "niceToSeeYou": "Nice to see you again",
+    "goodToSeeYou": "Good to see you",
     "welcome": "Welcome"
   },
   "welcomeBack": {
