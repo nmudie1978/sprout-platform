@@ -29,7 +29,7 @@ import {
   Target, Sparkles, Save, Maximize2, X,
   Heart, Wrench, Check, CheckCircle2, Clock, MapPin, Award, Users,
   DollarSign, BarChart3, Layers, AlertCircle, Plus, Trash2, Tag, Video, Zap, Info,
-  Building2, Shield, Loader2, Download, FileText, CheckCircle,
+  Building2, Shield, Loader2, Download, FileText, CheckCircle, Phone,
 } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
@@ -2555,7 +2555,20 @@ function ClarityTab({ goalTitle, career }: { goalTitle: string | null; career: C
               non-study actions the user can take today (networking,
               conversations, hands-on exposure). */}
           {(() => {
-              const allSuggestions = [
+              type MomentumSuggestion = {
+                icon: typeof Users;
+                color: string;
+                title: string;
+                descriptor: string;
+                /** Optional external link — action-only suggestions omit it. */
+                url?: string;
+              };
+              // Three complementary first moves: (1) where the openings are,
+              // (2) who's already doing it (real people on LinkedIn), and
+              // (3) a direct conversation with a course/college. The first
+              // adapts to special pathways (Forsvaret, ESA, …); generic
+              // careers get an open-jobs search instead.
+              const careerOpening: MomentumSuggestion =
                 career.pathType === 'military' ? {
                   icon: Users, color: 'text-green-400',
                   title: 'Explore careers at Forsvaret',
@@ -2582,10 +2595,25 @@ function ClarityTab({ goalTitle, career }: { goalTitle: string | null; career: C
                   descriptor: 'Norwegian Olympic training system and talent pathways',
                   url: 'https://www.olympiatoppen.no/',
                 } : {
-                  icon: Users, color: 'text-blue-400',
-                  title: `People in ${career.title} roles`,
+                  icon: Briefcase, color: 'text-blue-400',
+                  title: `Open ${career.title} jobs`,
+                  descriptor: 'Browse current openings and entry-level roles',
+                  url: `https://www.linkedin.com/jobs/search/?keywords=${encodeURIComponent(career.title)}`,
+                };
+
+              const allSuggestions: MomentumSuggestion[] = [
+                careerOpening,
+                {
+                  icon: Users, color: 'text-sky-400',
+                  title: `See people in ${career.title} roles`,
                   descriptor: 'Find professionals on LinkedIn and read their journeys',
                   url: `https://www.linkedin.com/search/results/people/?keywords=${encodeURIComponent(career.title)}`,
+                },
+                {
+                  icon: Phone, color: 'text-teal-400',
+                  title: 'Ask a course about openings',
+                  descriptor: `Call or email a college or training provider to discuss entry options and places for ${career.title}`,
+                  // No link — this one is a real-world conversation to do.
                 },
               ];
               // Hide a suggestion once it's already been added to the
@@ -2620,14 +2648,16 @@ function ClarityTab({ goalTitle, career }: { goalTitle: string | null; career: C
                       </div>
                     </div>
                     <div className="flex gap-1 mt-auto pt-1">
-                      <a
-                        href={s.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center justify-center gap-0.5 rounded-md border border-border/30 bg-background/40 px-1.5 py-0.5 text-[9px] font-medium text-foreground/70 hover:border-border/60 hover:text-foreground transition-colors"
-                      >
-                        Open <ExternalLink className="h-2 w-2" />
-                      </a>
+                      {s.url && (
+                        <a
+                          href={s.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center justify-center gap-0.5 rounded-md border border-border/30 bg-background/40 px-1.5 py-0.5 text-[9px] font-medium text-foreground/70 hover:border-border/60 hover:text-foreground transition-colors"
+                        >
+                          Open <ExternalLink className="h-2 w-2" />
+                        </a>
+                      )}
                       <button
                         onClick={() => {
                           saveActions([

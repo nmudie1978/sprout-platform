@@ -36,6 +36,7 @@ import {
   Volume2,
   Square,
   User as UserIcon,
+  Info,
 } from "lucide-react";
 import { ReportModal } from "@/components/report-modal";
 
@@ -472,26 +473,24 @@ export function CareerTwinView({
 
         </div>
 
-        {/* Reality-check disclaimer — calmer (muted) when embedded in Clarity,
-            amber on the standalone Career Twin page. */}
-        <div className={cn(
-          "flex items-start gap-2 px-4 sm:px-6 py-2.5 border-y",
-          embedded
-            ? "bg-muted/30 border-border/30"
-            : "bg-amber-50 dark:bg-amber-950/30 border-amber-200/60 dark:border-amber-900/40",
-        )}>
-          <ShieldAlert className={cn(
-            "h-4 w-4 mt-0.5 shrink-0",
-            embedded ? "text-muted-foreground/70" : "text-amber-600 dark:text-amber-400",
-          )} />
-          <p className={cn(
-            "text-xs",
-            embedded ? "text-muted-foreground" : "text-amber-800 dark:text-amber-300",
-          )}>
-            <span className="font-semibold">{t("realityCheck")}: </span>
-            {t("disclaimer")}
+        {/* AI disclosure. Embedded in Clarity ("Ask Future Me") it's a single
+            calm, muted line to keep the surface clean; the standalone Career
+            Twin page keeps the fuller amber reality-check banner. Both preserve
+            the AI-generated / not-careers-advice disclosure. */}
+        {embedded ? (
+          <p className="flex items-center gap-1.5 px-4 sm:px-6 py-2 text-[11px] text-muted-foreground/70">
+            <Info className="h-3 w-3 shrink-0" />
+            {t("disclaimerShort")}
           </p>
-        </div>
+        ) : (
+          <div className="flex items-start gap-2 px-4 sm:px-6 py-2.5 border-y bg-amber-50 dark:bg-amber-950/30 border-amber-200/60 dark:border-amber-900/40">
+            <ShieldAlert className="h-4 w-4 mt-0.5 shrink-0 text-amber-600 dark:text-amber-400" />
+            <p className="text-xs text-amber-800 dark:text-amber-300">
+              <span className="font-semibold">{t("realityCheck")}: </span>
+              {t("disclaimer")}
+            </p>
+          </div>
+        )}
 
         {/* Mode chips */}
         <div className="px-4 sm:px-6 pt-3">
