@@ -64,7 +64,13 @@ export function useSubtleHint({
   }, []);
 
   useEffect(() => {
-    if (!enabled || hasBeenSeen(hintKey, persistence)) return;
+    // Precondition no longer holds (e.g. the user's goal finished loading) —
+    // hide any currently-shown hint instead of leaving it stranded.
+    if (!enabled) {
+      setVisible(false);
+      return;
+    }
+    if (hasBeenSeen(hintKey, persistence)) return;
 
     // Start the inactivity timer
     showTimer.current = setTimeout(() => {
