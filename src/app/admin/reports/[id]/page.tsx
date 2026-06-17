@@ -21,6 +21,10 @@ export default async function AdminReportDetailPage({ params }: PageProps) {
     redirect("/admin/login");
   }
 
+  // Data minimisation (GDPR Art. 5 + CLAUDE.md "no contact display"):
+  // moderation never needs the reporter's or reported user's email — every
+  // action keys off the user id. Select only what the queue renders
+  // (displayName / role / status), never email or other contact data.
   const report = await prisma.communityReport.findUnique({
     where: { id },
     include: {
@@ -28,7 +32,6 @@ export default async function AdminReportDetailPage({ params }: PageProps) {
       reporter: {
         select: {
           id: true,
-          email: true,
           role: true,
           youthProfile: { select: { displayName: true } },
         },
@@ -36,7 +39,6 @@ export default async function AdminReportDetailPage({ params }: PageProps) {
       assignedGuardian: {
         select: {
           id: true,
-          email: true,
           youthProfile: { select: { displayName: true } },
         },
       },
@@ -47,12 +49,18 @@ export default async function AdminReportDetailPage({ params }: PageProps) {
     notFound();
   }
 
-  // Fetch the target's details so the admin can make an informed call
+  // Fetch the target's details so the admin can make an informed call. Use an
+  // explicit `select` (not `include`) so we never pull email / passwordHash /
+  // other User scalars — only the fields the moderation UI shows.
   const targetUser =
     report.targetType === "USER"
       ? await prisma.user.findUnique({
           where: { id: report.targetId },
-          include: {
+          select: {
+            id: true,
+            role: true,
+            isPaused: true,
+            accountStatus: true,
             youthProfile: { select: { displayName: true, city: true } },
           },
         })
@@ -60,8 +68,7 @@ export default async function AdminReportDetailPage({ params }: PageProps) {
 
   const reporterName =
     report.reporter.youthProfile?.displayName ??
-    report.reporter.email ??
-    "—";
+    `User ${report.reporter.id.slice(0, 8)}`;
   const reasonLabel = REPORT_REASONS[report.reason as keyof typeof REPORT_REASONS] ?? report.reason;
 
   return (
@@ -130,7 +137,7 @@ export default async function AdminReportDetailPage({ params }: PageProps) {
           Reporter
         </p>
         <p className="text-sm text-foreground/90">{reporterName}</p>
-        <p className="text-xs text-muted-foreground mt-0.5">{report.reporter.email} · {report.reporter.role}</p>
+        <p className="text-xs text-muted-foreground mt-0.5">{report.reporter.role} · ID {report.reporter.id.slice(0, 8)}</p>
       </div>
 
       {targetUser && (
@@ -139,10 +146,10 @@ export default async function AdminReportDetailPage({ params }: PageProps) {
             Reported user
           </p>
           <p className="text-sm font-medium text-foreground/90">
-            {targetUser.youthProfile?.displayName ?? targetUser.email}
+            {targetUser.youthProfile?.displayName ?? `User ${targetUser.id.slice(0, 8)}`}
           </p>
           <p className="text-xs text-muted-foreground mt-0.5">
-            {targetUser.role} · {targetUser.email}
+            {targetUser.role} · ID {targetUser.id.slice(0, 8)}
             {targetUser.isPaused && <span className="ml-2 text-amber-500">· PAUSED</span>}
             {targetUser.accountStatus !== "ACTIVE" && <span className="ml-2 text-amber-500">· {targetUser.accountStatus}</span>}
           </p>

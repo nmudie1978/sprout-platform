@@ -126,7 +126,24 @@ export async function GET(req: NextRequest) {
       safe("vaultItems", () => prisma.vaultItem.findMany(byUser)),
       safe("lifeSkillEvents", () => prisma.lifeSkillEvent.findMany(byUser)),
       safe("feedbackSubmissions", () => prisma.feedback.findMany({ where: { createdByUserId: userId } })),
-      safe("communityReportsFiled", () => prisma.communityReport.findMany({ where: { reporterUserId: userId } })),
+      // Art. 20 covers the data subject's OWN data only. A filed report's
+      // `targetId` is another person's identifier (often a minor) — redact it.
+      // We return the reporter's own content (reason, note, status, outcome),
+      // not who they reported or the moderator's internal note.
+      safe("communityReportsFiled", () =>
+        prisma.communityReport.findMany({
+          where: { reporterUserId: userId },
+          select: {
+            id: true,
+            targetType: true,
+            reason: true,
+            details: true,
+            status: true,
+            actionTaken: true,
+            actionTakenAt: true,
+            createdAt: true,
+          },
+        })),
       safe("proQuestions", () => prisma.proQuestion.findMany({ where: { youthId: userId } })),
       safe("proAnswers", () => prisma.proAnswer.findMany({ where: { answeredBy: userId } })),
       safe("userPreferences", () => prisma.userPreferences.findUnique(byUser)),
