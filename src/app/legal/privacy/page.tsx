@@ -102,7 +102,7 @@ export default function PrivacyPolicyPage() {
 
             <h3>5.1 Processing Data of Minors</h3>
             <p>
-              Endeavrly is for young people aged 15&ndash;30 and is privacy-by-design: we collect only
+              Endeavrly is for people aged 15 and older and is privacy-by-design: we collect only
               the minimal personal data needed to operate a career-exploration service, do not run
               tracking ads or behavioural profiling, and have no messaging or marketplace features.
               We process minors&apos; data on this minimised basis and apply GDPR safeguards (data

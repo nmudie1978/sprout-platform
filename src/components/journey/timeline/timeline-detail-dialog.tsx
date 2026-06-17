@@ -237,7 +237,7 @@ const STAGE_OPTIONS = [
   { value: 'school' as const, label: 'School' },
   { value: 'college' as const, label: 'College' },
   { value: 'university' as const, label: 'University' },
-  { value: 'other' as const, label: 'Other' },
+  { value: 'other' as const, label: 'Working' },
 ];
 
 export function TimelineDetailDialog({
@@ -284,6 +284,7 @@ export function TimelineDetailDialog({
   };
   const [schoolName, setSchoolName] = useState('');
   const [studyProgram, setStudyProgram] = useState('');
+  const [currentRole, setCurrentRole] = useState('');
   const [expectedCompletion, setExpectedCompletion] = useState('');
   const [subjects, setSubjects] = useState<string[]>([]);
   const [newSubject, setNewSubject] = useState('');
@@ -340,6 +341,7 @@ export function TimelineDetailDialog({
             setEduStage(ctx.stage || 'school');
             setSchoolName(ctx.schoolName || '');
             setStudyProgram(ctx.studyProgram || '');
+            setCurrentRole(ctx.currentRole || '');
             setExpectedCompletion(ctx.expectedCompletion || '');
             setSubjects(ctx.currentSubjects || []);
             return;
@@ -347,16 +349,18 @@ export function TimelineDetailDialog({
 
           // No saved context yet — pick a sensible default based on age.
           // Under 18: almost certainly still in school (Videregående).
-          // 18 and over: it's a coin flip — they could be in Vg3, at
-          // university, in a vocational programme, or working — so we
-          // default to "university" because that's the most common
-          // outcome for an Endeavrly user who has actively set a goal,
-          // and the picker is clearly editable if we guessed wrong.
+          // 26+: very likely past initial education and working, so default to
+          // "Working" — an older career-changer should never be asked for school
+          // details. 18-25: default to "university" (most common for a goal-
+          // setting Endeavrly user). The picker is always editable.
           const defaultStage: 'school' | 'college' | 'university' | 'other' =
-            (typeof age === 'number' && age >= 18) ? 'university' : 'school';
+            (typeof age === 'number' && age >= 26) ? 'other'
+              : (typeof age === 'number' && age >= 18) ? 'university'
+                : 'school';
           setEduStage(defaultStage);
           setSchoolName('');
           setStudyProgram('');
+          setCurrentRole('');
           setExpectedCompletion(defaultFinishYearFor(age, defaultStage));
           setSubjects([]);
         });
@@ -401,6 +405,7 @@ export function TimelineDetailDialog({
             stage: eduStage,
             schoolName: schoolName.trim() || undefined,
             studyProgram: studyProgram.trim() || undefined,
+            currentRole: currentRole.trim() || undefined,
             expectedCompletion: expectedCompletion.trim() || undefined,
             currentSubjects: subjects,
           }),
@@ -489,9 +494,9 @@ export function TimelineDetailDialog({
                 // School first.
                 const orderedOptions = isAdult
                   ? [
+                      { value: 'other' as const, label: 'Working' },
                       { value: 'university' as const, label: 'University' },
                       { value: 'college' as const, label: 'College' },
-                      { value: 'other' as const, label: 'Other' },
                       { value: 'school' as const, label: 'School' },
                     ]
                   : STAGE_OPTIONS;
@@ -534,21 +539,39 @@ export function TimelineDetailDialog({
                 );
               })()}
 
-              {/* School/University name */}
-              <div>
-                <label className="text-[10px] text-muted-foreground/70 uppercase tracking-wider">
-                  {eduStage === 'university' ? 'University' : eduStage === 'college' ? 'College' : 'School'} name
-                </label>
-                <input
-                  value={schoolName}
-                  onChange={(e) => { setSchoolName(e.target.value); setDirty(true); }}
-                  placeholder={eduStage === 'university' ? 'e.g. NTNU, UiO' : 'e.g. Lakewood High'}
-                  className="w-full mt-1 rounded-lg border border-border/30 bg-muted/10 px-3 py-2 text-xs text-foreground/90 placeholder:text-muted-foreground/55 focus:outline-none focus:border-teal-500/40"
-                />
-              </div>
+              {/* Working / changing career → ask their current role instead of
+                  school details. This anchors a career-transition roadmap. */}
+              {eduStage === 'other' ? (
+                <div>
+                  <label className="text-[10px] text-muted-foreground/70 uppercase tracking-wider">
+                    What do you do now?
+                  </label>
+                  <input
+                    value={currentRole}
+                    onChange={(e) => { setCurrentRole(e.target.value); setDirty(true); }}
+                    placeholder="e.g. Marketing manager, electrician, teacher"
+                    className="w-full mt-1 rounded-lg border border-border/30 bg-muted/10 px-3 py-2 text-xs text-foreground/90 placeholder:text-muted-foreground/55 focus:outline-none focus:border-teal-500/40"
+                  />
+                  <p className="mt-1 text-[10px] text-muted-foreground/65 leading-snug">
+                    Your current role or field — we&rsquo;ll build a roadmap that moves you from here into your goal, using what you already bring.
+                  </p>
+                </div>
+              ) : (
+                <div>
+                  <label className="text-[10px] text-muted-foreground/70 uppercase tracking-wider">
+                    {eduStage === 'university' ? 'University' : eduStage === 'college' ? 'College' : 'School'} name
+                  </label>
+                  <input
+                    value={schoolName}
+                    onChange={(e) => { setSchoolName(e.target.value); setDirty(true); }}
+                    placeholder={eduStage === 'university' ? 'e.g. NTNU, UiO' : 'e.g. Lakewood High'}
+                    className="w-full mt-1 rounded-lg border border-border/30 bg-muted/10 px-3 py-2 text-xs text-foreground/90 placeholder:text-muted-foreground/55 focus:outline-none focus:border-teal-500/40"
+                  />
+                </div>
+              )}
 
-              {/* Study programme — only shown for college/university/other, not school */}
-              {eduStage !== 'school' && (
+              {/* Study programme — only shown for college/university, not school or working */}
+              {eduStage !== 'school' && eduStage !== 'other' && (
                 <div>
                   <label className="text-[10px] text-muted-foreground/70 uppercase tracking-wider">
                     Study programme
@@ -562,6 +585,8 @@ export function TimelineDetailDialog({
                 </div>
               )}
 
+              {eduStage !== 'other' && (
+                <>
               {/* Expected completion year — drives roadmap anchoring */}
               <div>
                 <div className="flex items-center justify-between">
@@ -699,6 +724,8 @@ export function TimelineDetailDialog({
                   </>
                 )}
               </div>
+                </>
+              )}
             </div>
           )}
 

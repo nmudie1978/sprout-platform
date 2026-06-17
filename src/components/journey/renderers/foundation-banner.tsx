@@ -100,15 +100,19 @@ export function useFoundationData({
     id: FOUNDATION_ITEM_ID,
     stage: 'foundation',
     title: 'Your Starting Point',
-    subtitle: eduContext
-      ? `${EDUCATION_STAGE_CONFIG[eduContext.stage].label}${eduContext.schoolName ? ` · ${eduContext.schoolName}` : ''}`
-      : 'Tap to add details',
+    subtitle: !eduContext
+      ? 'Tap to add details'
+      : eduContext.stage === 'other'
+        ? (eduContext.currentRole ? `Currently: ${eduContext.currentRole}` : 'Working / exploring a change')
+        : `${EDUCATION_STAGE_CONFIG[eduContext.stage].label}${eduContext.schoolName ? ` · ${eduContext.schoolName}` : ''}`,
     startAge: userAge ?? journeyStartAge,
     isMilestone: false,
     icon: 'Target',
-    description: eduContext
-      ? `Your current education: ${EDUCATION_STAGE_CONFIG[eduContext.stage].label}.${eduContext.studyProgram ? ` Studying ${eduContext.studyProgram}.` : ''}${eduContext.expectedCompletion ? ` Finishing ${eduContext.expectedCompletion}.` : ''} This is your starting point — everything builds from here.`
-      : 'Where you are today. Tap to add details about your current situation.',
+    description: !eduContext
+      ? 'Where you are today. Tap to add details about your current situation.'
+      : eduContext.stage === 'other'
+        ? `${eduContext.currentRole ? `You currently work as ${eduContext.currentRole}. ` : 'You\'re working or exploring a change. '}Your roadmap builds from here toward your goal, using the experience you already bring.`
+        : `Your current education: ${EDUCATION_STAGE_CONFIG[eduContext.stage].label}.${eduContext.studyProgram ? ` Studying ${eduContext.studyProgram}.` : ''}${eduContext.expectedCompletion ? ` Finishing ${eduContext.expectedCompletion}.` : ''} This is your starting point — everything builds from here.`,
     microActions: FOUNDATION_MICRO_ACTIONS[eduContext?.stage ?? 'school'],
   }), [eduContext, userAge, journeyStartAge]);
 

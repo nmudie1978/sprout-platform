@@ -292,7 +292,7 @@ export default function WhitePaperPage() {
         <div className="space-y-4 text-foreground/85 leading-relaxed">
           <p>
             A career exploration platform built specifically for young people
-            aged <strong>15 to 30</strong>. It helps students understand who
+            aged <strong>15 and older</strong> (typically 15&ndash;23). It helps students understand who
             they are, explore careers that genuinely fit them, discover real
             education pathways and employers, and build a realistic roadmap
             toward a fulfilling career — without exposing them to the risks
@@ -562,7 +562,7 @@ export default function WhitePaperPage() {
           <Bullets
             items={[
               "Global Lens — macroeconomic stats, featured reports, podcasts.",
-              "Youth Lens — trends re-interpreted for the 15–30 demographic.",
+              "Youth Lens — trends re-interpreted for a 15–23 audience.",
               "Dig Deeper — trending roles and in-demand skills.",
               "Go Further — international context and verified events worth attending.",
             ]}

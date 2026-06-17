@@ -26,7 +26,7 @@ export default function NotEligiblePage() {
             Thanks for Your Interest!
           </CardTitle>
           <CardDescription className="text-base">
-            Endeavrly is designed for young people aged 15-30
+            Endeavrly is for anyone aged 15 and older
           </CardDescription>
         </CardHeader>
 
@@ -34,7 +34,7 @@ export default function NotEligiblePage() {
           <div className="text-center space-y-4">
             <p className="text-muted-foreground">
               We appreciate your interest in Endeavrly! Our platform is specifically designed
-              for young people between 15 and 30 years old to find safe, age-appropriate
+              for people aged 15 and older to explore careers in a safe, age-appropriate
               work opportunities.
             </p>
 

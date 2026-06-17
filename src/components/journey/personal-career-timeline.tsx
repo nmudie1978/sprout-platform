@@ -150,7 +150,7 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney, read
   // steps) stays in sync with what the user has told us about where
   // they actually are.
   const { data: educationContextData } = useQuery<{
-    educationContext: { stage?: EducationStage; expectedCompletion?: string } | null;
+    educationContext: { stage?: EducationStage; expectedCompletion?: string; currentRole?: string } | null;
   }>({
     queryKey: ['education-context'],
     queryFn: async () => {
@@ -164,6 +164,8 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney, read
     educationContextData?.educationContext?.stage;
   const expectedCompletion: string | undefined =
     educationContextData?.educationContext?.expectedCompletion;
+  const currentRole: string | undefined =
+    educationContextData?.educationContext?.currentRole;
 
   // The user's age — needed by the client-side fallback so it renders
   // an accurate placeholder roadmap while the AI version loads. Without
@@ -223,12 +225,12 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney, read
     // showing a stale "Complete Videregående" step to a university
     // graduate (or "Continue studying" to someone who marked their
     // Foundation as Complete).
-    queryKey: ['personal-career-timeline', primaryGoalTitle, educationStage ?? 'default', foundationComplete ? 'done' : 'open', expectedCompletion ?? 'none'],
+    queryKey: ['personal-career-timeline', primaryGoalTitle, educationStage ?? 'default', foundationComplete ? 'done' : 'open', expectedCompletion ?? 'none', currentRole ?? 'no-role'],
     queryFn: async () => {
       const res = await fetch('/api/journey/generate-timeline', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ career: primaryGoalTitle, educationStage, foundationComplete, expectedCompletion }),
+        body: JSON.stringify({ career: primaryGoalTitle, educationStage, foundationComplete, expectedCompletion, currentRole }),
       });
 
       if (!res.ok) {

@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { LAUNCHED_COUNTRIES, DEFAULT_COUNTRY } from "@/lib/countries";
-import { PLATFORM_MIN_AGE, PLATFORM_MAX_AGE } from "@/lib/safety/age";
+import { PLATFORM_MIN_AGE } from "@/lib/safety/age";
 import { Sparkles, Loader2, ArrowLeft, ArrowRight } from "lucide-react";
 
 /**
@@ -80,19 +80,24 @@ function SignUpForm() {
     if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
       age--;
     }
+    // ageBracket is a deprecated/inert signal; only the youth bands are
+    // meaningful, and older users send null (no bracket) so the server's
+    // bracket cross-check is skipped for them.
     let bracket: string | null = null;
     if (age >= PLATFORM_MIN_AGE && age <= 17) bracket = "SIXTEEN_SEVENTEEN";
-    else if (age >= 18 && age <= PLATFORM_MAX_AGE) bracket = "EIGHTEEN_TWENTY";
+    else if (age >= 18 && age <= 23) bracket = "EIGHTEEN_TWENTY";
     return { age, bracket };
   };
 
   const ageInfo = calculateAgeInfo(dateOfBirth);
   const isUnderMinAge = ageInfo.age !== null && ageInfo.age < PLATFORM_MIN_AGE;
-  const isAboveMaxAge = ageInfo.age !== null && ageInfo.age > PLATFORM_MAX_AGE;
+  // No upper eligibility limit — anyone 15+ is welcome. We only reject
+  // implausible input (a sanity guard, not a product gate).
+  const isImplausibleAge = ageInfo.age !== null && ageInfo.age > 100;
   const isEligible =
     ageInfo.age !== null &&
     ageInfo.age >= PLATFORM_MIN_AGE &&
-    ageInfo.age <= PLATFORM_MAX_AGE;
+    ageInfo.age <= 100;
 
   // ── Submit ────────────────────────────────────────────────────────
   const handleSubmit = async (e: React.FormEvent) => {
@@ -118,7 +123,7 @@ function SignUpForm() {
       }
       if (role === "YOUTH") {
         if (!isEligible) {
-          throw new Error("Endeavrly is for ages 15–30.");
+          throw new Error("Endeavrly is for ages 15 and up. Please check your date of birth.");
         }
       }
       if (role === "TEACHER") {
@@ -208,7 +213,7 @@ function SignUpForm() {
                 </div>
                 <h1 className="text-2xl font-bold tracking-tight">First, when were you born?</h1>
                 <p className="text-sm text-muted-foreground mt-1">
-                  Endeavrly is built for 15&ndash;30 year olds. We just need this so we can set things up properly.
+                  We use this to shape your roadmap around where you are now &mdash; not to limit who can join. Endeavrly is for anyone 15 or older.
                 </p>
               </div>
 
@@ -233,25 +238,9 @@ function SignUpForm() {
                         Endeavrly is for ages 15 and up. We hope to see you when you&rsquo;re a bit older.
                       </p>
                     )}
-                    {isAboveMaxAge && (
+                    {isImplausibleAge && (
                       <p className="text-xs text-rose-500 leading-relaxed">
-                        Endeavrly is for 15&ndash;30 year olds. If you&rsquo;re a{" "}
-                        <Link
-                          href="/auth/signup?role=teacher"
-                          className="text-teal-500 hover:underline"
-                        >
-                          teacher
-                        </Link>
-                        , sign up via that link instead.
-                      </p>
-                    )}
-                    {isAboveMaxAge && (
-                      <p className="text-xs text-muted-foreground leading-relaxed mt-2">
-                        Are you a parent or professional who&rsquo;d like to share your career path to help young people?{" "}
-                        <Link href="/for-parents" className="text-teal-500 hover:underline">
-                          You can do that here
-                        </Link>
-                        {" "}&mdash; no account needed.
+                        That date doesn&rsquo;t look right &mdash; please check your date of birth.
                       </p>
                     )}
                     {isEligible && (

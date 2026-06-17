@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
   }
 
   const body = await req.json();
-  const { stage, currentSubjects, ageBand, schoolName, yearLevel, studyProgram, expectedCompletion } = body;
+  const { stage, currentSubjects, ageBand, schoolName, yearLevel, studyProgram, expectedCompletion, currentRole } = body;
 
   if (!stage || !Array.isArray(currentSubjects)) {
     return NextResponse.json({ error: 'stage and currentSubjects are required' }, { status: 400 });
@@ -64,6 +64,7 @@ export async function POST(req: NextRequest) {
     yearLevel: str(yearLevel, 30),
     studyProgram: str(studyProgram, 80),
     expectedCompletion: str(expectedCompletion, 10),
+    currentRole: str(currentRole, 80),
     updatedAt: new Date().toISOString(),
   };
 

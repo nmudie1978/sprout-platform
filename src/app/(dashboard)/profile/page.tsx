@@ -39,7 +39,7 @@ import {
 import { Avatar } from "@/components/avatar";
 import Link from "next/link";
 import type { GoalSlot } from "@/lib/goals/types";
-import { PLATFORM_MIN_AGE, PLATFORM_MAX_AGE } from "@/lib/safety/age";
+import { PLATFORM_MIN_AGE } from "@/lib/safety/age";
 
 const INTEREST_OPTIONS = [
   "Technology",
@@ -54,12 +54,14 @@ const INTEREST_OPTIONS = [
   "Learning",
 ];
 
-// Date of birth dropdown helpers
+// Date of birth dropdown helpers.
+// Open to anyone 15+ (no upper product limit). Offer birth years from age 15
+// down through age ~80 — wide enough for any adult career-changer, while the
+// 100+ sanity guard lives in the eligibility check.
 const currentYear = new Date().getFullYear();
-// Youth platform: ages 15–30 (one extra year each side as a safe buffer for
-// birthdays not yet reached this calendar year).
+const DOB_MAX_PICKER_AGE = 80;
 const DOB_YEARS = Array.from(
-  { length: PLATFORM_MAX_AGE - PLATFORM_MIN_AGE + 2 },
+  { length: DOB_MAX_PICKER_AGE - PLATFORM_MIN_AGE + 1 },
   (_, i) => currentYear - PLATFORM_MIN_AGE - i,
 );
 const DOB_MONTHS = [

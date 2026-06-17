@@ -30,7 +30,7 @@ export default function DisclaimerPage() {
             <h2>Platform Role</h2>
             <p>
               Endeavrly is a career-exploration and information platform for young people
-              (ages 15&ndash;30). It helps you explore careers, understand realistic education
+              (ages 15 and older). It helps you explore careers, understand realistic education
               pathways, and reflect on your direction.
             </p>
             <p>
