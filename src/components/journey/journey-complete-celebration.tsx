@@ -15,7 +15,7 @@
 import { useEffect } from 'react';
 import Link from 'next/link';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
-import { CheckCircle2, Download, Compass, ArrowRight, Loader2, X } from 'lucide-react';
+import { Check, Download, Compass, ArrowRight, Loader2, X } from 'lucide-react';
 import { playCompletionChime } from '@/lib/journey/completion-chime';
 
 interface JourneyCompleteCelebrationProps {
@@ -40,6 +40,19 @@ const SPARKS: ReadonlyArray<[number, number, number, number, number]> = [
   [50, 108, 0.28, 0, 22],
   [30, 4, 0.2, -12, -18],
   [70, 6, 0.08, 12, -18],
+];
+
+// A one-time confetti burst that falls the height of the card (clipped by the
+// card's overflow-hidden). Tasteful + brand-coloured, not a slot-machine —
+// fires once and is fully skipped under prefers-reduced-motion.
+// [color, startLeft%, driftX px, delay s].
+const CONFETTI: ReadonlyArray<[string, number, number, number]> = [
+  ['#34d399', 12, -42, 0.0], ['#2dd4bf', 22, -22, 0.06], ['#fbbf24', 33, -10, 0.12],
+  ['#38bdf8', 45, 8, 0.02], ['#fb7185', 57, 18, 0.1], ['#34d399', 67, 30, 0.07],
+  ['#fbbf24', 78, 46, 0.15], ['#2dd4bf', 88, 62, 0.03], ['#38bdf8', 17, -30, 0.18],
+  ['#fbbf24', 29, 0, 0.21], ['#34d399', 50, 2, 0.0], ['#fb7185', 63, 24, 0.16],
+  ['#2dd4bf', 73, 40, 0.23], ['#38bdf8', 84, 56, 0.09], ['#fbbf24', 39, -8, 0.26],
+  ['#34d399', 55, 14, 0.13], ['#38bdf8', 8, -18, 0.3], ['#fb7185', 92, 30, 0.2],
 ];
 
 export function JourneyCompleteCelebration({
@@ -86,6 +99,28 @@ export function JourneyCompleteCelebration({
               <X className="h-4 w-4" />
             </button>
 
+            {/* One-time confetti burst — celebratory but tasteful, clipped to
+                the card, skipped entirely under reduced motion. */}
+            {!reduce && (
+              <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
+                {CONFETTI.map(([color, left, dx, delay], i) => (
+                  <motion.span
+                    key={i}
+                    className="absolute top-0 h-2.5 w-1.5 rounded-[1px]"
+                    style={{ left: `${left}%`, backgroundColor: color }}
+                    initial={{ y: -16, x: 0, rotate: 0, opacity: 0 }}
+                    animate={{
+                      y: 420,
+                      x: dx,
+                      rotate: i % 2 ? 380 : -380,
+                      opacity: [0, 1, 1, 0],
+                    }}
+                    transition={{ duration: 1.9 + (i % 3) * 0.3, delay, ease: 'easeIn' }}
+                  />
+                ))}
+              </div>
+            )}
+
             {/* Checkmark reveal + soft ring + sparse sparkles */}
             <div className="relative mx-auto mb-5 flex h-20 w-20 items-center justify-center">
               {!reduce && (
@@ -100,9 +135,15 @@ export function JourneyCompleteCelebration({
                 initial={reduce ? {} : { scale: 0, rotate: -18 }}
                 animate={{ scale: 1, rotate: 0 }}
                 transition={{ type: 'spring', stiffness: 300, damping: 15, delay: 0.05 }}
-                className="flex h-16 w-16 items-center justify-center rounded-full bg-emerald-500/15 ring-1 ring-emerald-400/40"
+                className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 shadow-[0_8px_24px_-6px_rgba(16,185,129,0.7)] ring-4 ring-emerald-400/20"
               >
-                <CheckCircle2 className="h-9 w-9 text-emerald-400" strokeWidth={2} />
+                <motion.span
+                  initial={reduce ? {} : { scale: 0, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ type: 'spring', stiffness: 400, damping: 16, delay: 0.22 }}
+                >
+                  <Check className="h-8 w-8 text-white" strokeWidth={3} />
+                </motion.span>
               </motion.div>
 
               {!reduce &&
