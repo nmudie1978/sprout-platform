@@ -337,7 +337,7 @@
   },
   "landing": {
     "hero": {
-      "ageRange": "Para jóvenes de 15 a 23 años",
+      "ageRange": "Pensado para 15–23 · abierto a quien quiera explorar",
       "title": "Nadie te enseña a descubrir tu futuro.",
       "subhead": "Te dicen que elijas asignaturas, que elijas una carrera y que elijas una profesión. Pero ¿cómo vas a elegir algo que nunca has visto?",
       "problem": "Existen miles de profesiones, pero la mayoría solo conoce un puñado.",
@@ -345,6 +345,7 @@
       "missing": "Endeavrly te da lo que faltaba: profesiones reales, información honesta y un espacio para explorar quién eres y qué te importa.",
       "payoff": "Así, cuando elijas un rumbo, será tuyo.",
       "closer": "Sin tests. Sin presión. Solo claridad.",
+      "audience": "Endeavrly está pensado para jóvenes — la mayoría de quienes exploran tienen entre 15 y 23 años. Pero si estás decidiendo hacia dónde ir, a cualquier edad, este también es tu sitio. El único requisito es tener 15 años o más.",
       "cta": "Empieza su camino",
       "ctaSecondary": "Explora carreras gratis",
       "trust": "Diseñado para jóvenes de 15 a 23 años que buscan su rumbo, y igual de útil a cualquier edad si estás pensando en cambiar. Sin anuncios, sin presión, solo claridad.",
