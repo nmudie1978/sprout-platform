@@ -47,6 +47,9 @@ import {
 } from "lucide-react";
 import { useCuriositySaves } from "@/hooks/use-curiosity-saves";
 import { useAllInterestLevels } from "@/hooks/use-interest-level";
+import { useDailyWelcome } from "@/hooks/use-daily-welcome";
+import { WelcomeBackCard } from "@/components/dashboard/welcome-back-card";
+import { selectWelcomeBack } from "@/lib/dashboard/welcome-back";
 import { InterestLevelStars } from "@/components/interest-level/interest-level-rating";
 import { WorthALook } from "@/components/dashboard/worth-a-look";
 import type { GoalsResponse } from "@/lib/goals/types";
@@ -708,6 +711,48 @@ export default function DashboardPage() {
   const recentActivity = dashboardStats?.recentActivity ?? [];
   const { curiosities: savedCareers, removeCuriosity } = useCuriositySaves();
 
+  // ── "Welcome back" awareness card ──────────────────────────────────
+  // A calm, once-a-day recognition of a returning user, drawn from their
+  // real recent activity (most-recent journey → strong interest → save).
+  const welcomeDescriptor = useMemo(() => {
+    const goals = exploredGoalsData?.goals ?? [];
+    const lastExplored = goals.length
+      ? {
+          title: [...goals].sort(
+            (a, b) =>
+              new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
+          )[0].goalTitle,
+        }
+      : null;
+
+    const titleById = new Map(getAllCareers().map((c) => [c.id, c.title]));
+    let topInterest: { title: string; rating: number } | null = null;
+    for (const [careerId, rating] of Object.entries(interestLevels)) {
+      if (!rating) continue;
+      if (!topInterest || rating > topInterest.rating) {
+        topInterest = { title: titleById.get(careerId) ?? careerId, rating };
+      }
+    }
+
+    const lastSaved = savedCareers.length
+      ? {
+          title: [...savedCareers].sort(
+            (a, b) =>
+              new Date(b.savedAt).getTime() - new Date(a.savedAt).getTime(),
+          )[0].careerTitle,
+        }
+      : null;
+
+    return selectWelcomeBack({ name: displayName, lastExplored, topInterest, lastSaved });
+  }, [exploredGoalsData, interestLevels, savedCareers, displayName, getAllCareers]);
+
+  // Only for returning (onboarding-complete) youth, and only once the
+  // activity data has loaded so the one daily appearance is accurate.
+  const { show: showWelcomeBack, dismiss: dismissWelcomeBack } = useDailyWelcome(
+    onboardingComplete && session?.user.role === "YOUTH" ? session?.user?.id : undefined,
+    exploredGoalsData !== undefined,
+  );
+
   // Durable "interest cluster" powering the Worth-a-look card: the careers the
   // user is circling (saved + interest-rated), NOT the volatile primary goal —
   // so it survives goal switches and works with no goal set.
@@ -904,10 +949,17 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        <PageContext
-          pageKey="dashboard"
-          purpose={t('dashboard.pageContext')}
-        />
+        {showWelcomeBack ? (
+          <WelcomeBackCard
+            descriptor={welcomeDescriptor}
+            onDismiss={dismissWelcomeBack}
+          />
+        ) : (
+          <PageContext
+            pageKey="dashboard"
+            purpose={t('dashboard.pageContext')}
+          />
+        )}
 
         {/* ── First-action card ───────────────────────────────────
             Three states, in order of priority:

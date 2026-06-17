@@ -74,6 +74,21 @@
     "evening": "Good evening",
     "welcome": "Welcome"
   },
+  "welcomeBack": {
+    "greeting": "Welcome back, {name}",
+    "memory": {
+      "explored": "Last time you were exploring {career}.",
+      "interest": "You were really drawn to {career} last time.",
+      "saved": "You'd saved {career} to come back to.",
+      "none": "Good to see you again — your journey's right where you left it."
+    },
+    "prompt": "What would you like to explore today?",
+    "cta": {
+      "resume": "Continue your journey",
+      "explore": "Explore careers"
+    },
+    "dismiss": "Dismiss"
+  },
   "dashboard": {
     "pageContext": "A snapshot of your journeys, activity, and saved content.",
     "replayWalkthrough": "Replay app walkthrough",
