@@ -34,7 +34,7 @@ function getOpenAIClient(): OpenAI | null {
 
 // Rules section is built from the shared rules engine so the prompt and
 // the client sanitiser stay in sync. See src/lib/journey/roadmap-rules.ts.
-const SYSTEM_PROMPT = `Career timeline generator for ages 15-30 (teenagers in school through to career-changers in their late twenties). Anchor every roadmap to the user's CURRENT age and stage — never assume they are still a teenager in school. Output ONLY valid JSON.
+const SYSTEM_PROMPT = `Career timeline generator for users aged 15 and up — from teenagers still in school through to adults of any age changing career. The typical user is 15-23 and starting out, but many are established professionals exploring a switch. ALWAYS anchor the roadmap to the user's CURRENT age and situation — never assume they are a teenager in school. For an older user already working, build a realistic CAREER-TRANSITION path from where they are now (transferable experience → any conversion/certification/study needed → first role in the new field → growth); do NOT include school/videregående steps for them. Output ONLY valid JSON.
 
 ROADMAP RULES (all mandatory):
 ${buildPromptRules()}
@@ -108,12 +108,18 @@ export async function POST(req: NextRequest) {
     // the saved education context (set via the Foundation card). The
     // request body can override it for explicit regeneration.
     const summary = (profile?.journeySummary as Record<string, unknown> | null) || null;
-    const ctx = summary?.educationContext as { stage?: string; expectedCompletion?: string } | undefined;
+    const ctx = summary?.educationContext as { stage?: string; expectedCompletion?: string; currentRole?: string } | undefined;
     // Prefer body.expectedCompletion (fresher — just saved) over the DB snapshot.
     const expectedCompletion =
       typeof body.expectedCompletion === 'string' && body.expectedCompletion.trim()
         ? body.expectedCompletion.trim()
         : typeof ctx?.expectedCompletion === 'string' ? ctx.expectedCompletion.trim() : '';
+    // Current role/field for a working / career-changing user (stage 'other').
+    // Anchors a career-transition roadmap rather than a school→degree ladder.
+    const currentRole =
+      typeof body.currentRole === 'string' && body.currentRole.trim()
+        ? body.currentRole.trim()
+        : typeof ctx?.currentRole === 'string' ? ctx.currentRole.trim() : '';
     const validStages: EducationStage[] = ['school', 'college', 'university', 'other'];
     const bodyStage = typeof body.educationStage === 'string' ? body.educationStage : undefined;
     const educationStage: EducationStage | undefined =
@@ -273,13 +279,20 @@ export async function POST(req: NextRequest) {
             : ' The user has marked their foundation as complete — assume they are ready to enter the workforce immediately. Start the timeline at the experience phase, anchored to their current age.'
       : '';
 
+    // Career-transition instruction — when a working/career-changing user has
+    // told us their current role, anchor a transition path from it.
+    const transitionInstruction =
+      effectiveStage === 'other' && currentRole
+        ? ` The user currently works as "${currentRole}" and is exploring a move into ${career}. Build a CAREER-TRANSITION roadmap from that starting point: lead with the transferable skills and experience they already have, then ONLY the conversion, certification, or study genuinely required to switch, then a first role in the new field, then growth. Do NOT include school or videregående steps — anchor every step to their current age.`
+        : '';
+
     if (openai) {
       try {
         const completion = await openai.chat.completions.create({
           model: 'gpt-4o-mini',
           messages: [
             { role: 'system', content: SYSTEM_PROMPT },
-            { role: 'user', content: `Career: ${career}. Age: ${userAge}. Start year: ${new Date().getFullYear()}.${expectedCompletion ? ` The user expects to finish their current education stage in ${expectedCompletion} — anchor the first post-foundation step to start in the SAME year (e.g. they finish school in summer 2027 and begin university in autumn 2027, same age).` : ''}${routeInstruction}${stageInstruction}${completeInstruction}` },
+            { role: 'user', content: `Career: ${career}. Age: ${userAge}. Start year: ${new Date().getFullYear()}.${expectedCompletion ? ` The user expects to finish their current education stage in ${expectedCompletion} — anchor the first post-foundation step to start in the SAME year (e.g. they finish school in summer 2027 and begin university in autumn 2027, same age).` : ''}${routeInstruction}${stageInstruction}${completeInstruction}${transitionInstruction}` },
           ],
           temperature: 0.7,
           max_tokens: 1200,

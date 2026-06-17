@@ -29,26 +29,28 @@ export default function EligibilityPage() {
           <section className="mb-8">
             <h2>Who Can Use Endeavrly</h2>
             <p>
-              Endeavrly is a career-exploration platform built for young people aged
-              <strong> 15&ndash;30</strong>. It is not a jobs marketplace and does not offer paid
-              work &mdash; so there are no job-poster or employer accounts.
+              Endeavrly is built for young people starting out &mdash; typically
+              <strong> 15&ndash;23</strong> &mdash; but it&rsquo;s just as useful at any age if
+              you&rsquo;re exploring a change of direction. <strong>Anyone 15 or older is welcome.</strong>
+              It is not a jobs marketplace and does not offer paid work &mdash; so there are no
+              job-poster or employer accounts.
             </p>
           </section>
 
           <section className="mb-8">
-            <h2>Youth Users (Ages 15–30)</h2>
+            <h2>Who can register</h2>
             <p>
               To register on Endeavrly, you must:
             </p>
             <ul>
-              <li>Be between <strong>15 and 30 years old</strong></li>
+              <li>Be <strong>15 or older</strong> (no upper age limit)</li>
               <li>Provide an accurate date of birth at sign-up</li>
             </ul>
             <p>
-              Everyone aged 15&ndash;30 gets the <strong>same full access</strong> to the platform
+              Everyone 15 or older gets the <strong>same full access</strong> to the platform
               &mdash; career exploration, My Journey, Career Radar, the AI Advisor and Career Twin,
-              and your Library. Age is used to tailor your roadmap (for example, education routes),
-              not to lock features.
+              and your Library. Age isn&rsquo;t a gate; it simply tailors your roadmap to where you
+              are now (for example, a school-leaver&rsquo;s path versus a career-changer&rsquo;s).
             </p>
           </section>
 
@@ -56,8 +58,9 @@ export default function EligibilityPage() {
             <h2>Age Verification</h2>
             <p>
               We verify age at sign-up via your date of birth (and, where available, Vipps). This is
-              a one-time eligibility check so the platform stays a space for 15&ndash;30 year olds.
-              We collect minimal information and do not require identity documents.
+              a one-time check confirming you&rsquo;re 15 or older &mdash; it&rsquo;s about
+              personalising your experience, not limiting who can join. We collect minimal information
+              and do not require identity documents.
             </p>
           </section>
 
@@ -68,7 +71,7 @@ export default function EligibilityPage() {
             </p>
             <ul>
               <li>False age information was provided during registration</li>
-              <li>A user no longer meets the 15&ndash;30 eligibility requirement</li>
+              <li>A user is found to be under the minimum age of 15</li>
               <li>Our <Link href="/legal/safety" className="text-primary hover:underline">Safety &amp; Community Guidelines</Link> are violated</li>
             </ul>
           </section>

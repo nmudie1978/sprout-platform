@@ -4,12 +4,15 @@
  * This is the SINGLE SOURCE OF TRUTH for age-related safety checks.
  * All age gating decisions MUST use this module.
  *
- * PLATFORM AGE POLICY (v1.0):
- * - Target audience: 15-30 years old
- * - Under 15: HARD BLOCKED from platform (MVP)
- * - 15-17: Minor-safe defaults, guardian consent required for sensitive actions
- * - 18-23: Standard flow
- * - Over 23: Allowed but marked as "out of target" (may restrict in future)
+ * PLATFORM AGE POLICY (v2.0):
+ * - Eligibility: 15 and older — NO upper limit. Anyone 15+ can join.
+ * - Primary/"typical" audience: 15-23 (youth starting out) — a positioning
+ *   focus, NOT an eligibility gate. Career-changers of any age are welcome.
+ * - Under 15: HARD BLOCKED from platform (MVP safety/legal floor)
+ * - 15-17: Minor-safe defaults
+ * - 18+: Standard flow
+ * - Age is a PERSONALISATION signal (it shapes the roadmap around the user's
+ *   current situation), not a restriction.
  *
  * IMPORTANT: Never expose actual DOB to clients. Use age bands instead.
  */
@@ -145,7 +148,7 @@ export function isAllowedToUsePlatform(
       return {
         allowed: false,
         ageBand,
-        reason: "Endeavrly is for ages 15-30. You must be at least 15 to use this platform.",
+        reason: "Endeavrly is for ages 15 and up. You must be at least 15 to use this platform.",
         requiresGuardianConsent: false,
       };
 
@@ -339,17 +342,19 @@ export function validateSignupAge(dateOfBirth: string | Date): { valid: boolean;
   if (ageBand === "UNDER_15") {
     return {
       valid: false,
-      error: "Endeavrly is for ages 15-30. You must be at least 15 to create an account.",
+      error: "Endeavrly is for ages 15 and up. You must be at least 15 to create an account.",
       ageBand,
     };
   }
 
-  if (age > 30) {
-    // Eligibility ceiling — platform is for ages 15-30.
+  // No upper eligibility limit — anyone 15+ is welcome. We only reject
+  // implausible input (a sanity guard, not a product gate) so a typo or a
+  // garbage DOB can't create a nonsensical account.
+  if (age > 100) {
     return {
       valid: false,
-      error: "This platform is designed for people aged 15-30.",
-      ageBand: "OVER_23",
+      error: "Please enter a valid date of birth.",
+      ageBand,
     };
   }
 

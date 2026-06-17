@@ -17,7 +17,6 @@ import {
   getAgeBand,
   validateSignupAge,
   PLATFORM_MIN_AGE,
-  PLATFORM_MAX_AGE,
 } from "@/lib/safety/age";
 import { checkRateLimitAsync, getRateLimitHeaders, RateLimits } from "@/lib/rate-limit";
 import { isSchoolEmail } from "@/lib/education/school-domains";
@@ -159,17 +158,12 @@ export async function POST(req: NextRequest) {
         );
       }
 
-      // Double-check age constraints server-side (defense in depth)
+      // Double-check the floor server-side (defense in depth). No upper limit —
+      // anyone 15+ is welcome; validateSignupAge above already rejects
+      // implausible ages as a sanity guard.
       if (age === null || age < PLATFORM_MIN_AGE) {
         return NextResponse.json(
-          { error: `Endeavrly is for users aged ${PLATFORM_MIN_AGE}-${PLATFORM_MAX_AGE}. You must be at least ${PLATFORM_MIN_AGE} to create an account.` },
-          { status: 400 }
-        );
-      }
-
-      if (age > PLATFORM_MAX_AGE) {
-        return NextResponse.json(
-          { error: `Endeavrly is for ages ${PLATFORM_MIN_AGE}–${PLATFORM_MAX_AGE}. Thanks for your interest!` },
+          { error: `Endeavrly is for ages ${PLATFORM_MIN_AGE} and up. You must be at least ${PLATFORM_MIN_AGE} to create an account.` },
           { status: 400 }
         );
       }

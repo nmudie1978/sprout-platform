@@ -1,7 +1,8 @@
 # CLAUDE.md — Endeavrly (Youth Career Exploration & Direction Platform)
 
 <project_context>
-Endeavrly is a youth-first (ages 15–30) career development platform.
+Endeavrly is a youth-first (typically 15–23) career development platform,
+open to anyone aged 15 or older — including career-changers of any age.
 
 It helps young people explore careers, understand realistic pathways,
 and build clarity about their future.
@@ -103,7 +104,7 @@ Mandatory:
 - UUID primary keys
 - created_at / updated_at timestamps
 - Soft delete where appropriate
-- Age validation on signup (15–30 eligibility floor only — see <age_policy>)
+- Age validation on signup (15+ floor only, no upper limit — see <age_policy>)
 
 Never store:
 - Excessive personal data
@@ -121,8 +122,14 @@ What age IS used for:
 1. Personalising the Clarity-tab roadmap — e.g. no university step
    before 18, professional certifications spaced to post-experience.
    (Roadmap logic reads date of birth / age + educationStage.)
-2. A one-time signup ELIGIBILITY FLOOR: the platform is for ages 15–30,
-   enforced in /api/auth/signup. Under-15 and over-30 cannot register.
+2. A one-time signup ELIGIBILITY FLOOR: the platform is for anyone aged
+   15 OR OLDER — there is NO upper age limit. Enforced in /api/auth/signup:
+   under-15 cannot register; a sanity guard rejects implausible ages (>100).
+   The "typical" audience is 15–23 (youth starting out) — that's a POSITIONING
+   focus, not an eligibility gate. Career-changers of any age are welcome and
+   get a transition-shaped roadmap from their current situation.
+   (Owner-approved 2026-06-17 widening from the earlier 15–30 ceiling — do NOT
+   re-introduce an upper age limit.)
 
 What age is NOT used for:
 - NO in-app action is blocked by age or guardian consent. Every

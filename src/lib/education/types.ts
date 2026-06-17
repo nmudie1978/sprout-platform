@@ -37,6 +37,12 @@ export interface EducationContext {
   yearLevel?: string;
   studyProgram?: string;
   expectedCompletion?: string;
+  /**
+   * For users who are working / changing career (stage 'other'): their current
+   * role or field. Replaces the school details for established users and anchors
+   * a career-transition roadmap rather than a school→degree ladder.
+   */
+  currentRole?: string;
   updatedAt: string;
 }
 
