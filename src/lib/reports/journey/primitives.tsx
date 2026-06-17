@@ -322,13 +322,13 @@ export function StatStrip({
       style={{
         flexDirection: "row",
         gap: 32,
-        paddingTop: 20,
-        paddingBottom: 22,
+        paddingTop: 15,
+        paddingBottom: 16,
         borderTopWidth: 0.75,
         borderTopColor: palette.ink,
         borderBottomWidth: 0.5,
         borderBottomColor: palette.hairline,
-        marginBottom: 24,
+        marginBottom: 18,
       }}
       wrap={false}
     >

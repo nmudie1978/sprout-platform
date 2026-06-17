@@ -18,6 +18,7 @@ import {
   TagList,
 } from "./primitives";
 import { WindingRoad } from "./winding-road";
+import { truncate } from "./winding-road-layout";
 import type {
   ClaritySummary,
   DiscoverSummary,
@@ -215,7 +216,7 @@ export function TocPage({
       <SectionHeader
         eyebrow="Contents"
         title="Inside this report"
-        lead="A structured walk-through of your journey — the career, the path in, your personal roadmap, and the next moves to make."
+        lead="A structured walk-through of your journey — the career, the path in, your personal roadmap, and the routes that can take you there."
       />
 
       <View style={{ marginTop: 8 }}>
@@ -372,25 +373,18 @@ export function UnderstandPage({
       {/* Stat strip — headline facts */}
       {stats.length > 0 && <StatStrip items={stats} />}
 
-      {/* Overview paragraph — from catalog */}
+      {/* Overview paragraph — from catalog. Capped so the whole role
+          picture (incl. the reality check) stays on this single page. */}
       {data.facts?.description && (
-        <View style={{ marginBottom: 22 }}>
-          <Text style={styles.bodyLg}>{data.facts.description}</Text>
+        <View style={{ marginBottom: 14 }}>
+          <Text style={styles.bodyLg}>{truncate(data.facts.description, 300)}</Text>
         </View>
-      )}
-
-      {/* User's notes — elevated, surfaces the user's voice before
-          catalog content. */}
-      {data.roleReality.length > 0 && (
-        <Callout label="What you noted about the role" tone="accent">
-          <BulletList items={data.roleReality} max={6} />
-        </Callout>
       )}
 
       {/* What you actually do — full-width because this is long-form */}
       {data.insights?.whatYouActuallyDo && data.insights.whatYouActuallyDo.length > 0 && (
         <EditorialBlock label="What you actually do day-to-day">
-          <BulletList items={data.insights.whatYouActuallyDo} max={6} />
+          <BulletList items={data.insights.whatYouActuallyDo} max={5} />
         </EditorialBlock>
       )}
 
@@ -405,7 +399,7 @@ export function UnderstandPage({
               items={data.insights.topSkills}
               color={palette.blue}
               bg={palette.blueSoft}
-              max={10}
+              max={8}
             />
           </View>
         )}
@@ -414,20 +408,30 @@ export function UnderstandPage({
             <View style={styles.ruleSoft} />
             <View style={{ height: 8 }} />
             <Text style={styles.label}>Who this suits</Text>
-            <BulletList items={data.insights.whoThisIsGoodFor} max={5} />
+            <BulletList items={data.insights.whoThisIsGoodFor} max={4} />
           </View>
         )}
       </View>
 
+      {/* Reality check — catalog truth. Kept directly under the core role
+          picture so it never spills onto a page of its own. */}
       {data.insights?.realityCheck && (
         <Callout label="Reality check" tone="muted">
-          {data.insights.realityCheck}
+          {truncate(data.insights.realityCheck, 300)}
+        </Callout>
+      )}
+
+      {/* User's own notes — secondary, after the catalog role picture so
+          they never push the reality check off the page. */}
+      {data.roleReality.length > 0 && (
+        <Callout label="What you noted about the role" tone="accent">
+          <BulletList items={data.roleReality} max={4} />
         </Callout>
       )}
 
       {data.industryInsights.length > 0 && (
         <EditorialBlock label="Your industry notes">
-          <BulletList items={data.industryInsights} max={6} />
+          <BulletList items={data.industryInsights} max={4} />
         </EditorialBlock>
       )}
 
@@ -826,33 +830,45 @@ export function RoutesPage({
         }
       />
 
+      {/* Slick three-column table: Route · University · First role. */}
       <View>
+        {/* Header row */}
+        <View
+          style={{
+            flexDirection: "row",
+            gap: 16,
+            paddingBottom: 8,
+            borderBottomWidth: 1,
+            borderBottomColor: palette.ink,
+          }}
+        >
+          <Text style={[styles.label, { width: 118, marginBottom: 0 }]}>Route</Text>
+          <Text style={[styles.label, { flex: 1, marginBottom: 0 }]}>University</Text>
+          <Text style={[styles.label, { flex: 1, marginBottom: 0 }]}>First role</Text>
+        </View>
+
+        {/* Body rows */}
         {routes.map((route, i) => (
           <View
             key={i}
             style={{
-              paddingVertical: 16,
+              flexDirection: "row",
+              gap: 16,
+              paddingVertical: 11,
               borderBottomWidth: 0.5,
               borderBottomColor: palette.hairline,
-              ...(i === 0 ? { borderTopWidth: 0.75, borderTopColor: palette.divider } : {}),
+              alignItems: "flex-start",
             }}
             wrap={false}
           >
-            {/* Route header */}
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "baseline",
-                marginBottom: 12,
-              }}
-            >
-              <View style={{ flexDirection: "row", alignItems: "baseline", gap: 10 }}>
+            {/* Col 1 — route label + country */}
+            <View style={{ width: 118 }}>
+              <View style={{ flexDirection: "row", alignItems: "baseline", gap: 6 }}>
                 <Text
                   style={{
                     fontFamily: type.display.family,
                     fontWeight: type.display.weight,
-                    fontSize: 10,
+                    fontSize: 9,
                     color: palette.faint,
                     letterSpacing: -0.2,
                   }}
@@ -861,11 +877,12 @@ export function RoutesPage({
                 </Text>
                 <Text
                   style={{
+                    flex: 1,
                     fontFamily: type.heading.family,
-                    fontWeight: type.heading.weight,
-                    fontSize: 13,
+                    fontWeight: type.subheading.weight,
+                    fontSize: 10.5,
                     color: palette.ink,
-                    letterSpacing: -0.1,
+                    letterSpacing: -0.05,
                   }}
                 >
                   {route.label}
@@ -880,6 +897,7 @@ export function RoutesPage({
                     color: palette.subtle,
                     letterSpacing: 0.8,
                     textTransform: "uppercase",
+                    marginTop: 3,
                   }}
                 >
                   {route.university.country}
@@ -887,56 +905,50 @@ export function RoutesPage({
               )}
             </View>
 
-            {/* Two-column route detail */}
-            <View style={{ flexDirection: "row", gap: 22 }}>
-              <View style={{ flex: 1 }}>
-                <Text style={[styles.label, { marginBottom: 6 }]}>Study</Text>
-                <Text
-                  style={{
-                    fontFamily: type.heading.family,
-                    fontWeight: type.subheading.weight,
-                    fontSize: 10.5,
-                    color: palette.ink,
-                    marginBottom: 2,
-                    letterSpacing: -0.05,
-                  }}
-                >
-                  {route.university.name}
+            {/* Col 2 — university */}
+            <View style={{ flex: 1 }}>
+              <Text
+                style={{
+                  fontFamily: type.heading.family,
+                  fontWeight: type.subheading.weight,
+                  fontSize: 10,
+                  color: palette.ink,
+                  marginBottom: 2,
+                  letterSpacing: -0.05,
+                }}
+              >
+                {route.university.name}
+              </Text>
+              {route.university.programme && (
+                <Text style={[styles.caption, { color: palette.muted }]}>
+                  {route.university.programme}
                 </Text>
-                {route.university.programme && (
-                  <Text style={[styles.body, { color: palette.muted, marginBottom: 2 }]}>
-                    {route.university.programme}
-                  </Text>
-                )}
-                {route.university.city && (
-                  <Text style={styles.caption}>
-                    {[route.university.city, route.university.country]
-                      .filter(Boolean)
-                      .join(", ")}
-                  </Text>
-                )}
-              </View>
-              <View style={{ flex: 1 }}>
-                <Text style={[styles.label, { marginBottom: 6 }]}>First role</Text>
-                <Text
-                  style={{
-                    fontFamily: type.heading.family,
-                    fontWeight: type.subheading.weight,
-                    fontSize: 10.5,
-                    color: palette.ink,
-                    marginBottom: 2,
-                    letterSpacing: -0.05,
-                  }}
-                >
-                  {route.employer.name}
+              )}
+              {route.university.city && (
+                <Text style={styles.caption}>
+                  {[route.university.city, route.university.country].filter(Boolean).join(", ")}
                 </Text>
-                <Text style={[styles.body, { color: palette.muted, marginBottom: 2 }]}>
-                  {route.employer.role}
-                </Text>
-                {route.employer.city && (
-                  <Text style={styles.caption}>{route.employer.city}</Text>
-                )}
-              </View>
+              )}
+            </View>
+
+            {/* Col 3 — first role */}
+            <View style={{ flex: 1 }}>
+              <Text
+                style={{
+                  fontFamily: type.heading.family,
+                  fontWeight: type.subheading.weight,
+                  fontSize: 10,
+                  color: palette.ink,
+                  marginBottom: 2,
+                  letterSpacing: -0.05,
+                }}
+              >
+                {route.employer.name}
+              </Text>
+              <Text style={[styles.caption, { color: palette.muted }]}>{route.employer.role}</Text>
+              {route.employer.city && (
+                <Text style={styles.caption}>{route.employer.city}</Text>
+              )}
             </View>
           </View>
         ))}

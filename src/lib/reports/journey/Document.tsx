@@ -5,7 +5,6 @@ import type { JourneyReportViewModel } from "./types";
 import {
   ClosingPage,
   CoverPage,
-  NextStepsPage,
   RoadmapPages,
   RoutesPage,
   TocPage,
@@ -84,13 +83,12 @@ function hasPathContent(vm: JourneyReportViewModel): boolean {
  *   3  Career Summary — path (conditional)
  *   4..  Roadmap (one page — auto-breaks on overflow)
  *   N  Alternative routes (conditional)
- *   N+1 Recommended next steps
- *   N+2 Closing
+ *   N+1 Closing
  *
- * The Executive Summary, Discover ("Who you are"), and Clarity
- * ("Momentum & reflections") sections were dropped. The cover
- * communicates "what this is"; Career Summary + roadmap + next steps
- * carry the actionable content.
+ * The Executive Summary, Discover ("Who you are"), Clarity
+ * ("Momentum & reflections"), and the "Next moves" sections were
+ * dropped. The cover communicates "what this is"; Career Summary +
+ * roadmap + routes carry the actionable content.
  */
 function planLayout(vm: JourneyReportViewModel) {
   const tocPage = 1;
@@ -105,7 +103,6 @@ function planLayout(vm: JourneyReportViewModel) {
   let cursor = roadmapStart + roadmapPageCount;
   const routes: number | null = vm.routes.length > 0 ? cursor : null;
   if (routes !== null) cursor += 1;
-  const nextSteps = cursor++;
   const closing = cursor++;
   const total = closing;
 
@@ -132,7 +129,6 @@ function planLayout(vm: JourneyReportViewModel) {
   if (routes !== null) {
     toc.push({ n: n++, title: "More than one way in", pageNumber: routes });
   }
-  toc.push({ n: n++, title: "Your next six moves", pageNumber: nextSteps });
   toc.push({ n: n++, title: "A journey, not a verdict", pageNumber: closing });
 
   return {
@@ -144,7 +140,6 @@ function planLayout(vm: JourneyReportViewModel) {
       roadmapStart,
       roadmapPageCount,
       routes,
-      nextSteps,
       closing,
     },
     total,
@@ -194,11 +189,6 @@ export function JourneyReportDocument({ vm }: { vm: JourneyReportViewModel }) {
           totalPages={total}
         />
       )}
-      <NextStepsPage
-        steps={vm.nextSteps}
-        pageNumber={pages.nextSteps}
-        totalPages={total}
-      />
       <ClosingPage vm={vm} pageNumber={pages.closing} totalPages={total} />
     </Document>
   );
