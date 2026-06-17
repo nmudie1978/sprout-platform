@@ -590,11 +590,14 @@ export function TimelineDetailDialog({
                         setExpectedCompletion(e.target.value);
                         setDirty(true);
                       }}
-                      className="w-full rounded-lg border border-amber-500/30 bg-amber-500/[0.04] px-3 py-2 text-xs text-foreground/85 focus:outline-none focus:border-amber-500/60"
+                      // color-scheme makes the browser paint the native control
+                      // and its options with the right (dark) palette — without
+                      // it the popup renders white-on-white in dark mode.
+                      className="w-full rounded-lg border border-amber-500/30 bg-amber-500/[0.04] px-3 py-2 text-xs text-foreground focus:outline-none focus:border-amber-500/60 [color-scheme:light] dark:[color-scheme:dark]"
                     >
-                      <option value="">Select a year…</option>
+                      <option value="" className="bg-card text-foreground">Select a year…</option>
                       {years.map((y) => (
-                        <option key={y} value={String(y)}>
+                        <option key={y} value={String(y)} className="bg-card text-foreground">
                           {y}
                         </option>
                       ))}

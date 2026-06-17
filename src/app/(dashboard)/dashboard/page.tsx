@@ -53,6 +53,7 @@ import type { GoalsResponse } from "@/lib/goals/types";
 import { computeLensProgress, isJourneySnapshotWorthy, journeyStageLabel } from "@/lib/journey/lens-progress";
 import { useLensProgressSync } from "@/hooks/use-lens-progress-sync";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { OrientationWalkthrough } from "@/components/onboarding/orientation-walkthrough";
 import { RadarOnboardingWizard } from "@/components/onboarding/radar-onboarding-wizard";
@@ -377,6 +378,7 @@ function DidYouKnowCard() {
 export default function DashboardPage() {
   const { data: session, status } = useSession();
   const t = useTranslations();
+  const router = useRouter();
   const { getAllCareers } = useCareerCatalog();
   // Onboarding walkthrough
   const [showOnboardingWizard, setShowOnboardingWizard] = useState(false);
@@ -802,6 +804,10 @@ export default function DashboardPage() {
           setShowRadarWizard(false);
           dismissedRef.current = true;
           refetchOnboarding();
+          // Hand the new user straight to the Career Radar so they can act on
+          // the preferences they just set and pick a career — rather than
+          // landing back on the dashboard with nothing to do yet.
+          router.push("/careers/radar");
         }}
       />
 
