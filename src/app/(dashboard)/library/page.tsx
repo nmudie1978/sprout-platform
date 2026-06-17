@@ -164,26 +164,28 @@ const LENS_STYLE: Record<
   ReflectionLens,
   { text: string; dot: string; glow: string; panelBorder: string; panelBg: string }
 > = {
+  // Colours match the My Journey phase tabs exactly: Discover = teal,
+  // Understand = blue, Clarity = orange (see the `tabs` array in my-journey).
   discover: {
-    text: "text-sky-400",
-    dot: "bg-sky-400",
-    glow: "shadow-[0_0_10px_1px_rgba(56,189,248,0.45)]",
-    panelBorder: "border-sky-400/60",
-    panelBg: "bg-sky-400/[0.06]",
+    text: "text-teal-400",
+    dot: "bg-teal-400",
+    glow: "shadow-[0_0_10px_1px_rgba(45,212,191,0.45)]",
+    panelBorder: "border-teal-400/60",
+    panelBg: "bg-teal-400/[0.06]",
   },
   understand: {
-    text: "text-violet-400",
-    dot: "bg-violet-400",
-    glow: "shadow-[0_0_10px_1px_rgba(167,139,250,0.45)]",
-    panelBorder: "border-violet-400/60",
-    panelBg: "bg-violet-400/[0.06]",
+    text: "text-blue-400",
+    dot: "bg-blue-400",
+    glow: "shadow-[0_0_10px_1px_rgba(96,165,250,0.45)]",
+    panelBorder: "border-blue-400/60",
+    panelBg: "bg-blue-400/[0.06]",
   },
   clarity: {
-    text: "text-emerald-400",
-    dot: "bg-emerald-400",
-    glow: "shadow-[0_0_10px_1px_rgba(52,211,153,0.45)]",
-    panelBorder: "border-emerald-400/60",
-    panelBg: "bg-emerald-400/[0.06]",
+    text: "text-orange-500",
+    dot: "bg-orange-500",
+    glow: "shadow-[0_0_10px_1px_rgba(249,115,22,0.45)]",
+    panelBorder: "border-orange-500/60",
+    panelBg: "bg-orange-500/[0.06]",
   },
 };
 
@@ -288,7 +290,7 @@ function ReflectionsTab() {
           <div className="relative px-3 py-2">
             <div
               aria-hidden
-              className="absolute left-[26px] top-4 bottom-4 w-0.5 rounded bg-gradient-to-b from-sky-400 via-violet-400 to-emerald-400 opacity-40"
+              className="absolute left-[26px] top-4 bottom-4 w-0.5 rounded bg-gradient-to-b from-teal-400 via-blue-400 to-orange-500 opacity-40"
             />
             <div className="space-y-0.5">
               {group.entries.map((e) => {

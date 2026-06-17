@@ -336,7 +336,7 @@ function FullscreenRoadmap({ goalTitle, onClose }: { goalTitle: string; onClose:
         </button>
       </div>
       <div className="flex-1 overflow-auto p-6">
-        <PersonalCareerTimeline primaryGoalTitle={goalTitle} />
+        <PersonalCareerTimeline primaryGoalTitle={goalTitle} fitToWidth />
       </div>
     </motion.div>
   );
@@ -2651,6 +2651,16 @@ function ClarityTab({ goalTitle, career }: { goalTitle: string | null; career: C
                   title: `People in ${career.title} roles`,
                   descriptor: 'Find professionals on LinkedIn and read their journeys',
                   url: `https://www.linkedin.com/search/results/people/?keywords=${encodeURIComponent(career.title)}`,
+                },
+                // Professional body — works for any career via a public
+                // search, so there's no per-career data to maintain. Points
+                // to the field's association: standards, training routes and
+                // membership are a concrete, calm next move (not a study path).
+                {
+                  icon: Building2, color: 'text-orange-400',
+                  title: `Professional body for ${career.title}`,
+                  descriptor: 'Find the field’s association — standards, training routes and membership',
+                  url: `https://www.google.com/search?q=${encodeURIComponent(`${career.title} professional association OR professional body`)}`,
                 },
               ];
               // Hide a suggestion once it's already been added to the

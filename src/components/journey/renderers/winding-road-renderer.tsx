@@ -14,7 +14,7 @@
  * subject-alignment gate, year stamps, scenario overrides and read-only mode.
  */
 
-import { useMemo, type ReactNode } from 'react';
+import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { type JourneyItem, STAGE_CONFIG } from '@/lib/journey/career-journey-types';
 import { cn } from '@/lib/utils';
 import type { RendererProps } from './types';
@@ -61,7 +61,7 @@ function buildRoadPath(points: Pt[]): string {
 }
 
 export function WindingRoadRenderer(props: RendererProps) {
-  const { onItemClick, onProgressCycle, readOnly, cardDataMap } = props;
+  const { onItemClick, onProgressCycle, readOnly, cardDataMap, fitToWidth } = props;
   const {
     items,
     foundationItem,
@@ -124,10 +124,49 @@ export function WindingRoadRenderer(props: RendererProps) {
 
   const canvasWidth = coda ? Math.max(totalWidth, coda.rightEdge) : totalWidth;
 
+  // Fit-to-width — in the fullscreen overlay the whole road should fit one
+  // screen rather than scroll sideways. Measure the available width and scale
+  // the fixed-width canvas down to fit (never up, so short roadmaps stay 1×).
+  const fitRef = useRef<HTMLDivElement>(null);
+  const [fitScale, setFitScale] = useState(1);
+  useEffect(() => {
+    // fitScale is only read when fitToWidth is on, so no reset is needed off.
+    if (!fitToWidth) return;
+    const el = fitRef.current;
+    if (!el) return;
+    const measure = () => {
+      const avail = el.clientWidth;
+      setFitScale(avail > 0 ? Math.min(1, avail / canvasWidth) : 1);
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [fitToWidth, canvasWidth]);
+
   return (
     <div className="-mx-2 px-2 pb-4">
-      <div className="overflow-x-auto">
-        <div className="relative" style={{ width: canvasWidth, height: CANVAS_H }}>
+      <div ref={fitRef} className={fitToWidth ? undefined : 'overflow-x-auto'}>
+        <div
+          style={
+            fitToWidth
+              ? { width: canvasWidth * fitScale, height: CANVAS_H * fitScale }
+              : undefined
+          }
+        >
+        <div
+          className="relative"
+          style={
+            fitToWidth
+              ? {
+                  width: canvasWidth,
+                  height: CANVAS_H,
+                  transform: `scale(${fitScale})`,
+                  transformOrigin: 'top left',
+                }
+              : { width: canvasWidth, height: CANVAS_H }
+          }
+        >
           <svg
             className="pointer-events-none absolute inset-0"
             width={canvasWidth}
@@ -293,6 +332,7 @@ export function WindingRoadRenderer(props: RendererProps) {
               )}
             </>
           )}
+        </div>
         </div>
       </div>
     </div>
