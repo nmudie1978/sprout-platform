@@ -17,12 +17,10 @@ import path from "path";
  * A standalone, on-brand PDF for interest groups (schools, youth
  * organisations, funders, partners). Served as a download from /api/whitepaper.
  *
- * FONT NOTE: the repo's public/fonts/Inter-*.ttf are the Inter *variable*
- * font, which @react-pdf cannot subset (renders blank glyphs). So this doc
- * uses the static Poppins-SemiBold for headings/brand and the engine's
- * built-in Helvetica for body text — both render reliably. (Replacing the
- * variable Inter with static instances would let the wider report stack use
- * Inter again; tracked separately.)
+ * Brand fonts: Poppins-SemiBold for headings, Inter for body — the same
+ * pairing the app uses. public/fonts/Inter-*.ttf are now the official STATIC
+ * Inter build, which @react-pdf renders correctly (the old variable build
+ * rendered blank).
  */
 
 let fontsRegistered = false;
@@ -33,6 +31,13 @@ function registerFontsOnce() {
   Font.register({
     family: "Poppins",
     fonts: [{ src: path.join(fontsDir, "Poppins-SemiBold.ttf"), fontWeight: 600 }],
+  });
+  Font.register({
+    family: "Inter",
+    fonts: [
+      { src: path.join(fontsDir, "Inter-Regular.ttf"), fontWeight: 400 },
+      { src: path.join(fontsDir, "Inter-Medium.ttf"), fontWeight: 500 },
+    ],
   });
   Font.registerHyphenationCallback((w) => [w]);
 }
@@ -52,8 +57,7 @@ const C = {
   coverMuted: "#94A3B8",
 };
 
-// Headings use Poppins (static, brand). Body omits fontFamily on purpose →
-// the engine's built-in Helvetica, which always renders.
+// Headings use Poppins (brand display); body uses Inter (brand body).
 const POPPINS = { fontFamily: "Poppins", fontWeight: 600 as const };
 
 const s = StyleSheet.create({
@@ -62,6 +66,7 @@ const s = StyleSheet.create({
     paddingTop: 54,
     paddingBottom: 56,
     paddingHorizontal: 52,
+    fontFamily: "Inter",
     fontSize: 10.5,
     lineHeight: 1.6,
     color: C.body,
@@ -71,7 +76,7 @@ const s = StyleSheet.create({
   h2: { ...POPPINS, fontSize: 13.5, color: C.ink, marginBottom: 6 },
   eyebrow: { ...POPPINS, fontSize: 8.5, letterSpacing: 1.2, textTransform: "uppercase", color: C.accent, marginBottom: 5 },
   body: { fontSize: 10.5, color: C.body, lineHeight: 1.62, marginBottom: 8 },
-  strong: { fontWeight: 700, color: C.ink },
+  strong: { fontFamily: "Inter", fontWeight: 500, color: C.ink },
   accentBar: { height: 2.5, width: 40, backgroundColor: C.accent, marginTop: 8, marginBottom: 14 },
   rule: { height: 0.75, backgroundColor: C.hairline, marginVertical: 14 },
   bullet: { flexDirection: "row", marginBottom: 5 },
@@ -140,7 +145,7 @@ export function WhitepaperDocument() {
               Helping young people figure out their future.
             </Text>
             <View style={{ height: 3, width: 56, backgroundColor: C.coverAccent, marginTop: 20, marginBottom: 20 }} />
-            <Text style={{ fontSize: 12, color: C.coverMuted, lineHeight: 1.6, maxWidth: 420 }}>
+            <Text style={{ fontFamily: "Inter", fontSize: 12, color: C.coverMuted, lineHeight: 1.6, maxWidth: 420 }}>
               A calm, safe, privacy-first platform for exploring careers and building real
               direction — youth-first, and open to anyone 15 or older.
             </Text>
@@ -148,7 +153,7 @@ export function WhitepaperDocument() {
 
           <View style={{ position: "absolute", bottom: 52, left: 52, right: 52 }}>
             <View style={{ height: 0.75, backgroundColor: C.coverMuted, opacity: 0.3, marginBottom: 12 }} />
-            <Text style={{ fontSize: 8.5, color: C.coverMuted }}>
+            <Text style={{ fontFamily: "Inter", fontSize: 8.5, color: C.coverMuted }}>
               Not a jobs marketplace · No ads · No in-app payments · GDPR by design
             </Text>
           </View>
