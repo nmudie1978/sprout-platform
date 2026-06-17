@@ -59,4 +59,11 @@ export interface RendererProps {
    * against the ≤6 step cap (it's a projection, not a journey step).
    */
   evolutionTail?: RoleEvolutionTail | null;
+  /**
+   * Fit-to-width mode (used by the fullscreen roadmap overlay). When true the
+   * Winding Road scales its fixed-width canvas down so the whole road fits the
+   * available width with no horizontal scroll. Capped at 1× — short roadmaps
+   * are never enlarged. Renderers that don't support it ignore the flag.
+   */
+  fitToWidth?: boolean;
 }

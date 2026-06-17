@@ -38,6 +38,12 @@ interface PersonalCareerTimelineProps {
    * the parent (Clarity tab) can attach to a "Play Journey" button.
    */
   onSimulationReady?: (controls: { play: () => void }) => void;
+  /**
+   * When true, the roadmap renderer scales to fit the available width instead
+   * of scrolling sideways. Set by the fullscreen overlay so the whole road
+   * fits one screen.
+   */
+  fitToWidth?: boolean;
 }
 
 const RENDERERS = {
@@ -45,7 +51,7 @@ const RENDERERS = {
   'stepping-stones': SteppingStonesRenderer,
 } as const;
 
-export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney, readOnly = false, onSimulationReady }: PersonalCareerTimelineProps) {
+export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney, readOnly = false, onSimulationReady, fitToWidth }: PersonalCareerTimelineProps) {
   const [selectedItem, setSelectedItem] = useState<JourneyItem | null>(null);
   const [saveVersion, setSaveVersion] = useState(0);
   // Report dialog open state — declared with the other top-level hooks so it
@@ -746,6 +752,7 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney, read
           onProgressCycle={handleProgressCycle}
           careerTitle={primaryGoalTitle ?? undefined}
           readOnly={readOnly || simState.isPlaying}
+          fitToWidth={fitToWidth}
           showYears={showYears}
           birthYear={userAge != null ? new Date().getFullYear() - userAge : undefined}
           simulation={
