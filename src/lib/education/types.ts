@@ -7,13 +7,17 @@
 
 // ── Education Stage ──────────────────────────────────────────────────
 
-export type EducationStage = 'school' | 'college' | 'university' | 'other';
+export type EducationStage = 'school' | 'college' | 'university' | 'other' | 'between';
 
 export const EDUCATION_STAGE_CONFIG: Record<EducationStage, { label: string; ageBand: string }> = {
   school: { label: 'School', ageBand: '15–18' },
   college: { label: 'College', ageBand: '16–19' },
   university: { label: 'University', ageBand: '18–23' },
   other: { label: 'Self-directed', ageBand: '' },
+  // Not currently working or studying (between roles / a break / job-seeking).
+  // Roadmap-wise treated like 'other' (build from entry), just without a
+  // current role to leverage.
+  between: { label: 'Not working right now', ageBand: '' },
 };
 
 // ── Subject Alignment ────────────────────────────────────────────────

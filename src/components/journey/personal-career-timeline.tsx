@@ -531,12 +531,6 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney, read
               </span>
             </>
           )}
-          {isPreliminary && (
-            <span className="ml-2 inline-flex items-center gap-1 text-foreground/55">
-              <RefreshCw className="h-3 w-3 animate-spin" />
-              <span className="text-[10px]">Personalising...</span>
-            </span>
-          )}
         </button>
         <div className="flex items-center gap-2">
           {/* Play Journey — inline play button. Gated on foundation:
@@ -612,6 +606,23 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney, read
           eduLabel={eduLabel}
           onClose={() => setReportOpen(false)}
         />
+      )}
+
+      {/* Personalising banner — a clear, centred cue that the roadmap is being
+          recalculated for the user (e.g. right after they save their starting
+          point). Shown while the AI-personalised version loads over the
+          instantly-rendered fallback, and disappears on its own once ready. */}
+      {isPreliminary && (
+        <div className="mb-3 flex justify-center">
+          <div
+            role="status"
+            aria-live="polite"
+            className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-1.5 text-xs font-medium text-primary shadow-sm"
+          >
+            <RefreshCw className="h-3.5 w-3.5 animate-spin" />
+            Personalising your roadmap…
+          </div>
+        </div>
       )}
 
       {/* Roadmap */}

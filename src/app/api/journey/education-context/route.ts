@@ -43,7 +43,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'stage and currentSubjects are required' }, { status: 400 });
   }
 
-  const validStages = ['school', 'college', 'university', 'other'];
+  const validStages = ['school', 'college', 'university', 'other', 'between'];
   if (!validStages.includes(stage)) {
     return NextResponse.json({ error: 'Invalid education stage' }, { status: 400 });
   }
