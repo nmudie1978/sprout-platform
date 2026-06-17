@@ -554,7 +554,7 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney, read
               className={cn(
                 "inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-[10px] font-semibold transition-colors disabled:opacity-30",
                 hasFoundation
-                  ? "bg-amber-500/15 border-amber-500/30 text-amber-300 hover:bg-amber-500/25"
+                  ? "bg-amber-500/20 border-amber-500/50 text-amber-700 hover:bg-amber-500/30 dark:bg-amber-500/15 dark:border-amber-500/30 dark:text-amber-300 dark:hover:bg-amber-500/25"
                   : "bg-muted/30 border-border/40 text-muted-foreground/60 hover:bg-muted/40"
               )}
               title={hasFoundation ? "Play a voice-guided narration of your roadmap" : "Fill in your starting point first to unlock Play"}
