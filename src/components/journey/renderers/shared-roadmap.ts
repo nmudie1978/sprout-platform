@@ -50,11 +50,10 @@ export function useRoadmapModel(props: RendererProps) {
   const schoolTrack = journey.schoolTrack;
   const firstSchool = schoolTrack && schoolTrack.length > 0 ? schoolTrack[0] : null;
 
-  const { foundationItem, subjectHint, foundationEmpty } = useFoundationData({
+  const { foundationItem, subjectHint, foundationEmpty, foundationSubjects } = useFoundationData({
     careerTitle,
     userAge,
     journeyStartAge: journey.startAge,
-    extraSubjects: firstSchool?.subjects,
   });
   const foundationStatus = cardDataMap?.[FOUNDATION_ITEM_ID]?.status;
   const foundationState: StepState = foundationStatus === 'done' ? 'completed' : 'current';
@@ -123,6 +122,7 @@ export function useRoadmapModel(props: RendererProps) {
     foundationStatus,
     foundationState,
     foundationEmpty,
+    foundationSubjects,
     youAreHereIndex,
     computedSteps,
     educationIndex,

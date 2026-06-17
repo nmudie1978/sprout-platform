@@ -64,11 +64,11 @@ export function WindingRoadRenderer(props: RendererProps) {
   const { onItemClick, onProgressCycle, readOnly, cardDataMap } = props;
   const {
     items,
-    firstSchool,
     foundationItem,
     foundationStatus,
     foundationState,
     foundationEmpty,
+    foundationSubjects,
     computedSteps,
     educationIndex,
     alignmentGate,
@@ -234,7 +234,7 @@ export function WindingRoadRenderer(props: RendererProps) {
             onProgressCycle={
               onProgressCycle && !readOnly ? () => onProgressCycle(FOUNDATION_ITEM_ID) : undefined
             }
-            subjects={firstSchool?.subjects}
+            subjects={foundationSubjects}
           />
 
           {/* Journey items */}

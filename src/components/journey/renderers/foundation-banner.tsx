@@ -54,20 +54,12 @@ interface UseFoundationDataOptions {
   careerTitle?: string;
   userAge?: number;
   journeyStartAge: number;
-  /**
-   * Extra subjects to consider alongside the profile's education
-   * context — typically `journey.schoolTrack[0].subjects`. We merge
-   * them in so the alignment gate matches the subjects visibly
-   * displayed on the Starting Point card.
-   */
-  extraSubjects?: string[];
 }
 
 export function useFoundationData({
   careerTitle,
   userAge,
   journeyStartAge,
-  extraSubjects,
 }: UseFoundationDataOptions) {
   const { data: eduData } = useQuery<{ educationContext: EducationContext | null }>({
     queryKey: ['education-context'],
@@ -92,14 +84,17 @@ export function useFoundationData({
       if (subjects.some((ex) => ex.toLowerCase() === trimmed.toLowerCase())) return;
       subjects.push(trimmed);
     };
+    // ONLY the user's own subjects drive the alignment gate — never the
+    // career's recommended subjects (those aren't the user's choices, so
+    // aligning them against the career is meaningless and misleading).
     for (const s of eduContext?.currentSubjects || []) add(s);
     if (eduContext?.studyProgram) {
       for (const p of eduContext.studyProgram.split(/[,;/&+]+/)) add(p);
     }
-    for (const s of extraSubjects || []) add(s);
-    if (subjects.length === 0 && !eduContext) return null;
+    // No subjects entered → no alignment gate (nothing of the user's to align).
+    if (subjects.length === 0) return null;
     return calculateSubjectAlignment(subjects, careerTitle);
-  }, [eduContext, careerTitle, userAge, extraSubjects]);
+  }, [eduContext, careerTitle, userAge]);
 
   const foundationItem: JourneyItem = useMemo(() => ({
     id: FOUNDATION_ITEM_ID,
@@ -117,9 +112,21 @@ export function useFoundationData({
     microActions: FOUNDATION_MICRO_ACTIONS[eduContext?.stage ?? 'school'],
   }), [eduContext, userAge, journeyStartAge]);
 
-  // "Not filled in yet" — no saved education context. Drives the attention
-  // glow on the Starting Point card until the user adds their details.
-  const foundationEmpty = !eduContext;
+  // The user's OWN subjects (what they've told us they study) — drives the
+  // "Subjects" badge on the Starting Point card. Never the career's
+  // recommended subjects.
+  const foundationSubjects = eduContext?.currentSubjects ?? [];
 
-  return { eduContext, subjectHint, foundationItem, foundationEmpty };
+  // "Not filled in yet" — drives the attention glow + guidance prompt on the
+  // Starting Point card. Robust: an education context that carries only a
+  // default stage (no school, no subjects, no programme) still counts as
+  // EMPTY, because the user hasn't actually told us anything about their
+  // starting point. Clears automatically once real details are saved.
+  const foundationEmpty =
+    !eduContext ||
+    (!eduContext.schoolName?.trim() &&
+      foundationSubjects.length === 0 &&
+      !eduContext.studyProgram?.trim());
+
+  return { eduContext, subjectHint, foundationItem, foundationEmpty, foundationSubjects };
 }
