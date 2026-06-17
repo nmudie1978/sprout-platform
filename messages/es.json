@@ -347,7 +347,7 @@
       "closer": "Sin tests. Sin presión. Solo claridad.",
       "audience": "Endeavrly está pensado para jóvenes — la mayoría de quienes exploran tienen entre 15 y 23 años. Pero si estás decidiendo hacia dónde ir, a cualquier edad, este también es tu sitio. El único requisito es tener 15 años o más.",
       "cta": "Empieza su camino",
-      "ctaSecondary": "Explora carreras gratis",
+      "ctaSecondary": "Explora carreras",
       "trust": "Diseñado para jóvenes de 15 a 23 años que buscan su rumbo, y igual de útil a cualquier edad si estás pensando en cambiar. Sin anuncios, sin presión, solo claridad.",
       "tagline": "El sistema operativo de carreras para jóvenes."
     },
@@ -379,8 +379,8 @@
     },
     "cta": {
       "title": "Empieza.",
-      "subtitle": "Gratis. Sin tarjeta de crédito. Sin compromisos.",
-      "button": "Regístrate gratis"
+      "subtitle": "Sin presión. Sin compromisos.",
+      "button": "Regístrate"
     }
   },
   "footer": {

@@ -347,7 +347,7 @@
       "closer": "No quizzes. No pressure. Just clarity.",
       "audience": "Endeavrly is built around young people — most of our explorers are 15 to 23. But if you're working out where to go next at any age, you're welcome here just the same. The only requirement is being 15 or over.",
       "cta": "Start their journey",
-      "ctaSecondary": "Explore careers free",
+      "ctaSecondary": "Explore careers",
       "trust": "Built for 15–23 year olds finding their direction — and just as useful at any age if you're exploring a change. No ads, no pressure, just clarity.",
       "tagline": "The Career Operating System for young people."
     },
@@ -379,8 +379,8 @@
     },
     "cta": {
       "title": "Get started.",
-      "subtitle": "Free. No credit card. No commitments.",
-      "button": "Sign up free"
+      "subtitle": "No pressure. No commitments.",
+      "button": "Sign up"
     }
   },
   "footer": {
