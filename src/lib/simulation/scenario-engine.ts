@@ -325,19 +325,30 @@ export function buildScenarioOverlay(
   for (let i = 0; i < items.length; i++) {
     const title = items[i].title.toLowerCase();
 
-    // University steps — attach university + city.
+    // Self-employment steps ("establish your own brand / business / studio")
+    // name no employer — it's the user's own venture — so skip them entirely.
+    if (/establish|own (brand|business|studio|practice|company|restaurant)|start (a|your own)|freelance|self-employ|go solo/i.test(title)) {
+      continue;
+    }
+
+    // Education / training steps — attach the institution (e.g. the Norwegian
+    // culinary school). Broadened well beyond "university/degree" so vocational
+    // routes get named too: courses, training, apprenticeships, fagbrev,
+    // certificates, diplomas, college/school study, culinary/cooking school.
     if (
-      /apply.*universit|begin.*universit|start.*degree|apply.*studi|complete.*graduation|graduate|earn.*degree|finish.*degree|complete.*degree/i.test(
+      /universit|degree|graduate|studi|cours|training|apprentic|fagbrev|certificat|diploma|qualif|college|culinary|cooking school|trade school|vocational|enrol|complete.*(school|programme|program)/i.test(
         title,
       )
     ) {
       overrides.set(i, universityLabel);
     } else if (
-      /apply.*entry|apply.*role|apply.*job|apply.*intern|accept.*entry|accept.*role|start.*first|begin.*first/i.test(
+      // Work steps — attach the employer + city. Covers the first role AND
+      // later progression (advance / senior / promotion / lead) so a real
+      // Norwegian company is named across more of the journey, not just entry.
+      /entry|first (role|job)|intern|trainee|apprentice|junior|begin.*(role|job|work)|land.*role|start.*(role|job|career)|advance|senior|promot|lead|progress|experienced|specialis/i.test(
         title,
       )
     ) {
-      // Employer steps — attach employer + city.
       overrides.set(i, employerLabel);
     }
   }
