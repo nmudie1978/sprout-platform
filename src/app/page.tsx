@@ -469,45 +469,6 @@ export default async function LandingPage() {
       </section>
 
       {/* ============================================ */}
-      {/* SECTION 5c — BUILT BY (provenance)             */}
-      {/* Pre-launch, solo-built. Saying so openly is more                */}
-      {/* trust-building than fake testimonials.                          */}
-      {/* ============================================ */}
-      <section className="border-t border-slate-800/60">
-        <div className="mx-auto max-w-3xl px-5 py-20 sm:py-24">
-          <p className="text-[11px] font-medium uppercase tracking-[0.2em] text-neutral-600 mb-4 text-center">
-            Built by
-          </p>
-          <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-white text-center mb-10">
-            A solo builder, not a startup
-          </h2>
-          <div className="space-y-5 text-[15px] leading-relaxed text-neutral-400">
-            <p>
-              Endeavrly is being built by one person &mdash; a Scottish
-              father of three boys, 25 years in telecoms, no funding and
-              no users yet. This is an MVP in active development, not a
-              shipped product.
-            </p>
-            <p>
-              No pilot schools yet. No testimonials from real teenagers yet.
-              No claims of outcomes we can&rsquo;t back up. Those come once
-              the guardrails are finished and the first cohort has actually
-              used it. We&rsquo;d rather tell you the truth than manufacture
-              proof.
-            </p>
-            <p>
-              If you&rsquo;re a parent, teacher, careers counsellor or young
-              person who&rsquo;d like to shape what Endeavrly becomes,{" "}
-              <Link href="/feedback" className="text-emerald-400 hover:text-emerald-300 transition-colors">
-                get in touch
-              </Link>
-              .
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* ============================================ */}
       {/* SECTION 6 — CLOSING CTA */}
       {/* ============================================ */}
       <section className="border-t border-slate-800/60">
