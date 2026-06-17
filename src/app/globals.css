@@ -13,9 +13,9 @@
        Dark mode (.dark) is the app DEFAULT and is left untouched. */
     --background: 189 40% 72%;          /* X · Decent — airy pale-teal paper canvas */
     --foreground: 200 30% 18%;          /* deep teal-slate ink, never harsh black */
-    --card: 0 0% 100%;                  /* pure-white surface — sits crisply on the airy wash */
+    --card: 186 36% 92%;                /* soft green-blue surface — tinted, never white, lifts off the canvas */
     --card-foreground: 200 30% 18%;
-    --popover: 0 0% 100%;
+    --popover: 186 36% 93%;             /* matching green-blue popover surface */
     --popover-foreground: 200 30% 18%;
     --primary: 178 69% 29%;             /* #177D7A — grounded teal brand (retained) */
     --primary-foreground: 0 0% 100%;
@@ -33,8 +33,8 @@
     --info: 205 21% 37%;                /* #4A6172 — warm slate (DS "secondary") */
     --destructive: 0 72% 50%;           /* calm danger */
     --destructive-foreground: 0 0% 100%;
-    --border: 189 20% 82%;              /* soft pale-teal border */
-    --input: 189 20% 82%;
+    --border: 186 24% 72%;              /* defined teal border so tinted cards stay clearly separated */
+    --input: 186 24% 74%;
     --ring: 178 69% 29%;
     --radius: 0.75rem;
     --sidebar: 189 36% 88%;             /* pale-teal sidebar — tuned to the canvas */
@@ -108,9 +108,9 @@
      `bg-background/60` use a different generated class so they keep
      their intended translucency.
 
-     Cards and popovers are pure-white and fully opaque so they sit
-     crisply on top of the gradient (matches the X · Decent preview —
-     no frosted glass, no translucency). */
+     Cards and popovers use a soft green-blue tint (never white) so they
+     sit calmly on the teal canvas — distinct via tone + a defined border
+     rather than a stark white block. */
   :root:not(.dark) .bg-background {
     background-color: transparent;
   }
@@ -119,6 +119,13 @@
   }
   :root:not(.dark) .bg-popover {
     background-color: hsl(var(--popover));
+  }
+  /* Kill stark white in light mode: many components hardcode Tailwind's
+     `bg-white`. Remap solid white to the green-blue card tint so no surface
+     reads as a harsh white block (the owner's "no white" direction). Dark
+     mode is untouched; translucent `bg-white/NN` overlays are left alone. */
+  :root:not(.dark) .bg-white {
+    background-color: hsl(var(--card));
   }
 
   /* ── Teal-utility remap (light mode only) ────────────────────

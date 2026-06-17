@@ -18,8 +18,14 @@ export const SKILLS_CONTENT_TAG = "skills-that-matter";
  */
 export const CAREER_VIDEO_TAG = "career-video";
 
+/**
+ * Tag applied to SavedItems bookmarked from the "Worth a Look" dashboard card
+ * (verified reads from the world of work — articles, reports, the odd video).
+ */
+export const WORTH_A_LOOK_TAG = "worth-a-look";
+
 /** Tags whose SavedItems surface in the My Library "My Content" tab. */
-export const MY_CONTENT_TAGS = [SKILLS_CONTENT_TAG, CAREER_VIDEO_TAG];
+export const MY_CONTENT_TAGS = [SKILLS_CONTENT_TAG, CAREER_VIDEO_TAG, WORTH_A_LOOK_TAG];
 
 /** SavedItem types the gallery can produce (mirrors the Prisma SavedItemType). */
 export type SaveableType = "ARTICLE" | "VIDEO" | "PODCAST" | "SHORT";

@@ -19,11 +19,13 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
-import { FileText, Play, BarChart3, RefreshCw, ExternalLink } from 'lucide-react';
+import { FileText, Play, BarChart3, RefreshCw, ExternalLink, Bookmark } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useInsightsPool } from '@/hooks/use-insights-pool';
 import { deriveClusterTags } from '@/lib/insights/cluster-tags';
 import { useCareerCatalog } from '@/hooks/use-career-catalog';
+import { useToast } from '@/hooks/use-toast';
+import { WORTH_A_LOOK_TAG } from '@/lib/insights/saved-content';
 import type { PoolContentType } from '@/lib/insights/pool-types';
 
 const TYPE_ICON: Record<PoolContentType, typeof FileText> = {
@@ -57,6 +59,41 @@ function relTime(iso?: string): string | null {
 export function WorthALook({ careerIds }: { careerIds: string[] }) {
   const t = useTranslations();
   const { findCareerCategory } = useCareerCatalog();
+  const { toast } = useToast();
+
+  // Quick-save a read into My Library → My Content. Optimistic (flip the
+  // bookmark + toast immediately), tagged WORTH_A_LOOK_TAG; the server dedupes
+  // by URL so re-saving never duplicates.
+  const [savedIds, setSavedIds] = useState<Set<string>>(new Set());
+  const saveItem = useCallback(
+    async (item: { id: string; title: string; sourceUrl: string; sourceName?: string; contentType: PoolContentType }) => {
+      if (savedIds.has(item.id)) return;
+      setSavedIds((prev) => new Set(prev).add(item.id));
+      toast({ title: 'Saved to My Library' });
+      try {
+        const res = await fetch('/api/journey/saved-items', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            type: item.contentType === 'video' ? 'VIDEO' : 'ARTICLE',
+            title: item.title,
+            url: item.sourceUrl,
+            source: item.sourceName,
+            tags: [WORTH_A_LOOK_TAG],
+          }),
+        });
+        if (!res.ok) throw new Error('save failed');
+      } catch {
+        setSavedIds((prev) => {
+          const next = new Set(prev);
+          next.delete(item.id);
+          return next;
+        });
+        toast({ title: "Couldn't save", description: 'Please try again.', variant: 'destructive' });
+      }
+    },
+    [savedIds, toast],
+  );
   const tags = useMemo(
     () => deriveClusterTags(careerIds, findCareerCategory),
     [careerIds, findCareerCategory],
@@ -178,18 +215,17 @@ export function WorthALook({ careerIds }: { careerIds: string[] }) {
       </button>
 
       <ul className="divide-y divide-border/60 overflow-hidden rounded-control border border-border/60 bg-muted/10">
-        {items.map((item, idx) => {
+        {items.map((item) => {
           const Icon = TYPE_ICON[item.contentType] ?? FileText;
           const fresh = relTime(item.publishDate);
           return (
-            <li key={item.id}>
+            <li key={item.id} className="relative">
               <a
                 href={item.sourceUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className={cn(
-                  'group flex items-start gap-2 px-2.5 py-2 transition-colors hover:bg-muted/40',
-                  idx === 0 && 'pr-7',
+                  'group flex items-start gap-2 px-2.5 py-2 pr-9 transition-colors hover:bg-muted/40',
                   prefersReducedMotion ? '' : 'transition-opacity duration-300',
                 )}
               >
@@ -205,6 +241,18 @@ export function WorthALook({ careerIds }: { careerIds: string[] }) {
                 </div>
                 <ExternalLink className="h-2.5 w-2.5 shrink-0 mt-1 opacity-0 group-hover:opacity-60 transition-opacity" />
               </a>
+              {/* Quick-save — sibling of the <a> (not nested, which would be
+                  invalid) so it sits on top and saves without opening the link. */}
+              <button
+                type="button"
+                onClick={() => saveItem(item)}
+                aria-label={savedIds.has(item.id) ? `Saved: ${item.title}` : `Save ${item.title}`}
+                aria-pressed={savedIds.has(item.id)}
+                title={savedIds.has(item.id) ? 'Saved to My Library' : 'Save to My Library'}
+                className="absolute right-2 top-1/2 -translate-y-1/2 inline-flex h-6 w-6 items-center justify-center rounded-md text-muted-foreground/55 hover:bg-muted/50 hover:text-foreground transition-colors"
+              >
+                <Bookmark className={cn('h-3.5 w-3.5', savedIds.has(item.id) && 'fill-current text-primary')} />
+              </button>
             </li>
           );
         })}
