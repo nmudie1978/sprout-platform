@@ -15,6 +15,7 @@ function makeVideos(n: number): RealityVideo[] {
 }
 
 const countPlayers = () => document.querySelectorAll("iframe").length;
+const countTiles = () => screen.getAllByRole("button", { name: /^Play:/i }).length;
 
 describe("RealityVideos", () => {
   it("renders nothing when there are no videos", () => {
@@ -22,27 +23,35 @@ describe("RealityVideos", () => {
     expect(container).toBeEmptyDOMElement();
   });
 
-  it("shows all videos and no 'show more' when there are 3 or fewer", () => {
+  it("renders every video in the pool as a tile (carousel, no 'show more')", () => {
+    render(<RealityVideos videos={makeVideos(8)} />);
+    expect(countTiles()).toBe(8);
+    expect(
+      screen.queryByRole("button", { name: /show .* more/i }),
+    ).not.toBeInTheDocument();
+  });
+
+  it("does not mount any player until a tile is clicked (lightweight thumbnails)", () => {
     render(<RealityVideos videos={makeVideos(3)} />);
-    expect(countPlayers()).toBe(3);
-    expect(screen.queryByRole("button", { name: /show .* more/i })).not.toBeInTheDocument();
+    expect(countPlayers()).toBe(0);
   });
 
-  it("shows only the first 3 and a 'show 5 more' button for a pool of 8", () => {
-    render(<RealityVideos videos={makeVideos(8)} />);
-    expect(countPlayers()).toBe(3);
-    expect(screen.getByRole("button", { name: /show 5 more videos/i })).toBeInTheDocument();
+  it("mounts a player only for the clicked video", () => {
+    render(<RealityVideos videos={makeVideos(3)} />);
+    fireEvent.click(screen.getByRole("button", { name: /play: reality video 1/i }));
+    const frames = Array.from(document.querySelectorAll("iframe"));
+    expect(frames).toHaveLength(1);
+    expect(frames[0].getAttribute("src")).toContain("vid1");
   });
 
-  it("reveals the rest of the pool when 'show more' is clicked, then hides the button", () => {
-    render(<RealityVideos videos={makeVideos(8)} />);
-    fireEvent.click(screen.getByRole("button", { name: /show 5 more videos/i }));
-    expect(countPlayers()).toBe(8);
-    expect(screen.queryByRole("button", { name: /show .* more/i })).not.toBeInTheDocument();
-  });
-
-  it("uses singular 'video' when exactly one more is hidden", () => {
+  it("shows carousel nav arrows when there is more than one video", () => {
     render(<RealityVideos videos={makeVideos(4)} />);
-    expect(screen.getByRole("button", { name: /show 1 more video$/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /previous videos/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /more videos/i })).toBeInTheDocument();
+  });
+
+  it("hides the nav arrows when there is only one video", () => {
+    render(<RealityVideos videos={makeVideos(1)} />);
+    expect(screen.queryByRole("button", { name: /previous videos/i })).not.toBeInTheDocument();
   });
 });

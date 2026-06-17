@@ -271,6 +271,36 @@ async function searchYouTube(query: string, apiKey: string, career: string): Pro
   }
 }
 
+// Keep only videos that can actually be played in our embedded player.
+// YouTube's search.list does NOT report embeddability, so a video whose owner
+// has disabled off-site playback (status.embeddable === false) or that isn't
+// public sails through and renders as "Video unavailable" in the iframe. One
+// videos.list?part=status call (1 quota unit, up to 50 ids) tells us which ids
+// are safe to show. On any API hiccup we fail OPEN — returning the original
+// list rather than blanking the section — and let the player degrade as before.
+async function filterEmbeddable(videoIds: string[], apiKey: string): Promise<Set<string>> {
+  if (videoIds.length === 0) return new Set();
+  try {
+    const url = `https://www.googleapis.com/youtube/v3/videos?part=status&id=${videoIds
+      .slice(0, 50)
+      .join(',')}&key=${apiKey}`;
+    const res = await fetch(url, { cache: 'no-store' });
+    if (!res.ok) return new Set(videoIds); // fail open
+    const data = await res.json();
+    const playable = new Set<string>();
+    for (const item of data.items ?? []) {
+      const id = item.id as string | undefined;
+      const status = item.status as { embeddable?: boolean; privacyStatus?: string } | undefined;
+      if (id && status?.embeddable === true && status.privacyStatus !== 'private') {
+        playable.add(id);
+      }
+    }
+    return playable;
+  } catch {
+    return new Set(videoIds); // fail open
+  }
+}
+
 // The Understand-tab "Reality" UI shows 3 videos side by side and lets the
 // user reveal the rest on demand, so we return a pool rather than just the
 // top 1–2. Generated once per career and cached, so the extra YouTube reads
@@ -312,11 +342,18 @@ async function findBestVideos(career: string): Promise<RealityVideo[]> {
   // Sort by score descending
   candidates.sort((a, b) => b.score - a.score);
 
+  // Drop anything that can't be embedded (owner disabled off-site playback,
+  // private, etc.) so the UI never shows a dead "Video unavailable" tile. Done
+  // after scoring/sorting but before the pool slice, so non-playable leads
+  // don't crowd out playable clips. Fails open if the status call errors.
+  const playable = await filterEmbeddable(candidates.map(c => c.videoId), apiKey);
+  const embeddable = candidates.filter(c => playable.has(c.videoId));
+
   // Build a pool of up to REALITY_VIDEO_POOL videos: the UI shows 3 and lets
   // the user reveal the rest on demand. All candidates have already passed the
   // rejection + country filters; we keep them ordered by score so the strongest
   // reality clips lead and weaker (but still on-topic) ones fill the pool.
-  const selected = candidates.slice(0, REALITY_VIDEO_POOL);
+  const selected = embeddable.slice(0, REALITY_VIDEO_POOL);
 
   // Diversify the lead pair by video type when possible, so the first two
   // shown aren't both (e.g.) "harsh_truth".
@@ -432,11 +469,10 @@ export async function GET(req: NextRequest) {
   const career = new URL(req.url).searchParams.get('career');
   if (!career) return NextResponse.json({ error: 'Missing career parameter' }, { status: 400 });
 
-  // v3: added reject patterns for "[Career] Reacts" format and
-  // medical/health content (weight, diagnosis, patient cases) that
-  // aren't about the career itself. Bumps version to invalidate stale
-  // cached entries that passed the old filters.
-  const cacheKey = `career-reality:v3:${career.toLowerCase().trim()}`;
+  // v4: now drops non-embeddable videos (owner disabled off-site playback /
+  // private) that previously rendered as "Video unavailable". Bumping the
+  // version invalidates v3 entries that may still hold those dead videos.
+  const cacheKey = `career-reality:v4:${career.toLowerCase().trim()}`;
 
   // Check DB cache
   try {
