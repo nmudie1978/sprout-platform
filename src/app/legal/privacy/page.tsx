@@ -105,9 +105,15 @@ export default function PrivacyPolicyPage() {
               Endeavrly is for people aged 15 and older and is privacy-by-design: we collect only
               the minimal personal data needed to operate a career-exploration service, do not run
               tracking ads or behavioural profiling, and have no messaging or marketplace features.
-              We process minors&apos; data on this minimised basis and apply GDPR safeguards (data
-              minimisation, the rights below, and parental access on request). The lawful basis for
-              processing the data of under-16s is being kept under legal review.
+              Because our minimum age is 15, every user is at or above Norway&apos;s digital-consent
+              age of 13 (Personal Data Act &sect;5, implementing GDPR Art. 8) and can therefore
+              provide their own consent for online services. We process minors&apos; data on the same
+              minimised basis as all users: performance of our contract with you (Art. 6(1)(b)) for
+              the core career-exploration service, your consent (Art. 6(1)(a)) for optional
+              AI-personalisation features, and our legitimate interests (Art. 6(1)(f)) for security
+              &mdash; together with the GDPR safeguards described here (data minimisation, the rights
+              below, and parental access on request). A Data Protection Impact Assessment covering
+              this processing is maintained on file by Endeavrly AS.
             </p>
           </section>
 
