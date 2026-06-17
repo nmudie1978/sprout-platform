@@ -254,9 +254,11 @@ export async function POST(req: NextRequest) {
       ? ` This career is a VOCATIONAL (yrkesfag / fagbrev) path in Norway. DO NOT include a bachelor's or master's degree. The correct shape is: Vg1 at age ${Math.max(userAge, 16)}, Vg2 specialisation at 17, 2-year apprenticeship (læretid) starting at 18, fagprøve + fagbrev at ~20, first qualified role at 20-21, senior/own business at ~25. Total roadmap ~9 years from 16 to ~25, not 11+ years.`
       : careerRoute === 'mixed'
         ? ' This career has BOTH a vocational (fagbrev) AND a university (degree) route in Norway. Default to the degree route in the main timeline, but include one step describing the vocational alternative ("Some people take the fagbrev route instead — ~2 years shorter, enters the workforce at ~20 rather than 22").'
-        : careerRoute === 'on-the-job'
-          ? ' This career does NOT require a specific formal qualification in Norway. DO NOT force Videregående completion as a blocker. Include a short "Finish school" step for context, then move quickly to entry-level work and any certifications picked up along the way.'
-          : '';
+        : careerRoute === 'certification'
+          ? ' This career is reached through PROFESSIONAL CERTIFICATIONS / LICENCES plus logged hands-on experience — NOT an academic degree. DO NOT include a bachelor\'s, master\'s, university, or fagbrev/apprenticeship step. The correct shape is a CERTIFICATION LADDER: an entry/foundation certification first, then progressively higher certifications or ratings interleaved with logged experience hours, then the first paid qualified role, then a senior/lead or self-employed step (e.g. running your own studio or school). Keep Videregående only as brief context, not a blocker. Anchor to the user\'s current age; this is typically a shorter path that reaches a first qualified role faster than a degree.'
+          : careerRoute === 'on-the-job'
+            ? ' This career does NOT require a specific formal qualification in Norway. DO NOT force Videregående completion as a blocker. Include a short "Finish school" step for context, then move quickly to entry-level work and any certifications picked up along the way.'
+            : '';
 
     // Foundation-complete instruction — tells the AI the user has
     // already finished their current education stage, so any

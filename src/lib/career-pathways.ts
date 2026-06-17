@@ -44,13 +44,23 @@ export type SpecialistPathType = "space" | "military" | "police" | "firefighter"
  *                      (bachelor's OR vocational); photographer (degree
  *                      OR self-taught). Generator defaults to university
  *                      but documents the vocational alternative.
+ *   - "certification"— no academic degree; you qualify through professional
+ *                      certifications / licences plus logged experience.
+ *                      Scuba diving instructor, personal trainer, yoga
+ *                      teacher, ski instructor, commercial pilot, etc. The
+ *                      roadmap is a certification ladder, not a degree.
  *   - "on-the-job"   — no formal qualification expected at entry.
  *                      Shop assistant, delivery driver, etc.
  *
  * When absent, inferEducationRoute() falls back to scanning the
  * freeform educationPath string for keywords.
  */
-export type EducationRoute = "vocational" | "university" | "mixed" | "on-the-job";
+export type EducationRoute =
+  | "vocational"
+  | "university"
+  | "mixed"
+  | "certification"
+  | "on-the-job";
 
 export interface Career {
   id: string;
@@ -184,11 +194,16 @@ export function inferEducationRoute(career: Career): EducationRoute {
     /\b(bachelor|master|phd|doctorate|mba|degree|profesjonsstudium)\b/i.test(path);
   const hasVocational =
     /\b(vocational|fagbrev|apprenticeship|yrkesfag|l[æa]retid|fagskole|trade)\b/i.test(path);
+  const hasCertification =
+    /\b(certification|certificate|certified|licen[cs]e|licensed|PADI|SSI|instructor course|accreditation)\b/i.test(path);
   const hasOnTheJob = /\bon[- ]the[- ]job\b/i.test(path);
 
   if (hasUniversity && hasVocational) return "mixed";
   if (hasVocational) return "vocational";
   if (hasUniversity) return "university";
+  // No degree, but a clear professional-certification/licence signal — a
+  // certification ladder, not a degree (scuba instructor, PT, pilot, …).
+  if (hasCertification) return "certification";
   if (hasOnTheJob) return "on-the-job";
 
   // No keyword signal in the freeform path — fall back to the category's
@@ -294,6 +309,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "healthcare-worker",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Healthcare Worker",
       emoji: "🏥",
       description: "Assist patients with daily activities and basic medical care in nursing homes and hospitals.",
@@ -369,6 +386,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "paramedic",
+      educationRoute: "mixed",
+      entryRoute: "bachelor",
       title: "Paramedic",
       emoji: "🚑",
       description: "Provide emergency medical care and transport patients in ambulances.",
@@ -394,6 +413,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "veterinary-assistant",
+      educationRoute: "on-the-job",
+      entryRoute: "direct-entry",
       title: "Veterinary Assistant",
       emoji: "🐕",
       description: "Assist veterinarians with animal care, restraint, and clinic operations.",
@@ -419,6 +440,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "optician",
+      educationRoute: "mixed",
+      entryRoute: "bachelor",
       title: "Optician",
       emoji: "👓",
       description: "Fit and dispense eyeglasses and contact lenses based on prescriptions.",
@@ -503,6 +526,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "care-assistant",
+      educationRoute: "on-the-job",
+      entryRoute: "direct-entry",
       title: "Care Assistant",
       emoji: "🤲",
       description: "Support elderly and disabled people with daily living — washing, dressing, meals, medication reminders. Often the first step into healthcare; many move on to become Helsefagarbeider or Nurse.",
@@ -743,6 +768,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     // ──────────────────────────────────────────────
     {
       id: "emt",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Emergency Medical Technician",
       emoji: "🚑",
       description: "Provide first-response emergency care at the scene of accidents and illnesses, transporting patients safely to hospital.",
@@ -759,6 +786,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     // ──────────────────────────────────────────────
     {
       id: "pharmacy-technician",
+      educationRoute: "vocational",
+      entryRoute: "fagskole",
       title: "Pharmacy Technician",
       emoji: "💊",
       description: "Support pharmacists by preparing and dispensing medication, managing stock, and helping customers in pharmacies and hospitals.",
@@ -771,6 +800,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "dental-assistant",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Dental Assistant",
       emoji: "🦷",
       description: "Support dentists during treatment by preparing patients, sterilising tools, and helping with procedures in dental practices.",
@@ -799,6 +830,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "nutritionist",
+      educationRoute: "mixed",
+      entryRoute: "bachelor",
       title: "Nutritionist",
       emoji: "🥑",
       description: "Advise people on food, healthy eating, and lifestyle to improve general wellbeing and prevent disease.",
@@ -873,6 +906,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "sports-nutritionist",
+      educationRoute: "mixed",
+      entryRoute: "certification",
       title: "Sports Nutritionist",
       emoji: "💪",
       description: "Build performance-focused diets for athletes and active people — optimising fuelling, recovery, body composition, and competition strategy.",
@@ -926,6 +961,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     // ──────────────────────────────────────────────
     {
       id: "medical-secretary",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Medical Secretary",
       emoji: "📋",
       description: "Provide administrative support in clinics and hospitals — managing appointments, records, and patient correspondence.",
@@ -1099,6 +1136,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "corporate-trainer",
+      educationRoute: "mixed",
+      entryRoute: "bachelor",
       title: "Corporate Trainer",
       emoji: "👔",
       description: "Design and deliver training programs for employees in organisations.",
@@ -1148,6 +1187,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "childcare-assistant",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Childcare Assistant",
       emoji: "👶",
       description: "Support children's care and development in kindergartens and after-school programs.",
@@ -1158,14 +1199,14 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       growthOutlook: "high",
       entryLevel: true,
     },
-    { id: "tutor", title: "Tutor", emoji: "📝", description: "Teach individual students one-on-one — usually in a specific subject, helping them catch up or excel.", avgSalary: "200,000 - 600,000 kr/year (often part-time)", educationPath: "Subject expertise — university student or graduate", keySkills: ["subject mastery", "patience", "explanation", "diagnosis", "adaptability"], dailyTasks: ["Plan lessons", "Teach students", "Mark work", "Track progress", "Brief parents"], growthOutlook: "high", entryLevel: true, sector: "private" },
-    { id: "career-coach", title: "Career Coach", emoji: "🧭", description: "Help people figure out career direction, write CVs, and prepare for interviews — through one-on-one coaching.", avgSalary: "680,000 - 1,180,000 kr/year", educationPath: "Bachelor's in Psychology / HR / Education + coaching certification (ICF)", keySkills: ["coaching", "empathy", "career knowledge", "questioning", "structure"], dailyTasks: ["Run sessions", "Review CVs", "Coach interviews", "Set goals", "Track progress"], growthOutlook: "high", sector: "private" },
+    { id: "tutor", educationRoute: "on-the-job", entryRoute: "direct-entry", title: "Tutor", emoji: "📝", description: "Teach individual students one-on-one — usually in a specific subject, helping them catch up or excel.", avgSalary: "200,000 - 600,000 kr/year (often part-time)", educationPath: "Subject expertise — university student or graduate", keySkills: ["subject mastery", "patience", "explanation", "diagnosis", "adaptability"], dailyTasks: ["Plan lessons", "Teach students", "Mark work", "Track progress", "Brief parents"], growthOutlook: "high", entryLevel: true, sector: "private" },
+    { id: "career-coach", educationRoute: "mixed", entryRoute: "certification", title: "Career Coach", emoji: "🧭", description: "Help people figure out career direction, write CVs, and prepare for interviews — through one-on-one coaching.", avgSalary: "680,000 - 1,180,000 kr/year", educationPath: "Bachelor's in Psychology / HR / Education + coaching certification (ICF)", keySkills: ["coaching", "empathy", "career knowledge", "questioning", "structure"], dailyTasks: ["Run sessions", "Review CVs", "Coach interviews", "Set goals", "Track progress"], growthOutlook: "high", sector: "private" },
     { id: "teacher-generalist", title: "Teacher", emoji: "👩‍🏫", description: "Teach students in a school setting — plan lessons, mark work, and support young people's learning and wellbeing.", avgSalary: "520,000 - 780,000 kr/year", educationPath: "Bachelor's in Education or subject + Teacher Education (5 years total in Norway)", keySkills: ["pedagogy", "subject knowledge", "communication", "classroom management", "empathy"], dailyTasks: ["Plan lessons", "Teach classes", "Mark assessments", "Meet parents", "Collaborate with staff"], growthOutlook: "high", peopleIntensity: "high", lastVerifiedAt: "2026-04-16", entryRoute: "bachelor", gradeBand: { floor: 3, ceiling: 4, competitiveness: "accessible" } },
     { id: "high-school-teacher", title: "High School Teacher", emoji: "📘", description: "Teach upper-secondary students (videregående) in one or two specialist subjects.", avgSalary: "570,000 - 820,000 kr/year", educationPath: "Master's in subject + PPU (pedagogical qualification) — 6 years total in Norway", keySkills: ["subject mastery", "pedagogy", "assessment", "communication", "classroom management"], dailyTasks: ["Plan lessons", "Teach classes", "Mark exams", "Prepare students for eksamen", "Meet parents"], growthOutlook: "high", peopleIntensity: "high", lastVerifiedAt: "2026-04-16", entryRoute: "master", gradeBand: { floor: 3, ceiling: 4, competitiveness: "accessible" } },
     { id: "preschool-teacher", title: "Preschool Teacher", emoji: "🧸", description: "Teach and care for 3-5 year olds before primary school — play-based learning and early development.", avgSalary: "440,000 - 650,000 kr/year", educationPath: "Bachelor's in Early Childhood Education (3 years)", keySkills: ["early childhood development", "patience", "creativity", "communication", "caregiving"], dailyTasks: ["Plan play activities", "Support learning", "Care for children", "Meet parents", "Collaborate with staff"], growthOutlook: "high", entryLevel: true, peopleIntensity: "high", lastVerifiedAt: "2026-04-16" },
     { id: "special-education-teacher", title: "Special Education Teacher", emoji: "🤝", description: "Teach students with learning, behavioural, or physical needs — individualised plans and specialist strategies.", avgSalary: "550,000 - 820,000 kr/year", educationPath: "Teacher education + specialisation in spesialpedagogikk (4-5 years)", keySkills: ["spesialpedagogikk", "adaptation", "patience", "individualised planning", "collaboration"], dailyTasks: ["Build IEPs", "Teach small groups", "Adapt materials", "Meet families", "Collaborate with therapists"], growthOutlook: "high", peopleIntensity: "high", lastVerifiedAt: "2026-04-16" },
-    { id: "esl-teacher", title: "ESL Teacher", emoji: "🌍", description: "Teach English as a Second Language — to immigrants, refugees, or international students.", avgSalary: "450,000 - 750,000 kr/year", educationPath: "Bachelor's in English or Education + TEFL/CELTA certification", keySkills: ["language teaching", "patience", "cultural awareness", "lesson planning", "adaptability"], dailyTasks: ["Plan lessons", "Teach English", "Assess progress", "Adapt to learner level", "Build cultural bridges"], growthOutlook: "high", peopleIntensity: "high", lastVerifiedAt: "2026-04-16" },
-    { id: "efl-teacher", title: "EFL Teacher", emoji: "✈️", description: "Teach English as a Foreign Language abroad — immersive teaching in non-English-speaking countries.", avgSalary: "300,000 - 650,000 kr/year (varies widely by country)", educationPath: "Bachelor's + CELTA / TEFL certification", keySkills: ["language teaching", "cultural adaptability", "lesson planning", "communication", "independence"], dailyTasks: ["Plan lessons", "Teach English", "Design materials", "Assess students", "Adapt to learners"], growthOutlook: "medium", peopleIntensity: "high", lastVerifiedAt: "2026-04-16" },
+    { id: "esl-teacher", educationRoute: "mixed", entryRoute: "bachelor", title: "ESL Teacher", emoji: "🌍", description: "Teach English as a Second Language — to immigrants, refugees, or international students.", avgSalary: "450,000 - 750,000 kr/year", educationPath: "Bachelor's in English or Education + TEFL/CELTA certification", keySkills: ["language teaching", "patience", "cultural awareness", "lesson planning", "adaptability"], dailyTasks: ["Plan lessons", "Teach English", "Assess progress", "Adapt to learner level", "Build cultural bridges"], growthOutlook: "high", peopleIntensity: "high", lastVerifiedAt: "2026-04-16" },
+    { id: "efl-teacher", educationRoute: "mixed", entryRoute: "certification", title: "EFL Teacher", emoji: "✈️", description: "Teach English as a Foreign Language abroad — immersive teaching in non-English-speaking countries.", avgSalary: "300,000 - 650,000 kr/year (varies widely by country)", educationPath: "Bachelor's + CELTA / TEFL certification", keySkills: ["language teaching", "cultural adaptability", "lesson planning", "communication", "independence"], dailyTasks: ["Plan lessons", "Teach English", "Design materials", "Assess students", "Adapt to learners"], growthOutlook: "medium", peopleIntensity: "high", lastVerifiedAt: "2026-04-16" },
     { id: "language-teacher", title: "Language Teacher", emoji: "🗣️", description: "Teach a language — French, Spanish, German, Norwegian as a second language — in schools or private institutions.", avgSalary: "480,000 - 780,000 kr/year", educationPath: "Master's in the language + PPU / teacher qualification", keySkills: ["language mastery", "pedagogy", "cultural knowledge", "pronunciation teaching", "patience"], dailyTasks: ["Plan lessons", "Teach classes", "Mark assessments", "Run conversation practice", "Track progress"], growthOutlook: "medium", peopleIntensity: "high", lastVerifiedAt: "2026-04-16" },
     { id: "mathematics-teacher", title: "Mathematics Teacher", emoji: "➗", description: "Teach mathematics at primary, secondary, or upper-secondary level — build numeracy and problem-solving.", avgSalary: "550,000 - 820,000 kr/year", educationPath: "Master's in Mathematics + PPU (6 years total)", keySkills: ["mathematics", "pedagogy", "diagnosis", "patience", "clear explanation"], dailyTasks: ["Plan lessons", "Teach maths", "Mark work", "Support struggling students", "Mentor advanced learners"], growthOutlook: "high", peopleIntensity: "high", lastVerifiedAt: "2026-04-16" },
     { id: "science-teacher", title: "Science Teacher", emoji: "🔬", description: "Teach integrated science at lower-secondary level — biology, chemistry, physics in accessible form.", avgSalary: "540,000 - 810,000 kr/year", educationPath: "Master's in Natural Sciences + PPU", keySkills: ["science knowledge", "experiment design", "pedagogy", "safety", "enthusiasm"], dailyTasks: ["Plan experiments", "Teach lessons", "Run labs", "Mark work", "Manage safety"], growthOutlook: "high", peopleIntensity: "high", lastVerifiedAt: "2026-04-16" },
@@ -1179,16 +1220,16 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     { id: "pe-teacher", title: "Physical Education Teacher", emoji: "🏃", description: "Teach physical education — sports, movement, fitness — and coach school teams.", avgSalary: "520,000 - 780,000 kr/year", educationPath: "Bachelor's in Sport Science / PE + PPU", keySkills: ["movement", "coaching", "pedagogy", "first aid", "motivation"], dailyTasks: ["Plan lessons", "Teach PE", "Coach teams", "Ensure safety", "Run sports days"], growthOutlook: "medium", workSetting: "hands-on", peopleIntensity: "high", lastVerifiedAt: "2026-04-16" },
     { id: "art-teacher", title: "Art Teacher", emoji: "🎨", description: "Teach visual art — drawing, painting, digital, sculpture — across primary through upper-secondary.", avgSalary: "500,000 - 770,000 kr/year", educationPath: "Bachelor's/Master's in Art / Kunstfag + PPU", keySkills: ["art technique", "creativity", "pedagogy", "critique", "exhibition"], dailyTasks: ["Plan projects", "Teach technique", "Give feedback", "Mount exhibitions", "Manage materials"], growthOutlook: "medium", workSetting: "creative", peopleIntensity: "high", lastVerifiedAt: "2026-04-16" },
     { id: "drama-teacher", title: "Drama Teacher", emoji: "🎭", description: "Teach drama and theatre — improvisation, scripted performance, theatre history — and direct school productions.", avgSalary: "500,000 - 770,000 kr/year", educationPath: "Bachelor's/Master's in Drama / Theatre + PPU", keySkills: ["drama", "directing", "pedagogy", "production", "empathy"], dailyTasks: ["Plan lessons", "Rehearse scenes", "Direct productions", "Manage props/sets", "Coach performance"], growthOutlook: "medium", workSetting: "creative", peopleIntensity: "high", lastVerifiedAt: "2026-04-16" },
-    { id: "vocational-education-teacher", title: "Vocational Education Teacher", emoji: "🛠️", description: "Teach yrkesfag — vocational programmes (construction, mechanics, hospitality) — combining classroom and practical.", avgSalary: "530,000 - 800,000 kr/year", educationPath: "Trade certification + 2 years' trade experience + PPU-Y", keySkills: ["trade mastery", "practical teaching", "safety", "mentoring", "industry contacts"], dailyTasks: ["Teach trade skills", "Run workshops", "Supervise practice", "Arrange placements", "Assess competence"], growthOutlook: "high", workSetting: "hands-on", peopleIntensity: "high", lastVerifiedAt: "2026-04-16" },
-    { id: "technical-instructor", title: "Technical Instructor", emoji: "⚙️", description: "Train adults in technical skills — software, machinery, procedures — in industry or vocational settings.", avgSalary: "500,000 - 800,000 kr/year", educationPath: "Technical expertise + instructor certification", keySkills: ["technical mastery", "teaching", "patience", "material design", "assessment"], dailyTasks: ["Design courses", "Teach classes", "Run practicals", "Assess learners", "Update materials"], growthOutlook: "medium", peopleIntensity: "high", lastVerifiedAt: "2026-04-16" },
+    { id: "vocational-education-teacher", educationRoute: "mixed", entryRoute: "fagbrev", title: "Vocational Education Teacher", emoji: "🛠️", description: "Teach yrkesfag — vocational programmes (construction, mechanics, hospitality) — combining classroom and practical.", avgSalary: "530,000 - 800,000 kr/year", educationPath: "Trade certification + 2 years' trade experience + PPU-Y", keySkills: ["trade mastery", "practical teaching", "safety", "mentoring", "industry contacts"], dailyTasks: ["Teach trade skills", "Run workshops", "Supervise practice", "Arrange placements", "Assess competence"], growthOutlook: "high", workSetting: "hands-on", peopleIntensity: "high", lastVerifiedAt: "2026-04-16" },
+    { id: "technical-instructor", educationRoute: "certification", entryRoute: "certification", title: "Technical Instructor", emoji: "⚙️", description: "Train adults in technical skills — software, machinery, procedures — in industry or vocational settings.", avgSalary: "500,000 - 800,000 kr/year", educationPath: "Technical expertise + instructor certification", keySkills: ["technical mastery", "teaching", "patience", "material design", "assessment"], dailyTasks: ["Design courses", "Teach classes", "Run practicals", "Assess learners", "Update materials"], growthOutlook: "medium", peopleIntensity: "high", lastVerifiedAt: "2026-04-16" },
     { id: "lecturer", title: "Lecturer", emoji: "🎓", description: "Teach at university level — deliver lectures, seminars, and mark coursework for undergraduate students.", avgSalary: "600,000 - 900,000 kr/year", educationPath: "Master's / PhD in subject + university teaching experience", keySkills: ["subject expertise", "lecturing", "assessment design", "research", "mentoring"], dailyTasks: ["Deliver lectures", "Run seminars", "Mark coursework", "Supervise projects", "Stay current with research"], growthOutlook: "medium", peopleIntensity: "high", lastVerifiedAt: "2026-04-16" },
     { id: "senior-lecturer", title: "Senior Lecturer", emoji: "📚", description: "Senior teaching role at university — lead courses, supervise students, often combined with research output.", avgSalary: "750,000 - 1,100,000 kr/year", educationPath: "PhD + significant teaching + publications", keySkills: ["subject expertise", "course design", "supervision", "research", "leadership"], dailyTasks: ["Lead courses", "Supervise PhDs", "Publish research", "Review grants", "Mentor staff"], growthOutlook: "stable", peopleIntensity: "high", lastVerifiedAt: "2026-04-16" },
     { id: "professor", title: "Professor", emoji: "🎓", description: "Full professor at university — senior academic with research leadership, teaching, and administrative roles.", avgSalary: "900,000 - 1,350,000 kr/year", educationPath: "PhD + habilitation/equivalent + sustained research output", keySkills: ["research leadership", "subject expertise", "supervision", "grant writing", "leadership"], dailyTasks: ["Lead research", "Supervise PhDs", "Publish", "Win grants", "Chair committees"], growthOutlook: "stable", peopleIntensity: "high", lastVerifiedAt: "2026-04-16" },
     { id: "assistant-professor", title: "Assistant Professor", emoji: "🧑‍🏫", description: "Tenure-track or postdoc-level professor — build research programme while teaching and supervising.", avgSalary: "650,000 - 950,000 kr/year", educationPath: "PhD + postdoctoral research experience", keySkills: ["research", "teaching", "grant writing", "supervision", "publication"], dailyTasks: ["Run research", "Teach courses", "Supervise students", "Write grants", "Publish"], growthOutlook: "stable", peopleIntensity: "high", lastVerifiedAt: "2026-04-16" },
     { id: "associate-professor", title: "Associate Professor", emoji: "📖", description: "Mid-rank professor with tenure or førsteamanuensis status — established research + teaching.", avgSalary: "800,000 - 1,150,000 kr/year", educationPath: "PhD + substantial research output + teaching", keySkills: ["research", "teaching", "supervision", "grant writing", "subject expertise"], dailyTasks: ["Lead research", "Teach", "Supervise", "Write papers", "Review grants"], growthOutlook: "stable", peopleIntensity: "high", lastVerifiedAt: "2026-04-16" },
-    { id: "teaching-assistant", title: "Teaching Assistant", emoji: "🧑‍🎓", description: "Support a teacher or lecturer — run seminars, mark work, and help students one-on-one.", avgSalary: "370,000 - 640,000 kr/year", educationPath: "Enrolled student or recent graduate in the subject", keySkills: ["subject knowledge", "patience", "communication", "marking", "supporting"], dailyTasks: ["Run study groups", "Mark assignments", "Help students", "Support lectures", "Administer tests"], growthOutlook: "stable", entryLevel: true, peopleIntensity: "high", lastVerifiedAt: "2026-04-16" },
-    { id: "private-tutor", title: "Private Tutor", emoji: "📝", description: "Tutor students privately — usually one subject, working from their home or online.", avgSalary: "150,000 - 600,000 kr/year (often part-time)", educationPath: "Subject expertise — often university students or graduates", keySkills: ["subject mastery", "patience", "explanation", "diagnosis", "reliability"], dailyTasks: ["Plan sessions", "Teach students", "Mark work", "Track progress", "Update parents"], growthOutlook: "high", entryLevel: true, sector: "private", lastVerifiedAt: "2026-04-16" },
-    { id: "online-instructor", title: "Online Instructor", emoji: "💻", description: "Teach courses on online platforms (Coursera, Udemy, school LMS) — record, assess, and engage remote learners.", avgSalary: "300,000 - 900,000 kr/year (varies widely — platform + course success)", educationPath: "Subject expertise + online teaching skills", keySkills: ["subject mastery", "video production", "online pedagogy", "engagement", "self-direction"], dailyTasks: ["Record lessons", "Engage students", "Mark work", "Update courses", "Promote content"], growthOutlook: "high", sector: "private", lastVerifiedAt: "2026-04-16" },
+    { id: "teaching-assistant", educationRoute: "on-the-job", entryRoute: "direct-entry", title: "Teaching Assistant", emoji: "🧑‍🎓", description: "Support a teacher or lecturer — run seminars, mark work, and help students one-on-one.", avgSalary: "370,000 - 640,000 kr/year", educationPath: "Enrolled student or recent graduate in the subject", keySkills: ["subject knowledge", "patience", "communication", "marking", "supporting"], dailyTasks: ["Run study groups", "Mark assignments", "Help students", "Support lectures", "Administer tests"], growthOutlook: "stable", entryLevel: true, peopleIntensity: "high", lastVerifiedAt: "2026-04-16" },
+    { id: "private-tutor", educationRoute: "on-the-job", entryRoute: "direct-entry", title: "Private Tutor", emoji: "📝", description: "Tutor students privately — usually one subject, working from their home or online.", avgSalary: "150,000 - 600,000 kr/year (often part-time)", educationPath: "Subject expertise — often university students or graduates", keySkills: ["subject mastery", "patience", "explanation", "diagnosis", "reliability"], dailyTasks: ["Plan sessions", "Teach students", "Mark work", "Track progress", "Update parents"], growthOutlook: "high", entryLevel: true, sector: "private", lastVerifiedAt: "2026-04-16" },
+    { id: "online-instructor", educationRoute: "on-the-job", entryRoute: "direct-entry", title: "Online Instructor", emoji: "💻", description: "Teach courses on online platforms (Coursera, Udemy, school LMS) — record, assess, and engage remote learners.", avgSalary: "300,000 - 900,000 kr/year (varies widely — platform + course success)", educationPath: "Subject expertise + online teaching skills", keySkills: ["subject mastery", "video production", "online pedagogy", "engagement", "self-direction"], dailyTasks: ["Record lessons", "Engage students", "Mark work", "Update courses", "Promote content"], growthOutlook: "high", sector: "private", lastVerifiedAt: "2026-04-16" },
     { id: "curriculum-developer", title: "Curriculum Developer", emoji: "📋", description: "Design what students learn — develop curricula, syllabi, and course structures for schools or training providers.", avgSalary: "550,000 - 900,000 kr/year", educationPath: "Master's in Education / subject + curriculum design experience", keySkills: ["curriculum design", "pedagogy", "subject expertise", "assessment", "collaboration"], dailyTasks: ["Design curricula", "Align with standards", "Collaborate with teachers", "Review materials", "Pilot changes"], growthOutlook: "medium", lastVerifiedAt: "2026-04-16" },
     { id: "instructional-designer", title: "Instructional Designer", emoji: "🎯", description: "Design learning experiences — digital courses, training modules — grounded in learning science.", avgSalary: "600,000 - 1,000,000 kr/year", educationPath: "Bachelor's/Master's in Education / Learning Design + portfolio", keySkills: ["instructional design", "learning science", "tools (Articulate, Rise)", "storytelling", "analysis"], dailyTasks: ["Design courses", "Build modules", "Script video", "Run user testing", "Iterate on feedback"], growthOutlook: "high", sector: "private", lastVerifiedAt: "2026-04-16" },
     { id: "education-consultant", title: "Education Consultant", emoji: "🤝", description: "Advise schools, districts, or ed-tech firms on strategy, curriculum, assessment, and teacher development.", avgSalary: "650,000 - 1,300,000 kr/year", educationPath: "Master's in Education + 5+ years' teaching / leadership experience", keySkills: ["consulting", "education systems", "data analysis", "communication", "change management"], dailyTasks: ["Meet clients", "Audit practices", "Recommend changes", "Run workshops", "Track impact"], growthOutlook: "medium", peopleIntensity: "high", lastVerifiedAt: "2026-04-16" },
@@ -1416,6 +1457,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "software-developer",
+      educationRoute: "mixed",
+      entryRoute: "bachelor",
       title: "Software Developer",
       emoji: "💻",
       description: "Design, build, and maintain software applications — analyse requirements, model data, and optimise performance for web, mobile, or desktop.",
@@ -1431,6 +1474,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "cybersecurity-analyst",
+      educationRoute: "mixed",
+      entryRoute: "bachelor",
       title: "Cybersecurity Analyst",
       emoji: "🔐",
       description: "Protect organisations from cyber threats by monitoring systems and responding to incidents.",
@@ -1442,6 +1487,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "soc-analyst",
+      educationRoute: "mixed",
+      entryRoute: "certification",
       title: "SOC Analyst",
       emoji: "🚨",
       description: "Work in a Security Operations Centre as the first line of defence — watch live alerts, spot suspicious activity, and escalate real threats. The most common way in to a cybersecurity career.",
@@ -1455,6 +1502,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "digital-forensics-analyst",
+      educationRoute: "mixed",
+      entryRoute: "bachelor",
       title: "Digital Forensics Analyst",
       emoji: "🔍",
       description: "The digital detective — recover and analyse evidence from computers, phones, and networks after a breach or crime, then explain what happened. Bridges cybersecurity and investigation.",
@@ -1467,6 +1516,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "ux-designer",
+      educationRoute: "mixed",
+      entryRoute: "bachelor",
       title: "UX Designer",
       emoji: "🎨",
       description: "Design user interfaces and experiences for websites and apps that are intuitive and beautiful.",
@@ -1479,6 +1530,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "product-designer",
+      educationRoute: "mixed",
+      entryRoute: "bachelor",
       title: "Product Designer",
       emoji: "✏️",
       description: "Own how a digital product looks, feels, and works end-to-end — from user research and flows to the polished interface. Broader than UX or UI alone, sitting close to product and engineering.",
@@ -1492,6 +1545,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "cloud-engineer",
+      educationRoute: "mixed",
+      entryRoute: "certification",
       title: "Cloud Engineer",
       emoji: "☁️",
       description: "Design and manage cloud infrastructure on platforms like AWS, Azure, or Google Cloud.",
@@ -1505,6 +1560,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "it-support",
+      educationRoute: "mixed",
+      entryRoute: "fagbrev",
       title: "IT Support Specialist",
       emoji: "🖥️",
       description: "Help users solve technical problems and maintain computer systems in organisations.",
@@ -1602,6 +1659,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "agile-coach",
+      educationRoute: "certification",
+      entryRoute: "certification",
       title: "SAFe Agile Coach",
       emoji: "🎯",
       description: "Guide organisations in adopting agile practices and the Scaled Agile Framework (SAFe) for large teams.",
@@ -1613,6 +1672,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "network-engineer",
+      educationRoute: "mixed",
+      entryRoute: "certification",
       title: "Network Engineer",
       emoji: "🌐",
       description: "Design, implement, and maintain computer networks including LANs, WANs, and cloud connectivity.",
@@ -1635,6 +1696,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "database-administrator",
+      educationRoute: "mixed",
+      entryRoute: "certification",
       title: "Database Administrator",
       emoji: "🗄️",
       description: "Manage, optimise, and secure databases to ensure data availability and performance.",
@@ -1646,6 +1709,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "qa-engineer",
+      educationRoute: "mixed",
+      entryRoute: "bachelor",
       title: "QA Engineer",
       emoji: "🧪",
       description: "Ensure software quality through testing strategies, test automation, and defect prevention.",
@@ -1658,6 +1723,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "scrum-master",
+      educationRoute: "certification",
+      entryRoute: "certification",
       title: "Scrum Master",
       emoji: "🔄",
       description: "Facilitate scrum processes, remove blockers, and help development teams deliver effectively.",
@@ -1669,6 +1736,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "systems-administrator",
+      educationRoute: "mixed",
+      entryRoute: "certification",
       title: "Systems Administrator",
       emoji: "🖧",
       description: "Maintain and configure servers, operating systems, and IT infrastructure for organisations.",
@@ -1692,6 +1761,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "rte",
+      educationRoute: "certification",
+      entryRoute: "certification",
       title: "Release Train Engineer",
       emoji: "🚂",
       description: "Facilitate Agile Release Trains in SAFe, coordinating multiple teams to deliver value at scale.",
@@ -1703,6 +1774,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "product-owner",
+      educationRoute: "certification",
+      entryRoute: "certification",
       title: "Product Owner",
       emoji: "📝",
       description: "Own the product backlog, prioritise features, and ensure teams build the right things for customers.",
@@ -1725,6 +1798,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "frontend-developer",
+      educationRoute: "mixed",
+      entryRoute: "bachelor",
       title: "Frontend Developer",
       emoji: "🎨",
       description: "Build user interfaces and interactive web experiences using modern JavaScript frameworks.",
@@ -1737,6 +1812,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "backend-developer",
+      educationRoute: "mixed",
+      entryRoute: "bachelor",
       title: "Backend Developer",
       emoji: "⚙️",
       description: "Build server-side applications, APIs, and database systems that power applications.",
@@ -1749,6 +1826,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "mobile-developer",
+      educationRoute: "mixed",
+      entryRoute: "bachelor",
       title: "Mobile Developer",
       emoji: "📲",
       description: "Build native or cross-platform mobile applications for iOS and Android devices.",
@@ -1761,6 +1840,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "game-developer",
+      educationRoute: "mixed",
+      entryRoute: "bachelor",
       title: "Game Developer",
       emoji: "🎮",
       description: "Design and program video games, from gameplay mechanics to graphics and AI.",
@@ -1773,6 +1854,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "game-designer",
+      educationRoute: "mixed",
+      entryRoute: "bachelor",
       title: "Game Designer",
       emoji: "🕹️",
       description: "Shape what a game actually plays like — the rules, levels, mechanics, and player experience. The creative-direction side of games, distinct from the programming a Game Developer does.",
@@ -1885,6 +1968,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "fullstack-engineer",
+      educationRoute: "mixed",
+      entryRoute: "bachelor",
       title: "Full-Stack Engineer",
       emoji: "🔗",
       description: "Work across the entire stack from database and APIs to frontend UI, owning features end-to-end from technical design to deployment.",
@@ -1907,6 +1992,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "iac-specialist",
+      educationRoute: "mixed",
+      entryRoute: "certification",
       title: "Infrastructure as Code Specialist",
       emoji: "📝",
       description: "Specialise in defining all infrastructure through code using Terraform, Pulumi, or similar tools, enforcing GitOps workflows and best practices.",
@@ -1918,6 +2005,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "automation-engineer",
+      educationRoute: "mixed",
+      entryRoute: "bachelor",
       title: "Automation Engineer",
       emoji: "🤖",
       description: "Automate business processes and workflows through scripting, API integrations, and workflow automation tools.",
@@ -1951,6 +2040,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "perf-test-engineer",
+      educationRoute: "mixed",
+      entryRoute: "bachelor",
       title: "Load Test Engineer",
       emoji: "📈",
       description: "Design and execute performance and load tests to ensure systems scale reliably under production traffic patterns.",
@@ -2380,6 +2471,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "studio-director",
+      educationRoute: "mixed",
+      entryRoute: "bachelor",
       title: "Studio Director",
       emoji: "🎬",
       description: "Lead an entire game or creative studio, managing the business, creative vision, and team to deliver successful products.",
@@ -2459,6 +2552,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "test-automation-engineer",
+      educationRoute: "mixed",
+      entryRoute: "bachelor",
       title: "Test Automation Engineer",
       emoji: "🧪",
       description: "Build automated test suites and frameworks to ensure software quality at scale.",
@@ -2492,6 +2587,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "ui-designer",
+      educationRoute: "mixed",
+      entryRoute: "bachelor",
       title: "UI Designer",
       emoji: "🎨",
       description: "Craft the visual interface of digital products — layouts, components, colours, and typography.",
@@ -2535,8 +2632,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       dailyTasks: ["Build immersive scenes", "Optimise for headsets", "Integrate sensors", "Test on devices", "Collaborate with designers"],
       growthOutlook: "high",
     },
-    { id: "app-developer", title: "App Developer", emoji: "📱", description: "Build mobile apps for iOS and Android — designing features, writing code, and shipping to app stores.", avgSalary: "650,000 - 1,100,000 kr/year", educationPath: "Bachelor's in CS or self-taught with strong portfolio", keySkills: ["Swift / Kotlin", "React Native / Flutter", "UI design", "APIs", "testing"], dailyTasks: ["Write features", "Fix bugs", "Test on devices", "Ship updates", "Read crash reports"], growthOutlook: "high", entryLevel: true },
-    { id: "web-developer", title: "Web Developer", emoji: "🌐", description: "Build websites and web apps — from landing pages to complex platforms — using HTML, CSS, JavaScript and frameworks.", avgSalary: "550,000 - 1,000,000 kr/year", educationPath: "Bachelor's in CS or self-taught with strong portfolio", keySkills: ["HTML/CSS", "JavaScript", "React or Vue", "responsive design", "performance"], dailyTasks: ["Build pages", "Write code", "Fix bugs", "Test browsers", "Deploy updates"], growthOutlook: "high", entryLevel: true, entryRoute: "bachelor", gradeBand: { floor: 3, ceiling: 5, competitiveness: "accessible" } },
+    { id: "app-developer", educationRoute: "mixed", entryRoute: "bachelor", title: "App Developer", emoji: "📱", description: "Build mobile apps for iOS and Android — designing features, writing code, and shipping to app stores.", avgSalary: "650,000 - 1,100,000 kr/year", educationPath: "Bachelor's in CS or self-taught with strong portfolio", keySkills: ["Swift / Kotlin", "React Native / Flutter", "UI design", "APIs", "testing"], dailyTasks: ["Write features", "Fix bugs", "Test on devices", "Ship updates", "Read crash reports"], growthOutlook: "high", entryLevel: true },
+    { id: "web-developer", educationRoute: "mixed", title: "Web Developer", emoji: "🌐", description: "Build websites and web apps — from landing pages to complex platforms — using HTML, CSS, JavaScript and frameworks.", avgSalary: "550,000 - 1,000,000 kr/year", educationPath: "Bachelor's in CS or self-taught with strong portfolio", keySkills: ["HTML/CSS", "JavaScript", "React or Vue", "responsive design", "performance"], dailyTasks: ["Build pages", "Write code", "Fix bugs", "Test browsers", "Deploy updates"], growthOutlook: "high", entryLevel: true, entryRoute: "bachelor", gradeBand: { floor: 3, ceiling: 5, competitiveness: "accessible" } },
     // ── Senior technology leadership, architecture & principal-tier roles ──
     {
       id: "chief-architect",
@@ -2661,6 +2758,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "infrastructure-director",
+      educationRoute: "mixed",
+      entryRoute: "bachelor",
       title: "Infrastructure Director",
       emoji: "🏢",
       description: "Own infrastructure as a business function — strategy, budgets, and the leaders running networks, data centres, and cloud platforms.",
@@ -2676,6 +2775,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "data-centre-director",
+      educationRoute: "mixed",
+      entryRoute: "bachelor",
       title: "Data Centre Director",
       emoji: "🏬",
       description: "Lead the people and operations behind one or more data centres — power, cooling, capacity, security, and uptime at industrial scale.",
@@ -2689,6 +2790,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "head-of-cyber-security",
+      educationRoute: "mixed",
+      entryRoute: "bachelor",
       title: "Head of Cyber Security",
       emoji: "🔐",
       description: "Lead an organisation's cyber security function day to day — the team, the defences, and the response to threats — often reporting to the CISO.",
@@ -2704,6 +2807,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "security-director",
+      educationRoute: "mixed",
+      entryRoute: "bachelor",
       title: "Security Director",
       emoji: "🛡️",
       description: "Own security as a business function — strategy, budgets, and the teams protecting an organisation's people, data, and systems.",
@@ -2719,6 +2824,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "principal-security-consultant",
+      educationRoute: "mixed",
+      entryRoute: "bachelor",
       title: "Principal Security Consultant",
       emoji: "🔎",
       description: "The most senior security consultant — leading complex security engagements, advising clients at board level, and shaping how organisations defend themselves.",
@@ -2732,6 +2839,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "cyber-security-manager",
+      educationRoute: "mixed",
+      entryRoute: "bachelor",
       title: "Cyber Security Manager",
       emoji: "🧑‍💻",
       description: "Manage a cyber security team — coordinating defences, monitoring, and response, and turning security strategy into day-to-day execution.",
@@ -2747,6 +2856,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "security-operations-director",
+      educationRoute: "mixed",
+      entryRoute: "bachelor",
       title: "Security Operations Director",
       emoji: "📡",
       description: "Lead the security operations function — the SOC, detection, and response capability that watches for threats around the clock.",
@@ -2762,6 +2873,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "principal-cloud-engineer",
+      educationRoute: "mixed",
+      entryRoute: "bachelor",
       title: "Principal Cloud Engineer",
       emoji: "☁️",
       description: "The most senior cloud engineer — designing and optimising large-scale cloud platforms and solving the hardest reliability and cost problems.",
@@ -2775,6 +2888,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "cloud-platform-lead",
+      educationRoute: "mixed",
+      entryRoute: "bachelor",
       title: "Cloud Platform Lead",
       emoji: "🌩️",
       description: "Lead the team that builds and runs an organisation's internal cloud platform — the self-service foundation other engineers build on.",
@@ -2788,6 +2903,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "head-of-cloud",
+      educationRoute: "mixed",
+      entryRoute: "bachelor",
       title: "Head of Cloud",
       emoji: "⛅",
       description: "Own an organisation's cloud strategy — adoption, platforms, cost, and the teams delivering everything in the cloud.",
@@ -2803,6 +2920,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "principal-cloud-architect",
+      educationRoute: "mixed",
+      entryRoute: "bachelor",
       title: "Principal Cloud Architect",
       emoji: "🏗️",
       description: "The most senior cloud architect — designing complex, multi-region cloud architectures and setting the patterns teams build on.",
@@ -2816,6 +2935,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "principal-solutions-architect",
+      educationRoute: "mixed",
+      entryRoute: "bachelor",
       title: "Principal Solutions Architect",
       emoji: "🧩",
       description: "The most senior solutions architect — designing end-to-end solutions for the largest, most complex problems and guiding many delivery teams.",
@@ -2829,6 +2950,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "principal-data-architect",
+      educationRoute: "mixed",
+      entryRoute: "bachelor",
       title: "Principal Data Architect",
       emoji: "🗄️",
       description: "The most senior data architect — designing how data is modelled, stored, and governed across an entire organisation.",
@@ -2842,6 +2965,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "principal-software-engineer",
+      educationRoute: "mixed",
+      entryRoute: "bachelor",
       title: "Principal Software Engineer",
       emoji: "👨‍💻",
       description: "A top individual-contributor engineer — owning the hardest technical problems and the architecture of major systems across teams.",
@@ -2855,6 +2980,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "technical-program-manager",
+      educationRoute: "mixed",
+      entryRoute: "bachelor",
       title: "Technical Program Manager",
       emoji: "📋",
       description: "Drive large, complex technical programmes across many teams — owning the plan, the dependencies, and the delivery of things engineers build.",
@@ -2868,6 +2995,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "principal-technical-program-manager",
+      educationRoute: "mixed",
+      entryRoute: "bachelor",
       title: "Principal Technical Program Manager",
       emoji: "🗂️",
       description: "The most senior technical program manager — driving the largest, most ambiguous cross-organisation programmes and shaping how delivery is run.",
@@ -2881,6 +3010,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "head-of-data-engineering",
+      educationRoute: "mixed",
+      entryRoute: "bachelor",
       title: "Head of Data Engineering",
       emoji: "🛢️",
       description: "Lead the teams that build an organisation's data pipelines and platforms — the foundation that analytics and AI depend on.",
@@ -2896,6 +3027,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "general-manager-technology",
+      educationRoute: "mixed",
+      entryRoute: "bachelor",
       title: "General Manager, Technology",
       emoji: "🧮",
       description: "Run a technology business unit as a whole — owning its strategy, people, finances, and outcomes end to end.",
@@ -2909,6 +3042,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "fractional-chief-architect",
+      educationRoute: "mixed",
+      entryRoute: "bachelor",
       title: "Fractional Chief Architect",
       emoji: "🧱",
       description: "Act as a part-time chief architect across several organisations — bringing senior architecture leadership to companies not ready for a full-time hire.",
@@ -2922,6 +3057,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "fractional-ciso",
+      educationRoute: "mixed",
+      entryRoute: "bachelor",
       title: "Fractional CISO",
       emoji: "🔏",
       description: "Provide part-time CISO leadership to several organisations — bringing senior security strategy to companies without a full-time security executive.",
@@ -3472,6 +3609,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "project-manager",
+      educationRoute: "mixed",
+      entryRoute: "bachelor",
       title: "Project Manager (generalist)",
       emoji: "📋",
       description:
@@ -3510,6 +3649,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "office-administrator",
+      educationRoute: "mixed",
+      entryRoute: "fagbrev",
       title: "Office Administrator",
       emoji: "🗂️",
       description: "Manage daily office operations, schedules, and administrative tasks.",
@@ -3533,6 +3674,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "executive-assistant",
+      educationRoute: "mixed",
+      entryRoute: "bachelor",
       title: "Executive Assistant",
       emoji: "📱",
       description: "Support senior executives with scheduling, communication, and administrative tasks.",
@@ -3623,6 +3766,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "delivery-director",
+      educationRoute: "mixed",
+      entryRoute: "bachelor",
       title: "Delivery Director",
       emoji: "🚀",
       description: "Lead delivery teams ensuring projects and programmes are delivered on time, on budget, and to quality standards.",
@@ -3634,6 +3779,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "senior-project-director",
+      educationRoute: "mixed",
+      entryRoute: "master",
       title: "Senior Project Director",
       emoji: "📋",
       description: "Direct the largest and most complex projects, managing multi-million budgets, executive stakeholders, and cross-functional teams.",
@@ -3689,6 +3836,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "independent-consultant",
+      educationRoute: "mixed",
+      entryRoute: "bachelor",
       title: "Independent Consultant",
       emoji: "🧭",
       description: "Provide expert consulting services as an independent advisor, managing your own practice, clients, and engagements.",
@@ -3722,6 +3871,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "enterprise-systems-consultant",
+      educationRoute: "mixed",
+      entryRoute: "bachelor",
       title: "Enterprise Systems Consultant",
       emoji: "🏗️",
       description: "Advise on selection, implementation, and optimisation of enterprise systems such as ERP, CRM, and HCM platforms.",
@@ -3733,6 +3884,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "erp-transformation-lead",
+      educationRoute: "mixed",
+      entryRoute: "bachelor",
       title: "ERP Transformation Lead",
       emoji: "🔗",
       description: "Lead enterprise resource planning transformations migrating organisations to modern ERP platforms like SAP S/4HANA or Oracle Cloud.",
@@ -3744,6 +3897,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "oss-bss-transformation-lead",
+      educationRoute: "mixed",
+      entryRoute: "bachelor",
       title: "Telecom Transformation Lead",
       emoji: "📡",
       description: "Lead telecom OSS/BSS transformation programmes modernising operations and business support systems for telco operators.",
@@ -3755,6 +3910,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "fractional-cto",
+      educationRoute: "mixed",
+      entryRoute: "bachelor",
       title: "Fractional CTO",
       emoji: "👔",
       description: "Serve as a part-time CTO for multiple companies, providing senior technology leadership to startups and scale-ups that need strategic guidance.",
@@ -3832,6 +3989,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "operations-director",
+      educationRoute: "mixed",
+      entryRoute: "bachelor",
       title: "Operations Director",
       emoji: "⚙️",
       description: "Lead operations across the organisation, optimising processes, efficiency, and service delivery.",
@@ -3843,6 +4002,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "head-of-operations",
+      educationRoute: "mixed",
+      entryRoute: "bachelor",
       title: "Head of Operations",
       emoji: "⚙️",
       description: "Own all operational functions ensuring smooth service delivery, process efficiency, and scalability.",
@@ -3997,6 +4158,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "independent-contractor-technical",
+      educationRoute: "mixed",
+      entryRoute: "bachelor",
       title: "Senior Technical Contractor",
       emoji: "🧑‍💻",
       description: "Provide senior technical expertise as an independent contractor, working on complex projects across multiple clients.",
@@ -4008,6 +4171,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "independent-program-director",
+      educationRoute: "mixed",
+      entryRoute: "master",
       title: "Independent Program Director",
       emoji: "📋",
       description: "Direct complex programmes as an independent contractor, providing senior programme leadership to multiple organisations.",
@@ -4019,6 +4184,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "independent-transformation-lead",
+      educationRoute: "mixed",
+      entryRoute: "master",
       title: "Independent Transformation Lead",
       emoji: "🔄",
       description: "Lead transformation engagements as an independent advisor, bringing senior transformation expertise to client organisations.",
@@ -4030,6 +4197,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "programme-manager",
+      educationRoute: "mixed",
+      entryRoute: "bachelor",
       title: "Programme Manager",
       emoji: "📊",
       description: "Oversee multiple related projects to achieve strategic business objectives, managing dependencies, risks, and stakeholder expectations across programmes.",
@@ -4052,6 +4221,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "property-manager",
+      educationRoute: "mixed",
+      entryRoute: "bachelor",
       title: "Property Manager",
       emoji: "🔑",
       description: "Manage day-to-day operations of residential or commercial properties, including tenants, maintenance, and finances.",
@@ -4065,6 +4236,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "leasing-agent",
+      educationRoute: "on-the-job",
+      entryRoute: "direct-entry",
       title: "Leasing Agent",
       emoji: "📝",
       description: "Show rental units to prospective tenants, process applications, and sign leases.",
@@ -4077,6 +4250,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "real-estate-developer",
+      educationRoute: "mixed",
+      entryRoute: "bachelor",
       title: "Real Estate Developer",
       emoji: "🏗️",
       description: "Acquire land and oversee the design, financing, and construction of new property developments.",
@@ -4088,6 +4263,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "real-estate-investor",
+      educationRoute: "on-the-job",
+      entryRoute: "direct-entry",
       title: "Real Estate Investor",
       emoji: "💰",
       description: "Buy, hold, and sell properties to generate rental income and capital gains.",
@@ -4110,6 +4287,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "real-estate-appraiser",
+      educationRoute: "certification",
+      entryRoute: "certification",
       title: "Real Estate Appraiser",
       emoji: "🏷️",
       description: "Assess property values for sales, mortgages, taxes, and insurance based on inspections and market data.",
@@ -4132,6 +4311,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "property-consultant",
+      educationRoute: "mixed",
+      entryRoute: "bachelor",
       title: "Property Consultant",
       emoji: "💼",
       description: "Advise clients on buying, selling, leasing, and investing in property based on market expertise.",
@@ -4166,6 +4347,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "lettings-agent",
+      educationRoute: "on-the-job",
+      entryRoute: "direct-entry",
       title: "Lettings Agent",
       emoji: "🗝️",
       description: "Match tenants with rental properties, handle viewings, references, and tenancy agreements.",
@@ -4178,6 +4361,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "estate-manager",
+      educationRoute: "mixed",
+      entryRoute: "bachelor",
       title: "Estate Manager",
       emoji: "🏰",
       description: "Manage large private or commercial estates including staff, grounds, properties, and finances.",
@@ -4189,6 +4374,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "facilities-manager",
+      educationRoute: "mixed",
+      entryRoute: "bachelor",
       title: "Facilities Manager",
       emoji: "🛠️",
       description: "Ensure buildings and their services meet the needs of the people working in them, covering maintenance, safety, and operations.",
@@ -4244,6 +4431,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "property-administrator",
+      educationRoute: "on-the-job",
+      entryRoute: "direct-entry",
       title: "Property Administrator",
       emoji: "🗂️",
       description: "Provide administrative support to property managers, handling paperwork, tenant queries, and records.",
@@ -4267,6 +4456,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "real-estate-sales-manager",
+      educationRoute: "mixed",
+      entryRoute: "certification",
       title: "Real Estate Sales Manager",
       emoji: "👔",
       description: "Lead a team of real estate agents, set sales targets, and drive revenue growth.",
@@ -4278,6 +4469,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "mortgage-advisor",
+      educationRoute: "certification",
+      entryRoute: "certification",
       title: "Mortgage Advisor",
       emoji: "🏦",
       description: "Help clients understand and choose mortgage products that fit their needs and circumstances.",
@@ -4289,6 +4482,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "mortgage-broker",
+      educationRoute: "certification",
+      entryRoute: "certification",
       title: "Mortgage Broker",
       emoji: "🏧",
       description: "Act as an intermediary between borrowers and lenders to secure the best mortgage deals.",
@@ -4311,6 +4506,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "escrow-officer",
+      educationRoute: "certification",
+      entryRoute: "certification",
       title: "Escrow Officer",
       emoji: "🔐",
       description: "Manage neutral third-party accounts during real estate transactions to ensure all conditions are met before funds change hands.",
@@ -4322,6 +4519,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "title-officer",
+      educationRoute: "on-the-job",
+      entryRoute: "direct-entry",
       title: "Title Officer",
       emoji: "📜",
       description: "Examine property titles to ensure clear ownership and issue title insurance for transactions.",
@@ -4366,6 +4565,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "property-inspector",
+      educationRoute: "vocational",
+      entryRoute: "fagskole",
       title: "Property Inspector",
       emoji: "🔎",
       description: "Inspect homes and buildings for structural, safety, and code compliance issues before sale or lease.",
@@ -4389,6 +4590,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "construction-manager",
+      educationRoute: "mixed",
+      entryRoute: "bachelor",
       title: "Construction Manager",
       emoji: "👷",
       description: "Plan, coordinate, and supervise construction projects from start to finish, on time and on budget.",
@@ -4411,6 +4614,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "real-estate-photographer",
+      educationRoute: "on-the-job",
+      entryRoute: "direct-entry",
       title: "Real Estate Photographer",
       emoji: "📸",
       description: "Capture professional photos and video of properties for listings, marketing, and tours.",
@@ -4423,6 +4628,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "real-estate-consultant",
+      educationRoute: "mixed",
+      entryRoute: "bachelor",
       title: "Real Estate Consultant",
       emoji: "🧭",
       description: "Provide strategic advice to investors, developers, and corporates on real estate decisions.",
@@ -4942,6 +5149,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     // ── Senior consulting, advisory & technology-leadership roles ──
     {
       id: "digital-transformation-director",
+      educationRoute: "mixed",
+      entryRoute: "bachelor",
       title: "Digital Transformation Director",
       emoji: "🔄",
       description: "Lead an organisation's reinvention through technology — owning the strategy and the major programmes that change how a business runs.",
@@ -4955,6 +5164,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "digital-transformation-consultant",
+      educationRoute: "mixed",
+      entryRoute: "bachelor",
       title: "Digital Transformation Consultant",
       emoji: "🧭",
       description: "Help organisations reinvent how they work with technology — diagnosing problems, designing change, and guiding teams through it.",
@@ -4968,6 +5179,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "senior-principal-consultant",
+      educationRoute: "mixed",
+      entryRoute: "bachelor",
       title: "Senior Principal Consultant",
       emoji: "💼",
       description: "An elite consultant who leads the largest engagements, owns the most important client relationships, and drives new business.",
@@ -4981,6 +5194,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "managing-partner",
+      educationRoute: "mixed",
+      entryRoute: "direct-entry",
       title: "Managing Partner",
       emoji: "🤝",
       description: "Lead a consulting or advisory firm — owning its strategy, its people, and its commercial success as the most senior partner.",
@@ -4994,6 +5209,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "consulting-director",
+      educationRoute: "mixed",
+      entryRoute: "bachelor",
       title: "Consulting Director",
       emoji: "📊",
       description: "Lead a consulting practice or portfolio of engagements — responsible for delivery, client outcomes, and growing the business.",
@@ -5007,6 +5224,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "mergers-acquisitions-technology-advisor",
+      educationRoute: "mixed",
+      entryRoute: "bachelor",
       title: "M&A Technology Advisor",
       emoji: "🔗",
       description: "Advise on the technology side of mergers and acquisitions — assessing systems, risks, and integration so deals succeed.",
@@ -5020,6 +5239,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "technology-due-diligence-consultant",
+      educationRoute: "mixed",
+      entryRoute: "bachelor",
       title: "Technology Due Diligence Consultant",
       emoji: "🔬",
       description: "Examine a company's technology before an investment or acquisition — judging the quality, scalability, and risk of what's been built.",
@@ -5033,6 +5254,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "principal-advisor",
+      educationRoute: "mixed",
+      entryRoute: "bachelor",
       title: "Principal Advisor",
       emoji: "🧠",
       description: "A senior trusted advisor who guides leaders on their hardest decisions — bringing deep expertise rather than hands-on delivery.",
@@ -5046,6 +5269,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "senior-advisor",
+      educationRoute: "mixed",
+      entryRoute: "direct-entry",
       title: "Senior Advisor",
       emoji: "💬",
       description: "An experienced expert who advises organisations on strategy and decisions, often part-time or alongside a portfolio of roles.",
@@ -5059,6 +5284,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "technology-advisory-director",
+      educationRoute: "mixed",
+      entryRoute: "bachelor",
       title: "Technology Advisory Director",
       emoji: "🏛️",
       description: "Lead a technology advisory practice — guiding clients on technology strategy, investment, and risk at the most senior level.",
@@ -5072,6 +5299,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "transformation-advisor",
+      educationRoute: "mixed",
+      entryRoute: "bachelor",
       title: "Transformation Advisor",
       emoji: "🌀",
       description: "Advise organisations going through major change — bringing experience of what works and what doesn't to leaders steering transformation.",
@@ -5085,6 +5314,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "operating-partner",
+      educationRoute: "mixed",
+      entryRoute: "direct-entry",
       title: "Operating Partner",
       emoji: "📈",
       description: "Work inside an investment firm to improve the companies it owns — bringing operational expertise to help portfolio businesses grow.",
@@ -5098,6 +5329,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "technology-operating-partner",
+      educationRoute: "mixed",
+      entryRoute: "direct-entry",
       title: "Technology Operating Partner",
       emoji: "⚡",
       description: "An operating partner focused on technology — helping an investment firm's portfolio companies build, fix, and scale their technology.",
@@ -5111,6 +5344,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "digital-operating-partner",
+      educationRoute: "mixed",
+      entryRoute: "direct-entry",
       title: "Digital Operating Partner",
       emoji: "🚀",
       description: "An operating partner focused on digital — helping portfolio companies modernise, adopt technology, and grow through digital change.",
@@ -5124,6 +5359,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "venture-partner",
+      educationRoute: "mixed",
+      entryRoute: "direct-entry",
       title: "Venture Partner",
       emoji: "🌱",
       description: "Work with a venture capital firm to find, back, and support startups — bringing expertise and networks to early-stage companies.",
@@ -5137,6 +5374,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "practice-lead",
+      educationRoute: "mixed",
+      entryRoute: "bachelor",
       title: "Practice Lead",
       emoji: "🎓",
       description: "Lead a specialist practice within a consultancy or technology firm — owning its expertise, its people, and its growth.",
@@ -5150,6 +5389,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "expert-witness-technology",
+      educationRoute: "mixed",
+      entryRoute: "direct-entry",
       title: "Expert Witness (Technology)",
       emoji: "⚖️",
       description: "Provide independent expert opinion on technology in legal disputes — explaining complex systems clearly to courts and lawyers.",
@@ -5163,6 +5404,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "board-advisor-technology",
+      educationRoute: "mixed",
+      entryRoute: "direct-entry",
       title: "Board Advisor (Technology)",
       emoji: "🪑",
       description: "Advise a company's board on technology — bringing senior, independent perspective on strategy, risk, and innovation.",
@@ -6083,14 +6326,14 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     // ── Trading & investing ──
     { id: "stockbroker", title: "Stockbroker", emoji: "📈", description: "Buy and sell stocks on behalf of clients — building portfolios, providing advice, and managing relationships.", avgSalary: "650,000 - 1,800,000 kr/year (commission-driven)", educationPath: "Bachelor's in Finance / Economics + Finansforetaket licensing", keySkills: ["market knowledge", "client service", "trading", "communication", "risk management"], dailyTasks: ["Place trades", "Advise clients", "Track markets", "Build portfolios", "Manage compliance"], growthOutlook: "medium" },
     { id: "trader", title: "Trader", emoji: "💹", description: "Trade financial instruments — equities, FX, commodities, derivatives — on behalf of a bank, fund, or own account.", avgSalary: "700,000 - 3,000,000+ kr/year (highly variable, performance-based)", educationPath: "Bachelor's/Master's in Finance / Maths + trading internship", keySkills: ["market analysis", "fast decision-making", "risk control", "discipline", "stress management"], dailyTasks: ["Watch markets", "Place trades", "Manage risk", "Read research", "Brief desk"], growthOutlook: "medium" },
-    { id: "day-trader", title: "Day Trader", emoji: "⏱️", description: "Buy and sell securities within the same day — making many small trades and rarely holding positions overnight.", avgSalary: "0 - 2,000,000+ kr/year (highly variable, often negative)", educationPath: "Self-taught — most professional day traders fail; risk capital required", keySkills: ["technical analysis", "discipline", "risk management", "patience", "emotional control"], dailyTasks: ["Watch markets", "Take entries", "Manage stops", "Journal trades", "Review setups"], growthOutlook: "stable" },
+    { id: "day-trader", educationRoute: "on-the-job", entryRoute: "direct-entry", title: "Day Trader", emoji: "⏱️", description: "Buy and sell securities within the same day — making many small trades and rarely holding positions overnight.", avgSalary: "0 - 2,000,000+ kr/year (highly variable, often negative)", educationPath: "Self-taught — most professional day traders fail; risk capital required", keySkills: ["technical analysis", "discipline", "risk management", "patience", "emotional control"], dailyTasks: ["Watch markets", "Take entries", "Manage stops", "Journal trades", "Review setups"], growthOutlook: "stable" },
     { id: "investment-banker", title: "Investment Banker", emoji: "🏦", description: "Advise companies on M&A, IPOs, and capital raising — building financial models and pitching deals to executives.", avgSalary: "485,000 - 1,610,000 kr/year", educationPath: "Bachelor's/Master's in Finance / Economics + analyst programme", keySkills: ["financial modelling", "valuation", "stamina", "client management", "presentation"], dailyTasks: ["Build models", "Draft pitches", "Run analyses", "Brief clients", "Execute deals"], growthOutlook: "medium" , lastVerifiedAt: "2026-06-12" , sourceUrl: "https://www.ssb.no/en/statbank/table/11418" },
     { id: "equity-analyst", title: "Equity Analyst", emoji: "📊", description: "Research and value listed companies — publishing recommendations to fund managers and institutional clients.", avgSalary: "650,000 - 1,500,000 kr/year", educationPath: "Bachelor's in Finance / Economics + CFA route", keySkills: ["financial analysis", "valuation", "report writing", "industry knowledge", "modelling"], dailyTasks: ["Build models", "Read reports", "Meet management", "Write notes", "Brief sales"], growthOutlook: "medium" },
     { id: "financial-analyst", title: "Financial Analyst", emoji: "💼", description: "Analyse business performance, build forecasts, and support decision-making — in corporate finance, banking, or asset management.", avgSalary: "750,000 - 1,295,000 kr/year", educationPath: "Bachelor's in Finance / Economics + Excel / financial modelling skills", keySkills: ["financial modelling", "Excel", "analysis", "communication", "attention to detail"], dailyTasks: ["Build forecasts", "Track performance", "Analyse variance", "Brief management", "Support decisions"], growthOutlook: "high" , lastVerifiedAt: "2026-06-12" , sourceUrl: "https://www.ssb.no/en/statbank/table/11418", entryRoute: "bachelor", gradeBand: { floor: 4, ceiling: 5, competitiveness: "competitive" } },
     { id: "hedge-fund-manager", title: "Hedge Fund Manager", emoji: "🎯", description: "Run a hedge fund — make investment decisions, manage risk, and grow client capital across complex strategies.", avgSalary: "1,200,000 - 10,000,000+ kr/year (performance fees)", educationPath: "Bachelor's/Master's in Finance + decade of trading or PM experience", keySkills: ["investment strategy", "risk management", "decision-making", "leadership", "investor relations"], dailyTasks: ["Make decisions", "Manage risk", "Meet investors", "Run team", "Track P&L"], growthOutlook: "medium" },
     { id: "options-trader", title: "Options Trader", emoji: "📉", description: "Trade options contracts — using volatility, time decay, and complex strategies to profit and hedge risk.", avgSalary: "700,000 - 3,000,000+ kr/year (variable)", educationPath: "Bachelor's in Finance / Maths / Physics + trading desk experience", keySkills: ["volatility", "Greeks", "risk modelling", "strategy", "discipline"], dailyTasks: ["Quote options", "Hedge risk", "Build positions", "Watch vol", "Manage P&L"], growthOutlook: "medium" },
-    { id: "forex-trader", title: "Forex Trader", emoji: "💱", description: "Trade currency pairs in the FX market — analysing macro, central banks, and price action 24/5.", avgSalary: "0 - 2,000,000+ kr/year (highly variable)", educationPath: "Self-taught or finance background + risk capital", keySkills: ["macro analysis", "technical analysis", "risk management", "discipline", "stamina"], dailyTasks: ["Watch news", "Place trades", "Manage stops", "Read flows", "Journal trades"], growthOutlook: "stable" },
-    { id: "crypto-trader", title: "Crypto Trader", emoji: "🪙", description: "Trade cryptocurrencies on exchanges — using technical analysis, on-chain data, and market sentiment.", avgSalary: "0 - 3,000,000+ kr/year (highly variable, very risky)", educationPath: "Self-taught — risk capital and risk management required", keySkills: ["technical analysis", "on-chain data", "risk management", "discipline", "stamina"], dailyTasks: ["Watch charts", "Place trades", "Manage positions", "Track on-chain", "Review setups"], growthOutlook: "medium" },
+    { id: "forex-trader", educationRoute: "on-the-job", entryRoute: "direct-entry", title: "Forex Trader", emoji: "💱", description: "Trade currency pairs in the FX market — analysing macro, central banks, and price action 24/5.", avgSalary: "0 - 2,000,000+ kr/year (highly variable)", educationPath: "Self-taught or finance background + risk capital", keySkills: ["macro analysis", "technical analysis", "risk management", "discipline", "stamina"], dailyTasks: ["Watch news", "Place trades", "Manage stops", "Read flows", "Journal trades"], growthOutlook: "stable" },
+    { id: "crypto-trader", educationRoute: "on-the-job", entryRoute: "direct-entry", title: "Crypto Trader", emoji: "🪙", description: "Trade cryptocurrencies on exchanges — using technical analysis, on-chain data, and market sentiment.", avgSalary: "0 - 3,000,000+ kr/year (highly variable, very risky)", educationPath: "Self-taught — risk capital and risk management required", keySkills: ["technical analysis", "on-chain data", "risk management", "discipline", "stamina"], dailyTasks: ["Watch charts", "Place trades", "Manage positions", "Track on-chain", "Review setups"], growthOutlook: "medium" },
     { id: "wealth-manager", title: "Wealth Manager", emoji: "💎", description: "Help wealthy individuals and families manage and grow their wealth — investments, tax, estate, and lifestyle.", avgSalary: "800,000 - 2,000,000+ kr/year", educationPath: "Bachelor's in Finance + CFP / wealth management certifications", keySkills: ["client management", "investment strategy", "tax planning", "discretion", "communication"], dailyTasks: ["Meet clients", "Build portfolios", "Plan tax", "Review markets", "Network"], growthOutlook: "high" },
     { id: "risk-analyst", title: "Risk Analyst", emoji: "⚖️", description: "Identify and quantify risks across credit, market, or operational areas — supporting decisions that protect the business.", avgSalary: "800,000 - 1,380,000 kr/year", educationPath: "Bachelor's in Finance / Maths / Statistics + FRM / PRM certifications", keySkills: ["statistical modelling", "risk frameworks", "Excel", "report writing", "regulation"], dailyTasks: ["Build risk models", "Run stress tests", "Monitor exposures", "Write reports", "Brief management"], growthOutlook: "high" },
     { id: "derivatives-trader", title: "Derivatives Trader", emoji: "🔀", description: "Trade derivatives — futures, swaps, options — for a bank or fund, often hedging or providing liquidity.", avgSalary: "800,000 - 3,000,000+ kr/year (variable)", educationPath: "Bachelor's/Master's in Finance / Maths / Physics + trading desk experience", keySkills: ["derivatives pricing", "risk management", "modelling", "fast decision-making", "discipline"], dailyTasks: ["Price derivatives", "Hedge books", "Manage P&L", "Watch markets", "Brief desk"], growthOutlook: "medium" },
@@ -6213,6 +6456,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "digital-marketer",
+      educationRoute: "mixed",
+      entryRoute: "direct-entry",
       title: "Digital Marketing Specialist",
       emoji: "📱",
       description: "Run online marketing campaigns including social media, SEO, and paid advertising.",
@@ -6225,6 +6470,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "sales-representative",
+      educationRoute: "on-the-job",
+      entryRoute: "direct-entry",
       title: "Sales Representative",
       emoji: "🤝",
       description: "Sell products or services to businesses or consumers, building client relationships.",
@@ -6237,6 +6484,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "customer-service-rep",
+      educationRoute: "on-the-job",
+      entryRoute: "direct-entry",
       title: "Customer Service Representative",
       emoji: "📞",
       description: "Help customers with inquiries, complaints, and support via phone, chat, or email.",
@@ -6249,6 +6498,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "content-creator",
+      educationRoute: "mixed",
+      entryRoute: "direct-entry",
       title: "Social Media Manager",
       emoji: "✨",
       description: "Create engaging content for social media, blogs, and digital platforms.",
@@ -6272,6 +6523,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "retail-manager",
+      educationRoute: "on-the-job",
+      entryRoute: "direct-entry",
       title: "Retail Store Manager",
       emoji: "🏪",
       description: "Manage daily store operations, staff, and sales performance in retail.",
@@ -6470,6 +6723,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "retail-assistant",
+      educationRoute: "on-the-job",
+      entryRoute: "direct-entry",
       title: "Retail Assistant",
       emoji: "🛍️",
       description: "Serve customers in shops — stock shelves, run the till, advise on products, handle returns. A common first job at 15+; the path forward leads to Shop Supervisor and Store Manager.",
@@ -6482,6 +6737,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "brewer",
+      educationRoute: "mixed",
+      entryRoute: "apprenticeship",
       title: "Brewer",
       emoji: "🍺",
       description: "Make beer at scale — managing fermentation, recipes, and production runs in a craft brewery or large brewing operation.",
@@ -6944,6 +7201,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "electrician",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Electrician",
       emoji: "🔌",
       description: "Install, maintain, and repair electrical systems in buildings and facilities.",
@@ -6958,6 +7217,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "plumber",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Plumber",
       emoji: "🔧",
       description: "Install and repair water, heating, and drainage systems in buildings.",
@@ -6983,6 +7244,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "renewable-energy-tech",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Renewable Energy Technician",
       emoji: "🌱",
       description: "Install and maintain solar panels, wind turbines, and other renewable energy systems.",
@@ -6995,6 +7258,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "process-operator",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Process Operator",
       emoji: "🏭",
       description: "Monitor and control industrial processes in manufacturing and energy plants.",
@@ -7007,6 +7272,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "carpenter",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Carpenter",
       emoji: "🪚",
       description: "Build and repair wooden structures and frameworks for buildings.",
@@ -7021,6 +7288,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "hvac-technician",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "HVAC Technician",
       emoji: "❄️",
       description: "Install, maintain, and repair heating, ventilation, and air conditioning systems.",
@@ -7033,6 +7302,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "painter",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Painter",
       emoji: "🎨",
       description: "Apply paint, wallpaper, and other finishes to interior and exterior surfaces.",
@@ -7045,6 +7316,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "welder",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Welder",
       emoji: "🔥",
       description: "Join metal parts using various welding techniques in construction and manufacturing.",
@@ -7057,6 +7330,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "auto-mechanic",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Auto Mechanic",
       emoji: "🚗",
       description: "Diagnose, repair, and maintain vehicles including cars, trucks, and motorcycles.",
@@ -7159,6 +7434,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "industrial-electrician",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Industrial Electrician",
       emoji: "⚡",
       description: "Installs, maintains, and repairs electrical systems and equipment in industrial facilities such as factories, plants, and processing sites.",
@@ -7171,6 +7448,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "high-voltage-electrician",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "High Voltage Electrician",
       emoji: "🔌",
       description: "Specializes in the installation, maintenance, and repair of high-voltage electrical systems and distribution networks.",
@@ -7183,6 +7462,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "power-line-technician",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Power Line Technician",
       emoji: "🗼",
       description: "Constructs, maintains, and repairs overhead and underground power transmission and distribution lines.",
@@ -7195,6 +7476,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "substation-technician",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Substation Technician",
       emoji: "🏗️",
       description: "Maintains and operates electrical substations that transform voltage levels for power transmission and distribution.",
@@ -7207,6 +7490,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "electrical-commissioning-technician",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Electrical Commissioning Technician",
       emoji: "✅",
       description: "Tests, verifies, and commissions new or upgraded electrical systems to ensure they meet design specifications before handover.",
@@ -7219,6 +7504,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "protection-and-control-technician",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Protection and Control Technician",
       emoji: "🛡️",
       description: "Configures, tests, and maintains protection relay systems and control schemes that safeguard electrical power networks.",
@@ -7231,6 +7518,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "instrumentation-technician",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Instrumentation Technician",
       emoji: "📊",
       description: "Installs, calibrates, and maintains measurement and control instruments used in industrial processes.",
@@ -7243,6 +7532,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "industrial-instrumentation-technician",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Industrial Instrumentation Technician",
       emoji: "🏭",
       description: "Specializes in maintaining and optimizing complex instrumentation systems within large-scale industrial and manufacturing environments.",
@@ -7255,6 +7546,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "plc-technician",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "PLC Technician",
       emoji: "🖥️",
       description: "Programs, troubleshoots, and maintains programmable logic controllers that automate industrial machinery and processes.",
@@ -7267,6 +7560,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "scada-technician",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "SCADA Technician",
       emoji: "📡",
       description: "Installs, configures, and maintains supervisory control and data acquisition systems used for remote monitoring and control of infrastructure.",
@@ -7279,6 +7574,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "automation-technician",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Automation Technician",
       emoji: "🤖",
       description: "Designs, installs, and maintains automated control systems that optimise industrial production and process efficiency.",
@@ -7291,6 +7588,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "offshore-electrician",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Offshore Electrician",
       emoji: "🛢️",
       description: "Maintains and repairs electrical systems on offshore oil and gas platforms, ensuring safe and reliable power distribution in a demanding environment.",
@@ -7303,6 +7602,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "offshore-instrumentation-technician",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Offshore Instrumentation Technician",
       emoji: "🔬",
       description: "Calibrates, maintains, and repairs instrumentation and control systems on offshore oil and gas installations.",
@@ -7315,6 +7616,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "offshore-mechanical-technician",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Offshore Mechanical Technician",
       emoji: "🔧",
       description: "Performs mechanical maintenance and repair on rotating equipment, piping, and structural components on offshore platforms.",
@@ -7327,6 +7630,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "offshore-maintenance-technician",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Offshore Maintenance Technician",
       emoji: "🛠️",
       description: "Carries out planned and corrective maintenance across multiple disciplines on offshore installations to ensure operational uptime.",
@@ -7339,6 +7644,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "rig-electrician",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Rig Electrician",
       emoji: "⚡",
       description: "Maintains and troubleshoots electrical power generation, distribution, and control systems on mobile drilling rigs.",
@@ -7351,6 +7658,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "rig-instrumentation-technician",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Rig Instrumentation Technician",
       emoji: "📈",
       description: "Maintains and calibrates instrumentation and control systems specific to drilling rig operations, including well monitoring equipment.",
@@ -7363,6 +7672,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "drilling-technician",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Drilling Technician",
       emoji: "🕳️",
       description: "Operates and maintains drilling equipment and systems, supporting the safe and efficient execution of well drilling programs.",
@@ -7375,6 +7686,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "well-intervention-technician",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Well Intervention Technician",
       emoji: "🔩",
       description: "Performs specialized well maintenance and intervention operations to restore or enhance production from existing oil and gas wells.",
@@ -7387,6 +7700,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "subsea-technician",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Subsea Technician",
       emoji: "🌊",
       description: "Installs, maintains, and repairs subsea production equipment and infrastructure on the seabed.",
@@ -7399,6 +7714,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "subsea-controls-technician",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Subsea Controls Technician",
       emoji: "🎛️",
       description: "Specializes in the electronic and hydraulic control systems that operate subsea production equipment from topside facilities.",
@@ -7411,6 +7728,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "rov-pilot-technician",
+      educationRoute: "certification",
+      entryRoute: "certification",
       title: "ROV Pilot Technician",
       emoji: "🤿",
       description: "Operates remotely operated vehicles to perform underwater inspections, maintenance, and construction tasks in deep-sea environments.",
@@ -7423,6 +7742,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "rov-supervisor",
+      educationRoute: "on-the-job",
+      entryRoute: "direct-entry",
       title: "ROV Supervisor",
       emoji: "🎯",
       description: "Leads ROV operations offshore, managing pilot teams and coordinating underwater vehicle missions to meet project objectives safely.",
@@ -7435,6 +7756,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "fpso-technician",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "FPSO Technician",
       emoji: "🚢",
       description: "Maintains and operates process, mechanical, and utility systems aboard floating production, storage, and offloading vessels.",
@@ -7447,6 +7770,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "offshore-production-technician",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Offshore Production Technician",
       emoji: "🛢️",
       description: "Operates and monitors oil and gas production systems on offshore platforms to ensure safe, continuous, and optimised hydrocarbon output.",
@@ -7459,6 +7784,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "offshore-operations-technician",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Offshore Operations Technician",
       emoji: "🔄",
       description: "Supports the overall daily operations of an offshore installation, coordinating across departments to maintain platform safety and efficiency.",
@@ -7471,6 +7798,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "control-room-operator",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Control Room Operator",
       emoji: "🖥️",
       description: "Monitors and controls industrial or offshore process operations from a centralized control room using DCS and SCADA systems.",
@@ -7484,6 +7813,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
 
     {
       id: "offshore-wind-technician",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Offshore Wind Technician",
       emoji: "🌊",
       description: "Performs maintenance, troubleshooting, and repair of wind turbines located in offshore wind farms.",
@@ -7496,6 +7827,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "senior-wind-turbine-technician",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Senior Wind Turbine Technician",
       emoji: "⚙️",
       description: "Leads complex turbine repairs and mentors junior technicians across onshore and offshore wind installations.",
@@ -7508,6 +7841,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "high-voltage-wind-technician",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "High Voltage Wind Technician",
       emoji: "⚡",
       description: "Specializes in the installation, testing, and maintenance of high-voltage electrical systems within wind farms.",
@@ -7520,6 +7855,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "wind-commissioning-technician",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Wind Commissioning Technician",
       emoji: "🔌",
       description: "Oversees the startup, testing, and handover of newly installed wind turbines and associated electrical systems.",
@@ -7532,6 +7869,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "wind-service-supervisor",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Wind Service Supervisor",
       emoji: "📋",
       description: "Manages wind farm service teams, coordinates maintenance campaigns, and ensures HSE compliance across sites.",
@@ -7544,6 +7883,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "grid-connection-technician",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Grid Connection Technician",
       emoji: "🔗",
       description: "Installs, tests, and maintains the electrical infrastructure that connects power generation assets to the grid.",
@@ -7556,6 +7897,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "power-plant-technician",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Power Plant Technician",
       emoji: "🏭",
       description: "Operates and maintains equipment in thermal, hydro, or combined-cycle power plants to ensure reliable energy production.",
@@ -7568,6 +7911,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "gas-turbine-technician",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Gas Turbine Technician",
       emoji: "🔥",
       description: "Maintains, overhauls, and troubleshoots industrial gas turbines used in power generation and offshore platforms.",
@@ -7580,6 +7925,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "steam-turbine-technician",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Steam Turbine Technician",
       emoji: "♨️",
       description: "Services and repairs steam turbines and auxiliary systems in power stations and industrial facilities.",
@@ -7592,6 +7939,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "energy-commissioning-technician",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Energy Commissioning Technician",
       emoji: "✅",
       description: "Tests and verifies power generation and distribution systems during construction and handover of energy facilities.",
@@ -7604,6 +7953,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "marine-engineer",
+      educationRoute: "mixed",
+      entryRoute: "fagskole",
       title: "Marine Engineer",
       emoji: "🚢",
       description: "Operates and maintains the mechanical and electrical systems aboard ships, ensuring safe and efficient vessel operation.",
@@ -7616,6 +7967,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "chief-marine-engineer",
+      educationRoute: "certification",
+      entryRoute: "certification",
       title: "Chief Marine Engineer",
       emoji: "⚓",
       description: "Leads the entire engine department aboard a vessel, responsible for all technical operations and regulatory compliance.",
@@ -7628,6 +7981,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "ships-electrical-engineer",
+      educationRoute: "mixed",
+      entryRoute: "fagbrev",
       title: "Ship's Electrical Engineer",
       emoji: "💡",
       description: "Manages and maintains all electrical power generation, distribution, and control systems aboard a vessel.",
@@ -7640,6 +7995,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "marine-electrician",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Marine Electrician",
       emoji: "🔧",
       description: "Installs, repairs, and maintains electrical wiring, lighting, and equipment aboard ships and offshore vessels.",
@@ -7652,6 +8009,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "electro-technical-officer",
+      educationRoute: "certification",
+      entryRoute: "certification",
       title: "Electro-Technical Officer",
       emoji: "🖥️",
       description: "Serves as the certified electrical and electronics officer aboard STCW-regulated vessels, bridging engineering and IT systems.",
@@ -7664,6 +8023,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "dynamic-positioning-operator",
+      educationRoute: "certification",
+      entryRoute: "certification",
       title: "Dynamic Positioning Operator",
       emoji: "🎯",
       description: "Operates the dynamic positioning system on offshore vessels, maintaining precise station-keeping during critical operations.",
@@ -7676,6 +8037,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "shipyard-commissioning-technician",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Shipyard Commissioning Technician",
       emoji: "🛳️",
       description: "Tests and commissions mechanical, electrical, and automation systems during newbuild and refit projects in shipyards.",
@@ -7688,6 +8051,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "port-crane-technician",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Port Crane Technician",
       emoji: "🏗️",
       description: "Maintains and repairs large container cranes, ship-to-shore gantries, and mobile harbour cranes at port terminals.",
@@ -7700,6 +8065,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "vessel-maintenance-supervisor",
+      educationRoute: "mixed",
+      entryRoute: "fagskole",
       title: "Vessel Maintenance Supervisor",
       emoji: "📊",
       description: "Plans and oversees all maintenance activities aboard a vessel or across a fleet, ensuring regulatory compliance and uptime.",
@@ -7712,6 +8079,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "aircraft-maintenance-engineer",
+      educationRoute: "certification",
+      entryRoute: "certification",
       title: "Aircraft Maintenance Engineer",
       emoji: "✈️",
       description: "Performs scheduled and unscheduled maintenance on aircraft airframes, engines, and systems to ensure airworthiness.",
@@ -7724,6 +8093,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "licensed-aircraft-engineer",
+      educationRoute: "certification",
+      entryRoute: "certification",
       title: "Licensed Aircraft Engineer",
       emoji: "🛫",
       description: "Holds a certifying authority to approve aircraft for return to service after maintenance, carrying full legal responsibility.",
@@ -7736,6 +8107,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "avionics-technician",
+      educationRoute: "certification",
+      entryRoute: "certification",
       title: "Avionics Technician",
       emoji: "📡",
       description: "Installs, tests, and repairs electronic systems in aircraft including navigation, communication, and flight instruments.",
@@ -7748,6 +8121,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "aircraft-structures-technician",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Aircraft Structures Technician",
       emoji: "🔩",
       description: "Repairs and fabricates aircraft structural components including fuselage panels, composite parts, and flight control surfaces.",
@@ -7760,6 +8135,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "maintenance-release-engineer",
+      educationRoute: "certification",
+      entryRoute: "certification",
       title: "Maintenance Release Engineer",
       emoji: "📝",
       description: "Manages the technical release process for aircraft returning to service after heavy maintenance checks or modifications.",
@@ -7772,6 +8149,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "helicopter-maintenance-engineer",
+      educationRoute: "certification",
+      entryRoute: "certification",
       title: "Helicopter Maintenance Engineer",
       emoji: "🚁",
       description: "Maintains and repairs helicopters used in offshore transport, search and rescue, and emergency medical services.",
@@ -7784,6 +8163,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "industrial-mechanic",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Industrial Mechanic",
       emoji: "🔧",
       description: "Installs, maintains, and repairs mechanical equipment and machinery in factories, plants, and industrial facilities.",
@@ -7796,6 +8177,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "heavy-equipment-mechanic",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Heavy Equipment Mechanic",
       emoji: "🚜",
       description: "Services and repairs heavy machinery such as excavators, wheel loaders, and dump trucks used in construction and mining.",
@@ -7809,6 +8192,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
 
     {
       id: "crane-technician",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Crane Technician",
       emoji: "🏗️",
       description: "Maintains, inspects, and repairs cranes and lifting equipment to ensure safe and reliable operation on construction and industrial sites.",
@@ -7821,6 +8206,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "crane-operator",
+      educationRoute: "certification",
+      entryRoute: "certification",
       title: "Crane Operator",
       emoji: "🎮",
       description: "Operates tower cranes, mobile cranes, and other heavy lifting equipment to move materials and components on construction and industrial sites.",
@@ -7833,6 +8220,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "hydraulic-systems-technician",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Hydraulic Systems Technician",
       emoji: "💧",
       description: "Installs, maintains, and troubleshoots hydraulic power systems used in industrial machinery, offshore equipment, and mobile plant.",
@@ -7845,6 +8234,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "pneumatic-systems-technician",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Pneumatic Systems Technician",
       emoji: "🌬️",
       description: "Services and repairs pneumatic control systems and compressed air networks in manufacturing plants and process facilities.",
@@ -7857,6 +8248,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "rotating-equipment-specialist",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Rotating Equipment Specialist",
       emoji: "⚙️",
       description: "Specialises in the maintenance, alignment, and vibration analysis of turbines, compressors, pumps, and other rotating machinery in process industries.",
@@ -7869,6 +8262,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "compressor-technician",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Compressor Technician",
       emoji: "🔩",
       description: "Maintains and overhauls reciprocating, screw, and centrifugal compressors used in oil and gas, refrigeration, and industrial air systems.",
@@ -7881,6 +8276,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "pump-technician",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Pump Technician",
       emoji: "🔧",
       description: "Installs, repairs, and maintains centrifugal, positive displacement, and submersible pumps across water treatment, process, and offshore industries.",
@@ -7893,6 +8290,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "industrial-maintenance-supervisor",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Industrial Maintenance Supervisor",
       emoji: "📋",
       description: "Leads and coordinates maintenance teams to ensure industrial equipment operates safely, efficiently, and with minimal unplanned downtime.",
@@ -7905,6 +8304,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "mechanical-commissioning-technician",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Mechanical Commissioning Technician",
       emoji: "✅",
       description: "Tests, verifies, and brings mechanical systems into operation during the final stages of construction and installation projects.",
@@ -7917,6 +8318,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "construction-site-supervisor",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Construction Site Supervisor",
       emoji: "🦺",
       description: "Oversees day-to-day construction activities, managing workers, subcontractors, and resources to deliver projects on time and within safety standards.",
@@ -7929,6 +8332,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "civil-works-foreman",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Civil Works Foreman",
       emoji: "🏛️",
       description: "Directs civil construction crews on earthworks, foundations, drainage, and concrete operations for infrastructure and building projects.",
@@ -7941,6 +8346,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "tunnelling-technician",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Tunnelling Technician",
       emoji: "⛏️",
       description: "Supports tunnel construction operations including drill-and-blast, ground support installation, and monitoring of rock conditions underground.",
@@ -7953,6 +8360,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "tunnel-boring-machine-technician",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Tunnel Boring Machine Technician",
       emoji: "🕳️",
       description: "Operates and maintains tunnel boring machines (TBMs), ensuring continuous excavation progress and mechanical reliability on major tunnel projects.",
@@ -7965,6 +8374,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "rail-signalling-technician",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Rail Signalling Technician",
       emoji: "🚦",
       description: "Installs, tests, and maintains railway signalling systems including interlockings, track circuits, and automatic train protection equipment.",
@@ -7977,6 +8388,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "rail-systems-technician",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Rail Systems Technician",
       emoji: "🚆",
       description: "Maintains and repairs railway infrastructure systems including track, power supply, communications, and SCADA control systems.",
@@ -7989,6 +8402,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "overhead-line-equipment-technician",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Overhead Line Equipment Technician",
       emoji: "🔌",
       description: "Installs and maintains overhead catenary and contact wire systems that supply electric power to trains on electrified railway lines.",
@@ -8001,6 +8416,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "lift-technician",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Lift Technician",
       emoji: "🛗",
       description: "Installs, services, and repairs passenger and goods lifts (elevators) in commercial buildings, residential blocks, and industrial facilities.",
@@ -8013,6 +8430,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "escalator-technician",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Escalator Technician",
       emoji: "↗️",
       description: "Maintains and repairs escalators and moving walkways in shopping centres, metro stations, airports, and public buildings.",
@@ -8025,6 +8444,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "cnc-machinist",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "CNC Machinist",
       emoji: "🖥️",
       description: "Programs, sets up, and operates computer numerically controlled machines to produce precision metal and plastic components.",
@@ -8037,6 +8458,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "precision-machinist",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Precision Machinist",
       emoji: "🔬",
       description: "Produces ultra-tight tolerance components for aerospace, medical, and scientific applications using advanced machining techniques and measurement methods.",
@@ -8049,6 +8472,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "toolmaker",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Toolmaker",
       emoji: "🛠️",
       description: "Designs, builds, and maintains precision tools, dies, moulds, and jigs used in mass production and manufacturing processes.",
@@ -8061,6 +8486,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "industrial-fitter",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Industrial Fitter",
       emoji: "🔧",
       description: "Assembles, installs, and maintains mechanical equipment and systems in factories, plants, and industrial facilities.",
@@ -8073,6 +8500,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "millwright",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Millwright",
       emoji: "⚙️",
       description: "Installs, dismantles, repairs, and relocates heavy industrial machinery and mechanical systems in manufacturing and process plants.",
@@ -8085,6 +8514,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "welding-inspector",
+      educationRoute: "certification",
+      entryRoute: "certification",
       title: "Welding Inspector",
       emoji: "🔍",
       description: "Inspects welds and welding processes to ensure compliance with codes, standards, and project specifications in fabrication and construction.",
@@ -8097,6 +8528,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "coded-welder",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Coded Welder",
       emoji: "🔥",
       description: "Performs high-integrity welding on pressure vessels, pipelines, and structural components, holding certified qualifications to recognised codes and standards.",
@@ -8109,6 +8542,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "pipefitter",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Pipefitter",
       emoji: "🔧",
       description: "Fabricates, assembles, and installs piping systems for process plants, refineries, and offshore installations according to isometric drawings and specifications.",
@@ -8121,6 +8556,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "boilermaker",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Boilermaker",
       emoji: "🏭",
       description: "Fabricates, assembles, and repairs boilers, pressure vessels, tanks, and heavy plate structures for industrial and energy sector applications.",
@@ -8134,6 +8571,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
 
     {
       id: "commercial-diver",
+      educationRoute: "certification",
+      entryRoute: "certification",
       title: "Commercial Diver",
       emoji: "🤿",
       description: "Performs underwater construction, inspection, and repair work for harbours, bridges, pipelines, and offshore installations.",
@@ -8146,6 +8585,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "saturation-diver",
+      educationRoute: "certification",
+      entryRoute: "certification",
       title: "Saturation Diver",
       emoji: "⚓",
       description: "Lives and works at extreme depths for extended periods in pressurised chambers, performing complex subsea tasks on offshore oil and gas infrastructure.",
@@ -8158,6 +8599,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "subsea-diver",
+      educationRoute: "certification",
+      entryRoute: "certification",
       title: "Subsea Diver",
       emoji: "🌊",
       description: "Specialises in inspection, maintenance, and repair of subsea equipment such as wellheads, manifolds, and subsea production systems.",
@@ -8170,6 +8613,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "rope-access-technician",
+      educationRoute: "certification",
+      entryRoute: "certification",
       title: "Rope Access Technician",
       emoji: "🧗",
       description: "Uses industrial rope systems to access hard-to-reach structures for inspection, maintenance, and installation work at height.",
@@ -8182,6 +8627,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "industrial-abseiler",
+      educationRoute: "certification",
+      entryRoute: "certification",
       title: "Industrial Abseiler",
       emoji: "🏗️",
       description: "Carries out painting, coating, cleaning, and light maintenance on tall structures such as wind turbines, bridges, and building facades using abseil techniques.",
@@ -8194,6 +8641,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "confined-space-rescue-technician",
+      educationRoute: "certification",
+      entryRoute: "certification",
       title: "Confined Space Rescue Technician",
       emoji: "🚨",
       description: "Provides standby rescue capability and atmospheric monitoring for personnel working inside tanks, vessels, tunnels, and other confined spaces.",
@@ -8206,6 +8655,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "hazardous-materials-technician",
+      educationRoute: "certification",
+      entryRoute: "certification",
       title: "Hazardous Materials Technician",
       emoji: "☣️",
       description: "Handles the identification, containment, removal, and safe disposal of hazardous substances including asbestos, chemicals, and radioactive materials.",
@@ -8218,6 +8669,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "explosives-technician",
+      educationRoute: "certification",
+      entryRoute: "certification",
       title: "Explosives Technician",
       emoji: "💥",
       description: "Plans, prepares, and executes controlled blasting operations for mining, quarrying, tunnelling, and construction projects.",
@@ -8230,6 +8683,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "controlled-demolition-specialist",
+      educationRoute: "mixed",
+      entryRoute: "certification",
       title: "Controlled Demolition Specialist",
       emoji: "🏚️",
       description: "Engineers and carries out the safe, precise dismantlement or implosion of structures using mechanical, explosive, or cutting methods.",
@@ -8242,6 +8697,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "non-destructive-testing-technician",
+      educationRoute: "certification",
+      entryRoute: "certification",
       title: "Non-Destructive Testing Technician",
       emoji: "🔬",
       description: "Uses ultrasonic, radiographic, magnetic particle, and other testing methods to detect flaws in welds, structures, and components without causing damage.",
@@ -8254,6 +8711,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "level-iii-ndt-inspector",
+      educationRoute: "mixed",
+      entryRoute: "certification",
       title: "Level III NDT Inspector",
       emoji: "🔎",
       description: "Serves as the highest-qualified NDT authority, responsible for procedure development, technique validation, and certification of Level I and II personnel.",
@@ -8266,6 +8725,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "gas-network-technician",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Gas Network Technician",
       emoji: "🔥",
       description: "Installs, maintains, and repairs natural gas distribution networks including pipelines, regulators, meters, and pressure stations.",
@@ -8278,6 +8739,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "water-treatment-plant-technician",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Water Treatment Plant Technician",
       emoji: "💧",
       description: "Operates and maintains water purification systems to ensure safe drinking water meets quality standards for public distribution.",
@@ -8290,6 +8753,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "wastewater-systems-technician",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Wastewater Systems Technician",
       emoji: "♻️",
       description: "Maintains and operates sewage collection networks and treatment facilities to protect public health and the environment.",
@@ -8302,6 +8767,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "district-heating-technician",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "District Heating Technician",
       emoji: "🌡️",
       description: "Installs, operates, and maintains district heating distribution networks that deliver hot water or steam to residential and commercial buildings.",
@@ -8314,6 +8781,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "utility-network-commissioning-technician",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Utility Network Commissioning Technician",
       emoji: "✅",
       description: "Tests, verifies, and brings newly built or upgraded utility networks (water, gas, power, heating) into operational service.",
@@ -8326,6 +8795,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "critical-infrastructure-maintenance-technician",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Critical Infrastructure Maintenance Technician",
       emoji: "🛡️",
       description: "Maintains and repairs essential systems in critical facilities such as data centres, hospitals, power plants, and emergency services buildings.",
@@ -8338,6 +8809,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "electrical-contractor",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Electrical Contractor",
       emoji: "⚡",
       description: "Runs an independent contracting business providing electrical installation, maintenance, and project services to industrial and commercial clients.",
@@ -8350,6 +8823,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "instrumentation-contractor",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Instrumentation Contractor",
       emoji: "📡",
       description: "Provides specialist instrumentation and control system services including installation, calibration, and loop testing for process industry clients.",
@@ -8362,6 +8837,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "mechanical-maintenance-contractor",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Mechanical Maintenance Contractor",
       emoji: "🔧",
       description: "Delivers contracted mechanical maintenance services including rotating equipment overhaul, valve repair, and piping modifications for industrial plants.",
@@ -8374,6 +8851,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "offshore-service-contractor",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Offshore Service Contractor",
       emoji: "🛢️",
       description: "Provides multidiscipline technical services on offshore oil, gas, and wind installations including maintenance, modifications, and hook-up campaigns.",
@@ -8386,6 +8865,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "specialist-inspection-contractor",
+      educationRoute: "certification",
+      entryRoute: "certification",
       title: "Specialist Inspection Contractor",
       emoji: "🔍",
       description: "Offers advanced inspection services including drone surveys, corrosion mapping, fitness-for-service assessments, and integrity management for asset owners.",
@@ -8398,6 +8879,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "commissioning-contractor",
+      educationRoute: "mixed",
+      entryRoute: "fagbrev",
       title: "Commissioning Contractor",
       emoji: "🎛️",
       description: "Leads the systematic testing, verification, and start-up of new or modified industrial systems to ensure they perform to design specifications.",
@@ -8410,6 +8893,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "maintenance-shutdown-contractor",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Maintenance Shutdown Contractor",
       emoji: "🏭",
       description: "Plans and executes large-scale planned maintenance shutdowns (turnarounds) at refineries, process plants, and offshore installations within tight schedules.",
@@ -8422,6 +8907,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "gardener",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Gardener",
       emoji: "🌱",
       description: "Maintain gardens, parks and grounds — planting, pruning, mowing, seasonal care. Outdoor work in all weather. Path forward leads to Landscaper, Garden Designer or Park Manager.",
@@ -8434,7 +8921,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     // ── Civil & general engineering ──
     { id: "civil-engineer", title: "Civil Engineer", emoji: "🏗️", description: "Design and oversee construction of roads, bridges, tunnels, and water systems — the infrastructure that keeps societies running.", avgSalary: "650,000 - 1,000,000 kr/year", educationPath: "Master's in Civil Engineering (5 years)", keySkills: ["structural analysis", "CAD", "project planning", "site management", "regulations"], dailyTasks: ["Design structures", "Run calculations", "Visit sites", "Review drawings", "Coordinate contractors"], growthOutlook: "high", entryRoute: "master", gradeBand: { floor: 4, ceiling: 5, competitiveness: "competitive" } },
-    { id: "construction-worker", title: "Construction Worker", emoji: "👷", description: "Build buildings, roads, and infrastructure — operating tools, mixing materials, and supporting skilled trades on site.", avgSalary: "400,000 - 600,000 kr/year", educationPath: "On-the-job training; HMS / safety course required", keySkills: ["physical stamina", "tool use", "teamwork", "safety awareness", "reliability"], dailyTasks: ["Carry materials", "Operate basic tools", "Assist trades", "Clean site", "Follow safety rules"], growthOutlook: "stable", entryLevel: true, entryRoute: "apprenticeship", gradeBand: { floor: 2, ceiling: 3, competitiveness: "accessible" } },
+    { id: "construction-worker", educationRoute: "on-the-job", title: "Construction Worker", emoji: "👷", description: "Build buildings, roads, and infrastructure — operating tools, mixing materials, and supporting skilled trades on site.", avgSalary: "400,000 - 600,000 kr/year", educationPath: "On-the-job training; HMS / safety course required", keySkills: ["physical stamina", "tool use", "teamwork", "safety awareness", "reliability"], dailyTasks: ["Carry materials", "Operate basic tools", "Assist trades", "Clean site", "Follow safety rules"], growthOutlook: "stable", entryLevel: true, entryRoute: "apprenticeship", gradeBand: { floor: 2, ceiling: 3, competitiveness: "accessible" } },
     { id: "aviation-engineer", title: "Aviation Engineer", emoji: "✈️", description: "Design, develop, and certify aircraft systems — from airframes to avionics — for commercial and military aviation.", avgSalary: "750,000 - 1,200,000 kr/year", educationPath: "Master's in Aerospace or Mechanical Engineering (5 years)", keySkills: ["aerodynamics", "CAD/CAE", "systems engineering", "safety standards", "problem-solving"], dailyTasks: ["Run simulations", "Design components", "Validate test data", "Coordinate certification", "Document changes"], growthOutlook: "medium", pathType: "space" },
     // ── Space & aerospace ──
     { id: "astronaut", title: "Astronaut", emoji: "🧑‍🚀", description: "Train and operate as part of crewed space missions — conducting experiments, spacewalks, and operating spacecraft.", avgSalary: "800,000 - 1,500,000 kr/year", educationPath: "Master's/PhD in STEM + flight or military experience + ESA/NASA selection", keySkills: ["physical fitness", "stress management", "technical mastery", "teamwork", "languages"], dailyTasks: ["Train for missions", "Run simulations", "Operate spacecraft", "Conduct experiments", "Maintain physical condition"], growthOutlook: "stable", pathType: "space" },
@@ -8463,10 +8950,10 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     { id: "spacecraft-engineer", title: "Spacecraft Engineer", emoji: "🛰️", description: "Own the design, build, and integration of an entire spacecraft — from thermal systems to comms to deployment.", avgSalary: "800,000 - 1,400,000 kr/year", educationPath: "Master's in Aerospace Engineering (5 years) + industry experience", keySkills: ["systems engineering", "spacecraft design", "thermal analysis", "integration", "mission planning"], dailyTasks: ["Lead design reviews", "Coordinate subsystems", "Run integration tests", "Plan missions", "Support launch"], growthOutlook: "high", pathType: "space", lastVerifiedAt: "2026-04-16" },
     { id: "mission-control-specialist", title: "Mission Control Specialist", emoji: "🎛️", description: "Operate spacecraft from the ground — monitor telemetry, send commands, and troubleshoot during a live mission.", avgSalary: "650,000 - 1,000,000 kr/year", educationPath: "Bachelor's/Master's in Aerospace or Engineering + on-site training", keySkills: ["calm focus", "telemetry", "shift work", "procedures", "diagnostic thinking"], dailyTasks: ["Monitor telemetry", "Uplink commands", "Log anomalies", "Coordinate teams", "Run rehearsals"], growthOutlook: "medium", pathType: "space", lastVerifiedAt: "2026-04-16" },
     { id: "orbital-analyst", title: "Orbital Analyst", emoji: "🌐", description: "Predict where satellites go — model trajectories, plan manoeuvres, and avoid collisions in a crowded orbit.", avgSalary: "750,000 - 1,200,000 kr/year", educationPath: "Master's in Aerospace / Astrodynamics / Physics", keySkills: ["orbital mechanics", "numerical methods", "modelling", "Python", "data analysis"], dailyTasks: ["Model orbits", "Screen for conjunctions", "Plan manoeuvres", "Report to ops", "Validate predictions"], growthOutlook: "high", pathType: "space", lastVerifiedAt: "2026-04-16" },
-    { id: "aerospace-technician", title: "Aerospace Technician", emoji: "🔩", description: "Build, assemble, and maintain aerospace hardware — precision work on aircraft and spacecraft components.", avgSalary: "650,000 - 1,120,000 kr/year", educationPath: "Vocational diploma (fagbrev) in aerospace mechanics or apprenticeship", keySkills: ["mechanical skills", "precision", "hand tools", "blueprint reading", "safety procedures"], dailyTasks: ["Assemble hardware", "Inspect parts", "Calibrate instruments", "Follow specs", "Document work"], growthOutlook: "medium", workSetting: "hands-on", entryLevel: true, lastVerifiedAt: "2026-04-16" },
+    { id: "aerospace-technician", educationRoute: "vocational", entryRoute: "fagbrev", title: "Aerospace Technician", emoji: "🔩", description: "Build, assemble, and maintain aerospace hardware — precision work on aircraft and spacecraft components.", avgSalary: "650,000 - 1,120,000 kr/year", educationPath: "Vocational diploma (fagbrev) in aerospace mechanics or apprenticeship", keySkills: ["mechanical skills", "precision", "hand tools", "blueprint reading", "safety procedures"], dailyTasks: ["Assemble hardware", "Inspect parts", "Calibrate instruments", "Follow specs", "Document work"], growthOutlook: "medium", workSetting: "hands-on", entryLevel: true, lastVerifiedAt: "2026-04-16" },
     { id: "manufacturing-engineer", title: "Manufacturing Engineer", emoji: "🏭", description: "Design and optimise how products are made — layout production lines, reduce waste, improve throughput.", avgSalary: "600,000 - 1,000,000 kr/year", educationPath: "Bachelor's in Industrial / Mechanical Engineering", keySkills: ["process design", "lean methodology", "CAD", "data analysis", "problem-solving"], dailyTasks: ["Improve production lines", "Design jigs and fixtures", "Analyse throughput", "Reduce defects", "Train operators"], growthOutlook: "medium", workSetting: "mixed", lastVerifiedAt: "2026-04-16" },
     { id: "quality-assurance-engineer", title: "Quality Assurance Engineer", emoji: "✅", description: "Make sure products meet the spec — build test plans, audit suppliers, and stop defects before they reach customers.", avgSalary: "600,000 - 950,000 kr/year", educationPath: "Bachelor's in Engineering or Quality Management", keySkills: ["attention to detail", "ISO standards", "root-cause analysis", "auditing", "documentation"], dailyTasks: ["Run inspections", "Audit processes", "Investigate non-conformances", "Write procedures", "Train teams"], growthOutlook: "medium", lastVerifiedAt: "2026-04-16" },
-    { id: "aircraft-mechanic", title: "Aircraft Mechanic", emoji: "🔧", description: "Inspect, repair, and overhaul aircraft — keep planes and helicopters safe and airworthy.", avgSalary: "670,000 - 1,170,000 kr/year", educationPath: "Vocational aircraft mechanic diploma + EASA Part-66 licence", keySkills: ["mechanical skills", "aircraft systems", "regulations", "troubleshooting", "precision"], dailyTasks: ["Inspect aircraft", "Repair systems", "Change components", "Document work", "Sign off airworthiness"], growthOutlook: "medium", workSetting: "hands-on", lastVerifiedAt: "2026-04-16", entryRoute: "fagbrev", gradeBand: { floor: 3, ceiling: 4, competitiveness: "competitive" } },
+    { id: "aircraft-mechanic", educationRoute: "vocational", title: "Aircraft Mechanic", emoji: "🔧", description: "Inspect, repair, and overhaul aircraft — keep planes and helicopters safe and airworthy.", avgSalary: "670,000 - 1,170,000 kr/year", educationPath: "Vocational aircraft mechanic diploma + EASA Part-66 licence", keySkills: ["mechanical skills", "aircraft systems", "regulations", "troubleshooting", "precision"], dailyTasks: ["Inspect aircraft", "Repair systems", "Change components", "Document work", "Sign off airworthiness"], growthOutlook: "medium", workSetting: "hands-on", lastVerifiedAt: "2026-04-16", entryRoute: "fagbrev", gradeBand: { floor: 3, ceiling: 4, competitiveness: "competitive" } },
   ],
 
   // ========================================
@@ -8723,6 +9210,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "truck-driver",
+      educationRoute: "certification",
+      entryRoute: "certification",
       title: "Truck Driver",
       emoji: "🚛",
       description: "Transport goods across the country or internationally in heavy vehicles.",
@@ -8737,6 +9226,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "warehouse-manager",
+      educationRoute: "mixed",
+      entryRoute: "bachelor",
       title: "Warehouse Manager",
       emoji: "🏢",
       description: "Manage warehouse operations, staff, and inventory management systems.",
@@ -8759,6 +9250,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "delivery-driver",
+      educationRoute: "on-the-job",
+      entryRoute: "direct-entry",
       title: "Delivery Driver",
       emoji: "🚐",
       description: "Deliver packages and goods to customers and businesses locally.",
@@ -8771,6 +9264,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "warehouse-worker",
+      educationRoute: "on-the-job",
+      entryRoute: "direct-entry",
       title: "Warehouse Worker",
       emoji: "📦",
       description: "Pick, pack, and organise goods in warehouses for shipping and storage.",
@@ -8794,6 +9289,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "airline-pilot",
+      educationRoute: "certification",
+      entryRoute: "certification",
       title: "Airline Pilot",
       emoji: "✈️",
       description: "Fly commercial aircraft, transporting passengers and cargo safely between destinations while managing complex flight systems and crew coordination.",
@@ -8807,6 +9304,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "helicopter-pilot",
+      educationRoute: "certification",
+      entryRoute: "certification",
       title: "Helicopter Pilot",
       emoji: "🚁",
       description: "Fly helicopters for offshore transport, emergency medical services, search and rescue, or commercial operations in Norway's challenging terrain.",
@@ -8818,6 +9317,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "warehouse-picker",
+      educationRoute: "on-the-job",
+      entryRoute: "direct-entry",
       title: "Warehouse Picker",
       emoji: "📦",
       description: "Pick and pack orders in a warehouse, often using a handheld scanner. Common entry into logistics; the path forward leads to Forklift Operator, Team Leader, then Warehouse Supervisor.",
@@ -8830,6 +9331,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "delivery-driver",
+      educationRoute: "on-the-job",
+      entryRoute: "direct-entry",
       title: "Delivery Driver",
       emoji: "🚐",
       description: "Deliver packages and goods to customers and businesses locally.",
@@ -8841,14 +9344,14 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       entryLevel: true,
     },
     // ── Drivers & couriers ──
-    { id: "taxi-driver", title: "Taxi Driver", emoji: "🚕", description: "Drive a licensed taxi — picking up passengers from ranks, street hails, or app bookings (Uber, Bolt). Flexible shifts, independent work.", avgSalary: "350,000 - 600,000 kr/year", educationPath: "Class B licence + kjøreseddel (taxi licence)", keySkills: ["local knowledge", "safe driving", "customer service", "patience", "navigation", "app management"], dailyTasks: ["Pick up passengers", "Manage app bookings", "Calculate fares", "Process payments", "Maintain car", "Stay on shift"], growthOutlook: "stable", entryLevel: true },
-    { id: "courier", title: "Courier", emoji: "📮", description: "Deliver parcels and documents quickly — by van, bike, or on foot — for businesses or end customers.", avgSalary: "350,000 - 500,000 kr/year", educationPath: "Driving licence (or none for bike couriers); on-the-job training", keySkills: ["fast navigation", "physical stamina", "time management", "reliability", "customer service"], dailyTasks: ["Pick up parcels", "Plan routes", "Deliver fast", "Get signatures", "Track packages"], growthOutlook: "stable", entryLevel: true },
-    { id: "bus-driver", title: "Bus Driver", emoji: "🚌", description: "Drive scheduled bus routes — city, regional, or long-distance — getting passengers safely from stop to stop.", avgSalary: "450,000 - 600,000 kr/year", educationPath: "Class D licence + yrkessjåførkompetanse (CPC) — funded paths exist", keySkills: ["safe driving", "punctuality", "customer service", "patience", "stamina"], dailyTasks: ["Drive route", "Stop at all stops", "Sell tickets", "Help passengers", "Inspect bus"], growthOutlook: "stable", entryLevel: true , lastVerifiedAt: "2026-06-12" , sourceUrl: "https://www.ssb.no/en/statbank/table/11418" },
-    { id: "food-delivery-rider", title: "Food Delivery Rider", emoji: "🛵", description: "Deliver hot food from restaurants to customers — by bike, e-bike, or scooter — for Foodora, Wolt, etc.", avgSalary: "200,000 - 400,000 kr/year (variable, often part-time)", educationPath: "No formal requirement; bike or moped + smartphone", keySkills: ["fast cycling", "navigation", "weather tolerance", "stamina", "customer service"], dailyTasks: ["Accept orders", "Cycle to restaurants", "Deliver food", "Track app", "Stay safe in traffic"], growthOutlook: "stable", entryLevel: true },
-    { id: "logistics-driver", title: "Logistics Driver", emoji: "🚚", description: "Move goods between warehouses, distribution centres, and retailers — usually in a fixed local route.", avgSalary: "450,000 - 600,000 kr/year", educationPath: "Class C licence + yrkessjåførkompetanse", keySkills: ["safe driving", "load handling", "navigation", "punctuality", "documentation"], dailyTasks: ["Load truck", "Drive route", "Deliver pallets", "Get signatures", "Maintain logbook"], growthOutlook: "stable", entryLevel: true },
-    { id: "freight-driver", title: "Freight Driver", emoji: "🚛", description: "Drive heavy goods vehicles long distance — across Norway and into Europe — moving freight for haulage companies.", avgSalary: "500,000 - 750,000 kr/year", educationPath: "Class C/CE licence + yrkessjåførkompetanse + ADR (for hazardous goods)", keySkills: ["heavy vehicle handling", "endurance", "navigation", "documentation", "self-reliance"], dailyTasks: ["Load freight", "Drive long routes", "Manage rest hours", "Deliver loads", "Maintain logbook"], growthOutlook: "stable" },
+    { id: "taxi-driver", educationRoute: "certification", entryRoute: "certification", title: "Taxi Driver", emoji: "🚕", description: "Drive a licensed taxi — picking up passengers from ranks, street hails, or app bookings (Uber, Bolt). Flexible shifts, independent work.", avgSalary: "350,000 - 600,000 kr/year", educationPath: "Class B licence + kjøreseddel (taxi licence)", keySkills: ["local knowledge", "safe driving", "customer service", "patience", "navigation", "app management"], dailyTasks: ["Pick up passengers", "Manage app bookings", "Calculate fares", "Process payments", "Maintain car", "Stay on shift"], growthOutlook: "stable", entryLevel: true },
+    { id: "courier", educationRoute: "on-the-job", entryRoute: "direct-entry", title: "Courier", emoji: "📮", description: "Deliver parcels and documents quickly — by van, bike, or on foot — for businesses or end customers.", avgSalary: "350,000 - 500,000 kr/year", educationPath: "Driving licence (or none for bike couriers); on-the-job training", keySkills: ["fast navigation", "physical stamina", "time management", "reliability", "customer service"], dailyTasks: ["Pick up parcels", "Plan routes", "Deliver fast", "Get signatures", "Track packages"], growthOutlook: "stable", entryLevel: true },
+    { id: "bus-driver", educationRoute: "certification", entryRoute: "certification", title: "Bus Driver", emoji: "🚌", description: "Drive scheduled bus routes — city, regional, or long-distance — getting passengers safely from stop to stop.", avgSalary: "450,000 - 600,000 kr/year", educationPath: "Class D licence + yrkessjåførkompetanse (CPC) — funded paths exist", keySkills: ["safe driving", "punctuality", "customer service", "patience", "stamina"], dailyTasks: ["Drive route", "Stop at all stops", "Sell tickets", "Help passengers", "Inspect bus"], growthOutlook: "stable", entryLevel: true , lastVerifiedAt: "2026-06-12" , sourceUrl: "https://www.ssb.no/en/statbank/table/11418" },
+    { id: "food-delivery-rider", educationRoute: "on-the-job", entryRoute: "direct-entry", title: "Food Delivery Rider", emoji: "🛵", description: "Deliver hot food from restaurants to customers — by bike, e-bike, or scooter — for Foodora, Wolt, etc.", avgSalary: "200,000 - 400,000 kr/year (variable, often part-time)", educationPath: "No formal requirement; bike or moped + smartphone", keySkills: ["fast cycling", "navigation", "weather tolerance", "stamina", "customer service"], dailyTasks: ["Accept orders", "Cycle to restaurants", "Deliver food", "Track app", "Stay safe in traffic"], growthOutlook: "stable", entryLevel: true },
+    { id: "logistics-driver", educationRoute: "certification", entryRoute: "certification", title: "Logistics Driver", emoji: "🚚", description: "Move goods between warehouses, distribution centres, and retailers — usually in a fixed local route.", avgSalary: "450,000 - 600,000 kr/year", educationPath: "Class C licence + yrkessjåførkompetanse", keySkills: ["safe driving", "load handling", "navigation", "punctuality", "documentation"], dailyTasks: ["Load truck", "Drive route", "Deliver pallets", "Get signatures", "Maintain logbook"], growthOutlook: "stable", entryLevel: true },
+    { id: "freight-driver", educationRoute: "certification", entryRoute: "certification", title: "Freight Driver", emoji: "🚛", description: "Drive heavy goods vehicles long distance — across Norway and into Europe — moving freight for haulage companies.", avgSalary: "500,000 - 750,000 kr/year", educationPath: "Class C/CE licence + yrkessjåførkompetanse + ADR (for hazardous goods)", keySkills: ["heavy vehicle handling", "endurance", "navigation", "documentation", "self-reliance"], dailyTasks: ["Load freight", "Drive long routes", "Manage rest hours", "Deliver loads", "Maintain logbook"], growthOutlook: "stable" },
     // ── Aviation ──
-    { id: "air-traffic-controller", title: "Air Traffic Controller", emoji: "🗼", description: "Direct aircraft on the ground and in the air — keeping flights safe and on schedule from a tower or radar centre.", avgSalary: "850,000 - 1,400,000 kr/year", educationPath: "Avinor Air Navigation College (3 years) + on-job training", keySkills: ["spatial awareness", "fast decision-making", "calm under pressure", "communication", "discipline"], dailyTasks: ["Direct aircraft", "Watch radar", "Coordinate handovers", "Issue clearances", "Brief teams"], growthOutlook: "stable" },
+    { id: "air-traffic-controller", educationRoute: "certification", entryRoute: "certification", title: "Air Traffic Controller", emoji: "🗼", description: "Direct aircraft on the ground and in the air — keeping flights safe and on schedule from a tower or radar centre.", avgSalary: "850,000 - 1,400,000 kr/year", educationPath: "Avinor Air Navigation College (3 years) + on-job training", keySkills: ["spatial awareness", "fast decision-making", "calm under pressure", "communication", "discipline"], dailyTasks: ["Direct aircraft", "Watch radar", "Coordinate handovers", "Issue clearances", "Brief teams"], growthOutlook: "stable" },
   ],
 
   // ========================================
@@ -8868,6 +9371,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "chef",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Chef",
       emoji: "👨‍🍳",
       description: "Prepare and cook meals in restaurants, hotels, or catering services.",
@@ -8882,6 +9387,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "tour-guide",
+      educationRoute: "on-the-job",
+      entryRoute: "direct-entry",
       title: "Tour Guide",
       emoji: "🗺️",
       description: "Lead tourists on excursions, sharing knowledge about destinations and culture.",
@@ -8894,6 +9401,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "flight-attendant",
+      educationRoute: "certification",
+      entryRoute: "certification",
       title: "Flight Attendant",
       emoji: "✈️",
       description: "Ensure passenger safety and comfort on commercial flights.",
@@ -8905,6 +9414,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "hairdresser",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Hairdresser",
       emoji: "💇",
       description: "Cut, style, and color hair, providing beauty services to clients.",
@@ -8919,6 +9430,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "fitness-instructor",
+      educationRoute: "certification",
+      entryRoute: "certification",
       title: "Personal Trainer",
       emoji: "🏋️",
       description: "Lead fitness classes and provide personal training to help clients reach health goals.",
@@ -8931,6 +9444,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "restaurant-server",
+      educationRoute: "on-the-job",
+      entryRoute: "direct-entry",
       title: "Restaurant Server",
       emoji: "🍽️",
       description: "Serve food and drinks to guests, ensuring a positive dining experience.",
@@ -8954,6 +9469,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "receptionist",
+      educationRoute: "on-the-job",
+      entryRoute: "direct-entry",
       title: "Hotel Receptionist",
       emoji: "🛎️",
       description: "Welcome guests, handle check-ins/check-outs, and assist with inquiries at hotels.",
@@ -8966,6 +9483,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "massage-therapist",
+      educationRoute: "certification",
+      entryRoute: "certification",
       title: "Massage Therapist",
       emoji: "💆",
       description: "Provide therapeutic massage treatments to relieve pain, reduce stress, and improve wellbeing.",
@@ -8978,6 +9497,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "beautician",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Makeup Artist",
       emoji: "💄",
       description: "Provide skincare treatments, apply makeup, and advise clients on beauty routines.",
@@ -8990,6 +9511,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "nail-technician",
+      educationRoute: "certification",
+      entryRoute: "certification",
       title: "Nail Technician",
       emoji: "💅",
       description: "Provide manicures, pedicures, nail art, and nail enhancements to clients.",
@@ -9002,6 +9525,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "photographer",
+      educationRoute: "mixed",
+      entryRoute: "direct-entry",
       title: "Photographer",
       emoji: "📷",
       description: "Capture professional images for events, portraits, commercial use, or artistic expression.",
@@ -9016,6 +9541,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "video-editor",
+      educationRoute: "mixed",
+      entryRoute: "direct-entry",
       title: "Video Editor",
       emoji: "🎬",
       description: "Shoot and edit video content for films, commercials, social media, and corporate clients.",
@@ -9052,6 +9579,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "graphic-designer",
+      educationRoute: "mixed",
+      entryRoute: "bachelor",
       title: "Graphic Designer",
       emoji: "🖌️",
       description: "Create visual content for print and digital media including logos, marketing materials, and websites.",
@@ -9065,6 +9594,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "house-cleaner",
+      educationRoute: "on-the-job",
+      entryRoute: "direct-entry",
       title: "House Cleaner",
       emoji: "🧹",
       description: "Clean private homes for clients on a regular schedule. Often self-employed or via a cleaning company. Path forward leads to Cleaning Supervisor and Facilities Manager.",
@@ -9077,6 +9608,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "hotel-housekeeper",
+      educationRoute: "on-the-job",
+      entryRoute: "direct-entry",
       title: "Hotel Housekeeper",
       emoji: "🛏️",
       description: "Service hotel rooms between guests — change linen, clean bathrooms, restock supplies. Path forward leads to Floor Supervisor, Head Housekeeper and Hotel Operations roles.",
@@ -9089,6 +9622,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "kitchen-porter",
+      educationRoute: "on-the-job",
+      entryRoute: "direct-entry",
       title: "Kitchen Porter",
       emoji: "🍽️",
       description: "Wash dishes, prep ingredients and keep the kitchen running for chefs. The classic entry into hospitality — many head chefs started here.",
@@ -9101,6 +9636,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "fast-food-crew",
+      educationRoute: "on-the-job",
+      entryRoute: "direct-entry",
       title: "Fast Food Crew Member",
       emoji: "🍔",
       description: "Take orders, prepare food and serve customers in a fast-paced restaurant. Often the first job at 15+; the path forward leads to Shift Leader and Restaurant Manager.",
@@ -9113,6 +9650,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "dog-groomer",
+      educationRoute: "vocational",
+      entryRoute: "fagskole",
       title: "Dog Groomer",
       emoji: "🐕",
       description: "Wash, clip, trim and style dogs at a salon, mobile van or independently. Combines animal handling with creative skill. Often self-employed with a regular client base.",
@@ -9123,10 +9662,12 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       growthOutlook: "medium",
       entryLevel: true,
     },
-    { id: "restaurant-owner", title: "Restaurant Owner", emoji: "🍽️", description: "Own and run a restaurant — set the menu, hire chefs, manage finances, and build a place people love to eat at.", avgSalary: "400,000 - 1,500,000+ kr/year (highly variable, often loss-making early)", educationPath: "Hospitality experience + business knowledge; no degree required", keySkills: ["business management", "hospitality", "leadership", "finance", "creativity"], dailyTasks: ["Plan menus", "Manage staff", "Track costs", "Greet guests", "Handle suppliers"], growthOutlook: "stable", entryLevel: true },
-    { id: "barista", title: "Barista", emoji: "☕", description: "Make and serve coffee in a café — pulling espresso, steaming milk, and building a regular customer base.", avgSalary: "320,000 - 450,000 kr/year", educationPath: "On-the-job training; specialty coffee courses (SCA) help", keySkills: ["espresso technique", "milk steaming", "customer service", "speed", "consistency"], dailyTasks: ["Brew coffee", "Serve customers", "Clean equipment", "Restock supplies", "Run the till"], growthOutlook: "stable", entryLevel: true },
+    { id: "restaurant-owner", educationRoute: "on-the-job", entryRoute: "direct-entry", title: "Restaurant Owner", emoji: "🍽️", description: "Own and run a restaurant — set the menu, hire chefs, manage finances, and build a place people love to eat at.", avgSalary: "400,000 - 1,500,000+ kr/year (highly variable, often loss-making early)", educationPath: "Hospitality experience + business knowledge; no degree required", keySkills: ["business management", "hospitality", "leadership", "finance", "creativity"], dailyTasks: ["Plan menus", "Manage staff", "Track costs", "Greet guests", "Handle suppliers"], growthOutlook: "stable", entryLevel: true },
+    { id: "barista", educationRoute: "on-the-job", entryRoute: "direct-entry", title: "Barista", emoji: "☕", description: "Make and serve coffee in a café — pulling espresso, steaming milk, and building a regular customer base.", avgSalary: "320,000 - 450,000 kr/year", educationPath: "On-the-job training; specialty coffee courses (SCA) help", keySkills: ["espresso technique", "milk steaming", "customer service", "speed", "consistency"], dailyTasks: ["Brew coffee", "Serve customers", "Clean equipment", "Restock supplies", "Run the till"], growthOutlook: "stable", entryLevel: true },
     {
       id: "baker",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Baker",
       emoji: "🍞",
       description: "Bake bread, pastries, and cakes — early starts, hot ovens, and the craft of turning flour, water, and time into something people line up for.",
@@ -9139,6 +9680,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "pastry-chef",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Pastry Chef",
       emoji: "🥐",
       description: "Specialise in desserts, pastries, chocolate work, and cakes — the artistic, precise side of the kitchen where presentation and technique matter most.",
@@ -9150,6 +9693,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "butcher",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Butcher",
       emoji: "🔪",
       description: "Cut, prepare, and sell meat — breaking down whole carcasses or working from primal cuts in a shop, supermarket, or restaurant supply.",
@@ -9162,6 +9707,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "sommelier",
+      educationRoute: "certification",
+      entryRoute: "certification",
       title: "Sommelier",
       emoji: "🍷",
       description: "The wine expert in a fine restaurant — selecting wines, training staff, advising guests, and pairing bottles to dishes on the menu.",
@@ -9173,6 +9720,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "catering-manager",
+      educationRoute: "mixed",
+      entryRoute: "bachelor",
       title: "Catering Manager",
       emoji: "🍽️",
       description: "Run catering operations for events, schools, hospitals, or workplaces — planning menus, leading kitchen teams, and managing budgets at scale.",
@@ -9184,6 +9733,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "restaurant-manager",
+      educationRoute: "on-the-job",
+      entryRoute: "direct-entry",
       title: "Restaurant Manager",
       emoji: "📋",
       description: "Run a restaurant day-to-day — staff, service, finances, customer experience — making sure every shift goes smoothly and the business stays profitable.",
@@ -9193,17 +9744,17 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       dailyTasks: ["Open and close site", "Lead service", "Hire and train staff", "Track sales", "Handle issues"],
       growthOutlook: "stable",
     },
-    { id: "esthetician", title: "Esthetician", emoji: "💆", description: "Provide skin-care treatments — facials, peels, hair removal — at spas, salons, or clinics.", avgSalary: "380,000 - 650,000 kr/year", educationPath: "Vocational esthetician programme (1-2 years) + certification", keySkills: ["skincare", "client care", "precision", "product knowledge", "hygiene"], dailyTasks: ["Consult clients", "Perform treatments", "Recommend products", "Sanitise tools", "Book appointments"], growthOutlook: "medium", workSetting: "hands-on", entryLevel: true, peopleIntensity: "high", lastVerifiedAt: "2026-04-16" },
-    { id: "cosmetologist", title: "Cosmetologist", emoji: "💄", description: "Broad beauty professional covering hair, skin, and nails — cuts, colour, facials, manicures.", avgSalary: "380,000 - 650,000 kr/year", educationPath: "Vocational cosmetology programme (2-3 years) + licensing", keySkills: ["hair styling", "skincare", "nail care", "client care", "hygiene"], dailyTasks: ["Consult clients", "Cut and colour hair", "Do facials", "Apply nail treatments", "Keep station clean"], growthOutlook: "medium", workSetting: "hands-on", entryLevel: true, peopleIntensity: "high", lastVerifiedAt: "2026-04-16" },
-    { id: "hairstylist", title: "Hairstylist", emoji: "💇", description: "Cut, colour, and style hair — work in a salon, freelance, or backstage for fashion/film.", avgSalary: "350,000 - 650,000 kr/year", educationPath: "Vocational hairstylist programme + apprenticeship (fagbrev, 4 years)", keySkills: ["hair cutting", "colouring", "client care", "trend awareness", "physical stamina"], dailyTasks: ["Consult clients", "Cut and style", "Apply colour", "Book appointments", "Recommend products"], growthOutlook: "stable", workSetting: "hands-on", entryLevel: true, peopleIntensity: "high", lastVerifiedAt: "2026-04-16", entryRoute: "fagbrev", gradeBand: { floor: 2, ceiling: 4, competitiveness: "accessible" } },
-    { id: "barber", title: "Barber", emoji: "💈", description: "Specialise in men's grooming — haircuts, beard trims, hot towel shaves.", avgSalary: "320,000 - 600,000 kr/year", educationPath: "Barber apprenticeship / vocational programme (2-4 years)", keySkills: ["hair cutting", "beard styling", "client care", "precision", "conversation"], dailyTasks: ["Consult clients", "Cut hair", "Trim beards", "Shave", "Keep tools sterilised"], growthOutlook: "stable", workSetting: "hands-on", entryLevel: true, peopleIntensity: "high", lastVerifiedAt: "2026-04-16", entryRoute: "fagbrev", gradeBand: { floor: 2, ceiling: 4, competitiveness: "accessible" } },
-    { id: "spa-therapist", title: "Spa Therapist", emoji: "🧖", description: "Deliver massage, facial, and body treatments in a spa setting — relaxation and wellness focus.", avgSalary: "350,000 - 620,000 kr/year", educationPath: "Vocational spa therapy / massage certification", keySkills: ["massage", "client care", "hygiene", "calm presence", "product knowledge"], dailyTasks: ["Consult clients", "Deliver treatments", "Sanitise rooms", "Recommend products", "Book appointments"], growthOutlook: "medium", workSetting: "hands-on", entryLevel: true, peopleIntensity: "high", lastVerifiedAt: "2026-04-16", entryRoute: "fagbrev", gradeBand: { floor: 2, ceiling: 4, competitiveness: "accessible" } },
-    { id: "beauty-therapist", title: "Beauty Therapist", emoji: "💅", description: "Offer a range of beauty treatments — facials, waxing, eyelash extensions, body treatments.", avgSalary: "350,000 - 620,000 kr/year", educationPath: "Vocational beauty therapy programme (1-2 years)", keySkills: ["beauty treatments", "client care", "hygiene", "product knowledge", "precision"], dailyTasks: ["Consult clients", "Perform treatments", "Manage stock", "Book appointments", "Maintain workspace"], growthOutlook: "medium", workSetting: "hands-on", entryLevel: true, peopleIntensity: "high", lastVerifiedAt: "2026-04-16", entryRoute: "fagbrev", gradeBand: { floor: 2, ceiling: 4, competitiveness: "accessible" } },
-    { id: "skincare-specialist", title: "Skincare Specialist", emoji: "🧴", description: "Advise clients on skincare routines, assess skin, and recommend products/treatments — retail or clinical.", avgSalary: "380,000 - 700,000 kr/year", educationPath: "Esthetician or cosmetology training + product certifications", keySkills: ["skincare", "consultation", "product knowledge", "communication", "sales"], dailyTasks: ["Assess skin", "Design routines", "Recommend products", "Deliver treatments", "Educate clients"], growthOutlook: "medium", workSetting: "hands-on", peopleIntensity: "high", lastVerifiedAt: "2026-04-16", entryRoute: "fagbrev", gradeBand: { floor: 2, ceiling: 4, competitiveness: "accessible" } },
-    { id: "laser-technician", title: "Laser Technician", emoji: "🔦", description: "Operate laser devices for hair removal, skin rejuvenation, and tattoo removal — medical aesthetics.", avgSalary: "420,000 - 750,000 kr/year", educationPath: "Laser technician certification + health regulator approval", keySkills: ["laser technology", "skin anatomy", "safety protocols", "client care", "precision"], dailyTasks: ["Consult clients", "Operate lasers", "Manage safety", "Follow up on results", "Sterilise equipment"], growthOutlook: "high", workSetting: "hands-on", peopleIntensity: "high", lastVerifiedAt: "2026-04-16", entryRoute: "bachelor", gradeBand: { floor: 4, ceiling: 5, competitiveness: "competitive" } },
-    { id: "tattoo-artist", title: "Tattoo Artist", emoji: "🖋️", description: "Design and apply tattoos — freelance or in a studio, combining art skill with sterile technique.", avgSalary: "300,000 - 900,000 kr/year (highly variable — portfolio-driven)", educationPath: "Apprenticeship under a licensed tattoo artist + public health certification", keySkills: ["drawing", "tattoo technique", "sterility", "client care", "creativity"], dailyTasks: ["Design tattoos", "Consult clients", "Apply tattoos", "Sterilise equipment", "Build portfolio"], growthOutlook: "stable", workSetting: "creative", peopleIntensity: "high", lastVerifiedAt: "2026-04-16", entryRoute: "apprenticeship" },
-    { id: "piercing-specialist", title: "Piercing Specialist", emoji: "💎", description: "Perform body piercings with sterile technique — ears, facial, body — in a licensed studio.", avgSalary: "280,000 - 550,000 kr/year", educationPath: "Apprenticeship + public health piercing certification", keySkills: ["piercing technique", "sterility", "anatomy", "client care", "precision"], dailyTasks: ["Consult clients", "Perform piercings", "Sterilise equipment", "Advise aftercare", "Manage bookings"], growthOutlook: "stable", workSetting: "hands-on", entryLevel: true, peopleIntensity: "high", lastVerifiedAt: "2026-04-16", entryRoute: "apprenticeship" },
-    { id: "wellness-coach", title: "Wellness Coach", emoji: "🌿", description: "Coach clients on lifestyle goals — nutrition, exercise, sleep, stress — holistic wellbeing.", avgSalary: "350,000 - 900,000 kr/year", educationPath: "Coaching certification + nutrition/fitness training", keySkills: ["coaching", "nutrition literacy", "psychology", "motivation", "empathy"], dailyTasks: ["Run sessions", "Set goals", "Track progress", "Design plans", "Educate on habits"], growthOutlook: "high", sector: "private", peopleIntensity: "high", lastVerifiedAt: "2026-04-16", entryRoute: "direct-entry" },
+    { id: "esthetician", educationRoute: "vocational", entryRoute: "fagbrev", title: "Esthetician", emoji: "💆", description: "Provide skin-care treatments — facials, peels, hair removal — at spas, salons, or clinics.", avgSalary: "380,000 - 650,000 kr/year", educationPath: "Vocational esthetician programme (1-2 years) + certification", keySkills: ["skincare", "client care", "precision", "product knowledge", "hygiene"], dailyTasks: ["Consult clients", "Perform treatments", "Recommend products", "Sanitise tools", "Book appointments"], growthOutlook: "medium", workSetting: "hands-on", entryLevel: true, peopleIntensity: "high", lastVerifiedAt: "2026-04-16" },
+    { id: "cosmetologist", educationRoute: "vocational", entryRoute: "fagbrev", title: "Cosmetologist", emoji: "💄", description: "Broad beauty professional covering hair, skin, and nails — cuts, colour, facials, manicures.", avgSalary: "380,000 - 650,000 kr/year", educationPath: "Vocational cosmetology programme (2-3 years) + licensing", keySkills: ["hair styling", "skincare", "nail care", "client care", "hygiene"], dailyTasks: ["Consult clients", "Cut and colour hair", "Do facials", "Apply nail treatments", "Keep station clean"], growthOutlook: "medium", workSetting: "hands-on", entryLevel: true, peopleIntensity: "high", lastVerifiedAt: "2026-04-16" },
+    { id: "hairstylist", educationRoute: "vocational", title: "Hairstylist", emoji: "💇", description: "Cut, colour, and style hair — work in a salon, freelance, or backstage for fashion/film.", avgSalary: "350,000 - 650,000 kr/year", educationPath: "Vocational hairstylist programme + apprenticeship (fagbrev, 4 years)", keySkills: ["hair cutting", "colouring", "client care", "trend awareness", "physical stamina"], dailyTasks: ["Consult clients", "Cut and style", "Apply colour", "Book appointments", "Recommend products"], growthOutlook: "stable", workSetting: "hands-on", entryLevel: true, peopleIntensity: "high", lastVerifiedAt: "2026-04-16", entryRoute: "fagbrev", gradeBand: { floor: 2, ceiling: 4, competitiveness: "accessible" } },
+    { id: "barber", educationRoute: "vocational", title: "Barber", emoji: "💈", description: "Specialise in men's grooming — haircuts, beard trims, hot towel shaves.", avgSalary: "320,000 - 600,000 kr/year", educationPath: "Barber apprenticeship / vocational programme (2-4 years)", keySkills: ["hair cutting", "beard styling", "client care", "precision", "conversation"], dailyTasks: ["Consult clients", "Cut hair", "Trim beards", "Shave", "Keep tools sterilised"], growthOutlook: "stable", workSetting: "hands-on", entryLevel: true, peopleIntensity: "high", lastVerifiedAt: "2026-04-16", entryRoute: "fagbrev", gradeBand: { floor: 2, ceiling: 4, competitiveness: "accessible" } },
+    { id: "spa-therapist", educationRoute: "vocational", title: "Spa Therapist", emoji: "🧖", description: "Deliver massage, facial, and body treatments in a spa setting — relaxation and wellness focus.", avgSalary: "350,000 - 620,000 kr/year", educationPath: "Vocational spa therapy / massage certification", keySkills: ["massage", "client care", "hygiene", "calm presence", "product knowledge"], dailyTasks: ["Consult clients", "Deliver treatments", "Sanitise rooms", "Recommend products", "Book appointments"], growthOutlook: "medium", workSetting: "hands-on", entryLevel: true, peopleIntensity: "high", lastVerifiedAt: "2026-04-16", entryRoute: "fagbrev", gradeBand: { floor: 2, ceiling: 4, competitiveness: "accessible" } },
+    { id: "beauty-therapist", educationRoute: "vocational", title: "Beauty Therapist", emoji: "💅", description: "Offer a range of beauty treatments — facials, waxing, eyelash extensions, body treatments.", avgSalary: "350,000 - 620,000 kr/year", educationPath: "Vocational beauty therapy programme (1-2 years)", keySkills: ["beauty treatments", "client care", "hygiene", "product knowledge", "precision"], dailyTasks: ["Consult clients", "Perform treatments", "Manage stock", "Book appointments", "Maintain workspace"], growthOutlook: "medium", workSetting: "hands-on", entryLevel: true, peopleIntensity: "high", lastVerifiedAt: "2026-04-16", entryRoute: "fagbrev", gradeBand: { floor: 2, ceiling: 4, competitiveness: "accessible" } },
+    { id: "skincare-specialist", educationRoute: "vocational", title: "Skincare Specialist", emoji: "🧴", description: "Advise clients on skincare routines, assess skin, and recommend products/treatments — retail or clinical.", avgSalary: "380,000 - 700,000 kr/year", educationPath: "Esthetician or cosmetology training + product certifications", keySkills: ["skincare", "consultation", "product knowledge", "communication", "sales"], dailyTasks: ["Assess skin", "Design routines", "Recommend products", "Deliver treatments", "Educate clients"], growthOutlook: "medium", workSetting: "hands-on", peopleIntensity: "high", lastVerifiedAt: "2026-04-16", entryRoute: "fagbrev", gradeBand: { floor: 2, ceiling: 4, competitiveness: "accessible" } },
+    { id: "laser-technician", educationRoute: "certification", title: "Laser Technician", emoji: "🔦", description: "Operate laser devices for hair removal, skin rejuvenation, and tattoo removal — medical aesthetics.", avgSalary: "420,000 - 750,000 kr/year", educationPath: "Laser technician certification + health regulator approval", keySkills: ["laser technology", "skin anatomy", "safety protocols", "client care", "precision"], dailyTasks: ["Consult clients", "Operate lasers", "Manage safety", "Follow up on results", "Sterilise equipment"], growthOutlook: "high", workSetting: "hands-on", peopleIntensity: "high", lastVerifiedAt: "2026-04-16", entryRoute: "bachelor", gradeBand: { floor: 4, ceiling: 5, competitiveness: "competitive" } },
+    { id: "tattoo-artist", educationRoute: "certification", title: "Tattoo Artist", emoji: "🖋️", description: "Design and apply tattoos — freelance or in a studio, combining art skill with sterile technique.", avgSalary: "300,000 - 900,000 kr/year (highly variable — portfolio-driven)", educationPath: "Apprenticeship under a licensed tattoo artist + public health certification", keySkills: ["drawing", "tattoo technique", "sterility", "client care", "creativity"], dailyTasks: ["Design tattoos", "Consult clients", "Apply tattoos", "Sterilise equipment", "Build portfolio"], growthOutlook: "stable", workSetting: "creative", peopleIntensity: "high", lastVerifiedAt: "2026-04-16", entryRoute: "apprenticeship" },
+    { id: "piercing-specialist", educationRoute: "certification", title: "Piercing Specialist", emoji: "💎", description: "Perform body piercings with sterile technique — ears, facial, body — in a licensed studio.", avgSalary: "280,000 - 550,000 kr/year", educationPath: "Apprenticeship + public health piercing certification", keySkills: ["piercing technique", "sterility", "anatomy", "client care", "precision"], dailyTasks: ["Consult clients", "Perform piercings", "Sterilise equipment", "Advise aftercare", "Manage bookings"], growthOutlook: "stable", workSetting: "hands-on", entryLevel: true, peopleIntensity: "high", lastVerifiedAt: "2026-04-16", entryRoute: "apprenticeship" },
+    { id: "wellness-coach", educationRoute: "certification", title: "Wellness Coach", emoji: "🌿", description: "Coach clients on lifestyle goals — nutrition, exercise, sleep, stress — holistic wellbeing.", avgSalary: "350,000 - 900,000 kr/year", educationPath: "Coaching certification + nutrition/fitness training", keySkills: ["coaching", "nutrition literacy", "psychology", "motivation", "empathy"], dailyTasks: ["Run sessions", "Set goals", "Track progress", "Design plans", "Educate on habits"], growthOutlook: "high", sector: "private", peopleIntensity: "high", lastVerifiedAt: "2026-04-16", entryRoute: "direct-entry" },
   ],
 
   // ========================================
@@ -9676,8 +10227,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     { id: "telco-transmission-engineer", title: "Transmission Engineer", emoji: "📡", description: "Engineer microwave and fibre transmission links that backhaul mobile and fixed traffic.", avgSalary: "810,000 - 1,410,000 kr/year", educationPath: "Bachelor's in Telecom/EE + microwave/optical training", keySkills: ["microwave links", "DWDM", "link budgets", "alignment", "fault analysis"], dailyTasks: ["Design transmission paths", "Calculate link budgets", "Commission new links", "Investigate outages", "Maintain documentation"], growthOutlook: "medium" },
     { id: "telco-ip-network-engineer", title: "IP Network Engineer", emoji: "🌐", description: "Build and maintain IP/MPLS backbones and aggregation networks carrying customer and signalling traffic.", avgSalary: "650,000 - 950,000 kr/year", educationPath: "Bachelor's in CS/Telecom + CCNP/JNCIP", keySkills: ["BGP/OSPF/ISIS", "MPLS", "QoS", "Juniper/Cisco", "network automation"], dailyTasks: ["Configure routers", "Tune routing policies", "Troubleshoot incidents", "Roll out new services", "Automate changes"], growthOutlook: "high" },
     { id: "telco-optical-network-engineer", title: "Optical Network Engineer", emoji: "💡", description: "Design and operate DWDM optical transport networks underpinning long-haul telecom traffic.", avgSalary: "810,000 - 1,410,000 kr/year", educationPath: "Bachelor's in Telecom/EE + optical vendor training", keySkills: ["DWDM", "OTN", "optical amplifiers", "fibre characterisation", "GMPLS"], dailyTasks: ["Plan optical capacity", "Commission new wavelengths", "Investigate fibre faults", "Optimise power levels", "Support upgrades"], growthOutlook: "high" },
-    { id: "telco-field-engineer", title: "Field Engineer", emoji: "🪛", description: "Install, commission, and repair telecom equipment on customer sites, base stations, and exchanges.", avgSalary: "500,000 - 750,000 kr/year", educationPath: "Vocational diploma in electronics/telecom + certifications", keySkills: ["installation", "fault finding", "safety", "tools & test gear", "customer comms"], dailyTasks: ["Install hardware on site", "Run cable and fibre", "Test and commission links", "Fix faults", "Complete site reports"], growthOutlook: "medium", entryLevel: true, workSetting: "outdoors" },
-    { id: "telco-noc-engineer", title: "NOC Engineer", emoji: "🖥️", description: "Monitor telecom networks 24/7 from a Network Operations Centre, triaging alarms and coordinating fixes.", avgSalary: "690,000 - 1,200,000 kr/year", educationPath: "Bachelor's in Telecom/IT or vocational + ITIL", keySkills: ["alarm monitoring", "ticketing", "incident triage", "ITIL", "communication"], dailyTasks: ["Watch dashboards", "Triage alarms", "Open and update tickets", "Coordinate field teams", "Escalate major incidents"], growthOutlook: "medium", entryLevel: true },
+    { id: "telco-field-engineer", educationRoute: "vocational", entryRoute: "fagskole", title: "Field Engineer", emoji: "🪛", description: "Install, commission, and repair telecom equipment on customer sites, base stations, and exchanges.", avgSalary: "500,000 - 750,000 kr/year", educationPath: "Vocational diploma in electronics/telecom + certifications", keySkills: ["installation", "fault finding", "safety", "tools & test gear", "customer comms"], dailyTasks: ["Install hardware on site", "Run cable and fibre", "Test and commission links", "Fix faults", "Complete site reports"], growthOutlook: "medium", entryLevel: true, workSetting: "outdoors" },
+    { id: "telco-noc-engineer", educationRoute: "mixed", entryRoute: "bachelor", title: "NOC Engineer", emoji: "🖥️", description: "Monitor telecom networks 24/7 from a Network Operations Centre, triaging alarms and coordinating fixes.", avgSalary: "690,000 - 1,200,000 kr/year", educationPath: "Bachelor's in Telecom/IT or vocational + ITIL", keySkills: ["alarm monitoring", "ticketing", "incident triage", "ITIL", "communication"], dailyTasks: ["Watch dashboards", "Triage alarms", "Open and update tickets", "Coordinate field teams", "Escalate major incidents"], growthOutlook: "medium", entryLevel: true },
     { id: "telco-ran-engineer", title: "RAN Engineer", emoji: "📡", description: "Manage the Radio Access Network — base stations, controllers, and the radio side of mobile networks.", avgSalary: "810,000 - 1,410,000 kr/year", educationPath: "Bachelor's in Telecom/EE + vendor RAN training", keySkills: ["LTE/NR", "base station configuration", "KPI analysis", "vendor tools", "rollout support"], dailyTasks: ["Configure cell sites", "Analyse RAN KPIs", "Support new deployments", "Resolve coverage issues", "Coordinate with RF planning"], growthOutlook: "high" },
     { id: "telco-voip-engineer", title: "VoIP Engineer", emoji: "☎️", description: "Design and run voice-over-IP platforms, SBCs, and IMS components delivering modern voice services.", avgSalary: "600,000 - 900,000 kr/year", educationPath: "Bachelor's in CS/Telecom + SIP/IMS training", keySkills: ["SIP", "IMS", "SBC", "codecs", "voice quality"], dailyTasks: ["Configure SBCs", "Investigate call drops", "Plan IMS upgrades", "Tune voice quality", "Support interconnects"], growthOutlook: "medium" },
     {
@@ -9698,7 +10249,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     { id: "telco-software-engineer", title: "Software Engineer", emoji: "💻", description: "Build software products and internal tools for telecom operators, from portals to network apps.", avgSalary: "650,000 - 1,000,000 kr/year", educationPath: "Bachelor's in CS or equivalent experience", keySkills: ["coding", "APIs", "testing", "version control", "system design"], dailyTasks: ["Write features", "Review code", "Fix bugs", "Design services", "Support deployments"], growthOutlook: "high" },
     { id: "telco-data-engineer", title: "Data Engineer", emoji: "🧮", description: "Build data pipelines and warehouses powering telco analytics, billing, and ML.", avgSalary: "700,000 - 1,000,000 kr/year", educationPath: "Bachelor's in CS/Data + cloud data platform skills", keySkills: ["SQL", "Spark", "data modelling", "ETL", "cloud warehouses"], dailyTasks: ["Build pipelines", "Model data", "Tune queries", "Support analysts", "Maintain quality"], growthOutlook: "high" },
     { id: "telco-ai-ml-engineer", title: "AI and ML Engineer", emoji: "🤖", description: "Apply machine learning to telecom problems like churn, fault prediction, and network optimisation.", avgSalary: "750,000 - 1,100,000 kr/year", educationPath: "Master's in CS/ML or strong bachelor's + ML projects", keySkills: ["Python", "ML frameworks", "feature engineering", "MLOps", "statistics"], dailyTasks: ["Train models", "Deploy ML services", "Evaluate performance", "Work with data engineers", "Iterate on use cases"], growthOutlook: "high" },
-    { id: "telco-it-systems-engineer", title: "IT Systems Engineer", emoji: "🗄️", description: "Operate the internal IT systems telecom employees rely on — servers, identity, and corporate apps.", avgSalary: "680,000 - 1,180,000 kr/year", educationPath: "Bachelor's in IT or vocational + Microsoft/Linux certifications", keySkills: ["Windows/Linux", "Active Directory", "virtualisation", "scripting", "support"], dailyTasks: ["Maintain servers", "Manage identities", "Patch systems", "Resolve incidents", "Support employees"], growthOutlook: "medium" },
+    { id: "telco-it-systems-engineer", educationRoute: "mixed", entryRoute: "bachelor", title: "IT Systems Engineer", emoji: "🗄️", description: "Operate the internal IT systems telecom employees rely on — servers, identity, and corporate apps.", avgSalary: "680,000 - 1,180,000 kr/year", educationPath: "Bachelor's in IT or vocational + Microsoft/Linux certifications", keySkills: ["Windows/Linux", "Active Directory", "virtualisation", "scripting", "support"], dailyTasks: ["Maintain servers", "Manage identities", "Patch systems", "Resolve incidents", "Support employees"], growthOutlook: "medium" },
     { id: "telco-service-delivery-manager", title: "Service Delivery Manager", emoji: "📦", description: "Own delivery of telecom services to customers, hitting SLAs and coordinating across operations teams.", avgSalary: "1,020,000 - 1,770,000 kr/year", educationPath: "Bachelor's + ITIL + service management experience", keySkills: ["ITIL", "SLA management", "stakeholder comms", "reporting", "escalation"], dailyTasks: ["Track SLAs", "Run service reviews", "Manage escalations", "Coordinate teams", "Report to customers"], growthOutlook: "medium" },
     { id: "telco-incident-manager", title: "Incident Manager", emoji: "🚨", description: "Lead the response to major telecom incidents, restoring service and coordinating communication.", avgSalary: "1,020,000 - 1,770,000 kr/year", educationPath: "Bachelor's + ITIL + incident management experience", keySkills: ["ITIL incident", "crisis comms", "coordination", "RCA", "decision-making"], dailyTasks: ["Run major incident calls", "Coordinate fixes", "Communicate updates", "Drive RCAs", "Improve playbooks"], growthOutlook: "medium" },
     { id: "telco-problem-manager", title: "Problem Manager", emoji: "🧩", description: "Investigate recurring telecom issues, find root causes, and prevent future incidents.", avgSalary: "1,020,000 - 1,770,000 kr/year", educationPath: "Bachelor's + ITIL + analytical experience", keySkills: ["ITIL problem", "RCA", "data analysis", "facilitation", "documentation"], dailyTasks: ["Lead RCAs", "Track problem records", "Drive permanent fixes", "Report trends", "Coach teams"], growthOutlook: "medium" },
@@ -9715,10 +10266,10 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     { id: "telco-pmo-analyst", title: "PMO Analyst", emoji: "🗃️", description: "Support telecom programmes with planning, reporting, governance, and finance tracking.", avgSalary: "760,000 - 1,320,000 kr/year", educationPath: "Bachelor's + PMO/PRINCE2 awareness", keySkills: ["planning tools", "reporting", "governance", "finance tracking", "attention to detail"], dailyTasks: ["Maintain plans", "Build status reports", "Track budgets", "Run governance forums", "Maintain RAID logs"], growthOutlook: "medium" },
     { id: "telco-agile-coach", title: "Agile Coach", emoji: "🧭", description: "Coach telecom teams and leaders to adopt agile ways of working at scale.", avgSalary: "850,000 - 1,200,000 kr/year", educationPath: "Bachelor's + SAFe/agile certifications + coaching experience", keySkills: ["SAFe/Scrum", "coaching", "facilitation", "change management", "metrics"], dailyTasks: ["Coach teams", "Run workshops", "Support leaders", "Improve flow", "Measure outcomes"], growthOutlook: "high" },
     { id: "telco-scrum-master", title: "Scrum Master", emoji: "🌀", description: "Facilitate scrum teams delivering telecom software and network automation work.", avgSalary: "760,000 - 1,320,000 kr/year", educationPath: "Bachelor's + CSM/PSM", keySkills: ["scrum", "facilitation", "servant leadership", "JIRA", "team coaching"], dailyTasks: ["Run ceremonies", "Remove blockers", "Coach team", "Track flow", "Support PO"], growthOutlook: "medium" },
-    { id: "telco-customer-support-engineer", title: "Customer Support Engineer", emoji: "🛎️", description: "Provide technical support to telecom customers, diagnosing issues across networks and services.", avgSalary: "500,000 - 750,000 kr/year", educationPath: "Bachelor's/vocational in Telecom/IT", keySkills: ["troubleshooting", "customer comms", "ticketing", "product knowledge", "patience"], dailyTasks: ["Take support tickets", "Diagnose issues", "Coordinate with engineering", "Update customers", "Document fixes"], growthOutlook: "medium", entryLevel: true },
+    { id: "telco-customer-support-engineer", educationRoute: "mixed", entryRoute: "bachelor", title: "Customer Support Engineer", emoji: "🛎️", description: "Provide technical support to telecom customers, diagnosing issues across networks and services.", avgSalary: "500,000 - 750,000 kr/year", educationPath: "Bachelor's/vocational in Telecom/IT", keySkills: ["troubleshooting", "customer comms", "ticketing", "product knowledge", "patience"], dailyTasks: ["Take support tickets", "Diagnose issues", "Coordinate with engineering", "Update customers", "Document fixes"], growthOutlook: "medium", entryLevel: true },
     { id: "telco-tech-support-specialist", title: "Technical Support Specialist", emoji: "🧑‍🔧", description: "Resolve complex technical issues escalated from frontline support, often with deep product knowledge.", avgSalary: "550,000 - 800,000 kr/year", educationPath: "Bachelor's in Telecom/CS + product certifications", keySkills: ["deep product knowledge", "troubleshooting", "scripting", "lab work", "documentation"], dailyTasks: ["Investigate escalations", "Reproduce issues in lab", "Coordinate with R&D", "Build knowledge base", "Support frontline"], growthOutlook: "medium" },
     { id: "telco-customer-success-manager", title: "Customer Success Manager", emoji: "🌟", description: "Help telecom customers get value from their services, drive adoption, and prevent churn.", avgSalary: "650,000 - 950,000 kr/year", educationPath: "Bachelor's in Business/Telecom + customer success experience", keySkills: ["customer engagement", "data analysis", "communication", "value selling", "renewals"], dailyTasks: ["Run reviews", "Track usage", "Drive adoption", "Identify expansion", "Prevent churn"], growthOutlook: "high" },
-    { id: "telco-call-center-agent", title: "Call Center Agent", emoji: "🎧", description: "Handle inbound calls and chats from telecom customers, resolving billing and service questions.", avgSalary: "480,000 - 820,000 kr/year", educationPath: "High school + on-the-job training", keySkills: ["customer service", "active listening", "patience", "computer literacy", "communication"], dailyTasks: ["Take calls and chats", "Resolve billing queries", "Place orders", "Escalate issues", "Document interactions"], growthOutlook: "stable", entryLevel: true },
+    { id: "telco-call-center-agent", educationRoute: "on-the-job", entryRoute: "direct-entry", title: "Call Center Agent", emoji: "🎧", description: "Handle inbound calls and chats from telecom customers, resolving billing and service questions.", avgSalary: "480,000 - 820,000 kr/year", educationPath: "High school + on-the-job training", keySkills: ["customer service", "active listening", "patience", "computer literacy", "communication"], dailyTasks: ["Take calls and chats", "Resolve billing queries", "Place orders", "Escalate issues", "Document interactions"], growthOutlook: "stable", entryLevel: true },
     { id: "telco-security-engineer", title: "Security Engineer", emoji: "🛡️", description: "Protect telecom networks and platforms from cyber threats and misuse.", avgSalary: "750,000 - 1,100,000 kr/year", educationPath: "Bachelor's in CS/CyberSec + certifications", keySkills: ["network security", "SIEM", "firewalls", "incident response", "scripting"], dailyTasks: ["Harden systems", "Investigate alerts", "Run threat hunts", "Review designs", "Coordinate response"], growthOutlook: "high" },
     { id: "telco-cybersecurity-analyst", title: "Cybersecurity Analyst", emoji: "🕵️", description: "Monitor security alerts, investigate suspicious activity, and respond to incidents in telecom environments.", avgSalary: "770,000 - 1,340,000 kr/year", educationPath: "Bachelor's in CyberSec/CS + SOC experience", keySkills: ["SOC", "SIEM", "log analysis", "threat intel", "incident response"], dailyTasks: ["Triage alerts", "Investigate incidents", "Tune detections", "Write reports", "Run tabletop exercises"], growthOutlook: "high", entryLevel: true },
     { id: "telco-fraud-analyst", title: "Fraud Analyst", emoji: "🔍", description: "Detect and prevent fraud across telecom services — IRSF, SIM swap, subscription fraud, and more.", avgSalary: "550,000 - 800,000 kr/year", educationPath: "Bachelor's in Finance/CS + fraud tooling experience", keySkills: ["fraud detection", "data analysis", "rules engines", "investigation", "communication"], dailyTasks: ["Monitor fraud rules", "Investigate cases", "Coordinate with security", "Tune detection", "Report losses"], growthOutlook: "medium" },
@@ -9931,6 +10482,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
   CREATIVE_MEDIA: [
     {
       id: "illustrator",
+      educationRoute: "mixed",
+      entryRoute: "direct-entry",
       title: "Illustrator",
       emoji: "🎨",
       description: "Create original artwork for books, magazines, advertising, packaging, and digital media. Many work freelance for clients across publishing and marketing.",
@@ -9943,6 +10496,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "content-creator",
+      educationRoute: "mixed",
+      entryRoute: "direct-entry",
       title: "Social Media Manager",
       emoji: "✨",
       description: "Create engaging content for social media, blogs, and digital platforms.",
@@ -9955,6 +10510,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "video-editor",
+      educationRoute: "mixed",
+      entryRoute: "direct-entry",
       title: "Video Editor",
       emoji: "🎬",
       description: "Shoot and edit video content for films, commercials, social media, and corporate clients.",
@@ -9967,6 +10524,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "animator",
+      educationRoute: "mixed",
+      entryRoute: "bachelor",
       title: "Animator",
       emoji: "🎞️",
       description: "Bring characters and scenes to life for film, TV, games and advertising — 2D, 3D, or motion graphics.",
@@ -9991,6 +10550,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "copywriter",
+      educationRoute: "mixed",
+      entryRoute: "bachelor",
       title: "Copywriter",
       emoji: "✍️",
       description: "Write the words for adverts, websites, packaging and brand campaigns. Works closely with designers and strategists.",
@@ -10036,6 +10597,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "sound-engineer",
+      educationRoute: "vocational",
+      entryRoute: "fagskole",
       title: "Sound Engineer",
       emoji: "🎚️",
       description: "Record, mix and produce audio for music, film, podcasts, live events and broadcast. Equal parts technical and creative.",
@@ -10052,6 +10615,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     // ──────────────────────────────────────────────
     {
       id: "musician",
+      educationRoute: "on-the-job",
+      entryRoute: "direct-entry",
       title: "Musician",
       emoji: "🎸",
       description: "Perform live and recorded music as an instrumentalist — solo, in bands, or with ensembles. Income mixes gigs, royalties, and teaching.",
@@ -10064,6 +10629,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "vocalist",
+      educationRoute: "mixed",
+      entryRoute: "direct-entry",
       title: "Vocalist",
       emoji: "🎤",
       description: "Sing professionally — solo, in choirs, or as part of bands and recording projects across genres.",
@@ -10076,6 +10643,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "dj",
+      educationRoute: "on-the-job",
+      entryRoute: "direct-entry",
       title: "DJ",
       emoji: "🎧",
       description: "Mix and play music for clubs, events, weddings, festivals, and radio. Build a personal brand around taste and energy.",
@@ -10088,6 +10657,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "session-musician",
+      educationRoute: "mixed",
+      entryRoute: "direct-entry",
       title: "Session Musician",
       emoji: "🎹",
       description: "Play instruments on other artists' recordings, jingles, and live tours. Versatility across genres is the key skill.",
@@ -10111,6 +10682,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "busker",
+      educationRoute: "on-the-job",
+      entryRoute: "direct-entry",
       title: "Busker",
       emoji: "🪕",
       description: "Perform music in public spaces — train stations, town squares, festivals — earning from passers-by and online tips.",
@@ -10138,6 +10711,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "private-music-tutor",
+      educationRoute: "mixed",
+      entryRoute: "direct-entry",
       title: "Private Music Tutor",
       emoji: "🎶",
       description: "Teach instruments or voice one-to-one in students' homes, your own studio, or online. Set your own schedule and rates.",
@@ -10161,6 +10736,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "vocal-coach",
+      educationRoute: "mixed",
+      entryRoute: "direct-entry",
       title: "Vocal Coach",
       emoji: "🗣️",
       description: "Train singers in technique, repertoire, and performance — for amateurs, professionals, recording artists, and theatre productions.",
@@ -10188,6 +10765,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     // ──────────────────────────────────────────────
     {
       id: "music-producer",
+      educationRoute: "mixed",
+      entryRoute: "direct-entry",
       title: "Music Producer",
       emoji: "🎚️",
       description: "Shape recorded music — arranging, recording, mixing, and guiding artists from idea to finished track. Many work freelance from home studios.",
@@ -10200,6 +10779,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "songwriter",
+      educationRoute: "on-the-job",
+      entryRoute: "direct-entry",
       title: "Songwriter",
       emoji: "✍️",
       description: "Write songs for yourself or other artists — melodies, lyrics, and structure. Income comes from royalties, advances, and co-writing fees.",
@@ -10212,6 +10793,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "composer",
+      educationRoute: "mixed",
+      entryRoute: "bachelor",
       title: "Composer",
       emoji: "📝",
       description: "Write original music for ensembles, choirs, soloists, or commission projects. Spans contemporary classical, choral, and concert work.",
@@ -10223,6 +10806,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "audio-engineer",
+      educationRoute: "vocational",
+      entryRoute: "fagskole",
       title: "Audio Engineer",
       emoji: "🎛️",
       description: "Record, mix, and master audio in studios or live settings. Specialise in music, podcasts, film, or game audio.",
@@ -10235,6 +10820,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "beatmaker",
+      educationRoute: "on-the-job",
+      entryRoute: "direct-entry",
       title: "Beatmaker",
       emoji: "🥁",
       description: "Produce instrumental beats for hip-hop, R&B, pop, and electronic artists. Sell beats online or work directly with vocalists.",
@@ -10247,6 +10834,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "film-composer",
+      educationRoute: "mixed",
+      entryRoute: "bachelor",
       title: "Film Composer",
       emoji: "🎬",
       description: "Write original scores for films, TV shows, and documentaries. Combines composition with deep understanding of visual storytelling.",
@@ -10258,6 +10847,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "game-composer",
+      educationRoute: "mixed",
+      entryRoute: "direct-entry",
       title: "Game Composer",
       emoji: "🎮",
       description: "Compose adaptive music for video games — themes, ambient layers, and dynamic systems that respond to player action.",
@@ -10273,6 +10864,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     // ──────────────────────────────────────────────
     {
       id: "music-manager",
+      educationRoute: "on-the-job",
+      entryRoute: "direct-entry",
       title: "Music Manager",
       emoji: "📋",
       description: "Manage an artist's career — bookings, contracts, branding, finances, and long-term direction. Usually paid a percentage of artist income.",
@@ -10285,6 +10878,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "talent-agent",
+      educationRoute: "on-the-job",
+      entryRoute: "direct-entry",
       title: "Talent Agent",
       emoji: "🤝",
       description: "Book live performances and tours for musicians, securing venues, festivals, and promoters. Earn commission on every booking.",
@@ -10296,6 +10891,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "ar-rep",
+      educationRoute: "on-the-job",
+      entryRoute: "direct-entry",
       title: "A&R Representative",
       emoji: "👂",
       description: "Scout new musical talent for record labels, develop signed artists, and shepherd projects from demo to release.",
@@ -10307,6 +10904,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "music-promoter",
+      educationRoute: "on-the-job",
+      entryRoute: "direct-entry",
       title: "Music Promoter",
       emoji: "📣",
       description: "Organise concerts, festivals, and tours — book venues, market shows, and take on the financial risk of putting on the event.",
@@ -10319,6 +10918,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "tour-manager",
+      educationRoute: "on-the-job",
+      entryRoute: "direct-entry",
       title: "Tour Manager",
       emoji: "🚐",
       description: "Run the day-to-day logistics of a touring music act — travel, hotels, schedules, payments, and keeping everyone moving on time.",
@@ -10331,6 +10932,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "sound-technician",
+      educationRoute: "mixed",
+      entryRoute: "fagskole",
       title: "Sound Technician",
       emoji: "🔊",
       description: "Set up and operate live sound at concerts, festivals, and events — mics, monitors, mixing desks, and front-of-house sound.",
@@ -10343,6 +10946,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "music-journalist",
+      educationRoute: "mixed",
+      entryRoute: "bachelor",
       title: "Music Journalist",
       emoji: "📰",
       description: "Write reviews, interviews, and features about music for magazines, websites, and newspapers. Many freelance across multiple outlets.",
@@ -10355,6 +10960,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "music-content-creator",
+      educationRoute: "on-the-job",
+      entryRoute: "direct-entry",
       title: "Music Content Creator",
       emoji: "📹",
       description: "Build an audience around music — reactions, tutorials, reviews, gear breakdowns — across YouTube, TikTok, and Instagram.",
@@ -10367,6 +10974,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "music-licensing-specialist",
+      educationRoute: "mixed",
+      entryRoute: "bachelor",
       title: "Music Licensing Specialist",
       emoji: "📄",
       description: "Negotiate the use of music in films, ads, games, and TV. Manage rights, royalties, and clearances on behalf of artists or rights holders.",
@@ -10377,64 +10986,64 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       growthOutlook: "stable",
     },
     // ── Online creators & influencers ──
-    { id: "youtuber", title: "YouTuber", emoji: "📺", description: "Build and run a YouTube channel — creating, editing, and publishing videos that grow an audience and earn ad / sponsorship income.", avgSalary: "0 - 2,000,000+ kr/year (highly variable)", educationPath: "Self-taught — consistency, video skills, and audience-building matter more than formal credentials", keySkills: ["video production", "storytelling", "editing", "SEO", "consistency"], dailyTasks: ["Plan videos", "Film content", "Edit footage", "Engage viewers", "Analyse stats"], growthOutlook: "high", entryLevel: true },
-    { id: "social-media-influencer", title: "Social Media Influencer", emoji: "🤳", description: "Build a personal brand across Instagram, TikTok, YouTube — earning through sponsorships, affiliate links, and brand deals.", avgSalary: "0 - 3,000,000+ kr/year (highly variable)", educationPath: "Self-taught — content quality and authentic audience matter most", keySkills: ["personal branding", "content creation", "negotiation", "consistency", "trend awareness"], dailyTasks: ["Post content", "Engage followers", "Negotiate deals", "Track analytics", "Plan campaigns"], growthOutlook: "high", entryLevel: true },
-    { id: "vlogger", title: "Vlogger", emoji: "🎬", description: "Document daily life, travels, or experiences in regular video diaries — building a community of subscribers who tune in.", avgSalary: "0 - 1,500,000+ kr/year (highly variable)", educationPath: "Self-taught — video skills and a consistent point of view matter most", keySkills: ["camera presence", "editing", "storytelling", "scheduling", "self-discipline"], dailyTasks: ["Film daily", "Edit clips", "Write scripts", "Engage community", "Plan series"], growthOutlook: "high", entryLevel: true },
-    { id: "gaming-streamer", title: "Gaming Streamer", emoji: "🎮", description: "Stream gameplay live on Twitch, YouTube, or Kick — entertaining viewers through commentary, skill, and personality.", avgSalary: "0 - 2,000,000+ kr/year (highly variable)", educationPath: "Self-taught — game skill, charisma, and audience-building matter most", keySkills: ["game skill", "personality", "tech setup", "engagement", "stamina"], dailyTasks: ["Stream live", "Engage chat", "Edit highlights", "Manage subs", "Network with creators"], growthOutlook: "high", entryLevel: true },
-    { id: "educational-content-creator", title: "Educational Content Creator", emoji: "📚", description: "Teach a subject through video, articles, or short clips — explaining concepts in ways that help people learn.", avgSalary: "200,000 - 1,200,000 kr/year (highly variable)", educationPath: "Subject expertise + self-taught video and writing skills", keySkills: ["explanation", "subject expertise", "video production", "writing", "research"], dailyTasks: ["Plan lessons", "Record content", "Edit videos", "Answer questions", "Update curriculum"], growthOutlook: "high", entryLevel: true },
-    { id: "tech-reviewer", title: "Tech Reviewer", emoji: "📱", description: "Test and review consumer tech — phones, laptops, gadgets — sharing honest opinions through video or written reviews.", avgSalary: "300,000 - 1,500,000 kr/year (highly variable)", educationPath: "Self-taught — tech knowledge, video production, and credibility matter most", keySkills: ["product testing", "video production", "writing", "fairness", "tech knowledge"], dailyTasks: ["Test products", "Film reviews", "Edit footage", "Research specs", "Engage audience"], growthOutlook: "medium", entryLevel: true },
-    { id: "lifestyle-influencer", title: "Lifestyle Influencer", emoji: "✨", description: "Share daily life, fashion, beauty, and routines through curated posts — earning through brand collaborations.", avgSalary: "0 - 2,000,000+ kr/year (highly variable)", educationPath: "Self-taught — taste, photography, and audience-building matter most", keySkills: ["aesthetic eye", "photography", "personal branding", "negotiation", "consistency"], dailyTasks: ["Plan posts", "Shoot content", "Engage followers", "Negotiate deals", "Attend events"], growthOutlook: "medium", entryLevel: true },
-    { id: "travel-vlogger", title: "Travel Vlogger", emoji: "✈️", description: "Document your travels through video and photography — funded by ads, brand deals, and tourism boards.", avgSalary: "0 - 1,500,000 kr/year (highly variable)", educationPath: "Self-taught — content quality, storytelling, and resilience on the road matter most", keySkills: ["filmmaking", "storytelling", "logistics", "languages", "stamina"], dailyTasks: ["Travel and film", "Edit on the move", "Plan trips", "Engage community", "Pitch sponsors"], growthOutlook: "medium", entryLevel: true },
-    { id: "fitness-influencer", title: "Fitness Influencer", emoji: "💪", description: "Share workouts, nutrition tips, and transformations — earning through coaching, supplements, and brand partnerships.", avgSalary: "0 - 1,500,000 kr/year (highly variable)", educationPath: "Personal training certification + self-taught content skills", keySkills: ["training expertise", "content creation", "personal branding", "consistency", "coaching"], dailyTasks: ["Train and film", "Coach clients", "Plan content", "Engage audience", "Promote products"], growthOutlook: "high", entryLevel: true },
-    { id: "food-blogger", title: "Food Blogger", emoji: "🍳", description: "Create recipes, restaurant reviews, and food content — earning through ads, cookbooks, and brand collaborations.", avgSalary: "0 - 1,000,000 kr/year (highly variable)", educationPath: "Self-taught cooking + photography + writing", keySkills: ["cooking", "food photography", "writing", "recipe development", "personal brand"], dailyTasks: ["Cook recipes", "Style and shoot", "Write posts", "Engage readers", "Pitch brands"], growthOutlook: "medium", entryLevel: true },
-    { id: "podcast-host", title: "Podcast Host", emoji: "🎙️", description: "Host a podcast — interview guests, lead conversations, and build a loyal audience through audio content.", avgSalary: "0 - 1,500,000 kr/year (highly variable)", educationPath: "Self-taught — voice skills, curiosity, and consistency matter most", keySkills: ["interviewing", "audio production", "research", "personality", "consistency"], dailyTasks: ["Plan episodes", "Interview guests", "Edit audio", "Promote shows", "Pitch sponsors"], growthOutlook: "high", entryLevel: true },
-    { id: "tiktok-creator", title: "TikTok Creator", emoji: "🎵", description: "Make short-form vertical videos for TikTok — chasing trends and building an audience that grows fast.", avgSalary: "0 - 2,000,000+ kr/year (highly variable)", educationPath: "Self-taught — quick editing and trend awareness matter most", keySkills: ["short-form video", "trend awareness", "editing", "personality", "speed"], dailyTasks: ["Spot trends", "Film clips", "Edit fast", "Engage comments", "Negotiate deals"], growthOutlook: "high", entryLevel: true },
-    { id: "instagram-influencer", title: "Instagram Influencer", emoji: "📸", description: "Build a following on Instagram through photos, reels, and stories — earning through brand partnerships and affiliate sales.", avgSalary: "0 - 1,500,000 kr/year (highly variable)", educationPath: "Self-taught — aesthetics, photography, and engagement matter most", keySkills: ["photography", "personal brand", "engagement", "negotiation", "consistency"], dailyTasks: ["Shoot content", "Post daily", "Engage DMs", "Run campaigns", "Track analytics"], growthOutlook: "medium", entryLevel: true },
-    { id: "live-streamer", title: "Live Streamer", emoji: "📡", description: "Stream live content — gaming, talk shows, music, makeup — building a real-time community of viewers and subscribers.", avgSalary: "0 - 1,500,000 kr/year (highly variable)", educationPath: "Self-taught — charisma, tech setup, and stamina matter most", keySkills: ["personality", "tech setup", "engagement", "improvisation", "stamina"], dailyTasks: ["Stream live", "Engage chat", "Manage tech", "Edit highlights", "Grow community"], growthOutlook: "high", entryLevel: true },
-    { id: "short-form-video-creator", title: "Short-form Video Creator", emoji: "📲", description: "Specialise in 15–60 second videos for TikTok, Reels, and Shorts — earning through views, brand deals, and creator funds.", avgSalary: "0 - 1,500,000 kr/year (highly variable)", educationPath: "Self-taught — fast editing and trend literacy matter most", keySkills: ["mobile editing", "hooks", "pacing", "trend awareness", "experimentation"], dailyTasks: ["Film clips", "Edit fast", "Test ideas", "Track analytics", "Engage audience"], growthOutlook: "high", entryLevel: true },
-    { id: "brand-ambassador", title: "Brand Ambassador", emoji: "🎁", description: "Represent a brand to consumers — at events, online, or through long-term partnerships — promoting products authentically.", avgSalary: "200,000 - 800,000 kr/year (often part-time)", educationPath: "No formal requirement — personal brand and people skills matter most", keySkills: ["communication", "personal brand", "presentation", "reliability", "social skills"], dailyTasks: ["Promote products", "Attend events", "Post content", "Train staff", "Report metrics"], growthOutlook: "medium", entryLevel: true },
-    { id: "affiliate-marketer", title: "Affiliate Marketer", emoji: "🔗", description: "Drive sales for other brands through tracked links — building niche websites, channels, or audiences that convert.", avgSalary: "0 - 1,500,000 kr/year (highly variable)", educationPath: "Self-taught — SEO, copywriting, and analytics matter most", keySkills: ["SEO", "copywriting", "analytics", "niche selection", "patience"], dailyTasks: ["Build content", "Run SEO", "Test offers", "Track conversions", "Optimise funnels"], growthOutlook: "medium", entryLevel: true },
-    { id: "online-personality", title: "Online Personality", emoji: "🌟", description: "Build a multi-platform brand around your personality — combining streaming, video, podcasts, and brand deals.", avgSalary: "0 - 3,000,000+ kr/year (highly variable)", educationPath: "Self-taught — charisma, work ethic, and audience-building matter most", keySkills: ["personality", "multi-platform content", "consistency", "negotiation", "personal brand"], dailyTasks: ["Create content", "Engage audience", "Negotiate deals", "Manage team", "Plan launches"], growthOutlook: "high", entryLevel: true },
-    { id: "digital-creator", title: "Digital Creator", emoji: "💡", description: "Make creative digital content of any kind — videos, posts, art, music — for an online audience and modern platforms.", avgSalary: "0 - 1,500,000 kr/year (highly variable)", educationPath: "Self-taught — creativity, tools, and consistency matter most", keySkills: ["creativity", "digital tools", "personal brand", "consistency", "experimentation"], dailyTasks: ["Make content", "Publish online", "Engage community", "Test ideas", "Track results"], growthOutlook: "high", entryLevel: true },
+    { id: "youtuber", educationRoute: "on-the-job", entryRoute: "direct-entry", title: "YouTuber", emoji: "📺", description: "Build and run a YouTube channel — creating, editing, and publishing videos that grow an audience and earn ad / sponsorship income.", avgSalary: "0 - 2,000,000+ kr/year (highly variable)", educationPath: "Self-taught — consistency, video skills, and audience-building matter more than formal credentials", keySkills: ["video production", "storytelling", "editing", "SEO", "consistency"], dailyTasks: ["Plan videos", "Film content", "Edit footage", "Engage viewers", "Analyse stats"], growthOutlook: "high", entryLevel: true },
+    { id: "social-media-influencer", educationRoute: "on-the-job", entryRoute: "direct-entry", title: "Social Media Influencer", emoji: "🤳", description: "Build a personal brand across Instagram, TikTok, YouTube — earning through sponsorships, affiliate links, and brand deals.", avgSalary: "0 - 3,000,000+ kr/year (highly variable)", educationPath: "Self-taught — content quality and authentic audience matter most", keySkills: ["personal branding", "content creation", "negotiation", "consistency", "trend awareness"], dailyTasks: ["Post content", "Engage followers", "Negotiate deals", "Track analytics", "Plan campaigns"], growthOutlook: "high", entryLevel: true },
+    { id: "vlogger", educationRoute: "on-the-job", entryRoute: "direct-entry", title: "Vlogger", emoji: "🎬", description: "Document daily life, travels, or experiences in regular video diaries — building a community of subscribers who tune in.", avgSalary: "0 - 1,500,000+ kr/year (highly variable)", educationPath: "Self-taught — video skills and a consistent point of view matter most", keySkills: ["camera presence", "editing", "storytelling", "scheduling", "self-discipline"], dailyTasks: ["Film daily", "Edit clips", "Write scripts", "Engage community", "Plan series"], growthOutlook: "high", entryLevel: true },
+    { id: "gaming-streamer", educationRoute: "on-the-job", entryRoute: "direct-entry", title: "Gaming Streamer", emoji: "🎮", description: "Stream gameplay live on Twitch, YouTube, or Kick — entertaining viewers through commentary, skill, and personality.", avgSalary: "0 - 2,000,000+ kr/year (highly variable)", educationPath: "Self-taught — game skill, charisma, and audience-building matter most", keySkills: ["game skill", "personality", "tech setup", "engagement", "stamina"], dailyTasks: ["Stream live", "Engage chat", "Edit highlights", "Manage subs", "Network with creators"], growthOutlook: "high", entryLevel: true },
+    { id: "educational-content-creator", educationRoute: "on-the-job", entryRoute: "direct-entry", title: "Educational Content Creator", emoji: "📚", description: "Teach a subject through video, articles, or short clips — explaining concepts in ways that help people learn.", avgSalary: "200,000 - 1,200,000 kr/year (highly variable)", educationPath: "Subject expertise + self-taught video and writing skills", keySkills: ["explanation", "subject expertise", "video production", "writing", "research"], dailyTasks: ["Plan lessons", "Record content", "Edit videos", "Answer questions", "Update curriculum"], growthOutlook: "high", entryLevel: true },
+    { id: "tech-reviewer", educationRoute: "on-the-job", entryRoute: "direct-entry", title: "Tech Reviewer", emoji: "📱", description: "Test and review consumer tech — phones, laptops, gadgets — sharing honest opinions through video or written reviews.", avgSalary: "300,000 - 1,500,000 kr/year (highly variable)", educationPath: "Self-taught — tech knowledge, video production, and credibility matter most", keySkills: ["product testing", "video production", "writing", "fairness", "tech knowledge"], dailyTasks: ["Test products", "Film reviews", "Edit footage", "Research specs", "Engage audience"], growthOutlook: "medium", entryLevel: true },
+    { id: "lifestyle-influencer", educationRoute: "on-the-job", entryRoute: "direct-entry", title: "Lifestyle Influencer", emoji: "✨", description: "Share daily life, fashion, beauty, and routines through curated posts — earning through brand collaborations.", avgSalary: "0 - 2,000,000+ kr/year (highly variable)", educationPath: "Self-taught — taste, photography, and audience-building matter most", keySkills: ["aesthetic eye", "photography", "personal branding", "negotiation", "consistency"], dailyTasks: ["Plan posts", "Shoot content", "Engage followers", "Negotiate deals", "Attend events"], growthOutlook: "medium", entryLevel: true },
+    { id: "travel-vlogger", educationRoute: "on-the-job", entryRoute: "direct-entry", title: "Travel Vlogger", emoji: "✈️", description: "Document your travels through video and photography — funded by ads, brand deals, and tourism boards.", avgSalary: "0 - 1,500,000 kr/year (highly variable)", educationPath: "Self-taught — content quality, storytelling, and resilience on the road matter most", keySkills: ["filmmaking", "storytelling", "logistics", "languages", "stamina"], dailyTasks: ["Travel and film", "Edit on the move", "Plan trips", "Engage community", "Pitch sponsors"], growthOutlook: "medium", entryLevel: true },
+    { id: "fitness-influencer", educationRoute: "certification", entryRoute: "certification", title: "Fitness Influencer", emoji: "💪", description: "Share workouts, nutrition tips, and transformations — earning through coaching, supplements, and brand partnerships.", avgSalary: "0 - 1,500,000 kr/year (highly variable)", educationPath: "Personal training certification + self-taught content skills", keySkills: ["training expertise", "content creation", "personal branding", "consistency", "coaching"], dailyTasks: ["Train and film", "Coach clients", "Plan content", "Engage audience", "Promote products"], growthOutlook: "high", entryLevel: true },
+    { id: "food-blogger", educationRoute: "on-the-job", entryRoute: "direct-entry", title: "Food Blogger", emoji: "🍳", description: "Create recipes, restaurant reviews, and food content — earning through ads, cookbooks, and brand collaborations.", avgSalary: "0 - 1,000,000 kr/year (highly variable)", educationPath: "Self-taught cooking + photography + writing", keySkills: ["cooking", "food photography", "writing", "recipe development", "personal brand"], dailyTasks: ["Cook recipes", "Style and shoot", "Write posts", "Engage readers", "Pitch brands"], growthOutlook: "medium", entryLevel: true },
+    { id: "podcast-host", educationRoute: "on-the-job", entryRoute: "direct-entry", title: "Podcast Host", emoji: "🎙️", description: "Host a podcast — interview guests, lead conversations, and build a loyal audience through audio content.", avgSalary: "0 - 1,500,000 kr/year (highly variable)", educationPath: "Self-taught — voice skills, curiosity, and consistency matter most", keySkills: ["interviewing", "audio production", "research", "personality", "consistency"], dailyTasks: ["Plan episodes", "Interview guests", "Edit audio", "Promote shows", "Pitch sponsors"], growthOutlook: "high", entryLevel: true },
+    { id: "tiktok-creator", educationRoute: "on-the-job", entryRoute: "direct-entry", title: "TikTok Creator", emoji: "🎵", description: "Make short-form vertical videos for TikTok — chasing trends and building an audience that grows fast.", avgSalary: "0 - 2,000,000+ kr/year (highly variable)", educationPath: "Self-taught — quick editing and trend awareness matter most", keySkills: ["short-form video", "trend awareness", "editing", "personality", "speed"], dailyTasks: ["Spot trends", "Film clips", "Edit fast", "Engage comments", "Negotiate deals"], growthOutlook: "high", entryLevel: true },
+    { id: "instagram-influencer", educationRoute: "on-the-job", entryRoute: "direct-entry", title: "Instagram Influencer", emoji: "📸", description: "Build a following on Instagram through photos, reels, and stories — earning through brand partnerships and affiliate sales.", avgSalary: "0 - 1,500,000 kr/year (highly variable)", educationPath: "Self-taught — aesthetics, photography, and engagement matter most", keySkills: ["photography", "personal brand", "engagement", "negotiation", "consistency"], dailyTasks: ["Shoot content", "Post daily", "Engage DMs", "Run campaigns", "Track analytics"], growthOutlook: "medium", entryLevel: true },
+    { id: "live-streamer", educationRoute: "on-the-job", entryRoute: "direct-entry", title: "Live Streamer", emoji: "📡", description: "Stream live content — gaming, talk shows, music, makeup — building a real-time community of viewers and subscribers.", avgSalary: "0 - 1,500,000 kr/year (highly variable)", educationPath: "Self-taught — charisma, tech setup, and stamina matter most", keySkills: ["personality", "tech setup", "engagement", "improvisation", "stamina"], dailyTasks: ["Stream live", "Engage chat", "Manage tech", "Edit highlights", "Grow community"], growthOutlook: "high", entryLevel: true },
+    { id: "short-form-video-creator", educationRoute: "on-the-job", entryRoute: "direct-entry", title: "Short-form Video Creator", emoji: "📲", description: "Specialise in 15–60 second videos for TikTok, Reels, and Shorts — earning through views, brand deals, and creator funds.", avgSalary: "0 - 1,500,000 kr/year (highly variable)", educationPath: "Self-taught — fast editing and trend literacy matter most", keySkills: ["mobile editing", "hooks", "pacing", "trend awareness", "experimentation"], dailyTasks: ["Film clips", "Edit fast", "Test ideas", "Track analytics", "Engage audience"], growthOutlook: "high", entryLevel: true },
+    { id: "brand-ambassador", educationRoute: "on-the-job", entryRoute: "direct-entry", title: "Brand Ambassador", emoji: "🎁", description: "Represent a brand to consumers — at events, online, or through long-term partnerships — promoting products authentically.", avgSalary: "200,000 - 800,000 kr/year (often part-time)", educationPath: "No formal requirement — personal brand and people skills matter most", keySkills: ["communication", "personal brand", "presentation", "reliability", "social skills"], dailyTasks: ["Promote products", "Attend events", "Post content", "Train staff", "Report metrics"], growthOutlook: "medium", entryLevel: true },
+    { id: "affiliate-marketer", educationRoute: "on-the-job", entryRoute: "direct-entry", title: "Affiliate Marketer", emoji: "🔗", description: "Drive sales for other brands through tracked links — building niche websites, channels, or audiences that convert.", avgSalary: "0 - 1,500,000 kr/year (highly variable)", educationPath: "Self-taught — SEO, copywriting, and analytics matter most", keySkills: ["SEO", "copywriting", "analytics", "niche selection", "patience"], dailyTasks: ["Build content", "Run SEO", "Test offers", "Track conversions", "Optimise funnels"], growthOutlook: "medium", entryLevel: true },
+    { id: "online-personality", educationRoute: "on-the-job", entryRoute: "direct-entry", title: "Online Personality", emoji: "🌟", description: "Build a multi-platform brand around your personality — combining streaming, video, podcasts, and brand deals.", avgSalary: "0 - 3,000,000+ kr/year (highly variable)", educationPath: "Self-taught — charisma, work ethic, and audience-building matter most", keySkills: ["personality", "multi-platform content", "consistency", "negotiation", "personal brand"], dailyTasks: ["Create content", "Engage audience", "Negotiate deals", "Manage team", "Plan launches"], growthOutlook: "high", entryLevel: true },
+    { id: "digital-creator", educationRoute: "on-the-job", entryRoute: "direct-entry", title: "Digital Creator", emoji: "💡", description: "Make creative digital content of any kind — videos, posts, art, music — for an online audience and modern platforms.", avgSalary: "0 - 1,500,000 kr/year (highly variable)", educationPath: "Self-taught — creativity, tools, and consistency matter most", keySkills: ["creativity", "digital tools", "personal brand", "consistency", "experimentation"], dailyTasks: ["Make content", "Publish online", "Engage community", "Test ideas", "Track results"], growthOutlook: "high", entryLevel: true },
     // ── Video & film production ──
-    { id: "videographer", title: "Videographer", emoji: "📹", description: "Shoot video for clients — events, weddings, corporate, music — handling camera, lighting, and basic editing.", avgSalary: "400,000 - 800,000 kr/year", educationPath: "Self-taught or vocational film/photo school + portfolio", keySkills: ["camera operation", "lighting", "framing", "editing basics", "client management"], dailyTasks: ["Set up shoots", "Operate cameras", "Direct subjects", "Edit footage", "Deliver files"], growthOutlook: "medium", entryLevel: true },
-    { id: "cinematographer", title: "Cinematographer", emoji: "🎥", description: "Lead the visual look of a film or show — deciding cameras, lenses, lighting, and movement to bring a script to life.", avgSalary: "550,000 - 1,200,000 kr/year (highly variable)", educationPath: "Film school (3 years) + portfolio + crew progression", keySkills: ["lighting design", "camera mastery", "composition", "leadership", "collaboration"], dailyTasks: ["Plan shots", "Direct camera crew", "Light scenes", "Operate camera", "Review dailies"], growthOutlook: "medium" },
-    { id: "film-director", title: "Film Director", emoji: "🎬", description: "Lead the creative vision of a film or TV show — guiding actors, crew, and storytelling from script to final cut.", avgSalary: "400,000 - 2,000,000+ kr/year (highly variable)", educationPath: "Film school + portfolio + years of crew experience", keySkills: ["storytelling", "leadership", "visual thinking", "decision-making", "actor direction"], dailyTasks: ["Direct actors", "Approve shots", "Plan scenes", "Lead crew", "Review edits"], growthOutlook: "medium" },
-    { id: "camera-operator", title: "Camera Operator", emoji: "📷", description: "Operate the camera on set — following the director and DP's plan, holding precise framing and movement.", avgSalary: "450,000 - 800,000 kr/year", educationPath: "Film school or assistant camera progression + on-set training", keySkills: ["camera tech", "framing", "stamina", "responsiveness", "teamwork"], dailyTasks: ["Set up cameras", "Frame shots", "Hold focus", "Follow action", "Maintain gear"], growthOutlook: "medium" },
-    { id: "drone-videographer", title: "Drone Videographer", emoji: "🚁", description: "Shoot aerial video and photography with drones — for real estate, events, weddings, and commercials.", avgSalary: "400,000 - 800,000 kr/year", educationPath: "Drone pilot certification (RO1/RO2 in Norway) + camera skills", keySkills: ["drone piloting", "aerial composition", "regulations", "camera tech", "editing"], dailyTasks: ["Plan flights", "Pilot drones", "Capture footage", "Edit clips", "Manage permits"], growthOutlook: "high", entryLevel: true },
-    { id: "wedding-videographer", title: "Wedding Videographer", emoji: "💍", description: "Capture wedding days on video — telling each couple's story through cinematic highlight films and full edits.", avgSalary: "350,000 - 800,000 kr/year", educationPath: "Self-taught or vocational + strong portfolio", keySkills: ["storytelling", "candid camera work", "audio capture", "editing", "client care"], dailyTasks: ["Meet couples", "Plan shot lists", "Film weddings", "Edit highlight reels", "Deliver films"], growthOutlook: "medium", entryLevel: true },
-    { id: "documentary-filmmaker", title: "Documentary Filmmaker", emoji: "🎞️", description: "Tell true stories through film — researching, shooting, and editing documentaries for streaming, TV, or festivals.", avgSalary: "350,000 - 900,000 kr/year (highly variable)", educationPath: "Film school + documentary specialism + grant-writing experience", keySkills: ["research", "interviewing", "story structure", "editing", "fundraising"], dailyTasks: ["Research subjects", "Conduct interviews", "Film scenes", "Edit cuts", "Pitch funders"], growthOutlook: "medium" },
-    { id: "commercial-video-producer", title: "Commercial Video Producer", emoji: "📺", description: "Produce ads and branded video content for businesses — managing crew, budget, and schedule from brief to delivery.", avgSalary: "550,000 - 1,000,000 kr/year", educationPath: "Bachelor's in Film/Media or production experience", keySkills: ["production management", "budgeting", "client comms", "creative briefing", "scheduling"], dailyTasks: ["Take briefs", "Hire crew", "Manage budgets", "Run shoots", "Oversee post"], growthOutlook: "medium" },
-    { id: "youtube-video-editor", title: "YouTube Video Editor", emoji: "✂️", description: "Edit videos for YouTube creators — pacing, b-roll, captions, and graphics that keep viewers watching.", avgSalary: "350,000 - 800,000 kr/year", educationPath: "Self-taught or vocational editing course + portfolio", keySkills: ["video editing", "pacing", "motion graphics", "sound design", "creator collaboration"], dailyTasks: ["Cut footage", "Add b-roll", "Sound design", "Caption", "Iterate with creator"], growthOutlook: "high", entryLevel: true },
-    { id: "post-production-specialist", title: "Post-Production Specialist", emoji: "🎛️", description: "Handle every step of finishing a film or video project — editing, sound, colour, VFX — to broadcast standard.", avgSalary: "500,000 - 1,000,000 kr/year", educationPath: "Film school or vocational post-production training", keySkills: ["editing", "colour grading", "sound", "VFX basics", "delivery specs"], dailyTasks: ["Cut sequences", "Grade colour", "Mix audio", "Add VFX", "Master deliverables"], growthOutlook: "medium" },
-    { id: "color-grading-specialist", title: "Color Grading Specialist", emoji: "🎨", description: "Shape the look and feel of finished film through colour — matching shots, setting mood, and creating signature styles.", avgSalary: "550,000 - 1,100,000 kr/year", educationPath: "Specialist colour course (DaVinci Resolve, Baselight) + portfolio", keySkills: ["colour theory", "DaVinci Resolve", "monitoring", "client comms", "precision"], dailyTasks: ["Grade shots", "Match cameras", "Build looks", "Deliver masters", "Brief clients"], growthOutlook: "medium" },
-    { id: "lighting-technician", title: "Lighting Technician", emoji: "💡", description: "Set up and operate lighting for film, TV, and events — under the gaffer's direction or as a head of department.", avgSalary: "400,000 - 750,000 kr/year", educationPath: "Vocational film school or apprenticeship on-set", keySkills: ["electrics", "lighting kit", "rigging", "safety", "stamina"], dailyTasks: ["Rig lights", "Run cables", "Adjust intensity", "Strike sets", "Maintain gear"], growthOutlook: "medium", entryLevel: true },
-    { id: "sound-editor", title: "Sound Editor", emoji: "🔊", description: "Edit dialogue, sound effects, and ambience for film and TV — building the soundscape that supports the picture.", avgSalary: "450,000 - 900,000 kr/year", educationPath: "Bachelor's in Sound/Audio Engineering or vocational training", keySkills: ["DAW skills", "sound design", "dialogue editing", "Foley", "attention to detail"], dailyTasks: ["Cut dialogue", "Build sound design", "Record Foley", "Sync tracks", "Prep mixes"], growthOutlook: "medium" },
-    { id: "motion-graphics-designer", title: "Motion Graphics Designer", emoji: "🌀", description: "Create animated graphics and visual effects for video — titles, lower thirds, explainers, and brand idents.", avgSalary: "500,000 - 950,000 kr/year", educationPath: "Bachelor's in Design / Animation or self-taught + strong portfolio", keySkills: ["After Effects", "Cinema 4D", "design fundamentals", "animation", "typography"], dailyTasks: ["Animate graphics", "Build templates", "Render shots", "Iterate with directors", "Deliver assets"], growthOutlook: "high" },
-    { id: "video-content-producer", title: "Video Content Producer", emoji: "🎙️", description: "Produce video content end-to-end for social, web, or campaigns — concept, shoot, edit, and publish.", avgSalary: "450,000 - 850,000 kr/year", educationPath: "Bachelor's in Media or self-taught + portfolio", keySkills: ["concepting", "shooting", "editing", "distribution", "analytics"], dailyTasks: ["Pitch ideas", "Shoot footage", "Edit videos", "Publish content", "Track performance"], growthOutlook: "high", entryLevel: true },
-    { id: "corporate-videographer", title: "Corporate Videographer", emoji: "🏢", description: "Make video content for businesses — internal comms, training, recruitment, product, and event coverage.", avgSalary: "450,000 - 800,000 kr/year", educationPath: "Self-taught or vocational + corporate portfolio", keySkills: ["client comms", "interviewing", "lighting", "editing", "delivery"], dailyTasks: ["Brief clients", "Film shoots", "Conduct interviews", "Edit videos", "Deliver projects"], growthOutlook: "medium", entryLevel: true },
+    { id: "videographer", educationRoute: "mixed", entryRoute: "direct-entry", title: "Videographer", emoji: "📹", description: "Shoot video for clients — events, weddings, corporate, music — handling camera, lighting, and basic editing.", avgSalary: "400,000 - 800,000 kr/year", educationPath: "Self-taught or vocational film/photo school + portfolio", keySkills: ["camera operation", "lighting", "framing", "editing basics", "client management"], dailyTasks: ["Set up shoots", "Operate cameras", "Direct subjects", "Edit footage", "Deliver files"], growthOutlook: "medium", entryLevel: true },
+    { id: "cinematographer", educationRoute: "mixed", entryRoute: "fagskole", title: "Cinematographer", emoji: "🎥", description: "Lead the visual look of a film or show — deciding cameras, lenses, lighting, and movement to bring a script to life.", avgSalary: "550,000 - 1,200,000 kr/year (highly variable)", educationPath: "Film school (3 years) + portfolio + crew progression", keySkills: ["lighting design", "camera mastery", "composition", "leadership", "collaboration"], dailyTasks: ["Plan shots", "Direct camera crew", "Light scenes", "Operate camera", "Review dailies"], growthOutlook: "medium" },
+    { id: "film-director", educationRoute: "mixed", entryRoute: "direct-entry", title: "Film Director", emoji: "🎬", description: "Lead the creative vision of a film or TV show — guiding actors, crew, and storytelling from script to final cut.", avgSalary: "400,000 - 2,000,000+ kr/year (highly variable)", educationPath: "Film school + portfolio + years of crew experience", keySkills: ["storytelling", "leadership", "visual thinking", "decision-making", "actor direction"], dailyTasks: ["Direct actors", "Approve shots", "Plan scenes", "Lead crew", "Review edits"], growthOutlook: "medium" },
+    { id: "camera-operator", educationRoute: "mixed", entryRoute: "direct-entry", title: "Camera Operator", emoji: "📷", description: "Operate the camera on set — following the director and DP's plan, holding precise framing and movement.", avgSalary: "450,000 - 800,000 kr/year", educationPath: "Film school or assistant camera progression + on-set training", keySkills: ["camera tech", "framing", "stamina", "responsiveness", "teamwork"], dailyTasks: ["Set up cameras", "Frame shots", "Hold focus", "Follow action", "Maintain gear"], growthOutlook: "medium" },
+    { id: "drone-videographer", educationRoute: "certification", entryRoute: "certification", title: "Drone Videographer", emoji: "🚁", description: "Shoot aerial video and photography with drones — for real estate, events, weddings, and commercials.", avgSalary: "400,000 - 800,000 kr/year", educationPath: "Drone pilot certification (RO1/RO2 in Norway) + camera skills", keySkills: ["drone piloting", "aerial composition", "regulations", "camera tech", "editing"], dailyTasks: ["Plan flights", "Pilot drones", "Capture footage", "Edit clips", "Manage permits"], growthOutlook: "high", entryLevel: true },
+    { id: "wedding-videographer", educationRoute: "on-the-job", entryRoute: "direct-entry", title: "Wedding Videographer", emoji: "💍", description: "Capture wedding days on video — telling each couple's story through cinematic highlight films and full edits.", avgSalary: "350,000 - 800,000 kr/year", educationPath: "Self-taught or vocational + strong portfolio", keySkills: ["storytelling", "candid camera work", "audio capture", "editing", "client care"], dailyTasks: ["Meet couples", "Plan shot lists", "Film weddings", "Edit highlight reels", "Deliver films"], growthOutlook: "medium", entryLevel: true },
+    { id: "documentary-filmmaker", educationRoute: "mixed", entryRoute: "direct-entry", title: "Documentary Filmmaker", emoji: "🎞️", description: "Tell true stories through film — researching, shooting, and editing documentaries for streaming, TV, or festivals.", avgSalary: "350,000 - 900,000 kr/year (highly variable)", educationPath: "Film school + documentary specialism + grant-writing experience", keySkills: ["research", "interviewing", "story structure", "editing", "fundraising"], dailyTasks: ["Research subjects", "Conduct interviews", "Film scenes", "Edit cuts", "Pitch funders"], growthOutlook: "medium" },
+    { id: "commercial-video-producer", educationRoute: "mixed", entryRoute: "bachelor", title: "Commercial Video Producer", emoji: "📺", description: "Produce ads and branded video content for businesses — managing crew, budget, and schedule from brief to delivery.", avgSalary: "550,000 - 1,000,000 kr/year", educationPath: "Bachelor's in Film/Media or production experience", keySkills: ["production management", "budgeting", "client comms", "creative briefing", "scheduling"], dailyTasks: ["Take briefs", "Hire crew", "Manage budgets", "Run shoots", "Oversee post"], growthOutlook: "medium" },
+    { id: "youtube-video-editor", educationRoute: "on-the-job", entryRoute: "direct-entry", title: "YouTube Video Editor", emoji: "✂️", description: "Edit videos for YouTube creators — pacing, b-roll, captions, and graphics that keep viewers watching.", avgSalary: "350,000 - 800,000 kr/year", educationPath: "Self-taught or vocational editing course + portfolio", keySkills: ["video editing", "pacing", "motion graphics", "sound design", "creator collaboration"], dailyTasks: ["Cut footage", "Add b-roll", "Sound design", "Caption", "Iterate with creator"], growthOutlook: "high", entryLevel: true },
+    { id: "post-production-specialist", educationRoute: "mixed", entryRoute: "fagskole", title: "Post-Production Specialist", emoji: "🎛️", description: "Handle every step of finishing a film or video project — editing, sound, colour, VFX — to broadcast standard.", avgSalary: "500,000 - 1,000,000 kr/year", educationPath: "Film school or vocational post-production training", keySkills: ["editing", "colour grading", "sound", "VFX basics", "delivery specs"], dailyTasks: ["Cut sequences", "Grade colour", "Mix audio", "Add VFX", "Master deliverables"], growthOutlook: "medium" },
+    { id: "color-grading-specialist", educationRoute: "certification", entryRoute: "certification", title: "Color Grading Specialist", emoji: "🎨", description: "Shape the look and feel of finished film through colour — matching shots, setting mood, and creating signature styles.", avgSalary: "550,000 - 1,100,000 kr/year", educationPath: "Specialist colour course (DaVinci Resolve, Baselight) + portfolio", keySkills: ["colour theory", "DaVinci Resolve", "monitoring", "client comms", "precision"], dailyTasks: ["Grade shots", "Match cameras", "Build looks", "Deliver masters", "Brief clients"], growthOutlook: "medium" },
+    { id: "lighting-technician", educationRoute: "vocational", entryRoute: "fagskole", title: "Lighting Technician", emoji: "💡", description: "Set up and operate lighting for film, TV, and events — under the gaffer's direction or as a head of department.", avgSalary: "400,000 - 750,000 kr/year", educationPath: "Vocational film school or apprenticeship on-set", keySkills: ["electrics", "lighting kit", "rigging", "safety", "stamina"], dailyTasks: ["Rig lights", "Run cables", "Adjust intensity", "Strike sets", "Maintain gear"], growthOutlook: "medium", entryLevel: true },
+    { id: "sound-editor", educationRoute: "mixed", entryRoute: "bachelor", title: "Sound Editor", emoji: "🔊", description: "Edit dialogue, sound effects, and ambience for film and TV — building the soundscape that supports the picture.", avgSalary: "450,000 - 900,000 kr/year", educationPath: "Bachelor's in Sound/Audio Engineering or vocational training", keySkills: ["DAW skills", "sound design", "dialogue editing", "Foley", "attention to detail"], dailyTasks: ["Cut dialogue", "Build sound design", "Record Foley", "Sync tracks", "Prep mixes"], growthOutlook: "medium" },
+    { id: "motion-graphics-designer", educationRoute: "mixed", entryRoute: "bachelor", title: "Motion Graphics Designer", emoji: "🌀", description: "Create animated graphics and visual effects for video — titles, lower thirds, explainers, and brand idents.", avgSalary: "500,000 - 950,000 kr/year", educationPath: "Bachelor's in Design / Animation or self-taught + strong portfolio", keySkills: ["After Effects", "Cinema 4D", "design fundamentals", "animation", "typography"], dailyTasks: ["Animate graphics", "Build templates", "Render shots", "Iterate with directors", "Deliver assets"], growthOutlook: "high" },
+    { id: "video-content-producer", educationRoute: "mixed", entryRoute: "bachelor", title: "Video Content Producer", emoji: "🎙️", description: "Produce video content end-to-end for social, web, or campaigns — concept, shoot, edit, and publish.", avgSalary: "450,000 - 850,000 kr/year", educationPath: "Bachelor's in Media or self-taught + portfolio", keySkills: ["concepting", "shooting", "editing", "distribution", "analytics"], dailyTasks: ["Pitch ideas", "Shoot footage", "Edit videos", "Publish content", "Track performance"], growthOutlook: "high", entryLevel: true },
+    { id: "corporate-videographer", educationRoute: "on-the-job", entryRoute: "direct-entry", title: "Corporate Videographer", emoji: "🏢", description: "Make video content for businesses — internal comms, training, recruitment, product, and event coverage.", avgSalary: "450,000 - 800,000 kr/year", educationPath: "Self-taught or vocational + corporate portfolio", keySkills: ["client comms", "interviewing", "lighting", "editing", "delivery"], dailyTasks: ["Brief clients", "Film shoots", "Conduct interviews", "Edit videos", "Deliver projects"], growthOutlook: "medium", entryLevel: true },
     // ── Photography ──
-    { id: "freelance-photographer", title: "Freelance Photographer", emoji: "📷", description: "Run your own photography business — shooting clients across portraits, events, products, and editorial.", avgSalary: "300,000 - 800,000 kr/year (highly variable)", educationPath: "Self-taught or photo school + strong portfolio", keySkills: ["camera mastery", "lighting", "client management", "editing", "self-promotion"], dailyTasks: ["Book shoots", "Shoot clients", "Edit photos", "Invoice clients", "Market services"], growthOutlook: "stable", entryLevel: true },
-    { id: "event-photographer", title: "Event Photographer", emoji: "🎉", description: "Cover live events — conferences, parties, sports, festivals — capturing the atmosphere and key moments.", avgSalary: "350,000 - 700,000 kr/year", educationPath: "Self-taught or photo school + portfolio + fast turnaround", keySkills: ["fast shooting", "low-light technique", "editing speed", "people skills", "reliability"], dailyTasks: ["Cover events", "Capture key shots", "Edit on the day", "Deliver galleries", "Promote work"], growthOutlook: "stable", entryLevel: true },
-    { id: "wildlife-photographer", title: "Wildlife Photographer", emoji: "🦌", description: "Photograph animals in nature — for editorial, conservation, or fine art — often spending days waiting for the right shot.", avgSalary: "200,000 - 700,000 kr/year (highly variable)", educationPath: "Self-taught + biology knowledge + serious patience", keySkills: ["fieldcraft", "patience", "long-lens technique", "biology knowledge", "stamina"], dailyTasks: ["Plan trips", "Track wildlife", "Set up hides", "Shoot patiently", "Edit and pitch"], growthOutlook: "stable" },
+    { id: "freelance-photographer", educationRoute: "on-the-job", entryRoute: "direct-entry", title: "Freelance Photographer", emoji: "📷", description: "Run your own photography business — shooting clients across portraits, events, products, and editorial.", avgSalary: "300,000 - 800,000 kr/year (highly variable)", educationPath: "Self-taught or photo school + strong portfolio", keySkills: ["camera mastery", "lighting", "client management", "editing", "self-promotion"], dailyTasks: ["Book shoots", "Shoot clients", "Edit photos", "Invoice clients", "Market services"], growthOutlook: "stable", entryLevel: true },
+    { id: "event-photographer", educationRoute: "on-the-job", entryRoute: "direct-entry", title: "Event Photographer", emoji: "🎉", description: "Cover live events — conferences, parties, sports, festivals — capturing the atmosphere and key moments.", avgSalary: "350,000 - 700,000 kr/year", educationPath: "Self-taught or photo school + portfolio + fast turnaround", keySkills: ["fast shooting", "low-light technique", "editing speed", "people skills", "reliability"], dailyTasks: ["Cover events", "Capture key shots", "Edit on the day", "Deliver galleries", "Promote work"], growthOutlook: "stable", entryLevel: true },
+    { id: "wildlife-photographer", educationRoute: "on-the-job", entryRoute: "direct-entry", title: "Wildlife Photographer", emoji: "🦌", description: "Photograph animals in nature — for editorial, conservation, or fine art — often spending days waiting for the right shot.", avgSalary: "200,000 - 700,000 kr/year (highly variable)", educationPath: "Self-taught + biology knowledge + serious patience", keySkills: ["fieldcraft", "patience", "long-lens technique", "biology knowledge", "stamina"], dailyTasks: ["Plan trips", "Track wildlife", "Set up hides", "Shoot patiently", "Edit and pitch"], growthOutlook: "stable" },
     { id: "photojournalist", title: "Photojournalist", emoji: "📰", description: "Tell news stories through photographs — covering politics, conflict, sport, and daily life for newspapers and agencies.", avgSalary: "350,000 - 800,000 kr/year (highly variable)", educationPath: "Bachelor's in Journalism / Photojournalism + portfolio", keySkills: ["news instincts", "fast shooting", "ethics", "storytelling", "languages"], dailyTasks: ["Chase stories", "Shoot fast", "Caption and file", "Edit selects", "Build sources"], growthOutlook: "stable" },
-    { id: "studio-photographer", title: "Studio Photographer", emoji: "💡", description: "Shoot in a controlled studio environment — portraits, products, fashion, or commercial work — with full lighting control.", avgSalary: "400,000 - 800,000 kr/year", educationPath: "Photo school or vocational + strong studio portfolio", keySkills: ["studio lighting", "direction", "set-building", "retouching", "client comms"], dailyTasks: ["Set up lights", "Direct subjects", "Shoot precisely", "Retouch images", "Manage clients"], growthOutlook: "stable" },
+    { id: "studio-photographer", educationRoute: "mixed", entryRoute: "fagskole", title: "Studio Photographer", emoji: "💡", description: "Shoot in a controlled studio environment — portraits, products, fashion, or commercial work — with full lighting control.", avgSalary: "400,000 - 800,000 kr/year", educationPath: "Photo school or vocational + strong studio portfolio", keySkills: ["studio lighting", "direction", "set-building", "retouching", "client comms"], dailyTasks: ["Set up lights", "Direct subjects", "Shoot precisely", "Retouch images", "Manage clients"], growthOutlook: "stable" },
     { id: "translator", title: "Translator", emoji: "🌐", description: "Translate written text from one language to another — legal, literary, technical, or commercial documents.", avgSalary: "400,000 - 800,000 kr/year (freelance-heavy)", educationPath: "Bachelor's/Master's in Translation Studies or the source/target languages", keySkills: ["bilingual mastery", "writing", "research", "cultural awareness", "self-discipline"], dailyTasks: ["Translate documents", "Proofread own work", "Research terminology", "Liaise with clients", "Manage deadlines"], growthOutlook: "medium", lastVerifiedAt: "2026-04-16" },
     { id: "interpreter", title: "Interpreter", emoji: "🎙️", description: "Translate spoken language in real time — conferences, courts, healthcare, business meetings.", avgSalary: "450,000 - 900,000 kr/year", educationPath: "Master's in Interpreting or Translation Studies", keySkills: ["fluency", "note-taking", "concentration", "cultural awareness", "composure"], dailyTasks: ["Interpret in meetings", "Prepare terminology", "Travel with clients", "Work in booths", "Follow ethics code"], growthOutlook: "medium", peopleIntensity: "high", lastVerifiedAt: "2026-04-16" },
     { id: "linguist", title: "Linguist", emoji: "📚", description: "Study the structure, history, and use of language — in academia, government, or tech.", avgSalary: "500,000 - 900,000 kr/year", educationPath: "Master's/PhD in Linguistics", keySkills: ["language analysis", "research", "phonetics", "writing", "data analysis"], dailyTasks: ["Analyse language data", "Write papers", "Teach courses", "Field-record speakers", "Build corpora"], growthOutlook: "stable", lastVerifiedAt: "2026-04-16" },
-    { id: "language-tutor", title: "Language Tutor", emoji: "💬", description: "Tutor individuals in a language — typically one-to-one or small groups, online or in-person.", avgSalary: "200,000 - 500,000 kr/year (often part-time)", educationPath: "Strong fluency + teaching ability; certification optional", keySkills: ["fluency", "patience", "teaching", "cultural knowledge", "adaptability"], dailyTasks: ["Plan sessions", "Teach students", "Mark work", "Track progress", "Adapt materials"], growthOutlook: "medium", entryLevel: true, sector: "private", peopleIntensity: "high", lastVerifiedAt: "2026-04-16" },
+    { id: "language-tutor", educationRoute: "on-the-job", entryRoute: "direct-entry", title: "Language Tutor", emoji: "💬", description: "Tutor individuals in a language — typically one-to-one or small groups, online or in-person.", avgSalary: "200,000 - 500,000 kr/year (often part-time)", educationPath: "Strong fluency + teaching ability; certification optional", keySkills: ["fluency", "patience", "teaching", "cultural knowledge", "adaptability"], dailyTasks: ["Plan sessions", "Teach students", "Mark work", "Track progress", "Adapt materials"], growthOutlook: "medium", entryLevel: true, sector: "private", peopleIntensity: "high", lastVerifiedAt: "2026-04-16" },
     { id: "localization-specialist", title: "Localization Specialist", emoji: "🌍", description: "Adapt software, websites, and content for different markets — translation, cultural fit, and formatting.", avgSalary: "500,000 - 900,000 kr/year", educationPath: "Bachelor's/Master's in Translation + tech-tooling experience", keySkills: ["translation", "localization tools (CAT)", "cultural awareness", "quality control", "attention to detail"], dailyTasks: ["Translate strings", "Adapt content", "QA builds", "Manage glossaries", "Liaise with engineers"], growthOutlook: "high", lastVerifiedAt: "2026-04-16" },
-    { id: "localization-project-manager", title: "Localization Project Manager", emoji: "📦", description: "Run localization projects — coordinate translators, tooling, and timelines across many languages.", avgSalary: "650,000 - 1,100,000 kr/year", educationPath: "Bachelor's + PM certification + localization experience", keySkills: ["project management", "localization tools", "vendor management", "budgeting", "communication"], dailyTasks: ["Plan projects", "Brief translators", "Manage timelines", "Review quality", "Report to stakeholders"], growthOutlook: "high", peopleIntensity: "high", lastVerifiedAt: "2026-04-16" },
+    { id: "localization-project-manager", educationRoute: "mixed", entryRoute: "bachelor", title: "Localization Project Manager", emoji: "📦", description: "Run localization projects — coordinate translators, tooling, and timelines across many languages.", avgSalary: "650,000 - 1,100,000 kr/year", educationPath: "Bachelor's + PM certification + localization experience", keySkills: ["project management", "localization tools", "vendor management", "budgeting", "communication"], dailyTasks: ["Plan projects", "Brief translators", "Manage timelines", "Review quality", "Report to stakeholders"], growthOutlook: "high", peopleIntensity: "high", lastVerifiedAt: "2026-04-16" },
     { id: "terminologist", title: "Terminologist", emoji: "📖", description: "Maintain consistent terminology across a language or domain — build and curate terminology databases.", avgSalary: "500,000 - 850,000 kr/year", educationPath: "Master's in Translation / Linguistics + terminology specialisation", keySkills: ["terminology management", "research", "writing", "precision", "collaboration"], dailyTasks: ["Research terms", "Update databases", "Brief translators", "Review glossaries", "Coordinate with experts"], growthOutlook: "stable", lastVerifiedAt: "2026-04-16" },
     { id: "lexicographer", title: "Lexicographer", emoji: "📕", description: "Write and edit dictionaries — research word meanings, usage, and etymology for print or online publication.", avgSalary: "500,000 - 850,000 kr/year", educationPath: "Master's in Linguistics or the target language", keySkills: ["language expertise", "research", "writing", "precision", "corpus analysis"], dailyTasks: ["Research words", "Write definitions", "Analyse usage corpora", "Edit entries", "Collaborate with editors"], growthOutlook: "stable", lastVerifiedAt: "2026-04-16" },
-    { id: "proofreader", title: "Proofreader", emoji: "✏️", description: "Check final text for typos, inconsistencies, and formatting issues before publication.", avgSalary: "350,000 - 650,000 kr/year (freelance-heavy)", educationPath: "Bachelor's in Language / Literature / Journalism + proofreading certification", keySkills: ["attention to detail", "grammar mastery", "patience", "style guides", "tool knowledge"], dailyTasks: ["Read documents closely", "Mark errors", "Query authors", "Check layouts", "Return marked copies"], growthOutlook: "stable", entryLevel: true, lastVerifiedAt: "2026-04-16" },
+    { id: "proofreader", educationRoute: "mixed", entryRoute: "bachelor", title: "Proofreader", emoji: "✏️", description: "Check final text for typos, inconsistencies, and formatting issues before publication.", avgSalary: "350,000 - 650,000 kr/year (freelance-heavy)", educationPath: "Bachelor's in Language / Literature / Journalism + proofreading certification", keySkills: ["attention to detail", "grammar mastery", "patience", "style guides", "tool knowledge"], dailyTasks: ["Read documents closely", "Mark errors", "Query authors", "Check layouts", "Return marked copies"], growthOutlook: "stable", entryLevel: true, lastVerifiedAt: "2026-04-16" },
     { id: "editor", title: "Editor", emoji: "📝", description: "Shape written content — books, articles, scripts — working with writers to improve structure, clarity, and flow.", avgSalary: "500,000 - 900,000 kr/year", educationPath: "Bachelor's in Journalism / English / Publishing + editing experience", keySkills: ["writing", "editing", "judgement", "communication", "project management"], dailyTasks: ["Edit manuscripts", "Brief writers", "Coordinate production", "Fact-check", "Plan issues"], growthOutlook: "medium", lastVerifiedAt: "2026-04-16" },
-    { id: "subtitler", title: "Subtitler", emoji: "🎬", description: "Write subtitles and captions for film, TV, and online video — timed, translated, accessible.", avgSalary: "350,000 - 700,000 kr/year (freelance-heavy)", educationPath: "Translation training + subtitling software proficiency", keySkills: ["translation", "timing", "concision", "subtitling software", "cultural adaptation"], dailyTasks: ["Time subtitles", "Translate dialogue", "QA captions", "Edit for readability", "Deliver files"], growthOutlook: "high", lastVerifiedAt: "2026-04-16" },
-    { id: "transcriptionist", title: "Transcriptionist", emoji: "⌨️", description: "Convert audio to text — interviews, legal proceedings, medical notes, research recordings.", avgSalary: "300,000 - 550,000 kr/year", educationPath: "Secretarial / transcription certification + fast typing", keySkills: ["fast typing", "listening", "grammar", "confidentiality", "focus"], dailyTasks: ["Listen and type", "Research terms", "Review accuracy", "Format documents", "Manage confidentiality"], growthOutlook: "stable", entryLevel: true, lastVerifiedAt: "2026-04-16" },
-    { id: "voice-over-artist", title: "Voice-Over Artist", emoji: "🎤", description: "Record voiceovers for ads, audiobooks, animations, and e-learning — from home studios or in-booth.", avgSalary: "200,000 - 900,000 kr/year (gig-based, highly variable)", educationPath: "Voice training / acting + demo reel + home studio", keySkills: ["voice control", "acting", "audio editing", "self-direction", "marketing"], dailyTasks: ["Record bookings", "Edit audio", "Pitch clients", "Maintain studio", "Build demo reels"], growthOutlook: "medium", entryLevel: true, workSetting: "creative", lastVerifiedAt: "2026-04-16" },
+    { id: "subtitler", educationRoute: "mixed", entryRoute: "certification", title: "Subtitler", emoji: "🎬", description: "Write subtitles and captions for film, TV, and online video — timed, translated, accessible.", avgSalary: "350,000 - 700,000 kr/year (freelance-heavy)", educationPath: "Translation training + subtitling software proficiency", keySkills: ["translation", "timing", "concision", "subtitling software", "cultural adaptation"], dailyTasks: ["Time subtitles", "Translate dialogue", "QA captions", "Edit for readability", "Deliver files"], growthOutlook: "high", lastVerifiedAt: "2026-04-16" },
+    { id: "transcriptionist", educationRoute: "certification", entryRoute: "certification", title: "Transcriptionist", emoji: "⌨️", description: "Convert audio to text — interviews, legal proceedings, medical notes, research recordings.", avgSalary: "300,000 - 550,000 kr/year", educationPath: "Secretarial / transcription certification + fast typing", keySkills: ["fast typing", "listening", "grammar", "confidentiality", "focus"], dailyTasks: ["Listen and type", "Research terms", "Review accuracy", "Format documents", "Manage confidentiality"], growthOutlook: "stable", entryLevel: true, lastVerifiedAt: "2026-04-16" },
+    { id: "voice-over-artist", educationRoute: "on-the-job", entryRoute: "direct-entry", title: "Voice-Over Artist", emoji: "🎤", description: "Record voiceovers for ads, audiobooks, animations, and e-learning — from home studios or in-booth.", avgSalary: "200,000 - 900,000 kr/year (gig-based, highly variable)", educationPath: "Voice training / acting + demo reel + home studio", keySkills: ["voice control", "acting", "audio editing", "self-direction", "marketing"], dailyTasks: ["Record bookings", "Edit audio", "Pitch clients", "Maintain studio", "Build demo reels"], growthOutlook: "medium", entryLevel: true, workSetting: "creative", lastVerifiedAt: "2026-04-16" },
     { id: "computational-linguist", title: "Computational Linguist", emoji: "🧠", description: "Apply linguistics to computer systems — NLP tooling, language models, speech tech.", avgSalary: "750,000 - 1,200,000 kr/year", educationPath: "Master's/PhD in Computational Linguistics or NLP", keySkills: ["linguistics", "programming", "NLP", "data analysis", "research"], dailyTasks: ["Build language models", "Annotate data", "Run experiments", "Write papers", "Collaborate with engineers"], growthOutlook: "high", lastVerifiedAt: "2026-04-16" },
-    { id: "language-data-annotator", title: "Language Data Annotator", emoji: "🏷️", description: "Label and annotate language data — transcripts, dialogues, sentiment — to train machine-learning models.", avgSalary: "300,000 - 550,000 kr/year", educationPath: "Bachelor's or equivalent language background + annotation training", keySkills: ["attention to detail", "language awareness", "tooling", "consistency", "patience"], dailyTasks: ["Annotate data", "Follow guidelines", "Flag edge cases", "Meet quality targets", "Review peer work"], growthOutlook: "high", entryLevel: true, lastVerifiedAt: "2026-04-16" },
-    { id: "bilingual-customer-support-specialist", title: "Bilingual Customer Support Specialist", emoji: "💼", description: "Provide customer service in two or more languages — chat, email, or phone.", avgSalary: "380,000 - 600,000 kr/year", educationPath: "Fluency in target languages + customer service training", keySkills: ["bilingual fluency", "customer service", "patience", "problem-solving", "written communication"], dailyTasks: ["Answer queries", "Resolve issues", "Document tickets", "Escalate complex cases", "Write knowledge base articles"], growthOutlook: "medium", entryLevel: true, peopleIntensity: "high", lastVerifiedAt: "2026-04-16" },
+    { id: "language-data-annotator", educationRoute: "mixed", entryRoute: "bachelor", title: "Language Data Annotator", emoji: "🏷️", description: "Label and annotate language data — transcripts, dialogues, sentiment — to train machine-learning models.", avgSalary: "300,000 - 550,000 kr/year", educationPath: "Bachelor's or equivalent language background + annotation training", keySkills: ["attention to detail", "language awareness", "tooling", "consistency", "patience"], dailyTasks: ["Annotate data", "Follow guidelines", "Flag edge cases", "Meet quality targets", "Review peer work"], growthOutlook: "high", entryLevel: true, lastVerifiedAt: "2026-04-16" },
+    { id: "bilingual-customer-support-specialist", educationRoute: "on-the-job", entryRoute: "direct-entry", title: "Bilingual Customer Support Specialist", emoji: "💼", description: "Provide customer service in two or more languages — chat, email, or phone.", avgSalary: "380,000 - 600,000 kr/year", educationPath: "Fluency in target languages + customer service training", keySkills: ["bilingual fluency", "customer service", "patience", "problem-solving", "written communication"], dailyTasks: ["Answer queries", "Resolve issues", "Document tickets", "Escalate complex cases", "Write knowledge base articles"], growthOutlook: "medium", entryLevel: true, peopleIntensity: "high", lastVerifiedAt: "2026-04-16" },
   ],
 
   // ========================================
@@ -10572,6 +11181,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "firefighter",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Firefighter",
       emoji: "🚒",
       description: "Respond to fires, accidents, and emergencies across Norway. Norwegian firefighters train through the Norges brannskole (Norwegian Fire Academy) in Tjeldsund. Many fire departments also require EMT/first responder certification. The role combines rescue work, fire suppression, hazmat response, and public education.",
@@ -10656,6 +11267,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "lifeguard",
+      educationRoute: "certification",
+      entryRoute: "certification",
       title: "Lifeguard",
       emoji: "🛟",
       description: "Supervise swimmers at beaches and pools across Norway (strandvakt / badevakt). Prevent accidents, perform water rescues and provide first aid.",
@@ -10679,6 +11292,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "civil-defence-officer",
+      educationRoute: "vocational",
+      entryRoute: "direct-entry",
       title: "Civil Defence Officer",
       emoji: "🧯",
       description: "Serve in Sivilforsvaret — Norway's civilian preparedness force. Train for and respond to floods, fires, evacuation and major incidents supporting police and fire services.",
@@ -10723,6 +11338,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "emergency-dispatcher",
+      educationRoute: "on-the-job",
+      entryRoute: "direct-entry",
       title: "Emergency Dispatcher",
       emoji: "🚨",
       description: "Answer 110/112/113 calls, assess emergencies, dispatch responders and guide callers through critical first minutes.",
@@ -10735,6 +11352,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "customs-officer",
+      educationRoute: "vocational",
+      entryRoute: "direct-entry",
       title: "Customs Officer",
       emoji: "🛂",
       description: "Inspect goods and travellers at borders, ports and airports for the Norwegian Customs (Tolletaten). Enforce import/export regulations.",
@@ -10792,6 +11411,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "corrections-officer",
+      educationRoute: "vocational",
+      entryRoute: "fagskole",
       title: "Corrections Officer",
       emoji: "🔐",
       description: "Work in Norwegian prisons supervising inmates, supporting rehabilitation and maintaining security. Norway's model emphasises humane treatment.",
@@ -10856,6 +11477,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     // ──────────────────────────────────────────────
     {
       id: "caregiver",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Caregiver",
       emoji: "🤲",
       description: "Provide daily care and companionship for elderly, ill, or disabled people in their homes. One-to-one work that makes a direct difference.",
@@ -10868,6 +11491,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "support-worker",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Support Worker",
       emoji: "💪",
       description: "Help people with disabilities, mental health needs, or learning difficulties live independently — at home, in the community, or in supported housing.",
@@ -10880,6 +11505,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "residential-care-worker",
+      educationRoute: "mixed",
+      entryRoute: "fagbrev",
       title: "Residential Care Worker",
       emoji: "🏡",
       description: "Live and work alongside young people or adults in residential homes — providing care, structure, and a stable environment.",
@@ -10892,6 +11519,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "disability-support-worker",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Disability Support Worker",
       emoji: "♿",
       description: "Work with people with physical, intellectual, or developmental disabilities — at home, in day centres, or in supported employment.",
@@ -10904,6 +11533,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "special-needs-assistant",
+      educationRoute: "on-the-job",
+      entryRoute: "direct-entry",
       title: "Special Needs Assistant",
       emoji: "🎒",
       description: "Support children with additional needs in mainstream schools — work alongside teachers to help one or several students access learning.",
@@ -10916,6 +11547,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "rehabilitation-worker",
+      educationRoute: "mixed",
+      entryRoute: "fagbrev",
       title: "Rehabilitation Worker",
       emoji: "🦾",
       description: "Help people recover from illness, injury, or addiction — support physical, social, and vocational rehabilitation back into daily life.",
@@ -10943,6 +11576,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "mental-health-support-worker",
+      educationRoute: "on-the-job",
+      entryRoute: "direct-entry",
       title: "Mental Health Support Worker",
       emoji: "🧠",
       description: "Support people living with mental illness in the community, in supported housing, or in inpatient settings — helping them manage daily life.",
@@ -11018,6 +11653,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     // ──────────────────────────────────────────────
     {
       id: "housing-support-officer",
+      educationRoute: "mixed",
+      entryRoute: "bachelor",
       title: "Housing Support Officer",
       emoji: "🏘️",
       description: "Help people find and keep housing — work with local authorities, charities, or housing associations. Often supports those at risk of homelessness.",
@@ -11030,6 +11667,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "homelessness-support-worker",
+      educationRoute: "on-the-job",
+      entryRoute: "direct-entry",
       title: "Homelessness Support Worker",
       emoji: "🌃",
       description: "Work directly with people experiencing homelessness — outreach on the streets, day centres, or hostels. Help connect them to services and stable housing.",
@@ -11042,6 +11681,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "refuge-worker",
+      educationRoute: "mixed",
+      entryRoute: "fagbrev",
       title: "Refuge Worker",
       emoji: "⛑️",
       description: "Work in shelters supporting women, children, or refugees fleeing violence or crisis. Provide a safe environment and practical support.",
@@ -11054,6 +11695,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "community-outreach-worker",
+      educationRoute: "mixed",
+      entryRoute: "bachelor",
       title: "Community Outreach Worker",
       emoji: "📣",
       description: "Build relationships with marginalised communities and bring services to where people are — youth groups, religious centres, public spaces.",
@@ -11102,7 +11745,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       growthOutlook: "stable",
     },
     // ── Security & investigation ──
-    { id: "security-guard", title: "Security Guard", emoji: "🛡️", description: "Protect people, property, and assets — patrolling, monitoring CCTV, and responding to incidents.", avgSalary: "430,000 - 750,000 kr/year", educationPath: "Vekterskolen (security guard certification, ~150 hours)", keySkills: ["observation", "calm under pressure", "communication", "physical fitness", "reliability"], dailyTasks: ["Patrol premises", "Monitor CCTV", "Check IDs", "Respond to alarms", "Write reports"], growthOutlook: "stable", entryLevel: true },
+    { id: "security-guard", educationRoute: "certification", entryRoute: "certification", title: "Security Guard", emoji: "🛡️", description: "Protect people, property, and assets — patrolling, monitoring CCTV, and responding to incidents.", avgSalary: "430,000 - 750,000 kr/year", educationPath: "Vekterskolen (security guard certification, ~150 hours)", keySkills: ["observation", "calm under pressure", "communication", "physical fitness", "reliability"], dailyTasks: ["Patrol premises", "Monitor CCTV", "Check IDs", "Respond to alarms", "Write reports"], growthOutlook: "stable", entryLevel: true },
     { id: "detective", title: "Detective", emoji: "🕵️", description: "Investigate serious crimes — interviewing witnesses, gathering evidence, and building cases for prosecution.", avgSalary: "650,000 - 950,000 kr/year", educationPath: "Police College (3 years) + investigative experience + specialist training", keySkills: ["analytical thinking", "interviewing", "patience", "report writing", "law knowledge"], dailyTasks: ["Interview witnesses", "Gather evidence", "Build cases", "Brief prosecutors", "Lead operations"], growthOutlook: "medium" },
     // Note: Diplomat + Foreign Service Officer are already covered by
     // the existing "diplomat" entry, whose title is
@@ -11184,26 +11827,26 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       lastVerifiedAt: "2026-06-12",
       sourceUrl: "https://www.ssb.no/en/statbank/table/11418",
     },
-    { id: "soldier", title: "Soldier", emoji: "🪖", description: "Serve in the army — train in combat, weapons, and field operations as part of a unit defending the country.", avgSalary: "350,000 - 520,000 kr/year", educationPath: "Førstegangstjeneste (initial service, 12 months) + further training for career soldiers", keySkills: ["physical fitness", "discipline", "teamwork", "weapon handling", "resilience"], dailyTasks: ["Drill and train", "Maintain equipment", "Run patrols", "Practice tactics", "Stand watch"], growthOutlook: "stable", entryLevel: true, pathType: "military" , lastVerifiedAt: "2026-06-12" , sourceUrl: "https://www.ssb.no/en/statbank/table/11418" },
+    { id: "soldier", educationRoute: "on-the-job", entryRoute: "military-academy", title: "Soldier", emoji: "🪖", description: "Serve in the army — train in combat, weapons, and field operations as part of a unit defending the country.", avgSalary: "350,000 - 520,000 kr/year", educationPath: "Førstegangstjeneste (initial service, 12 months) + further training for career soldiers", keySkills: ["physical fitness", "discipline", "teamwork", "weapon handling", "resilience"], dailyTasks: ["Drill and train", "Maintain equipment", "Run patrols", "Practice tactics", "Stand watch"], growthOutlook: "stable", entryLevel: true, pathType: "military" , lastVerifiedAt: "2026-06-12" , sourceUrl: "https://www.ssb.no/en/statbank/table/11418" },
     { id: "infantry-officer", title: "Infantry Officer", emoji: "🎖️", description: "Lead infantry units in the field — planning operations, training soldiers, and executing missions.", avgSalary: "600,000 - 900,000 kr/year", educationPath: "Krigsskolen (Norwegian Military Academy, 3 years) + commission", keySkills: ["leadership", "tactics", "decision-making", "fitness", "communication"], dailyTasks: ["Lead training", "Plan exercises", "Mentor soldiers", "Run operations", "Report to command"], growthOutlook: "stable", pathType: "military" },
-    { id: "special-forces-operator", title: "Special Forces Operator", emoji: "🦅", description: "Elite soldier trained for high-risk missions — direct action, reconnaissance, hostage rescue, counter-terrorism.", avgSalary: "650,000 - 950,000 kr/year", educationPath: "Forsvarets Spesialkommando (FSK) selection + multi-year specialist training", keySkills: ["elite fitness", "marksmanship", "calm under fire", "languages", "small-team tactics"], dailyTasks: ["Train relentlessly", "Plan missions", "Maintain kit", "Conduct ops", "Debrief after"], growthOutlook: "stable", pathType: "military" },
-    { id: "sniper", title: "Sniper", emoji: "🎯", description: "Highly trained marksman delivering precision long-range fire and reconnaissance — usually as part of a small team.", avgSalary: "500,000 - 800,000 kr/year", educationPath: "Military service + sniper school selection + advanced marksmanship", keySkills: ["marksmanship", "patience", "fieldcraft", "navigation", "stealth"], dailyTasks: ["Practice shooting", "Maintain weapons", "Train fieldcraft", "Conduct reconnaissance", "Provide overwatch"], growthOutlook: "stable", pathType: "military" },
-    { id: "tank-commander", title: "Tank Commander", emoji: "🛡️", description: "Command an armoured fighting vehicle and crew — directing manoeuvres, gunnery, and tactics in armoured formations.", avgSalary: "550,000 - 850,000 kr/year", educationPath: "Military service + armour school + NCO/officer training", keySkills: ["leadership", "armoured tactics", "gunnery", "navigation", "teamwork"], dailyTasks: ["Direct crew", "Plan routes", "Run gunnery", "Maintain vehicle", "Coordinate with infantry"], growthOutlook: "stable", pathType: "military" },
+    { id: "special-forces-operator", educationRoute: "vocational", entryRoute: "military-academy", title: "Special Forces Operator", emoji: "🦅", description: "Elite soldier trained for high-risk missions — direct action, reconnaissance, hostage rescue, counter-terrorism.", avgSalary: "650,000 - 950,000 kr/year", educationPath: "Forsvarets Spesialkommando (FSK) selection + multi-year specialist training", keySkills: ["elite fitness", "marksmanship", "calm under fire", "languages", "small-team tactics"], dailyTasks: ["Train relentlessly", "Plan missions", "Maintain kit", "Conduct ops", "Debrief after"], growthOutlook: "stable", pathType: "military" },
+    { id: "sniper", educationRoute: "vocational", entryRoute: "military-academy", title: "Sniper", emoji: "🎯", description: "Highly trained marksman delivering precision long-range fire and reconnaissance — usually as part of a small team.", avgSalary: "500,000 - 800,000 kr/year", educationPath: "Military service + sniper school selection + advanced marksmanship", keySkills: ["marksmanship", "patience", "fieldcraft", "navigation", "stealth"], dailyTasks: ["Practice shooting", "Maintain weapons", "Train fieldcraft", "Conduct reconnaissance", "Provide overwatch"], growthOutlook: "stable", pathType: "military" },
+    { id: "tank-commander", educationRoute: "vocational", entryRoute: "military-academy", title: "Tank Commander", emoji: "🛡️", description: "Command an armoured fighting vehicle and crew — directing manoeuvres, gunnery, and tactics in armoured formations.", avgSalary: "550,000 - 850,000 kr/year", educationPath: "Military service + armour school + NCO/officer training", keySkills: ["leadership", "armoured tactics", "gunnery", "navigation", "teamwork"], dailyTasks: ["Direct crew", "Plan routes", "Run gunnery", "Maintain vehicle", "Coordinate with infantry"], growthOutlook: "stable", pathType: "military" },
     { id: "artillery-officer", title: "Artillery Officer", emoji: "💥", description: "Command artillery units providing long-range indirect fire — calculating trajectories and coordinating fire missions.", avgSalary: "600,000 - 900,000 kr/year", educationPath: "Krigsskolen + artillery branch training", keySkills: ["mathematics", "fire control", "leadership", "communication", "decision-making"], dailyTasks: ["Plan fire missions", "Direct gun crews", "Coordinate with manoeuvre", "Train soldiers", "Track ammunition"], growthOutlook: "stable", pathType: "military" },
-    { id: "combat-engineer", title: "Combat Engineer", emoji: "🛠️", description: "Build and breach obstacles in combat — bridges, fortifications, demolitions, mine clearance, and route-clearance.", avgSalary: "500,000 - 800,000 kr/year", educationPath: "Military service + engineering branch training", keySkills: ["demolitions", "construction", "explosives safety", "improvisation", "fieldcraft"], dailyTasks: ["Build bridges", "Clear obstacles", "Lay/clear mines", "Construct defences", "Support manoeuvre"], growthOutlook: "stable", pathType: "military" },
+    { id: "combat-engineer", educationRoute: "vocational", entryRoute: "military-academy", title: "Combat Engineer", emoji: "🛠️", description: "Build and breach obstacles in combat — bridges, fortifications, demolitions, mine clearance, and route-clearance.", avgSalary: "500,000 - 800,000 kr/year", educationPath: "Military service + engineering branch training", keySkills: ["demolitions", "construction", "explosives safety", "improvisation", "fieldcraft"], dailyTasks: ["Build bridges", "Clear obstacles", "Lay/clear mines", "Construct defences", "Support manoeuvre"], growthOutlook: "stable", pathType: "military" },
     { id: "military-pilot", title: "Military Pilot", emoji: "🛩️", description: "Fly military aircraft — fighters, transports, helicopters — in defence, training, and operational missions.", avgSalary: "850,000 - 1,400,000 kr/year", educationPath: "Luftkrigsskolen (Air Force Academy) + flight training (~3 years)", keySkills: ["flight skills", "rapid decision-making", "spatial awareness", "discipline", "teamwork"], dailyTasks: ["Fly missions", "Run pre-flight checks", "Train constantly", "Brief and debrief", "Maintain currency"], growthOutlook: "stable", pathType: "military" },
-    { id: "drone-operator-uav", title: "Drone Operator (UAV Pilot)", emoji: "🛸", description: "Pilot unmanned aerial vehicles for surveillance, reconnaissance, or strike missions from a ground control station.", avgSalary: "550,000 - 900,000 kr/year", educationPath: "Military service + UAV pilot certification", keySkills: ["flight controls", "situational awareness", "calm focus", "sensor operation", "comms"], dailyTasks: ["Pilot UAV", "Operate sensors", "Track targets", "Coordinate with team", "Maintain logs"], growthOutlook: "high", pathType: "military" },
+    { id: "drone-operator-uav", educationRoute: "certification", entryRoute: "certification", title: "Drone Operator (UAV Pilot)", emoji: "🛸", description: "Pilot unmanned aerial vehicles for surveillance, reconnaissance, or strike missions from a ground control station.", avgSalary: "550,000 - 900,000 kr/year", educationPath: "Military service + UAV pilot certification", keySkills: ["flight controls", "situational awareness", "calm focus", "sensor operation", "comms"], dailyTasks: ["Pilot UAV", "Operate sensors", "Track targets", "Coordinate with team", "Maintain logs"], growthOutlook: "high", pathType: "military" },
     { id: "naval-officer", title: "Naval Officer", emoji: "⚓", description: "Command operations and personnel aboard navy ships — from frigates to coastal patrol vessels.", avgSalary: "870,000 - 1,510,000 kr/year", educationPath: "Sjøkrigsskolen (Naval Academy, 3 years) + sea time", keySkills: ["leadership", "navigation", "seamanship", "tactical command", "decision-making"], dailyTasks: ["Stand watch", "Command crew", "Navigate", "Plan exercises", "Maintain readiness"], growthOutlook: "stable", pathType: "military" },
     { id: "submarine-officer", title: "Submarine Officer", emoji: "🚤", description: "Serve aboard a submarine — operating systems, navigating underwater, and conducting silent missions.", avgSalary: "700,000 - 1,100,000 kr/year", educationPath: "Naval Academy + submarine school + qualification at sea", keySkills: ["calm focus", "systems knowledge", "teamwork in confined spaces", "navigation", "discretion"], dailyTasks: ["Stand watch", "Operate systems", "Run drills", "Navigate submerged", "Maintain stealth"], growthOutlook: "stable", pathType: "military" },
-    { id: "marine", title: "Marine", emoji: "🌊", description: "Specialist soldier trained for amphibious and coastal operations — landing from sea and operating in littoral zones.", avgSalary: "580,000 - 1,000,000 kr/year", educationPath: "Military service + amphibious / coastal operations training", keySkills: ["amphibious tactics", "fitness", "swimming", "weapons handling", "teamwork"], dailyTasks: ["Train amphibious assaults", "Maintain kit", "Practice landings", "Drill weapons", "Patrol coast"], growthOutlook: "stable", entryLevel: true, pathType: "military" },
-    { id: "air-force-technician", title: "Air Force Technician", emoji: "🔧", description: "Maintain and repair military aircraft — engines, avionics, weapons systems — keeping the fleet flight-ready.", avgSalary: "500,000 - 750,000 kr/year", educationPath: "Military technical school + aircraft systems certification", keySkills: ["mechanical aptitude", "diagnostics", "attention to detail", "safety", "documentation"], dailyTasks: ["Inspect aircraft", "Replace parts", "Run diagnostics", "Document work", "Prepare for sorties"], growthOutlook: "stable", pathType: "military" },
-    { id: "military-intelligence-analyst", title: "Military Intelligence Analyst", emoji: "🧠", description: "Collect, analyse, and disseminate intelligence to support military decision-making — from imagery to signals to HUMINT.", avgSalary: "600,000 - 900,000 kr/year", educationPath: "Military service + intelligence training (often Bachelor's/Master's)", keySkills: ["analysis", "research", "languages", "report writing", "security awareness"], dailyTasks: ["Analyse intel", "Brief commanders", "Track threats", "Write assessments", "Coordinate sources"], growthOutlook: "high", pathType: "military" },
+    { id: "marine", educationRoute: "vocational", entryRoute: "military-academy", title: "Marine", emoji: "🌊", description: "Specialist soldier trained for amphibious and coastal operations — landing from sea and operating in littoral zones.", avgSalary: "580,000 - 1,000,000 kr/year", educationPath: "Military service + amphibious / coastal operations training", keySkills: ["amphibious tactics", "fitness", "swimming", "weapons handling", "teamwork"], dailyTasks: ["Train amphibious assaults", "Maintain kit", "Practice landings", "Drill weapons", "Patrol coast"], growthOutlook: "stable", entryLevel: true, pathType: "military" },
+    { id: "air-force-technician", educationRoute: "vocational", entryRoute: "military-academy", title: "Air Force Technician", emoji: "🔧", description: "Maintain and repair military aircraft — engines, avionics, weapons systems — keeping the fleet flight-ready.", avgSalary: "500,000 - 750,000 kr/year", educationPath: "Military technical school + aircraft systems certification", keySkills: ["mechanical aptitude", "diagnostics", "attention to detail", "safety", "documentation"], dailyTasks: ["Inspect aircraft", "Replace parts", "Run diagnostics", "Document work", "Prepare for sorties"], growthOutlook: "stable", pathType: "military" },
+    { id: "military-intelligence-analyst", educationRoute: "mixed", entryRoute: "military-academy", title: "Military Intelligence Analyst", emoji: "🧠", description: "Collect, analyse, and disseminate intelligence to support military decision-making — from imagery to signals to HUMINT.", avgSalary: "600,000 - 900,000 kr/year", educationPath: "Military service + intelligence training (often Bachelor's/Master's)", keySkills: ["analysis", "research", "languages", "report writing", "security awareness"], dailyTasks: ["Analyse intel", "Brief commanders", "Track threats", "Write assessments", "Coordinate sources"], growthOutlook: "high", pathType: "military" },
     { id: "cyber-warfare-specialist", title: "Cyber Warfare Specialist", emoji: "💻", description: "Conduct offensive and defensive cyber operations on behalf of the military — protecting networks and degrading adversaries.", avgSalary: "750,000 - 1,200,000 kr/year", educationPath: "Bachelor's in CS/Cybersecurity + military cyber training (e.g. Cyberforsvaret)", keySkills: ["network security", "exploitation", "scripting", "OPSEC", "calm focus"], dailyTasks: ["Defend networks", "Hunt threats", "Develop tools", "Run exercises", "Report findings"], growthOutlook: "high", pathType: "military" },
-    { id: "eod-technician", title: "EOD Technician", emoji: "💣", description: "Dispose of bombs, IEDs, and unexploded ordnance — protecting civilians and personnel from explosive threats.", avgSalary: "600,000 - 950,000 kr/year", educationPath: "Military service + EOD school (rigorous selection)", keySkills: ["explosives knowledge", "calm under pressure", "precision", "diagnostics", "safety"], dailyTasks: ["Identify threats", "Disarm devices", "Clear sites", "Train constantly", "Document incidents"], growthOutlook: "medium", pathType: "military" },
+    { id: "eod-technician", educationRoute: "vocational", entryRoute: "military-academy", title: "EOD Technician", emoji: "💣", description: "Dispose of bombs, IEDs, and unexploded ordnance — protecting civilians and personnel from explosive threats.", avgSalary: "600,000 - 950,000 kr/year", educationPath: "Military service + EOD school (rigorous selection)", keySkills: ["explosives knowledge", "calm under pressure", "precision", "diagnostics", "safety"], dailyTasks: ["Identify threats", "Disarm devices", "Clear sites", "Train constantly", "Document incidents"], growthOutlook: "medium", pathType: "military" },
     { id: "logistics-officer", title: "Military Logistics Officer", emoji: "📦", description: "Plan and run military logistics — supply, transport, fuel, ammunition — keeping units fed, fuelled, and resupplied.", avgSalary: "600,000 - 900,000 kr/year", educationPath: "Krigsskolen + logistics branch training", keySkills: ["planning", "supply chain", "leadership", "problem-solving", "coordination"], dailyTasks: ["Plan resupply", "Track inventory", "Coordinate transport", "Lead teams", "Brief command"], growthOutlook: "stable", pathType: "military" },
-    { id: "military-police", title: "Military Police", emoji: "🚔", description: "Enforce military law, investigate misconduct, secure installations, and provide convoy and personnel protection.", avgSalary: "800,000 - 1,380,000 kr/year", educationPath: "Military service + MP training", keySkills: ["law enforcement", "discipline", "investigation", "fitness", "report writing"], dailyTasks: ["Patrol bases", "Investigate cases", "Secure convoys", "Process reports", "Train soldiers"], growthOutlook: "stable", pathType: "military" },
-    { id: "search-and-rescue-operator", title: "Search and Rescue Operator", emoji: "🚁", description: "Deploy by helicopter, boat, or on foot to rescue people in distress — at sea, in mountains, or in disaster zones.", avgSalary: "600,000 - 950,000 kr/year", educationPath: "Military rescue school or Redningsselskapet training + medical/first responder certification", keySkills: ["fitness", "first aid", "swimming", "rope rescue", "calm under pressure"], dailyTasks: ["Run drills", "Respond to calls", "Treat casualties", "Hoist from sea", "Maintain kit"], growthOutlook: "high", pathType: "military" },
-    { id: "weapons-specialist", title: "Weapons Specialist", emoji: "🔫", description: "Maintain, repair, and instruct on military weapons systems — from small arms to crew-served and vehicle-mounted weapons.", avgSalary: "800,000 - 1,380,000 kr/year", educationPath: "Military service + armourer / weapons specialist course", keySkills: ["weapons knowledge", "precision", "safety", "diagnostics", "instruction"], dailyTasks: ["Service weapons", "Train soldiers", "Inspect arsenals", "Document maintenance", "Test fire systems"], growthOutlook: "stable", pathType: "military" },
+    { id: "military-police", educationRoute: "vocational", entryRoute: "military-academy", title: "Military Police", emoji: "🚔", description: "Enforce military law, investigate misconduct, secure installations, and provide convoy and personnel protection.", avgSalary: "800,000 - 1,380,000 kr/year", educationPath: "Military service + MP training", keySkills: ["law enforcement", "discipline", "investigation", "fitness", "report writing"], dailyTasks: ["Patrol bases", "Investigate cases", "Secure convoys", "Process reports", "Train soldiers"], growthOutlook: "stable", pathType: "military" },
+    { id: "search-and-rescue-operator", educationRoute: "certification", entryRoute: "certification", title: "Search and Rescue Operator", emoji: "🚁", description: "Deploy by helicopter, boat, or on foot to rescue people in distress — at sea, in mountains, or in disaster zones.", avgSalary: "600,000 - 950,000 kr/year", educationPath: "Military rescue school or Redningsselskapet training + medical/first responder certification", keySkills: ["fitness", "first aid", "swimming", "rope rescue", "calm under pressure"], dailyTasks: ["Run drills", "Respond to calls", "Treat casualties", "Hoist from sea", "Maintain kit"], growthOutlook: "high", pathType: "military" },
+    { id: "weapons-specialist", educationRoute: "vocational", entryRoute: "military-academy", title: "Weapons Specialist", emoji: "🔫", description: "Maintain, repair, and instruct on military weapons systems — from small arms to crew-served and vehicle-mounted weapons.", avgSalary: "800,000 - 1,380,000 kr/year", educationPath: "Military service + armourer / weapons specialist course", keySkills: ["weapons knowledge", "precision", "safety", "diagnostics", "instruction"], dailyTasks: ["Service weapons", "Train soldiers", "Inspect arsenals", "Document maintenance", "Test fire systems"], growthOutlook: "stable", pathType: "military" },
     // ========================================================================
     // Forsvaret — Norway-specific roles (added 2026-06-11). Tagged country: "NO"
     // because military structures are nation-specific (Cyberforsvaret,
@@ -11215,10 +11858,10 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     { id: "cyberforsvaret-cyber-intel-analyst", title: "Cyber Intelligence Analyst (Cyberforsvaret)", emoji: "🕵️", description: "Track and analyse cyber threats against Norway — attributing attacks, profiling adversaries, and turning raw data into actionable intelligence.", avgSalary: "600,000 - 1,000,000 kr/year", educationPath: "Førstegangstjeneste + intelligence/cyber training (Bachelor's/Master's in CS, cyber, or intelligence)", keySkills: ["threat intelligence", "analysis", "attribution", "report writing", "security awareness"], dailyTasks: ["Analyse cyber threats", "Attribute attacks", "Profile adversaries", "Write assessments", "Brief decision-makers"], growthOutlook: "high", pathType: "military", sector: "public", country: "NO" },
     { id: "forsvaret-cryptologist", title: "Military Cryptologist (Kryptolog)", emoji: "🧩", description: "Make and break codes for the Norwegian Armed Forces — designing secure communications and analysing encrypted adversary traffic.", avgSalary: "600,000 - 1,000,000 kr/year", educationPath: "Master's in mathematics, cryptography, or computer science + Forsvaret cryptology training", educationRoute: "university", keySkills: ["cryptography", "mathematics", "analysis", "programming", "discretion"], dailyTasks: ["Design secure systems", "Analyse encrypted traffic", "Develop crypto tools", "Advise on COMSEC", "Research methods"], growthOutlook: "high", pathType: "military", sector: "public", country: "NO" },
     { id: "forsvaret-signals-officer", title: "Signals Officer (Sambandsoffiser)", emoji: "📡", description: "Run the military's communications backbone — radio, satellite, and tactical networks that keep units connected in the field.", avgSalary: "600,000 - 950,000 kr/year", educationPath: "Førstegangstjeneste + Krigsskolen (officer) / signals (samband) specialisation", keySkills: ["communications systems", "leadership", "networking", "problem-solving", "fieldcraft"], dailyTasks: ["Plan communications", "Manage tactical networks", "Lead signals teams", "Maintain radio/satcom", "Support operations"], growthOutlook: "high", pathType: "military", sector: "public", country: "NO" },
-    { id: "forsvaret-electronic-warfare-specialist", title: "Electronic Warfare Specialist (EK)", emoji: "📶", description: "Master the electromagnetic spectrum — detecting, jamming, and protecting against radar and radio threats in elektronisk krigføring (EK).", avgSalary: "600,000 - 950,000 kr/year", educationPath: "Førstegangstjeneste + electronic warfare (elektronisk krigføring) training", keySkills: ["signals analysis", "electronics", "spectrum awareness", "problem-solving", "calm focus"], dailyTasks: ["Detect emissions", "Jam adversary systems", "Protect own signals", "Analyse spectrum", "Support missions"], growthOutlook: "high", pathType: "military", sector: "public", country: "NO" },
-    { id: "etjenesten-sigint-analyst", title: "Signals Intelligence Analyst (E-tjenesten)", emoji: "🛰️", description: "Collect and interpret signals intelligence for Etterretningstjenesten — Norway's intelligence service — turning intercepted communications into insight.", avgSalary: "600,000 - 1,000,000 kr/year", educationPath: "Førstegangstjeneste + SIGINT / intelligence training (often Bachelor's/Master's + languages)", keySkills: ["signals analysis", "languages", "pattern recognition", "report writing", "discretion"], dailyTasks: ["Analyse intercepted signals", "Identify patterns", "Write intelligence reports", "Brief analysts", "Support collection"], growthOutlook: "high", pathType: "military", sector: "public", country: "NO" },
+    { id: "forsvaret-electronic-warfare-specialist", educationRoute: "vocational", entryRoute: "military-academy", title: "Electronic Warfare Specialist (EK)", emoji: "📶", description: "Master the electromagnetic spectrum — detecting, jamming, and protecting against radar and radio threats in elektronisk krigføring (EK).", avgSalary: "600,000 - 950,000 kr/year", educationPath: "Førstegangstjeneste + electronic warfare (elektronisk krigføring) training", keySkills: ["signals analysis", "electronics", "spectrum awareness", "problem-solving", "calm focus"], dailyTasks: ["Detect emissions", "Jam adversary systems", "Protect own signals", "Analyse spectrum", "Support missions"], growthOutlook: "high", pathType: "military", sector: "public", country: "NO" },
+    { id: "etjenesten-sigint-analyst", educationRoute: "mixed", entryRoute: "military-academy", title: "Signals Intelligence Analyst (E-tjenesten)", emoji: "🛰️", description: "Collect and interpret signals intelligence for Etterretningstjenesten — Norway's intelligence service — turning intercepted communications into insight.", avgSalary: "600,000 - 1,000,000 kr/year", educationPath: "Førstegangstjeneste + SIGINT / intelligence training (often Bachelor's/Master's + languages)", keySkills: ["signals analysis", "languages", "pattern recognition", "report writing", "discretion"], dailyTasks: ["Analyse intercepted signals", "Identify patterns", "Write intelligence reports", "Brief analysts", "Support collection"], growthOutlook: "high", pathType: "military", sector: "public", country: "NO" },
     { id: "forsvaret-space-operations-officer", title: "Space Operations Officer (Forsvaret)", emoji: "🚀", description: "Manage military space and satellite capabilities — surveillance, navigation, and communications from orbit — a fast-growing Forsvaret domain.", avgSalary: "870,000 - 1,510,000 kr/year", educationPath: "Førstegangstjeneste + Krigsskolen + space/satellite or engineering specialisation", keySkills: ["space systems", "satellite operations", "analysis", "leadership", "technical literacy"], dailyTasks: ["Operate satellite systems", "Monitor space assets", "Support navigation/comms", "Analyse space data", "Coordinate with allies"], growthOutlook: "high", pathType: "military", sector: "public", country: "NO" },
-    { id: "forsvaret-combat-medic", title: "Combat Medic (Sanitetssoldat)", emoji: "🚑", description: "Provide life-saving medical care on the front line — treating wounds and stabilising casualties under fire as part of Forsvarets sanitet.", avgSalary: "480,000 - 750,000 kr/year", educationPath: "Førstegangstjeneste + Forsvaret medical (sanitet) training; route toward paramedic/nurse qualification", keySkills: ["emergency care", "calm under pressure", "first aid", "teamwork", "physical fitness"], dailyTasks: ["Treat casualties", "Stabilise the wounded", "Carry medical kit", "Train in first aid", "Support the unit"], growthOutlook: "stable", pathType: "military", sector: "public", country: "NO" },
+    { id: "forsvaret-combat-medic", educationRoute: "on-the-job", entryRoute: "military-academy", title: "Combat Medic (Sanitetssoldat)", emoji: "🚑", description: "Provide life-saving medical care on the front line — treating wounds and stabilising casualties under fire as part of Forsvarets sanitet.", avgSalary: "480,000 - 750,000 kr/year", educationPath: "Førstegangstjeneste + Forsvaret medical (sanitet) training; route toward paramedic/nurse qualification", keySkills: ["emergency care", "calm under pressure", "first aid", "teamwork", "physical fitness"], dailyTasks: ["Treat casualties", "Stabilise the wounded", "Carry medical kit", "Train in first aid", "Support the unit"], growthOutlook: "stable", pathType: "military", sector: "public", country: "NO" },
     { id: "forsvaret-chaplain", title: "Military Chaplain (Feltprest)", emoji: "✝️", description: "Support the spiritual and emotional wellbeing of soldiers — offering counsel, ceremony, and a steady presence in difficult conditions, regardless of faith.", avgSalary: "600,000 - 900,000 kr/year", educationPath: "Theology degree + ordination + Feltprestkorpset (military chaplaincy) training", educationRoute: "university", keySkills: ["pastoral care", "counselling", "empathy", "communication", "resilience"], dailyTasks: ["Counsel soldiers", "Lead services", "Support in crises", "Advise command on welfare", "Accompany on deployment"], growthOutlook: "stable", pathType: "military", sector: "public", country: "NO" },
     { id: "forsvaret-military-lawyer", title: "Military Lawyer (Militærjurist)", emoji: "⚖️", description: "Advise the Norwegian Armed Forces on military and international law — rules of engagement, operations law, and discipline — as a uniformed legal adviser.", avgSalary: "700,000 - 1,200,000 kr/year", educationPath: "Master of Law (rettsvitenskap, 5 years) + Forsvaret legal officer track", educationRoute: "university", keySkills: ["military law", "international law", "advisory", "analytical thinking", "ethics"], dailyTasks: ["Advise on rules of engagement", "Interpret operations law", "Support discipline cases", "Train on legal compliance", "Advise commanders"], growthOutlook: "stable", pathType: "military", sector: "public", country: "NO" },
   ],
@@ -11294,6 +11937,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "personal-trainer",
+      educationRoute: "certification",
+      entryRoute: "certification",
       title: "Personal Trainer",
       emoji: "💪",
       description: "Design and deliver one-on-one fitness programmes for clients in gyms, studios, or independently. Combines coaching, motivation and exercise science.",
@@ -11308,6 +11953,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "sports-coach",
+      educationRoute: "certification",
+      entryRoute: "certification",
       title: "Sports Coach",
       emoji: "🏆",
       description: "Train athletes or teams in a specific sport — from grassroots youth clubs to professional level. Focuses on technique, tactics and development.",
@@ -11322,6 +11969,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "fitness-instructor",
+      educationRoute: "certification",
+      entryRoute: "certification",
       title: "Personal Trainer",
       emoji: "🏋️",
       description: "Lead fitness classes and provide personal training to help clients reach health goals.",
@@ -11356,6 +12005,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "athletic-trainer",
+      educationRoute: "mixed",
+      entryRoute: "certification",
       title: "Athletic Trainer",
       emoji: "🏃",
       description: "Provide on-field first response, taping, and acute injury management for sports teams. The first medic on the pitch.",
@@ -11368,6 +12019,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "yoga-instructor",
+      educationRoute: "certification",
+      entryRoute: "certification",
       title: "Yoga Instructor",
       emoji: "🧘",
       description: "Teach yoga classes in studios, gyms or independently — covering physical practice, breathwork and mindfulness.",
@@ -11380,6 +12033,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "swim-instructor",
+      educationRoute: "certification",
+      entryRoute: "certification",
       title: "Swim Instructor",
       emoji: "🏊",
       description: "Teach swimming to children and adults at pools and clubs — water safety, technique and progression through levels.",
@@ -11392,6 +12047,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "outdoor-instructor",
+      educationRoute: "certification",
+      entryRoute: "certification",
       title: "Outdoor Instructor",
       emoji: "🧗",
       description: "Lead climbing, hiking, kayaking, skiing and other outdoor activities — for schools, summer camps and adventure tourism.",
@@ -11408,6 +12065,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     // ──────────────────────────────────────────────
     {
       id: "professional-athlete",
+      educationRoute: "on-the-job",
+      entryRoute: "direct-entry",
       title: "Professional Athlete",
       emoji: "🏅",
       description: "Compete at the highest level in a chosen sport — training daily and performing in matches, races, or events.",
@@ -11420,6 +12079,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "assistant-coach",
+      educationRoute: "certification",
+      entryRoute: "certification",
       title: "Assistant Coach",
       emoji: "📋",
       description: "Support the head coach by running training drills, analysing players, and helping with tactics and team logistics.",
@@ -11432,6 +12093,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "strength-conditioning-coach",
+      educationRoute: "mixed",
+      entryRoute: "certification",
       title: "Strength & Conditioning Coach",
       emoji: "🏋️",
       description: "Design and run physical training programmes that build athletes' strength, speed, power, and resilience.",
@@ -11495,6 +12158,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     // ──────────────────────────────────────────────
     {
       id: "referee",
+      educationRoute: "certification",
+      entryRoute: "certification",
       title: "Referee",
       emoji: "🟨",
       description: "Officiate matches by enforcing the rules of the sport, managing players, and making split-second decisions on the field.",
@@ -11507,6 +12172,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "umpire",
+      educationRoute: "certification",
+      entryRoute: "certification",
       title: "Umpire",
       emoji: "⚖️",
       description: "Officiate sports like tennis, cricket, baseball, and hockey — making rulings on plays, scoring, and conduct.",
@@ -11523,6 +12190,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     // ──────────────────────────────────────────────
     {
       id: "talent-scout",
+      educationRoute: "certification",
+      entryRoute: "certification",
       title: "Talent Scout",
       emoji: "🔭",
       description: "Travel to games and tournaments to spot promising young athletes and recommend signings to clubs and academies.",
@@ -11616,6 +12285,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "sports-photographer",
+      educationRoute: "on-the-job",
+      entryRoute: "direct-entry",
       title: "Sports Photographer",
       emoji: "📸",
       description: "Capture the decisive moments of sport — for newspapers, agencies, clubs, and sponsors.",
@@ -11698,6 +12369,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "groundskeeper",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Groundskeeper",
       emoji: "🌱",
       description: "Look after sports pitches, courts, and grounds — mowing, marking, watering, and preparing surfaces for matches.",
@@ -11710,6 +12383,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "equipment-manager",
+      educationRoute: "on-the-job",
+      entryRoute: "direct-entry",
       title: "Equipment Manager",
       emoji: "🎽",
       description: "Look after a team's kit and equipment — washing, repairing, packing, and making sure everything is ready for training and matches.",
@@ -11726,6 +12401,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     // ──────────────────────────────────────────────
     {
       id: "esports-player",
+      educationRoute: "on-the-job",
+      entryRoute: "direct-entry",
       title: "Esports Player",
       emoji: "🎮",
       description: "Compete professionally in video games — training daily, playing in tournaments, and representing teams or organisations.",
@@ -11738,6 +12415,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "esports-coach",
+      educationRoute: "on-the-job",
+      entryRoute: "direct-entry",
       title: "Esports Coach",
       emoji: "🕹️",
       description: "Coach professional esports teams — building strategy, reviewing gameplay, and developing players for competition.",
@@ -11749,6 +12428,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "esports-analyst",
+      educationRoute: "on-the-job",
+      entryRoute: "direct-entry",
       title: "Esports Analyst",
       emoji: "🖥️",
       description: "Analyse esports matches, opponents, and meta — providing data-driven insights to coaches and players.",
@@ -11759,38 +12440,38 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       growthOutlook: "high",
       entryLevel: true,
     },
-    { id: "footballer", title: "Footballer", emoji: "⚽", description: "Play professional football — train daily, compete in matches, and represent a club at the highest level you can reach.", avgSalary: "300,000 - 5,000,000+ kr/year (highly variable, top 1% earn millions)", educationPath: "Youth academy → senior contract; only a small fraction make it pro", keySkills: ["football technique", "fitness", "tactical awareness", "mental resilience", "teamwork"], dailyTasks: ["Train daily", "Play matches", "Watch tape", "Recover", "Travel"], growthOutlook: "stable", pathType: "elite-sport" },
-    { id: "tennis-player", title: "Tennis Player", emoji: "🎾", description: "Compete on the professional tennis tour — chasing ranking points, prize money, and major titles.", avgSalary: "0 - 10,000,000+ kr/year (highly variable, top 100 earn well)", educationPath: "Junior competition → ITF/ATP/WTA tour; long expensive path", keySkills: ["tennis technique", "fitness", "mental resilience", "tactics", "self-management"], dailyTasks: ["Train daily", "Play matches", "Travel", "Strength work", "Plan schedule"], growthOutlook: "stable", pathType: "elite-sport" },
-    { id: "extreme-sports-athlete", title: "Professional Extreme Sports Athlete", emoji: "🪂", description: "Compete at the highest level in extreme disciplines — sponsorships, media content, and contest circuits fund the lifestyle.", avgSalary: "100,000 - 3,000,000+ kr/year (highly variable, sponsorships dominate)", educationPath: "Competition circuit + sponsorship-funded career; no formal degree required", keySkills: ["elite skill", "fearlessness", "fitness", "media presence", "risk management"], dailyTasks: ["Train at high intensity", "Compete or film", "Manage sponsors", "Travel to events", "Recover from injury"], growthOutlook: "stable", workSetting: "outdoors", pathType: "elite-sport", lastVerifiedAt: "2026-04-16" },
-    { id: "base-jumper", title: "BASE Jumper", emoji: "🏔️", description: "Parachute from fixed objects — buildings, antennas, spans, earth — at the very edge of the sport.", avgSalary: "0 - 800,000 kr/year (sponsorship + content-driven, highly variable)", educationPath: "1000+ skydives + dedicated BASE mentorship; not a regulated career", keySkills: ["skydiving mastery", "risk assessment", "spatial awareness", "calm focus", "physical fitness"], dailyTasks: ["Pack rigs", "Scout exit points", "Check weather", "Jump", "Review footage"], growthOutlook: "stable", workSetting: "outdoors", lastVerifiedAt: "2026-04-16" },
-    { id: "wingsuit-pilot", title: "Wingsuit Pilot", emoji: "🦅", description: "Fly the narrow corridor between cliff and ground in a wingsuit — one of the most technical sports in the world.", avgSalary: "0 - 1,000,000 kr/year (sponsorship and content-driven)", educationPath: "Extensive skydiving + BASE progression + wingsuit coaching", keySkills: ["flight control", "spatial awareness", "risk management", "physical conditioning", "mental discipline"], dailyTasks: ["Train in tunnel", "Review flight lines", "Scout terrain", "Jump", "Edit footage"], growthOutlook: "stable", workSetting: "outdoors", lastVerifiedAt: "2026-04-16" },
-    { id: "skydiving-instructor", title: "Skydiving Instructor", emoji: "🪂", description: "Teach first-time and progressing skydivers — tandem jumps, AFF courses, and licensing.", avgSalary: "400,000 - 750,000 kr/year (seasonal, pay per jump)", educationPath: "USPA / FAI / national skydiving instructor certification (tandem, AFF, coach)", keySkills: ["skydiving expertise", "teaching", "patience", "safety", "composure"], dailyTasks: ["Brief students", "Fit gear", "Jump with students", "Debrief", "Maintain rigs"], growthOutlook: "medium", workSetting: "outdoors", lastVerifiedAt: "2026-04-16" },
-    { id: "paragliding-instructor", title: "Paragliding Instructor", emoji: "🪁", description: "Teach paragliding from first flights through thermalling and cross-country flying.", avgSalary: "350,000 - 700,000 kr/year (seasonal)", educationPath: "Paragliding instructor certification (FAI / national body) + 500+ hours flight time", keySkills: ["paragliding skill", "weather reading", "teaching", "risk management", "patience"], dailyTasks: ["Check weather", "Teach ground handling", "Supervise flights", "Brief students", "Maintain wings"], growthOutlook: "medium", workSetting: "outdoors", lastVerifiedAt: "2026-04-16" },
-    { id: "hang-gliding-instructor", title: "Hang Gliding Instructor", emoji: "🪂", description: "Teach hang gliding — launches, soaring, and advanced cross-country technique.", avgSalary: "300,000 - 650,000 kr/year (seasonal)", educationPath: "Hang gliding instructor certification + extensive flight hours", keySkills: ["hang gliding skill", "aerology", "teaching", "risk management", "patience"], dailyTasks: ["Teach launches", "Supervise soaring", "Brief weather", "Rig gliders", "Coach progression"], growthOutlook: "stable", workSetting: "outdoors", lastVerifiedAt: "2026-04-16" },
-    { id: "big-wave-surf-instructor", title: "Surfing Instructor (Big Wave)", emoji: "🌊", description: "Coach advanced surfers in big-wave environments — safety, paddling strategy, and reading the ocean.", avgSalary: "350,000 - 800,000 kr/year", educationPath: "ISA / national surf instructor certification + big-wave experience + water safety training", keySkills: ["surfing", "ocean reading", "teaching", "water safety", "physical fitness"], dailyTasks: ["Brief students", "Coach in the water", "Run safety", "Read conditions", "Mentor progression"], growthOutlook: "stable", workSetting: "outdoors", lastVerifiedAt: "2026-04-16" },
-    { id: "freestyle-snowboard-instructor", title: "Snowboard Instructor (Freestyle/Backcountry)", emoji: "🏂", description: "Coach freestyle park and backcountry snowboarding — jumps, rails, avalanche awareness.", avgSalary: "300,000 - 600,000 kr/year (seasonal)", educationPath: "Snowboard instructor certification (ISIA / national) + freestyle/backcountry specialisation", keySkills: ["snowboarding", "freestyle coaching", "avalanche awareness", "patience", "safety"], dailyTasks: ["Teach groups", "Coach progression", "Assess snow/terrain", "Run park sessions", "Manage safety"], growthOutlook: "medium", workSetting: "outdoors", lastVerifiedAt: "2026-04-16" },
-    { id: "freestyle-ski-instructor", title: "Ski Instructor (Freestyle/Backcountry)", emoji: "⛷️", description: "Coach freestyle park and backcountry skiing — jumps, rails, and off-piste technique with avalanche awareness.", avgSalary: "300,000 - 600,000 kr/year (seasonal)", educationPath: "Ski instructor certification (ISIA / national) + freestyle/backcountry specialisation", keySkills: ["skiing", "freestyle coaching", "avalanche training", "terrain assessment", "teaching"], dailyTasks: ["Teach groups", "Coach skills", "Assess snow/terrain", "Run backcountry trips", "Manage safety"], growthOutlook: "medium", workSetting: "outdoors", lastVerifiedAt: "2026-04-16" },
-    { id: "bmx-rider", title: "BMX Rider", emoji: "🚴", description: "Compete in BMX freestyle, racing, or street events — sponsorship, contests, and media are the income streams.", avgSalary: "0 - 1,500,000 kr/year (highly variable, top riders earn well via sponsorship)", educationPath: "Progression through contests + sponsorship; no formal education required", keySkills: ["BMX technique", "fearlessness", "fitness", "content creation", "mental toughness"], dailyTasks: ["Train tricks", "Film runs", "Edit content", "Compete", "Manage sponsors"], growthOutlook: "stable", workSetting: "outdoors", entryLevel: true, lastVerifiedAt: "2026-04-16" },
-    { id: "skateboarder-pro", title: "Professional Skateboarder", emoji: "🛹", description: "Skate professionally — contests, video parts, sponsorship decks, and brand content.", avgSalary: "0 - 2,500,000+ kr/year (sponsorship-dominated)", educationPath: "Contest / video-part progression + sponsorship; no formal education", keySkills: ["skate technique", "creativity", "fitness", "filming", "brand awareness"], dailyTasks: ["Film tricks", "Skate daily", "Produce content", "Compete", "Manage sponsors"], growthOutlook: "stable", workSetting: "outdoors", entryLevel: true, lastVerifiedAt: "2026-04-16" },
-    { id: "motocross-rider", title: "Motocross Rider", emoji: "🏍️", description: "Race professionally on dirt tracks — amateur circuits through national and international championships.", avgSalary: "0 - 5,000,000+ kr/year (top riders earn millions)", educationPath: "Amateur → national → international circuit + sponsorship", keySkills: ["racing", "fitness", "mechanics knowledge", "tactics", "mental resilience"], dailyTasks: ["Train daily", "Race", "Tune bike", "Analyse races", "Manage team"], growthOutlook: "stable", workSetting: "outdoors", pathType: "elite-sport", lastVerifiedAt: "2026-04-16" },
-    { id: "rally-driver", title: "Rally Driver (Off-road)", emoji: "🏁", description: "Race on unpaved stages — rally sprints, national championships, and world-level events.", avgSalary: "0 - 5,000,000+ kr/year (team-supported, sponsorship-heavy)", educationPath: "Karting / local rallies → national licence → team seats", keySkills: ["driving skill", "car control", "pace notes", "fitness", "teamwork"], dailyTasks: ["Train", "Recce stages", "Race", "Work with engineers", "Review tapes"], growthOutlook: "stable", workSetting: "outdoors", pathType: "elite-sport", lastVerifiedAt: "2026-04-16" },
-    { id: "rock-climbing-guide", title: "Rock Climbing Guide", emoji: "🧗", description: "Lead climbers on routes — trad, sport, multi-pitch — as a certified guide.", avgSalary: "400,000 - 800,000 kr/year (seasonal)", educationPath: "IFMGA or national climbing guide certification + extensive climbing experience", keySkills: ["climbing skill", "rope systems", "risk assessment", "teaching", "calm under pressure"], dailyTasks: ["Plan routes", "Set anchors", "Guide climbers", "Manage safety", "Teach technique"], growthOutlook: "medium", workSetting: "outdoors", lastVerifiedAt: "2026-04-16" },
-    { id: "ice-climbing-guide", title: "Ice Climbing Guide", emoji: "🧊", description: "Lead climbers up frozen waterfalls and mixed routes — winter mountaineering skill-set required.", avgSalary: "400,000 - 850,000 kr/year (seasonal)", educationPath: "IFMGA or national ice guide certification + extensive winter experience", keySkills: ["ice climbing", "rope systems", "winter skills", "avalanche awareness", "teaching"], dailyTasks: ["Assess conditions", "Set anchors", "Guide clients", "Read weather", "Manage safety"], growthOutlook: "stable", workSetting: "outdoors", lastVerifiedAt: "2026-04-16" },
-    { id: "mountaineering-guide", title: "Mountaineering Guide", emoji: "🏔️", description: "Lead expeditions in the mountains — Alpine, high-altitude, and expedition-style climbs.", avgSalary: "450,000 - 900,000 kr/year (seasonal + expeditions)", educationPath: "IFMGA / UIAGM certification + years of high-altitude experience", keySkills: ["mountaineering", "glacier travel", "navigation", "leadership", "first aid"], dailyTasks: ["Plan expeditions", "Guide climbs", "Assess conditions", "Lead teams", "Manage risk"], growthOutlook: "medium", workSetting: "outdoors", lastVerifiedAt: "2026-04-16" },
-    { id: "parkour-athlete", title: "Parkour Athlete", emoji: "🤸", description: "Train and perform parkour professionally — competition, stunt work, and content creation.", avgSalary: "150,000 - 900,000 kr/year (sponsorship + stunt + content)", educationPath: "Self-trained + coaching clinics; no formal path", keySkills: ["movement", "fitness", "creativity", "content creation", "body awareness"], dailyTasks: ["Train daily", "Film movement", "Edit content", "Coach", "Compete or perform"], growthOutlook: "stable", workSetting: "outdoors", entryLevel: true, lastVerifiedAt: "2026-04-16" },
-    { id: "stunt-performer", title: "Stunt Performer", emoji: "🎬", description: "Perform physical action for film and TV — fights, falls, driving, fire — with rigorous safety planning.", avgSalary: "400,000 - 1,500,000+ kr/year (gig-based)", educationPath: "Stunt training + industry contacts + specialisations (driving, aerial, fight)", keySkills: ["fitness", "stunt technique", "safety", "acting", "reliability"], dailyTasks: ["Train stunts", "Rehearse sequences", "Perform on set", "Coordinate with crew", "Recover from injury"], growthOutlook: "medium", workSetting: "mixed", lastVerifiedAt: "2026-04-16" },
-    { id: "adventure-sports-coach", title: "Adventure Sports Coach", emoji: "🎯", description: "Coach multi-discipline adventure athletes — climbers, paddlers, skiers — in training and expedition planning.", avgSalary: "450,000 - 800,000 kr/year", educationPath: "Sport-specific instructor certifications + coaching qualification", keySkills: ["coaching", "multi-sport experience", "periodisation", "psychology", "planning"], dailyTasks: ["Plan training", "Coach athletes", "Analyse performance", "Run camps", "Mentor"], growthOutlook: "medium", workSetting: "outdoors", lastVerifiedAt: "2026-04-16" },
+    { id: "footballer", educationRoute: "on-the-job", entryRoute: "direct-entry", title: "Footballer", emoji: "⚽", description: "Play professional football — train daily, compete in matches, and represent a club at the highest level you can reach.", avgSalary: "300,000 - 5,000,000+ kr/year (highly variable, top 1% earn millions)", educationPath: "Youth academy → senior contract; only a small fraction make it pro", keySkills: ["football technique", "fitness", "tactical awareness", "mental resilience", "teamwork"], dailyTasks: ["Train daily", "Play matches", "Watch tape", "Recover", "Travel"], growthOutlook: "stable", pathType: "elite-sport" },
+    { id: "tennis-player", educationRoute: "on-the-job", entryRoute: "direct-entry", title: "Tennis Player", emoji: "🎾", description: "Compete on the professional tennis tour — chasing ranking points, prize money, and major titles.", avgSalary: "0 - 10,000,000+ kr/year (highly variable, top 100 earn well)", educationPath: "Junior competition → ITF/ATP/WTA tour; long expensive path", keySkills: ["tennis technique", "fitness", "mental resilience", "tactics", "self-management"], dailyTasks: ["Train daily", "Play matches", "Travel", "Strength work", "Plan schedule"], growthOutlook: "stable", pathType: "elite-sport" },
+    { id: "extreme-sports-athlete", educationRoute: "on-the-job", entryRoute: "direct-entry", title: "Professional Extreme Sports Athlete", emoji: "🪂", description: "Compete at the highest level in extreme disciplines — sponsorships, media content, and contest circuits fund the lifestyle.", avgSalary: "100,000 - 3,000,000+ kr/year (highly variable, sponsorships dominate)", educationPath: "Competition circuit + sponsorship-funded career; no formal degree required", keySkills: ["elite skill", "fearlessness", "fitness", "media presence", "risk management"], dailyTasks: ["Train at high intensity", "Compete or film", "Manage sponsors", "Travel to events", "Recover from injury"], growthOutlook: "stable", workSetting: "outdoors", pathType: "elite-sport", lastVerifiedAt: "2026-04-16" },
+    { id: "base-jumper", educationRoute: "on-the-job", entryRoute: "direct-entry", title: "BASE Jumper", emoji: "🏔️", description: "Parachute from fixed objects — buildings, antennas, spans, earth — at the very edge of the sport.", avgSalary: "0 - 800,000 kr/year (sponsorship + content-driven, highly variable)", educationPath: "1000+ skydives + dedicated BASE mentorship; not a regulated career", keySkills: ["skydiving mastery", "risk assessment", "spatial awareness", "calm focus", "physical fitness"], dailyTasks: ["Pack rigs", "Scout exit points", "Check weather", "Jump", "Review footage"], growthOutlook: "stable", workSetting: "outdoors", lastVerifiedAt: "2026-04-16" },
+    { id: "wingsuit-pilot", educationRoute: "on-the-job", entryRoute: "direct-entry", title: "Wingsuit Pilot", emoji: "🦅", description: "Fly the narrow corridor between cliff and ground in a wingsuit — one of the most technical sports in the world.", avgSalary: "0 - 1,000,000 kr/year (sponsorship and content-driven)", educationPath: "Extensive skydiving + BASE progression + wingsuit coaching", keySkills: ["flight control", "spatial awareness", "risk management", "physical conditioning", "mental discipline"], dailyTasks: ["Train in tunnel", "Review flight lines", "Scout terrain", "Jump", "Edit footage"], growthOutlook: "stable", workSetting: "outdoors", lastVerifiedAt: "2026-04-16" },
+    { id: "skydiving-instructor", educationRoute: "certification", entryRoute: "certification", title: "Skydiving Instructor", emoji: "🪂", description: "Teach first-time and progressing skydivers — tandem jumps, AFF courses, and licensing.", avgSalary: "400,000 - 750,000 kr/year (seasonal, pay per jump)", educationPath: "USPA / FAI / national skydiving instructor certification (tandem, AFF, coach)", keySkills: ["skydiving expertise", "teaching", "patience", "safety", "composure"], dailyTasks: ["Brief students", "Fit gear", "Jump with students", "Debrief", "Maintain rigs"], growthOutlook: "medium", workSetting: "outdoors", lastVerifiedAt: "2026-04-16" },
+    { id: "paragliding-instructor", educationRoute: "certification", entryRoute: "certification", title: "Paragliding Instructor", emoji: "🪁", description: "Teach paragliding from first flights through thermalling and cross-country flying.", avgSalary: "350,000 - 700,000 kr/year (seasonal)", educationPath: "Paragliding instructor certification (FAI / national body) + 500+ hours flight time", keySkills: ["paragliding skill", "weather reading", "teaching", "risk management", "patience"], dailyTasks: ["Check weather", "Teach ground handling", "Supervise flights", "Brief students", "Maintain wings"], growthOutlook: "medium", workSetting: "outdoors", lastVerifiedAt: "2026-04-16" },
+    { id: "hang-gliding-instructor", educationRoute: "certification", entryRoute: "certification", title: "Hang Gliding Instructor", emoji: "🪂", description: "Teach hang gliding — launches, soaring, and advanced cross-country technique.", avgSalary: "300,000 - 650,000 kr/year (seasonal)", educationPath: "Hang gliding instructor certification + extensive flight hours", keySkills: ["hang gliding skill", "aerology", "teaching", "risk management", "patience"], dailyTasks: ["Teach launches", "Supervise soaring", "Brief weather", "Rig gliders", "Coach progression"], growthOutlook: "stable", workSetting: "outdoors", lastVerifiedAt: "2026-04-16" },
+    { id: "big-wave-surf-instructor", educationRoute: "certification", entryRoute: "certification", title: "Surfing Instructor (Big Wave)", emoji: "🌊", description: "Coach advanced surfers in big-wave environments — safety, paddling strategy, and reading the ocean.", avgSalary: "350,000 - 800,000 kr/year", educationPath: "ISA / national surf instructor certification + big-wave experience + water safety training", keySkills: ["surfing", "ocean reading", "teaching", "water safety", "physical fitness"], dailyTasks: ["Brief students", "Coach in the water", "Run safety", "Read conditions", "Mentor progression"], growthOutlook: "stable", workSetting: "outdoors", lastVerifiedAt: "2026-04-16" },
+    { id: "freestyle-snowboard-instructor", educationRoute: "certification", entryRoute: "certification", title: "Snowboard Instructor (Freestyle/Backcountry)", emoji: "🏂", description: "Coach freestyle park and backcountry snowboarding — jumps, rails, avalanche awareness.", avgSalary: "300,000 - 600,000 kr/year (seasonal)", educationPath: "Snowboard instructor certification (ISIA / national) + freestyle/backcountry specialisation", keySkills: ["snowboarding", "freestyle coaching", "avalanche awareness", "patience", "safety"], dailyTasks: ["Teach groups", "Coach progression", "Assess snow/terrain", "Run park sessions", "Manage safety"], growthOutlook: "medium", workSetting: "outdoors", lastVerifiedAt: "2026-04-16" },
+    { id: "freestyle-ski-instructor", educationRoute: "certification", entryRoute: "certification", title: "Ski Instructor (Freestyle/Backcountry)", emoji: "⛷️", description: "Coach freestyle park and backcountry skiing — jumps, rails, and off-piste technique with avalanche awareness.", avgSalary: "300,000 - 600,000 kr/year (seasonal)", educationPath: "Ski instructor certification (ISIA / national) + freestyle/backcountry specialisation", keySkills: ["skiing", "freestyle coaching", "avalanche training", "terrain assessment", "teaching"], dailyTasks: ["Teach groups", "Coach skills", "Assess snow/terrain", "Run backcountry trips", "Manage safety"], growthOutlook: "medium", workSetting: "outdoors", lastVerifiedAt: "2026-04-16" },
+    { id: "bmx-rider", educationRoute: "on-the-job", entryRoute: "direct-entry", title: "BMX Rider", emoji: "🚴", description: "Compete in BMX freestyle, racing, or street events — sponsorship, contests, and media are the income streams.", avgSalary: "0 - 1,500,000 kr/year (highly variable, top riders earn well via sponsorship)", educationPath: "Progression through contests + sponsorship; no formal education required", keySkills: ["BMX technique", "fearlessness", "fitness", "content creation", "mental toughness"], dailyTasks: ["Train tricks", "Film runs", "Edit content", "Compete", "Manage sponsors"], growthOutlook: "stable", workSetting: "outdoors", entryLevel: true, lastVerifiedAt: "2026-04-16" },
+    { id: "skateboarder-pro", educationRoute: "on-the-job", entryRoute: "direct-entry", title: "Professional Skateboarder", emoji: "🛹", description: "Skate professionally — contests, video parts, sponsorship decks, and brand content.", avgSalary: "0 - 2,500,000+ kr/year (sponsorship-dominated)", educationPath: "Contest / video-part progression + sponsorship; no formal education", keySkills: ["skate technique", "creativity", "fitness", "filming", "brand awareness"], dailyTasks: ["Film tricks", "Skate daily", "Produce content", "Compete", "Manage sponsors"], growthOutlook: "stable", workSetting: "outdoors", entryLevel: true, lastVerifiedAt: "2026-04-16" },
+    { id: "motocross-rider", educationRoute: "on-the-job", entryRoute: "direct-entry", title: "Motocross Rider", emoji: "🏍️", description: "Race professionally on dirt tracks — amateur circuits through national and international championships.", avgSalary: "0 - 5,000,000+ kr/year (top riders earn millions)", educationPath: "Amateur → national → international circuit + sponsorship", keySkills: ["racing", "fitness", "mechanics knowledge", "tactics", "mental resilience"], dailyTasks: ["Train daily", "Race", "Tune bike", "Analyse races", "Manage team"], growthOutlook: "stable", workSetting: "outdoors", pathType: "elite-sport", lastVerifiedAt: "2026-04-16" },
+    { id: "rally-driver", educationRoute: "certification", entryRoute: "certification", title: "Rally Driver (Off-road)", emoji: "🏁", description: "Race on unpaved stages — rally sprints, national championships, and world-level events.", avgSalary: "0 - 5,000,000+ kr/year (team-supported, sponsorship-heavy)", educationPath: "Karting / local rallies → national licence → team seats", keySkills: ["driving skill", "car control", "pace notes", "fitness", "teamwork"], dailyTasks: ["Train", "Recce stages", "Race", "Work with engineers", "Review tapes"], growthOutlook: "stable", workSetting: "outdoors", pathType: "elite-sport", lastVerifiedAt: "2026-04-16" },
+    { id: "rock-climbing-guide", educationRoute: "certification", entryRoute: "certification", title: "Rock Climbing Guide", emoji: "🧗", description: "Lead climbers on routes — trad, sport, multi-pitch — as a certified guide.", avgSalary: "400,000 - 800,000 kr/year (seasonal)", educationPath: "IFMGA or national climbing guide certification + extensive climbing experience", keySkills: ["climbing skill", "rope systems", "risk assessment", "teaching", "calm under pressure"], dailyTasks: ["Plan routes", "Set anchors", "Guide climbers", "Manage safety", "Teach technique"], growthOutlook: "medium", workSetting: "outdoors", lastVerifiedAt: "2026-04-16" },
+    { id: "ice-climbing-guide", educationRoute: "certification", entryRoute: "certification", title: "Ice Climbing Guide", emoji: "🧊", description: "Lead climbers up frozen waterfalls and mixed routes — winter mountaineering skill-set required.", avgSalary: "400,000 - 850,000 kr/year (seasonal)", educationPath: "IFMGA or national ice guide certification + extensive winter experience", keySkills: ["ice climbing", "rope systems", "winter skills", "avalanche awareness", "teaching"], dailyTasks: ["Assess conditions", "Set anchors", "Guide clients", "Read weather", "Manage safety"], growthOutlook: "stable", workSetting: "outdoors", lastVerifiedAt: "2026-04-16" },
+    { id: "mountaineering-guide", educationRoute: "certification", entryRoute: "certification", title: "Mountaineering Guide", emoji: "🏔️", description: "Lead expeditions in the mountains — Alpine, high-altitude, and expedition-style climbs.", avgSalary: "450,000 - 900,000 kr/year (seasonal + expeditions)", educationPath: "IFMGA / UIAGM certification + years of high-altitude experience", keySkills: ["mountaineering", "glacier travel", "navigation", "leadership", "first aid"], dailyTasks: ["Plan expeditions", "Guide climbs", "Assess conditions", "Lead teams", "Manage risk"], growthOutlook: "medium", workSetting: "outdoors", lastVerifiedAt: "2026-04-16" },
+    { id: "parkour-athlete", educationRoute: "on-the-job", entryRoute: "direct-entry", title: "Parkour Athlete", emoji: "🤸", description: "Train and perform parkour professionally — competition, stunt work, and content creation.", avgSalary: "150,000 - 900,000 kr/year (sponsorship + stunt + content)", educationPath: "Self-trained + coaching clinics; no formal path", keySkills: ["movement", "fitness", "creativity", "content creation", "body awareness"], dailyTasks: ["Train daily", "Film movement", "Edit content", "Coach", "Compete or perform"], growthOutlook: "stable", workSetting: "outdoors", entryLevel: true, lastVerifiedAt: "2026-04-16" },
+    { id: "stunt-performer", educationRoute: "on-the-job", entryRoute: "direct-entry", title: "Stunt Performer", emoji: "🎬", description: "Perform physical action for film and TV — fights, falls, driving, fire — with rigorous safety planning.", avgSalary: "400,000 - 1,500,000+ kr/year (gig-based)", educationPath: "Stunt training + industry contacts + specialisations (driving, aerial, fight)", keySkills: ["fitness", "stunt technique", "safety", "acting", "reliability"], dailyTasks: ["Train stunts", "Rehearse sequences", "Perform on set", "Coordinate with crew", "Recover from injury"], growthOutlook: "medium", workSetting: "mixed", lastVerifiedAt: "2026-04-16" },
+    { id: "adventure-sports-coach", educationRoute: "certification", entryRoute: "certification", title: "Adventure Sports Coach", emoji: "🎯", description: "Coach multi-discipline adventure athletes — climbers, paddlers, skiers — in training and expedition planning.", avgSalary: "450,000 - 800,000 kr/year", educationPath: "Sport-specific instructor certifications + coaching qualification", keySkills: ["coaching", "multi-sport experience", "periodisation", "psychology", "planning"], dailyTasks: ["Plan training", "Coach athletes", "Analyse performance", "Run camps", "Mentor"], growthOutlook: "medium", workSetting: "outdoors", lastVerifiedAt: "2026-04-16" },
     { id: "extreme-sports-event-organizer", title: "Extreme Sports Event Organiser", emoji: "🎟️", description: "Plan and run extreme sports events — from local contests to international festivals.", avgSalary: "450,000 - 900,000 kr/year", educationPath: "Bachelor's in Event Management / Sport Management + industry network", keySkills: ["event planning", "logistics", "risk management", "sponsorship", "communication"], dailyTasks: ["Plan events", "Coordinate vendors", "Manage budgets", "Liaise with athletes", "Ensure safety"], growthOutlook: "medium", peopleIntensity: "high", lastVerifiedAt: "2026-04-16" },
-    { id: "expedition-leader", title: "Expedition Leader", emoji: "🧭", description: "Lead groups on multi-day expeditions — polar, high altitude, remote terrain — end-to-end.", avgSalary: "450,000 - 900,000 kr/year (expedition-based)", educationPath: "Mountain guide / wilderness leader certification + extensive expedition experience", keySkills: ["leadership", "navigation", "first aid", "logistics", "calm under pressure"], dailyTasks: ["Plan routes", "Lead groups", "Manage logistics", "Make safety calls", "Debrief"], growthOutlook: "medium", workSetting: "outdoors", peopleIntensity: "high", lastVerifiedAt: "2026-04-16" },
-    { id: "outdoor-survival-instructor", title: "Outdoor Survival Instructor", emoji: "🔥", description: "Teach wilderness survival skills — shelter, fire, navigation, foraging, first aid.", avgSalary: "350,000 - 700,000 kr/year", educationPath: "Wilderness / survival instructor certification + outdoor education experience", keySkills: ["survival skills", "teaching", "wilderness first aid", "navigation", "calm under pressure"], dailyTasks: ["Teach courses", "Plan scenarios", "Run drills", "Maintain kit", "Brief safety"], growthOutlook: "medium", workSetting: "outdoors", lastVerifiedAt: "2026-04-16" },
-    { id: "whitewater-rafting-guide", title: "Whitewater Rafting Guide", emoji: "🚣", description: "Guide rafting trips down whitewater rivers — safety, paddling, and river reading.", avgSalary: "300,000 - 600,000 kr/year (seasonal)", educationPath: "Whitewater rafting guide certification + swiftwater rescue", keySkills: ["rafting", "swiftwater rescue", "teamwork", "communication", "fitness"], dailyTasks: ["Brief clients", "Guide rafts", "Rescue swimmers", "Read water", "Maintain kit"], growthOutlook: "stable", workSetting: "outdoors", entryLevel: true, lastVerifiedAt: "2026-04-16" },
-    { id: "scuba-diving-instructor", title: "Scuba Diving Instructor", emoji: "🤿", description: "Teach recreational and technical scuba diving — open water through instructor-level courses.", avgSalary: "300,000 - 700,000 kr/year (often seasonal + resort-based)", educationPath: "PADI / SSI / SDI scuba instructor certification + dive experience", keySkills: ["scuba skills", "teaching", "safety", "equipment maintenance", "patience"], dailyTasks: ["Brief dives", "Teach students", "Supervise dives", "Maintain gear", "Certify divers"], growthOutlook: "medium", workSetting: "outdoors", lastVerifiedAt: "2026-04-16" },
-    { id: "freediving-instructor", title: "Freediving Instructor", emoji: "🐬", description: "Teach freediving — breath-hold technique, safety, and progressive depth training.", avgSalary: "300,000 - 650,000 kr/year (seasonal)", educationPath: "AIDA / Molchanovs / PADI Freediver instructor certification", keySkills: ["freediving", "teaching", "rescue skills", "physiology", "patience"], dailyTasks: ["Brief students", "Coach technique", "Supervise dives", "Run safety", "Certify students"], growthOutlook: "medium", workSetting: "outdoors", lastVerifiedAt: "2026-04-16" },
-    { id: "kitesurfing-instructor", title: "Kitesurfing Instructor", emoji: "🪁", description: "Teach kitesurfing from first lessons through advanced tricks and wave riding.", avgSalary: "300,000 - 600,000 kr/year (seasonal)", educationPath: "IKO / VDWS kitesurfing instructor certification", keySkills: ["kitesurfing", "teaching", "water safety", "weather reading", "patience"], dailyTasks: ["Teach lessons", "Rig kites", "Supervise riders", "Read weather", "Manage safety"], growthOutlook: "medium", workSetting: "outdoors", lastVerifiedAt: "2026-04-16" },
-    { id: "windsurfing-instructor", title: "Windsurfing Instructor", emoji: "🏄", description: "Teach windsurfing — beginner lessons through advanced wave and freestyle sailing.", avgSalary: "280,000 - 550,000 kr/year (seasonal)", educationPath: "VDWS / national windsurfing instructor certification", keySkills: ["windsurfing", "teaching", "water safety", "rigging", "patience"], dailyTasks: ["Teach lessons", "Rig boards", "Supervise students", "Read conditions", "Manage safety"], growthOutlook: "stable", workSetting: "outdoors", lastVerifiedAt: "2026-04-16" },
-    { id: "extreme-sports-photographer", title: "Extreme Sports Photographer", emoji: "📸", description: "Shoot athletes in extreme environments — slopes, cliffs, waves — for media and sponsor content.", avgSalary: "350,000 - 900,000 kr/year (freelance-heavy)", educationPath: "Photography training + extreme-sport discipline skill + portfolio", keySkills: ["photography", "sport expertise", "fitness", "editing", "storytelling"], dailyTasks: ["Plan shoots", "Shoot action", "Edit images", "Pitch editors", "Manage gear"], growthOutlook: "medium", workSetting: "outdoors", lastVerifiedAt: "2026-04-16" },
-    { id: "extreme-sports-videographer", title: "Extreme Sports Videographer", emoji: "🎥", description: "Film athletes in extreme environments — follow-cam, drones, cinematic edits for media and sponsors.", avgSalary: "400,000 - 1,000,000 kr/year (freelance-heavy)", educationPath: "Film / videography training + sport-specific skill + portfolio", keySkills: ["videography", "editing", "drone operation", "sport expertise", "storytelling"], dailyTasks: ["Plan shoots", "Film action", "Edit videos", "Pitch clients", "Manage gear"], growthOutlook: "high", workSetting: "outdoors", lastVerifiedAt: "2026-04-16" },
-    { id: "extreme-sports-safety-coordinator", title: "Safety Coordinator (Extreme Sports)", emoji: "🛟", description: "Own safety planning for extreme events — risk assessments, rescue teams, and contingency protocols.", avgSalary: "500,000 - 950,000 kr/year", educationPath: "Wilderness / industrial safety training + sport-specific rescue certifications", keySkills: ["risk assessment", "rescue operations", "first aid", "regulations", "communication"], dailyTasks: ["Run risk assessments", "Brief staff", "Oversee rescues", "Audit procedures", "Liaise with authorities"], growthOutlook: "medium", peopleIntensity: "high", lastVerifiedAt: "2026-04-16" },
+    { id: "expedition-leader", educationRoute: "certification", entryRoute: "certification", title: "Expedition Leader", emoji: "🧭", description: "Lead groups on multi-day expeditions — polar, high altitude, remote terrain — end-to-end.", avgSalary: "450,000 - 900,000 kr/year (expedition-based)", educationPath: "Mountain guide / wilderness leader certification + extensive expedition experience", keySkills: ["leadership", "navigation", "first aid", "logistics", "calm under pressure"], dailyTasks: ["Plan routes", "Lead groups", "Manage logistics", "Make safety calls", "Debrief"], growthOutlook: "medium", workSetting: "outdoors", peopleIntensity: "high", lastVerifiedAt: "2026-04-16" },
+    { id: "outdoor-survival-instructor", educationRoute: "certification", entryRoute: "certification", title: "Outdoor Survival Instructor", emoji: "🔥", description: "Teach wilderness survival skills — shelter, fire, navigation, foraging, first aid.", avgSalary: "350,000 - 700,000 kr/year", educationPath: "Wilderness / survival instructor certification + outdoor education experience", keySkills: ["survival skills", "teaching", "wilderness first aid", "navigation", "calm under pressure"], dailyTasks: ["Teach courses", "Plan scenarios", "Run drills", "Maintain kit", "Brief safety"], growthOutlook: "medium", workSetting: "outdoors", lastVerifiedAt: "2026-04-16" },
+    { id: "whitewater-rafting-guide", educationRoute: "certification", entryRoute: "certification", title: "Whitewater Rafting Guide", emoji: "🚣", description: "Guide rafting trips down whitewater rivers — safety, paddling, and river reading.", avgSalary: "300,000 - 600,000 kr/year (seasonal)", educationPath: "Whitewater rafting guide certification + swiftwater rescue", keySkills: ["rafting", "swiftwater rescue", "teamwork", "communication", "fitness"], dailyTasks: ["Brief clients", "Guide rafts", "Rescue swimmers", "Read water", "Maintain kit"], growthOutlook: "stable", workSetting: "outdoors", entryLevel: true, lastVerifiedAt: "2026-04-16" },
+    { id: "scuba-diving-instructor", educationRoute: "certification", entryRoute: "certification", title: "Scuba Diving Instructor", emoji: "🤿", description: "Teach recreational and technical scuba diving — open water through instructor-level courses.", avgSalary: "300,000 - 700,000 kr/year (often seasonal + resort-based)", educationPath: "PADI / SSI / SDI scuba instructor certification + dive experience", keySkills: ["scuba skills", "teaching", "safety", "equipment maintenance", "patience"], dailyTasks: ["Brief dives", "Teach students", "Supervise dives", "Maintain gear", "Certify divers"], growthOutlook: "medium", workSetting: "outdoors", lastVerifiedAt: "2026-04-16" },
+    { id: "freediving-instructor", educationRoute: "certification", entryRoute: "certification", title: "Freediving Instructor", emoji: "🐬", description: "Teach freediving — breath-hold technique, safety, and progressive depth training.", avgSalary: "300,000 - 650,000 kr/year (seasonal)", educationPath: "AIDA / Molchanovs / PADI Freediver instructor certification", keySkills: ["freediving", "teaching", "rescue skills", "physiology", "patience"], dailyTasks: ["Brief students", "Coach technique", "Supervise dives", "Run safety", "Certify students"], growthOutlook: "medium", workSetting: "outdoors", lastVerifiedAt: "2026-04-16" },
+    { id: "kitesurfing-instructor", educationRoute: "certification", entryRoute: "certification", title: "Kitesurfing Instructor", emoji: "🪁", description: "Teach kitesurfing from first lessons through advanced tricks and wave riding.", avgSalary: "300,000 - 600,000 kr/year (seasonal)", educationPath: "IKO / VDWS kitesurfing instructor certification", keySkills: ["kitesurfing", "teaching", "water safety", "weather reading", "patience"], dailyTasks: ["Teach lessons", "Rig kites", "Supervise riders", "Read weather", "Manage safety"], growthOutlook: "medium", workSetting: "outdoors", lastVerifiedAt: "2026-04-16" },
+    { id: "windsurfing-instructor", educationRoute: "certification", entryRoute: "certification", title: "Windsurfing Instructor", emoji: "🏄", description: "Teach windsurfing — beginner lessons through advanced wave and freestyle sailing.", avgSalary: "280,000 - 550,000 kr/year (seasonal)", educationPath: "VDWS / national windsurfing instructor certification", keySkills: ["windsurfing", "teaching", "water safety", "rigging", "patience"], dailyTasks: ["Teach lessons", "Rig boards", "Supervise students", "Read conditions", "Manage safety"], growthOutlook: "stable", workSetting: "outdoors", lastVerifiedAt: "2026-04-16" },
+    { id: "extreme-sports-photographer", educationRoute: "on-the-job", entryRoute: "direct-entry", title: "Extreme Sports Photographer", emoji: "📸", description: "Shoot athletes in extreme environments — slopes, cliffs, waves — for media and sponsor content.", avgSalary: "350,000 - 900,000 kr/year (freelance-heavy)", educationPath: "Photography training + extreme-sport discipline skill + portfolio", keySkills: ["photography", "sport expertise", "fitness", "editing", "storytelling"], dailyTasks: ["Plan shoots", "Shoot action", "Edit images", "Pitch editors", "Manage gear"], growthOutlook: "medium", workSetting: "outdoors", lastVerifiedAt: "2026-04-16" },
+    { id: "extreme-sports-videographer", educationRoute: "on-the-job", entryRoute: "direct-entry", title: "Extreme Sports Videographer", emoji: "🎥", description: "Film athletes in extreme environments — follow-cam, drones, cinematic edits for media and sponsors.", avgSalary: "400,000 - 1,000,000 kr/year (freelance-heavy)", educationPath: "Film / videography training + sport-specific skill + portfolio", keySkills: ["videography", "editing", "drone operation", "sport expertise", "storytelling"], dailyTasks: ["Plan shoots", "Film action", "Edit videos", "Pitch clients", "Manage gear"], growthOutlook: "high", workSetting: "outdoors", lastVerifiedAt: "2026-04-16" },
+    { id: "extreme-sports-safety-coordinator", educationRoute: "certification", entryRoute: "certification", title: "Safety Coordinator (Extreme Sports)", emoji: "🛟", description: "Own safety planning for extreme events — risk assessments, rescue teams, and contingency protocols.", avgSalary: "500,000 - 950,000 kr/year", educationPath: "Wilderness / industrial safety training + sport-specific rescue certifications", keySkills: ["risk assessment", "rescue operations", "first aid", "regulations", "communication"], dailyTasks: ["Run risk assessments", "Brief staff", "Oversee rescues", "Audit procedures", "Liaise with authorities"], growthOutlook: "medium", peopleIntensity: "high", lastVerifiedAt: "2026-04-16" },
   ],
 
   // ========================================
@@ -11845,6 +12526,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "lettings-agent",
+      educationRoute: "on-the-job",
+      entryRoute: "direct-entry",
       title: "Lettings Agent",
       emoji: "🗝️",
       description: "Match tenants with rental properties, handle viewings, references, and tenancy agreements.",
@@ -11857,6 +12540,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "property-manager",
+      educationRoute: "mixed",
+      entryRoute: "bachelor",
       title: "Property Manager",
       emoji: "🔑",
       description: "Manage day-to-day operations of residential or commercial properties, including tenants, maintenance, and finances.",
@@ -11881,6 +12566,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "mortgage-advisor",
+      educationRoute: "certification",
+      entryRoute: "certification",
       title: "Mortgage Advisor",
       emoji: "🏦",
       description: "Help clients understand and choose mortgage products that fit their needs and circumstances.",
@@ -11903,6 +12590,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "property-developer",
+      educationRoute: "mixed",
+      entryRoute: "bachelor",
       title: "Property Developer",
       emoji: "🏗️",
       description: "Buy land or buildings, plan and finance construction or renovation projects, and sell or rent them out for profit.",
@@ -11933,6 +12622,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "youth-worker",
+      educationRoute: "mixed",
+      entryRoute: "fagbrev",
       title: "Youth Worker",
       emoji: "🧑‍🤝‍🧑",
       description: "Support young people aged 11-25 through informal education, activities, and one-to-one mentoring at clubs and community centres.",
@@ -11945,6 +12636,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "family-support-worker",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Family Support Worker",
       emoji: "👨‍👩‍👧",
       description: "Work directly with families facing difficulties — offering practical help, parenting support, and links to other services.",
@@ -11990,6 +12683,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "outreach-worker",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Outreach Worker",
       emoji: "🚶",
       description: "Engage with people who don't access mainstream services — homeless people, rough sleepers, street-involved youth — and connect them to support.",
@@ -12202,6 +12897,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "carpenter",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Carpenter",
       emoji: "🪚",
       description: "Build and repair wooden structures and frameworks for buildings.",
@@ -12216,6 +12913,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "electrician",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Electrician",
       emoji: "🔌",
       description: "Install, maintain, and repair electrical systems in buildings and facilities.",
@@ -12230,6 +12929,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "plumber",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Plumber",
       emoji: "🔧",
       description: "Install and repair water, heating, and drainage systems in buildings.",
@@ -12244,6 +12945,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "bricklayer",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Bricklayer",
       emoji: "🧱",
       description: "Build walls, chimneys, and other structures from bricks, blocks, and stone using mortar and traditional craft skills.",
@@ -12258,6 +12961,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "painter-decorator",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Painter & Decorator",
       emoji: "🎨",
       description: "Prepare and paint walls, ceilings, and woodwork — and apply wallpaper and finishes — in homes and commercial buildings.",
@@ -12270,6 +12975,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "scaffolder",
+      educationRoute: "vocational",
+      entryRoute: "fagbrev",
       title: "Scaffolder",
       emoji: "🏗️",
       description: "Erect and dismantle the temporary structures that allow other tradespeople to work safely at height on construction sites.",
@@ -13706,6 +14413,7 @@ export type EntryRoute =
   | "master"            // 5-year integrated, or 3+2
   | "profesjonsstudium" // 5-6 year professional programme (medicine, law, psychology)
   | "direct-entry"      // No formal qualification required
+  | "certification"     // Professional certifications / licences + logged experience (no degree)
   | "military-academy"; // Forsvaret + dedicated academies
 
 /** Entry routes that count as "university" for the excludeUniversity filter. */

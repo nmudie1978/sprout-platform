@@ -33,7 +33,7 @@ export type EducationStage = 'school' | 'college' | 'university' | 'other';
  *                 shape and document the vocational alternative.
  *   on-the-job  — no formal qualification expected at entry.
  */
-export type CareerRoute = 'vocational' | 'university' | 'mixed' | 'on-the-job';
+export type CareerRoute = 'vocational' | 'university' | 'mixed' | 'certification' | 'on-the-job';
 
 function id(): string {
   return `fb-${Math.random().toString(36).slice(2, 9)}`;
@@ -174,6 +174,11 @@ export function generateFallbackTimeline(
     stage === 'school' &&
     (careerRoute === 'vocational' || careerRoute === 'mixed');
 
+  // Certification-led careers (scuba instructor, PT, ski instructor, …) follow
+  // a certification ladder rather than school/university — regardless of the
+  // user's stage. You qualify via professional certs + logged experience.
+  const useCertificationLadder = careerRoute === 'certification';
+
   // Try to extract a 4-digit year from the user's expected-completion
   // string ("June 2027", "2027", "Spring 2027" all work). If we have one,
   // we'll use it later to shift the first post-foundation step so it
@@ -190,7 +195,81 @@ export function generateFallbackTimeline(
   // "you are here = today" rather than pretending there's a gap.
   let items: JourneyItem[];
 
-  if (useVocationalSchoolLadder) {
+  if (useCertificationLadder) {
+    // Certification ladder: get certified → log experience + higher certs →
+    // first paid role → senior/own studio. Anchored to the user's current age;
+    // no degree or fagbrev step. buildCertificationItems handles the cert tier
+    // (real cert data when we have it, a sensible generic step otherwise).
+    const advCertAge = a + 1;
+    const firstRoleAge = a + 2;
+    const seniorAge = a + 6;
+    items = [
+      {
+        id: id(),
+        stage: 'certification',
+        title: 'Earn your entry certification',
+        subtitle: 'Your first credential',
+        startAge: a,
+        endAge: a,
+        isMilestone: false,
+        icon: 'Award',
+        description: `Start with the foundational certification or licence for ${career} — usually a short course plus an assessment. This is your entry ticket; no degree required.`,
+        microActions: [
+          'Find the recognised certifying body for this field',
+          'Book the entry-level course',
+          'Pass the assessment',
+        ],
+      },
+      {
+        id: id(),
+        stage: 'certification',
+        title: 'Stack higher certifications + log experience',
+        subtitle: 'Level up your ratings',
+        startAge: advCertAge,
+        endAge: firstRoleAge,
+        isMilestone: true,
+        icon: 'Award',
+        description: `Take higher certifications or ratings while logging real hands-on hours — the combination of credentials and experience is what qualifies you for ${career}.`,
+        microActions: [
+          'Log supervised practice hours',
+          'Take the next certification level',
+          'Find a mentor already working in the field',
+        ],
+      },
+      {
+        id: id(),
+        stage: 'experience',
+        title: `Land your first ${career} role`,
+        subtitle: 'Paid work with your certifications',
+        startAge: firstRoleAge,
+        endAge: firstRoleAge,
+        isMilestone: true,
+        icon: 'Briefcase',
+        description: `With your core certifications and logged experience, you can take on paid ${career} work — at a centre, club, or operator, or freelance.`,
+        microActions: [
+          'Build a logbook / portfolio of your experience',
+          'Apply to centres, clubs, or operators in your area',
+          'Get to know the local scene and its hiring patterns',
+        ],
+      },
+      {
+        id: id(),
+        stage: 'career',
+        title: 'Grow into a senior or lead role',
+        subtitle: 'Lead, specialise, or run your own',
+        startAge: seniorAge,
+        endAge: seniorAge,
+        isMilestone: true,
+        icon: 'Target',
+        description: `Experienced ${career}s move into lead or trainer roles, specialise in a niche, or set up their own studio, school, or business.`,
+        microActions: [
+          'Mentor or train newer practitioners',
+          'Specialise in a high-demand niche',
+          'Consider running your own studio or operation',
+        ],
+      },
+    ];
+  } else if (useVocationalSchoolLadder) {
     // Norwegian yrkesfag / fagbrev (2+2) ladder for a student still in
     // upper secondary who wants a vocational career. Ages line up:
     //   16 — Vg1 vocational foundation
