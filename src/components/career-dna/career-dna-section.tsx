@@ -15,7 +15,15 @@ import { getCareerDNA } from '@/lib/career-dna';
 import { DNAStrand } from './dna-strand';
 import { CareerDNAModal } from './career-dna-modal';
 
-export function CareerDNASection({ career }: { career: Career | null }) {
+export function CareerDNASection({
+  career,
+  variant = 'bar',
+}: {
+  career: Career | null;
+  /** 'bar' = full-width premium row (default); 'card' = compact quick-insight
+   *  card that fits a grid cell (used in the Discover insights row). */
+  variant?: 'bar' | 'card';
+}) {
   const [open, setOpen] = useState(false);
   const previewTraits = useMemo(
     () => (career ? getCareerDNA(career).traits : []),
@@ -23,6 +31,35 @@ export function CareerDNASection({ career }: { career: Career | null }) {
   );
 
   if (!career) return null;
+
+  // Compact card — mirrors the sibling "Where you'll work" quick-insight card,
+  // but clickable (opens the DNA modal). Used where TIMELINE used to sit.
+  if (variant === 'card') {
+    return (
+      <>
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          aria-haspopup="dialog"
+          className="group flex h-full w-full flex-col rounded-card border border-border bg-card/50 p-4 text-left transition-colors hover:border-primary/40 hover:bg-primary/[0.03] focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
+          <span className="mb-2 flex items-center gap-2">
+            <Dna className="h-3.5 w-3.5 text-primary" />
+            <span className="text-xs font-semibold uppercase tracking-wider text-primary">Career DNA</span>
+          </span>
+          <span className="text-xs leading-relaxed text-foreground/70">
+            See what this career is made of — its traits, strengths, pressures, and working style.
+          </span>
+          <span className="mt-2 inline-flex items-center gap-1 text-xs font-medium text-primary">
+            Explore Career DNA
+            <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+          </span>
+        </button>
+
+        <CareerDNAModal career={career} open={open} onOpenChange={setOpen} />
+      </>
+    );
+  }
 
   return (
     <>
