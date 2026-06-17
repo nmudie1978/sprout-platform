@@ -171,7 +171,7 @@ function Stone({
           // Empty foundation — guidance prompt (the stone also glows).
           // Disappears once the user saves their details (glow → false).
           <p className="mt-0.5 text-[11px] font-medium leading-snug text-teal-600 dark:text-teal-300">
-            Tap to add your school &amp; subjects — it tailors your roadmap.
+            Tap to add your starting point — it tailors your roadmap.
           </p>
         ) : item.subtitle ? (
           <p

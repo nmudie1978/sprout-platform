@@ -255,7 +255,7 @@ export function TimelineDetailDialog({
   const [saving, setSaving] = useState(false);
 
   // Foundation-specific education fields
-  const [eduStage, setEduStage] = useState<'school' | 'college' | 'university' | 'other'>('school');
+  const [eduStage, setEduStage] = useState<'school' | 'college' | 'university' | 'other' | 'between'>('school');
   /**
    * Sensible default finish year given the user's age + chosen stage.
    * Used to pre-fill the dropdown and avoid anomalies like a 17-year-old
@@ -268,8 +268,10 @@ export function TimelineDetailDialog({
    */
   const defaultFinishYearFor = (
     age: number | null,
-    stage: 'school' | 'college' | 'university' | 'other',
+    stage: 'school' | 'college' | 'university' | 'other' | 'between',
   ): string => {
+    // Not-working users aren't in a programme, so there's no finish year.
+    if (stage === 'between') return '';
     if (typeof age !== 'number') return '';
     const thisYear = new Date().getFullYear();
     let targetAge: number;
@@ -486,22 +488,38 @@ export function TimelineDetailDialog({
                   re-pick a stage. */}
               {(() => {
                 const isAdult = typeof userAge === 'number' && userAge >= 18;
+                // Over ~35 the youth education stages (Vg3 "School" + 2-year
+                // "College") are implausible and read as insulting, so we drop
+                // them: an older user's honest starting points are Working,
+                // University (mature/retraining students exist), or not working.
+                const isOlderAdult = typeof userAge === 'number' && userAge >= 35;
 
-                // Always offer ALL four stages so the user can freely change
-                // their starting point at any time — including after they've
-                // already saved details. Order is age-aware: adults see
-                // University first (most common), under-18s / unknown age see
-                // School first.
-                const orderedOptions = isAdult
+                // "Not working right now" is offered to everyone — a gap year,
+                // between jobs, or a mid-life pause all need an honest option
+                // (previously a non-working user was forced to pick "Working").
+                const notWorking = { value: 'between' as const, label: 'Not working right now' };
+
+                // Order is age-aware. 35+: Working · University · Not working.
+                // 18–34: University first (most common), then the rest + Not
+                // working. Under-18 / unknown: School-first youth set + Not
+                // working.
+                const orderedOptions = isOlderAdult
                   ? [
                       { value: 'other' as const, label: 'Working' },
                       { value: 'university' as const, label: 'University' },
-                      { value: 'college' as const, label: 'College' },
-                      { value: 'school' as const, label: 'School' },
+                      notWorking,
                     ]
-                  : STAGE_OPTIONS;
+                  : isAdult
+                    ? [
+                        { value: 'other' as const, label: 'Working' },
+                        { value: 'university' as const, label: 'University' },
+                        { value: 'college' as const, label: 'College' },
+                        { value: 'school' as const, label: 'School' },
+                        notWorking,
+                      ]
+                    : [...STAGE_OPTIONS, notWorking];
                 return (
-                  <div className="flex gap-1.5">
+                  <div className="flex flex-wrap gap-1.5">
                     {orderedOptions.map(opt => {
                       const isSchoolForAdult = isAdult && opt.value === 'school';
                       return (
@@ -556,6 +574,12 @@ export function TimelineDetailDialog({
                     Your current role or field — we&rsquo;ll build a roadmap that moves you from here into your goal, using what you already bring.
                   </p>
                 </div>
+              ) : eduStage === 'between' ? (
+                <p className="text-[11px] text-muted-foreground/70 leading-snug">
+                  No problem — we&rsquo;ll build your roadmap from your experience
+                  and strengths. Just set your goal and we&rsquo;ll map the steps
+                  from here.
+                </p>
               ) : (
                 <div>
                   <label className="text-[10px] text-muted-foreground/70 uppercase tracking-wider">
@@ -570,8 +594,8 @@ export function TimelineDetailDialog({
                 </div>
               )}
 
-              {/* Study programme — only shown for college/university, not school or working */}
-              {eduStage !== 'school' && eduStage !== 'other' && (
+              {/* Study programme — only shown for college/university, not school, working, or not-working */}
+              {eduStage !== 'school' && eduStage !== 'other' && eduStage !== 'between' && (
                 <div>
                   <label className="text-[10px] text-muted-foreground/70 uppercase tracking-wider">
                     Study programme
@@ -585,7 +609,7 @@ export function TimelineDetailDialog({
                 </div>
               )}
 
-              {eduStage !== 'other' && (
+              {eduStage !== 'other' && eduStage !== 'between' && (
                 <>
               {/* Expected completion year — drives roadmap anchoring */}
               <div>

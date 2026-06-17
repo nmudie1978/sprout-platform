@@ -522,7 +522,7 @@ function RoadCard({
         // Empty foundation — guidance prompt (the card also glows). Disappears
         // automatically once the user saves their details (glow → false).
         <p className="mt-1 text-[10px] font-medium leading-snug text-teal-600 dark:text-teal-300">
-          Tap to add your school &amp; subjects — it tailors your whole roadmap.
+          Tap to add your starting point — it tailors your whole roadmap.
         </p>
       ) : item.subtitle ? (
         <p

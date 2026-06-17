@@ -48,6 +48,11 @@ const FOUNDATION_MICRO_ACTIONS: Record<EducationContext['stage'], string[]> = {
     'Build evidence of relevant skills — a portfolio or short courses',
     'Research the qualification or experience the next step needs',
   ],
+  between: [
+    'Identify what employers actually require to get in',
+    'Map the transferable skills your past experience already gives you',
+    'Build momentum with a short course or qualification the next step needs',
+  ],
 };
 
 interface UseFoundationDataOptions {
@@ -104,7 +109,9 @@ export function useFoundationData({
       ? 'Tap to add details'
       : eduContext.stage === 'other'
         ? (eduContext.currentRole ? `Currently: ${eduContext.currentRole}` : 'Working / exploring a change')
-        : `${EDUCATION_STAGE_CONFIG[eduContext.stage].label}${eduContext.schoolName ? ` · ${eduContext.schoolName}` : ''}`,
+        : eduContext.stage === 'between'
+          ? 'Not working right now'
+          : `${EDUCATION_STAGE_CONFIG[eduContext.stage].label}${eduContext.schoolName ? ` · ${eduContext.schoolName}` : ''}`,
     startAge: userAge ?? journeyStartAge,
     isMilestone: false,
     icon: 'Target',
@@ -112,7 +119,9 @@ export function useFoundationData({
       ? 'Where you are today. Tap to add details about your current situation.'
       : eduContext.stage === 'other'
         ? `${eduContext.currentRole ? `You currently work as ${eduContext.currentRole}. ` : 'You\'re working or exploring a change. '}Your roadmap builds from here toward your goal, using the experience you already bring.`
-        : `Your current education: ${EDUCATION_STAGE_CONFIG[eduContext.stage].label}.${eduContext.studyProgram ? ` Studying ${eduContext.studyProgram}.` : ''}${eduContext.expectedCompletion ? ` Finishing ${eduContext.expectedCompletion}.` : ''} This is your starting point — everything builds from here.`,
+        : eduContext.stage === 'between'
+          ? "You're not working right now — that's your starting point. Your roadmap builds from here toward your goal, drawing on the experience and strengths you already bring."
+          : `Your current education: ${EDUCATION_STAGE_CONFIG[eduContext.stage].label}.${eduContext.studyProgram ? ` Studying ${eduContext.studyProgram}.` : ''}${eduContext.expectedCompletion ? ` Finishing ${eduContext.expectedCompletion}.` : ''} This is your starting point — everything builds from here.`,
     microActions: FOUNDATION_MICRO_ACTIONS[eduContext?.stage ?? 'school'],
   }), [eduContext, userAge, journeyStartAge]);
 
@@ -130,7 +139,12 @@ export function useFoundationData({
     !eduContext ||
     (!eduContext.schoolName?.trim() &&
       foundationSubjects.length === 0 &&
-      !eduContext.studyProgram?.trim());
+      !eduContext.studyProgram?.trim() &&
+      // Working / career-changer users fill in their current role instead of
+      // school details — that counts as "filled" too, so the glow + "tap to
+      // add" prompt clears for them (was the bug: a saved role still read as
+      // empty because only school fields were checked).
+      !eduContext.currentRole?.trim());
 
   return { eduContext, subjectHint, foundationItem, foundationEmpty, foundationSubjects };
 }
