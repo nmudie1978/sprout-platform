@@ -21,7 +21,7 @@
     --primary-foreground: 0 0% 100%;
     --secondary: 189 30% 90%;           /* secondary pale-teal surface */
     --secondary-foreground: 200 30% 18%;
-    --muted: 189 30% 90%;               /* muted pale-teal surface */
+    --muted: 188 38% 81%;               /* nested/sunken surface — a clear step DARKER than --card so sub-panels read below their parent */
     --muted-foreground: 200 12% 40%;    /* calm secondary text; faint /50–/40 variants stay legible */
     --accent: 40 61% 57%;               /* #D4A84F — soft achievement gold highlight (retained) */
     --accent-foreground: 30 30% 18%;    /* warm ink — reads on the gold accent */
@@ -246,14 +246,18 @@
      (Nimvelo sky gradient) it reads as smudged and bleeds the
      gradient through, breaking text contrast.
      Force every `bg-card/X`, `bg-background/X`, `bg-muted/X`,
-     `bg-popover/X` variant to the solid card/muted fill in light
-     mode. Dark mode keeps the translucent glass effect. */
+     `bg-popover/X` variant to a solid fill in light mode. Dark mode keeps
+     the translucent glass effect.
+
+     HIERARCHY: solid `bg-card` (outer section cards, e.g. GlassCard) stays at
+     --card. The ALPHA variants are what nested sub-panels use (SectionCard's
+     bg-card/50, list strips' bg-muted/10, salary tiles, etc.), so we route
+     them to the DARKER --muted tone — giving nested sections a clear "one
+     step down" depth from their parent card. */
   :root:not(.dark) [class*="bg-card/"],
   :root:not(.dark) [class*="bg-background/"],
   :root:not(.dark) [class*="bg-popover/"],
-  :root:not(.dark) [class*="bg-secondary/"] {
-    background-color: hsl(var(--card));
-  }
+  :root:not(.dark) [class*="bg-secondary/"],
   :root:not(.dark) [class*="bg-muted/"] {
     background-color: hsl(var(--muted));
   }
