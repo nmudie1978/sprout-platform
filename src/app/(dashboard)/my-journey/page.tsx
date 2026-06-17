@@ -3148,10 +3148,10 @@ export default function MyJourneyPage() {
   const [goalSheetOpen, setGoalSheetOpen] = useState(false);
 
 
-  const tabs: { id: V2Tab; label: string; subtitle: string; icon: typeof Search; color: string; glow: string; tooltip: string; lockedTooltip: string }[] = [
-    { id: 'discover', label: t('journey.discover.label'), subtitle: t('journey.discover.subtitle'), icon: Search, color: 'text-teal-400', glow: 'rgba(20,184,166,0.25)', tooltip: t('journey.discover.tooltip'), lockedTooltip: '' },
-    { id: 'understand', label: t('journey.understand.label'), subtitle: t('journey.understand.subtitle'), icon: Globe, color: 'text-blue-400', glow: 'rgba(59,130,246,0.25)', tooltip: t('journey.understand.tooltip'), lockedTooltip: t('journey.understand.lockedTooltip') },
-    { id: 'clarity', label: t('journey.clarity.label'), subtitle: t('journey.clarity.subtitle'), icon: Rocket, color: 'text-orange-500', glow: 'rgba(234,88,12,0.3)', tooltip: t('journey.clarity.tooltip'), lockedTooltip: t('journey.clarity.lockedTooltip') },
+  const tabs: { id: V2Tab; label: string; subtitle: string; icon: typeof Search; color: string; rgb: string; tooltip: string; lockedTooltip: string }[] = [
+    { id: 'discover', label: t('journey.discover.label'), subtitle: t('journey.discover.subtitle'), icon: Search, color: 'text-teal-400', rgb: '13,148,136', tooltip: t('journey.discover.tooltip'), lockedTooltip: '' },
+    { id: 'understand', label: t('journey.understand.label'), subtitle: t('journey.understand.subtitle'), icon: Globe, color: 'text-blue-400', rgb: '37,99,235', tooltip: t('journey.understand.tooltip'), lockedTooltip: t('journey.understand.lockedTooltip') },
+    { id: 'clarity', label: t('journey.clarity.label'), subtitle: t('journey.clarity.subtitle'), icon: Rocket, color: 'text-orange-500', rgb: '234,88,12', tooltip: t('journey.clarity.tooltip'), lockedTooltip: t('journey.clarity.lockedTooltip') },
   ];
 
   // While goals are loading, show a skeleton to avoid flashing the onboarding
@@ -3298,12 +3298,18 @@ export default function MyJourneyPage() {
                     ? 'border-border/20 bg-muted/10 cursor-not-allowed opacity-55'
                     : isActive
                       ? 'border-transparent'
-                      : 'border-border/40 hover:border-border/60 hover:bg-muted/20',
+                      // Inactive tabs are now clearly-bordered cards (not faint
+                      // ghosts): a visible border + a subtle fill, with a teal
+                      // hint on hover so they read as tappable.
+                      : 'border-border bg-card/60 hover:border-primary/60 hover:bg-card/80',
                 )}
                 style={isActive && !locked ? {
-                  boxShadow: `0 0 20px ${tab.glow}, 0 0 40px ${tab.glow.replace('0.25', '0.1')}, inset 0 1px 0 rgba(255,255,255,0.05)`,
-                  border: `1px solid ${tab.glow.replace('0.25', '0.4')}`,
-                  background: `linear-gradient(180deg, ${tab.glow.replace('0.25', '0.08')} 0%, transparent 100%)`,
+                  // Bold, unmistakable active state: a 2px coloured ring + a
+                  // strong outer glow + a tinted fill, all from the tab's own
+                  // colour. Composed from an rgb base so every tab pops equally.
+                  boxShadow: `0 0 0 2px rgba(${tab.rgb},0.85), 0 0 18px rgba(${tab.rgb},0.5), 0 8px 22px rgba(${tab.rgb},0.22)`,
+                  border: `2px solid rgba(${tab.rgb},0.9)`,
+                  background: `linear-gradient(180deg, rgba(${tab.rgb},0.18) 0%, rgba(${tab.rgb},0.06) 100%)`,
                 } : undefined}
               >
                 <div className="flex items-center gap-2 mb-0.5">
