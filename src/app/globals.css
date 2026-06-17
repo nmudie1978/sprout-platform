@@ -1095,33 +1095,16 @@
     pointer-events: none;
   }
 
-  /* "Continue your journey" CTA — a calm band of light sweeps left→right
-     across the label every few seconds, an inviting "come back in" pulse.
-     Done as a clipped text gradient so only the glyphs shimmer; the icons
-     beside it keep their solid primary colour. On-brand: the highlight is
-     just a lightened mix of the primary teal, no harsh white flash. */
-  @keyframes journey-cta-sheen {
-    0%   { background-position: 160% 0; }
-    /* hold at rest most of the cycle, then sweep — feels like a heartbeat,
-       not a constant scanner. */
-    55%  { background-position: 160% 0; }
-    100% { background-position: -60% 0; }
+  /* "Continue your journey" CTA — the label simply pulses (a gentle fade in
+     and out) to invite the user back in. Plain opacity, no gradient/clip
+     tricks, so the words never get cut off. The icons beside it sit outside
+     this span and stay solid. */
+  @keyframes journey-cta-pulse {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0.5; }
   }
   .journey-cta-shimmer {
-    background-image: linear-gradient(
-      100deg,
-      hsl(var(--primary)) 0%,
-      hsl(var(--primary)) 38%,
-      color-mix(in srgb, hsl(var(--primary)) 35%, white) 50%,
-      hsl(var(--primary)) 62%,
-      hsl(var(--primary)) 100%
-    );
-    background-size: 250% 100%;
-    background-repeat: no-repeat;
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    animation: journey-cta-sheen 3.6s ease-in-out infinite;
+    animation: journey-cta-pulse 2.2s ease-in-out infinite;
   }
 
 }
@@ -1148,13 +1131,9 @@
     animation: none !important;
     opacity: 0;
   }
-  /* The CTA sheen is decorative — hold it still and restore a solid fill so
-     the label stays fully legible for reduced-motion users. */
+  /* The CTA pulse is decorative — hold the label fully opaque (still). */
   .journey-cta-shimmer {
     animation: none !important;
-    -webkit-background-clip: border-box;
-    background-clip: border-box;
-    background-image: none;
-    color: hsl(var(--primary));
+    opacity: 1 !important;
   }
 }
