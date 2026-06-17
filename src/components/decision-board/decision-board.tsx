@@ -5,23 +5,8 @@ import { buildDecisionBoard } from "@/lib/decision-board/build";
 import type { DecisionRow } from "@/lib/decision-board/types";
 import { useDecisionInputs } from "@/hooks/use-decision-inputs";
 import { useDecisionBoard } from "@/hooks/use-decision-board";
-import { DecisionRowView, DB_ROW_GRID } from "./decision-row";
-
-/** Column header — mirrors DB_ROW_GRID so labels sit over their columns. */
-function BoardHeader() {
-  return (
-    <div
-      className={`${DB_ROW_GRID} rounded-t-card border border-b-0 border-border/60 bg-foreground/[0.06] py-1.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/70 dark:bg-muted/30`}
-    >
-      <span className="text-center">#</span>
-      <span>Career</span>
-      <span className="md:text-center">Rating</span>
-      <span className="hidden text-center md:block">Status</span>
-      <span className="hidden text-right md:block">Salary</span>
-      <span className="text-right">{/* actions */}</span>
-    </div>
-  );
-}
+import { parseSalaryRangeK } from "@/lib/salary-progression";
+import { DecisionRowView, type SalaryDomain } from "./decision-row";
 
 const STAGE_LABEL = ["Not started", "Discover", "Understand", "Complete"];
 
@@ -47,12 +32,20 @@ export function DecisionBoardTab() {
   // journeys to load first so we don't flash the empty state at returning users.
   if (userId && !isLoading && inputs.length < 2) {
     return (
-      <div className="rounded-card border border-border/60 bg-muted/10 px-4 py-8 text-center text-sm text-muted-foreground/70">
+      <div className="mx-auto max-w-3xl rounded-card border border-border/60 bg-muted/10 px-4 py-8 text-center text-sm text-muted-foreground/70">
         Explore a couple of careers and they&apos;ll start stacking up here — ranked by how
         much each one pulls at you.
       </div>
     );
   }
+
+  // One shared pay scale across every card, so the range bars are comparable.
+  const bands = [...ranked, ...ruledOut]
+    .map((r) => parseSalaryRangeK(getCareerById(r.careerId)?.avgSalary))
+    .filter((b): b is SalaryDomain => !!b);
+  const salaryDomain: SalaryDomain | undefined = bands.length
+    ? { minK: Math.min(...bands.map((b) => b.minK)), maxK: Math.max(...bands.map((b) => b.maxK)) }
+    : undefined;
 
   const toggle = (id: string) =>
     setExpanded((prev) => {
@@ -100,74 +93,71 @@ export function DecisionBoardTab() {
   const resetToSuggested = () => save({ order: [], ruledOut: board.ruledOut });
 
   return (
-    <div className="space-y-4">
+    <div className="mx-auto max-w-3xl space-y-4">
       {/* Lean headline — the synthesis */}
       {leader && (
-        <div className="rounded-card border border-primary/30 bg-primary/5 px-4 py-3">
-          <p className="text-sm text-foreground/90">
-            You&apos;ve explored {ranked.length} {ranked.length === 1 ? "career" : "careers"} —
-            you&apos;re leaning{" "}
-            <span className="font-semibold">
-              {leader.emoji} {leader.title}
-            </span>
-          </p>
-          {leadReason(leader) && (
-            <p className="mt-0.5 text-xs text-muted-foreground/70">{leadReason(leader)}</p>
-          )}
+        <div className="flex items-center gap-3 rounded-card border border-primary/25 bg-primary/[0.06] px-4 py-3">
+          <span className="shrink-0 text-2xl leading-none">{leader.emoji}</span>
+          <div className="min-w-0">
+            <p className="text-sm text-foreground/90">
+              You&apos;re leaning{" "}
+              <span className="font-semibold text-foreground">{leader.title}</span>
+            </p>
+            <p className="mt-0.5 text-xs text-muted-foreground/70">
+              {ranked.length} {ranked.length === 1 ? "career" : "careers"} explored
+              {leadReason(leader) ? ` · ${leadReason(leader)}` : ""}
+            </p>
+          </div>
         </div>
       )}
 
-      {/* Standings — structured table (header + bordered body), mirroring the
-          Explore Careers list view. */}
+      {/* Standings — a calm stack of ranked cards */}
       {ranked.length > 0 && (
-        <div>
-          <BoardHeader />
-          <div className="overflow-hidden rounded-b-card border border-border/60 bg-card/40">
-            {ranked.map((row, i) => (
-              <div
-                key={row.careerId}
-                draggable
-                onDragStart={() => setDragId(row.careerId)}
-                onDragOver={(e) => e.preventDefault()}
-                onDrop={() => onDrop(row.careerId)}
-              >
-                <DecisionRowView
-                  row={row}
-                  career={getCareerById(row.careerId)}
-                  stageLabel={STAGE_LABEL[row.progress] ?? ""}
-                  reflections={reflections[row.careerId] ?? []}
-                  expanded={expanded.has(row.careerId)}
-                  onToggle={() => toggle(row.careerId)}
-                  onUp={i > 0 ? () => move(i, -1) : undefined}
-                  onDown={i < ranked.length - 1 ? () => move(i, 1) : undefined}
-                  onRelegate={() => relegate(row.careerId)}
-                />
-              </div>
-            ))}
-          </div>
+        <div className="space-y-2">
+          {ranked.map((row, i) => (
+            <div
+              key={row.careerId}
+              draggable
+              onDragStart={() => setDragId(row.careerId)}
+              onDragOver={(e) => e.preventDefault()}
+              onDrop={() => onDrop(row.careerId)}
+            >
+              <DecisionRowView
+                row={row}
+                career={getCareerById(row.careerId)}
+                stageLabel={STAGE_LABEL[row.progress] ?? ""}
+                reflections={reflections[row.careerId] ?? []}
+                salaryDomain={salaryDomain}
+                expanded={expanded.has(row.careerId)}
+                onToggle={() => toggle(row.careerId)}
+                onUp={i > 0 ? () => move(i, -1) : undefined}
+                onDown={i < ranked.length - 1 ? () => move(i, 1) : undefined}
+                onRelegate={() => relegate(row.careerId)}
+              />
+            </div>
+          ))}
         </div>
       )}
 
       {/* Out of the running */}
       {ruledOut.length > 0 && (
-        <div className="space-y-1.5">
+        <div className="space-y-2">
           <p className="text-center text-[10px] uppercase tracking-wide text-muted-foreground/70">
             Out of the running
           </p>
-          <div className="overflow-hidden rounded-card border border-border/60 bg-card/40">
-            {ruledOut.map((row) => (
-              <DecisionRowView
-                key={row.careerId}
-                row={row}
-                career={getCareerById(row.careerId)}
-                stageLabel={STAGE_LABEL[row.progress] ?? ""}
-                reflections={reflections[row.careerId] ?? []}
-                expanded={expanded.has(row.careerId)}
-                onToggle={() => toggle(row.careerId)}
-                onRestore={() => restore(row.careerId)}
-              />
-            ))}
-          </div>
+          {ruledOut.map((row) => (
+            <DecisionRowView
+              key={row.careerId}
+              row={row}
+              career={getCareerById(row.careerId)}
+              stageLabel={STAGE_LABEL[row.progress] ?? ""}
+              reflections={reflections[row.careerId] ?? []}
+              salaryDomain={salaryDomain}
+              expanded={expanded.has(row.careerId)}
+              onToggle={() => toggle(row.careerId)}
+              onRestore={() => restore(row.careerId)}
+            />
+          ))}
         </div>
       )}
 
