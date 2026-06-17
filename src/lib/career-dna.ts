@@ -11,6 +11,7 @@
  */
 
 import { inferEducationRoute, type Career } from '@/lib/career-pathways';
+import { DNA_TRAIT_OVERRIDES } from '@/lib/career-dna-overrides.generated';
 import type {
   CareerDNAProfile,
   CareerDNATrait,
@@ -262,6 +263,18 @@ export function deriveCareerDNA(career: Career): CareerDNAProfile {
     'education-length': education,
     independence: clamp(independence),
   };
+
+  // Apply AI-verified accuracy corrections on top of the heuristic scores, so
+  // the displayed DNA (and the genes/snapshot derived from it below) reflect
+  // the confirmed values. income-potential & education-length are never
+  // overridden — they're computed from salary/education data.
+  const overrides = DNA_TRAIT_OVERRIDES[career.id];
+  if (overrides) {
+    for (const key of Object.keys(overrides) as CareerDNATraitId[]) {
+      const v = overrides[key];
+      if (typeof v === 'number') scores[key] = clamp(v);
+    }
+  }
 
   return {
     careerId: career.id,
