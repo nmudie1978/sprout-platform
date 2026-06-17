@@ -40,11 +40,15 @@ function CareerRadarPageContent() {
   const discoveryPreferences: DiscoveryPreferences | null =
     (profileData?.discoveryPreferences as DiscoveryPreferences) || null;
 
-  // Spotlight — guides new users to "What I like" / "Start Discovery"
+  // Spotlight — guides new users to "What I like" / "Start Discovery", but
+  // only once they've sat idle on the radar for 20s (no taps, keys, or
+  // scrolling). An engaged user exploring the radar never sees it; it's a
+  // gentle nudge for someone who seems stuck. useSubtleHint resets its timer
+  // on every interaction, so the 20s is true inactivity.
   const radarHint = useSubtleHint({
     hintKey: "radar-spotlight",
     enabled: isYouth && !profileLoading,
-    delayMs: 2000,
+    delayMs: 20000,
     durationMs: 4000,
   });
 
