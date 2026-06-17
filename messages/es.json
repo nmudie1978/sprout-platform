@@ -87,7 +87,9 @@
       "resume": "Continúa tu camino",
       "explore": "Explorar carreras"
     },
-    "dismiss": "Cerrar"
+    "dismiss": "Cerrar",
+    "continueResume": "Continúa donde lo dejaste",
+    "continueExplore": "Sigue explorando"
   },
   "dashboard": {
     "pageContext": "Un resumen de tus recorridos, tu actividad y el contenido que has guardado.",

@@ -87,7 +87,9 @@
       "resume": "Fortsett reisen din",
       "explore": "Utforsk karrierer"
     },
-    "dismiss": "Lukk"
+    "dismiss": "Lukk",
+    "continueResume": "Fortsett der du slapp",
+    "continueExplore": "Fortsett å utforske"
   },
   "dashboard": {
     "pageContext": "Et overblikk over reisene, aktiviteten og det lagrede innholdet ditt.",
