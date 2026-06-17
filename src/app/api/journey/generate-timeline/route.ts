@@ -162,13 +162,21 @@ export async function POST(req: NextRequest) {
       return match ? match[1] : 'none';
     })();
 
+    // Current-role cache segment. A working career-changer's roadmap is
+    // anchored to "what they do now" (see the transition prompt below), so the
+    // role MUST be part of the cache identity — otherwise editing the role on
+    // the Foundation card returns the stale roadmap built from the old role.
+    const roleKey = currentRole
+      ? currentRole.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '').slice(0, 40)
+      : 'none';
+
     // Check per-user cache first — must match career, age, stage,
     // foundation completion, expected finish year AND version. The
     // version stamp invalidates old cached timelines when roadmap
     // rules change (currently v2 = no-university-before-18).
     const ROADMAP_CACHE_VERSION = 'v4';
     if (profile?.generatedTimeline) {
-      const cached = profile.generatedTimeline as { version?: string; career?: string; stage?: string; complete?: string; finish?: string; journey?: Journey };
+      const cached = profile.generatedTimeline as { version?: string; career?: string; stage?: string; complete?: string; finish?: string; role?: string; journey?: Journey };
       if (
         (cached.version ?? 'v1') === ROADMAP_CACHE_VERSION &&
         cached.career?.toLowerCase() === career.toLowerCase() &&
@@ -176,7 +184,8 @@ export async function POST(req: NextRequest) {
         cached.journey.startAge === userAge &&
         (cached.stage ?? 'default') === stageKey &&
         (cached.complete ?? 'open') === completeKey &&
-        (cached.finish ?? 'none') === finishYearKey
+        (cached.finish ?? 'none') === finishYearKey &&
+        (cached.role ?? '') === currentRole
       ) {
         return NextResponse.json({ journey: cached.journey, cached: true });
       }
@@ -187,17 +196,19 @@ export async function POST(req: NextRequest) {
     // (e.g. v2 = no-university-before-18 enforcement). Bump on rule changes
     // that alter timeline shape in ways the client sanitiser cannot fix
     // retroactively.
-    const globalCacheKey = `timeline:v4:${career.toLowerCase().trim()}:age${userAge}:stage${stageKey}:${completeKey}:finish${finishYearKey}`;
+    const globalCacheKey = `timeline:v4:${career.toLowerCase().trim()}:age${userAge}:stage${stageKey}:${completeKey}:finish${finishYearKey}:role${roleKey}`;
     try {
       const globalCached = await prisma.videoCache.findUnique({ where: { cacheKey: globalCacheKey } });
       if (globalCached && globalCached.expiresAt > new Date()) {
         const cachedData = globalCached.data as Record<string, unknown> | null;
         const cachedJourney = (cachedData as { journey?: Journey })?.journey;
         if (cachedJourney) {
-          // Save to per-user cache too (non-blocking)
+          // Save to per-user cache too (non-blocking). Stamp the full cache
+          // identity (version + stage/complete/finish/role) so the per-user
+          // read above validates on the next request instead of always missing.
           prisma.youthProfile.update({
             where: { userId: session.user.id },
-            data: { generatedTimeline: JSON.parse(JSON.stringify({ career, generatedAt: new Date().toISOString(), journey: cachedJourney })) },
+            data: { generatedTimeline: JSON.parse(JSON.stringify({ version: ROADMAP_CACHE_VERSION, career, stage: stageKey, complete: completeKey, finish: finishYearKey, role: currentRole, generatedAt: new Date().toISOString(), journey: cachedJourney })) },
           }).catch(logAndSwallow("timeline:perUserCache:hit"));
           return NextResponse.json({ journey: cachedJourney, cached: true });
         }
@@ -346,7 +357,7 @@ export async function POST(req: NextRequest) {
     // Cache result (non-blocking) — stamp the version, stage,
     // completion AND finish year so future requests cleanly miss the
     // cache when any of them changes.
-    const cacheData = JSON.parse(JSON.stringify({ version: ROADMAP_CACHE_VERSION, career, stage: stageKey, complete: completeKey, finish: finishYearKey, generatedAt: new Date().toISOString(), journey }));
+    const cacheData = JSON.parse(JSON.stringify({ version: ROADMAP_CACHE_VERSION, career, stage: stageKey, complete: completeKey, finish: finishYearKey, role: currentRole, generatedAt: new Date().toISOString(), journey }));
     prisma.youthProfile.update({
       where: { userId: session.user.id },
       data: { generatedTimeline: cacheData },
