@@ -1,5 +1,5 @@
 "use client";
-import { ChevronUp, ChevronDown, MoreVertical, X, Undo2, FileText, GripVertical } from "lucide-react";
+import { ChevronUp, ChevronDown, MoreVertical, X, Undo2, FileText, GripVertical, Crown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { InterestLevelStars } from "@/components/interest-level/interest-level-rating";
 import {
@@ -17,20 +17,22 @@ import type { Career } from "@/lib/career-pathways";
  *  range bar on a shared scale so two careers compare at a glance. */
 export type SalaryDomain = { minK: number; maxK: number };
 
-/** A slim range bar showing this career's pay band within the board's overall
- *  span. Pure visual aid — the exact figures sit just above it. */
+/** A slim left-anchored bar comparing this career's typical pay against the
+ *  board's highest. Longer = pays more. Left-anchored (not a floating range
+ *  segment) so it always reads as a normal fill, never a disconnected bar.
+ *  Pure visual aid — the exact figures sit just above it. */
 function SalaryBar({ band, domain }: { band: SalaryDomain; domain: SalaryDomain }) {
-  const span = domain.maxK - domain.minK || 1;
-  const left = Math.max(0, ((band.minK - domain.minK) / span) * 100);
-  const width = Math.min(100 - left, Math.max(((band.maxK - band.minK) / span) * 100, 4));
+  const mid = (band.minK + band.maxK) / 2;
+  // Scale this career's midpoint pay against the highest pay on the board.
+  const pct = Math.max(8, Math.min(100, (mid / (domain.maxK || 1)) * 100));
   return (
     <div
-      className="relative h-1.5 w-full overflow-hidden rounded-full bg-muted/50"
+      className="relative h-1.5 w-full overflow-hidden rounded-full bg-muted-foreground/15"
       aria-hidden
     >
       <div
-        className="absolute inset-y-0 rounded-full bg-gradient-to-r from-primary/45 to-primary/80"
-        style={{ left: `${left}%`, width: `${width}%` }}
+        className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-primary/55 to-primary"
+        style={{ width: `${pct}%` }}
       />
     </div>
   );
@@ -76,17 +78,20 @@ export function DecisionRowView(props: {
   return (
     <div
       className={cn(
-        "group relative overflow-hidden rounded-card border transition-colors",
+        "group relative overflow-hidden rounded-card transition-colors",
         row.ruledOut
-          ? "border-border/40 bg-card/20 opacity-60 hover:opacity-100"
+          ? "border border-border/40 bg-card/20 opacity-60 hover:opacity-100"
           : isLeader
-            ? "border-primary/40 bg-primary/[0.05] hover:bg-primary/[0.07]"
-            : "border-border/50 bg-card/40 hover:bg-muted/30",
+            // The leading choice is unmistakable: a 2px primary border, a
+            // teal glow, and a stronger tinted fill so it clearly sits above
+            // the rest of the board as the user's primary pick.
+            ? "border-2 border-primary/70 bg-primary/[0.10] shadow-lg shadow-primary/20 ring-1 ring-primary/25 hover:bg-primary/[0.13]"
+            : "border border-border/50 bg-card/40 hover:bg-muted/30",
       )}
     >
-      {/* Podium accent — the leading choice, felt rather than announced. */}
+      {/* Podium accent — a bold primary rail down the leading choice. */}
       {isLeader && (
-        <span className="absolute inset-y-0 left-0 w-1 bg-gradient-to-b from-primary to-emerald-400/50" />
+        <span className="absolute inset-y-0 left-0 w-1.5 bg-gradient-to-b from-primary to-emerald-400/60" />
       )}
 
       <div className="flex items-start gap-3 px-3 py-3 sm:px-4">
@@ -118,7 +123,8 @@ export function DecisionRowView(props: {
               {row.title}
             </button>
             {isLeader && (
-              <span className="rounded-full bg-primary/15 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-primary">
+              <span className="inline-flex items-center gap-1 rounded-full bg-primary px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-primary-foreground shadow-sm shadow-primary/30">
+                <Crown className="h-3 w-3" />
                 Your pick
               </span>
             )}
