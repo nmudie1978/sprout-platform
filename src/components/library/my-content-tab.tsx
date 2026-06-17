@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { X } from "lucide-react";
-import { SKILLS_CONTENT_TAG } from "@/lib/insights/saved-content";
+import { MY_CONTENT_TAGS } from "@/lib/insights/saved-content";
 
 interface SavedContentItem {
   id: string;
@@ -14,8 +14,9 @@ interface SavedContentItem {
 }
 
 /**
- * "My Content" tab — saved Skills That Matter cards. Lists SavedItems tagged
- * SKILLS_CONTENT_TAG, opens them in a new tab, and removes via DELETE.
+ * "My Content" tab — saved content cards. Lists SavedItems tagged with any of
+ * MY_CONTENT_TAGS (saved career videos + any legacy Skills That Matter cards),
+ * opens them in a new tab, and removes via DELETE.
  */
 export function MyContentTab() {
   // null = loading; [] = loaded-empty.
@@ -24,7 +25,7 @@ export function MyContentTab() {
   const load = useCallback(async () => {
     try {
       const res = await fetch(
-        `/api/journey/saved-items?tags=${SKILLS_CONTENT_TAG}&limit=200`,
+        `/api/journey/saved-items?tags=${MY_CONTENT_TAGS.join(",")}&limit=200`,
       );
       if (!res.ok) {
         setItems([]);
@@ -58,8 +59,8 @@ export function MyContentTab() {
   if (items.length === 0) {
     return (
       <p className="text-sm text-muted-foreground/60 py-10 text-center">
-        Nothing saved yet — tap the bookmark on any Skills That Matter card in
-        Industry Insights.
+        Nothing saved yet — tap the bookmark on any video in Industry Insights,
+        or on the clips in a career&rsquo;s Discover and Understand tabs.
       </p>
     );
   }

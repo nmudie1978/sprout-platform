@@ -337,7 +337,7 @@
   },
   "landing": {
     "hero": {
-      "ageRange": "For 15–23 year olds",
+      "ageRange": "Made for 15–23 · open to anyone exploring",
       "title": "Nobody teaches you how to figure out your future.",
       "subhead": "You're told to choose subjects, choose a degree, and choose a career. But how are you supposed to choose something you've never seen?",
       "problem": "Thousands of jobs exist, yet most people only know a handful.",
@@ -345,6 +345,7 @@
       "missing": "Endeavrly gives you what's been missing: real careers, honest information, and a space to explore who you are and what matters to you.",
       "payoff": "So when you choose a direction, it's yours.",
       "closer": "No quizzes. No pressure. Just clarity.",
+      "audience": "Endeavrly is built around young people — most of our explorers are 15 to 23. But if you're working out where to go next at any age, you're welcome here just the same. The only requirement is being 15 or over.",
       "cta": "Start their journey",
       "ctaSecondary": "Explore careers free",
       "trust": "Built for 15–23 year olds finding their direction — and just as useful at any age if you're exploring a change. No ads, no pressure, just clarity.",

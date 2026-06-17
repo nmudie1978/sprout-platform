@@ -1091,7 +1091,9 @@ export default function DashboardPage() {
               <div className="mt-4 pt-3 border-t border-border/20">
                 <span className="inline-flex items-center gap-1.5 text-sm font-medium text-primary group-hover:text-primary/80 transition-colors">
                   <PlayCircle className="h-4 w-4 shrink-0" />
-                  {t('journey.continueJourney')}
+                  <span className="journey-cta-shimmer motion-reduce:[animation:none]">
+                    {t('journey.continueJourney')}
+                  </span>
                   <ArrowRight className="h-3.5 w-3.5 shrink-0 transition-transform group-hover:translate-x-0.5" />
                 </span>
               </div>

@@ -3,6 +3,8 @@
 import { useCallback, useRef, useState } from 'react';
 import { Play, ChevronLeft, ChevronRight } from 'lucide-react';
 import type { RealityVideo } from '@/lib/career-reality-types';
+import { SaveVideoButton } from '@/components/save-video-button';
+import { useVideoSaves } from '@/hooks/use-video-saves';
 
 // Reality clips are shown in a horizontal carousel rather than a growing grid:
 // it stays one tidy row whatever the pool size, and the user swipes / clicks
@@ -18,11 +20,19 @@ const decode = (s: string) => s.replace(/&amp;/g, '&');
 const thumbFor = (v: RealityVideo) =>
   v.thumbnailUrl || `https://i.ytimg.com/vi/${v.videoId}/hqdefault.jpg`;
 
-export function RealityVideos({ videos }: { videos: RealityVideo[] }) {
+export function RealityVideos({
+  videos,
+  careerPathId,
+}: {
+  videos: RealityVideo[];
+  /** Career slug so a saved clip can be grouped by career. */
+  careerPathId?: string | null;
+}) {
   const trackRef = useRef<HTMLDivElement>(null);
   const [playing, setPlaying] = useState<Set<string>>(() => new Set());
   const [atStart, setAtStart] = useState(true);
   const [atEnd, setAtEnd] = useState(false);
+  const { save, isSaved } = useVideoSaves();
 
   const updateEdges = useCallback(() => {
     const el = trackRef.current;
@@ -91,7 +101,8 @@ export function RealityVideos({ videos }: { videos: RealityVideo[] }) {
               key={video.videoId}
               className="w-full shrink-0 snap-start space-y-1.5 sm:w-[calc((100%-0.75rem)/2)] lg:w-[calc((100%-1.5rem)/3)]"
             >
-              <div className="overflow-hidden rounded-control bg-muted/30">
+              {/* relative so the save bookmark can overlay the tile */}
+              <div className="relative overflow-hidden rounded-control bg-muted/30">
                 {playing.has(video.videoId) ? (
                   <iframe
                     src={`https://www.youtube.com/embed/${video.videoId}?autoplay=1`}
@@ -122,6 +133,19 @@ export function RealityVideos({ videos }: { videos: RealityVideo[] }) {
                     </span>
                   </button>
                 )}
+                <SaveVideoButton
+                  saved={isSaved(video.videoId)}
+                  onSave={() =>
+                    save({
+                      videoId: video.videoId,
+                      title,
+                      channel: video.channel,
+                      careerPathId,
+                    })
+                  }
+                  title={video.title}
+                  className="right-2 top-2"
+                />
               </div>
               <div className="flex items-center gap-1.5 px-0.5">
                 <Play className="h-3 w-3 shrink-0 text-muted-foreground/65" />

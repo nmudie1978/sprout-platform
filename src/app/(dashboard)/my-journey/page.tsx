@@ -64,6 +64,8 @@ import { getRoutesForCareer } from '@/lib/education/routes';
 import { CareerMythBuster } from '@/components/journey/career-myth-buster';
 import { CareerSpecialisms } from '@/components/journey/career-specialisms';
 import { RealityVideos } from '@/components/journey/reality-videos';
+import { SaveVideoButton } from '@/components/save-video-button';
+import { useVideoSaves } from '@/hooks/use-video-saves';
 import { hasSpecialisms } from '@/lib/career-specialisms';
 import { TopEmployers } from '@/components/journey/top-employers';
 import { CareerDNASection } from '@/components/career-dna/career-dna-section';
@@ -548,14 +550,12 @@ function DiscoverTab({
   career,
   goalTitle,
   onContinue,
-  onConfirmChange,
   onGoToUnderstand,
 }: {
   career: Career | null;
   goalTitle: string | null;
+  /** Advance to Understand — confirms the Discover step and navigates. */
   onContinue: () => void;
-  /** Notifies the page so the Understand tab unlocks immediately. */
-  onConfirmChange?: (confirmed: boolean) => void;
   /** Navigate to Understand tab (for "See full progression" link). */
   onGoToUnderstand?: () => void;
 }) {
@@ -577,6 +577,8 @@ function DiscoverTab({
   const currentVideo = videos[videoIndex] ?? null;
   const videoId = currentVideo?.videoId ?? ytData?.videoId ?? null;
   const hasMoreVideos = videos.length > 1;
+  // Bookmark the "A Day in the Life" clip into My Library → My Content.
+  const { save, isSaved: isDayVideoSaved } = useVideoSaves();
   const { isCollapsed: dCollapsed, toggle: dToggle } = useSectionCollapse(['d-video', 'd-overview', 'd-insights']);
 
   // Pull the user's age from /api/profile so the Timeline card can
@@ -721,7 +723,7 @@ function DiscoverTab({
           {!dCollapsed('d-video') && <div className="p-4">
             {videoId ? (
               <div className="space-y-2">
-                <div className="rounded-control overflow-hidden">
+                <div className="relative rounded-control overflow-hidden">
                   <iframe
                     key={videoId}
                     src={`https://www.youtube.com/embed/${videoId}`}
@@ -729,6 +731,18 @@ function DiscoverTab({
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen
                     title={`Day in the life — ${career.title}`}
+                  />
+                  <SaveVideoButton
+                    saved={isDayVideoSaved(videoId)}
+                    onSave={() =>
+                      save({
+                        videoId,
+                        title: currentVideo?.title ?? `A Day in the Life — ${career.title}`,
+                        careerPathId: career?.id,
+                      })
+                    }
+                    title={currentVideo?.title ?? `A Day in the Life — ${career.title}`}
+                    className="right-2 top-2"
                   />
                 </div>
                 {/* "More videos" control — only shown when the search
@@ -864,33 +878,13 @@ function DiscoverTab({
       </div>
 
 
-      {/* Self-confirmation — drives the dashboard's Discover progress
-          AND the tab lock. Picking a goal alone no longer counts; the
-          user has to actively say they've explored the role before the
-          Understand tab unlocks. A brand-new career starts at 0/3 on
-          the dashboard ring and Understand / Clarity are locked. */}
-      <DiscoverConfirmCard careerTitle={goalTitle} onChange={onConfirmChange} />
-
-      {/* Next — the Continue button is the happy-path route into
-          Understand, but it only fires when the user has confirmed.
-          The confirmation is the ONLY way to unlock the next tab, so
-          clicking the button before answering is a no-op (with a
-          gentle inline hint below the confirmation card). */}
-      <div className="flex justify-end pt-2">
-        <button
-          onClick={onContinue}
-          disabled={!isDiscoverConfirmed(goalTitle)}
-          className={cn(
-            'inline-flex items-center gap-2 px-4 py-2 rounded-control text-sm font-medium transition-colors',
-            isDiscoverConfirmed(goalTitle)
-              ? 'text-muted-foreground/60 hover:text-foreground hover:bg-muted/30'
-              : 'text-muted-foreground/25 cursor-not-allowed',
-          )}
-          title={isDiscoverConfirmed(goalTitle) ? undefined : 'Answer the question above first'}
-        >
-          Understand <ArrowRight className="h-4 w-4" />
-        </button>
-      </div>
+      {/* Advance to Understand. A single, plain-language cue replaces the
+          old "Have you explored…? Yes" confirmation + separate arrow button
+          (two controls for one decision, which read as confusing). Clicking
+          Next IS the confirmation: the parent records the Discover step as
+          done — driving the dashboard's progress ring and unlocking the
+          Understand tab — and moves the user straight on. */}
+      <TabAdvancePrompt question="Ready to move to Understand?" onNext={onContinue} />
 
       {/* Salary Progression popup */}
       {showSalaryPopup && (
@@ -943,13 +937,11 @@ function UnderstandTab({
   career,
   goalTitle,
   onContinue,
-  onConfirmChange,
 }: {
   career: Career | null;
   goalTitle: string | null;
+  /** Advance to Clarity — confirms the Understand step and navigates. */
   onContinue: () => void;
-  /** Notifies the page so the Clarity tab unlocks immediately. */
-  onConfirmChange?: (confirmed: boolean) => void;
 }) {
   const t = useTranslations("careerTwin");
   const { data: detailsData, isLoading: detailsLoading } = useCareerDetails(career?.id ?? null);
@@ -1029,6 +1021,14 @@ function UnderstandTab({
           tooltip="What you'll actually do day to day, an honest look at the reality, and the tools of the trade."
           collapsed={uCollapsed('u-role')}
           onToggle={() => uToggle('u-role')}
+          badge={
+            uCollapsed('u-role') ? (
+              <span className="journey-start-here inline-flex items-center gap-1 rounded-full border bg-primary/10 px-2.5 py-0.5 text-[11px] font-semibold text-primary">
+                Start here
+                <ArrowRight className="start-here-arrow h-3 w-3" />
+              </span>
+            ) : undefined
+          }
         />
         {!uCollapsed('u-role') && (
           <div className="p-4 sm:p-5">
@@ -1101,7 +1101,7 @@ function UnderstandTab({
                           </div>
                         );
                       })()}
-                      <RealityVideos videos={realityData.videos} />
+                      <RealityVideos videos={realityData.videos} careerPathId={career?.id} />
                     </>
                   ) : details?.realityCheck ? (
                     <div className="rounded-control border border-warning/15 bg-warning/5 p-3">
@@ -1786,113 +1786,48 @@ function UnderstandTab({
         </SectionCard>
       )}
 
-      <UnderstandConfirmCard careerTitle={goalTitle} onChange={onConfirmChange} />
-
-      <div className="flex justify-end pt-2">
-        <button
-          onClick={onContinue}
-          disabled={!isUnderstandConfirmed(goalTitle)}
-          className={cn(
-            'inline-flex items-center gap-2 px-4 py-2 rounded-control text-sm font-medium transition-colors',
-            isUnderstandConfirmed(goalTitle)
-              ? 'text-muted-foreground/60 hover:text-foreground hover:bg-muted/30'
-              : 'text-muted-foreground/25 cursor-not-allowed',
-          )}
-          title={isUnderstandConfirmed(goalTitle) ? undefined : 'Answer the question above first'}
-        >
-          Clarity <ArrowRight className="h-4 w-4" />
-        </button>
-      </div>
+      {/* Advance to Clarity — same single-cue pattern as Discover→Understand
+          for consistency. Clicking Next records the Understand step as done
+          and moves on. */}
+      <TabAdvancePrompt question="Ready to move to Clarity?" onNext={onContinue} accent="info" />
     </div>
   );
 }
 
-function DiscoverConfirmCard({
-  careerTitle,
-  onChange,
+/**
+ * The single, plain-language cue for moving from one journey tab to the
+ * next. Replaces the old two-control pattern (a "Have you explored…? Yes"
+ * confirmation card sitting above a separate, initially-disabled arrow
+ * button) which made one decision look like two steps. Here, Next is the
+ * whole interaction: `onNext` both records the current step as complete
+ * (unlocking the next tab + advancing the dashboard ring) and navigates.
+ */
+function TabAdvancePrompt({
+  question,
+  onNext,
+  accent = 'primary',
 }: {
-  careerTitle: string | null;
-  /** Notifies the parent page so the tab bar can re-lock/unlock the
-   *  next tab immediately when the user toggles their answer. */
-  onChange?: (confirmed: boolean) => void;
+  question: string;
+  onNext: () => void;
+  accent?: 'primary' | 'info';
 }) {
-  const t = useTranslations();
-  const [confirmed, setConfirmed] = useState(false);
-  useEffect(() => {
-    setConfirmed(isDiscoverConfirmed(careerTitle));
-  }, [careerTitle]);
-  if (!careerTitle) return null;
-
-  const choose = (value: boolean) => {
-    setDiscoverConfirmed(careerTitle, value);
-    setConfirmed(value);
-    onChange?.(value);
-  };
-
   return (
-    <div className="rounded-control border border-primary/15 bg-primary/[0.03] px-4 py-2">
-      <div className="flex items-center justify-between gap-3">
-        <p className="text-xs text-muted-foreground/70 min-w-0">
-          {t('journey.discover.confirmQuestion')}
-        </p>
-        <button
-          onClick={() => choose(!confirmed)}
-          className={cn(
-            'px-3 py-1 rounded-control text-xs font-medium transition-colors border shrink-0',
-            confirmed
-              ? 'bg-success/15 border-success/40 text-success'
-              : 'bg-background/40 border-border/40 text-foreground/60 hover:border-success/40 hover:text-success',
-          )}
-          aria-pressed={confirmed}
-        >
-          {confirmed ? t('journey.discover.confirmYes') : t('journey.discover.confirmNotYet')}
-        </button>
-      </div>
-    </div>
-  );
-}
-
-function UnderstandConfirmCard({
-  careerTitle,
-  onChange,
-}: {
-  careerTitle: string | null;
-  /** Notifies the parent page so the tab bar can re-lock/unlock Clarity
-   *  immediately when the user toggles their answer. */
-  onChange?: (confirmed: boolean) => void;
-}) {
-  const t = useTranslations();
-  const [confirmed, setConfirmed] = useState(false);
-  useEffect(() => {
-    setConfirmed(isUnderstandConfirmed(careerTitle));
-  }, [careerTitle]);
-  if (!careerTitle) return null;
-
-  const choose = (value: boolean) => {
-    setUnderstandConfirmed(careerTitle, value);
-    setConfirmed(value);
-    onChange?.(value);
-  };
-
-  return (
-    <div className="rounded-control border border-info/15 bg-info/[0.03] px-4 py-2">
-      <div className="flex items-center justify-between gap-3">
-        <p className="text-xs text-muted-foreground/70 min-w-0">
-          {t('journey.understand.confirmQuestion')}
-        </p>
-        <button
-          onClick={() => choose(!confirmed)}
-          className={cn(
-            'px-3 py-1 rounded-control text-xs font-medium transition-colors border shrink-0',
-            confirmed
-              ? 'bg-success/15 border-success/40 text-success'
-              : 'bg-background/40 border-border/40 text-foreground/60 hover:border-success/40 hover:text-success',
-          )}
-          aria-pressed={confirmed}
-        >
-          {confirmed ? t('journey.understand.confirmYes') : t('journey.understand.confirmNotYet')}
-        </button>
-      </div>
+    <div
+      className={cn(
+        'rounded-control border px-4 py-3 flex items-center justify-between gap-4',
+        accent === 'info'
+          ? 'border-info/20 bg-info/[0.04]'
+          : 'border-primary/20 bg-primary/[0.04]',
+      )}
+    >
+      <p className="text-sm text-foreground/75 min-w-0">{question}</p>
+      <button
+        onClick={onNext}
+        className="journey-next-pulse group inline-flex items-center gap-1.5 px-4 py-2 rounded-control text-sm font-semibold bg-primary text-primary-foreground hover:bg-primary/90 transition-colors shrink-0"
+      >
+        Next
+        <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+      </button>
     </div>
   );
 }
@@ -3395,8 +3330,16 @@ export default function MyJourneyPage() {
             <DiscoverTab
               career={career}
               goalTitle={goalTitle}
-              onContinue={() => goToTab('understand')}
-              onConfirmChange={setDiscoverConfirmedState}
+              // Next on Discover IS the confirmation: record the step as done,
+              // mirror it into state so the tab bar unlocks, and navigate
+              // directly. We can't route through goToTab here — its lock guard
+              // closes over the pre-click discoverConfirmedState (still false in
+              // this tick), so it would refuse the very jump we just earned.
+              onContinue={() => {
+                setDiscoverConfirmed(goalTitle, true);
+                setDiscoverConfirmedState(true);
+                setActiveTab('understand');
+              }}
               onGoToUnderstand={() => goToTab('understand')}
             />
           </div>
@@ -3410,8 +3353,13 @@ export default function MyJourneyPage() {
             <UnderstandTab
               career={career}
               goalTitle={goalTitle}
-              onContinue={() => goToTab('clarity')}
-              onConfirmChange={setUnderstandConfirmedState}
+              // Same as Discover→Understand: Next confirms + unlocks + jumps
+              // in one go, bypassing goToTab's stale lock guard.
+              onContinue={() => {
+                setUnderstandConfirmed(goalTitle, true);
+                setUnderstandConfirmedState(true);
+                setActiveTab('clarity');
+              }}
             />
           </div>
         )}

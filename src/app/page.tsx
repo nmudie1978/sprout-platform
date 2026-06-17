@@ -196,6 +196,17 @@ export default async function LandingPage() {
                   {t('landing.hero.closer')}
                 </p>
               </FadeReveal>
+
+              {/* Audience note — the platform is built around young people
+                  (15–23), but the page never made clear it's open to everyone.
+                  This makes the welcome explicit and honest: the signup floor
+                  is 15+ with no upper limit, so career changers and late
+                  explorers belong here too. */}
+              <FadeReveal delay={2600}>
+                <p className="mt-5 text-sm text-neutral-400 leading-relaxed max-w-lg">
+                  {t('landing.hero.audience')}
+                </p>
+              </FadeReveal>
             </div>
 
             {/* Right — hero illustration */}

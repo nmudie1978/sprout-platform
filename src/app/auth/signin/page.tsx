@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { signIn, useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -12,19 +11,28 @@ import { useToast } from "@/hooks/use-toast";
 import { Navigation2, Loader2 } from "lucide-react";
 
 export default function SignInPage() {
-  const router = useRouter();
   const { data: session, status } = useSession();
   const { toast } = useToast();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // If already authenticated, redirect immediately
+  // If already authenticated, redirect immediately.
+  //
+  // This MUST be a hard navigation, not router.push. A soft client nav serves
+  // the logged-out Router Cache entry for /dashboard, which still resolves to
+  // the layout's redirect("/auth/signin") — and since this page then sees the
+  // authenticated session again, it re-pushes, producing an endless
+  // signin→dashboard→signin flicker that only a manual refresh breaks. It bites
+  // hardest right after signup: the brand-new cookie can miss the first
+  // server-side /dashboard read, bouncing the user here, where a soft redirect
+  // would trap them in the loop. A hard navigation re-renders the server with
+  // the fresh cookie and settles in one hop. Mirrors the signup page.
   useEffect(() => {
     if (status === "authenticated" && session?.user?.role && !loading) {
-      router.push("/dashboard");
+      window.location.assign("/dashboard");
     }
-  }, [session, status, loading, router]);
+  }, [session, status, loading]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

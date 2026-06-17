@@ -53,6 +53,8 @@ import {
   type AiModalId,
   type AiVideo,
 } from "@/lib/insights/ai-future-of-work";
+import { SaveVideoButton } from "@/components/save-video-button";
+import { useVideoSaves } from "@/hooks/use-video-saves";
 
 const ICONS: Record<AiIconKey, LucideIcon> = {
   changesWork: Wand2,
@@ -76,6 +78,7 @@ export function AiFutureOfWorkSection() {
   const [openModal, setOpenModal] = useState<AiModalId | null>(null);
   const [openVideo, setOpenVideo] = useState<AiVideo | null>(null);
   const [credTab, setCredTab] = useState<"models" | "certs">("models");
+  const { save, isSaved } = useVideoSaves();
 
   return (
     <section id="ai-future-of-work" className="mb-3 scroll-mt-20">
@@ -279,29 +282,39 @@ export function AiFutureOfWorkSection() {
           {/* Horizontal carousel — videos flow left → right; scroll/swipe to explore. */}
           <div className="-mx-1 flex snap-x snap-mandatory gap-3 overflow-x-auto px-1 pb-2 [scrollbar-width:thin]">
             {videos.items.map((v) => (
-              <button
-                key={v.id}
-                type="button"
-                onClick={() => setOpenVideo(v)}
-                className="group w-64 flex-shrink-0 snap-start overflow-hidden rounded-card border border-border/40 bg-card/40 text-left transition-all hover:-translate-y-0.5 hover:border-violet-500/40 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/50"
-              >
-                <div className="relative aspect-video w-full overflow-hidden bg-muted">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={`https://img.youtube.com/vi/${v.id}/mqdefault.jpg`}
-                    alt={v.title}
-                    loading="lazy"
-                    className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                  />
-                  <span className="absolute inset-0 flex items-center justify-center bg-black/25 transition-colors group-hover:bg-black/35">
-                    <PlayCircle className="h-9 w-9 text-white drop-shadow" />
-                  </span>
-                </div>
-                <div className="p-3">
-                  <p className="line-clamp-2 text-xs font-semibold text-foreground/90">{v.title}</p>
-                  <p className="mt-1 text-[11px] text-muted-foreground">{v.channel}</p>
-                </div>
-              </button>
+              // Wrapper carries the sizing + relative anchor so the save
+              // bookmark can overlay the card without nesting a button inside
+              // the card's own <button> (invalid HTML).
+              <div key={v.id} className="group relative w-64 flex-shrink-0 snap-start">
+                <button
+                  type="button"
+                  onClick={() => setOpenVideo(v)}
+                  className="w-full overflow-hidden rounded-card border border-border/40 bg-card/40 text-left transition-all hover:-translate-y-0.5 hover:border-violet-500/40 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/50"
+                >
+                  <div className="relative aspect-video w-full overflow-hidden bg-muted">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={`https://img.youtube.com/vi/${v.id}/mqdefault.jpg`}
+                      alt={v.title}
+                      loading="lazy"
+                      className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    />
+                    <span className="absolute inset-0 flex items-center justify-center bg-black/25 transition-colors group-hover:bg-black/35">
+                      <PlayCircle className="h-9 w-9 text-white drop-shadow" />
+                    </span>
+                  </div>
+                  <div className="p-3">
+                    <p className="line-clamp-2 text-xs font-semibold text-foreground/90">{v.title}</p>
+                    <p className="mt-1 text-[11px] text-muted-foreground">{v.channel}</p>
+                  </div>
+                </button>
+                <SaveVideoButton
+                  saved={isSaved(v.id)}
+                  onSave={() => save({ videoId: v.id, title: v.title, channel: v.channel })}
+                  title={v.title}
+                  className="right-2 top-2"
+                />
+              </div>
             ))}
           </div>
         </div>
