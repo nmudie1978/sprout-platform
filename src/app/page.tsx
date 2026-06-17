@@ -159,7 +159,7 @@ export default async function LandingPage() {
 
               {/* Subhead — the core promise */}
               <FadeReveal delay={1100} className="mb-10 sm:mb-12">
-                <p className="text-lg sm:text-xl font-medium text-neutral-200 leading-snug max-w-lg">
+                <p className="text-lg sm:text-xl font-medium text-white/90 leading-snug max-w-lg">
                   {t('landing.hero.subhead')}
                 </p>
               </FadeReveal>
@@ -167,7 +167,7 @@ export default async function LandingPage() {
               {/* Description */}
               <div className="space-y-5 mb-12 sm:mb-14 max-w-lg">
                 <FadeReveal delay={1400}>
-                  <p className="text-base sm:text-[17px] text-neutral-400 leading-relaxed">
+                  <p className="text-base sm:text-[17px] text-neutral-300 leading-relaxed">
                     {t('landing.hero.problem')}
                   </p>
                 </FadeReveal>
@@ -190,9 +190,10 @@ export default async function LandingPage() {
                 </p>
               </FadeReveal>
 
-              {/* Closer — calm three-beat sign-off */}
+              {/* Closer — calm three-beat sign-off. Matched to the body
+                  paragraphs above so the hero reads as one consistent block. */}
               <FadeReveal delay={2400}>
-                <p className="text-base sm:text-lg font-medium text-neutral-200">
+                <p className="text-base sm:text-[17px] text-neutral-300 leading-relaxed max-w-lg">
                   {t('landing.hero.closer')}
                 </p>
               </FadeReveal>
