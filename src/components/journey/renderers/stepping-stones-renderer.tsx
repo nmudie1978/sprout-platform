@@ -19,7 +19,7 @@ import { cn } from '@/lib/utils';
 import type { RendererProps } from './types';
 import { getStepIcon, type StepState } from './shared-node';
 import { useRoadmapModel } from './shared-roadmap';
-import { Check, MapPin } from 'lucide-react';
+import { Check } from 'lucide-react';
 
 const STONE_COL = 168;
 
@@ -148,14 +148,6 @@ function Stone({
               <Icon className="h-5 w-5" strokeWidth={1.9} />
             )}
           </span>
-          {isFoundation && (
-            <span
-              className="absolute -bottom-1.5 left-1/2 inline-flex -translate-x-1/2 items-center gap-0.5 rounded-full bg-card px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide shadow-sm"
-              style={{ color: accent }}
-            >
-              <MapPin className="h-2.5 w-2.5" /> You
-            </span>
-          )}
         </span>
 
         {/* stage label */}
@@ -175,14 +167,20 @@ function Stone({
         >
           {item.title}
         </h3>
-        {item.subtitle && (
+        {isFoundation && glow ? (
+          // Empty foundation — guidance prompt (the stone also glows).
+          // Disappears once the user saves their details (glow → false).
+          <p className="mt-0.5 text-[11px] font-medium leading-snug text-teal-600 dark:text-teal-300">
+            Tap to add your school &amp; subjects — it tailors your roadmap.
+          </p>
+        ) : item.subtitle ? (
           <p
             className="mt-0.5 text-[11px] leading-snug text-muted-foreground"
             title={item.description ?? undefined}
           >
             {item.subtitle}
           </p>
-        )}
+        ) : null}
 
         {/* age / year chip */}
         <span className="mt-2 rounded-full bg-muted px-2.5 py-1 text-[10px] font-medium text-muted-foreground">

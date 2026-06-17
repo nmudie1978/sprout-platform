@@ -23,7 +23,6 @@ import { useRoadmapModel } from './shared-roadmap';
 import {
   BookOpen,
   Check,
-  MapPin,
   ShieldCheck,
   ShieldAlert,
   AlertCircle,
@@ -489,39 +488,43 @@ function RoadCard({
       )}
       style={{ borderTopWidth: 3, borderTopColor: accent }}
     >
-      <div className="flex items-center justify-center gap-1.5">
-        <span
-          className={cn(
-            'inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium',
-            isFoundation
-              ? 'bg-teal-500/15 text-teal-700 dark:text-teal-300'
-              : state === 'completed'
+      {/* Age pill + Done — only on real journey steps. The foundation card
+          drops the "Now" / "You" badges (it's clearly the starting point). */}
+      {!isFoundation && (
+        <div className="flex items-center justify-center gap-1.5">
+          <span
+            className={cn(
+              'inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium',
+              state === 'completed'
                 ? 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-300'
                 : 'bg-muted text-muted-foreground',
+            )}
+          >
+            {ageLabel}
+          </span>
+          {state === 'completed' && (
+            <span className="inline-flex items-center gap-0.5 text-[8px] font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
+              <Check className="h-2 w-2" strokeWidth={4} /> Done
+            </span>
           )}
-        >
-          {isFoundation ? 'Now' : ageLabel}
-        </span>
-        {state === 'completed' && !isFoundation && (
-          <span className="inline-flex items-center gap-0.5 text-[8px] font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
-            <Check className="h-2 w-2" strokeWidth={4} /> Done
-          </span>
-        )}
-        {isFoundation && (
-          <span className="inline-flex items-center gap-0.5 text-[9px] font-semibold uppercase tracking-wide text-teal-600 dark:text-teal-300">
-            <MapPin className="h-2.5 w-2.5" /> You
-          </span>
-        )}
-      </div>
+        </div>
+      )}
       <p
         className={cn(
-          'mt-1.5 text-xs font-semibold leading-tight',
+          'text-xs font-semibold leading-tight',
+          isFoundation ? '' : 'mt-1.5',
           state === 'future' ? 'text-muted-foreground' : 'text-foreground',
         )}
       >
         {item.title}
       </p>
-      {item.subtitle && (
+      {isFoundation && glow ? (
+        // Empty foundation — guidance prompt (the card also glows). Disappears
+        // automatically once the user saves their details (glow → false).
+        <p className="mt-1 text-[10px] font-medium leading-snug text-teal-600 dark:text-teal-300">
+          Tap to add your school &amp; subjects — it tailors your whole roadmap.
+        </p>
+      ) : item.subtitle ? (
         <p
           className={cn(
             'mt-0.5 text-[10px] font-medium leading-snug',
@@ -531,7 +534,7 @@ function RoadCard({
         >
           {item.subtitle}
         </p>
-      )}
+      ) : null}
       {scenarioAnnotation && (
         <p className="mt-1 text-[10px] font-medium leading-snug text-violet-500 dark:text-violet-300/90">
           {scenarioAnnotation}
