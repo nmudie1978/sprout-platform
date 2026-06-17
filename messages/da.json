@@ -490,5 +490,10 @@
     "whyHere": "Hvorfor du er her:",
     "learnMore": "Lær mere",
     "gotIt": "Forstået"
+  },
+  "welcomeBack": {
+    "dismiss": "Luk",
+    "continueResume": "Fortsæt hvor du slap",
+    "continueExplore": "Fortsæt med at udforske"
   }
 }

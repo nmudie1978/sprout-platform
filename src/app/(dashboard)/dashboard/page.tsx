@@ -949,7 +949,7 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {showWelcomeBack ? (
+        {showWelcomeBack && welcomeDescriptor.memory.kind !== "none" ? (
           <WelcomeBackCard
             descriptor={welcomeDescriptor}
             onDismiss={dismissWelcomeBack}

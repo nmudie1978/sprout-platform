@@ -87,7 +87,9 @@
       "resume": "Continue your journey",
       "explore": "Explore careers"
     },
-    "dismiss": "Dismiss"
+    "dismiss": "Dismiss",
+    "continueResume": "Continue where you left off",
+    "continueExplore": "Continue exploring"
   },
   "dashboard": {
     "pageContext": "A snapshot of your journeys, activity, and saved content.",
