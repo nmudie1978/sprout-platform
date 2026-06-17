@@ -1,7 +1,7 @@
 'use client';
 
+import { ArrowLeftRight } from 'lucide-react';
 import { type TimelineStyle } from '@/hooks/use-timeline-style';
-import { cn } from '@/lib/utils';
 
 interface StyleOption {
   id: TimelineStyle;
@@ -66,25 +66,25 @@ interface TimelineStyleSelectorProps {
   onChange: (style: TimelineStyle) => void;
 }
 
+/**
+ * Smart toggle: with only two layouts, a single pill that shows the CURRENT
+ * style and switches to the other on tap is far more compact than two pills
+ * side by side. The little swap glyph signals it toggles.
+ */
 export function TimelineStyleSelector({ value, onChange }: TimelineStyleSelectorProps) {
+  const current = OPTIONS.find((o) => o.id === value) ?? OPTIONS[0];
+  const next = OPTIONS.find((o) => o.id !== value) ?? OPTIONS[0];
+
   return (
-    <div className="flex items-center gap-1 rounded-xl border border-border/50 bg-card/60 backdrop-blur-sm px-1.5 py-1">
-      {OPTIONS.map((opt) => (
-        <button
-          key={opt.id}
-          onClick={() => onChange(opt.id)}
-          title={`${opt.label} — ${opt.description}`}
-          className={cn(
-            'flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs transition-colors',
-            value === opt.id
-              ? `${opt.activeBg} ${opt.activeText}`
-              : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
-          )}
-        >
-          <span className="w-5 h-3.5">{opt.preview}</span>
-          <span className="hidden sm:inline">{opt.label}</span>
-        </button>
-      ))}
-    </div>
+    <button
+      onClick={() => onChange(next.id)}
+      title={`${current.description} — tap to switch to ${next.description}`}
+      aria-label={`Roadmap style: ${current.label}. Tap to switch to ${next.label}.`}
+      className="flex items-center gap-1.5 rounded-xl border border-border/50 bg-card/60 backdrop-blur-sm px-2.5 py-1.5 text-xs text-foreground/80 transition-colors hover:bg-muted/50 hover:text-foreground"
+    >
+      <span className={`w-5 h-3.5 ${current.activeText}`}>{current.preview}</span>
+      <span className="hidden sm:inline">{current.label}</span>
+      <ArrowLeftRight className="h-3 w-3 text-muted-foreground/50" />
+    </button>
   );
 }

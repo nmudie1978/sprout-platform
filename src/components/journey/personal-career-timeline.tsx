@@ -3,10 +3,11 @@
 import { useState, useCallback, useRef, useMemo, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Target, AlertCircle, RefreshCw, Play, FileText, X, Shuffle } from 'lucide-react';
+import { Target, AlertCircle, RefreshCw, Play, FileText, X, Shuffle, ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from '@/hooks/use-toast';
 import type { JourneyItem, Journey } from '@/lib/journey/career-journey-types';
+import { STAGE_CONFIG } from '@/lib/journey/career-journey-types';
 import { generateFallbackTimeline, type EducationStage } from '@/lib/journey/generate-fallback-timeline';
 import { sanitizeJourney } from '@/lib/journey/roadmap-rules';
 import { deriveRoleEvolutionTail } from '@/lib/journey/role-evolution-tail';
@@ -50,6 +51,9 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney, read
   // Report dialog open state — declared with the other top-level hooks so it
   // is never called after one of this component's early returns below.
   const [reportOpen, setReportOpen] = useState(false);
+  // Quick aggregated milestone view — a lightweight "when do I hit each step"
+  // popup, distinct from the full PDF-style report.
+  const [summaryOpen, setSummaryOpen] = useState(false);
   const { style, setStyle } = useTimelineStyle();
   // "Show years" toggle — persists across sessions via localStorage so
   // users who prefer calendar-year stamps on every step don't have to
@@ -520,7 +524,8 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney, read
       <div className="flex items-center justify-between mb-2">
         <button
           type="button"
-          onClick={() => setReportOpen(true)}
+          onClick={() => setSummaryOpen(true)}
+          title="See your roadmap at a glance"
           className="text-[11px] text-muted-foreground/75 hover:text-foreground/80 transition-colors group flex items-center gap-1.5"
         >
           {spanYears > 0 && (
@@ -606,6 +611,109 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney, read
           eduLabel={eduLabel}
           onClose={() => setReportOpen(false)}
         />
+      )}
+
+      {/* Roadmap summary — an elegant "at a glance" vertical timeline of every
+          milestone and the age you reach it. Quick, scannable; the full report
+          is one tap deeper. */}
+      {summaryOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-150"
+          onClick={() => setSummaryOpen(false)}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Roadmap summary"
+        >
+          <div
+            className="relative w-full max-w-md max-h-[85vh] overflow-hidden rounded-2xl border border-border/60 bg-card shadow-2xl animate-in zoom-in-95 fade-in duration-200"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Accent bar */}
+            <div className="h-1 w-full bg-gradient-to-r from-teal-400 via-violet-400 to-amber-400" />
+
+            <button
+              type="button"
+              onClick={() => setSummaryOpen(false)}
+              aria-label="Close"
+              className="absolute right-3 top-4 rounded-full p-1.5 text-muted-foreground/60 transition-colors hover:bg-muted/40 hover:text-foreground"
+            >
+              <X className="h-4 w-4" />
+            </button>
+
+            {/* Header */}
+            <div className="px-6 pt-5 pb-4">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground/70">
+                Your roadmap at a glance
+              </p>
+              {primaryGoalTitle && (
+                <h3 className="mt-1 text-lg font-semibold tracking-tight text-foreground">
+                  Becoming a {primaryGoalTitle}
+                </h3>
+              )}
+              <div className="mt-2 inline-flex items-center gap-1.5 rounded-full border border-border/50 bg-muted/30 px-2.5 py-0.5 text-[11px] font-medium text-muted-foreground">
+                <FileText className="h-3 w-3" />
+                ~{spanYears} year{spanYears !== 1 ? 's' : ''} · Age {firstAge}–{lastAge}
+              </div>
+            </div>
+
+            {/* Vertical milestone timeline */}
+            <div className="max-h-[52vh] overflow-y-auto px-6 pb-2">
+              <ol className="relative ml-1 space-y-4 border-l border-border/40 pl-5">
+                {[...journey.items]
+                  .sort((a, b) => a.startAge - b.startAge)
+                  .map((it, i) => {
+                    const cfg = STAGE_CONFIG[it.stage];
+                    const ageLabel =
+                      it.endAge && it.endAge > it.startAge
+                        ? `Age ${it.startAge}–${it.endAge}`
+                        : `Age ${it.startAge}`;
+                    return (
+                      <li key={`${it.id}-${i}`} className="relative">
+                        {/* node */}
+                        <span
+                          className="absolute -left-[27px] top-0.5 flex h-3.5 w-3.5 items-center justify-center rounded-full ring-4 ring-card"
+                          style={{
+                            background: `linear-gradient(135deg, ${cfg.gradientFrom}, ${cfg.gradientTo})`,
+                          }}
+                        />
+                        <div className="flex items-baseline justify-between gap-3">
+                          <p className="text-sm font-semibold leading-snug text-foreground/90">
+                            {it.title}
+                          </p>
+                          <span
+                            className="shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold"
+                            style={{ color: cfg.color, backgroundColor: `${cfg.color}1f` }}
+                          >
+                            {ageLabel}
+                          </span>
+                        </div>
+                        {it.subtitle && (
+                          <p className="mt-0.5 text-xs leading-snug text-muted-foreground/75">
+                            {it.subtitle}
+                          </p>
+                        )}
+                      </li>
+                    );
+                  })}
+              </ol>
+            </div>
+
+            {/* Footer → full report */}
+            <div className="flex items-center justify-end border-t border-border/40 px-6 py-3">
+              <button
+                type="button"
+                onClick={() => {
+                  setSummaryOpen(false);
+                  setReportOpen(true);
+                }}
+                className="inline-flex items-center gap-1.5 text-xs font-medium text-primary transition-colors hover:text-primary/80"
+              >
+                View full report
+                <ArrowRight className="h-3.5 w-3.5" />
+              </button>
+            </div>
+          </div>
+        </div>
       )}
 
       {/* Personalising banner — a clear, centred cue that the roadmap is being
