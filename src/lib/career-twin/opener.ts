@@ -23,12 +23,14 @@
 import type { TwinRecentActivity, CareerTwinCareerContext } from "./types";
 import { isReturningAfterGap } from "./memory";
 
-export type TwinLang = "en" | "no" | "es";
+export type TwinLang = "en" | "no" | "es" | "sv" | "da";
 
 /** Map a NEXT_LOCALE value to the Twin's deterministic-string language. */
 export function localeToTwinLang(locale?: string | null): TwinLang {
   if (locale === "nb-NO") return "no";
   if (locale === "es") return "es";
+  if (locale === "sv") return "sv";
+  if (locale === "da") return "da";
   return "en";
 }
 
@@ -167,6 +169,84 @@ const STRINGS: Record<TwinLang, OpenerStrings> = {
         `Noto que ${stage} con ${career}. ` +
         `Soy la versión de ti unos años más adelante — pregúntame cómo son de verdad los estudios y el trabajo.`,
       question: "¿Por dónde te gustaría empezar?",
+    }),
+  },
+  sv: {
+    and: "och",
+    stage: {
+      clarity: "du närmar dig ett beslut",
+      understand: "du har grävt i hur det egentligen fungerar",
+      discover: "du har utforskat hur den här vägen är",
+    },
+    returning: (career) => ({
+      text:
+        `Det var ett tag sedan vi pratade sist — jag har fortfarande varit här och levt ${career}-versionen av din framtid. ` +
+        `Vill du ta vid där vi slutade?`,
+      question: "Vad har du funderat mest på kring den här vägen på sistone?",
+    }),
+    multiOther: (names, career, first) => ({
+      text:
+        `Jag märkte att du har vägt ${names} mot ${career} på sistone. ` +
+        `Jag är ${career}-versionen av dig — pratar gärna om hur den här faktiskt står sig.`,
+      question: `Vill du börja med hur ${career} står sig mot ${first}?`,
+    }),
+    oneOther: (names, career, first) => ({
+      text:
+        `Jag märkte att du också har utforskat ${names} nyligen. ` +
+        `Jag är här som ${career}-versionen av din framtid — fråga mig hur de två jämförs, eller vad som helst om den här vägen.`,
+      question: `Nyfiken på hur ${career} och ${first} skiljer sig i vardagen?`,
+    }),
+    activeGoal: (career, stage) => ({
+      text:
+        `${career} är ditt fokus just nu — och jag är versionen av dig som redan lever det. ` +
+        (stage ? `Det ser ut som att ${stage}. ` : "") +
+        `Fråga mig vad det faktiskt kräver, eller vad jag skulle göra härnäst om jag var du igen.`,
+      question: "Vad är den enda sak du mest vill veta innan du bestämmer dig?",
+    }),
+    stageOnly: (stage, career) => ({
+      text:
+        `Jag märker att ${stage} med ${career}. ` +
+        `Jag är versionen av dig några år in i det — fråga mig hur studierna och jobbet egentligen är.`,
+      question: "Var vill du börja?",
+    }),
+  },
+  da: {
+    and: "og",
+    stage: {
+      clarity: "du nærmer dig en beslutning",
+      understand: "du har gravet i, hvordan det egentlig fungerer",
+      discover: "du har udforsket, hvordan denne vej er",
+    },
+    returning: (career) => ({
+      text:
+        `Det er et stykke tid siden, vi sidst talte — jeg har stadig været her og levet ${career}-versionen af din fremtid. ` +
+        `Vil du tage fat, hvor vi slap?`,
+      question: "Hvad har du tænkt mest på om denne vej på det seneste?",
+    }),
+    multiOther: (names, career, first) => ({
+      text:
+        `Jeg lagde mærke til, at du har vejet ${names} op mod ${career} på det seneste. ` +
+        `Jeg er ${career}-versionen af dig — taler gerne om, hvordan denne faktisk står sig.`,
+      question: `Vil du starte med, hvordan ${career} står sig mod ${first}?`,
+    }),
+    oneOther: (names, career, first) => ({
+      text:
+        `Jeg lagde mærke til, at du også har udforsket ${names} for nylig. ` +
+        `Jeg er her som ${career}-versionen af din fremtid — spørg mig, hvordan de to sammenlignes, eller hvad som helst om denne vej.`,
+      question: `Nysgerrig på, hvordan ${career} og ${first} adskiller sig i hverdagen?`,
+    }),
+    activeGoal: (career, stage) => ({
+      text:
+        `${career} er dit fokus lige nu — og jeg er versionen af dig, der allerede lever det. ` +
+        (stage ? `Det ser ud som ${stage}. ` : "") +
+        `Spørg mig, hvad det faktisk kræver, eller hvad jeg ville gøre som det næste, hvis jeg var dig igen.`,
+      question: "Hvad er den ene ting, du mest vil vide, før du beslutter dig?",
+    }),
+    stageOnly: (stage, career) => ({
+      text:
+        `Jeg kan mærke, at ${stage} med ${career}. ` +
+        `Jeg er versionen af dig nogle år inde i det — spørg mig, hvordan studiet og arbejdet egentlig er.`,
+      question: "Hvor vil du gerne starte?",
     }),
   },
 };
