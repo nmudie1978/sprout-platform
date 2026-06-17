@@ -347,7 +347,7 @@
       "closer": "Ingen tester. Ikke noe press. Bare klarhet.",
       "audience": "Endeavrly er laget for unge — de fleste som utforsker hos oss er mellom 15 og 23. Men holder du på å finne ut hvor du skal videre, uansett alder, er du like velkommen her. Det eneste kravet er at du er 15 år eller eldre.",
       "cta": "Start reisen deres",
-      "ctaSecondary": "Utforsk karrierer gratis",
+      "ctaSecondary": "Utforsk karrierer",
       "trust": "Laget for 15–23-åringer som finner retningen sin — og like nyttig i alle aldre hvis du vurderer et skifte. Ingen reklame, ikke noe press, bare klarhet.",
       "tagline": "Karriere-operativsystemet for unge."
     },
@@ -379,8 +379,8 @@
     },
     "cta": {
       "title": "Kom i gang.",
-      "subtitle": "Gratis. Ingen kredittkort. Ingen forpliktelser.",
-      "button": "Registrer deg gratis"
+      "subtitle": "Ingen press. Ingen forpliktelser.",
+      "button": "Registrer deg"
     }
   },
   "footer": {
