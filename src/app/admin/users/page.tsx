@@ -259,7 +259,8 @@ export default function AdminUsersPage() {
           </div>
         ) : (
           <div className="rounded-lg border border-slate-700/50 overflow-hidden">
-            <table className="w-full text-sm">
+            <div className="overflow-x-auto">
+            <table className="w-full min-w-[760px] text-sm">
               <thead className="bg-slate-800/80">
                 <tr className="text-left text-xs text-slate-400 uppercase tracking-wider">
                   <th className="px-4 py-3">User</th>
@@ -378,6 +379,7 @@ export default function AdminUsersPage() {
                 })}
               </tbody>
             </table>
+            </div>
             {filtered.length === 0 && (
               <div className="text-center py-8 text-slate-500">
                 {search ? "No users match your search" : "No users found"}

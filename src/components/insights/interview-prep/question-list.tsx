@@ -70,7 +70,7 @@ export function QuestionList({ questions, selectedId, onSelect, onToggleSave }: 
                 className={`w-5 h-5 rounded flex items-center justify-center transition-colors ${
                   isSaved
                     ? "text-amber-500"
-                    : "text-muted-foreground opacity-0 group-hover:opacity-100"
+                    : "text-muted-foreground opacity-50 group-hover:opacity-100"
                 }`}
               >
                 <Bookmark className={`h-3.5 w-3.5 ${isSaved ? "fill-current" : ""}`} />

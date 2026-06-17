@@ -66,7 +66,6 @@ import { CareerSpecialisms } from '@/components/journey/career-specialisms';
 import { RealityVideos } from '@/components/journey/reality-videos';
 import { hasSpecialisms } from '@/lib/career-specialisms';
 import { TopEmployers } from '@/components/journey/top-employers';
-import { SalaryProgressionLine } from '@/components/journey/salary-progression-line';
 import { CareerDNASection } from '@/components/career-dna/career-dna-section';
 import { hasCareerEmployers, getRepresentativeEmployers } from '@/lib/career-employers';
 import { hasMyths } from '@/lib/career-myths';
@@ -94,6 +93,12 @@ const JourneyReflectionsTray = dynamic(
 const JourneyCompaniesTray = dynamic(
   () => import('@/components/journey/journey-companies-tray').then((m) => m.JourneyCompaniesTray),
   { ssr: false }
+);
+// Salary chart pulls in recharts (~250KB). Only loaded when the salary popup
+// renders, so it stays out of the My Journey initial bundle.
+const SalaryProgressionLine = dynamic(
+  () => import('@/components/journey/salary-progression-line').then((m) => m.SalaryProgressionLine),
+  { ssr: false, loading: () => <div className="h-48 animate-pulse rounded-card bg-muted/50" /> }
 );
 // Career Twin — the first Clarity sub-tab. Opens inline within the tab so the
 // user never leaves their journey. Heavy, so it's only loaded when rendered.
@@ -680,7 +685,7 @@ function DiscoverTab({
           'very-high': 'Highly selective — top grades and preparation required.',
         };
         return (
-          <div className="grid grid-cols-3 gap-2.5">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
             {[
               { label: 'Demand',      icon: TrendingUp, value: getDemandLabel(ap.demand),                    hint: demandHint[ap.demand] },
               { label: 'Pathway',     icon: Award,      value: getPathwayLabel(ap.pathwayType),              hint: pathwayHint[ap.pathwayType] },
@@ -2048,9 +2053,9 @@ function CareerNotes({ careerTitle, collapsed, onToggle }: { careerTitle: string
                     <div className="flex items-center gap-2">
                       <span className={cn('shrink-0 rounded px-1.5 py-0.5 text-[9px] font-medium', cat.color)}>{cat.label}</span>
                       <p className="text-xs text-foreground/65 flex-1 truncate">{note.text}</p>
-                      <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
-                        <button onClick={() => startEdit(note)} className="p-1 rounded text-muted-foreground/60 hover:text-foreground/60"><Pencil className="h-2.5 w-2.5" /></button>
-                        <button onClick={() => deleteNote(note.id)} className="p-1 rounded text-muted-foreground/60 hover:text-red-400"><Trash2 className="h-2.5 w-2.5" /></button>
+                      <div className="flex items-center gap-0.5 opacity-60 group-hover:opacity-100 transition-opacity shrink-0">
+                        <button onClick={() => startEdit(note)} aria-label="Edit note" className="p-2 rounded text-muted-foreground/60 hover:text-foreground/60"><Pencil className="h-3.5 w-3.5" /></button>
+                        <button onClick={() => deleteNote(note.id)} aria-label="Delete note" className="p-2 rounded text-muted-foreground/60 hover:text-red-400"><Trash2 className="h-3.5 w-3.5" /></button>
                       </div>
                     </div>
                   )}
@@ -2740,10 +2745,10 @@ function ClarityTab({ goalTitle, career }: { goalTitle: string | null; career: C
                         {/* Delete — top-right, appears on hover */}
                         <button
                           onClick={() => deleteAction(a.id)}
-                          className="absolute top-1.5 right-1.5 opacity-0 group-hover:opacity-100 text-muted-foreground/65 hover:text-rose-400 transition-all"
+                          className="absolute top-1 right-1 p-1.5 opacity-60 group-hover:opacity-100 text-muted-foreground/65 hover:text-rose-400 transition-all"
                           aria-label="Delete step"
                         >
-                          <X className="h-2.5 w-2.5" />
+                          <X className="h-3.5 w-3.5" />
                         </button>
 
                         {/* Status toggle */}

@@ -97,7 +97,7 @@ export function MyContentTab() {
             type="button"
             onClick={() => remove(it.id)}
             aria-label={`Remove ${it.title}`}
-            className="absolute right-1.5 top-1.5 rounded-control bg-black/40 p-1 text-white/70 opacity-0 transition-opacity hover:bg-destructive/80 hover:text-white group-hover:opacity-100"
+            className="absolute right-1.5 top-1.5 rounded-control bg-black/40 p-2 text-white/70 opacity-70 transition-opacity hover:bg-destructive/80 hover:text-white group-hover:opacity-100"
           >
             <X className="h-3.5 w-3.5" />
           </button>

@@ -264,7 +264,7 @@ export function SavedComparisonsTray({
                   {/* Delete */}
                   <button
                     onClick={(e) => handleDelete(e, comp.id)}
-                    className="p-1 rounded opacity-0 group-hover:opacity-100 hover:bg-red-500/10 text-muted-foreground/60 hover:text-red-400 transition-all shrink-0"
+                    className="p-2 rounded opacity-60 group-hover:opacity-100 hover:bg-red-500/10 text-muted-foreground/60 hover:text-red-400 transition-all shrink-0"
                     aria-label={`Delete ${comp.title}`}
                   >
                     <Trash2 className="h-3 w-3" />
