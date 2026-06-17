@@ -172,14 +172,14 @@ export function WindingRoadRenderer(props: RendererProps) {
                 refY="4.5"
                 orient="auto"
               >
-                <path d="M0 0 L9 4.5 L0 9 z" className="fill-slate-300 dark:fill-slate-600" />
+                <path d="M0 0 L9 4.5 L0 9 z" className="fill-teal-500 dark:fill-slate-600" />
               </marker>
             </defs>
             {/* road body */}
             <path
               d={roadPath}
               fill="none"
-              className="stroke-slate-200 dark:stroke-slate-800"
+              className="stroke-teal-300 dark:stroke-slate-800"
               strokeWidth={30}
               strokeLinecap="round"
             />
@@ -187,7 +187,7 @@ export function WindingRoadRenderer(props: RendererProps) {
             <path
               d={roadPath}
               fill="none"
-              className="stroke-slate-300 dark:stroke-slate-600"
+              className="stroke-teal-500 dark:stroke-slate-600"
               strokeWidth={2.5}
               strokeDasharray="9 12"
               strokeLinecap="round"
@@ -198,19 +198,19 @@ export function WindingRoadRenderer(props: RendererProps) {
             {coda && (
               <>
                 {/* connector: last milestone → core role */}
-                <path d={coda.connect} fill="none" className="stroke-slate-200 dark:stroke-slate-800" strokeWidth={30} strokeLinecap="round" />
-                <path d={coda.connect} fill="none" className="stroke-slate-300 dark:stroke-slate-600" strokeWidth={2.5} strokeDasharray="9 12" strokeLinecap="round" />
+                <path d={coda.connect} fill="none" className="stroke-teal-300 dark:stroke-slate-800" strokeWidth={30} strokeLinecap="round" />
+                <path d={coda.connect} fill="none" className="stroke-teal-500 dark:stroke-slate-600" strokeWidth={2.5} strokeDasharray="9 12" strokeLinecap="round" />
                 {coda.forked ? (
                   coda.branchPaths.map((d, i) => (
                     <g key={i}>
-                      <path d={d} fill="none" className="stroke-slate-200 dark:stroke-slate-800" strokeWidth={26} strokeLinecap="round" />
-                      <path d={d} fill="none" className="stroke-slate-300 dark:stroke-slate-600" strokeWidth={2.5} strokeDasharray="9 12" strokeLinecap="round" markerEnd="url(#wr-arrow)" />
+                      <path d={d} fill="none" className="stroke-teal-300 dark:stroke-slate-800" strokeWidth={26} strokeLinecap="round" />
+                      <path d={d} fill="none" className="stroke-teal-500 dark:stroke-slate-600" strokeWidth={2.5} strokeDasharray="9 12" strokeLinecap="round" markerEnd="url(#wr-arrow)" />
                     </g>
                   ))
                 ) : (
                   <>
-                    <path d={coda.seniorPath} fill="none" className="stroke-slate-200 dark:stroke-slate-800" strokeWidth={30} strokeLinecap="round" />
-                    <path d={coda.seniorPath} fill="none" className="stroke-slate-300 dark:stroke-slate-600" strokeWidth={2.5} strokeDasharray="9 12" strokeLinecap="round" markerEnd="url(#wr-arrow)" />
+                    <path d={coda.seniorPath} fill="none" className="stroke-teal-300 dark:stroke-slate-800" strokeWidth={30} strokeLinecap="round" />
+                    <path d={coda.seniorPath} fill="none" className="stroke-teal-500 dark:stroke-slate-600" strokeWidth={2.5} strokeDasharray="9 12" strokeLinecap="round" markerEnd="url(#wr-arrow)" />
                   </>
                 )}
               </>
