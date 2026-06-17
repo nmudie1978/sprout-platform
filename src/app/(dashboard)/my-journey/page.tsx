@@ -834,39 +834,10 @@ function DiscoverTab({
 
       {/* Quick insights row */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        {/* How long */}
-        {(() => {
-          const eduForTimeline = lcEducation ?? "";
-          const yearMatch = eduForTimeline.match(/(\d+)\s*[–\-+]\s*(\d+)?\s*years?/i) || eduForTimeline.match(/(\d+)\s*years?/i);
-          const years = yearMatch ? parseInt(yearMatch[2] || yearMatch[1]) : null;
-          // Rule: study paths (uni / college / vocational) can't start
-          // before upper secondary ends — i.e. age 18. So the earliest
-          // the user can begin the study years is max(userAge, 18). If
-          // the user is already older than 18 they start now; if
-          // they're 17 or younger they start at 18. When we don't know
-          // the user's age, fall back to 18 as the canonical start.
-          const startAge = Math.max(userAge ?? 18, 18);
-          const qualifiedAge = years ? startAge + years : null;
-          // "Years from now" is relative to the user's current age.
-          const yearsFromNow =
-            qualifiedAge != null && userAge != null ? qualifiedAge - userAge : years;
-          return (
-            <div className="rounded-card border border-border bg-card/50 p-4">
-              <div className="flex items-center gap-2 mb-2">
-                <Clock className="h-3.5 w-3.5 text-warning" />
-                <span className="text-xs font-semibold text-warning uppercase tracking-wider">Timeline</span>
-              </div>
-              {qualifiedAge ? (
-                <p className="text-xs text-foreground/70 leading-relaxed">
-                  You could be qualified by <span className="font-semibold text-foreground/90">age {qualifiedAge}</span>
-                  <span className="text-muted-foreground/65"> — that&apos;s ~{yearsFromNow} years from now</span>
-                </p>
-              ) : (
-                <p className="text-xs text-foreground/70 leading-relaxed">{lcEducation ?? notTailored}</p>
-              )}
-            </div>
-          );
-        })()}
+        {/* Career DNA — replaces the old "Timeline" card. A compact, clickable
+            quick-insight that opens the DNA modal (what the career is made of).
+            The full study-timeline lives in Clarity → roadmap. */}
+        <CareerDNASection career={career} variant="card" />
 
         {/* Work environment — always visible */}
         <div className="rounded-card border border-border bg-card/50 p-4">
@@ -887,10 +858,6 @@ function DiscoverTab({
             dead IIFE was removed; pull from git history if needed. */}
       </div>
 
-      {/* Career DNA — a subtle link that opens a modal showing what this
-          career is *made of* (objective traits), not who the user is.
-          Mirrors the calm, understated salary affordance above. */}
-      <CareerDNASection career={career} />
 
       {/* Self-confirmation — drives the dashboard's Discover progress
           AND the tab lock. Picking a goal alone no longer counts; the
