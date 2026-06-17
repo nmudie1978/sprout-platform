@@ -20,6 +20,7 @@
  */
 
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCompareShortlist } from "@/hooks/use-compare-shortlist";
 import { CompareModal } from "@/components/compare/compare-modal";
@@ -74,9 +75,22 @@ export function CompareHost() {
       }
       const result = add(career);
       if (result === "full") {
+        // The shortlist is managed in Career Radar — off the radar the user
+        // can't remove an item from here, so point them there with a link.
         toast({
           title: `You can compare up to ${max} at a time`,
-          description: "Remove one to add another.",
+          description: (
+            <span>
+              Remove one in{" "}
+              <Link
+                href={RADAR_PATH}
+                className="font-medium text-emerald-400 underline underline-offset-2 hover:text-emerald-300"
+              >
+                Career Radar
+              </Link>{" "}
+              to add another.
+            </span>
+          ),
         });
       } else if (result === "added") {
         toast({ title: `${career.title} added to shortlist`, variant: "success" });

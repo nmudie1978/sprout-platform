@@ -72,6 +72,9 @@
     "morning": "Buenos días",
     "afternoon": "Buenas tardes",
     "evening": "Buenas noches",
+    "welcomeBack": "Bienvenido/a de nuevo",
+    "niceToSeeYou": "Qué bien verte de nuevo",
+    "goodToSeeYou": "Me alegro de verte",
     "welcome": "Bienvenido/a"
   },
   "welcomeBack": {

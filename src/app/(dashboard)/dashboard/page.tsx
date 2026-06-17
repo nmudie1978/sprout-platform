@@ -69,6 +69,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import { Target } from "lucide-react";
 import { syncGuidanceGoal } from "@/lib/guidance/rules";
+import { selectGreetingKind, type GreetingKind } from "@/lib/dashboard/greeting";
 import { PageContext } from "@/components/ui/page-context";
 import { GoalSelectionSheet } from "@/components/goals/GoalSelectionSheet";
 import { useSubtleHint } from "@/hooks/use-subtle-hint";
@@ -761,8 +762,18 @@ export default function DashboardPage() {
     day: "numeric",
     month: "short",
   });
-  const hour = today.getHours();
-  const timeGreeting = hour < 12 ? t('greeting.morning') : hour < 17 ? t('greeting.afternoon') : t('greeting.evening');
+  // Smart greeting — rotates the time-of-day greeting with warmer relational
+  // ones ("Welcome back", "Nice to see you again"). Deterministic per moment so
+  // it varies across visits without flickering on re-render.
+  const greetingByKind: Record<GreetingKind, string> = {
+    morning: t('greeting.morning'),
+    afternoon: t('greeting.afternoon'),
+    evening: t('greeting.evening'),
+    welcomeBack: t('greeting.welcomeBack'),
+    niceToSeeYou: t('greeting.niceToSeeYou'),
+    goodToSeeYou: t('greeting.goodToSeeYou'),
+  };
+  const timeGreeting = greetingByKind[selectGreetingKind(today)];
 
   if (status === "loading" || session?.user.role !== "YOUTH") {
     return (
