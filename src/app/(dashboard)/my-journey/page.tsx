@@ -338,7 +338,7 @@ function FullscreenRoadmap({ goalTitle, onClose }: { goalTitle: string; onClose:
         </button>
       </div>
       <div className="flex-1 overflow-auto p-6">
-        <PersonalCareerTimeline primaryGoalTitle={goalTitle} />
+        <PersonalCareerTimeline primaryGoalTitle={goalTitle} fitToWidth />
       </div>
     </motion.div>
   );
