@@ -143,7 +143,7 @@ export default async function LandingPage() {
             {/* Left — text */}
             <div className="max-w-2xl">
               {/* Context label + positioning kicker */}
-              <FadeReveal delay={0} className="mb-12 sm:mb-16">
+              <FadeReveal delay={0} className="mb-5 sm:mb-6">
                 <p className="text-[11px] font-medium uppercase tracking-[0.2em] text-neutral-600">
                   {t('landing.hero.ageRange')}
                 </p>
@@ -158,33 +158,33 @@ export default async function LandingPage() {
               </h1>
 
               {/* Subhead — the core promise */}
-              <FadeReveal delay={1100} className="mb-10 sm:mb-12">
+              <FadeReveal delay={1100} className="mb-4 sm:mb-5">
                 <p className="text-lg sm:text-xl font-medium text-white/90 leading-snug max-w-lg">
                   {t('landing.hero.subhead')}
                 </p>
               </FadeReveal>
 
               {/* Description */}
-              <div className="space-y-5 mb-12 sm:mb-14 max-w-lg">
+              <div className="space-y-3 mb-4 sm:mb-5 max-w-lg">
                 <FadeReveal delay={1400}>
-                  <p className="text-base sm:text-[17px] text-neutral-300 leading-relaxed">
+                  <p className="text-base sm:text-[17px] text-neutral-300 leading-normal">
                     {t('landing.hero.problem')}
                   </p>
                 </FadeReveal>
                 <FadeReveal delay={1800}>
-                  <p className="text-base sm:text-[17px] text-neutral-300 leading-relaxed">
+                  <p className="text-base sm:text-[17px] text-neutral-300 leading-normal">
                     {t('landing.hero.solution')}
                   </p>
                 </FadeReveal>
                 <FadeReveal delay={2000}>
-                  <p className="text-base sm:text-[17px] text-neutral-300 leading-relaxed">
+                  <p className="text-base sm:text-[17px] text-neutral-300 leading-normal">
                     {t('landing.hero.missing')}
                   </p>
                 </FadeReveal>
               </div>
 
               {/* Payoff — emphasised, plain (no blockquote, per #314) */}
-              <FadeReveal delay={2200} className="mb-5 sm:mb-6">
+              <FadeReveal delay={2200} className="mb-3 sm:mb-4">
                 <p className="text-lg sm:text-xl font-medium text-white/90 leading-snug max-w-lg">
                   {t('landing.hero.payoff')}
                 </p>
@@ -193,7 +193,7 @@ export default async function LandingPage() {
               {/* Closer — calm three-beat sign-off. Matched to the body
                   paragraphs above so the hero reads as one consistent block. */}
               <FadeReveal delay={2400}>
-                <p className="text-base sm:text-[17px] text-neutral-300 leading-relaxed max-w-lg">
+                <p className="text-base sm:text-[17px] text-neutral-300 leading-normal max-w-lg">
                   {t('landing.hero.closer')}
                 </p>
               </FadeReveal>
@@ -204,7 +204,7 @@ export default async function LandingPage() {
                   is 15+ with no upper limit, so career changers and late
                   explorers belong here too. */}
               <FadeReveal delay={2600}>
-                <p className="mt-5 text-sm text-neutral-400 leading-relaxed max-w-lg">
+                <p className="mt-4 text-sm text-neutral-400 leading-normal max-w-lg">
                   {t('landing.hero.audience')}
                 </p>
               </FadeReveal>

@@ -575,7 +575,15 @@ function readSavedRoadmap(
   timeline: Record<string, unknown> | null,
 ): Omit<RoadmapSection, "isFallback" | "birthYear"> | null {
   if (!timeline) return null;
-  const rawItems = (timeline.items as unknown[]) ?? [];
+  // The app persists the roadmap as `{ version, career, …, journey: {…} }`
+  // where the actual steps live under `journey.items` / `journey.schoolTrack`
+  // (see /api/journey/generate-timeline). Earlier shapes stored the steps at
+  // the top level, so read the nested journey when present and fall back to
+  // the top level for backwards compatibility — otherwise the report silently
+  // dropped the user's real roadmap and rendered the thin fallback instead.
+  const source =
+    (timeline.journey as Record<string, unknown> | undefined) ?? timeline;
+  const rawItems = (source.items as unknown[]) ?? [];
   const items: RoadmapStep[] = rawItems.map((raw) => {
     const it = (raw ?? {}) as Record<string, unknown>;
     return {
@@ -590,7 +598,7 @@ function readSavedRoadmap(
     };
   });
 
-  const rawSchool = (timeline.schoolTrack as unknown[]) ?? [];
+  const rawSchool = (source.schoolTrack as unknown[]) ?? [];
   const schoolTrack: SchoolStageItem[] = rawSchool.map((raw) => {
     const it = (raw ?? {}) as Record<string, unknown>;
     return {
@@ -604,7 +612,7 @@ function readSavedRoadmap(
   });
 
   return {
-    career: trim(timeline.career) || null,
+    career: trim(source.career) || trim(timeline.career) || null,
     items,
     schoolTrack,
   };

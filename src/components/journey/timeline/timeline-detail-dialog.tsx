@@ -493,6 +493,12 @@ export function TimelineDetailDialog({
                 // them: an older user's honest starting points are Working,
                 // University (mature/retraining students exist), or not working.
                 const isOlderAdult = typeof userAge === 'number' && userAge >= 35;
+                // 17 and under: a minor's honest starting point is still in
+                // education, so we hide "Working" and "Not working right now".
+                // Those options don't apply at this age and can read as
+                // pressure/judgement. Unknown age keeps the full set — we only
+                // narrow when we actually know the user is a minor.
+                const isMinor = typeof userAge === 'number' && userAge <= 17;
 
                 // "Not working right now" is offered to everyone — a gap year,
                 // between jobs, or a mid-life pause all need an honest option
@@ -501,8 +507,8 @@ export function TimelineDetailDialog({
 
                 // Order is age-aware. 35+: Working · University · Not working.
                 // 18–34: University first (most common), then the rest + Not
-                // working. Under-18 / unknown: School-first youth set + Not
-                // working.
+                // working. 17 and under: education stages only (no Working / Not
+                // working). Unknown age: School-first youth set + Not working.
                 const orderedOptions = isOlderAdult
                   ? [
                       { value: 'other' as const, label: 'Working' },
@@ -517,7 +523,9 @@ export function TimelineDetailDialog({
                         { value: 'school' as const, label: 'School' },
                         notWorking,
                       ]
-                    : [...STAGE_OPTIONS, notWorking];
+                    : isMinor
+                      ? STAGE_OPTIONS.filter(opt => opt.value !== 'other')
+                      : [...STAGE_OPTIONS, notWorking];
                 return (
                   <div className="flex flex-wrap gap-1.5">
                     {orderedOptions.map(opt => {
