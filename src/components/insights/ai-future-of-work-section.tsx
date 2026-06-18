@@ -149,17 +149,19 @@ export function AiFutureOfWorkSection() {
 
         {/* AI models & certifications — one slick tabbed, tabulated block
             (replaces the old chips + card grid to cut visual noise). */}
-        <div className="mt-5">
-          <SubHeading
-            title="AI models & certifications"
-            subtitle="The leading model families — and recognised ways to prove your skills."
-          />
+        <div className="mx-auto mt-5 max-w-2xl rounded-2xl border border-violet-500/15 bg-gradient-to-b from-violet-500/[0.05] to-transparent p-4 shadow-sm sm:p-5">
+          <div className="mb-3 text-center">
+            <h3 className="text-sm font-bold text-foreground/90">AI models &amp; certifications</h3>
+            <p className="text-xs text-muted-foreground">
+              The leading model families — and recognised ways to prove your skills.
+            </p>
+          </div>
 
-          {/* Tab switcher */}
+          {/* Tab switcher — centered */}
           <div
             role="tablist"
             aria-label="AI models and certifications"
-            className="mb-3 inline-flex rounded-pill border border-border/40 bg-card/40 p-0.5 text-xs font-medium"
+            className="mb-3 mx-auto flex w-fit rounded-pill border border-border/40 bg-card/40 p-0.5 text-xs font-medium"
           >
             <button
               type="button"
@@ -193,9 +195,9 @@ export function AiFutureOfWorkSection() {
 
           {credTab === "models" ? (
             <>
-              <div className="overflow-x-auto rounded-card border border-border/40">
+              <div className="max-h-56 overflow-y-auto overflow-x-auto rounded-card border border-border/40 [scrollbar-width:thin]">
                 <table className="w-full text-left text-xs">
-                  <thead className="bg-card/50 text-[10px] uppercase tracking-wider text-muted-foreground/70">
+                  <thead className="sticky top-0 z-10 bg-card/95 text-[10px] uppercase tracking-wider text-muted-foreground/70 backdrop-blur">
                     <tr>
                       <th className="px-3 py-2 font-semibold">Model</th>
                       <th className="px-3 py-2 font-semibold">Maker</th>
@@ -203,7 +205,11 @@ export function AiFutureOfWorkSection() {
                   </thead>
                   <tbody>
                     {models.items.map((m) => (
-                      <tr key={m.name} title={m.note} className="border-t border-border/30">
+                      <tr
+                        key={m.name}
+                        title={m.note}
+                        className="border-t border-border/30 transition-colors hover:bg-violet-500/[0.04]"
+                      >
                         <td className="whitespace-nowrap px-3 py-2 font-semibold">
                           <a
                             href={m.url}
@@ -226,16 +232,16 @@ export function AiFutureOfWorkSection() {
               <button
                 type="button"
                 onClick={() => setOpenModal("models")}
-                className="mt-2 inline-flex items-center gap-1 text-[11px] font-medium text-violet-500 transition-colors hover:text-violet-400"
+                className="mx-auto mt-3 flex w-fit items-center gap-1 text-[11px] font-medium text-violet-500 transition-colors hover:text-violet-400"
               >
                 What sets each model apart
                 <ArrowRight className="h-3 w-3" aria-hidden="true" />
               </button>
             </>
           ) : (
-            <div className="overflow-x-auto rounded-card border border-border/40">
+            <div className="max-h-56 overflow-y-auto overflow-x-auto rounded-card border border-border/40 [scrollbar-width:thin]">
               <table className="w-full text-left text-xs">
-                <thead className="bg-card/50 text-[10px] uppercase tracking-wider text-muted-foreground/70">
+                <thead className="sticky top-0 z-10 bg-card/95 text-[10px] uppercase tracking-wider text-muted-foreground/70 backdrop-blur">
                   <tr>
                     <th className="px-3 py-2 font-semibold">Certification</th>
                     <th className="px-3 py-2 font-semibold">Provider</th>
