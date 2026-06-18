@@ -19,6 +19,7 @@ import { PaginationControls } from "@/components/ui/pagination-controls";
 import { motion } from "framer-motion";
 import { Compass, Search, Sparkles, Loader2, Briefcase, Layers, TrendingUp, Heart, ArrowRight } from "lucide-react";
 import { DiscoveryNudge } from "@/components/discovery/discovery-nudge";
+import { CareerFrontDoor } from "@/components/careers/career-front-door";
 import Link from "next/link";
 import type { Career } from "@/lib/career-pathways";
 import { useCareerCatalog } from "@/hooks/use-career-catalog";
@@ -40,7 +41,8 @@ function CareersPageContent() {
   const router = useRouter();
   const pathname = usePathname();
   const isMobile = useIsMobile();
-  const { catalog, getAllCareers, isLoading: isCatalogLoading } = useCareerCatalog();
+  const { catalog, getAllCareers, getCategoryForCareer, isLoading: isCatalogLoading } =
+    useCareerCatalog();
   // Country-aware localization: localize the RENDERED view only (filtering/
   // sorting/matching keep using the raw career objects). Norway/default/
   // logged-out → unchanged.
@@ -128,6 +130,14 @@ function CareersPageContent() {
   const totalItems = filteredCareers.length;
   const totalPages = Math.ceil(totalItems / PAGE_SIZE);
   const validCurrentPage = Math.min(currentPage, Math.max(1, totalPages));
+
+  // Show the front-door discovery zone only when the user hasn't engaged the
+  // table: no active filters, no search, on the first page, catalog loaded.
+  const showFrontDoor =
+    !isCatalogLoading &&
+    !hasActiveFilters &&
+    !filters.searchQuery &&
+    validCurrentPage === 1;
 
   // Get paginated slice of careers
   const paginatedCareers = useMemo(() => {
@@ -345,6 +355,20 @@ function CareersPageContent() {
         </div>
       )}
 
+      {/* Front door: a calm, finite discovery zone (top matches / invite,
+          themed shelves, "surprise me") shown only on the unfiltered page-1
+          view so it never competes with an active query. */}
+      {showFrontDoor && (
+        <CareerFrontDoor
+          careers={getAllCareers()}
+          recommendationMap={recommendationMap}
+          getCategoryForCareer={getCategoryForCareer}
+          userCountry={userCountry}
+          notTailoredLabel={notTailoredLabel}
+          onOpen={setSelectedCareer}
+        />
+      )}
+
       <div className="flex items-center justify-center gap-3 mb-3 mt-4">
         <p className="text-xs text-foreground/80 dark:text-muted-foreground">
           {totalItems > PAGE_SIZE ? (
@@ -507,7 +531,9 @@ function CareersPageContent() {
         const topRecs = (insightsData?.recommendations ?? [])
           .filter((rec: any) => Math.round(rec.matchScore) > 70)
           .slice(0, 3);
-        if (!isYouth || topRecs.length === 0) return null;
+        // Hidden when the front door is showing — it surfaces top matches
+        // up top, so repeating them here would be redundant.
+        if (!isYouth || topRecs.length === 0 || showFrontDoor) return null;
         return (
           <div id="recommended-careers" className="mt-8 pt-6 border-t border-border scroll-mt-20">
             <div className="flex items-center gap-2 mb-4">
