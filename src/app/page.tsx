@@ -99,13 +99,16 @@ const CONTRASTS = [
 export default async function LandingPage() {
   const t = await getTranslations();
   return (
-    <div className="min-h-screen bg-slate-950">
+    // `dark` forces the dark (Sapphire) theme tokens regardless of the
+    // visitor's preference — the marketing landing is always dark, but now via
+    // theme tokens (bg-background/card/border/foreground) so it matches the app.
+    <div className="dark min-h-screen bg-background">
       {/* ============================================ */}
       {/* NAVIGATION */}
       {/* ============================================ */}
-      <nav className="sticky top-0 z-50 w-full border-b border-slate-800/80 bg-slate-950/80 backdrop-blur-xl">
+      <nav className="sticky top-0 z-50 w-full border-b border-muted/80 bg-background/80 backdrop-blur-xl">
         <div className="mx-auto flex h-14 sm:h-16 max-w-6xl items-center justify-between px-5">
-          <BrandMark size="lg" href="/" wordmarkClassName="text-white" iconClassName="text-emerald-400 fill-emerald-400" />
+          <BrandMark size="lg" href="/" wordmarkClassName="text-foreground" iconClassName="text-emerald-400 fill-emerald-400" />
 
           <div className="flex items-center gap-3 sm:gap-5">
             {/* Language switcher — always reachable, even logged out.
@@ -117,7 +120,7 @@ export default async function LandingPage() {
             <Suspense
               fallback={
                 <div className="flex items-center gap-2 sm:gap-4">
-                  <div className="h-9 w-20 bg-slate-800/50 rounded-lg animate-pulse hidden sm:block" />
+                  <div className="h-9 w-20 bg-muted/50 rounded-lg animate-pulse hidden sm:block" />
                   <div className="h-10 w-24 bg-emerald-600/30 rounded-lg animate-pulse" />
                 </div>
               }
@@ -144,13 +147,13 @@ export default async function LandingPage() {
             <div className="max-w-2xl">
               {/* Context label + positioning kicker */}
               <FadeReveal delay={0} className="mb-5 sm:mb-6">
-                <p className="text-[11px] font-medium uppercase tracking-[0.2em] text-neutral-600">
+                <p className="text-[11px] font-medium uppercase tracking-[0.2em] text-muted-foreground/70">
                   {t('landing.hero.ageRange')}
                 </p>
               </FadeReveal>
 
               {/* Headline */}
-              <h1 className="text-2xl sm:text-3xl md:text-4xl font-semibold tracking-tight leading-snug text-white mb-5 sm:mb-6">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-semibold tracking-tight leading-snug text-foreground mb-5 sm:mb-6">
                 <WordRevealLine
                   text={t('landing.hero.title')}
                   startDelay={300}
@@ -159,7 +162,7 @@ export default async function LandingPage() {
 
               {/* Subhead — the core promise */}
               <FadeReveal delay={1100} className="mb-4 sm:mb-5">
-                <p className="text-lg sm:text-xl font-medium text-white/90 leading-snug max-w-lg">
+                <p className="text-lg sm:text-xl font-medium text-foreground/90 leading-snug max-w-lg">
                   {t('landing.hero.subhead')}
                 </p>
               </FadeReveal>
@@ -167,17 +170,17 @@ export default async function LandingPage() {
               {/* Description */}
               <div className="space-y-3 mb-4 sm:mb-5 max-w-lg">
                 <FadeReveal delay={1400}>
-                  <p className="text-base sm:text-[17px] text-neutral-300 leading-normal">
+                  <p className="text-base sm:text-[17px] text-foreground/80 leading-normal">
                     {t('landing.hero.problem')}
                   </p>
                 </FadeReveal>
                 <FadeReveal delay={1800}>
-                  <p className="text-base sm:text-[17px] text-neutral-300 leading-normal">
+                  <p className="text-base sm:text-[17px] text-foreground/80 leading-normal">
                     {t('landing.hero.solution')}
                   </p>
                 </FadeReveal>
                 <FadeReveal delay={2000}>
-                  <p className="text-base sm:text-[17px] text-neutral-300 leading-normal">
+                  <p className="text-base sm:text-[17px] text-foreground/80 leading-normal">
                     {t('landing.hero.missing')}
                   </p>
                 </FadeReveal>
@@ -185,7 +188,7 @@ export default async function LandingPage() {
 
               {/* Payoff — emphasised, plain (no blockquote, per #314) */}
               <FadeReveal delay={2200} className="mb-3 sm:mb-4">
-                <p className="text-lg sm:text-xl font-medium text-white/90 leading-snug max-w-lg">
+                <p className="text-lg sm:text-xl font-medium text-foreground/90 leading-snug max-w-lg">
                   {t('landing.hero.payoff')}
                 </p>
               </FadeReveal>
@@ -193,7 +196,7 @@ export default async function LandingPage() {
               {/* Closer — calm three-beat sign-off. Matched to the body
                   paragraphs above so the hero reads as one consistent block. */}
               <FadeReveal delay={2400}>
-                <p className="text-base sm:text-[17px] text-neutral-300 leading-normal max-w-lg">
+                <p className="text-base sm:text-[17px] text-foreground/80 leading-normal max-w-lg">
                   {t('landing.hero.closer')}
                 </p>
               </FadeReveal>
@@ -204,7 +207,7 @@ export default async function LandingPage() {
                   is 15+ with no upper limit, so career changers and late
                   explorers belong here too. */}
               <FadeReveal delay={2600}>
-                <p className="mt-4 text-sm text-neutral-400 leading-normal max-w-lg">
+                <p className="mt-4 text-sm text-muted-foreground leading-normal max-w-lg">
                   {t('landing.hero.audience')}
                 </p>
               </FadeReveal>
@@ -220,13 +223,13 @@ export default async function LandingPage() {
                   height={448}
                   priority
                   sizes="(max-width: 1024px) 0px, 448px"
-                  className="w-full max-w-md rounded-3xl border border-slate-950 bg-slate-950 h-auto"
-                  style={{ borderColor: '#020617' }}
+                  className="w-full max-w-md rounded-3xl border border-background bg-background h-auto"
+                  style={{ borderColor: 'hsl(var(--background))' }}
                 />
                 {/* Blend edges into background */}
-                <div className="absolute inset-0 rounded-3xl ring-1 ring-slate-950 pointer-events-none" />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-slate-950/60 rounded-3xl pointer-events-none" />
-                <div className="absolute inset-0 bg-gradient-to-r from-slate-950/40 via-transparent to-slate-950/40 rounded-3xl pointer-events-none" />
+                <div className="absolute inset-0 rounded-3xl ring-1 ring-background pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/60 rounded-3xl pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-r from-background/40 via-transparent to-background/40 rounded-3xl pointer-events-none" />
               </div>
             </FadeReveal>
           </div>
@@ -236,14 +239,14 @@ export default async function LandingPage() {
       {/* ============================================ */}
       {/* SECTION 3 — THE FRAMEWORK */}
       {/* ============================================ */}
-      <section id="how-it-works" className="border-t border-slate-800/60 scroll-mt-20">
+      <section id="how-it-works" className="border-t border-muted/60 scroll-mt-20">
         <div className="mx-auto max-w-6xl px-5 py-24 sm:py-32">
           {/* Section header */}
           <div className="text-center mb-14 sm:mb-18">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight mb-5 text-white">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight mb-5 text-foreground">
               {t('landing.framework.title')}
             </h2>
-            <p className="text-neutral-400 text-base sm:text-lg max-w-xl mx-auto leading-relaxed">
+            <p className="text-muted-foreground text-base sm:text-lg max-w-xl mx-auto leading-relaxed">
               {t('landing.framework.subtitle')}
             </p>
           </div>
@@ -279,19 +282,19 @@ export default async function LandingPage() {
               <div key={lens.title} className="relative">
                 {/* Connector line */}
                 {i < 2 && (
-                  <div className="hidden sm:block absolute top-10 -right-3 w-6 h-px bg-slate-700/60" />
+                  <div className="hidden sm:block absolute top-10 -right-3 w-6 h-px bg-secondary/60" />
                 )}
-                <div className="rounded-2xl border border-slate-700/40 bg-slate-900/60 p-6 sm:p-7 h-full">
+                <div className="rounded-2xl border border-secondary/40 bg-card/60 p-6 sm:p-7 h-full">
                   <div className={`inline-flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br ${lens.accent} mb-4`}>
-                    <span className="text-sm font-bold text-white">{lens.step}</span>
+                    <span className="text-sm font-bold text-foreground">{lens.step}</span>
                   </div>
-                  <h3 className="text-lg font-semibold tracking-tight text-white mb-0.5">
+                  <h3 className="text-lg font-semibold tracking-tight text-foreground mb-0.5">
                     {lens.title}
                   </h3>
                   <p className={`text-xs font-medium ${lens.subtitleClass} mb-3`}>
                     {lens.subtitle}
                   </p>
-                  <p className="text-sm text-neutral-400 leading-relaxed">
+                  <p className="text-sm text-muted-foreground leading-relaxed">
                     {lens.description}
                   </p>
                 </div>
@@ -301,7 +304,7 @@ export default async function LandingPage() {
 
           {/* Feature Cards — what makes it different */}
           <div className="text-center mb-8">
-            <p className="text-sm font-medium uppercase tracking-wider text-neutral-500">Built around</p>
+            <p className="text-sm font-medium uppercase tracking-wider text-muted-foreground/80">Built around</p>
           </div>
           <div className="grid sm:grid-cols-2 gap-4 sm:gap-5 max-w-4xl mx-auto">
             {FEATURES.map((feature) => {
@@ -309,7 +312,7 @@ export default async function LandingPage() {
               return (
                 <div
                   key={feature.title}
-                  className="flex items-start gap-5 rounded-2xl border border-slate-700/40 bg-slate-900/60 p-6 sm:p-7"
+                  className="flex items-start gap-5 rounded-2xl border border-secondary/40 bg-card/60 p-6 sm:p-7"
                 >
                   <div
                     className={`flex-shrink-0 flex h-11 w-11 items-center justify-center rounded-xl ${feature.accentBg}`}
@@ -317,10 +320,10 @@ export default async function LandingPage() {
                     <Icon className={`h-5 w-5 ${feature.accentText}`} />
                   </div>
                   <div>
-                    <h3 className="text-base font-semibold tracking-tight text-white mb-1.5">
+                    <h3 className="text-base font-semibold tracking-tight text-foreground mb-1.5">
                       {feature.title}
                     </h3>
-                    <p className="text-sm text-neutral-400 leading-relaxed">
+                    <p className="text-sm text-muted-foreground leading-relaxed">
                       {feature.description}
                     </p>
                   </div>
@@ -334,7 +337,7 @@ export default async function LandingPage() {
       {/* ============================================ */}
       {/* SECTION 3b — YOUR TIMELINE */}
       {/* ============================================ */}
-      <section className="border-t border-slate-800/60">
+      <section className="border-t border-muted/60">
         <div className="mx-auto max-w-5xl px-5 py-24 sm:py-32">
           {/* Badge */}
           <div className="flex justify-center mb-8 sm:mb-10">
@@ -347,19 +350,19 @@ export default async function LandingPage() {
           </div>
 
           {/* Heading */}
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold tracking-tight text-white text-center mb-5 sm:mb-6">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold tracking-tight text-foreground text-center mb-5 sm:mb-6">
             Your journey,{" "}
             <span className="text-emerald-400">your pace.</span>
           </h2>
 
           {/* Subcopy */}
-          <p className="text-base sm:text-lg text-neutral-400 text-center max-w-lg mx-auto mb-12 sm:mb-16 leading-relaxed">
+          <p className="text-base sm:text-lg text-muted-foreground text-center max-w-lg mx-auto mb-12 sm:mb-16 leading-relaxed">
             Everyone grows differently. See your progress as a gentle
             unfolding, not a race.
           </p>
 
           {/* Timeline card */}
-          <div className="rounded-2xl bg-slate-900/60 border border-slate-700/25 px-4 sm:px-10 py-8 sm:py-10">
+          <div className="rounded-2xl bg-card/60 border border-secondary/25 px-4 sm:px-10 py-8 sm:py-10">
             <div className="overflow-x-auto">
               <div className="grid grid-cols-3 relative min-w-[480px] pb-2">
                 {/* Connecting line — the journey path (Discover → Clarity) */}
@@ -379,19 +382,19 @@ export default async function LandingPage() {
                     className="flex flex-col items-center relative z-10"
                   >
                     {/* Circle with step number */}
-                    <div className="h-11 w-11 rounded-full border-[2.5px] border-emerald-500 bg-slate-950 flex items-center justify-center">
+                    <div className="h-11 w-11 rounded-full border-[2.5px] border-emerald-500 bg-background flex items-center justify-center">
                       <span className="text-sm font-bold text-emerald-400">
                         {node.step}
                       </span>
                     </div>
 
                     {/* Stage name */}
-                    <span className="mt-3 mb-1 text-sm font-semibold text-white">
+                    <span className="mt-3 mb-1 text-sm font-semibold text-foreground">
                       {node.label}
                     </span>
 
                     {/* Caption */}
-                    <span className="text-xs text-center leading-tight max-w-[160px] text-neutral-400">
+                    <span className="text-xs text-center leading-tight max-w-[160px] text-muted-foreground">
                       {node.caption}
                     </span>
                   </div>
@@ -405,10 +408,10 @@ export default async function LandingPage() {
       {/* ============================================ */}
       {/* SECTION 4 — NOT THIS / THIS INSTEAD */}
       {/* ============================================ */}
-      <section className="border-t border-slate-800/60">
+      <section className="border-t border-muted/60">
         <div className="mx-auto max-w-5xl px-5 py-24 sm:py-32">
           {/* Section label — centred */}
-          <p className="text-[11px] font-medium uppercase tracking-[0.2em] text-neutral-600 mb-14 sm:mb-16 text-center">
+          <p className="text-[11px] font-medium uppercase tracking-[0.2em] text-muted-foreground/70 mb-14 sm:mb-16 text-center">
             Built differently
           </p>
 
@@ -416,17 +419,17 @@ export default async function LandingPage() {
             {CONTRASTS.map((item, i) => (
               <div
                 key={i}
-                className="grid sm:grid-cols-2 gap-0 max-w-3xl mx-auto rounded-xl overflow-hidden border border-slate-800/50"
+                className="grid sm:grid-cols-2 gap-0 max-w-3xl mx-auto rounded-xl overflow-hidden border border-muted/50"
               >
                 {/* "Not this" side — muted, struck through */}
-                <div className="bg-red-950/20 border-b sm:border-b-0 sm:border-r border-slate-800/40 px-6 py-5">
+                <div className="bg-red-950/20 border-b sm:border-b-0 sm:border-r border-muted/40 px-6 py-5">
                   <div className="flex items-center gap-2 mb-2.5">
                     <span className="h-5 w-5 rounded-full bg-red-500/15 flex items-center justify-center text-red-400 text-[10px] font-bold">✕</span>
                     <p className="text-[10px] font-medium uppercase tracking-[0.15em] text-red-400/60">
                       Not this
                     </p>
                   </div>
-                  <p className="text-[15px] text-neutral-500 line-through decoration-red-400/30 decoration-1 leading-relaxed">
+                  <p className="text-[15px] text-muted-foreground/80 line-through decoration-red-400/30 decoration-1 leading-relaxed">
                     {item.not}
                   </p>
                 </div>
@@ -439,7 +442,7 @@ export default async function LandingPage() {
                       This instead
                     </p>
                   </div>
-                  <p className="text-[15px] text-neutral-200 leading-relaxed font-medium">
+                  <p className="text-[15px] text-foreground/90 leading-relaxed font-medium">
                     {item.instead}
                   </p>
                 </div>
@@ -452,14 +455,14 @@ export default async function LandingPage() {
       {/* ============================================ */}
       {/* SECTION 5 — TRUST SIGNALS */}
       {/* ============================================ */}
-      <section className="border-t border-slate-800/60">
+      <section className="border-t border-muted/60">
         <div className="mx-auto max-w-4xl px-5 py-14 sm:py-16">
           <div className="flex flex-wrap justify-center gap-3">
             {["No ads", "No tracking", "Private by default", "Safety by design"].map(
               (label) => (
                 <span
                   key={label}
-                  className="rounded-full border border-slate-700/50 bg-slate-900/40 px-5 py-2 text-[13px] text-neutral-400"
+                  className="rounded-full border border-secondary/50 bg-card/40 px-5 py-2 text-[13px] text-muted-foreground"
                 >
                   {label}
                 </span>
@@ -472,18 +475,18 @@ export default async function LandingPage() {
       {/* ============================================ */}
       {/* SECTION 6 — CLOSING CTA */}
       {/* ============================================ */}
-      <section className="border-t border-slate-800/60">
+      <section className="border-t border-muted/60">
         <div className="mx-auto max-w-2xl px-5 py-28 sm:py-36 text-center">
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-white mb-5">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-foreground mb-5">
             {t('landing.cta.title')}
           </h2>
-          <p className="text-base sm:text-lg text-neutral-500 mb-12 sm:mb-14">
+          <p className="text-base sm:text-lg text-muted-foreground/80 mb-12 sm:mb-14">
             {t('landing.cta.subtitle')}
           </p>
           <Button
             size="lg"
             asChild
-            className="h-14 px-10 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white text-base font-medium transition-colors"
+            className="h-14 px-10 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-foreground text-base font-medium transition-colors"
           >
             <Link href="/auth/signup">{t('landing.cta.button')}</Link>
           </Button>
@@ -493,55 +496,55 @@ export default async function LandingPage() {
       {/* ============================================ */}
       {/* FOOTER */}
       {/* ============================================ */}
-      <footer className="border-t border-slate-800/60 bg-slate-950 py-10 sm:py-14">
+      <footer className="border-t border-muted/60 bg-background py-10 sm:py-14">
         <div className="mx-auto max-w-6xl px-5">
           <div className="flex flex-col items-center gap-5">
-            <BrandMark size="md" wordmarkClassName="text-white" iconClassName="text-emerald-400 fill-emerald-400" />
-            <div className="flex flex-wrap justify-center gap-4 sm:gap-6 text-sm text-neutral-500">
+            <BrandMark size="md" wordmarkClassName="text-foreground" iconClassName="text-emerald-400 fill-emerald-400" />
+            <div className="flex flex-wrap justify-center gap-4 sm:gap-6 text-sm text-muted-foreground/80">
               <Link
                 href="/about"
-                className="hover:text-white transition-colors"
+                className="hover:text-foreground transition-colors"
               >
                 {t('nav.about')}
               </Link>
               <Link
                 href="/about/research"
-                className="hover:text-white transition-colors"
+                className="hover:text-foreground transition-colors"
               >
                 {t('footer.research')}
               </Link>
               <Link
                 href="/legal/terms"
-                className="hover:text-white transition-colors"
+                className="hover:text-foreground transition-colors"
               >
                 {t('footer.terms')}
               </Link>
               <Link
                 href="/legal/privacy"
-                className="hover:text-white transition-colors"
+                className="hover:text-foreground transition-colors"
               >
                 {t('footer.privacy')}
               </Link>
               <Link
                 href="/legal/safety"
-                className="hover:text-white transition-colors"
+                className="hover:text-foreground transition-colors"
               >
                 {t('footer.safety')}
               </Link>
               <Link
                 href="/legal/eligibility"
-                className="hover:text-white transition-colors"
+                className="hover:text-foreground transition-colors"
               >
                 {t('footer.eligibility')}
               </Link>
               <Link
                 href="/legal/disclaimer"
-                className="hover:text-white transition-colors"
+                className="hover:text-foreground transition-colors"
               >
                 {t('footer.disclaimer')}
               </Link>
             </div>
-            <p className="text-xs text-neutral-600">
+            <p className="text-xs text-muted-foreground/70">
               {t('footer.copyright', { year: new Date().getFullYear() })}
             </p>
           </div>

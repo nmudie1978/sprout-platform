@@ -951,6 +951,19 @@ function UnderstandTab({
     U_SECTION_KEYS,
   );
 
+  // "Start here" on the first Understand section ("Inside the Role") is a
+  // one-time onboarding nudge. Once the user has opened that section even once,
+  // never show the label again — even though every section re-minimises on each
+  // load. Persisted so it stays dismissed across visits.
+  const [roleStarted, setRoleStarted] = useState(false);
+  useEffect(() => {
+    try { setRoleStarted(window.localStorage.getItem('endeavrly:understand-started') === '1'); } catch { /* ignore */ }
+  }, []);
+  const markRoleStarted = useCallback(() => {
+    setRoleStarted(true);
+    try { window.localStorage.setItem('endeavrly:understand-started', '1'); } catch { /* ignore */ }
+  }, []);
+
   if (!career || !goalTitle) {
     return <EmptyState icon={Globe} message="Set a career goal in Discover first" />;
   }
@@ -989,9 +1002,13 @@ function UnderstandTab({
           title="Inside the Role"
           tooltip="What you'll actually do day to day, an honest look at the reality, and the tools of the trade."
           collapsed={uCollapsed('u-role')}
-          onToggle={() => uToggle('u-role')}
+          onToggle={() => {
+            // Opening it (it's currently collapsed) retires the "Start here" hint.
+            if (uCollapsed('u-role')) markRoleStarted();
+            uToggle('u-role');
+          }}
           badge={
-            uCollapsed('u-role') ? (
+            uCollapsed('u-role') && !roleStarted ? (
               <span className="journey-start-here inline-flex items-center gap-1 rounded-full border bg-primary/10 px-2.5 py-0.5 text-[11px] font-semibold text-primary">
                 Start here
                 <ArrowRight className="start-here-arrow h-3 w-3" />
