@@ -41,16 +41,37 @@ function CareerRadarPageContent() {
   const discoveryPreferences: DiscoveryPreferences | null =
     (profileData?.discoveryPreferences as DiscoveryPreferences) || null;
 
-  // Spotlight — guides new users to "What I like" / "Start Discovery", but
-  // only once they've sat idle on the radar for 20s (no taps, keys, or
-  // scrolling). An engaged user exploring the radar never sees it; it's a
-  // gentle nudge for someone who seems stuck. useSubtleHint resets its timer
-  // on every interaction, so the 20s is true inactivity.
+  // Has the user given us enough to have real matches on the radar? (They
+  // arrive here from the first-login wizard with these set.) Drives WHICH
+  // first-visit hint they see.
+  const hasPrefs = !!(
+    discoveryPreferences &&
+    ((discoveryPreferences.subjects?.length ?? 0) > 0 ||
+      (discoveryPreferences.workStyles?.length ?? 0) > 0 ||
+      (discoveryPreferences.interests?.length ?? 0) > 0 ||
+      !!discoveryPreferences.peoplePref)
+  );
+
+  // Spotlight — guides users who haven't done discovery yet to "What I like" /
+  // "Start Discovery", once they've sat idle on the radar for 20s. Scoped to
+  // !hasPrefs so a user who already has matches gets the explore/filters hint
+  // below instead (and never both).
   const radarHint = useSubtleHint({
     hintKey: "radar-spotlight",
-    enabled: isYouth && !profileLoading,
+    enabled: isYouth && !profileLoading && !hasPrefs,
     delayMs: 20000,
     durationMs: 4000,
+  });
+
+  // First-visit guidance for users who land here WITH matches (straight from
+  // the onboarding wizard): a calm, one-time pointer at the filters that also
+  // reminds them they can tap a dot to explore. Shows promptly on arrival, not
+  // after 20s, so the radar never feels like an unexplained chart.
+  const radarExploreHint = useSubtleHint({
+    hintKey: "radar-explore-filters",
+    enabled: isYouth && !profileLoading && hasPrefs,
+    delayMs: 1800,
+    durationMs: 9000,
   });
 
   // Listen for radar dot clicks → open the existing career detail sheet
@@ -127,6 +148,15 @@ function CareerRadarPageContent() {
         onDismiss={radarHint.dismiss}
         text="Tell us what you like to see your matches"
         targetSelector='[data-spotlight="radar-cta"]'
+      />
+
+      {/* First-visit guidance for users who arrive with matches — points at the
+          filters and reminds them they can tap a dot to explore. */}
+      <SpotlightHint
+        visible={radarExploreHint.visible}
+        onDismiss={radarExploreHint.dismiss}
+        text="Tap any dot to explore a career — or use these filters to focus your matches by sector, match strength, or what you like."
+        targetSelector='[data-spotlight="radar-filters"]'
       />
     </div>
   );

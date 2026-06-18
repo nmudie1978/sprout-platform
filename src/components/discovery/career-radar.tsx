@@ -2422,7 +2422,7 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
         </Link>
       )}
 
-      <div className="flex items-center justify-between px-4 py-3 border-b flex-wrap gap-2">
+      <div data-spotlight="radar-filters" className="flex items-center justify-between px-4 py-3 border-b flex-wrap gap-2">
         <div className="flex items-center gap-3">
           <span className="text-[11px] text-muted-foreground">
             {visibleDots.length} of {dots.length} match{dots.length !== 1 ? "es" : ""}
