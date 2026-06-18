@@ -19,8 +19,9 @@
 import { useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { X, ChevronRight, ArrowRight } from "lucide-react";
+import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { ReflectionsCarousel } from "@/components/library/reflections-carousel";
 import { useCuriositySaves } from "@/hooks/use-curiosity-saves";
 import { useAllInterestLevels, useInterestLevel } from "@/hooks/use-interest-level";
 import {
@@ -158,48 +159,10 @@ function SavedCareersTab() {
   );
 }
 
-// Per-lens visual language for the reflection branches — each stage gets a
-// glowing node + colour-matched expand panel, connected by a gradient trunk.
-const LENS_STYLE: Record<
-  ReflectionLens,
-  { text: string; dot: string; glow: string; panelBorder: string; panelBg: string }
-> = {
-  discover: {
-    text: "text-sky-400",
-    dot: "bg-sky-400",
-    glow: "shadow-[0_0_10px_1px_rgba(56,189,248,0.45)]",
-    panelBorder: "border-sky-400/60",
-    panelBg: "bg-sky-400/[0.06]",
-  },
-  understand: {
-    text: "text-violet-400",
-    dot: "bg-violet-400",
-    glow: "shadow-[0_0_10px_1px_rgba(167,139,250,0.45)]",
-    panelBorder: "border-violet-400/60",
-    panelBg: "bg-violet-400/[0.06]",
-  },
-  clarity: {
-    text: "text-emerald-400",
-    dot: "bg-emerald-400",
-    glow: "shadow-[0_0_10px_1px_rgba(52,211,153,0.45)]",
-    panelBorder: "border-emerald-400/60",
-    panelBg: "bg-emerald-400/[0.06]",
-  },
-};
-
 function ReflectionsTab() {
   const { data: session } = useSession();
   const userId = session?.user?.id;
-  const router = useRouter();
   const [entries, setEntries] = useState<LocalReflectionEntry[]>([]);
-  const [expanded, setExpanded] = useState<Set<string>>(() => new Set());
-  const toggle = (id: string) =>
-    setExpanded((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
-      return next;
-    });
   const { getAllCareers } = useCareerCatalog();
 
   // Reflections persist to the JourneyNotebook table; localStorage is the
@@ -265,93 +228,5 @@ function ReflectionsTab() {
     }))
     .sort((a, b) => b.newest.localeCompare(a.newest));
 
-  return (
-    <div className="space-y-4">
-      {groups.map((group) => (
-        <section
-          key={group.slug}
-          className="rounded-card border border-border/60 bg-card/40 overflow-hidden"
-        >
-          <div className="flex items-center gap-2 px-3 py-2.5 border-b border-border/40 bg-muted/10">
-            <span className="text-sm shrink-0">{group.career.emoji}</span>
-            <h3 className="text-xs font-bold uppercase tracking-wide text-foreground truncate">
-              {group.career.label}
-            </h3>
-            <span className="ml-auto inline-flex h-5 min-w-[20px] items-center justify-center rounded-full bg-primary/10 px-1.5 text-xs font-semibold tabular-nums text-primary">
-              {group.entries.length}
-            </span>
-          </div>
-
-          {/* Each stage hangs off a gradient trunk as a retractable branch:
-              a one-line preview when collapsed, the full reflection when
-              expanded. Expanding reveals an "open in My Journey" link. */}
-          <div className="relative px-3 py-2">
-            <div
-              aria-hidden
-              className="absolute left-[26px] top-4 bottom-4 w-0.5 rounded bg-gradient-to-b from-sky-400 via-violet-400 to-emerald-400 opacity-40"
-            />
-            <div className="space-y-0.5">
-              {group.entries.map((e) => {
-                const st = LENS_STYLE[e.lens];
-                const open = expanded.has(e.id);
-                return (
-                  <div key={e.id} className="relative">
-                    <button
-                      type="button"
-                      onClick={() => toggle(e.id)}
-                      aria-expanded={open}
-                      className="flex w-full items-center gap-3 rounded-lg px-2 py-2 text-left transition-colors hover:bg-muted/20"
-                    >
-                      <span
-                        className={cn(
-                          "relative z-10 h-3.5 w-3.5 shrink-0 rounded-full border-2 border-card",
-                          st.dot,
-                          st.glow,
-                        )}
-                      />
-                      <span className={cn("shrink-0 text-sm font-semibold", st.text)}>
-                        {e.lensLabel}
-                      </span>
-                      {!open && (
-                        <span className="truncate text-xs text-muted-foreground/70">
-                          {e.text}
-                        </span>
-                      )}
-                      <ChevronRight
-                        className={cn(
-                          "ml-auto h-3.5 w-3.5 shrink-0 text-muted-foreground/55 transition-transform",
-                          open && "rotate-90",
-                        )}
-                      />
-                    </button>
-                    {open && (
-                      <div
-                        className={cn(
-                          "mb-1 ml-[34px] rounded-r-lg border-l-2 px-3 py-2.5",
-                          st.panelBorder,
-                          st.panelBg,
-                        )}
-                      >
-                        <p className="whitespace-pre-wrap text-sm leading-relaxed text-foreground/85">
-                          {e.text}
-                        </p>
-                        <button
-                          type="button"
-                          onClick={() => router.push(`/my-journey#${e.lens}`)}
-                          className="mt-2 inline-flex items-center gap-1 text-xs font-medium text-primary transition-colors hover:text-primary/80"
-                        >
-                          Open {e.lensLabel} in My Journey
-                          <ArrowRight className="h-3 w-3" />
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </section>
-      ))}
-    </div>
-  );
+  return <ReflectionsCarousel groups={groups} />;
 }
