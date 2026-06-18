@@ -5,8 +5,8 @@ import Link from "next/link";
 import { GraduationCap, ChevronDown, ChevronUp } from "lucide-react";
 import type { Career } from "@/lib/career-pathways";
 import { useCareerCatalog } from "@/hooks/use-career-catalog";
-import { searchFields } from "@/lib/discover/field-options";
-import { getCareersForDiscipline, rankDisciplineCareers } from "@/lib/discover/degree-to-careers";
+import { searchFields, getCareersForField } from "@/lib/discover/field-options";
+import { rankDisciplineCareers } from "@/lib/discover/degree-to-careers";
 import { parseSalaryRange, formatSalary } from "@/lib/career-filters/utils";
 
 const GROWTH_META: Record<Career["growthOutlook"], { label: string; dot: string }> = {
@@ -76,7 +76,7 @@ export function DegreeToCareers({ onOpen, defaultOpenFieldId, defaultQuery }: De
 
   const rankedCareers = useMemo(() => {
     if (!selectedFieldId || isLoading) return [];
-    const ids = getCareersForDiscipline(selectedFieldId);
+    const ids = getCareersForField(selectedFieldId);
     const careers = ids.map((id) => getCareerById(id)).filter((c): c is Career => c !== undefined);
     return rankDisciplineCareers(careers);
   }, [selectedFieldId, isLoading, getCareerById]);

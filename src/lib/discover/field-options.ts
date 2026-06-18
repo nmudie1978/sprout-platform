@@ -1,10 +1,13 @@
 import bucketsData from "@/lib/education/data/discipline-buckets.json";
 import mapData from "@/lib/education/data/career-discipline-map.json";
+import { getCareersForDiscipline } from "./degree-to-careers";
 
 export interface FieldOption {
   id: string;
   label: string;
   aliases: string[];
+  /** Curated career ids for synthetic fields that span multiple discipline buckets. */
+  careerIds?: string[];
 }
 
 // Build a lookup: disciplineId -> label (from the buckets JSON)
@@ -28,10 +31,11 @@ const ALIASES: Record<string, string[]> = {
     "paramedic",
     "allied health",
     "occupational therapy",
+    "nutrition",
   ],
   dentistry: ["dentistry", "dental", "dentist", "oral health", "bds"],
   pharmacy: ["pharmacy", "pharmacology", "pharmaceutical", "pharmacist", "drug science"],
-  veterinary: ["veterinary", "vet", "animal medicine", "animal science", "zoomed"],
+  veterinary: ["veterinary", "vet", "animal medicine", "animal science", "zoomed", "veterinary medicine"],
   psychology: ["psychology", "psych", "behavioural science", "mental health"],
   "public-health": ["public health", "epidemiology", "community health", "health promotion"],
   "biology-life-sciences": [
@@ -41,6 +45,8 @@ const ALIASES: Record<string, string[]> = {
     "bioscience",
     "microbiology",
     "biotechnology",
+    "biomedical science",
+    "zoology",
   ],
   chemistry: ["chemistry", "chemical science", "organic chemistry", "analytical chemistry"],
   "environmental-earth-science": [
@@ -58,6 +64,7 @@ const ALIASES: Record<string, string[]> = {
     "math",
     "theoretical physics",
     "applied mathematics",
+    "statistics",
   ],
   "mechanical-engineering": [
     "mechanical engineering",
@@ -95,6 +102,9 @@ const ALIASES: Record<string, string[]> = {
     "informatics",
     "it",
     "programming",
+    "computer engineering",
+    "information systems",
+    "web development",
   ],
   "data-science-ai": [
     "data science",
@@ -143,6 +153,8 @@ const ALIASES: Record<string, string[]> = {
     "administration",
     "business administration",
     "bba",
+    "international business",
+    "project management",
   ],
   "economics-finance": [
     "economics",
@@ -151,6 +163,7 @@ const ALIASES: Record<string, string[]> = {
     "financial economics",
     "banking",
     "fintech",
+    "actuarial science",
   ],
   accounting: [
     "accounting",
@@ -175,6 +188,7 @@ const ALIASES: Record<string, string[]> = {
     "people management",
     "organisational behaviour",
     "talent management",
+    "human resource management",
   ],
   "education-teaching": [
     "education",
@@ -190,6 +204,7 @@ const ALIASES: Record<string, string[]> = {
     "community work",
     "welfare",
     "social services",
+    "sociology",
   ],
   "humanities-languages": [
     "humanities",
@@ -199,6 +214,10 @@ const ALIASES: Record<string, string[]> = {
     "english",
     "modern languages",
     "translation",
+    "anthropology",
+    "english literature",
+    "history",
+    "philosophy",
   ],
   "history-philosophy": [
     "history",
@@ -355,17 +374,75 @@ const ALIASES: Record<string, string[]> = {
   ],
 };
 
+// Discipline-bucket-backed options (careerIds resolved via the discipline map).
+const disciplineOptions: FieldOption[] = [...usedDisciplineIds].map((id) => ({
+  id,
+  label: bucketLabelMap.get(id) ?? id,
+  aliases: ALIASES[id] ?? [],
+}));
+
 /**
- * One entry per discipline id that actually appears in the career-discipline map.
- * Sorted by label A–Z.
+ * Synthetic fields that span multiple discipline buckets and therefore carry an
+ * explicit curated career list rather than mapping to a single discipline.
  */
-export const FIELD_OPTIONS: FieldOption[] = [...usedDisciplineIds]
-  .map((id) => ({
-    id,
-    label: bucketLabelMap.get(id) ?? id,
-    aliases: ALIASES[id] ?? [],
-  }))
-  .sort((a, b) => a.label.localeCompare(b.label));
+const syntheticOptions: FieldOption[] = [
+  {
+    id: "robotics",
+    label: "Robotics & Autonomous Systems",
+    aliases: [
+      "robotics",
+      "robotics engineering",
+      "robotics & ai",
+      "autonomous systems",
+      "autonomous vehicles engineering",
+      "autonomous vehicles",
+      "autonomous vehicle",
+      "mechatronics",
+      "mechatronics engineering",
+      "control systems engineering",
+      "embedded systems engineering",
+      "automation engineering",
+      "intelligent systems",
+      "human-robot interaction",
+      "cyber-physical systems",
+      "systems engineering",
+      "machine learning",
+    ],
+    careerIds: [
+      "robotics-engineer",
+      "robotics-software-engineer",
+      "space-robotics-engineer",
+      "autonomous-systems-engineer",
+      "autonomous-vehicle-engineer",
+      "human-robot-interaction-specialist",
+      "automation-engineer",
+      "automation-technician",
+      "ai-automation-engineer",
+      "embedded-developer",
+      "systems-engineer",
+      "drone-systems-engineer",
+      "drone-operator-uav",
+    ],
+  },
+];
+
+/**
+ * One entry per discipline id that actually appears in the career-discipline map,
+ * plus synthetic cross-bucket fields. Sorted by label A–Z.
+ */
+export const FIELD_OPTIONS: FieldOption[] = [...disciplineOptions, ...syntheticOptions].sort(
+  (a, b) => a.label.localeCompare(b.label),
+);
+
+/**
+ * Career ids for a field option. Synthetic fields use their curated `careerIds`;
+ * discipline-backed fields resolve via the career-discipline map.
+ */
+export function getCareersForField(fieldId: string): string[] {
+  const option = FIELD_OPTIONS.find((o) => o.id === fieldId);
+  if (option?.careerIds) return option.careerIds;
+  return getCareersForDiscipline(fieldId);
+}
 
 /**
  * Search field options by query.
