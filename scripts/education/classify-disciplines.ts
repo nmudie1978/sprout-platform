@@ -103,6 +103,7 @@ const KEYWORD_RULES: Array<[RegExp, DisciplineId]> = [
   [/electrical eng|electronic eng|electronics eng|power eng|control (systems )?eng|instrumentation eng|mechatronic|electrical engineer|automation eng|robotics eng/, "electrical-engineering"],
   [/chemical eng|process eng|petroleum eng|petrochemical|refinery eng|polymer eng|materials eng|metallurg/, "chemical-process-engineering"],
   [/aerospace eng|aeronautic|aircraft eng|avionics/, "aviation"],
+  [/mechanical eng|mechanical engineer|automotive eng|marine eng|industrial eng|manufacturing eng|production eng|hvac eng/, "mechanical-engineering"],
   [/marine eng|naval architect|ocean eng|offshore eng|subsea eng/, "maritime"],
 
   // ---- Computing / data / security / telecom ----
@@ -177,7 +178,7 @@ const KEYWORD_RULES: Array<[RegExp, DisciplineId]> = [
   [/\bmanager\b|management consultant|business analyst|operations (manager|director)|project manager|product (manager|owner)|entrepreneur|director\b|chief (executive|operating)|consultant\b|administrator\b/, "business-management"],
 
   // ---- Generic trades (very last, broad) ----
-  [/electrician|plumber|carpenter|joiner|bricklayer|welder|mechanic|machinist|fitter\b|fabricator|roofer|plasterer|tiler|glazier|painter and decorat|scaffold|locksmith|\bhvac|gas engineer|heating engineer|installer|technician\b|tradesperson|apprentice|metalwork|woodwork|stonemason|blacksmith|upholster|cabinet maker/, "vocational-trades"],
+  [/electrician|plumber|carpenter|joiner|bricklayer|welder|\bmechanic\b|machinist|fitter\b|fabricator|roofer|plasterer|tiler|glazier|painter and decorat|scaffold|locksmith|\bhvac|gas engineer|heating engineer|installer|technician\b|tradesperson|apprentice|metalwork|woodwork|stonemason|blacksmith|upholster|cabinet maker/, "vocational-trades"],
 ];
 
 function classify(id: string, title: string, category: CareerCategory): DisciplineId {
