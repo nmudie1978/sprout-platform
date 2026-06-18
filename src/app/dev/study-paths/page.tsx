@@ -9,8 +9,8 @@ export default function StudyPathsDev() {
         <EducationBrowser careerTitle="Doctor" careerId="doctor" country="NO" />
       </div>
       <div>
-        <h2 className="mb-2 font-semibold">astronaut (likely no domestic programmes → local fallback + Europe)</h2>
-        <EducationBrowser careerTitle="Astronaut" careerId="astronaut" country="NO" />
+        <h2 className="mb-2 font-semibold">hairdresser (no domestic programmes → local fallback + Europe)</h2>
+        <EducationBrowser careerTitle="Hairdresser" careerId="hairdresser" country="NO" />
       </div>
     </div>
   );

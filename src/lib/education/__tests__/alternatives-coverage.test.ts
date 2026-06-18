@@ -14,14 +14,13 @@ const hasLocal = (id: string) =>
   getProgrammesForCareer(id, { country: "NO" }).length > 0;
 const hasEurope = (id: string) => getEuropeanAlternatives(id).length > 0;
 
-// TODO(unskip in Task 6 once discipline-bucket data lands): the 80% gate.
 describe("universities coverage (Norway primary market)", () => {
-  it.skip("≥80% of careers have a local (NO) named university", () => {
+  it("≥80% of careers have a local (NO) named university", () => {
     const pct = careerIds.filter(hasLocal).length / careerIds.length;
     expect(pct).toBeGreaterThanOrEqual(0.8);
   });
 
-  it.skip("≥80% of careers have a European alternative", () => {
+  it("≥80% of careers have a European alternative", () => {
     const pct = careerIds.filter(hasEurope).length / careerIds.length;
     expect(pct).toBeGreaterThanOrEqual(0.8);
   });
