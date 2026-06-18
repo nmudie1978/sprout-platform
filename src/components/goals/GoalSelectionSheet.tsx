@@ -14,6 +14,7 @@ import { cn } from "@/lib/utils";
 import { toast } from "@/hooks/use-toast";
 import type { Career } from "@/lib/career-pathways";
 import { useCareerCatalog } from "@/hooks/use-career-catalog";
+import { pickDiverseHighGrowth } from "@/lib/discover/diverse-suggestions";
 import { createGoalWithMilestones, type GoalSlot, type CareerGoal } from "@/lib/goals/types";
 import { useDebounce } from "@/hooks/use-debounce";
 import { useIsMobile } from "@/hooks/use-media-query";
@@ -53,17 +54,19 @@ export function GoalSelectionSheet({
   const [showPrimaryConfirm, setShowPrimaryConfirm] = useState(false);
 
   const debouncedQuery = useDebounce(searchQuery, 200);
-  const { getAllCareers, searchCareers } = useCareerCatalog();
+  const { getAllCareers, searchCareers, getCategoryForCareer } = useCareerCatalog();
   // Don't auto-focus the search on mobile: it pops the keyboard on open, which
   // covers the "Set as your career goal" footer so it can't be reached.
   const isMobile = useIsMobile();
 
-  // Get suggested careers (high growth, not already the goal)
+  // Suggested careers: a diverse, industry-spanning mix of high-growth roles
+  // (not the first 6 in catalogue order, which clusters — e.g. all genetics).
   const suggestedCareers = useMemo(() => {
-    return getAllCareers()
-      .filter((c) => c.growthOutlook === "high" && c.title !== primaryGoal?.title)
-      .slice(0, 6);
-  }, [primaryGoal, getAllCareers]);
+    return pickDiverseHighGrowth(getAllCareers(), getCategoryForCareer, {
+      limit: 6,
+      exclude: (c) => c.title === primaryGoal?.title,
+    });
+  }, [primaryGoal, getAllCareers, getCategoryForCareer]);
 
   // Search results
   const searchResults = useMemo(() => {
