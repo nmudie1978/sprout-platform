@@ -106,7 +106,11 @@ export function MobileSheet({
             }
             transition={{ type: "spring", damping: 25, stiffness: 300 }}
             className={cn(
-              "bg-card text-card-foreground shadow-xl",
+              // Flex column so the header stays fixed, the content scrolls, and
+              // a MobileSheetFooter pins to the bottom — the action button is
+              // always reachable even when the content (or the mobile keyboard)
+              // would otherwise push it off-screen.
+              "bg-card text-card-foreground shadow-xl flex flex-col",
               showAsSheet ? [
                 "fixed z-[60] bottom-0 left-0 right-0",
                 "rounded-t-3xl border-t",
@@ -122,7 +126,7 @@ export function MobileSheet({
           >
             {/* Handle bar for mobile */}
             {showAsSheet && (
-              <div className="flex justify-center pt-3 pb-1">
+              <div className="flex justify-center pt-3 pb-1 shrink-0">
                 <div className="w-12 h-1.5 bg-muted-foreground/30 rounded-full" />
               </div>
             )}
@@ -140,7 +144,7 @@ export function MobileSheet({
 
             {/* Header */}
             <div className={cn(
-              "px-4 pb-3",
+              "px-4 pb-3 shrink-0",
               showAsSheet ? "pt-2" : "pt-5",
               showClose && "pr-14"
             )}>
@@ -160,15 +164,14 @@ export function MobileSheet({
               )}
             </div>
 
-            {/* Content - scrollable. On mobile, pad the bottom with safe-area-inset
-                so the footer clears the home indicator and isn't covered by the
-                OS gesture area. */}
+            {/* Content - scrollable, flex-1 within the bounded sheet so it
+                always fits and a pinned footer stays reachable. On mobile, pad
+                the bottom with safe-area-inset so a sticky footer clears the
+                home indicator and the OS gesture area. */}
             <div
               className={cn(
-                "overflow-y-auto overscroll-contain px-4 pb-4",
-                showAsSheet
-                  ? "max-h-[calc(90dvh-80px)] pb-[max(env(safe-area-inset-bottom,0px),1rem)]"
-                  : "max-h-[calc(85vh-100px)]"
+                "flex-1 min-h-0 overflow-y-auto overscroll-contain px-4 pb-4",
+                showAsSheet && "pb-[max(env(safe-area-inset-bottom,0px),1rem)]"
               )}
               style={{ WebkitOverflowScrolling: "touch" }}
             >
@@ -193,7 +196,11 @@ export function MobileSheetFooter({
 }) {
   return (
     <div className={cn(
-      "flex gap-3 pt-4 mt-2 border-t",
+      // Pinned to the bottom of the scrollable content (opaque, full-width via
+      // the negative inset that cancels the content's px-4) so the action
+      // button is always visible/tappable — the fix for "can't scroll down to
+      // the button" on mobile. Sits above the content's safe-area padding.
+      "sticky bottom-0 z-10 -mx-4 px-4 bg-card flex gap-3 pt-4 mt-2 border-t",
       className
     )}>
       {children}
