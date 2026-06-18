@@ -52,18 +52,23 @@
   }
 
   .dark {
-    --background: 220 20% 10%;
-    --foreground: 0 0% 97%;
-    --card: 220 20% 12%;
-    --card-foreground: 0 0% 97%;
-    --popover: 220 20% 12%;
-    --popover-foreground: 0 0% 97%;
+    /* "Sapphire" — a rich, jewel-toned dark blue (hue 218). Owner-picked from
+       the /lab/dark-themes review. Surfaces step up in lightness (bg → card →
+       muted → secondary → border) and ease off saturation as they lift, on a
+       cool-white foreground. The teal brand/ring, gold accent, and semantic
+       colours are kept from the previous dark theme. */
+    --background: 218 58% 10%;
+    --foreground: 210 24% 96%;
+    --card: 218 48% 14%;
+    --card-foreground: 210 24% 96%;
+    --popover: 218 48% 14%;
+    --popover-foreground: 210 24% 96%;
     --primary: 166 72% 50%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 220 15% 18%;
-    --secondary-foreground: 0 0% 97%;
-    --muted: 220 15% 16%;
-    --muted-foreground: 215 10% 60%;
+    --secondary: 218 40% 20%;
+    --secondary-foreground: 210 24% 96%;
+    --muted: 218 38% 17%;
+    --muted-foreground: 215 16% 64%;
     --accent: 40 26% 22%;               /* warm gold-tinted surface on the dark canvas */
     --accent-foreground: 40 58% 70%;    /* soft gold */
     /* Restrained semantic palette — brighter on the dark canvas. */
@@ -72,12 +77,12 @@
     --info: 205 28% 62%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
-    --border: 220 15% 20%;
-    --input: 220 15% 20%;
+    --border: 218 40% 24%;
+    --input: 218 40% 24%;
     --ring: 166 72% 50%;
-    --sidebar: 220 20% 7%;
-    --sidebar-foreground: 215 10% 60%;
-    --sidebar-border: 220 15% 18%;
+    --sidebar: 218 62% 8%;
+    --sidebar-foreground: 215 16% 64%;
+    --sidebar-border: 218 40% 18%;
     /* Brighter glow on dark so it shows up against the near-black canvas */
     --brand: 172 72% 55%;
     --brand-foreground: 166 66% 65%;
