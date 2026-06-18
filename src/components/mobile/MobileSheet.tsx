@@ -112,9 +112,13 @@ export function MobileSheet({
               // would otherwise push it off-screen.
               "bg-card text-card-foreground shadow-xl flex flex-col",
               showAsSheet ? [
-                "fixed z-[60] bottom-0 left-0 right-0",
-                "rounded-t-3xl border-t",
-                "max-h-[90dvh]"
+                // FULL-SCREEN on mobile (fixed inset-0) so the whole modal IS
+                // the viewport. The previous bottom-sheet used max-h-[90dvh],
+                // but on real mobile browsers the dynamic address bar left part
+                // of the sheet off-screen and unscrollable ("can't see the whole
+                // modal"). inset-0 removes all viewport-unit maths; pt clears the
+                // notch.
+                "fixed inset-0 z-[60] pt-[env(safe-area-inset-top,0px)]",
               ] : [
                 "relative z-[60]",
                 "rounded-2xl border",
@@ -124,13 +128,6 @@ export function MobileSheet({
             style={!showAsSheet ? { maxHeight: `${maxHeightPercent}vh` } : undefined}
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Handle bar for mobile */}
-            {showAsSheet && (
-              <div className="flex justify-center pt-3 pb-1 shrink-0">
-                <div className="w-12 h-1.5 bg-muted-foreground/30 rounded-full" />
-              </div>
-            )}
-
             {/* Close button */}
             {showClose && (
               <button
