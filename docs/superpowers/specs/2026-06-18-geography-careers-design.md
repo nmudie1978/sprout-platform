@@ -27,7 +27,7 @@ career slots into the best existing category array in
 | Mapping & GIS — GIS Analyst, GIS Developer, Geospatial Analyst, Spatial Data Analyst, Cartographer, Remote Sensing Specialist, Geomatics Specialist, Mapping Technician, Hydrographer | `TECHNOLOGY_IT` | 9 |
 | Tech & Data — Geospatial Data Scientist, Location Intelligence Analyst, Satellite Data Analyst, Earth Observation Specialist, Drone Mapping Specialist, GIS Manager | `TECHNOLOGY_IT` | 6 |
 | Emerging AI-era — Geospatial AI Engineer, Climate Data Scientist, Satellite Analytics Specialist, Digital Twin Specialist, Smart City Planner, Earth Observation Scientist, Autonomous Mapping Systems Engineer, Environmental Intelligence Analyst | `ARTIFICIAL_INTELLIGENCE` | 8 |
-| Climate science — Meteorologist, Climatologist, Weather Forecaster | `HEALTHCARE_LIFE_SCIENCES` | 3 |
+| Atmospheric science — Meteorologist, Climatologist, Weather Forecaster | `TECHNOLOGY_IT` | 3 |
 | Environment science — Ecologist, Climate Change Analyst, Natural Resource Manager | `HEALTHCARE_LIFE_SCIENCES` | 3 |
 | Environment/risk consulting — Environmental Consultant, Sustainability Consultant, Environmental Planner, Climate Risk Analyst, Environmental Risk Consultant | `BUSINESS_MANAGEMENT` | 5 |
 | Planning — Town Planner, Regional Planner, Transport Planner, Infrastructure Planner, Land Use Planner, Development Planner, Housing Policy Officer | `PUBLIC_SERVICE_SAFETY` | 7 |
@@ -38,6 +38,14 @@ career slots into the best existing category array in
 | Education & research — Research Scientist (geo/earth-science framed), Field Researcher | `EDUCATION_TRAINING` | 2 |
 
 **Total: 61.**
+
+> Implementation note: the three atmospheric-science roles (Meteorologist,
+> Climatologist, Weather Forecaster) were placed in `TECHNOLOGY_IT` rather than
+> `HEALTHCARE_LIFE_SCIENCES`. In the life-sciences bucket the matching engine
+> treated them as biology/health-people affinities, so they ranked top for a
+> "psychology/helping-people" persona (caught by the adversarial smell-test).
+> `TECHNOLOGY_IT` groups them coherently with the earth-observation/geospatial
+> cluster (all earth-data work) and fixes the mis-match.
 
 ### Near-twin handling
 

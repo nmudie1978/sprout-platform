@@ -332,6 +332,19 @@ export const aiFutureOfWork: AiFutureOfWork = {
             { label: "AI Content Strategist" },
           ],
         },
+        {
+          label: "Geospatial & climate AI",
+          roles: [
+            { label: "Geospatial AI Engineer", careerId: "geospatial-ai-engineer" },
+            { label: "Climate Data Scientist", careerId: "climate-data-scientist" },
+            { label: "Satellite Analytics Specialist", careerId: "satellite-analytics-specialist" },
+            { label: "Earth Observation Scientist", careerId: "earth-observation-scientist" },
+            { label: "Digital Twin Specialist", careerId: "digital-twin-specialist" },
+            { label: "Smart City Planner", careerId: "smart-city-planner" },
+            { label: "Autonomous Mapping Systems Engineer", careerId: "autonomous-mapping-systems-engineer" },
+            { label: "Environmental Intelligence Analyst", careerId: "environmental-intelligence-analyst" },
+          ],
+        },
       ],
     },
     skills: {
