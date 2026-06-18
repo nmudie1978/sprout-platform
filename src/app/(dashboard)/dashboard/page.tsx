@@ -144,7 +144,7 @@ function DashboardSection({
         {action}
       </div>
       <div className={cn(
-        "rounded-card border border-border bg-card p-3 sm:p-4 flex-1",
+        "rounded-card border border-primary/30 bg-card p-3 sm:p-4 flex-1",
         "shadow-sm",
         fixedHeight,
       )}>

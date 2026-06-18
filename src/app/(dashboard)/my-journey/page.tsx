@@ -337,12 +337,13 @@ function FullscreenRoadmap({ goalTitle, onClose }: { goalTitle: string; onClose:
           <X className="h-3.5 w-3.5" /> Close
         </button>
       </div>
-      {/* Render at natural size and let the overlay scroll on both axes.
-          Fit-to-width shrank long roadmaps to an unreadable strip in
-          fullscreen ("the fullscreen doesn't work") — scrolling keeps every
-          step legible and reachable instead. */}
-      <div className="flex-1 min-h-0 overflow-auto p-6">
-        <PersonalCareerTimeline primaryGoalTitle={goalTitle} />
+      {/* Fit the whole road to the screen width so EVERY step is visible —
+          including the first ("Your Starting Point"). Natural-size scrolling
+          opened scrolled past the first step; fit-to-width guarantees it's in
+          view, and the now-compact canvas height keeps it from looking like a
+          thin strip. Centred, with scroll as a fallback for very long roads. */}
+      <div className="flex-1 min-h-0 overflow-auto p-6 flex items-center justify-center">
+        <PersonalCareerTimeline primaryGoalTitle={goalTitle} fitToWidth />
       </div>
     </motion.div>
   );
