@@ -402,18 +402,6 @@ export default function DashboardPage() {
     setCareerMatchesCardDismissed(true);
   }, []);
 
-  // "New here? Take a quick look around" first-run card — dismissible.
-  const [firstRunCardDismissed, setFirstRunCardDismissed] = useState(true);
-  useEffect(() => {
-    setFirstRunCardDismissed(
-      typeof window !== "undefined" &&
-        window.localStorage.getItem("firstRunCardDismissed") === "1"
-    );
-  }, []);
-  const dismissFirstRunCard = useCallback(() => {
-    try { window.localStorage.setItem("firstRunCardDismissed", "1"); } catch {}
-    setFirstRunCardDismissed(true);
-  }, []);
 
   const { data: onboardingStatus, refetch: refetchOnboarding } = useQuery({
     queryKey: ["onboarding-status"],
@@ -896,71 +884,11 @@ export default function DashboardPage() {
           purpose={t('dashboard.pageContext')}
         />
 
-        {/* ── First-action card ───────────────────────────────────
-            Three states, in order of priority:
-            1. First login + wizard not yet completed → open the wizard
-            2. Wizard completed but radar empty → take them to the radar
-            3. Radar populated but no goal yet → nudge them toward Career Radar
-            Card disappears once they have a primary goal set.
-        */}
-        {(() => {
-          // discoveryPreferences is a Json field on YouthProfile not declared
-          // in the local profileData type — read it dynamically.
-          const dp = (profileData as { discoveryPreferences?: { subjects?: string[]; workStyles?: string[] } } | null)?.discoveryPreferences;
-          const hasDiscoveryPrefs = !!dp && (
-            (dp.subjects?.length ?? 0) > 0 ||
-            (dp.workStyles?.length ?? 0) > 0
-          );
-          const hasGoal = !!goalTitle;
-
-          // State 1: brand-new user — the walkthrough auto-opens; this is a
-          // fallback card in case they closed it without completing.
-          if (isFirstLogin && !firstRunCardDismissed) {
-            return (
-              <div className="mb-6">
-                <GlassCard className="relative overflow-hidden border-border/40">
-                  <button
-                    onClick={dismissFirstRunCard}
-                    aria-label="Dismiss"
-                    title="Dismiss"
-                    className="absolute top-3 right-3 p-1.5 rounded-control text-muted-foreground/60 hover:text-foreground hover:bg-muted/40 transition-colors"
-                  >
-                    <X className="h-4 w-4" />
-                  </button>
-                  <div className="p-5 sm:p-6">
-                    <div className="flex items-start gap-4">
-                      <div className="p-2.5 rounded-control bg-muted/30 shrink-0">
-                        <Sparkles className="h-5 w-5 text-muted-foreground" />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <h2 className="text-lg font-semibold text-foreground mb-1.5">
-                          {t('firstLogin.cardTitle')}
-                        </h2>
-                        <p className="text-sm text-muted-foreground/70 leading-relaxed mb-4 max-w-md">
-                          {t('firstLogin.cardDescription')}
-                        </p>
-                        <button
-                          onClick={() => {
-                            dismissedRef.current = true;
-                            setShowOnboardingWizard(true);
-                          }}
-                          className="inline-flex items-center gap-2 px-4 py-2 rounded-control bg-primary hover:bg-primary/90 text-primary-foreground text-sm font-medium transition-colors"
-                        >
-                          {t('firstLogin.startWalkthrough')}
-                          <ArrowRight className="h-4 w-4" />
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </GlassCard>
-              </div>
-            );
-          }
-
-          // No separate guidance card — the My Journey card below handles
-          // the "Choose a Primary Goal" nudge directly.
-          return null;
-        })()}
+        {/* First-run walkthrough is presented ONLY via the auto-opening
+            OrientationWalkthrough modal above (and the menu replay button) —
+            the redundant "New here? Take a quick look around" dashboard card was
+            removed so onboarding is offered in one place, not two. The "Choose a
+            Primary Goal" nudge is handled by the My Journey card below. */}
 
         {/* ── 1. My Journey Card ─────────────────────────────── */}
         {(() => {
