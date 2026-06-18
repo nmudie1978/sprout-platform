@@ -45,23 +45,35 @@ interface VippsProfile {
 const SESSION_REFRESH_MS = 60 * 1000;
 
 async function loadSessionFields(userId: string) {
-  return prisma.user.findUnique({
-    where: { id: userId },
-    select: {
-      role: true,
-      ageBracket: true,
-      accountStatus: true,
-      isVerifiedAdult: true,
-      deletedAt: true,
-      youthProfile: {
-        select: {
-          displayName: true,
-          profileVisibility: true,
-          guardianConsent: true,
+  // LegalAcceptance has no Prisma relation to User (it's keyed by a unique
+  // userId), so fetch it alongside and cache it on the JWT. The dashboard
+  // layout then reads acceptance from the session instead of issuing its own
+  // legalAcceptance query on every navigation.
+  const [user, legalAcceptance] = await Promise.all([
+    prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        role: true,
+        ageBracket: true,
+        accountStatus: true,
+        isVerifiedAdult: true,
+        deletedAt: true,
+        youthProfile: {
+          select: {
+            displayName: true,
+            profileVisibility: true,
+            guardianConsent: true,
+          },
         },
       },
-    },
-  });
+    }),
+    prisma.legalAcceptance.findUnique({
+      where: { userId },
+      select: { termsVersion: true, privacyVersion: true },
+    }),
+  ]);
+  if (!user) return null;
+  return { ...user, legalAcceptance };
 }
 
 type SessionUserFields = Awaited<ReturnType<typeof loadSessionFields>>;
@@ -95,6 +107,7 @@ function applySessionFieldsToToken(token: JWT, dbUser: SessionUserFields): void 
   token.isVerifiedAdult = dbUser.isVerifiedAdult;
   token.guardianConsent = dbUser.youthProfile?.guardianConsent ?? false;
   token.youthProfile = dbUser.youthProfile ?? null;
+  token.legalAcceptance = dbUser.legalAcceptance ?? null;
 }
 
 export const authOptions: NextAuthOptions = {
@@ -329,6 +342,7 @@ export const authOptions: NextAuthOptions = {
           session.user.accountStatus = token.accountStatus;
           session.user.isVerifiedAdult = token.isVerifiedAdult;
           session.user.youthProfile = token.youthProfile ?? null;
+          session.user.legalAcceptance = token.legalAcceptance ?? null;
         }
       }
       return session;

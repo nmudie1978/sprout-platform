@@ -41,6 +41,23 @@ export async function loadTwinHistory(
   });
 }
 
+/**
+ * The timestamp of the most recent turn for this user+career. loadTwinHistory
+ * orders ascending + take, so its last row is NOT the newest — this is a
+ * dedicated newest-first lookup, fetched once by the GET route and shared with
+ * loadTwinMemory / loadRecentActivity.
+ */
+export async function loadLastTurnAt(
+  userId: string,
+  careerId: string,
+): Promise<{ createdAt: Date } | null> {
+  return prisma.careerTwinMessage.findFirst({
+    where: { userId, careerId },
+    orderBy: { createdAt: "desc" },
+    select: { createdAt: true },
+  });
+}
+
 /** Persist one or more turns (user message + assistant reply). */
 export async function appendTwinTurns(
   userId: string,

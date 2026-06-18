@@ -11,7 +11,7 @@ import {
   getMode,
   CAREER_TWIN_MODES,
 } from "@/lib/career-twin";
-import { resolveCareerContext, loadProfileContext, loadRecentActivity } from "@/lib/career-twin/resolve";
+import { resolveCareerContext, loadProfileContext, loadRecentActivity, loadActiveGoal } from "@/lib/career-twin/resolve";
 import { buildProactiveOpener, localeToTwinLang } from "@/lib/career-twin/opener";
 import { buildContextStarters } from "@/lib/career-twin/starters";
 import {
@@ -23,7 +23,7 @@ import {
 } from "@/lib/ai-guardrails";
 import { checkRateLimitAsync, RateLimits } from "@/lib/rate-limit";
 import { logAndSwallow, captureServerError } from "@/lib/observability";
-import { loadTwinHistory, appendTwinTurns, toPromptHistory, TWIN_CONTEXT_TURNS } from "@/lib/career-twin/history";
+import { loadTwinHistory, loadLastTurnAt, appendTwinTurns, toPromptHistory, TWIN_CONTEXT_TURNS } from "@/lib/career-twin/history";
 import { loadTwinMemory, isReturningAfterGap } from "@/lib/career-twin/memory";
 
 function isOpenAIConfigured(): boolean {
@@ -67,13 +67,21 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ needsCareer: true });
     }
 
-    const profile = await loadProfileContext(session.user.id);
+    // Fetch the profile, history, and the two SHARED rows (active goal + last
+    // turn) once. loadTwinMemory and loadRecentActivity both need the latter
+    // two, so injecting them avoids fetching the active goal and last turn 2-3×
+    // across this open.
+    const [profile, history, activeGoal, lastTurn] = await Promise.all([
+      loadProfileContext(session.user.id),
+      loadTwinHistory(session.user.id, career.id),
+      loadActiveGoal(session.user.id),
+      loadLastTurnAt(session.user.id, career.id),
+    ]);
     const persona = buildPersona({ userId: session.user.id, career, profile });
 
-    const [history, memory, recentActivity] = await Promise.all([
-      loadTwinHistory(session.user.id, career.id),
-      loadTwinMemory(session.user.id, career.id),
-      loadRecentActivity(session.user.id, career, profile),
+    const [memory, recentActivity] = await Promise.all([
+      loadTwinMemory(session.user.id, career.id, Date.now(), { lastTurn, activeGoal }),
+      loadRecentActivity(session.user.id, career, profile, { activeGoal, lastTurn }),
     ]);
 
     // Deterministic, zero-cost proactive opener built from REAL recent
