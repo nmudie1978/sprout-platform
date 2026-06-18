@@ -11,7 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
-import { Trash2, AlertTriangle, Target, AlertCircle, User, ExternalLink, MessageSquare, Info, Sparkles, Compass, ShieldAlert, Flag } from "lucide-react";
+import { Trash2, AlertTriangle, AlertCircle, User, ExternalLink, MessageSquare, Info, Sparkles, Compass, ShieldAlert, Flag } from "lucide-react";
 import { ReportModal } from "@/components/report-modal";
 import { DiscoveryQuizDialog } from "@/components/discovery/discovery-quiz-dialog";
 import type { DiscoveryPreferences } from "@/lib/career-pathways";
@@ -141,17 +141,6 @@ export default function ProfilePage() {
   }, [session?.user?.id]);
 
   // Fetch primary goal from goals API
-  const { data: goalsData } = useQuery({
-    queryKey: ["goals"],
-    queryFn: async () => {
-      const response = await fetch("/api/goals");
-      if (!response.ok) return null;
-      return response.json();
-    },
-    enabled: !!session?.user?.id && session?.user?.role === "YOUTH",
-    staleTime: 30 * 1000,
-  });
-
   // Only initialize form data once when profile first loads
   useEffect(() => {
     if (profile && !formInitializedRef.current) {
@@ -517,7 +506,7 @@ export default function ProfilePage() {
                 My <span className="text-primary">Profile</span>
               </h1>
               <p className="text-muted-foreground text-sm sm:text-base truncate">
-                Set your career direction, showcase your skills, and build your profile
+                Your personal details
               </p>
             </div>
           </div>
@@ -540,9 +529,8 @@ export default function ProfilePage() {
         // even when it was already set due to enum vs free-text mismatch,
         // and the field is a nice-to-have rather than a gate.
         if (!profile.bio) missingRecommended.push("About Me (bio)");
-        if (!goalsData?.primaryGoal) missingRecommended.push("Career Goal");
 
-        const totalFields = 6; // 4 required + 2 recommended
+        const totalFields = 5; // 4 required + 1 recommended
         const completedFields = totalFields - missingRequired.length - missingRecommended.length;
         const percent = Math.round((completedFields / totalFields) * 100);
         const isComplete = missingRequired.length === 0 && missingRecommended.length === 0;
@@ -597,81 +585,6 @@ export default function ProfilePage() {
           </div>
         );
       })()}
-
-      {/* Career Direction + Discovery Interests — side by side, top of profile */}
-      {profile && (
-        <div className="mb-6 relative z-10">
-        <Card className="border border-primary/20 overflow-hidden relative z-10">
-          <div className="absolute inset-0 bg-primary/5 pointer-events-none" />
-          <CardContent className="relative z-10 p-5 sm:p-6">
-            {/* Header with tooltip */}
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-2">
-                <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground/70">Career Direction</h2>
-                <TooltipProvider delayDuration={200}>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Info className="h-3.5 w-3.5 text-muted-foreground/65 cursor-help" />
-                    </TooltipTrigger>
-                    <TooltipContent side="right" className="max-w-[260px] text-xs p-3">
-                      <p className="font-medium mb-1">Why this matters</p>
-                      <p className="text-muted-foreground">Your career goal drives your entire My Journey experience — from research and career roadmap to action planning. Set or change it in My Journey; your progress is saved per goal.</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              </div>
-            </div>
-
-            {/* Goals grid */}
-            {goalsData?.primaryGoal ? (
-              <div className="grid gap-3">
-                {/* Primary Goal */}
-                <div className="rounded-control border border-primary/20 bg-primary/5 p-3">
-                  <div className="flex items-center justify-between mb-1.5">
-                    <div className="flex items-center gap-1">
-                      <span className="text-xs font-medium uppercase tracking-wider text-primary/60">Career goal</span>
-                      <TooltipProvider delayDuration={150}>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Info className="h-3 w-3 text-primary/40 hover:text-primary/70 cursor-help transition-colors" />
-                          </TooltipTrigger>
-                          <TooltipContent side="top" className="max-w-[260px] text-xs leading-snug">
-                            <p className="font-semibold mb-1">Your main career focus</p>
-                            <p className="text-muted-foreground">
-                              Your career goal powers everything in My Journey — your roadmap, study paths, suggested actions, voice simulation, and progress. Set or change it in My Journey.
-                            </p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-                    </div>
-                    <Badge
-                      variant="secondary"
-                      className={`text-xs h-4 ${
-                        goalsData.primaryGoal.status === "committed"
-                          ? "bg-success/10 text-success"
-                          : "bg-info/10 text-info"
-                      }`}
-                    >
-                      {goalsData.primaryGoal.status === "committed" ? "Committed" : "Exploring"}
-                    </Badge>
-                  </div>
-                  <p className="text-sm font-semibold truncate">{goalsData.primaryGoal.title}</p>
-                </div>
-              </div>
-            ) : (
-              <div className="rounded-control border border-dashed border-success/20 p-6 flex flex-col items-center text-center">
-                <Target className="h-8 w-8 text-success/30 mb-2" />
-                <p className="text-sm font-medium text-muted-foreground">No career goal set yet</p>
-                <p className="text-xs text-muted-foreground/60 mt-1">
-                  Your goal powers <span className="text-success/70 font-medium">My Journey</span> — it shapes your research, roadmap, and action plan
-                </p>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        </div>
-      )}
 
       <div className="grid gap-4 sm:gap-6 lg:grid-cols-3 relative z-10">
         {/* Main Profile Form */}
