@@ -16,6 +16,7 @@ import type { Career } from "@/lib/career-pathways";
 import { useCareerCatalog } from "@/hooks/use-career-catalog";
 import { createGoalWithMilestones, type GoalSlot, type CareerGoal } from "@/lib/goals/types";
 import { useDebounce } from "@/hooks/use-debounce";
+import { useIsMobile } from "@/hooks/use-media-query";
 import { syncGuidanceGoal } from "@/lib/guidance/rules";
 
 interface GoalSelectionSheetProps {
@@ -53,6 +54,9 @@ export function GoalSelectionSheet({
 
   const debouncedQuery = useDebounce(searchQuery, 200);
   const { getAllCareers, searchCareers } = useCareerCatalog();
+  // Don't auto-focus the search on mobile: it pops the keyboard on open, which
+  // covers the "Set as your career goal" footer so it can't be reached.
+  const isMobile = useIsMobile();
 
   // Get suggested careers (high growth, not already the goal)
   const suggestedCareers = useMemo(() => {
@@ -158,7 +162,7 @@ export function GoalSelectionSheet({
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-9 h-11"
-            autoFocus
+            autoFocus={!isMobile}
           />
           {searchQuery && (
             <button
