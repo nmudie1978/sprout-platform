@@ -33,13 +33,13 @@
     --info: 205 21% 37%;                /* #4A6172 — warm slate (DS "secondary") */
     --destructive: 0 72% 50%;           /* calm danger */
     --destructive-foreground: 0 0% 100%;
-    --border: 186 24% 72%;              /* defined teal border so tinted cards stay clearly separated */
-    --input: 186 24% 74%;
+    --border: 187 30% 60%;              /* stronger teal border so tinted cards/sections stay clearly separated in light mode */
+    --input: 187 28% 64%;
     --ring: 178 69% 29%;
     --radius: 0.75rem;
     --sidebar: 189 36% 88%;             /* pale-teal sidebar — tuned to the canvas */
     --sidebar-foreground: 200 30% 18%;
-    --sidebar-border: 189 24% 78%;
+    --sidebar-border: 186 42% 52%;      /* defined teal splitter between sidebar and canvas (light mode) */
     /* Glow brand — teal, used by the Glow component in light mode */
     --brand: 178 69% 32%;
     --brand-foreground: 178 60% 38%;
