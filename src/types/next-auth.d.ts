@@ -26,6 +26,9 @@ declare module "next-auth" {
         /** YouthProfile.country — drives country-aware localization (e.g. Spain). */
         country?: string | null;
       } | null;
+      /** Cached on the JWT so the dashboard layout can check current Terms/
+       *  Privacy acceptance without a per-navigation DB query. */
+      legalAcceptance?: { termsVersion: string; privacyVersion: string } | null;
     } & DefaultSession["user"];
   }
 
@@ -60,6 +63,9 @@ declare module "next-auth/jwt" {
       guardianConsent: boolean;
       country?: string | null;
     } | null;
+    // Current Terms/Privacy acceptance, cached so the dashboard layout's
+    // acceptance gate needs no per-navigation DB query.
+    legalAcceptance?: { termsVersion: string; privacyVersion: string } | null;
     // Set when the account is soft-deleted/missing at the last refresh — the
     // session() callback blanks the user id so the request reads as signed-out.
     revoked?: boolean;

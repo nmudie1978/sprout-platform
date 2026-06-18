@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -11,6 +12,7 @@ import { Navigation2, Loader2 } from "lucide-react";
 
 export default function AcceptTermsPage() {
   const router = useRouter();
+  const { update } = useSession();
   const { toast } = useToast();
   const [accepted, setAccepted] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -34,6 +36,11 @@ export default function AcceptTermsPage() {
         title: "Terms accepted",
         description: "Thank you for accepting our terms.",
       });
+
+      // Force the JWT to refresh so the newly-recorded acceptance is on the
+      // token before the dashboard layout's acceptance gate runs — otherwise
+      // the cached token would bounce the user straight back here.
+      await update();
 
       router.push("/dashboard");
       router.refresh();

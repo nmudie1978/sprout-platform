@@ -8,7 +8,6 @@ import { AmbientBackdrop } from "@/components/ui/ambient-backdrop";
 import { ThemeTallyPing } from "@/components/theme-tally-ping";
 import { ReportModal } from "@/components/report-modal";
 import { CompareHost } from "@/components/compare/compare-host";
-import { prisma } from "@/lib/prisma";
 import { isAcceptanceCurrent } from "@/lib/legal/versions";
 import { headers } from "next/headers";
 import Link from "next/link";
@@ -52,32 +51,20 @@ export default async function DashboardLayout({
     redirect("/dashboard");
   }
 
-  // Run legal check, profile fetch, and preferences in parallel
-  const [legalAcceptance, profileData] = await Promise.all([
-    prisma.legalAcceptance.findUnique({
-      where: { userId: session.user.id },
-      select: { termsVersion: true, privacyVersion: true },
-    }),
-    session.user.role === "YOUTH"
-      ? prisma.youthProfile.findUnique({
-          where: { userId: session.user.id },
-          select: { displayName: true },
-        })
-      : Promise.resolve(null),
-  ]);
-
+  // Acceptance + display name are both cached on the JWT (refreshed on a
+  // throttle in the auth jwt() callback), so this render needs no DB query.
   // Re-prompt for consent when there's no acceptance OR the stored versions
-  // are behind the current Terms/Privacy versions (GDPR Art. 7).
-  if (!isAcceptanceCurrent(legalAcceptance)) {
+  // are behind the current Terms/Privacy versions (GDPR Art. 7). The accept
+  // flow calls session update() so a fresh acceptance surfaces immediately.
+  if (!isAcceptanceCurrent(session.user.legalAcceptance)) {
     redirect("/legal/accept");
   }
 
-  let displayName: string | null = null;
-  let userProfilePic: string | null = null;
-
-  if (session.user.role === "YOUTH" && profileData && "displayName" in profileData) {
-    displayName = profileData.displayName || null;
-  }
+  const displayName =
+    session.user.role === "YOUTH"
+      ? session.user.youthProfile?.displayName || null
+      : null;
+  const userProfilePic: string | null = null;
 
   return (
     <div className="min-h-screen flex relative overflow-hidden">

@@ -38,29 +38,46 @@ export function extractQuizLabels(raw: unknown): string[] {
     .slice(0, 4);
 }
 
+/**
+ * Rows that the GET route already fetches once and can inject so this loader
+ * doesn't re-query them (the active goal + the last turn are also needed by
+ * loadRecentActivity). When `injected` is omitted the loader fetches them
+ * itself, so existing callers are unaffected.
+ */
+export interface TwinSharedRows {
+  lastTurn?: { createdAt: Date } | null;
+  activeGoal?: { goalTitle: string; updatedAt: Date } | null;
+}
+
 /** Load the Twin's memory of this user for this career. */
 export async function loadTwinMemory(
   userId: string,
   careerId: string,
   nowMs: number = Date.now(),
+  injected?: TwinSharedRows,
 ): Promise<TwinMemory> {
+  const useInjected = injected !== undefined;
   const [lastTurn, reflections, activeGoal, quiz] = await Promise.all([
-    prisma.careerTwinMessage.findFirst({
-      where: { userId, careerId },
-      orderBy: { createdAt: "desc" },
-      select: { createdAt: true },
-    }),
+    useInjected
+      ? Promise.resolve(injected!.lastTurn ?? null)
+      : prisma.careerTwinMessage.findFirst({
+          where: { userId, careerId },
+          orderBy: { createdAt: "desc" },
+          select: { createdAt: true },
+        }),
     prisma.journeyReflection.findMany({
       where: { profile: { userId }, skipped: false, response: { not: null } },
       orderBy: { createdAt: "desc" },
       take: 3,
       select: { response: true, createdAt: true },
     }),
-    prisma.journeyGoalData.findFirst({
-      where: { userId, isActive: true },
-      orderBy: { updatedAt: "desc" },
-      select: { goalTitle: true, updatedAt: true },
-    }),
+    useInjected
+      ? Promise.resolve(injected!.activeGoal ?? null)
+      : prisma.journeyGoalData.findFirst({
+          where: { userId, isActive: true },
+          orderBy: { updatedAt: "desc" },
+          select: { goalTitle: true, updatedAt: true },
+        }),
     prisma.careerQuizResult.findFirst({
       where: { userId },
       orderBy: { completedAt: "desc" },

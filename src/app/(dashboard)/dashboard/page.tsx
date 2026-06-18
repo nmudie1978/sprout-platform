@@ -474,26 +474,10 @@ export default function DashboardPage() {
     staleTime: 5 * 60 * 1000,
   });
 
-  // Unified dashboard stats — real-time from DB
-  const { data: dashboardStats } = useQuery<{
-    appStats: { applied: number; waiting: number; accepted: number; done: number };
-    savedSummary: { total: number; byType: { articles: number; videos: number; podcasts: number; shorts: number } };
-    savedItemsList: { id: string; title: string; type: string; url: string; thumbnail: string | null; source: string | null }[];
-    exploredCareers: string[];
-    careerInterests: string[];
-    lastCompletedJob: { title: string; completedAt: string; location: string } | null;
-    recentActivity: { type: string; title: string; time: string }[];
-  }>({
-    queryKey: ["dashboard-stats"],
-    queryFn: async () => {
-      const response = await fetch("/api/dashboard/stats");
-      if (!response.ok) throw new Error("Failed to fetch");
-      return response.json();
-    },
-    enabled: session?.user.role === "YOUTH",
-    staleTime: 10 * 1000, // 10 seconds — near real-time for saved content
-    refetchOnWindowFocus: true,
-  });
+  // (Removed: the /api/dashboard/stats query — a 7-query serial endpoint whose
+  // result (exploredCareers / careerInterests / recentActivity) was never read
+  // by this page. Recommendations come from explored-goals + saved + interest
+  // levels below, so the call was pure latency on every load + window focus.)
 
   // Explored journeys — all goals the user has saved progress for
   const { data: exploredGoalsData } = useQuery<{
@@ -549,9 +533,8 @@ export default function DashboardPage() {
       syncGuidanceGoal(goalTitle);
       queryClient.removeQueries({ queryKey: ["personal-career-timeline"] });
       // Invalidate only the keys that actually depend on which goal
-      // is primary. education-context is per-user, profile is derived
-      // from goals already, and dashboard-stats aggregates job/journey
-      // counts that don't change when a goal slot is reassigned.
+      // is primary. education-context is per-user and profile is derived
+      // from goals already, so neither needs invalidating here.
       queryClient.invalidateQueries({ queryKey: ["goals"] });
       queryClient.invalidateQueries({ queryKey: ["explored-goals"] });
       queryClient.invalidateQueries({ queryKey: ["goal-data"] });
@@ -695,10 +678,6 @@ export default function DashboardPage() {
   // The dashboard no longer pulls them from the legacy journey summary.
   const strengths: string[] = [];
 
-  // Real-time stats from DB
-  const exploredCareers = dashboardStats?.exploredCareers ?? [];
-  const careerInterests = dashboardStats?.careerInterests ?? [];
-  const recentActivity = dashboardStats?.recentActivity ?? [];
   const { curiosities: savedCareers, removeCuriosity } = useCuriositySaves();
 
 

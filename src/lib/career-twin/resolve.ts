@@ -184,16 +184,32 @@ export async function loadProfileContext(
  * indexed reads. The active career is excluded from `recentCareers` so we
  * never echo it back as "recent".
  */
+/** The active goal row, shared with loadTwinMemory so the GET route fetches it once. */
+export async function loadActiveGoal(
+  userId: string,
+): Promise<{ goalTitle: string; updatedAt: Date } | null> {
+  return prisma.journeyGoalData.findFirst({
+    where: { userId, isActive: true },
+    orderBy: { updatedAt: "desc" },
+    select: { goalTitle: true, updatedAt: true },
+  });
+}
+
 export async function loadRecentActivity(
   userId: string,
   activeCareer: CareerTwinCareerContext,
   profileContext?: CareerTwinProfileContext,
+  injected?: {
+    activeGoal?: { goalTitle: string } | null;
+    lastTurn?: { createdAt: Date } | null;
+  },
 ): Promise<TwinRecentActivity> {
   const profile = await prisma.youthProfile.findUnique({
     where: { userId },
     select: { id: true },
   });
 
+  const useInjected = injected !== undefined;
   const [savedRows, interestRows, activeGoal, lastTurn, profileCtx] =
     await Promise.all([
       // Recently SAVED careers (titles are stored on the row).
@@ -212,16 +228,20 @@ export async function loadRecentActivity(
         take: 6,
         select: { careerId: true, updatedAt: true },
       }),
-      prisma.journeyGoalData.findFirst({
-        where: { userId, isActive: true },
-        orderBy: { updatedAt: "desc" },
-        select: { goalTitle: true },
-      }),
-      prisma.careerTwinMessage.findFirst({
-        where: { userId, careerId: activeCareer.id },
-        orderBy: { createdAt: "desc" },
-        select: { createdAt: true },
-      }),
+      useInjected
+        ? Promise.resolve(injected!.activeGoal ?? null)
+        : prisma.journeyGoalData.findFirst({
+            where: { userId, isActive: true },
+            orderBy: { updatedAt: "desc" },
+            select: { goalTitle: true },
+          }),
+      useInjected
+        ? Promise.resolve(injected!.lastTurn ?? null)
+        : prisma.careerTwinMessage.findFirst({
+            where: { userId, careerId: activeCareer.id },
+            orderBy: { createdAt: "desc" },
+            select: { createdAt: true },
+          }),
       profileContext
         ? Promise.resolve(profileContext)
         : loadProfileContext(userId),
