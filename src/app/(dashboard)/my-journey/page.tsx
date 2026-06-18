@@ -337,8 +337,12 @@ function FullscreenRoadmap({ goalTitle, onClose }: { goalTitle: string; onClose:
           <X className="h-3.5 w-3.5" /> Close
         </button>
       </div>
-      <div className="flex-1 overflow-auto p-6">
-        <PersonalCareerTimeline primaryGoalTitle={goalTitle} fitToWidth />
+      {/* Render at natural size and let the overlay scroll on both axes.
+          Fit-to-width shrank long roadmaps to an unreadable strip in
+          fullscreen ("the fullscreen doesn't work") — scrolling keeps every
+          step legible and reachable instead. */}
+      <div className="flex-1 min-h-0 overflow-auto p-6">
+        <PersonalCareerTimeline primaryGoalTitle={goalTitle} />
       </div>
     </motion.div>
   );
@@ -2866,35 +2870,35 @@ function ClarityCompletionCard({
     }
   }, [clarityComplete, careerTitle]);
 
-  // One-time "moment of arrival": fire the celebration each time THIS career
-  // actually crosses incomplete → complete during the session. We keep a
-  // per-career completeness baseline (seeded on first observation) and only
-  // pop on a genuine transition — see nextCelebrationState. This means:
-  //   • re-opening an already-complete journey never re-pops ("not randomly"),
-  //   • completing a career — via interest OR the Foundation — always pops,
-  //   • completing a different career later pops for that one too.
-  // We gate on `interestHydrated` so the initial async null → loaded-level
-  // flip (which happens on every visit to a completed journey) does NOT look
-  // like a completion: the baseline is only seeded once the persisted level
-  // has settled. Triggering reactively on the transition — rather than a
-  // single input's onChange — makes it robust to whichever half of Clarity
-  // finishes last (the user rates interest in the ConfidenceTracker, not the
-  // in-card picker, which is exactly why the onChange approach never fired).
+  // One-time "moment of arrival": fire the celebration when THIS career
+  // crosses into completion during the session, gated so it pops on the
+  // DELIBERATE verdict (rating interest) and NEVER on routine roadmap work.
+  //
+  // The signal we track is the interest verdict — not `clarityComplete` —
+  // because filling in the Foundation / "starting point" is a normal roadmap
+  // interaction. Driving the detector off `clarityComplete` meant that a user
+  // who'd already rated interest would get the modal the moment they set their
+  // starting point in the roadmap ("journey complete triggers when using the
+  // roadmap"). Now only choosing an interest level can pop it, and only once a
+  // roadmap foundation is already in place (so it stays consistent with the
+  // completion row below).
+  //
+  // We gate on `interestHydrated` + `foundationReady` so the initial async
+  // null → loaded flips (which happen on every visit to a completed journey)
+  // do NOT look like a fresh completion: the per-career baseline is only
+  // seeded once the persisted state has settled — see nextCelebrationState.
   const [showCelebration, setShowCelebration] = useState(false);
   const celebrationBaseline = useRef<CelebrationBaseline | null>(null);
   useEffect(() => {
-    // Both halves of completion load async (interest from storage, foundation
-    // from a query). Only arm the detector once BOTH have settled, so neither
-    // settle is mistaken for a completion on an already-complete journey.
     if (!interestHydrated || !foundationReady) return;
     const { baseline, celebrate } = nextCelebrationState(
       celebrationBaseline.current,
       careerId,
-      clarityComplete,
+      hasSetInterest,
     );
     celebrationBaseline.current = baseline;
-    if (celebrate) setShowCelebration(true);
-  }, [interestHydrated, foundationReady, careerId, clarityComplete]);
+    if (celebrate && hasFoundation) setShowCelebration(true);
+  }, [interestHydrated, foundationReady, careerId, hasSetInterest, hasFoundation]);
 
   const handleDownloadReport = useCallback(async () => {
     setReportError(null);

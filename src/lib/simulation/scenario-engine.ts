@@ -331,25 +331,25 @@ export function buildScenarioOverlay(
       continue;
     }
 
-    // Education / training steps — attach the institution (e.g. the Norwegian
-    // culinary school). Broadened well beyond "university/degree" so vocational
-    // routes get named too: courses, training, apprenticeships, fagbrev,
-    // certificates, diplomas, college/school study, culinary/cooking school.
-    if (
-      /universit|degree|graduate|studi|cours|training|apprentic|fagbrev|certificat|diploma|qualif|college|culinary|cooking school|trade school|vocational|enrol|complete.*(school|programme|program)/i.test(
-        title,
-      )
-    ) {
-      overrides.set(i, universityLabel);
-    } else if (
-      // Work steps — attach the employer + city. Covers the first role AND
-      // later progression (advance / senior / promotion / lead) so a real
-      // Norwegian company is named across more of the journey, not just entry.
-      /entry|first (role|job)|intern|trainee|apprentice|junior|begin.*(role|job|work)|land.*role|start.*(role|job|career)|advance|senior|promot|lead|progress|experienced|specialis/i.test(
-        title,
-      )
-    ) {
-      overrides.set(i, employerLabel);
+    // Map by the step's STAGE — the authoritative field — rather than by
+    // matching keywords in the (free-text, AI-generated) title. Title regexes
+    // silently left any step whose wording fell outside a fixed keyword set
+    // unannotated, so a scenario only ever populated *some* steps. Stage is
+    // always present, so every study/work step now gets named:
+    //   • education / certification → the study institution
+    //   • experience / career       → the employer
+    //   • foundation                → left as-is (the user's current starting
+    //     point, which predates any scenario destination).
+    switch (items[i].stage) {
+      case 'education':
+      case 'certification':
+        overrides.set(i, universityLabel);
+        break;
+      case 'experience':
+      case 'career':
+        overrides.set(i, employerLabel);
+        break;
+      // 'foundation' — no scenario institution applies.
     }
   }
 

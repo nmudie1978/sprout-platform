@@ -86,7 +86,10 @@ async function resolveMapperInput(userId: string): Promise<MapperInput | null> {
       let a = now.getFullYear() - dob.getFullYear();
       const m = now.getMonth() - dob.getMonth();
       if (m < 0 || (m === 0 && now.getDate() < dob.getDate())) a -= 1;
-      if (a >= 10 && a <= 30) userAge = a;
+      // No upper age limit — career-changers of any age are welcome (the
+      // signup floor is 15+); only guard against implausible ages so the
+      // roadmap is anchored to the user's real age, not a thin fallback.
+      if (a >= 10 && a <= 100) userAge = a;
     }
   }
 
