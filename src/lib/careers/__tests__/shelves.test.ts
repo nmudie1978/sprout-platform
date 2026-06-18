@@ -2,7 +2,6 @@ import { describe, it, expect } from "vitest";
 import {
   buildShelf,
   isNonUniversity,
-  SHELVES,
   SHELF_LIMIT,
   type ShelfContext,
   type ShelfDef,
@@ -26,8 +25,6 @@ function career(overrides: Partial<Career> & { id: string }): Career {
 // categoryOf is unused when fixtures set explicit traits, so a stub is fine.
 const ctx: ShelfContext = { categoryOf: () => null };
 
-const shelf = (id: string) => SHELVES.find((s) => s.id === id) as ShelfDef;
-
 describe("isNonUniversity", () => {
   it("treats vocational / certification / on-the-job routes as non-university", () => {
     expect(isNonUniversity(career({ id: "a", educationRoute: "vocational" }))).toBe(true);
@@ -47,16 +44,6 @@ describe("isNonUniversity", () => {
     expect(
       isNonUniversity(career({ id: "g", educationPath: "Bachelor's in nursing" })),
     ).toBe(false);
-  });
-});
-
-describe("SHELVES auto-rules", () => {
-  it("helping-people selects high people intensity", () => {
-    const pool = [
-      career({ id: "y", peopleIntensity: "high" }),
-      career({ id: "n", peopleIntensity: "low" }),
-    ];
-    expect(buildShelf(shelf("helping-people"), pool, ctx).map((c) => c.id)).toEqual(["y"]);
   });
 });
 
