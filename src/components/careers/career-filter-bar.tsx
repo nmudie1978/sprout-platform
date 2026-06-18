@@ -10,6 +10,7 @@ import {
   X,
   ChevronDown,
   Check,
+  Shuffle,
 } from "lucide-react";
 import { useDebounce } from "@/hooks/use-debounce";
 import type { CareerFilterState, CareerNature, SalaryRange, SectorFilter, AcademicDemandFilter } from "@/lib/career-filters/types";
@@ -144,6 +145,8 @@ interface CareerFilterBarProps {
   onClearAll: () => void;
   selectedNatures: CareerNature[];
   onNatureToggle: (nature: CareerNature) => void;
+  /** Opens a random career — surfaced as a distinct option on the bar. */
+  onSurprise?: () => void;
 }
 
 export function CareerFilterBar({
@@ -160,6 +163,7 @@ export function CareerFilterBar({
   onClearAll,
   selectedNatures,
   onNatureToggle,
+  onSurprise,
 }: CareerFilterBarProps) {
   const [localSearch, setLocalSearch] = useState(filters.searchQuery);
   const debouncedSearch = useDebounce(localSearch, 300);
@@ -318,6 +322,20 @@ export function CareerFilterBar({
             <X className="h-3 w-3 mr-1" />
             Clear
           </Button>
+        )}
+
+        {/* Surprise me — a distinct violet pill so it reads as a playful
+            "open a random career" action rather than another filter. */}
+        {onSurprise && (
+          <button
+            type="button"
+            onClick={onSurprise}
+            title="Open a random career"
+            className="flex items-center gap-1.5 h-10 sm:h-8 px-3 sm:px-2.5 rounded-md border border-violet-500/40 bg-violet-500/10 text-xs font-medium text-violet-600 dark:text-violet-300 hover:bg-violet-500/20 hover:border-violet-500/60 transition-colors whitespace-nowrap"
+          >
+            <Shuffle className="h-3.5 w-3.5" />
+            Surprise me
+          </button>
         )}
 
       </div>

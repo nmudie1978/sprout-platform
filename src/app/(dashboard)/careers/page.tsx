@@ -21,6 +21,7 @@ import { Compass, Search, Sparkles, Loader2, Briefcase, Layers, TrendingUp, Hear
 import { DiscoveryNudge } from "@/components/discovery/discovery-nudge";
 import { CareerFrontDoor } from "@/components/careers/career-front-door";
 import { TopMatchesSection } from "@/components/careers/top-matches-section";
+import { pickSurprise } from "@/lib/careers/surprise";
 import Link from "next/link";
 import type { Career } from "@/lib/career-pathways";
 import { useCareerCatalog } from "@/hooks/use-career-catalog";
@@ -51,6 +52,14 @@ function CareersPageContent() {
   const notTailoredLabel = t("careers.notTailored");
   const [selectedCareer, setSelectedCareer] = useState<Career | null>(null);
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
+  // "Surprise me" (filter bar) — open a random career, avoiding recent repeats.
+  const [surpriseRecentIds, setSurpriseRecentIds] = useState<string[]>([]);
+  const handleSurprise = useCallback(() => {
+    const pick = pickSurprise(getAllCareers(), surpriseRecentIds);
+    if (!pick) return;
+    setSurpriseRecentIds((prev) => [pick.id, ...prev].slice(0, 10));
+    setSelectedCareer(pick);
+  }, [getAllCareers, surpriseRecentIds]);
 
   // Pull profile to get discoveryPreferences for the Career Radar.
   const { data: profileData } = useQuery({
@@ -330,6 +339,7 @@ function CareersPageContent() {
         onClearAll={clearAllFilters}
         selectedNatures={filters.careerNatures}
         onNatureToggle={handleNatureToggle}
+        onSurprise={handleSurprise}
       />
 
       {/* Mobile Filter Drawer */}
