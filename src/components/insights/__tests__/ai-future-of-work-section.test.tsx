@@ -95,10 +95,13 @@ describe("AiFutureOfWorkSection", () => {
     expect(link).toHaveAttribute("href", "/careers?open=ai-engineer");
   });
 
-  it("opens the evolution-of-AI timeline modal", () => {
+  it("reveals the evolution-of-AI timeline under the Evolution tab", () => {
     render(<AiFutureOfWorkSection />);
-    fireEvent.click(screen.getByRole("button", { name: /explore the evolution of ai/i }));
-    expect(screen.getByRole("heading", { name: "The evolution of AI" })).toBeInTheDocument();
+    // Timeline lives behind the tab in the same container — not shown by default.
+    expect(screen.queryByText(/Turing asks/i)).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole("tab", { name: "Evolution" }));
+    expect(screen.getByText("1950")).toBeInTheDocument();
+    expect(screen.getByText(/Turing asks/i)).toBeInTheDocument();
     expect(screen.getByText(/Transformer/)).toBeInTheDocument();
   });
 

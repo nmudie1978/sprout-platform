@@ -77,7 +77,7 @@ export function AiFutureOfWorkSection() {
     aiFutureOfWork;
   const [openModal, setOpenModal] = useState<AiModalId | null>(null);
   const [openVideo, setOpenVideo] = useState<AiVideo | null>(null);
-  const [credTab, setCredTab] = useState<"models" | "certs">("models");
+  const [credTab, setCredTab] = useState<"models" | "certs" | "evolution">("models");
   const { save, isSaved } = useVideoSaves();
 
   return (
@@ -191,9 +191,23 @@ export function AiFutureOfWorkSection() {
             >
               Certifications
             </button>
+            <button
+              type="button"
+              role="tab"
+              aria-selected={credTab === "evolution"}
+              onClick={() => setCredTab("evolution")}
+              className={
+                "rounded-pill px-3 py-1 transition-colors " +
+                (credTab === "evolution"
+                  ? "bg-violet-500/15 text-violet-600 dark:text-violet-300"
+                  : "text-muted-foreground hover:text-foreground/80")
+              }
+            >
+              Evolution
+            </button>
           </div>
 
-          {credTab === "models" ? (
+          {credTab === "models" && (
             <>
               <div className="max-h-56 overflow-y-auto overflow-x-auto rounded-card border border-border/40 [scrollbar-width:thin]">
                 <table className="w-full text-left text-xs">
@@ -238,7 +252,9 @@ export function AiFutureOfWorkSection() {
                 <ArrowRight className="h-3 w-3" aria-hidden="true" />
               </button>
             </>
-          ) : (
+          )}
+
+          {credTab === "certs" && (
             <div className="max-h-56 overflow-y-auto overflow-x-auto rounded-card border border-border/40 [scrollbar-width:thin]">
               <table className="w-full text-left text-xs">
                 <thead className="sticky top-0 z-10 bg-card/95 text-[10px] uppercase tracking-wider text-muted-foreground/70 backdrop-blur">
@@ -279,6 +295,35 @@ export function AiFutureOfWorkSection() {
                 </tbody>
               </table>
             </div>
+          )}
+
+          {credTab === "evolution" && (
+            <ol className="max-h-56 space-y-0 overflow-y-auto rounded-card border border-border/40 p-3 [scrollbar-width:thin]">
+              {timeline.map((item, i) => (
+                <li key={item.era} className="relative flex gap-3 pb-4 last:pb-0">
+                  {i < timeline.length - 1 && (
+                    <span
+                      className="absolute left-[5px] top-4 h-full w-px bg-violet-500/20"
+                      aria-hidden="true"
+                    />
+                  )}
+                  <span
+                    className="relative mt-1 h-2.5 w-2.5 shrink-0 rounded-pill bg-violet-500"
+                    aria-hidden="true"
+                  />
+                  <div className="min-w-0">
+                    <p className="text-sm font-semibold text-foreground/90">
+                      <span className="text-violet-500">{item.era}</span> · {item.label}
+                    </p>
+                    {item.detail && (
+                      <p className="mt-0.5 text-xs leading-relaxed text-muted-foreground">
+                        {item.detail}
+                      </p>
+                    )}
+                  </div>
+                </li>
+              ))}
+            </ol>
           )}
         </div>
 
@@ -325,18 +370,6 @@ export function AiFutureOfWorkSection() {
           </div>
         </div>
 
-        {/* CTA → evolution-of-AI timeline modal */}
-        <div className="mt-5 flex justify-center">
-          <button
-            type="button"
-            onClick={() => setOpenModal("timeline")}
-            className="group inline-flex items-center gap-2 rounded-pill border border-violet-500/30 bg-violet-500/10 px-4 py-2 text-sm font-semibold text-violet-500 transition-colors hover:bg-violet-500/20"
-          >
-            <History className="h-4 w-4" aria-hidden="true" />
-            Explore the evolution of AI
-            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-          </button>
-        </div>
       </motion.div>
 
       {/* ── Content modals ───────────────────────────────────── */}
@@ -456,40 +489,6 @@ export function AiFutureOfWorkSection() {
             </>
           )}
 
-          {openModal === "timeline" && (
-            <>
-              <DialogHeader>
-                <DialogTitle>The evolution of AI</DialogTitle>
-                <DialogDescription>
-                  From a question in 1950 to the AI agents reshaping work today.
-                </DialogDescription>
-              </DialogHeader>
-              <ol className="mt-3 space-y-0">
-                {timeline.map((item, i) => (
-                  <li key={item.era} className="relative flex gap-3 pb-4 last:pb-0">
-                    {/* spine */}
-                    {i < timeline.length - 1 && (
-                      <span
-                        className="absolute left-[5px] top-4 h-full w-px bg-violet-500/20"
-                        aria-hidden="true"
-                      />
-                    )}
-                    <span className="relative mt-1 h-2.5 w-2.5 shrink-0 rounded-pill bg-violet-500" aria-hidden="true" />
-                    <div className="min-w-0">
-                      <p className="text-sm font-semibold text-foreground/90">
-                        <span className="text-violet-500">{item.era}</span> · {item.label}
-                      </p>
-                      {item.detail && (
-                        <p className="mt-0.5 text-xs leading-relaxed text-muted-foreground">
-                          {item.detail}
-                        </p>
-                      )}
-                    </div>
-                  </li>
-                ))}
-              </ol>
-            </>
-          )}
         </DialogContent>
       </Dialog>
 
