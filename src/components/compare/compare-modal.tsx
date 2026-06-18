@@ -11,11 +11,13 @@
  * primary goal and routes to /my-journey.
  */
 
-import { X, ArrowRight, Download } from 'lucide-react';
+import { X, ArrowRight, Download, Building2, ExternalLink } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
+import { useSession } from 'next-auth/react';
 import type { Career, CareerCategory, DiscoveryPreferences } from '@/lib/career-pathways';
 import { useCareerCatalog } from '@/hooks/use-career-catalog';
+import { getCareerEmployers } from '@/lib/career-employers';
 import {
   getFitDimensions,
   shortDayToDay,
@@ -25,6 +27,16 @@ import { getKeyFacts } from '@/lib/compare/key-facts';
 import { getAcademicProfile, getPathwayLabel } from '@/lib/education/academic-readiness';
 import { cn } from '@/lib/utils';
 import { toast } from "@/hooks/use-toast";
+
+/** Bare hostname for a favicon lookup, or null if the URL is missing/invalid. */
+function faviconDomain(url?: string): string | null {
+  if (!url) return null;
+  try {
+    return new URL(url).hostname.replace('www.', '');
+  } catch {
+    return null;
+  }
+}
 
 interface CompareModalProps {
   open: boolean;
@@ -37,6 +49,8 @@ interface CompareModalProps {
 export function CompareModal({ open, careers, preferences, onClose, onRemove }: CompareModalProps) {
   const [mounted, setMounted] = useState(false);
   const { findCareerCategory } = useCareerCatalog();
+  const { data: session } = useSession();
+  const country = session?.user?.youthProfile?.country ?? null;
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -45,7 +59,7 @@ export function CompareModal({ open, careers, preferences, onClose, onRemove }: 
 
   const handleDownload = () => {
     try {
-      const html = buildComparisonHtml(careers, preferences, findCareerCategory);
+      const html = buildComparisonHtml(careers, preferences, findCareerCategory, country);
       const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -113,9 +127,10 @@ export function CompareModal({ open, careers, preferences, onClose, onRemove }: 
             // One explicit row track per section. Cards span all of them
             // and use grid-rows-subgrid so a long description in one
             // card doesn't push that card's "Reality check" out of line
-            // with the others. (snapshot · key facts · how-it-feels ·
-            // reality · day-to-day · things-to-consider · study-paths)
-            'sm:grid-rows-[auto_auto_auto_auto_auto_auto_auto]',
+            // with the others. (snapshot · key facts · where-you'd-work ·
+            // how-it-feels · reality · day-to-day · things-to-consider ·
+            // study-paths)
+            'sm:grid-rows-[auto_auto_auto_auto_auto_auto_auto_auto]',
             careers.length === 2 ? 'sm:grid-cols-2' : 'sm:grid-cols-3',
           )}
         >
@@ -124,6 +139,7 @@ export function CompareModal({ open, careers, preferences, onClose, onRemove }: 
               key={career.id}
               career={career}
               preferences={preferences}
+              country={country}
               onRemove={() => onRemove(career.id)}
             />
           ))}
@@ -139,10 +155,11 @@ export function CompareModal({ open, careers, preferences, onClose, onRemove }: 
 interface CompareCardProps {
   career: Career;
   preferences: DiscoveryPreferences | null | undefined;
+  country: string | null;
   onRemove: () => void;
 }
 
-function CompareCard({ career, preferences, onRemove }: CompareCardProps) {
+function CompareCard({ career, preferences, country, onRemove }: CompareCardProps) {
   const { findCareerCategory } = useCareerCatalog();
   const cat = findCareerCategory(career.id);
   const dims = getFitDimensions(career, cat);
@@ -151,6 +168,8 @@ function CompareCard({ career, preferences, onRemove }: CompareCardProps) {
   const facts = getKeyFacts(career);
   const academic = getAcademicProfile(career);
   const essentialSubjects = academic.subjects.filter(s => s.importance === 'essential');
+  // Top 3 relevant employers (country-aware; falls back to the sector list).
+  const employers = getCareerEmployers(career.id, cat, country).slice(0, 3);
 
   const titleClass = 'text-xs font-semibold uppercase tracking-wider text-emerald-500/80';
 
@@ -161,7 +180,7 @@ function CompareCard({ career, preferences, onRemove }: CompareCardProps) {
         'snap-start shrink-0 w-[85vw] mx-2 my-4',
         // Desktop: span all 5 row tracks of the parent grid so each
         // section row aligns row-by-row with sibling cards.
-        'sm:w-auto sm:m-0 sm:grid sm:grid-rows-subgrid sm:row-span-7',
+        'sm:w-auto sm:m-0 sm:grid sm:grid-rows-subgrid sm:row-span-8',
         // Card shell — same on both sizes
         'rounded-xl border-2 border-border/70 bg-card shadow-md overflow-hidden flex flex-col sm:flex-none',
       )}
@@ -217,7 +236,59 @@ function CompareCard({ career, preferences, onRemove }: CompareCardProps) {
         </div>
       </div>
 
-      {/* Fit dimensions — row 3 */}
+      {/* Where you'd work — row 3 (top 3 relevant employers) */}
+      <div className="p-4 border-b border-border/30">
+        <p className={cn(titleClass, 'mb-1.5')}>Where you&apos;d work</p>
+        {employers.length > 0 ? (
+          <ul className="space-y-0.5">
+            {employers.map((emp) => {
+              const domain = faviconDomain(emp.careersUrl);
+              const inner = (
+                <span className="flex items-center gap-2 min-w-0">
+                  {domain ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={`https://www.google.com/s2/favicons?domain=${domain}&sz=32`}
+                      alt=""
+                      width={14}
+                      height={14}
+                      className="rounded shrink-0"
+                    />
+                  ) : (
+                    <Building2 className="h-3.5 w-3.5 text-muted-foreground/55 shrink-0" />
+                  )}
+                  <span className="text-[11px] text-foreground/85 truncate">{emp.name}</span>
+                  {emp.careersUrl && (
+                    <ExternalLink className="h-2.5 w-2.5 text-muted-foreground/45 shrink-0 ml-auto" />
+                  )}
+                </span>
+              );
+              return (
+                <li key={emp.name} className="leading-snug">
+                  {emp.careersUrl ? (
+                    <a
+                      href={emp.careersUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block rounded px-1 -mx-1 py-0.5 hover:bg-muted/30 transition-colors"
+                    >
+                      {inner}
+                    </a>
+                  ) : (
+                    inner
+                  )}
+                </li>
+              );
+            })}
+          </ul>
+        ) : (
+          <p className="text-[11px] text-muted-foreground/60 leading-snug">
+            Examples vary by employer.
+          </p>
+        )}
+      </div>
+
+      {/* Fit dimensions — row 4 */}
       <div className="p-4 border-b border-border/30 space-y-2">
         <p className={cn(titleClass, 'mb-1')}>How it feels</p>
         {dims.map((d) => (
@@ -321,6 +392,7 @@ function buildComparisonHtml(
   careers: Career[],
   preferences: DiscoveryPreferences | null | undefined,
   findCategory: (careerId: string) => CareerCategory | null,
+  country: string | null,
 ): string {
   const date = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
   const titles = careers.map((c) => c.title).join(' vs ');
@@ -333,6 +405,17 @@ function buildComparisonHtml(
       const signals = getValueSignals(career, cat);
       const facts = getKeyFacts(career);
       const ap = getAcademicProfile(career);
+      const employers = getCareerEmployers(career.id, cat, country).slice(0, 3);
+
+      const employersHtml = employers.length > 0
+        ? `<ul class="companies">${employers
+            .map((e) =>
+              e.careersUrl
+                ? `<li><a href="${escapeHtml(e.careersUrl)}">${escapeHtml(e.name)}</a> <span class="meta">${escapeHtml(e.industry)}</span></li>`
+                : `<li>${escapeHtml(e.name)} <span class="meta">${escapeHtml(e.industry)}</span></li>`,
+            )
+            .join('')}</ul>`
+        : `<p class="path">Examples vary by employer.</p>`;
 
       const dimsHtml = dims
         .map((d) => {
@@ -365,6 +448,9 @@ function buildComparisonHtml(
             <tr><td>To qualify</td><td>${escapeHtml(facts.qualify)}</td></tr>
             <tr><td>Work&ndash;life</td><td>${escapeHtml(facts.workLifeLabel)}</td></tr>
           </table>
+
+          <h3>Where you&rsquo;d work</h3>
+          ${employersHtml}
 
           <h3>How it feels</h3>
           <div class="dims">${dimsHtml}</div>
@@ -457,6 +543,10 @@ function buildComparisonHtml(
   .card ul { margin: 0; padding-left: 16px; }
   .card ul li { font-size: 11px; color: #444; margin-bottom: 3px; line-height: 1.45; }
   .warn-list li::marker { color: #f59e0b; }
+  .companies { list-style: none; padding-left: 0; }
+  .companies li { font-size: 11px; color: #1a1a1a; margin-bottom: 3px; }
+  .companies a { color: #0f766e; text-decoration: none; font-weight: 600; }
+  .companies .meta { color: #888; }
   .footer { text-align: center; font-size: 10px; color: #999; margin-top: 24px; }
   @media print {
     body { background: white; padding: 12px; }
