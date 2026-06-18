@@ -36,7 +36,13 @@ const MARGIN_X = 88;
 const LOW_Y = 196; // node sits low → card above
 const HIGH_Y = 116; // node sits high → card below
 const CARD_WIDTH = 176;
-const CANVAS_H = 432;
+// Canvas height is cropped to the content. Cards + nodes hug the top of the
+// rail, so a single fixed height left a tall empty band below it (most visible
+// inline). The lowest content is a high-node card (~bottom 240); a forked
+// role-evolution coda drops its lowest branch card lower (~bottom 300), so that
+// shape gets a taller canvas. Both include a small safety margin.
+const CANVAS_H = 360; // forked role-evolution coda (the tallest shape)
+const CANVAS_H_COMPACT = 300; // linear / no coda — crops the empty band below
 // Role-evolution coda — a calm continuation of the road into core → senior.
 const CODA_Y = 156; // fixed mid-height so the branch fan is predictable
 const CODA_CARD_W = 150;
@@ -123,6 +129,9 @@ export function WindingRoadRenderer(props: RendererProps) {
   }, [tail, lastPoint]);
 
   const canvasWidth = coda ? Math.max(totalWidth, coda.rightEdge) : totalWidth;
+  // Only the forked coda needs the taller canvas; every other shape uses the
+  // compact height so the rail doesn't carry a big empty band beneath it.
+  const canvasHeight = coda?.forked ? CANVAS_H : CANVAS_H_COMPACT;
 
   // Fit-to-width — in the fullscreen overlay the whole road should fit one
   // screen rather than scroll sideways. Measure the available width and scale
@@ -148,19 +157,19 @@ export function WindingRoadRenderer(props: RendererProps) {
   return (
     <div className="-mx-2 px-2 pb-4">
       <div ref={fitRef} className={fitToWidth ? undefined : 'overflow-x-auto'}>
-        <div style={fitToWidth ? { width: canvasWidth * fitScale, height: CANVAS_H * fitScale } : undefined}>
+        <div style={fitToWidth ? { width: canvasWidth * fitScale, height: canvasHeight * fitScale } : undefined}>
         <div
           className="relative"
           style={
             fitToWidth
-              ? { width: canvasWidth, height: CANVAS_H, transform: `scale(${fitScale})`, transformOrigin: 'top left' }
-              : { width: canvasWidth, height: CANVAS_H }
+              ? { width: canvasWidth, height: canvasHeight, transform: `scale(${fitScale})`, transformOrigin: 'top left' }
+              : { width: canvasWidth, height: canvasHeight }
           }
         >
           <svg
             className="pointer-events-none absolute inset-0"
             width={canvasWidth}
-            height={CANVAS_H}
+            height={canvasHeight}
             aria-hidden
           >
             <defs>
