@@ -26,6 +26,7 @@ import {
 } from 'lucide-react';
 import { Lightbulb } from 'lucide-react';
 import { FOUNDATION_ITEM_ID } from '../renderers/foundation-banner';
+import { ProgrammePicker } from './programme-picker';
 import { SUBJECT_GROUPS, ALL_SUBJECTS } from '@/lib/education/subject-list';
 import { getCertificationPath } from '@/lib/education';
 import { Award, ExternalLink as ExtLink } from 'lucide-react';
@@ -619,11 +620,9 @@ export function TimelineDetailDialog({
                   <label className="text-[10px] text-muted-foreground/70 uppercase tracking-wider">
                     Study programme
                   </label>
-                  <input
+                  <ProgrammePicker
                     value={studyProgram}
-                    onChange={(e) => { setStudyProgram(e.target.value); setDirty(true); }}
-                    placeholder="e.g. Computer Science, Nursing"
-                    className="w-full mt-1 rounded-lg border border-border/30 bg-muted/10 px-3 py-2 text-xs text-foreground/90 placeholder:text-muted-foreground/55 focus:outline-none focus:border-teal-500/40"
+                    onChange={(v) => { setStudyProgram(v); setDirty(true); }}
                   />
                 </div>
               )}
@@ -674,7 +673,10 @@ export function TimelineDetailDialog({
                 })()}
               </div>
 
-              {/* Subjects — dropdown multi-select */}
+              {/* Subjects — school stage only. School subjects are the wrong
+                  vocabulary at college/university (the study programme is the
+                  meaningful input there), and subjects don't feed the roadmap. */}
+              {eduStage === 'school' && (
               <div>
                 <label className="text-[10px] text-muted-foreground/70 uppercase tracking-wider">Your Subjects</label>
 
@@ -767,6 +769,7 @@ export function TimelineDetailDialog({
                   </>
                 )}
               </div>
+              )}
                 </>
               )}
             </div>

@@ -20,6 +20,7 @@ import type { JourneyItem } from '@/lib/journey/career-journey-types';
 import type { RendererProps } from './types';
 import type { StepState } from './shared-node';
 import { useFoundationData, FOUNDATION_ITEM_ID } from './foundation-banner';
+import { programmeCareerFit } from '@/lib/education/programme-fit';
 
 export interface ComputedStep {
   item: JourneyItem;
@@ -50,7 +51,7 @@ export function useRoadmapModel(props: RendererProps) {
   const schoolTrack = journey.schoolTrack;
   const firstSchool = schoolTrack && schoolTrack.length > 0 ? schoolTrack[0] : null;
 
-  const { foundationItem, subjectHint, foundationEmpty, foundationSubjects } = useFoundationData({
+  const { eduContext, foundationItem, subjectHint, foundationEmpty, foundationSubjects } = useFoundationData({
     careerTitle,
     userAge,
     journeyStartAge: journey.startAge,
@@ -98,22 +99,39 @@ export function useRoadmapModel(props: RendererProps) {
   );
 
   const alignmentGate: AlignmentGate | null = useMemo(() => {
-    if (!subjectHint) return null;
-    const matched = subjectHint.matchedKey.length;
-    const missing = subjectHint.missingKey.length;
-    if (matched + missing === 0) return null;
-    let level: AlignmentGate['level'];
-    if (missing === 0) level = 'aligned';
-    else if (matched === 0) level = 'gap';
-    else level = 'partial';
-    const tooltip =
-      level === 'aligned'
-        ? `Subjects aligned: ${subjectHint.matchedKey.join(', ')}. You meet the core requirements for this path.`
-        : level === 'partial'
-          ? `Gap: you still need ${subjectHint.missingKey.join(', ')}. Aligned so far: ${subjectHint.matchedKey.join(', ')}.`
-          : `No required subjects yet. You'll need ${subjectHint.missingKey.join(', ')} to qualify for this path.`;
-    return { level, tooltip };
-  }, [subjectHint]);
+    // 1. School-stage / under-18: subject-alignment gate (existing behaviour).
+    if (subjectHint) {
+      const matched = subjectHint.matchedKey.length;
+      const missing = subjectHint.missingKey.length;
+      if (matched + missing > 0) {
+        let level: AlignmentGate['level'];
+        if (missing === 0) level = 'aligned';
+        else if (matched === 0) level = 'gap';
+        else level = 'partial';
+        const tooltip =
+          level === 'aligned'
+            ? `Subjects aligned: ${subjectHint.matchedKey.join(', ')}. You meet the core requirements for this path.`
+            : level === 'partial'
+              ? `Gap: you still need ${subjectHint.missingKey.join(', ')}. Aligned so far: ${subjectHint.matchedKey.join(', ')}.`
+              : `No required subjects yet. You'll need ${subjectHint.missingKey.join(', ')} to qualify for this path.`;
+        return { level, tooltip };
+      }
+    }
+
+    // 2. University / college: quiet "check this fits" badge when the named
+    // study programme doesn't naturally lead to the chosen career. Calm,
+    // non-blocking; stays silent unless we're confident it's a mismatch.
+    const stage = eduContext?.stage;
+    if ((stage === 'university' || stage === 'college') && eduContext?.studyProgram && careerTitle) {
+      if (programmeCareerFit(eduContext.studyProgram, careerTitle) === 'mismatch') {
+        return {
+          level: 'gap',
+          tooltip: `A ${eduContext.studyProgram} programme doesn't usually lead straight into ${careerTitle}. That's okay — changing direction is normal, and usually means a conversion course or postgraduate step. Worth checking this path fits.`,
+        };
+      }
+    }
+    return null;
+  }, [subjectHint, eduContext, careerTitle]);
 
   return {
     items,
