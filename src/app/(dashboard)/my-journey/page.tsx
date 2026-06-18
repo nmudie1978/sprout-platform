@@ -26,7 +26,7 @@ import {
   Search, Globe, Rocket, Play, TrendingUp,
   ArrowLeft, ArrowRight, BookOpen, Briefcase, GraduationCap, Pencil,
   Eye, ExternalLink, ChevronDown, Lock,
-  Target, Sparkles, Save, Maximize2, X,
+  Target, Sparkles, Save, X,
   Heart, Wrench, Check, CheckCircle2, Clock, MapPin, Award, Users,
   DollarSign, BarChart3, Layers, AlertCircle, Plus, Trash2, Tag, Video, Zap, Info,
   Building2, Shield, Loader2, Download, FileText, CheckCircle, Phone,
@@ -311,47 +311,6 @@ function useContributedPaths(careerId: string | null) {
   });
 }
 
-// ─── Fullscreen roadmap overlay ──────────────────────────────────────────────
-
-function FullscreenRoadmap({ goalTitle, onClose }: { goalTitle: string; onClose: () => void }) {
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
-    document.addEventListener('keydown', handleKeyDown);
-    document.body.style.overflow = 'hidden';
-    return () => { document.removeEventListener('keydown', handleKeyDown); document.body.style.overflow = ''; };
-  }, [onClose]);
-
-  return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }}
-      className="fixed inset-0 z-50 bg-background/95 backdrop-blur-sm flex flex-col"
-    >
-      <div className="flex items-center justify-between px-6 py-4 border-b border-border/30">
-        <div className="flex items-center gap-3">
-          <Rocket className="h-5 w-5 text-warning" />
-          <div>
-            <h2 className="text-base font-semibold">Career Roadmap</h2>
-            <p className="text-xs text-muted-foreground/70">Your path to {goalTitle}</p>
-          </div>
-        </div>
-        <button onClick={onClose} className="inline-flex items-center gap-1.5 px-3 py-1 rounded-control text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 border border-border/30 transition-colors">
-          <X className="h-3.5 w-3.5" /> Close
-        </button>
-      </div>
-      {/* Fit the whole road to the screen width so EVERY step is visible —
-          including the first ("Your Starting Point"). Use a COLUMN flex with
-          justify-center: that centres the road vertically while letting it
-          stretch to the full width (so the fit-to-width measurement is the real
-          screen width). An items-center / justify-center row instead shrank the
-          measured width to the road's own width — so it never scaled down and
-          its overflow was centred, clipping the first step off the left with no
-          way to scroll back to it. */}
-      <div className="flex-1 min-h-0 overflow-auto p-6 flex flex-col justify-center">
-        <PersonalCareerTimeline primaryGoalTitle={goalTitle} fitToWidth />
-      </div>
-    </motion.div>
-  );
-}
-
 // ─── Shared UI components ────────────────────────────────────────────────────
 
 function SectionCard({ children, className, style, accent }: { children: React.ReactNode; className?: string; style?: React.CSSProperties; accent?: 'teal' | 'amber' | 'blue' }) {
@@ -571,7 +530,6 @@ function DiscoverTab({
   onGoToUnderstand?: () => void;
 }) {
   const { getSectorForCareer, getPensionNote } = useCareerCatalog();
-  const [roadmapFullscreen, setRoadmapFullscreen] = useState(false);
   const [showSalaryPopup, setShowSalaryPopup] = useState(false);
   const { data: ytData } = useYouTubeVideo(goalTitle);
   const { data: discoverDetails } = useCareerDetails(career?.id ?? null);
@@ -2088,13 +2046,6 @@ function ClarityTab({ goalTitle, career }: { goalTitle: string | null; career: C
   // voice-guided roadmap experience inside PersonalCareerTimeline.
   const [simulationPlay, setSimulationPlay] = useState<(() => void) | null>(null);
 
-  // Full-screen roadmap overlay toggle — lets the user expand the
-  // Clarity roadmap to fill the viewport so a long career ladder can be
-  // scanned without fighting the page chrome. The overlay component
-  // (FullscreenRoadmap) already handles its own Escape handler, scroll
-  // lock, and close button.
-  const [roadmapFullscreen, setRoadmapFullscreen] = useState(false);
-
   // Clarity accordion — only one section open at a time
   const [claritySection, setClaritySection] = useState<string | null>('actions');
 
@@ -2515,25 +2466,9 @@ function ClarityTab({ goalTitle, career }: { goalTitle: string | null; career: C
         </div>
 
         {/* Tab content: Your Roadmap — the personal career timeline. The
-            timeline component owns its own header ("…'s Roadmap to …"). A
-            full-screen button sits at the top-right so a long ladder can be
-            scanned without the page chrome. */}
+            timeline component owns its own header ("…'s Roadmap to …"). */}
         {!gCollapsed('g-future') && claritySubTab === 'roadmap' && (
           <div className="p-4">
-            {goalTitle && (
-              <div className="flex justify-end mb-3">
-                <button
-                  type="button"
-                  onClick={() => setRoadmapFullscreen(true)}
-                  title="Expand to full screen"
-                  aria-label="Expand roadmap to full screen"
-                  className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md border border-border/30 bg-background/40 text-[11px] font-medium text-muted-foreground hover:text-foreground hover:border-amber-500/40 hover:bg-amber-500/[0.06] transition-colors"
-                >
-                  <Maximize2 className="h-3.5 w-3.5" />
-                  Full screen
-                </button>
-              </div>
-            )}
             <PersonalCareerTimeline
               primaryGoalTitle={goalTitle}
               onSimulationReady={({ play }) => setSimulationPlay(() => play)}
@@ -2818,12 +2753,6 @@ function ClarityTab({ goalTitle, career }: { goalTitle: string | null; career: C
         )}
 
       </SectionCard>
-      {/* Full-screen roadmap overlay — triggered from the Your Roadmap tab. */}
-      <AnimatePresence>
-        {roadmapFullscreen && goalTitle && (
-          <FullscreenRoadmap goalTitle={goalTitle} onClose={() => setRoadmapFullscreen(false)} />
-        )}
-      </AnimatePresence>
 
       {/* ── Confidence Tracker (after dates — user absorbs roadmap + deadlines, then reflects) ── */}
       {career && goalTitle && (

@@ -1,14 +1,13 @@
 "use client";
 
-import { useMemo, useState, useCallback } from "react";
+import { useMemo } from "react";
 import Link from "next/link";
-import { Shuffle, ArrowRight, Compass } from "lucide-react";
+import { ArrowRight, Compass } from "lucide-react";
 import type { Career, CareerCategory } from "@/lib/career-pathways";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { CareerShelf } from "@/components/careers/career-shelf";
 import { SHELVES, buildShelf, SHELF_MIN } from "@/lib/careers/shelves";
-import { pickSurprise } from "@/lib/careers/surprise";
 
 interface CareerFrontDoorProps {
   careers: Career[];
@@ -19,13 +18,13 @@ interface CareerFrontDoorProps {
 }
 
 const MIN_MATCHES_TO_SURFACE = 3;
-const RECENT_SURPRISE_CAP = 10;
 
 /**
- * The "front door" above the Explore Careers table: any themed shelves, a
- * "Surprise me" action, and — only for users without personalised matches yet
- * — a calm Career Radar invite. (Real matches render at the BOTTOM of the page
- * via <TopMatchesSection>.) Shown only on the unfiltered page-1 view.
+ * The "front door" above the Explore Careers table: any themed shelves and —
+ * only for users without personalised matches yet — a calm Career Radar
+ * invite. (Real matches render at the BOTTOM of the page via
+ * <TopMatchesSection>; "Surprise me" lives on the filter bar.) Shown only on
+ * the unfiltered page-1 view.
  */
 export function CareerFrontDoor({
   careers,
@@ -34,8 +33,6 @@ export function CareerFrontDoor({
   userCountry,
   onOpen,
 }: CareerFrontDoorProps) {
-  const [recentIds, setRecentIds] = useState<string[]>([]);
-
   const hasMatches = recommendationMap.size >= MIN_MATCHES_TO_SURFACE;
 
   const shelves = useMemo(
@@ -46,13 +43,6 @@ export function CareerFrontDoor({
       })).filter((s) => s.items.length >= SHELF_MIN),
     [careers, getCategoryForCareer],
   );
-
-  const handleSurprise = useCallback(() => {
-    const pick = pickSurprise(careers, recentIds);
-    if (!pick) return;
-    setRecentIds((prev) => [pick.id, ...prev].slice(0, RECENT_SURPRISE_CAP));
-    onOpen(pick);
-  }, [careers, recentIds, onOpen]);
 
   if (careers.length === 0) return null;
 
@@ -71,15 +61,7 @@ export function CareerFrontDoor({
         />
       ))}
 
-      {/* ② Surprise me — right-aligned */}
-      <div className="flex justify-end">
-        <Button variant="outline" size="sm" onClick={handleSurprise} className="gap-2">
-          <Shuffle className="h-3.5 w-3.5" />
-          Surprise me
-        </Button>
-      </div>
-
-      {/* ③ Career Radar invite — only when there are no matches to show yet */}
+      {/* ② Career Radar invite — only when there are no matches to show yet */}
       {!hasMatches && (
         <Card className="border-primary/20 bg-primary/[0.04]">
           <CardContent className="flex flex-col sm:flex-row sm:items-center gap-3 py-4">
