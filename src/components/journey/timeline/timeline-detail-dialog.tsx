@@ -406,7 +406,14 @@ export function TimelineDetailDialog({
           body: JSON.stringify({
             stage: eduStage,
             schoolName: schoolName.trim() || undefined,
-            studyProgram: studyProgram.trim() || undefined,
+            // Only persist the study programme for stages that actually have
+            // one. The local value is kept across stage toggles (so it isn't
+            // lost), but a school/working/not-working starting point shouldn't
+            // save a stale programme.
+            studyProgram:
+              eduStage === 'university' || eduStage === 'college'
+                ? studyProgram.trim() || undefined
+                : undefined,
             currentRole: currentRole.trim() || undefined,
             expectedCompletion: expectedCompletion.trim() || undefined,
             currentSubjects: subjects,
@@ -536,9 +543,13 @@ export function TimelineDetailDialog({
                           type="button"
                           onClick={() => {
                             setEduStage(opt.value);
-                            // School has no study programme — clear any stale
-                            // value carried over from a previous stage.
-                            if (opt.value === 'school') setStudyProgram('');
+                            // Keep the typed study programme in state even when
+                            // switching to a stage that hides it (school /
+                            // working / not-working) — toggling stages must not
+                            // wipe what the user entered. It's simply omitted
+                            // from the saved payload for those stages (see
+                            // handleSave), so the data is preserved if they
+                            // switch back to University/College.
                             // Refresh the finish-year default for the new stage
                             // (e.g. School → 18, University → age + 3).
                             setExpectedCompletion(defaultFinishYearFor(userAge, opt.value));
