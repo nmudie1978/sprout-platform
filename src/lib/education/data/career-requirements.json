@@ -5,6 +5,570 @@
     "note": "Regenerate with: npx tsx scripts/generate-career-requirements.ts"
   },
   "requirements": {
+    "mechatronics-engineer": {
+      "schoolSubjects": {
+        "required": [
+          "Mathematics (R1+R2)",
+          "Physics",
+          "Technology",
+          "English"
+        ],
+        "recommended": [
+          "Chemistry",
+          "Computer Science",
+          "Design"
+        ],
+        "minimumGrade": "Strong grades in mathematics and physics, typically 4-6 in the Norwegian scale."
+      },
+      "universityPath": {
+        "programme": "Bachelor or Master in Mechatronics",
+        "duration": "3-5 years",
+        "type": "bachelor",
+        "examples": [
+          "USN (Kongsberg)",
+          "UiA (Grimstad)",
+          "NTNU",
+          "Chalmers"
+        ],
+        "applicationRoute": "Samordna opptak (Norway)",
+        "competitiveness": "Moderately competitive; Kongsberg and Grimstad are Norway's established mechatronics hubs."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior Mechatronics Engineer",
+        "description": "Integrate mechanical, electrical and software subsystems under supervision.",
+        "whatYouNeed": "Completed bachelor in mechatronics or electrical/mechanical engineering."
+      },
+      "qualifiesFor": {
+        "immediate": "Junior Mechatronics Engineer",
+        "withExperience": "Senior Mechatronics Engineer",
+        "seniorPath": "Lead Systems Engineer"
+      },
+      "specialisationNote": null
+    },
+    "controls-engineer": {
+      "schoolSubjects": {
+        "required": [
+          "Mathematics (R1+R2)",
+          "Physics",
+          "English"
+        ],
+        "recommended": [
+          "Computer Science",
+          "Chemistry"
+        ],
+        "minimumGrade": "Strong mathematics and physics; cybernetics admission is selective."
+      },
+      "universityPath": {
+        "programme": "Master in Cybernetics & Robotics",
+        "duration": "5 years",
+        "type": "master",
+        "examples": [
+          "NTNU (Cybernetics & Robotics)",
+          "UiA",
+          "KTH",
+          "Aalto University"
+        ],
+        "applicationRoute": "Samordna opptak (Norway)",
+        "competitiveness": "Competitive - NTNU cybernetics is among the most selective engineering tracks."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior Control Systems Engineer",
+        "description": "Model, tune and commission control systems under supervision.",
+        "whatYouNeed": "Degree in cybernetics, automation or electrical engineering."
+      },
+      "qualifiesFor": {
+        "immediate": "Junior Controls Engineer",
+        "withExperience": "Senior Controls Engineer",
+        "seniorPath": "Lead Automation Engineer"
+      },
+      "specialisationNote": null
+    },
+    "ros-developer": {
+      "schoolSubjects": {
+        "required": [
+          "Mathematics (R1+R2)",
+          "Physics",
+          "English"
+        ],
+        "recommended": [
+          "Computer Science",
+          "Information Technology"
+        ],
+        "minimumGrade": "Good mathematics and clear programming aptitude."
+      },
+      "universityPath": {
+        "programme": "Bachelor in Computer Science or Robotics",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "NTNU",
+          "OsloMet",
+          "UiO",
+          "Aalto University"
+        ],
+        "applicationRoute": "Samordna opptak (Norway)",
+        "competitiveness": "Moderately competitive."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior Robotics Software Developer",
+        "description": "Build and test robot software on ROS under guidance.",
+        "whatYouNeed": "Degree in computer science or robotics; C++/Python."
+      },
+      "qualifiesFor": {
+        "immediate": "Junior ROS Developer",
+        "withExperience": "Senior Robotics Software Engineer",
+        "seniorPath": "Robotics Software Architect"
+      },
+      "specialisationNote": null
+    },
+    "robotics-research-scientist": {
+      "schoolSubjects": {
+        "required": [
+          "Mathematics (R1+R2)",
+          "Physics",
+          "English"
+        ],
+        "recommended": [
+          "Computer Science",
+          "Chemistry"
+        ],
+        "minimumGrade": "Top grades throughout; the research track is highly selective."
+      },
+      "universityPath": {
+        "programme": "PhD in Robotics / Cybernetics (after a Master's)",
+        "duration": "8+ years (BSc + MSc + PhD)",
+        "type": "doctorate",
+        "examples": [
+          "NTNU",
+          "UiO",
+          "KTH",
+          "ETH Zurich"
+        ],
+        "applicationRoute": "Samordna opptak -> Master's -> funded PhD position",
+        "competitiveness": "Highly selective; PhD positions are funded and limited."
+      },
+      "entryLevelRequirements": {
+        "title": "PhD Research Fellow",
+        "description": "Conduct original robotics research under a supervisor.",
+        "whatYouNeed": "Master's in robotics, cybernetics or a related field; strong research record."
+      },
+      "qualifiesFor": {
+        "immediate": "Research Fellow",
+        "withExperience": "Postdoctoral Researcher",
+        "seniorPath": "Senior Research Scientist"
+      },
+      "specialisationNote": null
+    },
+    "robotics-professor": {
+      "schoolSubjects": {
+        "required": [
+          "Mathematics (R1+R2)",
+          "Physics",
+          "English"
+        ],
+        "recommended": [
+          "Computer Science"
+        ],
+        "minimumGrade": "Top grades throughout an academic career."
+      },
+      "universityPath": {
+        "programme": "PhD followed by an academic career track",
+        "duration": "8+ years, then academic progression",
+        "type": "doctorate",
+        "examples": [
+          "NTNU",
+          "UiO",
+          "KTH"
+        ],
+        "applicationRoute": "Academic route via Master's + PhD",
+        "competitiveness": "Very selective; tenured professorships are rare."
+      },
+      "entryLevelRequirements": {
+        "title": "Postdoctoral Researcher",
+        "description": "Lead research and teaching after completing a PhD.",
+        "whatYouNeed": "PhD in robotics/cybernetics with a strong publication record."
+      },
+      "qualifiesFor": {
+        "immediate": "Postdoctoral Researcher",
+        "withExperience": "Associate Professor",
+        "seniorPath": "Professor"
+      },
+      "specialisationNote": null
+    },
+    "industrial-robotics-programmer": {
+      "schoolSubjects": {
+        "required": [
+          "Mathematics",
+          "Physics",
+          "Electrical & Electronics"
+        ],
+        "recommended": [
+          "Information Technology"
+        ],
+        "minimumGrade": "Pass upper-secondary; a vocational (fagbrev) route is fully valid."
+      },
+      "universityPath": {
+        "programme": "Vocational automation (fagbrev) or 2-yr Fagskole / Bachelor in Automation",
+        "duration": "2-3 years",
+        "type": "fagbrev",
+        "examples": [
+          "Fagskolen (technical colleges)",
+          "USN",
+          "NTNU",
+          "OsloMet"
+        ],
+        "applicationRoute": "Vocational intake / Samordna opptak",
+        "competitiveness": "Accessible; demand for robot programmers on the factory floor is high."
+      },
+      "entryLevelRequirements": {
+        "title": "Robot Programmer",
+        "description": "Program and maintain industrial robot cells on the factory floor.",
+        "whatYouNeed": "Automation fagbrev or engineering degree; PLC and robot-brand programming."
+      },
+      "qualifiesFor": {
+        "immediate": "Junior Robotics Programmer",
+        "withExperience": "Senior Automation Technician",
+        "seniorPath": "Automation Cell Lead"
+      },
+      "specialisationNote": null
+    },
+    "field-applications-engineer": {
+      "schoolSubjects": {
+        "required": [
+          "Mathematics (R1+R2)",
+          "Physics",
+          "English"
+        ],
+        "recommended": [
+          "Computer Science"
+        ],
+        "minimumGrade": "Good mathematics and physics."
+      },
+      "universityPath": {
+        "programme": "Bachelor in Electrical or Automation Engineering",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "NTNU",
+          "USN",
+          "UiA",
+          "OsloMet"
+        ],
+        "applicationRoute": "Samordna opptak (Norway)",
+        "competitiveness": "Moderately competitive."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior Applications Engineer",
+        "description": "Support customers deploying robotics and automation hardware.",
+        "whatYouNeed": "Electrical or automation degree plus strong communication skills."
+      },
+      "qualifiesFor": {
+        "immediate": "Junior Field Applications Engineer",
+        "withExperience": "Senior Applications Engineer",
+        "seniorPath": "Applications Engineering Manager"
+      },
+      "specialisationNote": null
+    },
+    "robotics-entrepreneur": {
+      "schoolSubjects": {
+        "required": [
+          "Mathematics (R1+R2)",
+          "Physics",
+          "English"
+        ],
+        "recommended": [
+          "Economics",
+          "Computer Science"
+        ],
+        "minimumGrade": "Solid mathematics; entrepreneurial drive matters as much as grades."
+      },
+      "universityPath": {
+        "programme": "Engineering degree + entrepreneurship (e.g. NTNU School of Entrepreneurship)",
+        "duration": "5 years",
+        "type": "master",
+        "examples": [
+          "NTNU School of Entrepreneurship",
+          "BI Norwegian Business School",
+          "NHH",
+          "UiO"
+        ],
+        "applicationRoute": "Samordna opptak (engineering) + entrepreneurship track",
+        "competitiveness": "Programme places are selective; building a real company is the true test."
+      },
+      "entryLevelRequirements": {
+        "title": "Technical Co-founder",
+        "description": "Found or join an early robotics startup, owning product and technology.",
+        "whatYouNeed": "Robotics/engineering background plus business and fundraising skills."
+      },
+      "qualifiesFor": {
+        "immediate": "Founder / Technical Co-founder",
+        "withExperience": "CTO or CEO of a robotics startup",
+        "seniorPath": "Serial Founder / Investor"
+      },
+      "specialisationNote": null
+    },
+    "simulation-engineer": {
+      "schoolSubjects": {
+        "required": [
+          "Mathematics (R1+R2)",
+          "Physics",
+          "English"
+        ],
+        "recommended": [
+          "Computer Science"
+        ],
+        "minimumGrade": "Strong mathematics and physics."
+      },
+      "universityPath": {
+        "programme": "Bachelor/Master in Engineering, Physics or Computer Science",
+        "duration": "3-5 years",
+        "type": "master",
+        "examples": [
+          "NTNU",
+          "UiO",
+          "Chalmers",
+          "KTH"
+        ],
+        "applicationRoute": "Samordna opptak (Norway)",
+        "competitiveness": "Moderately competitive."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior Simulation Engineer",
+        "description": "Build and validate physics and robotics simulations under supervision.",
+        "whatYouNeed": "Engineering, physics or computer-science degree; numerical methods, MATLAB/Python."
+      },
+      "qualifiesFor": {
+        "immediate": "Junior Simulation Engineer",
+        "withExperience": "Senior Simulation Engineer",
+        "seniorPath": "Lead Simulation Engineer"
+      },
+      "specialisationNote": null
+    },
+    "digital-twin-engineer": {
+      "schoolSubjects": {
+        "required": [
+          "Mathematics (R1+R2)",
+          "Physics",
+          "English"
+        ],
+        "recommended": [
+          "Computer Science"
+        ],
+        "minimumGrade": "Good mathematics and strong programming."
+      },
+      "universityPath": {
+        "programme": "Bachelor/Master in Computer Science or Cybernetics",
+        "duration": "3-5 years",
+        "type": "master",
+        "examples": [
+          "NTNU",
+          "USN",
+          "UiO",
+          "Aalto University"
+        ],
+        "applicationRoute": "Samordna opptak (Norway)",
+        "competitiveness": "Moderately competitive."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior Digital Twin Engineer",
+        "description": "Build digital-twin models linking live sensors to simulations.",
+        "whatYouNeed": "Computer-science or cybernetics degree; modelling, IoT and data skills."
+      },
+      "qualifiesFor": {
+        "immediate": "Junior Digital Twin Engineer",
+        "withExperience": "Senior Digital Twin Engineer",
+        "seniorPath": "Digital Twin Architect"
+      },
+      "specialisationNote": null
+    },
+    "humanoid-robotics-engineer": {
+      "schoolSubjects": {
+        "required": [
+          "Mathematics (R1+R2)",
+          "Physics",
+          "English"
+        ],
+        "recommended": [
+          "Computer Science",
+          "Design"
+        ],
+        "minimumGrade": "Top grades in mathematics and physics."
+      },
+      "universityPath": {
+        "programme": "Master in Robotics / Cybernetics",
+        "duration": "5 years",
+        "type": "master",
+        "examples": [
+          "NTNU (Cybernetics & Robotics)",
+          "UiO",
+          "KTH",
+          "ETH Zurich"
+        ],
+        "applicationRoute": "Samordna opptak (Norway)",
+        "competitiveness": "Competitive - a cutting-edge, research-heavy field."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior Robotics Engineer",
+        "description": "Develop actuation, balance and control for humanoid platforms.",
+        "whatYouNeed": "Robotics or cybernetics degree; control, mechanics and software."
+      },
+      "qualifiesFor": {
+        "immediate": "Junior Humanoid Robotics Engineer",
+        "withExperience": "Senior Robotics Engineer",
+        "seniorPath": "Robotics Lead"
+      },
+      "specialisationNote": null
+    },
+    "agricultural-robotics-specialist": {
+      "schoolSubjects": {
+        "required": [
+          "Mathematics (R1+R2)",
+          "Physics",
+          "English"
+        ],
+        "recommended": [
+          "Biology",
+          "Computer Science"
+        ],
+        "minimumGrade": "Good mathematics and physics."
+      },
+      "universityPath": {
+        "programme": "Bachelor/Master in Robotics, Agritech or Mechatronics",
+        "duration": "3-5 years",
+        "type": "master",
+        "examples": [
+          "NMBU (Aas)",
+          "NTNU",
+          "UiA",
+          "USN"
+        ],
+        "applicationRoute": "Samordna opptak (Norway)",
+        "competitiveness": "Moderately competitive; NMBU leads agritech in Norway."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior Agri-Robotics Engineer",
+        "description": "Develop and field-test autonomous farming robots.",
+        "whatYouNeed": "Robotics, agritech or mechatronics degree; field testing and sensors."
+      },
+      "qualifiesFor": {
+        "immediate": "Junior Agricultural Robotics Specialist",
+        "withExperience": "Senior Agri-Robotics Engineer",
+        "seniorPath": "Agri-Robotics Lead"
+      },
+      "specialisationNote": null
+    },
+    "warehouse-automation-engineer": {
+      "schoolSubjects": {
+        "required": [
+          "Mathematics (R1+R2)",
+          "Physics",
+          "English"
+        ],
+        "recommended": [
+          "Computer Science",
+          "Logistics"
+        ],
+        "minimumGrade": "Good mathematics and physics."
+      },
+      "universityPath": {
+        "programme": "Bachelor in Automation, Mechatronics or Logistics Engineering",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "NTNU",
+          "USN",
+          "OsloMet",
+          "UiA"
+        ],
+        "applicationRoute": "Samordna opptak (Norway)",
+        "competitiveness": "Moderately competitive; strong demand from firms such as AutoStore."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior Automation Engineer",
+        "description": "Commission and optimise automated warehouse systems.",
+        "whatYouNeed": "Automation or mechatronics degree; PLC, robotics and controls."
+      },
+      "qualifiesFor": {
+        "immediate": "Junior Warehouse Automation Engineer",
+        "withExperience": "Senior Automation Engineer",
+        "seniorPath": "Automation Systems Lead"
+      },
+      "specialisationNote": null
+    },
+    "service-robotics-developer": {
+      "schoolSubjects": {
+        "required": [
+          "Mathematics (R1+R2)",
+          "Physics",
+          "English"
+        ],
+        "recommended": [
+          "Computer Science"
+        ],
+        "minimumGrade": "Good mathematics and programming aptitude."
+      },
+      "universityPath": {
+        "programme": "Bachelor in Computer Science or Robotics",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "NTNU",
+          "OsloMet",
+          "UiO",
+          "USN"
+        ],
+        "applicationRoute": "Samordna opptak (Norway)",
+        "competitiveness": "Moderately competitive."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior Robotics Developer",
+        "description": "Develop software for service and consumer robots.",
+        "whatYouNeed": "Computer-science or robotics degree; ROS, perception and human-robot interaction."
+      },
+      "qualifiesFor": {
+        "immediate": "Junior Service Robotics Developer",
+        "withExperience": "Senior Robotics Developer",
+        "seniorPath": "Robotics Product Lead"
+      },
+      "specialisationNote": null
+    },
+    "swarm-robotics-researcher": {
+      "schoolSubjects": {
+        "required": [
+          "Mathematics (R1+R2)",
+          "Physics",
+          "English"
+        ],
+        "recommended": [
+          "Computer Science"
+        ],
+        "minimumGrade": "Top grades; the research track is highly selective."
+      },
+      "universityPath": {
+        "programme": "Master/PhD in Robotics, AI or Cybernetics",
+        "duration": "5-8+ years",
+        "type": "doctorate",
+        "examples": [
+          "NTNU",
+          "UiO",
+          "KTH",
+          "EPFL"
+        ],
+        "applicationRoute": "Samordna opptak -> Master's -> PhD",
+        "competitiveness": "Highly selective research field."
+      },
+      "entryLevelRequirements": {
+        "title": "Research Assistant (Multi-Agent Systems)",
+        "description": "Research coordination algorithms for robot swarms.",
+        "whatYouNeed": "Robotics or AI degree; multi-agent systems and distributed algorithms."
+      },
+      "qualifiesFor": {
+        "immediate": "Junior Swarm Robotics Researcher",
+        "withExperience": "Swarm Robotics Researcher",
+        "seniorPath": "Senior Research Scientist"
+      },
+      "specialisationNote": null
+    },
     "accountant": {
       "schoolSubjects": {
         "required": [
