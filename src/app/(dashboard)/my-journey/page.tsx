@@ -338,11 +338,14 @@ function FullscreenRoadmap({ goalTitle, onClose }: { goalTitle: string; onClose:
         </button>
       </div>
       {/* Fit the whole road to the screen width so EVERY step is visible —
-          including the first ("Your Starting Point"). Natural-size scrolling
-          opened scrolled past the first step; fit-to-width guarantees it's in
-          view, and the now-compact canvas height keeps it from looking like a
-          thin strip. Centred, with scroll as a fallback for very long roads. */}
-      <div className="flex-1 min-h-0 overflow-auto p-6 flex items-center justify-center">
+          including the first ("Your Starting Point"). Use a COLUMN flex with
+          justify-center: that centres the road vertically while letting it
+          stretch to the full width (so the fit-to-width measurement is the real
+          screen width). An items-center / justify-center row instead shrank the
+          measured width to the road's own width — so it never scaled down and
+          its overflow was centred, clipping the first step off the left with no
+          way to scroll back to it. */}
+      <div className="flex-1 min-h-0 overflow-auto p-6 flex flex-col justify-center">
         <PersonalCareerTimeline primaryGoalTitle={goalTitle} fitToWidth />
       </div>
     </motion.div>
