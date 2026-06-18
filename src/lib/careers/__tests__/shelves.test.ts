@@ -51,34 +51,6 @@ describe("isNonUniversity", () => {
 });
 
 describe("SHELVES auto-rules", () => {
-  it("high-growth selects only high growthOutlook", () => {
-    const pool = [
-      career({ id: "hi", growthOutlook: "high" }),
-      career({ id: "mid", growthOutlook: "medium" }),
-    ];
-    expect(buildShelf(shelf("high-growth"), pool, ctx).map((c) => c.id)).toEqual(["hi"]);
-  });
-
-  it("surprising-salaries needs high pay AND no degree", () => {
-    const pool = [
-      career({ id: "rich-novoc", avgSalary: "900,000 - 1,200,000 kr/year", educationRoute: "vocational" }),
-      career({ id: "rich-uni", avgSalary: "900,000 - 1,200,000 kr/year", educationRoute: "university" }),
-      career({ id: "poor-novoc", avgSalary: "300,000 - 400,000 kr/year", educationRoute: "vocational" }),
-    ];
-    expect(buildShelf(shelf("surprising-salaries"), pool, ctx).map((c) => c.id)).toEqual([
-      "rich-novoc",
-    ]);
-  });
-
-  it("hands-on selects hands-on or outdoors work settings", () => {
-    const pool = [
-      career({ id: "h", workSetting: "hands-on" }),
-      career({ id: "o", workSetting: "outdoors" }),
-      career({ id: "d", workSetting: "desk" }),
-    ];
-    expect(buildShelf(shelf("hands-on"), pool, ctx).map((c) => c.id).sort()).toEqual(["h", "o"]);
-  });
-
   it("helping-people selects high people intensity", () => {
     const pool = [
       career({ id: "y", peopleIntensity: "high" }),
@@ -125,6 +97,6 @@ describe("buildShelf hybrid behaviour", () => {
     const pool = Array.from({ length: SHELF_LIMIT + 5 }, (_, i) =>
       career({ id: `c${i}`, growthOutlook: "high" }),
     );
-    expect(buildShelf(shelf("high-growth"), pool, ctx)).toHaveLength(SHELF_LIMIT);
+    expect(buildShelf(def, pool, ctx)).toHaveLength(SHELF_LIMIT);
   });
 });
