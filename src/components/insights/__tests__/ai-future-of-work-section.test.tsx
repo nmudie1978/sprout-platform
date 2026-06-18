@@ -63,16 +63,27 @@ describe("AiFutureOfWorkSection", () => {
     expect(screen.getByText(/Safety-focused; strong at writing/)).toBeInTheDocument();
   });
 
-  it("renders the careers-in-AI videos (expanded set across roles)", () => {
+  it("reveals more careers-in-AI videos via 'Show more'", () => {
     render(<AiFutureOfWorkSection />);
     expect(screen.getByText("Watch: careers in AI")).toBeInTheDocument();
+    // First batch is visible immediately.
     expect(
       screen.getByText("Life as an AI Researcher & Machine Learning Engineer"),
     ).toBeInTheDocument();
-    // AI engineer (two real videos share this exact title), ML engineer & data scientist.
     expect(
       screen.getAllByText("Day in the Life of an AI Engineer").length,
     ).toBeGreaterThan(0);
+    // Later videos are hidden until "Show more videos" is clicked.
+    expect(
+      screen.queryByText("Day in the Life of a Data Scientist in San Francisco"),
+    ).not.toBeInTheDocument();
+    // Reveal the rest of the pool.
+    let btn = screen.queryByRole("button", { name: /show more videos/i });
+    expect(btn).not.toBeNull();
+    while (btn) {
+      fireEvent.click(btn);
+      btn = screen.queryByRole("button", { name: /show more videos/i });
+    }
     expect(
       screen.getByText("A Day in the Life of a Machine Learning Engineer (Berlin)"),
     ).toBeInTheDocument();

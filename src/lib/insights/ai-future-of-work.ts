@@ -247,6 +247,24 @@ export const aiFutureOfWork: AiFutureOfWork = {
         channel: "Berkeley School of Information",
         blurb: "Databricks data scientist Francois Callewaert on his day-to-day work.",
       },
+      {
+        id: "lQM5Tsm_T0s",
+        title: "Day in the Life of an AI Researcher",
+        channel: "Oak Ridge National Laboratory",
+        blurb: "Inside AI research at one of the world's leading science labs.",
+      },
+      {
+        id: "OMb2HuhGfjI",
+        title: "Machine Learning Engineer: A Day in the Life",
+        channel: "UVA School of Data Science",
+        blurb: "A close look at real ML engineering work at an AI startup.",
+      },
+      {
+        id: "9YhOuq_D9Yw",
+        title: "A Day in the Life of an AI/ML Researcher at Facebook",
+        channel: "Oleksii Sidorov",
+        blurb: "An honest, personal look at research life at a big-tech AI lab.",
+      },
     ],
   },
 
