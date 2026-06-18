@@ -41,13 +41,16 @@ export async function GET(req: NextRequest) {
     );
 
     // Strip PII fields that should never travel to the client browser.
-    // The fields exist in the DB for backend use (guardian flow, admin
-    // view) but must not appear in the JSON response — even to the
-    // profile owner — to satisfy GDPR data-minimisation and prevent
-    // leaks via browser devtools, Sentry breadcrumbs, or TanStack
-    // Query cache. phoneNumber + surname + guardianEmail are the three
-    // fields identified in the T3 security audit.
-    const { phoneNumber: _pn, surname: _sn, guardianEmail: _ge, ...safeProfile } = profile ?? {};
+    // This endpoint is owner-scoped (where: { userId } + RLS), so the
+    // response only ever contains the signed-in user's OWN profile.
+    // phoneNumber + surname are the owner's own contact details and the
+    // profile-edit form / completion widgets must show and let them edit
+    // those values — so they are returned to the owner here. guardianEmail
+    // stays stripped: no client surface reads or edits it, and it can
+    // reference a third party (a guardian), so it must not leave the
+    // server. (Relaxes the T3 audit's blanket strip, which had broken
+    // profile completion — phone showed as "missing" though it was set.)
+    const { guardianEmail: _ge, ...safeProfile } = profile ?? {};
     const response = NextResponse.json(safeProfile);
     // No caching to ensure avatar changes are reflected immediately
     response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate');
