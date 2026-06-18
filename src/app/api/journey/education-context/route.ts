@@ -36,62 +36,67 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const body = await req.json();
-  const { stage, currentSubjects, ageBand, schoolName, yearLevel, studyProgram, expectedCompletion, currentRole } = body;
+  try {
+    const body = await req.json();
+    const { stage, currentSubjects, ageBand, schoolName, yearLevel, studyProgram, expectedCompletion, currentRole } = body;
 
-  if (!stage || !Array.isArray(currentSubjects)) {
-    return NextResponse.json({ error: 'stage and currentSubjects are required' }, { status: 400 });
-  }
+    if (!stage || !Array.isArray(currentSubjects)) {
+      return NextResponse.json({ error: 'stage and currentSubjects are required' }, { status: 400 });
+    }
 
-  const validStages = ['school', 'college', 'university', 'other', 'between'];
-  if (!validStages.includes(stage)) {
-    return NextResponse.json({ error: 'Invalid education stage' }, { status: 400 });
-  }
+    const validStages = ['school', 'college', 'university', 'other', 'between'];
+    if (!validStages.includes(stage)) {
+      return NextResponse.json({ error: 'Invalid education stage' }, { status: 400 });
+    }
 
-  // Sanitise subjects — max 15, max 60 chars each
-  const cleanSubjects = currentSubjects
-    .filter((s: unknown): s is string => typeof s === 'string' && s.trim().length > 0)
-    .map((s: string) => s.trim().slice(0, 60))
-    .slice(0, 15);
+    // Sanitise subjects — max 15, max 60 chars each
+    const cleanSubjects = currentSubjects
+      .filter((s: unknown): s is string => typeof s === 'string' && s.trim().length > 0)
+      .map((s: string) => s.trim().slice(0, 60))
+      .slice(0, 15);
 
-  const str = (v: unknown, max: number) => typeof v === 'string' && v.trim() ? v.trim().slice(0, max) : undefined;
+    const str = (v: unknown, max: number) => typeof v === 'string' && v.trim() ? v.trim().slice(0, max) : undefined;
 
-  const educationContext: EducationContext = {
-    stage,
-    currentSubjects: cleanSubjects,
-    ageBand: str(ageBand, 20),
-    schoolName: str(schoolName, 100),
-    yearLevel: str(yearLevel, 30),
-    studyProgram: str(studyProgram, 80),
-    expectedCompletion: str(expectedCompletion, 10),
-    currentRole: str(currentRole, 80),
-    updatedAt: new Date().toISOString(),
-  };
+    const educationContext: EducationContext = {
+      stage,
+      currentSubjects: cleanSubjects,
+      ageBand: str(ageBand, 20),
+      schoolName: str(schoolName, 100),
+      yearLevel: str(yearLevel, 30),
+      studyProgram: str(studyProgram, 80),
+      expectedCompletion: str(expectedCompletion, 10),
+      currentRole: str(currentRole, 80),
+      updatedAt: new Date().toISOString(),
+    };
 
-  // Get or create profile, then merge into existing journeySummary
-  let profile = await prisma.youthProfile.findUnique({
-    where: { userId: session.user.id },
-    select: { journeySummary: true },
-  });
-
-  if (!profile) {
-    profile = await prisma.youthProfile.create({
-      data: {
-        userId: session.user.id,
-        displayName: session.user.email?.split('@')[0] || 'User',
-      },
+    // Get or create profile, then merge into existing journeySummary
+    let profile = await prisma.youthProfile.findUnique({
+      where: { userId: session.user.id },
       select: { journeySummary: true },
     });
+
+    if (!profile) {
+      profile = await prisma.youthProfile.create({
+        data: {
+          userId: session.user.id,
+          displayName: session.user.email?.split('@')[0] || 'User',
+        },
+        select: { journeySummary: true },
+      });
+    }
+
+    const existingSummary = (profile?.journeySummary as Record<string, unknown>) || {};
+    const updatedSummary = { ...existingSummary, educationContext };
+
+    await prisma.youthProfile.update({
+      where: { userId: session.user.id },
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      data: { journeySummary: updatedSummary as any },
+    });
+
+    return NextResponse.json({ success: true, educationContext });
+  } catch (error) {
+    console.error('[education-context] POST failed:', error);
+    return NextResponse.json({ error: 'Failed to save your starting point' }, { status: 500 });
   }
-
-  const existingSummary = (profile?.journeySummary as Record<string, unknown>) || {};
-  const updatedSummary = { ...existingSummary, educationContext };
-
-  await prisma.youthProfile.update({
-    where: { userId: session.user.id },
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    data: { journeySummary: updatedSummary as any },
-  });
-
-  return NextResponse.json({ success: true, educationContext });
 }

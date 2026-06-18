@@ -8,7 +8,7 @@ import { prisma } from '@/lib/prisma';
 import OpenAI from 'openai';
 import type { CareerPathExample } from '@/lib/education/career-path-examples';
 import { logAndSwallow } from '@/lib/observability';
-import { checkRateLimitAsync, getRateLimitHeaders, RateLimits } from '@/lib/rate-limit';
+import { checkRateLimitAsync, getRateLimitHeaders, RateLimits, checkGlobalAiBudget } from '@/lib/rate-limit';
 
 let _openai: OpenAI | null | undefined;
 function getOpenAIClient(): OpenAI | null {
@@ -102,7 +102,8 @@ export async function POST(req: NextRequest) {
       }
     } catch { /* cache miss */ }
 
-    const openai = getOpenAIClient();
+    // Null the client when the global daily AI budget is spent → empty result.
+    const openai = (await checkGlobalAiBudget()) ? getOpenAIClient() : null;
     if (!openai) {
       return NextResponse.json({ examples: [], error: 'AI not configured' }, { status: 200 });
     }

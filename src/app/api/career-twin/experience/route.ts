@@ -20,7 +20,7 @@ import {
   type Scenario,
 } from "@/lib/career-twin/experience";
 import { isResponseSafe, localeToLanguage, classifyIntent, getFallbackResponse } from "@/lib/ai-guardrails";
-import { checkRateLimitAsync, RateLimits } from "@/lib/rate-limit";
+import { checkRateLimitAsync, RateLimits, checkGlobalAiBudget } from "@/lib/rate-limit";
 import { logAndSwallow, captureServerError } from "@/lib/observability";
 
 function getOpenAIClient(): OpenAI | null {
@@ -95,7 +95,8 @@ export async function POST(req: NextRequest) {
     const career = await resolveCareerContext(session.user.id, careerIdParam);
     if (!career) return NextResponse.json({ needsCareer: true }, { status: 200 });
 
-    const openai = getOpenAIClient();
+    // Null the client when the global daily AI budget is spent → "unavailable".
+    const openai = (await checkGlobalAiBudget()) ? getOpenAIClient() : null;
     if (!openai) return NextResponse.json({ unavailable: true }, { status: 200 });
 
     const profile = await loadProfileContext(session.user.id);

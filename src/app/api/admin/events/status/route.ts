@@ -7,6 +7,7 @@
 import { NextResponse } from "next/server";
 import * as fs from "fs";
 import * as path from "path";
+import { getAdminSession } from "@/lib/admin/auth";
 import { getAllProviderHealth, getHealthSummary } from "@/lib/events/provider-health";
 import type { RefreshMetadata } from "@/lib/events/types";
 
@@ -25,6 +26,14 @@ function loadMetadata(): RefreshMetadata | null {
 }
 
 export async function GET() {
+  // /api/admin/* routes are NOT covered by the middleware /admin page gate, so
+  // each must self-gate. Without this the internal event-provider telemetry was
+  // reachable unauthenticated.
+  const session = await getAdminSession();
+  if (!session) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   try {
     const providerHealth = getAllProviderHealth();
     const healthSummary = getHealthSummary();

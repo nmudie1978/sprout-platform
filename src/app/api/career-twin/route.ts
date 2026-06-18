@@ -21,7 +21,7 @@ import {
   detectNonEnglishResponse,
   localeToLanguage,
 } from "@/lib/ai-guardrails";
-import { checkRateLimitAsync, RateLimits } from "@/lib/rate-limit";
+import { checkRateLimitAsync, RateLimits, checkGlobalAiBudget } from "@/lib/rate-limit";
 import { logAndSwallow, captureServerError } from "@/lib/observability";
 import { loadTwinHistory, loadLastTurnAt, appendTwinTurns, toPromptHistory, TWIN_CONTEXT_TURNS } from "@/lib/career-twin/history";
 import { loadTwinMemory, isReturningAfterGap } from "@/lib/career-twin/memory";
@@ -187,7 +187,9 @@ export async function POST(req: NextRequest) {
 
     const replyLanguage = localeToLanguage(req.cookies.get("NEXT_LOCALE")?.value);
 
-    const openai = getOpenAIClient();
+    // Null the client when the global daily AI budget is spent so the request
+    // degrades to the grounded fallback below instead of spending more.
+    const openai = (await checkGlobalAiBudget()) ? getOpenAIClient() : null;
     if (!openai) {
       return NextResponse.json({ message: twinFallback(career.title), fallback: true });
     }

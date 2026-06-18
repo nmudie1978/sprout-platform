@@ -18,7 +18,7 @@ export const maxDuration = 60;
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
-import { checkRateLimitAsync, getRateLimitHeaders, RateLimits } from '@/lib/rate-limit';
+import { checkRateLimitAsync, getRateLimitHeaders, RateLimits, checkGlobalAiBudget } from '@/lib/rate-limit';
 import OpenAI from 'openai';
 
 let _openai: OpenAI | null | undefined;
@@ -95,8 +95,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Text too long (max 4096 chars)' }, { status: 400 });
   }
 
-  // Generate audio
-  const openai = getOpenAI();
+  // Generate audio. Null the client when the global daily AI budget is spent so
+  // narration degrades to "unavailable" rather than spending more.
+  const openai = (await checkGlobalAiBudget()) ? getOpenAI() : null;
   if (!openai) {
     return NextResponse.json(
       { error: 'TTS service unavailable — OPENAI_API_KEY not configured' },

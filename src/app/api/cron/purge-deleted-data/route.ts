@@ -121,6 +121,26 @@ export async function GET(req: NextRequest) {
         where: { userId: { in: purgeIds } },
       });
       results.legalAcceptances = legalAcceptances.count;
+      // Right-to-erasure: these User relations are NOT onDelete:Cascade, so the
+      // account hard-delete below would otherwise FAIL or orphan PII. Without
+      // this, any user who filed a Report or answered a Pro question could never
+      // be erased — the FK Restrict throws and aborts the whole purge:
+      //   • Report.reporterId    — required FK, no onDelete → Restrict (throws)
+      //   • ProAnswer.answeredBy  — required FK, no onDelete → Restrict (throws)
+      //   • ConsentRecord.userId  — bare scalar, no @relation → orphaned PII
+      //     (holds IP + user-agent). Delete each before user.deleteMany.
+      const reports = await prisma.report.deleteMany({
+        where: { reporterId: { in: purgeIds } },
+      });
+      results.reports = reports.count;
+      const proAnswers = await prisma.proAnswer.deleteMany({
+        where: { answeredBy: { in: purgeIds } },
+      });
+      results.proAnswers = proAnswers.count;
+      const consentRecords = await prisma.consentRecord.deleteMany({
+        where: { userId: { in: purgeIds } },
+      });
+      results.consentRecords = consentRecords.count;
       const purged = await prisma.user.deleteMany({
         where: { id: { in: purgeIds } },
       });

@@ -6,7 +6,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import OpenAI from 'openai';
-import { checkRateLimitAsync, getRateLimitHeaders, RateLimits } from '@/lib/rate-limit';
+import { checkRateLimitAsync, getRateLimitHeaders, RateLimits, checkGlobalAiBudget } from '@/lib/rate-limit';
 import { logAndSwallow } from '@/lib/observability';
 import { generateFallbackTimeline, type EducationStage } from '@/lib/journey/generate-fallback-timeline';
 import { enrichFirstRoleStep } from '@/lib/journey/enrich-first-role';
@@ -245,9 +245,11 @@ export async function POST(req: NextRequest) {
       return match ? inferEducationRoute(match) : 'university';
     })();
 
-    // Generate timeline via AI (synchronous — Vercel kills function after response)
+    // Generate timeline via AI (synchronous — Vercel kills function after response).
+    // Null the client when the global daily AI budget is spent so we fall through
+    // to the deterministic generateFallbackTimeline below instead of spending more.
     let journey: Journey;
-    const openai = getOpenAIClient();
+    const openai = (await checkGlobalAiBudget()) ? getOpenAIClient() : null;
 
     // Stage-specific instruction we append to the user prompt so the AI
     // knows where the user is starting from. The system prompt covers

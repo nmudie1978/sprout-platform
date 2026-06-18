@@ -349,4 +349,32 @@ export const RateLimits = {
   // Translation is batched (one call per content batch). Generous so real
   // multilingual users aren't blocked, but a single account can't grind it.
   AI_MONTHLY_TRANSLATE: { interval: 30 * 24 * 3600_000, maxRequests: 1000 },
+
+  // ─── Global platform-wide daily OpenAI backstop ──────────────────
+  // A single SHARED ceiling across ALL users/accounts — defence-in-depth on
+  // top of the per-user caps above, so a flood of accounts can't collectively
+  // run up the OpenAI bill. Tune via AI_GLOBAL_DAILY_CAP (no deploy needed).
+  // NOTE: the authoritative hard ceiling is the cap set in the OpenAI billing
+  // dashboard; this is an in-app early-trip backstop, not a substitute for it.
+  AI_GLOBAL_DAILY: {
+    interval: 24 * 3600_000,
+    maxRequests: Number(process.env.AI_GLOBAL_DAILY_CAP) || 10_000,
+  },
 } as const;
+
+/**
+ * Platform-wide daily AI budget backstop. Returns false once the shared daily
+ * ceiling (RateLimits.AI_GLOBAL_DAILY) is reached, so AI routes can degrade to
+ * their non-AI fallback rather than keep spending. Uses one fixed bucket shared
+ * across all users; effective only with Redis (the in-memory fallback is
+ * per-instance). Fails OPEN on an unexpected error so a backstop glitch never
+ * takes the product down.
+ */
+export async function checkGlobalAiBudget(): Promise<boolean> {
+  try {
+    const result = await checkRateLimitAsync("ai-global:daily", RateLimits.AI_GLOBAL_DAILY);
+    return result.success;
+  } catch {
+    return true;
+  }
+}

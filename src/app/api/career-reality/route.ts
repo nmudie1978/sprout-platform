@@ -6,7 +6,7 @@ import { prisma } from '@/lib/prisma';
 import OpenAI from 'openai';
 import type { RealityCheckResult, RealityVideo, RealityVideoType } from '@/lib/career-reality-types';
 import { getAllCareers } from '@/lib/career-pathways';
-import { checkRateLimitAsync, RateLimits } from '@/lib/rate-limit';
+import { checkRateLimitAsync, RateLimits, checkGlobalAiBudget } from '@/lib/rate-limit';
 import { logAndSwallow } from '@/lib/observability';
 
 // OpenAI + YouTube calls can be slow; raise above Vercel's short default.
@@ -401,7 +401,9 @@ interface AiReality {
 }
 
 async function generateRealitySummary(career: string): Promise<AiReality | null> {
-  const openai = getOpenAIClient();
+  // Null the client when the global daily AI budget is spent → caller uses the
+  // deterministic fallbackSummary().
+  const openai = (await checkGlobalAiBudget()) ? getOpenAIClient() : null;
   if (!openai) return null;
 
   try {
