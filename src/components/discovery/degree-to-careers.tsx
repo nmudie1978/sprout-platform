@@ -28,9 +28,11 @@ interface DegreeToCareersProps {
   onOpen: (career: Career) => void;
   /** Dev/preview only: seeds open=true + selectedFieldId without user interaction. */
   defaultOpenFieldId?: string;
+  /** Dev/preview only: seeds open=true + the search query with the dropdown shown. */
+  defaultQuery?: string;
 }
 
-export function DegreeToCareers({ onOpen, defaultOpenFieldId }: DegreeToCareersProps) {
+export function DegreeToCareers({ onOpen, defaultOpenFieldId, defaultQuery }: DegreeToCareersProps) {
   const { getCareerById, isLoading } = useCareerCatalog();
 
   // Seed initial state from defaultOpenFieldId if provided
@@ -38,12 +40,12 @@ export function DegreeToCareers({ onOpen, defaultOpenFieldId }: DegreeToCareersP
     ? searchFields("").find((f) => f.id === defaultOpenFieldId) ?? null
     : null;
 
-  const [open, setOpen] = useState<boolean>(!!defaultOpenFieldId);
-  const [query, setQuery] = useState<string>(seedField?.label ?? "");
+  const [open, setOpen] = useState<boolean>(!!defaultOpenFieldId || !!defaultQuery);
+  const [query, setQuery] = useState<string>(seedField?.label ?? defaultQuery ?? "");
   const [selectedFieldId, setSelectedFieldId] = useState<string | null>(
     defaultOpenFieldId ?? null,
   );
-  const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
+  const [dropdownOpen, setDropdownOpen] = useState<boolean>(!!defaultQuery);
 
   const inputRef = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -134,7 +136,7 @@ export function DegreeToCareers({ onOpen, defaultOpenFieldId }: DegreeToCareersP
                 id="degree-field-suggestions"
                 role="listbox"
                 aria-label="Field suggestions"
-                className="absolute left-0 right-0 top-full mt-1 z-20 rounded-control border border-border bg-popover shadow-sm overflow-hidden"
+                className="mt-1 max-h-64 overflow-y-auto rounded-control border border-border bg-popover shadow-sm"
               >
                 {suggestions.map((field) => (
                   <button
