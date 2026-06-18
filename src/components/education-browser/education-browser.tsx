@@ -27,8 +27,10 @@ import {
   ChevronRight,
   ChevronDown,
   Globe,
+  ExternalLink,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { getEuropeanAlternatives, getLocalAlternatives, type AltUniversity } from '@/lib/education/alternatives';
 import {
   Tooltip,
   TooltipContent,
@@ -288,6 +290,15 @@ export function EducationBrowser({ careerTitle, careerId, country, programmesOnl
     [alignments],
   );
 
+  const europeAlts = useMemo(() => getEuropeanAlternatives(resolvedId ?? lookup), [resolvedId, lookup]);
+  const localAlts = useMemo(
+    () =>
+      domesticProgrammes.length === 0 && educationCountry && educationCountry !== 'ES'
+        ? getLocalAlternatives(resolvedId ?? lookup, educationCountry as 'NO' | 'SE' | 'DK' | 'FI' | 'IS')
+        : [],
+    [resolvedId, lookup, domesticProgrammes.length, educationCountry],
+  );
+
   // ── Empty states ────────────────────────────────────────────────────
 
   if (!careerTitle && !careerId) {
@@ -324,6 +335,8 @@ export function EducationBrowser({ careerTitle, careerId, country, programmesOnl
         careerTitle={careerTitle ?? ''}
         requirements={requirements}
         alternativePaths={alternativePaths}
+        localAlts={localAlts}
+        europeAlts={europeAlts}
       />
     );
   }
@@ -443,6 +456,7 @@ export function EducationBrowser({ careerTitle, careerId, country, programmesOnl
       {/* ── Results count + pagination slice (single-route flat table) ──
           Skipped entirely when the route picker is showing — the
           stage-based view above replaces it. */}
+      {/* NOTE: localAlts + europeAlts rows are rendered AFTER this IIFE block */}
       {!showRoutePicker && (() => {
         const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
         const safePage = Math.min(Math.max(1, page), totalPages);
@@ -609,6 +623,10 @@ export function EducationBrowser({ careerTitle, careerId, country, programmesOnl
           </>
         );
       })()}
+
+      {/* ── Alternative universities ────────────────────────────────── */}
+      {localAlts.length > 0 && <AltRow heading="Universities in your country" items={localAlts} />}
+      {europeAlts.length > 0 && <AltRow heading="Elsewhere in Europe" items={europeAlts} />}
     </div>
   );
 }
@@ -649,10 +667,14 @@ function PathwayFallbackView({
   careerTitle,
   requirements,
   alternativePaths,
+  localAlts = [],
+  europeAlts = [],
 }: {
   careerTitle: string;
   requirements: CareerRequirements | null;
   alternativePaths: string[];
+  localAlts?: AltUniversity[];
+  europeAlts?: AltUniversity[];
 }) {
   // Parse the free-text school list from universityPath.examples. The
   // source data is inconsistent: some careers have one clean entry per
@@ -793,6 +815,70 @@ function PathwayFallbackView({
         </a>{' '}
         for the latest programmes.
       </p>
+
+      {/* ── Alternative universities ────────────────────────────────── */}
+      {localAlts.length > 0 && <AltRow heading="Universities in your country" items={localAlts} />}
+      {europeAlts.length > 0 && <AltRow heading="Elsewhere in Europe" items={europeAlts} />}
+    </div>
+  );
+}
+
+// ── AltRow ────────────────────────────────────────────────────────────
+//
+// Compact card grid for alternative university suggestions from the
+// discipline-bucket layer. Shown below the main programme cards:
+// • "Universities in your country" — only when domestic list is empty
+// • "Elsewhere in Europe"         — always when data exists
+
+const ALT_FLAGS: Record<string, string> = {
+  NO: '🇳🇴',
+  SE: '🇸🇪',
+  DK: '🇩🇰',
+  FI: '🇫🇮',
+  IS: '🇮🇸',
+  NL: '🇳🇱',
+  BE: '🇧🇪',
+  CH: '🇨🇭',
+  DE: '🇩🇪',
+  FR: '🇫🇷',
+  IT: '🇮🇹',
+  ES: '🇪🇸',
+  IE: '🇮🇪',
+  AT: '🇦🇹',
+  GB: '🇬🇧',
+};
+
+function AltRow({ heading, items }: { heading: string; items: AltUniversity[] }) {
+  return (
+    <div className="pt-2">
+      <p className="text-[10px] font-semibold text-muted-foreground/70 uppercase tracking-wider mb-2">
+        {heading}
+      </p>
+      <div className="flex flex-wrap gap-3">
+        {items.map((item) => (
+          <a
+            key={item.url}
+            href={item.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex-1 min-w-[220px] max-w-sm rounded-xl border border-border bg-card/40 px-4 py-3 hover:border-teal-500/30 hover:bg-card/60 transition-colors group"
+          >
+            <div className="flex items-start justify-between gap-2">
+              <div className="min-w-0">
+                <p className="text-[12px] font-semibold text-foreground/90 leading-snug">
+                  <span className="mr-1.5">{ALT_FLAGS[item.country] ?? '🏛️'}</span>
+                  {item.name}
+                </p>
+                <p className="text-[10px] text-muted-foreground/65 mt-0.5">{item.city}</p>
+                {item.note && (
+                  <p className="text-[10px] text-muted-foreground/55 mt-1 leading-relaxed">{item.note}</p>
+                )}
+              </div>
+              <ExternalLink className="h-3.5 w-3.5 text-muted-foreground/40 group-hover:text-teal-400 shrink-0 mt-0.5 transition-colors" />
+            </div>
+          </a>
+        ))}
+      </div>
     </div>
   );
 }
