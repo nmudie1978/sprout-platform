@@ -1,6 +1,5 @@
 import type { Career, CareerCategory, EducationRoute } from "@/lib/career-pathways";
-import { workSettingFor, peopleIntensityFor } from "@/lib/matching/lookups";
-import { parseSalaryRange } from "@/lib/career-filters/utils";
+import { peopleIntensityFor } from "@/lib/matching/lookups";
 
 /**
  * Context a shelf rule needs to resolve traits that aren't always set
@@ -43,9 +42,10 @@ const NON_UNIVERSITY_TEXT =
   /vocational|fagbrev|apprentic|no formal|certificate|on[- ]the[- ]job/i;
 
 /**
- * "No degree needed" predicate, shared by the no-degree and
- * surprising-salaries shelves. Explicit route wins; otherwise entry-level
- * flag; otherwise sniff the free-text education path.
+ * "No degree needed" predicate. Explicit route wins; otherwise entry-level
+ * flag; otherwise sniff the free-text education path. Retained as a shared
+ * utility (and unit-tested) even though the shelves that used it have been
+ * removed from the front door.
  */
 export function isNonUniversity(career: Career): boolean {
   if (career.educationRoute) return NON_UNIVERSITY_ROUTES.has(career.educationRoute);
@@ -53,43 +53,7 @@ export function isNonUniversity(career: Career): boolean {
   return NON_UNIVERSITY_TEXT.test(career.educationPath ?? "");
 }
 
-/** Salary band max in thousands, or 0 when unparseable. */
-function salaryMax(career: Career): number {
-  return parseSalaryRange(career.avgSalary)?.max ?? 0;
-}
-
 export const SHELVES: ShelfDef[] = [
-  {
-    id: "high-growth",
-    title: "Fast-growing fields",
-    emoji: "🚀",
-    blurb: "Roles where demand is heading up.",
-    match: (c) => c.growthOutlook === "high",
-  },
-  {
-    id: "no-degree",
-    title: "Big careers, no degree required",
-    emoji: "🔧",
-    blurb: "Real paths that don't run through university.",
-    match: (c) => isNonUniversity(c),
-  },
-  {
-    id: "surprising-salaries",
-    title: "Surprising salaries",
-    emoji: "💰",
-    blurb: "Strong pay without a four-year degree.",
-    match: (c) => salaryMax(c) >= 900 && isNonUniversity(c),
-  },
-  {
-    id: "hands-on",
-    title: "Hands-on & outdoors",
-    emoji: "🛠️",
-    blurb: "Less desk, more doing.",
-    match: (c, ctx) => {
-      const ws = workSettingFor(c, ctx.categoryOf(c.id));
-      return ws === "hands-on" || ws === "outdoors";
-    },
-  },
   {
     id: "helping-people",
     title: "Careers that help people",

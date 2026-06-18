@@ -72,7 +72,28 @@ export function CareerFrontDoor({
 
   return (
     <div className="space-y-6 mb-8">
-      {/* ① Personalisation strip */}
+      {/* ① Themed shelves */}
+      {shelves.map(({ def, items }) => (
+        <CareerShelf
+          key={def.id}
+          emoji={def.emoji}
+          title={def.title}
+          blurb={def.blurb}
+          careers={items}
+          userCountry={userCountry}
+          onOpen={onOpen}
+        />
+      ))}
+
+      {/* ② Surprise me — right-aligned */}
+      <div className="flex justify-end">
+        <Button variant="outline" size="sm" onClick={handleSurprise} className="gap-2">
+          <Shuffle className="h-3.5 w-3.5" />
+          Surprise me
+        </Button>
+      </div>
+
+      {/* ③ Personalisation strip — moved to the bottom of the front door */}
       {topMatches.length > 0 ? (
         <section className="space-y-3">
           <div className="flex items-center gap-2">
@@ -112,27 +133,6 @@ export function CareerFrontDoor({
           </CardContent>
         </Card>
       )}
-
-      {/* ② Themed shelves */}
-      {shelves.map(({ def, items }) => (
-        <CareerShelf
-          key={def.id}
-          emoji={def.emoji}
-          title={def.title}
-          blurb={def.blurb}
-          careers={items}
-          userCountry={userCountry}
-          onOpen={onOpen}
-        />
-      ))}
-
-      {/* ③ Surprise me */}
-      <div className="flex justify-center">
-        <Button variant="outline" size="sm" onClick={handleSurprise} className="gap-2">
-          <Shuffle className="h-3.5 w-3.5" />
-          Surprise me
-        </Button>
-      </div>
     </div>
   );
 }
