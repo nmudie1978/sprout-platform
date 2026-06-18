@@ -78,6 +78,10 @@ export function AiFutureOfWorkSection() {
   const [openModal, setOpenModal] = useState<AiModalId | null>(null);
   const [openVideo, setOpenVideo] = useState<AiVideo | null>(null);
   const [credTab, setCredTab] = useState<"models" | "certs" | "evolution">("models");
+  // "Watch: careers in AI" reveals a few videos at a time from the curated
+  // pool rather than dumping all of them into the row at once.
+  const VIDEO_STEP = 3;
+  const [videoCount, setVideoCount] = useState(VIDEO_STEP);
   const { save, isSaved } = useVideoSaves();
 
   return (
@@ -332,7 +336,7 @@ export function AiFutureOfWorkSection() {
           <SubHeading title={videos.heading} subtitle={videos.subheading} />
           {/* Horizontal carousel — videos flow left → right; scroll/swipe to explore. */}
           <div className="-mx-1 flex snap-x snap-mandatory gap-3 overflow-x-auto px-1 pb-2 [scrollbar-width:thin]">
-            {videos.items.map((v) => (
+            {videos.items.slice(0, videoCount).map((v) => (
               // Wrapper carries the sizing + relative anchor so the save
               // bookmark can overlay the card without nesting a button inside
               // the card's own <button> (invalid HTML).
@@ -368,6 +372,21 @@ export function AiFutureOfWorkSection() {
               </div>
             ))}
           </div>
+          {videoCount < videos.items.length && (
+            <div className="mt-3 flex justify-center">
+              <button
+                type="button"
+                onClick={() => setVideoCount((n) => n + VIDEO_STEP)}
+                className="inline-flex items-center gap-1.5 rounded-pill border border-violet-500/30 bg-violet-500/10 px-4 py-1.5 text-xs font-semibold text-violet-500 transition-colors hover:bg-violet-500/20"
+              >
+                <PlayCircle className="h-3.5 w-3.5" aria-hidden="true" />
+                Show more videos
+                <span className="text-violet-500/70">
+                  ({videos.items.length - videoCount} more)
+                </span>
+              </button>
+            </div>
+          )}
         </div>
 
       </motion.div>
