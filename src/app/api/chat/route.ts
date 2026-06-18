@@ -25,7 +25,7 @@ import {
   localeToLanguage,
   type IntentType,
 } from "@/lib/ai-guardrails";
-import { checkRateLimitAsync, getRateLimitHeaders, RateLimits } from "@/lib/rate-limit";
+import { checkRateLimitAsync, getRateLimitHeaders, RateLimits, checkGlobalAiBudget } from "@/lib/rate-limit";
 import { aiRecommendCard } from "@/lib/life-skills";
 
 // Valid Life Skills card keys the AI can recommend
@@ -353,8 +353,9 @@ Keep it natural — don't list their profile back to them.`;
     const lifeSkillsAIEnabled = process.env.LIFE_SKILLS_AI_ENABLED === "true";
     const isYouth = session.user.role === "YOUTH";
 
-    // Get OpenAI client - returns null if not configured
-    const openai = getOpenAIClient();
+    // Get OpenAI client - returns null if not configured, or when the global
+    // daily AI budget is spent (→ smart fallback below instead of more spend).
+    const openai = (await checkGlobalAiBudget()) ? getOpenAIClient() : null;
     if (!openai) {
       // OpenAI is not configured - use smart fallback
       // OpenAI API key absent or misconfigured — fallback mode

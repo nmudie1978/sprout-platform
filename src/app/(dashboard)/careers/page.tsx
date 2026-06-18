@@ -521,7 +521,7 @@ function CareersPageContent() {
                 size="sm"
                 className="bg-primary hover:bg-primary/90"
               >
-                <Link href="/sign-up">Get Started</Link>
+                <Link href="/auth/signup">Get Started</Link>
               </Button>
             </CardContent>
           </Card>

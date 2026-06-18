@@ -3,9 +3,13 @@ import OpenAI from "openai";
 import { prisma } from "@/lib/prisma";
 
 let _openai: OpenAI | null = null;
-function getOpenAI(): OpenAI {
+// Returns null when no key is configured, so callers degrade to the source
+// language instead of the SDK constructor throwing (a 500 on /api/translate).
+function getOpenAI(): OpenAI | null {
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (!apiKey || apiKey.length < 10) return null;
   if (!_openai) {
-    _openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+    _openai = new OpenAI({ apiKey });
   }
   return _openai;
 }
@@ -56,8 +60,12 @@ export async function translateText(
     return cached.translated;
   }
 
+  // No key configured → degrade to the source text rather than 500.
+  const openai = getOpenAI();
+  if (!openai) return text;
+
   // Call OpenAI
-  const completion = await getOpenAI().chat.completions.create({
+  const completion = await openai.chat.completions.create({
     model: "gpt-4o-mini",
     temperature: 0.3,
     messages: [
@@ -130,12 +138,19 @@ export async function translateBatch(
 
   if (toTranslate.length === 0) return results;
 
+  // No key configured → degrade the untranslated items to source text.
+  const openai = getOpenAI();
+  if (!openai) {
+    for (const t of toTranslate) results[t.item.key] = t.item.text;
+    return results;
+  }
+
   // Build numbered prompt for batch
   const numberedInput = toTranslate
     .map((t) => `[${t.index}] ${t.item.text}`)
     .join("\n\n");
 
-  const completion = await getOpenAI().chat.completions.create({
+  const completion = await openai.chat.completions.create({
     model: "gpt-4o-mini",
     temperature: 0.3,
     messages: [
