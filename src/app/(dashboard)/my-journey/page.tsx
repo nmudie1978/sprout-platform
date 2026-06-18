@@ -351,7 +351,10 @@ function FullscreenRoadmap({ goalTitle, onClose }: { goalTitle: string; onClose:
 // ─── Shared UI components ────────────────────────────────────────────────────
 
 function SectionCard({ children, className, style, accent }: { children: React.ReactNode; className?: string; style?: React.CSSProperties; accent?: 'teal' | 'amber' | 'blue' }) {
-  const accentBorder = accent === 'teal' ? 'border-l-[3px] border-l-primary/60' : accent === 'amber' ? 'border-l-[3px] border-l-warning/60' : accent === 'blue' ? 'border-l-[3px] border-l-info/60' : '';
+  // 'blue' emphasises the whole border (not just a left bar) so the Understand
+  // sections read with a clear blue outline; 'teal'/'amber' keep their subtle
+  // left accent bar.
+  const accentBorder = accent === 'teal' ? 'border-l-[3px] border-l-primary/60' : accent === 'amber' ? 'border-l-[3px] border-l-warning/60' : accent === 'blue' ? 'border-2 border-info/70' : '';
   // Border thickness: 1px → 1.2px (+20%). The default Tailwind `border`
   // class is 1px; `border-[1.2px]` bumps it to the exact 20% increase
   // requested — renders cleanly on hidpi displays as a touch bolder.
@@ -457,7 +460,7 @@ function EmptyState({ icon: Icon, message }: { icon: typeof Target; message: str
 
 function StatCard({ label, value, icon: Icon, accent, tooltip }: { label: string; value: string; icon: typeof TrendingUp; accent?: string; tooltip?: string }) {
   const card = (
-    <div className={cn('rounded-control border border-border bg-background/50 p-3.5 flex flex-col items-center text-center', tooltip && 'cursor-help')}>
+    <div className={cn('rounded-control border border-primary/30 bg-background/50 p-3.5 flex flex-col items-center text-center', tooltip && 'cursor-help')}>
       <div className="flex items-center justify-center gap-2 mb-1.5">
         <Icon className={cn('h-3.5 w-3.5', accent || 'text-muted-foreground/70')} />
         <span className="text-xs font-medium text-success/60 uppercase tracking-wider">{label}</span>
@@ -699,7 +702,7 @@ function DiscoverTab({
             ].map((tile) => {
               const Icon = tile.icon;
               return (
-                <div key={tile.label} className="rounded-control border border-border bg-card/30 px-3 py-2.5">
+                <div key={tile.label} className="rounded-control border border-primary/30 bg-card/30 px-3 py-2.5">
                   <div className="flex items-center gap-2 mb-1.5">
                     <Icon className="h-3 w-3 text-muted-foreground/55 shrink-0" />
                     <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground/70">
@@ -722,7 +725,7 @@ function DiscoverTab({
       {/* Hero: Video + Overview */}
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
         {/* Video — 2 cols */}
-        <SectionCard className="lg:col-span-2">
+        <SectionCard className="lg:col-span-2 border-primary/30">
           <SectionHeader icon={Play} title="A Day in the Life" centered collapsed={dCollapsed('d-video')} onToggle={() => dToggle('d-video')} />
           {!dCollapsed('d-video') && <div className="p-4">
             {videoId ? (
@@ -800,7 +803,7 @@ function DiscoverTab({
 
         {/* Overview stats — 3 cols */}
         <div className="lg:col-span-3 space-y-4">
-          <SectionCard>
+          <SectionCard className="border-primary/30">
             <SectionHeader icon={BarChart3} title="Career Overview" centered collapsed={dCollapsed('d-overview')} onToggle={() => dToggle('d-overview')} />
             {!dCollapsed('d-overview') && <div className="p-4 flex flex-col items-center gap-3">
               {(() => {
@@ -863,7 +866,7 @@ function DiscoverTab({
         <CareerDNASection career={career} variant="card" />
 
         {/* Work environment — always visible */}
-        <div className="rounded-card border border-border bg-card/50 p-4">
+        <div className="rounded-card border border-primary/30 bg-card/50 p-4">
           <div className="flex items-center gap-2 mb-2">
             <MapPin className="h-3.5 w-3.5 text-foreground" />
             <span className="text-xs font-semibold text-foreground uppercase tracking-wider">Where you&apos;ll work</span>

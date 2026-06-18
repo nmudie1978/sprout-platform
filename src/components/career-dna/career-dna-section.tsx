@@ -41,7 +41,7 @@ export function CareerDNASection({
           type="button"
           onClick={() => setOpen(true)}
           aria-haspopup="dialog"
-          className="group flex h-full w-full flex-col rounded-card border border-border bg-card/50 p-4 text-left transition-colors hover:border-primary/40 hover:bg-primary/[0.03] focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="group flex h-full w-full flex-col rounded-card border border-primary/30 bg-card/50 p-4 text-left transition-colors hover:border-primary/50 hover:bg-primary/[0.03] focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           <span className="mb-2 flex items-center gap-2">
             <Dna className="h-3.5 w-3.5 text-foreground" />
