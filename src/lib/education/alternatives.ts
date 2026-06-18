@@ -4,7 +4,7 @@ import { resolveCareer } from "./index";
 
 export type EuropeCountry =
   | "NO" | "SE" | "DK" | "FI" | "IS"
-  | "NL" | "BE" | "CH" | "DE" | "FR" | "IT" | "ES" | "IE" | "AT";
+  | "NL" | "BE" | "CH" | "DE" | "FR" | "IT" | "ES" | "IE" | "AT" | "GB";
 
 export interface AltUniversity {
   name: string;
