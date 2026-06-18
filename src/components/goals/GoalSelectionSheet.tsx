@@ -153,6 +153,9 @@ export function GoalSelectionSheet({
         onClose={onClose}
         title="Set your career goal"
         description="Choose the career you want to explore properly"
+        // Centered on mobile too, so the "Set as your career goal" footer sits
+        // mid-screen and stays reachable instead of dropping below the fold.
+        centerOnMobile
       >
         {/* Search Input */}
         <div className="relative mb-4">
