@@ -1,5 +1,4 @@
 import type { Career, CareerCategory, EducationRoute } from "@/lib/career-pathways";
-import { peopleIntensityFor } from "@/lib/matching/lookups";
 
 /**
  * Context a shelf rule needs to resolve traits that aren't always set
@@ -53,15 +52,10 @@ export function isNonUniversity(career: Career): boolean {
   return NON_UNIVERSITY_TEXT.test(career.educationPath ?? "");
 }
 
-export const SHELVES: ShelfDef[] = [
-  {
-    id: "helping-people",
-    title: "Careers that help people",
-    emoji: "🤝",
-    blurb: "Work centred on other people.",
-    match: (c, ctx) => peopleIntensityFor(c, ctx.categoryOf(c.id)) === "high",
-  },
-];
+// No themed shelves are currently surfaced in the front door. The shelf
+// machinery (ShelfDef / buildShelf / pinned+hidden hybrid) is retained so a
+// curated shelf can be re-added by appending to this array.
+export const SHELVES: ShelfDef[] = [];
 
 /**
  * Build one shelf: pinned ids (that exist, in order) lead, followed by the

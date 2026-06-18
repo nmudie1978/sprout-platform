@@ -20,6 +20,7 @@ import { motion } from "framer-motion";
 import { Compass, Search, Sparkles, Loader2, Briefcase, Layers, TrendingUp, Heart, ArrowRight } from "lucide-react";
 import { DiscoveryNudge } from "@/components/discovery/discovery-nudge";
 import { CareerFrontDoor } from "@/components/careers/career-front-door";
+import { TopMatchesSection } from "@/components/careers/top-matches-section";
 import Link from "next/link";
 import type { Career } from "@/lib/career-pathways";
 import { useCareerCatalog } from "@/hooks/use-career-catalog";
@@ -364,7 +365,6 @@ function CareersPageContent() {
           recommendationMap={recommendationMap}
           getCategoryForCareer={getCategoryForCareer}
           userCountry={userCountry}
-          notTailoredLabel={notTailoredLabel}
           onOpen={setSelectedCareer}
         />
       )}
@@ -526,13 +526,26 @@ function CareersPageContent() {
         />
       )}
 
+      {/* Your top matches — relocated to the bottom of the page (below the
+          table) on the unfiltered page-1 view. */}
+      {showFrontDoor && (
+        <TopMatchesSection
+          careers={getAllCareers()}
+          recommendationMap={recommendationMap}
+          userCountry={userCountry}
+          notTailoredLabel={notTailoredLabel}
+          onOpen={setSelectedCareer}
+        />
+      )}
+
       {/* Recommended Careers (anchor for Matches pill) */}
       {(() => {
         const topRecs = (insightsData?.recommendations ?? [])
           .filter((rec: any) => Math.round(rec.matchScore) > 70)
           .slice(0, 3);
-        // Hidden when the front door is showing — it surfaces top matches
-        // up top, so repeating them here would be redundant.
+        // Hidden when the front door is showing — <TopMatchesSection> above
+        // already surfaces the matches at the bottom, so repeating them here
+        // would be redundant.
         if (!isYouth || topRecs.length === 0 || showFrontDoor) return null;
         return (
           <div id="recommended-careers" className="mt-8 pt-6 border-t border-border scroll-mt-20">

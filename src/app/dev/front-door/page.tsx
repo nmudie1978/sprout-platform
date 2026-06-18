@@ -11,6 +11,7 @@
 import { useState } from "react";
 import type { Career, CareerCategory } from "@/lib/career-pathways";
 import { CareerFrontDoor } from "@/components/careers/career-front-door";
+import { TopMatchesSection } from "@/components/careers/top-matches-section";
 
 function c(o: Partial<Career> & { id: string }): Career {
   return {
@@ -76,6 +77,19 @@ export default function FrontDoorDevPage() {
         careers={CAREERS}
         recommendationMap={recommendationMap}
         getCategoryForCareer={getCategoryForCareer}
+        userCountry={null}
+        onOpen={(career) => alert(`Open: ${career.title}`)}
+      />
+
+      {/* Stand-in for the careers table that sits between the front door and
+          the relocated "Your top matches" section. */}
+      <div className="rounded-card border border-dashed border-border/60 py-10 text-center text-xs text-muted-foreground">
+        … careers table …
+      </div>
+
+      <TopMatchesSection
+        careers={CAREERS}
+        recommendationMap={recommendationMap}
         userCountry={null}
         onOpen={(career) => alert(`Open: ${career.title}`)}
       />
