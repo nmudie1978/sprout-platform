@@ -16,6 +16,7 @@ import type { Career, DiscoveryPreferences } from "@/lib/career-pathways";
 import { useSubtleHint } from "@/hooks/use-subtle-hint";
 import { SpotlightHint } from "@/components/ui/spotlight-hint";
 import { useTranslations } from "next-intl";
+import { DegreeToCareers } from "@/components/discovery/degree-to-careers";
 
 
 function CareerRadarPageContent() {
@@ -76,6 +77,10 @@ function CareerRadarPageContent() {
           />
           <RadarGuideTips />
         </div>
+      </div>
+
+      <div className="mt-4 max-w-3xl mx-auto">
+        <DegreeToCareers onOpen={setSelectedCareer} />
       </div>
 
       {isYouth ? (
