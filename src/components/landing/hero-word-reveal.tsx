@@ -59,6 +59,11 @@ interface WordRevealLineProps {
   className?: string;
   /** Render function for a word — allows wrapping individual words in styled spans */
   renderWord?: (word: string, index: number) => ReactNode;
+  /** Words at this index and beyond get wrapped in <em class={accentClassName}>.
+   * Serializable alternative to renderWord so a Server Component can style an
+   * accent clause (e.g. an italic, coloured tail of the headline). */
+  accentFromIndex?: number;
+  accentClassName?: string;
 }
 
 export function WordRevealLine({
@@ -67,8 +72,12 @@ export function WordRevealLine({
   wordDelay = 120,
   className,
   renderWord,
+  accentFromIndex,
+  accentClassName,
 }: WordRevealLineProps) {
   const words = text.split(" ");
+  const accentAt =
+    accentFromIndex !== undefined && accentFromIndex >= 0 ? accentFromIndex : null;
 
   return (
     <>
@@ -80,7 +89,13 @@ export function WordRevealLine({
             className="word-reveal-span"
             style={{ animationDelay: `${startDelay + i * wordDelay}ms` }}
           >
-            {renderWord ? renderWord(word, i) : word}
+            {renderWord ? (
+              renderWord(word, i)
+            ) : accentAt !== null && i >= accentAt ? (
+              <em className={accentClassName}>{word}</em>
+            ) : (
+              word
+            )}
             {i < words.length - 1 ? "\u00A0" : ""}
           </span>
         ))}

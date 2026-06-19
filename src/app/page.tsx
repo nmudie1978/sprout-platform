@@ -152,11 +152,16 @@ export default async function LandingPage() {
                 </p>
               </FadeReveal>
 
-              {/* Headline */}
-              <h1 className="text-2xl sm:text-3xl md:text-4xl font-semibold tracking-tight leading-snug text-foreground mb-5 sm:mb-6">
+              {/* Headline — DM Serif Display editorial treatment (v07): serif
+                  with the "figure out your future" clause in italic emerald. */}
+              <h1 className="font-[family-name:var(--font-display)] text-3xl sm:text-4xl md:text-5xl font-normal tracking-tight leading-[1.1] text-foreground mb-5 sm:mb-6">
                 <WordRevealLine
                   text={t('landing.hero.title')}
                   startDelay={300}
+                  accentFromIndex={t('landing.hero.title')
+                    .split(' ')
+                    .findIndex((w) => /^figure/i.test(w))}
+                  accentClassName="italic text-emerald-400"
                 />
               </h1>
 
