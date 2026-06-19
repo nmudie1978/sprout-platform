@@ -1,8 +1,7 @@
 "use client";
 
-import { useState, useMemo, useRef, useEffect } from "react";
-import Link from "next/link";
-import { GraduationCap, ChevronDown, ChevronUp } from "lucide-react";
+import { useState, useMemo, useRef, useEffect, useCallback } from "react";
+import { GraduationCap, ChevronDown, ChevronUp, ChevronLeft, ChevronRight } from "lucide-react";
 import type { Career } from "@/lib/career-pathways";
 import { useCareerCatalog } from "@/hooks/use-career-catalog";
 import { searchFields, getCareersForField } from "@/lib/discover/field-options";
@@ -15,7 +14,6 @@ const GROWTH_META: Record<Career["growthOutlook"], { label: string; dot: string 
   stable: { label: "Stable", dot: "bg-sky-400" },
 };
 
-const CAP = 12;
 const DROPDOWN_CAP = 8;
 
 function salaryLabel(career: Career): string | null {
@@ -74,6 +72,8 @@ export function DegreeToCareers({ onOpen, defaultOpenFieldId, defaultQuery }: De
     [selectedFieldId],
   );
 
+  // Full ranked list — no cap. The user explores every matching career
+  // here in a carousel, so they never have to leave the radar.
   const rankedCareers = useMemo(() => {
     if (!selectedFieldId || isLoading) return [];
     const ids = getCareersForField(selectedFieldId);
@@ -81,8 +81,36 @@ export function DegreeToCareers({ onOpen, defaultOpenFieldId, defaultQuery }: De
     return rankDisciplineCareers(careers);
   }, [selectedFieldId, isLoading, getCareerById]);
 
-  const displayCareers = rankedCareers.slice(0, CAP);
-  const hasMore = rankedCareers.length > CAP;
+  // ── Horizontal carousel ───────────────────────────────────────────
+  // A snap-scrolling track of all results with prev/next controls. The
+  // arrows page by (almost) one viewport so it reads as a carousel; the
+  // track is also natively swipe/trackpad scrollable.
+  const trackRef = useRef<HTMLDivElement>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
+
+  const updateArrows = useCallback(() => {
+    const el = trackRef.current;
+    if (!el) return;
+    setCanScrollLeft(el.scrollLeft > 4);
+    setCanScrollRight(el.scrollLeft < el.scrollWidth - el.clientWidth - 4);
+  }, []);
+
+  // Recompute arrow availability whenever the result set changes (and on
+  // mount). Reset the scroll position when a new field is picked.
+  useEffect(() => {
+    const el = trackRef.current;
+    if (el) el.scrollLeft = 0;
+    // Defer to after layout so scrollWidth/clientWidth are settled.
+    const id = requestAnimationFrame(updateArrows);
+    return () => cancelAnimationFrame(id);
+  }, [rankedCareers, updateArrows]);
+
+  const scrollByPage = useCallback((dir: -1 | 1) => {
+    const el = trackRef.current;
+    if (!el) return;
+    el.scrollBy({ left: dir * el.clientWidth * 0.9, behavior: "smooth" });
+  }, []);
 
   return (
     <div className="rounded-card border border-border/40 bg-card/40 overflow-hidden">
@@ -163,13 +191,13 @@ export function DegreeToCareers({ onOpen, defaultOpenFieldId, defaultQuery }: De
             <p className="text-xs text-muted-foreground/60 animate-pulse">Loading careers…</p>
           )}
 
-          {!isLoading && selectedFieldId && displayCareers.length === 0 && (
+          {!isLoading && selectedFieldId && rankedCareers.length === 0 && (
             <p className="text-xs text-muted-foreground/60">
               No careers mapped to this field yet.
             </p>
           )}
 
-          {!isLoading && selectedFieldId && displayCareers.length > 0 && (
+          {!isLoading && selectedFieldId && rankedCareers.length > 0 && (
             <section className="space-y-3">
               <div className="flex items-baseline justify-between gap-2">
                 <h3 className="text-sm font-semibold text-foreground">
@@ -177,52 +205,78 @@ export function DegreeToCareers({ onOpen, defaultOpenFieldId, defaultQuery }: De
                   <span className="text-primary">{selectedFieldLabel}</span> background
                 </h3>
                 <span className="text-xs text-muted-foreground shrink-0">
-                  {Math.min(displayCareers.length, CAP)} shown
-                  {hasMore && ` of ${rankedCareers.length}`}
+                  {rankedCareers.length} career{rankedCareers.length === 1 ? "" : "s"}
                 </span>
               </div>
 
-              {/* Career grid */}
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                {displayCareers.map((career) => {
-                  const salary = salaryLabel(career);
-                  const growth = GROWTH_META[career.growthOutlook];
-                  return (
-                    <button
-                      key={career.id}
-                      type="button"
-                      onClick={() => onOpen(career)}
-                      className="text-left rounded-control border border-border bg-background hover:border-primary/40 hover:bg-foreground/[0.03] transition-colors p-3 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-                    >
-                      <div className="text-xl" aria-hidden>
-                        {career.emoji}
-                      </div>
-                      <div className="mt-1.5 text-sm font-medium text-foreground line-clamp-2 min-h-[2.5rem]">
-                        {career.title}
-                      </div>
-                      <div className="mt-1.5 flex items-center gap-2 text-[11px] text-muted-foreground flex-wrap">
-                        {salary && <span>{salary}</span>}
-                        <span className="inline-flex items-center gap-1">
-                          <span
-                            className={`h-1.5 w-1.5 rounded-full ${growth.dot}`}
-                            aria-hidden
-                          />
-                          {growth.label}
-                        </span>
-                      </div>
-                    </button>
-                  );
-                })}
+              {/* Carousel — the full list, scrollable, never leaves the radar */}
+              <div className="relative">
+                <div
+                  ref={trackRef}
+                  onScroll={updateArrows}
+                  className="flex gap-2 overflow-x-auto snap-x snap-mandatory scroll-smooth pb-1 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+                  role="group"
+                  aria-label={`Careers from a ${selectedFieldLabel} background`}
+                >
+                  {rankedCareers.map((career) => {
+                    const salary = salaryLabel(career);
+                    const growth = GROWTH_META[career.growthOutlook];
+                    return (
+                      <button
+                        key={career.id}
+                        type="button"
+                        onClick={() => onOpen(career)}
+                        aria-label={`View ${career.title} details`}
+                        className="snap-start shrink-0 basis-[46%] sm:basis-[calc(33.333%-0.5rem)] text-left rounded-control border border-border bg-background hover:border-primary/40 hover:bg-foreground/[0.03] transition-colors p-3 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                      >
+                        <div className="text-xl" aria-hidden>
+                          {career.emoji}
+                        </div>
+                        <div className="mt-1.5 text-sm font-medium text-foreground line-clamp-2 min-h-[2.5rem]">
+                          {career.title}
+                        </div>
+                        <div className="mt-1.5 flex items-center gap-2 text-[11px] text-muted-foreground flex-wrap">
+                          {salary && <span>{salary}</span>}
+                          <span className="inline-flex items-center gap-1">
+                            <span
+                              className={`h-1.5 w-1.5 rounded-full ${growth.dot}`}
+                              aria-hidden
+                            />
+                            {growth.label}
+                          </span>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* Prev / next controls — only shown when there's overflow
+                    in that direction. */}
+                {canScrollLeft && (
+                  <button
+                    type="button"
+                    onClick={() => scrollByPage(-1)}
+                    aria-label="Previous careers"
+                    className="absolute left-1 top-1/2 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-full border border-border bg-background/95 text-foreground shadow-sm backdrop-blur hover:border-primary/40 hover:bg-background transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                  >
+                    <ChevronLeft className="h-4 w-4" aria-hidden />
+                  </button>
+                )}
+                {canScrollRight && (
+                  <button
+                    type="button"
+                    onClick={() => scrollByPage(1)}
+                    aria-label="More careers"
+                    className="absolute right-1 top-1/2 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-full border border-border bg-background/95 text-foreground shadow-sm backdrop-blur hover:border-primary/40 hover:bg-background transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                  >
+                    <ChevronRight className="h-4 w-4" aria-hidden />
+                  </button>
+                )}
               </div>
 
-              {hasMore && (
-                <Link
-                  href="/careers"
-                  className="text-xs text-muted-foreground/70 hover:text-foreground underline-offset-2 hover:underline transition-colors"
-                >
-                  Browse all in Explore →
-                </Link>
-              )}
+              <p className="text-[11px] text-muted-foreground/60">
+                Tap a career to open its full details.
+              </p>
             </section>
           )}
         </div>
