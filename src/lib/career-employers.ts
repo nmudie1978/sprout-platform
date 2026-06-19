@@ -19,6 +19,7 @@ import { REALISM_EMPLOYERS_HIGHEARN } from './career-employers-realism-highearn'
 import { REALISM_EMPLOYERS_AI } from './career-employers-realism-ai';
 import { REALISM_EMPLOYERS_LAWENF } from './career-employers-realism-lawenforcement';
 import { REALISM_EMPLOYERS_GEO } from './career-employers-realism-geography';
+import { REALISM_EMPLOYERS_FASTGROW } from './career-employers-realism-fastgrow';
 
 export interface Employer {
   name: string;
@@ -377,6 +378,7 @@ export function getTopEmployers(careerId: string): Employer[] {
     ?? REALISM_EMPLOYERS_AI[careerId]
     ?? REALISM_EMPLOYERS_LAWENF[careerId]
     ?? REALISM_EMPLOYERS_GEO[careerId]
+    ?? REALISM_EMPLOYERS_FASTGROW[careerId]
     ?? [];
 }
 
@@ -393,7 +395,8 @@ export function hasTopEmployers(careerId: string): boolean {
     (REALISM_EMPLOYERS_HIGHEARN[careerId]?.length ?? 0) > 0 ||
     (REALISM_EMPLOYERS_AI[careerId]?.length ?? 0) > 0 ||
     (REALISM_EMPLOYERS_LAWENF[careerId]?.length ?? 0) > 0 ||
-    (REALISM_EMPLOYERS_GEO[careerId]?.length ?? 0) > 0
+    (REALISM_EMPLOYERS_GEO[careerId]?.length ?? 0) > 0 ||
+    (REALISM_EMPLOYERS_FASTGROW[careerId]?.length ?? 0) > 0
   );
 }
 
