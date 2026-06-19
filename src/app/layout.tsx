@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
+import { Inter, DM_Serif_Display } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/providers";
 import { NextIntlClientProvider } from "next-intl";
@@ -12,6 +12,15 @@ const inter = Inter({
   display: "swap",
   preload: true,
   variable: "--font-sans",
+});
+
+// Editorial serif for the landing hero headline (normal + italic).
+const dmSerif = DM_Serif_Display({
+  subsets: ["latin"],
+  weight: "400",
+  style: ["normal", "italic"],
+  display: "swap",
+  variable: "--font-display",
 });
 
 export const viewport: Viewport = {
@@ -46,7 +55,7 @@ export default async function RootLayout({
     // before next-themes hydrates. next-themes will swap the class
     // only if the user has explicitly opted into light via the toggle.
     <html lang={locale} className="dark" suppressHydrationWarning>
-      <body className={`${inter.variable} font-sans`}>
+      <body className={`${inter.variable} ${dmSerif.variable} font-sans`}>
         {/* Skip link — first focusable element, visible only on keyboard
             focus. Lets keyboard / screen-reader users jump past the nav
             straight to the page's main content (WCAG 2.4.1). */}
