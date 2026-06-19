@@ -241,10 +241,14 @@ export function WindingRoadRenderer(props: RendererProps) {
               >
                 <div
                   className={cn(
-                    'flex h-6 w-6 items-center justify-center rounded-full border-2 bg-background shadow-sm animate-pulse',
+                    'flex h-6 w-6 items-center justify-center rounded-full border-2 bg-background shadow-sm',
                     alignmentGate.level === 'aligned'
                       ? 'border-emerald-500 text-emerald-500'
                       : 'border-rose-500 text-rose-500',
+                    // Pulse only on a clear misalignment (e.g. a study programme
+                    // that doesn't lead to the chosen career) to draw the eye;
+                    // aligned / partial states stay calm and steady.
+                    alignmentGate.level === 'gap' && 'animate-pulse',
                   )}
                 >
                   {alignmentGate.level === 'aligned' ? (
