@@ -871,6 +871,39 @@ const PRESET_VOCATIONAL = new Set<string>([
   "nail-technician",
   "baker",
   "beautician",
+  // Common entry-level / first jobs (owner list, Jun 2026) — explicitly
+  // trusted in the non-degree filter regardless of the entryLevel heuristic.
+  // Existing catalogue ids that map to the owner's listed jobs:
+  "kitchen-porter",
+  "fast-food-crew",
+  "hotel-housekeeper",
+  "house-cleaner",
+  "industrial-cleaner",
+  "groundskeeper",
+  "material-handler",
+  "courier",
+  "support-worker",
+  "gardener",
+  "farmer",
+  "construction-worker",
+  "customer-service-rep",
+  "receptionist",
+  "lifeguard",
+  "mover",
+  // New entry-level careers added for this list:
+  "bartender",
+  "cinema-attendant",
+  "amusement-park-worker",
+  "car-wash-attendant",
+  "postal-worker",
+  "van-driver",
+  "newspaper-delivery",
+  "factory-operative",
+  "production-line-worker",
+  "call-centre-agent",
+  "telemarketer",
+  "gym-assistant",
+  "camp-counsellor",
 ]);
 
 // Fast-growing careers: the 30 roles the user flagged (Apr 2026) as
