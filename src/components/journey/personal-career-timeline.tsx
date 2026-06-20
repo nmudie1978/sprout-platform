@@ -349,6 +349,15 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney, read
   // narration can't be personalised (school, subjects, finish year).
   const hasFoundation = !!educationContextData?.educationContext?.stage;
 
+  // Starting-point guidance gate. Until the user tells us where they are
+  // today, the roadmap runs on defaults and doesn't re-tailor to them —
+  // which isn't obvious. Show a calm callout (only once the context query
+  // has resolved, so it never flashes during load, and only when there's
+  // a goal to build a roadmap from). It auto-hides the moment the user
+  // saves their starting point (the dialog invalidates education-context).
+  const startingPointEmpty =
+    !readOnly && !!primaryGoalTitle && educationContextData !== undefined && !hasFoundation;
+
   const guardedPlay = useCallback(() => {
     if (!hasFoundation) {
       toast({
@@ -737,6 +746,44 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney, read
             Personalising your roadmap…
           </div>
         </div>
+      )}
+
+      {/* Starting-point guidance — calm, actionable callout shown only
+          when the user hasn't filled in their starting point yet. Makes
+          it obvious that this step comes first and that completing it
+          re-tailors the roadmap. Tapping it opens the same Foundation
+          editor as the "Your Starting Point" step; it disappears on save. */}
+      {startingPointEmpty && (
+        <button
+          type="button"
+          onClick={() =>
+            setSelectedItem({
+              id: FOUNDATION_ITEM_ID,
+              stage: 'foundation',
+              title: 'Your Starting Point',
+              startAge: userAge ?? journey.startAge,
+              isMilestone: false,
+              icon: 'Target',
+            })
+          }
+          className="group mb-3 flex w-full items-center gap-3 rounded-card border border-teal-500/30 bg-teal-500/[0.07] px-4 py-3 text-left transition-colors hover:border-teal-500/50 hover:bg-teal-500/[0.12] focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500/60"
+        >
+          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-teal-500/15 ring-1 ring-teal-500/30 animate-pulse">
+            <Target className="h-4 w-4 text-teal-500" aria-hidden />
+          </span>
+          <span className="min-w-0 flex-1">
+            <span className="block text-sm font-semibold text-foreground">
+              Start here — add your starting point
+            </span>
+            <span className="block text-xs text-muted-foreground/80 leading-snug">
+              Tell us where you are today (school, studies or work) and we&rsquo;ll tailor this roadmap to you.
+            </span>
+          </span>
+          <span className="hidden sm:inline-flex shrink-0 items-center gap-1 text-xs font-semibold text-teal-600 dark:text-teal-300">
+            Add details
+            <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" aria-hidden />
+          </span>
+        </button>
       )}
 
       {/* Roadmap */}
