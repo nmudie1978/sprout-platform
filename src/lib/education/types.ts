@@ -5,6 +5,8 @@
  * Used by the roadmap school node, step type system, and learning alignment module.
  */
 
+import type { Blocker, TriedRoute } from '@/lib/journey/bridge-mindmap-types';
+
 // ── Education Stage ──────────────────────────────────────────────────
 
 export type EducationStage = 'school' | 'college' | 'university' | 'other';
@@ -38,6 +40,16 @@ export interface EducationContext {
   studyProgram?: string;
   expectedCompletion?: string;
   updatedAt: string;
+
+  // ── Bridge-routes mindmap inputs (stage `other` only; all optional) ──
+  /** What the user did before — anchors the bridge mindmap. */
+  previousOccupation?: string;
+  /** Whether the user is working with NAV — gates the NAV branch. */
+  withNav?: boolean;
+  /** Routes already tried — powers the mindmap's tried/untried split. */
+  triedRoutes?: TriedRoute[];
+  /** The user's main blocker — orders the mindmap branches. */
+  blocker?: Blocker;
 }
 
 // ── Roadmap Step Types ───────────────────────────────────────────────

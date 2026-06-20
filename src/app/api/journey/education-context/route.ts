@@ -4,6 +4,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import type { EducationContext } from '@/lib/education/types';
+import { sanitizeBridgeContext } from '@/lib/journey/sanitize-bridge-context';
 
 /**
  * GET /api/journey/education-context
@@ -65,6 +66,8 @@ export async function POST(req: NextRequest) {
     studyProgram: str(studyProgram, 80),
     expectedCompletion: str(expectedCompletion, 10),
     updatedAt: new Date().toISOString(),
+    // Bridge-routes mindmap inputs (relevant for stage `other`; harmless otherwise)
+    ...sanitizeBridgeContext(body),
   };
 
   // Get or create profile, then merge into existing journeySummary

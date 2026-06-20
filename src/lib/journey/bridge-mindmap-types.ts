@@ -16,6 +16,17 @@ export type TriedRoute =
 
 export type Blocker = 'no-experience' | 'no-callbacks' | 'unknown-routes';
 
+/** Runtime lists for validation + UI (kept in sync with the unions above). */
+export const TRIED_ROUTES: TriedRoute[] = [
+  'course',
+  'applications',
+  'cv',
+  'networking',
+  'placement',
+  'freelancing',
+];
+export const BLOCKERS: Blocker[] = ['no-experience', 'no-callbacks', 'unknown-routes'];
+
 export type BranchKind =
   | 'anchor'
   | 'workplace-nav'
