@@ -28,6 +28,16 @@ import { Lightbulb } from 'lucide-react';
 import { FOUNDATION_ITEM_ID } from '../renderers/foundation-banner';
 import { SUBJECT_GROUPS, ALL_SUBJECTS } from '@/lib/education/subject-list';
 import { getCertificationPath } from '@/lib/education';
+import { TRIED_ROUTES, BLOCKERS, type TriedRoute, type Blocker } from '@/lib/journey/bridge-mindmap-types';
+import { TRIED_ROUTE_LABELS } from '@/lib/journey/bridge-catalogue';
+import { buildBridgeMindmap } from '@/lib/journey/build-bridge-mindmap';
+import { BridgeMindmapView } from '@/components/journey/bridge-routes-mindmap';
+
+const BLOCKER_LABELS: Record<Blocker, string> = {
+  'no-experience': 'Not enough experience',
+  'no-callbacks': 'No callbacks / interviews',
+  'unknown-routes': "Don't know the routes",
+};
 import { Award, ExternalLink as ExtLink } from 'lucide-react';
 
 /**
@@ -292,6 +302,12 @@ export function TimelineDetailDialog({
   const [schoolName, setSchoolName] = useState('');
   const [studyProgram, setStudyProgram] = useState('');
   const [expectedCompletion, setExpectedCompletion] = useState('');
+  // Bridge-routes mindmap inputs — only collected/shown for stage `other`.
+  const [previousOccupation, setPreviousOccupation] = useState('');
+  const [withNav, setWithNav] = useState(false);
+  const [triedRoutes, setTriedRoutes] = useState<TriedRoute[]>([]);
+  const [blocker, setBlocker] = useState<Blocker | ''>('');
+  const [showRoutes, setShowRoutes] = useState(false);
   const [subjects, setSubjects] = useState<string[]>([]);
   const [newSubject, setNewSubject] = useState('');
   const [subjectDropdownOpen, setSubjectDropdownOpen] = useState(false);
@@ -349,6 +365,10 @@ export function TimelineDetailDialog({
             setStudyProgram(ctx.studyProgram || '');
             setExpectedCompletion(ctx.expectedCompletion || '');
             setSubjects(ctx.currentSubjects || []);
+            setPreviousOccupation(ctx.previousOccupation || '');
+            setWithNav(!!ctx.withNav);
+            setTriedRoutes(Array.isArray(ctx.triedRoutes) ? ctx.triedRoutes : []);
+            setBlocker(ctx.blocker || '');
             return;
           }
 
@@ -366,6 +386,10 @@ export function TimelineDetailDialog({
           setStudyProgram('');
           setExpectedCompletion(defaultFinishYearFor(age, defaultStage));
           setSubjects([]);
+          setPreviousOccupation('');
+          setWithNav(false);
+          setTriedRoutes([]);
+          setBlocker('');
         });
       }
     }
@@ -410,6 +434,11 @@ export function TimelineDetailDialog({
             studyProgram: studyProgram.trim() || undefined,
             expectedCompletion: expectedCompletion.trim() || undefined,
             currentSubjects: subjects,
+            // Bridge-routes inputs (sanitiser ignores these unless meaningful).
+            previousOccupation: previousOccupation.trim() || undefined,
+            withNav,
+            triedRoutes,
+            blocker: blocker || undefined,
           }),
         });
         if (!res.ok) {
@@ -590,6 +619,95 @@ export function TimelineDetailDialog({
                     placeholder="e.g. Computer Science, Nursing"
                     className="w-full mt-1 rounded-lg border border-border/30 bg-muted/10 px-3 py-2 text-xs text-foreground/90 placeholder:text-muted-foreground/55 focus:outline-none focus:border-teal-500/40"
                   />
+                </div>
+              )}
+
+              {/* Bridge-routes mindmap inputs — only for the "other" (self-directed / between jobs) stage */}
+              {eduStage === 'other' && (
+                <div className="space-y-3 rounded-lg border border-teal-500/20 bg-teal-500/[0.03] p-3">
+                  <p className="text-[10px] uppercase tracking-wider text-teal-400/80 font-semibold">Routes back into work</p>
+
+                  <div>
+                    <label className="text-[10px] text-muted-foreground/70 uppercase tracking-wider">What did you do before? (optional)</label>
+                    <input
+                      value={previousOccupation}
+                      onChange={(e) => { setPreviousOccupation(e.target.value); setDirty(true); }}
+                      placeholder="e.g. Interior designer"
+                      className="w-full mt-1 rounded-lg border border-border/30 bg-muted/10 px-3 py-2 text-xs text-foreground/90 placeholder:text-muted-foreground/55 focus:outline-none focus:border-teal-500/40"
+                    />
+                  </div>
+
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={withNav}
+                      onChange={(e) => { setWithNav(e.target.checked); setDirty(true); }}
+                      className="h-3.5 w-3.5 accent-teal-500"
+                    />
+                    <span className="text-xs text-foreground/85">I&apos;m working with NAV right now</span>
+                  </label>
+
+                  <div>
+                    <label className="text-[10px] text-muted-foreground/70 uppercase tracking-wider">What have you already tried?</label>
+                    <div className="flex flex-wrap gap-1.5 mt-1.5">
+                      {TRIED_ROUTES.map((r) => {
+                        const on = triedRoutes.includes(r);
+                        return (
+                          <button
+                            key={r}
+                            type="button"
+                            onClick={() => {
+                              setTriedRoutes((prev) => (on ? prev.filter((x) => x !== r) : [...prev, r]));
+                              setDirty(true);
+                            }}
+                            className={cn(
+                              'rounded-full px-2.5 py-1 text-[10px] border transition-colors',
+                              on
+                                ? 'border-teal-500/40 bg-teal-500/15 text-teal-300'
+                                : 'border-border/40 bg-muted/20 text-muted-foreground/75 hover:bg-muted/40',
+                            )}
+                          >
+                            {TRIED_ROUTE_LABELS[r]}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="text-[10px] text-muted-foreground/70 uppercase tracking-wider">What&apos;s blocking you most?</label>
+                    <select
+                      value={blocker}
+                      onChange={(e) => { setBlocker(e.target.value as Blocker | ''); setDirty(true); }}
+                      className="w-full mt-1 rounded-lg border border-border/30 bg-muted/10 px-3 py-2 text-xs text-foreground/90 focus:outline-none focus:border-teal-500/40"
+                    >
+                      <option value="">Select…</option>
+                      {BLOCKERS.map((b) => (
+                        <option key={b} value={b}>{BLOCKER_LABELS[b]}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => setShowRoutes((v) => !v)}
+                    className="text-xs font-medium text-teal-400 hover:text-teal-300"
+                  >
+                    {showRoutes ? 'Hide your routes' : 'See your routes →'}
+                  </button>
+                  {showRoutes && (
+                    <div className="mt-1">
+                      <BridgeMindmapView
+                        model={buildBridgeMindmap({
+                          previousOccupation: previousOccupation.trim() || null,
+                          targetCareer: careerTitle || 'your target role',
+                          withNav,
+                          triedRoutes,
+                          blocker: blocker || 'unknown-routes',
+                        })}
+                      />
+                    </div>
+                  )}
                 </div>
               )}
 
