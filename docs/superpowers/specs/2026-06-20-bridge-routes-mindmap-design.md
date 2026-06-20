@@ -1,8 +1,18 @@
 # Bridge Routes Mindmap — Design Spec
 
 **Date:** 2026-06-20
-**Status:** Approved (brainstorming complete)
+**Status:** Approved (brainstorming complete); amended 2026-06-20 after source verification
 **Surface:** My Journey → Clarity tab (career-changers / out-of-work users)
+
+## Codebase reality corrections (supersede anything below that conflicts)
+
+The initial exploration summary was partly inaccurate. Verified against source:
+
+1. **No `between` stage exists.** `EducationStage = 'school' | 'college' | 'university' | 'other'` (defined in BOTH `src/lib/education/types.ts:10` and `src/lib/journey/generate-fallback-timeline.ts:24`). `other` already means "gap year / self-taught / **already working** / between things" (`generate-fallback-timeline.ts:532`). → **The feature keys on stage `other` only.** Drop all `between` references.
+2. **No `currentRole`/occupation field exists** in the foundation/education context. → `previousOccupation` is a **newly collected input**, not a reused field. It is **optional** (generic `anchor` fallback when empty).
+3. The bridge step is the first item of the `other` branch: `title: "Find your way in"`, `stage: 'experience'`, `icon: 'Briefcase'` (`generate-fallback-timeline.ts:534-550`). The "See your routes →" affordance attaches here.
+4. Foundation context persists via `POST src/app/api/journey/education-context/route.ts` (allow-list of `stage` + sanitised string fields). New fields are added there + to the `EducationContext` interface.
+5. CLAUDE.md age policy reverted to 15–30 during the session — does not affect this feature (foundation stages are not age-gated). Keep copy age-agnostic.
 
 ## Problem
 
@@ -12,13 +22,13 @@ When someone is **out of work** or **between jobs** — especially in a **career
 2. They **can't tell which routes they've already exhausted**.
 3. They don't know the **support levers that exist** (e.g. NAV's praksisplass / lønnstilskudd).
 
-Today the Clarity roadmap already models this user (foundation stages `other` and `between`), but it produces a **single linear 5-step ladder** (`generate-fallback-timeline.ts` ~line 645): *Find your way in → Apply → First role → Certifications → Senior role.* One path, no alternatives, no sense of untried avenues.
+Today the Clarity roadmap already models this user (foundation stage `other`), but it produces a **single linear 5-step ladder** (`generate-fallback-timeline.ts` ~line 645): *Find your way in → Apply → First role → Certifications → Senior role.* One path, no alternatives, no sense of untried avenues.
 
 A **mindmap** is the right shape for this: it branches the avenues, contrasts *untried* vs *already tried*, and surfaces support routes the user didn't know existed.
 
 ## Goal
 
-Add a **supporting visual** in the Clarity tab — a popup mindmap of routes back into work — for users whose foundation stage is `other` or `between`. It must be **calm, accurate, privacy-minimal, and mobile-strong**, and must not replace or clutter the existing linear roadmap.
+Add a **supporting visual** in the Clarity tab — a popup mindmap of routes back into work — for users whose foundation stage is `other`. It must be **calm, accurate, privacy-minimal, and mobile-strong**, and must not replace or clutter the existing linear roadmap.
 
 ### Non-goals (YAGNI)
 
@@ -38,16 +48,18 @@ Add a **supporting visual** in the Clarity tab — a popup mindmap of routes bac
 
 ## Inputs
 
-Collected in the **existing foundation edit modal**, shown only for `other`/`between` stages. Persisted with the existing education-context record via `/api/journey/foundation-data`. All low-sensitivity; no free-text, no sensitive categories (privacy-by-design).
+Collected in the **existing foundation edit modal**, shown only for the `other` stage. Persisted with the existing education-context record via `POST /api/journey/education-context`. All low-sensitivity; no free-text, no sensitive categories (privacy-by-design).
 
 **Reused (already captured):**
-- `previousOccupation` ← existing `currentRole` (e.g. "Interior designer") — anchors the `anchor` branch.
 - `targetCareer` ← the journey goal (e.g. "Project Manager") — the centre of the map.
 
-**New (three fields):**
+**New (four fields, shown only for stage `other`):**
+- `previousOccupation: string | null` — "What did you do before?" (optional free-ish text, sanitised, ≤80 chars). Anchors the `anchor` branch; generic fallback when empty.
 - `withNav: boolean` — "Are you working with NAV right now?" Gates the NAV branch.
 - `triedRoutes: string[]` — multi-select chips: `course · applications · cv · networking · placement · freelancing`. Powers tried/untried.
 - `blocker: 'no-experience' | 'no-callbacks' | 'unknown-routes'` — "What's the main thing blocking you?" Orders the branches.
+
+(Privacy note: `previousOccupation` is a short occupation label, not sensitive profiling. Optional.)
 
 ## Data model
 
@@ -57,7 +69,7 @@ type Blocker = 'no-experience' | 'no-callbacks' | 'unknown-routes';
 type BranchKind = 'anchor' | 'workplace-nav' | 'proof' | 'training' | 'network' | 'tried';
 
 interface BridgeInput {
-  previousOccupation: string | null;   // null is common for `between`
+  previousOccupation: string | null;   // newly collected, optional
   targetCareer: string;
   withNav: boolean;
   triedRoutes: TriedRoute[];
@@ -123,7 +135,7 @@ export function buildBridgeMindmap(input: BridgeInput): BridgeMindmap
 
 ### Edge cases
 
-- `previousOccupation` null/empty (common for `between`) → `anchor` title becomes "Use the strengths you already have" with generic leaves; map still renders.
+- `previousOccupation` null/empty (common) → `anchor` title becomes "Use the strengths you already have" with generic leaves; map still renders.
 - `withNav` false → no NAV branch; `proof`/`network` lead depending on blocker.
 - All routes tried → branches keep their **non-route** leaves (most leaves have no `mapsToTriedRoute`), so nothing renders empty; the `tried` branch holds all six.
 - Certification-route target career → `training` branch includes a short cert-ladder leaf (reuse existing `careerRoute` signal).
@@ -131,18 +143,18 @@ export function buildBridgeMindmap(input: BridgeInput): BridgeMindmap
 ## UI & rendering
 
 - **Component:** `BridgeRoutesMindmap` (popup/dialog) + pure `layoutMindmap(model, viewport)` that computes node/edge positions.
-- **Trigger:** in the Clarity roadmap, when stage is `other`/`between`, the existing "Find your way in" bridge step gains a quiet **"See your routes →"** affordance that opens the popup. No new route; lazy-loaded like other renderers.
+- **Trigger:** in the Clarity roadmap, when stage is `other`, the existing "Find your way in" bridge step gains a quiet **"See your routes →"** affordance that opens the popup. No new route; lazy-loaded like other renderers.
 - **Desktop/tablet:** left→right SVG fan (centre → branches → leaves), reusing the SVG `<path>` bezier approach from `winding-road-renderer.tsx` (no graph library). Untried leaves = teal outline; NAV leaves = teal fill + glow + `NAV` badge; tried leaves = greyed, struck through.
 - **Mobile:** same `BridgeMindmap` model renders as a **vertical accordion** — each branch a collapsible section, leaves inside. Emphasised branch expanded by default.
 - **Interaction:** leaves are *explore*, not checkboxes. Tapping expands `detail`. NAV leaves show factual detail + a real `nav.no` pointer. A small "update my answers" link re-opens the foundation inputs to refresh the map.
-- **Inputs UI:** extend the existing foundation edit modal with the three new fields (NAV toggle · tried chips · blocker), shown only for `other`/`between`.
+- **Inputs UI:** extend the existing foundation edit modal with the four new fields (previous occupation · NAV toggle · tried chips · blocker), shown only for `other`.
 
 ## Testing
 
 - **Unit** (`build-bridge-mindmap.test.ts`): NAV gate on/off · each of the 3 blocker orderings + emphasis flag (including emphasis-fallback when gated out) · tried dedup · empty `previousOccupation` · all-routes-tried (branches still populated) · certification-route training leaf.
 - **Coverage** (`bridge-domain-adjacency-coverage.test.ts`): every catalogue entry resolves; fallback path returns non-empty (mirrors existing `discipline-map-coverage` test pattern).
 - **Layout** (`layout-mindmap.test.ts`): deterministic positions, no node overlap, fan within viewport bounds.
-- **Preview:** `/dev/bridge-mindmap` page rendering sample data (career-changer + between-jobs personas), verified via headless-Chrome screenshot (established UI-verify workflow). Desktop + mobile widths.
+- **Preview:** `/dev/bridge-mindmap` page rendering sample data (career-changer + out-of-work personas), verified via headless-Chrome screenshot (established UI-verify workflow). Desktop + mobile widths.
 - No e2e for v1.
 
 ## Files
@@ -153,12 +165,16 @@ export function buildBridgeMindmap(input: BridgeInput): BridgeMindmap
 - `src/lib/journey/bridge-catalogue.ts` — branch/leaf catalogue + NAV facts
 - `src/components/journey/bridge-routes-mindmap.tsx` — popup + responsive renderers
 - `src/components/journey/bridge-mindmap-layout.ts` — pure layout function
-- `src/app/(dev)/dev/bridge-mindmap/page.tsx` — preview
+- `src/app/dev/bridge-mindmap/page.tsx` — preview (dev pages live under `src/app/dev`, not a route group)
 - tests as above
 
 **Modified**
-- `src/lib/education/types.ts` — add `withNav`, `triedRoutes`, `blocker` to the education-context shape
-- `src/components/journey/renderers/foundation-banner.tsx` (or the foundation edit modal) — collect the 3 new fields for `other`/`between`
+- `src/lib/education/types.ts` — add `previousOccupation`, `withNav`, `triedRoutes`, `blocker` to the `EducationContext` interface
+- the foundation edit modal (locate via `studyProgram` input) — collect the 4 new fields, shown only for stage `other`
+- the Clarity roadmap bridge-step renderer — add the "See your routes →" affordance on the `other`-branch "Find your way in" item
+- `src/app/api/journey/education-context/route.ts` — accept/persist + return the 4 new fields (extend allow-list + sanitisation)
+
+(Note: `EducationStage` is duplicated in `education/types.ts` and `generate-fallback-timeline.ts` — leave as-is; this feature reads `stage`, it doesn't change the union.)
 - the Clarity roadmap bridge-step renderer — add the "See your routes →" affordance
 - `/api/journey/foundation-data` (+ persistence) — accept/return the 3 new fields
 
