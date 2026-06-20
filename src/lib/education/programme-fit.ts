@@ -14,6 +14,7 @@
 import { FIELD_OPTIONS, getCareersForField, type FieldOption } from "@/lib/discover/field-options";
 import { getDisciplineForCareer } from "@/lib/education/alternatives";
 import { resolveCareer } from "@/lib/education";
+import { slugify } from "@/lib/utils";
 
 export type ProgrammeFit = "fit" | "mismatch" | "unknown";
 
@@ -61,13 +62,19 @@ export function programmeCareerFit(
   const field = resolveProgrammeField(programme);
   if (!field) return "unknown";
 
+  // The caller may pass a career TITLE ("Interior Designer") whose fuzzy
+  // resolveCareer() match is wrong (e.g. → "designer"), so always also try the
+  // slug, which equals the catalogue id ("interior-designer").
+  const slug = slugify(careerIdOrTitle);
+
   // 1. Direct reachability — the career is in this field's career set.
   const careerId = resolveCareer(careerIdOrTitle) ?? careerIdOrTitle;
   const reachable = new Set(getCareersForField(field.id));
-  if (reachable.has(careerId)) return "fit";
+  if (reachable.has(careerId) || reachable.has(slug)) return "fit";
 
   // 2. Discipline-family comparison.
-  const careerDiscipline = getDisciplineForCareer(careerIdOrTitle);
+  const careerDiscipline =
+    getDisciplineForCareer(careerIdOrTitle) ?? getDisciplineForCareer(slug);
   if (!careerDiscipline) return "unknown";
   const progDisciplines = programmeDisciplines(field);
   if (progDisciplines.size === 0) return "unknown";
