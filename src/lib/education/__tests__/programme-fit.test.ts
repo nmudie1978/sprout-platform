@@ -21,6 +21,14 @@ describe("programmeCareerFit", () => {
     expect(programmeCareerFit("robotics", "psychologist")).toBe("mismatch");
   });
 
+  it("flags a mismatch when the career is passed as a TITLE (Biology → Interior Designer)", () => {
+    // Regression: the foundation passes the career title, whose fuzzy
+    // resolveCareer() match ("designer") isn't in the discipline map — the
+    // slug fallback ("interior-designer") must still resolve the mismatch.
+    expect(programmeCareerFit("Biology & Life Sciences", "Interior Designer")).toBe("mismatch");
+    expect(programmeCareerFit("Biology & Life Sciences", "interior-designer")).toBe("mismatch");
+  });
+
   it("treats a reachable career as a fit (Robotics -> Robotics Engineer)", () => {
     expect(programmeCareerFit("robotics", "robotics-engineer")).toBe("fit");
   });
