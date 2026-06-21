@@ -525,16 +525,12 @@ export function TimelineDetailDialog({
                     ]
                   : isAdult
                     ? [
+                        // School (Vg3) is dropped entirely for adults (18+) —
+                        // it read as the wrong assumption for anyone past
+                        // compulsory schooling. Minors (≤17) still see it below.
                         { value: 'other' as const, label: 'Working' },
                         { value: 'university' as const, label: 'University' },
                         { value: 'college' as const, label: 'College' },
-                        // Vg3 (final videregående year) is normally finished by
-                        // ~19, so only 18–19 year-olds still see "School"; from
-                        // 20 up it's dropped — it reads as the wrong assumption
-                        // for an adult who's clearly past school.
-                        ...(userAge !== null && userAge < 20
-                          ? [{ value: 'school' as const, label: 'School' }]
-                          : []),
                         notWorking,
                       ]
                     : isMinor
