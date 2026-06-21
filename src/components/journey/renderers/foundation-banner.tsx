@@ -110,7 +110,7 @@ export function useFoundationData({
       : eduContext.stage === 'other'
         ? (eduContext.currentRole ? `Currently: ${eduContext.currentRole}` : 'Working / exploring a change')
         : eduContext.stage === 'between'
-          ? 'Not working right now'
+          ? (eduContext.previousOccupation ? `Not working · was ${eduContext.previousOccupation}` : 'Not working right now')
           : `${EDUCATION_STAGE_CONFIG[eduContext.stage].label}${eduContext.schoolName ? ` · ${eduContext.schoolName}` : ''}`,
     startAge: userAge ?? journeyStartAge,
     isMilestone: false,
@@ -120,7 +120,7 @@ export function useFoundationData({
       : eduContext.stage === 'other'
         ? `${eduContext.currentRole ? `You currently work as ${eduContext.currentRole}. ` : 'You\'re working or exploring a change. '}Your roadmap builds from here toward your goal, using the experience you already bring.`
         : eduContext.stage === 'between'
-          ? "You're not working right now — that's your starting point. Your roadmap builds from here toward your goal, drawing on the experience and strengths you already bring."
+          ? `You're not working right now${eduContext.previousOccupation ? `, after working as ${eduContext.previousOccupation}` : ''} — that's your starting point. Your roadmap builds from here toward your goal.`
           : `Your current education: ${EDUCATION_STAGE_CONFIG[eduContext.stage].label}.${eduContext.studyProgram ? ` Studying ${eduContext.studyProgram}.` : ''}${eduContext.expectedCompletion ? ` Finishing ${eduContext.expectedCompletion}.` : ''} This is your starting point — everything builds from here.`,
     microActions: FOUNDATION_MICRO_ACTIONS[eduContext?.stage ?? 'school'],
   }), [eduContext, userAge, journeyStartAge]);
@@ -137,14 +137,22 @@ export function useFoundationData({
   // starting point. Clears automatically once real details are saved.
   const foundationEmpty =
     !eduContext ||
-    (!eduContext.schoolName?.trim() &&
+    // "Not working right now" (between) is itself a complete, honest starting
+    // point — selecting it means the user HAS told us their situation, so the
+    // glow + "tap to add" prompt must clear (and the roadmap key flips so it
+    // regenerates).
+    (eduContext.stage !== 'between' &&
+      !eduContext.schoolName?.trim() &&
       foundationSubjects.length === 0 &&
       !eduContext.studyProgram?.trim() &&
       // Working / career-changer users fill in their current role instead of
       // school details — that counts as "filled" too, so the glow + "tap to
       // add" prompt clears for them (was the bug: a saved role still read as
       // empty because only school fields were checked).
-      !eduContext.currentRole?.trim());
+      !eduContext.currentRole?.trim() &&
+      // Bridge-routes users may only fill "what did you do before" — that's
+      // real starting-point info too.
+      !eduContext.previousOccupation?.trim());
 
   return { eduContext, subjectHint, foundationItem, foundationEmpty, foundationSubjects };
 }

@@ -710,22 +710,43 @@ export function TimelineDetailDialog({
 
                   <button
                     type="button"
-                    onClick={() => setShowRoutes((v) => !v)}
+                    onClick={() => setShowRoutes(true)}
                     className="text-xs font-medium text-teal-400 hover:text-teal-300"
                   >
-                    {showRoutes ? 'Hide your routes' : 'See your routes →'}
+                    See your options in mindmap form →
                   </button>
                   {showRoutes && (
-                    <div className="mt-1">
-                      <BridgeMindmapView
-                        model={buildBridgeMindmap({
-                          previousOccupation: previousOccupation.trim() || null,
-                          targetCareer: careerTitle || 'your target role',
-                          withNav,
-                          triedRoutes,
-                          blocker: blocker || 'unknown-routes',
-                        })}
-                      />
+                    <div
+                      className="fixed inset-0 z-[100] flex flex-col bg-background/98 backdrop-blur-sm animate-in fade-in duration-150"
+                      role="dialog"
+                      aria-modal="true"
+                      aria-label="Your options — routes back into work"
+                    >
+                      <div className="flex items-center justify-between border-b border-border/40 px-4 py-2.5">
+                        <p className="text-sm font-semibold tracking-tight text-foreground/85">
+                          Your options — routes back into work
+                        </p>
+                        <button
+                          type="button"
+                          onClick={() => setShowRoutes(false)}
+                          className="rounded-full p-1.5 text-muted-foreground/70 transition-colors hover:bg-muted/40 hover:text-foreground"
+                          aria-label="Close options"
+                          title="Close"
+                        >
+                          <X className="h-4 w-4" />
+                        </button>
+                      </div>
+                      <div className="flex-1 overflow-auto p-4 sm:p-8">
+                        <BridgeMindmapView
+                          model={buildBridgeMindmap({
+                            previousOccupation: previousOccupation.trim() || null,
+                            targetCareer: careerTitle || 'your target role',
+                            withNav,
+                            triedRoutes,
+                            blocker: blocker || 'unknown-routes',
+                          })}
+                        />
+                      </div>
                     </div>
                   )}
                 </div>
