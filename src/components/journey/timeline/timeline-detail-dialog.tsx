@@ -528,7 +528,13 @@ export function TimelineDetailDialog({
                         { value: 'other' as const, label: 'Working' },
                         { value: 'university' as const, label: 'University' },
                         { value: 'college' as const, label: 'College' },
-                        { value: 'school' as const, label: 'School' },
+                        // Vg3 (final videregående year) is normally finished by
+                        // ~19, so only 18–19 year-olds still see "School"; from
+                        // 20 up it's dropped — it reads as the wrong assumption
+                        // for an adult who's clearly past school.
+                        ...(userAge !== null && userAge < 20
+                          ? [{ value: 'school' as const, label: 'School' }]
+                          : []),
                         notWorking,
                       ]
                     : isMinor
@@ -596,9 +602,8 @@ export function TimelineDetailDialog({
                 </div>
               ) : eduStage === 'between' ? (
                 <p className="text-[11px] text-muted-foreground/70 leading-snug">
-                  No problem — we&rsquo;ll build your roadmap from your experience
-                  and strengths. Just set your goal and we&rsquo;ll map the steps
-                  from here.
+                  No problem — that&rsquo;s your starting point. Just set your goal
+                  and we&rsquo;ll map the steps from here.
                 </p>
               ) : (
                 <div>
