@@ -99,6 +99,11 @@ export function useRoadmapModel(props: RendererProps) {
   );
 
   const alignmentGate: AlignmentGate | null = useMemo(() => {
+    // No fit/alarm badge for the "Working" (other) or "Not working right now"
+    // (between) starting points — there's no study programme to check against,
+    // so a guardrail there is irrelevant and reads as noise.
+    if (eduContext?.stage === 'between' || eduContext?.stage === 'other') return null;
+
     // 1. School-stage / under-18: subject-alignment gate (existing behaviour).
     if (subjectHint) {
       const matched = subjectHint.matchedKey.length;
