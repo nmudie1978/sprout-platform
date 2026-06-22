@@ -11,7 +11,7 @@ const SIDEBAR_HREFS = new Set([
   "/library",
   "/career-advisor",
   "/careers",
-  "/career-events",
+  "/events-opportunities",
   "/insights",
   "/profile",
   "/info",
@@ -28,7 +28,7 @@ const SIDEBAR_ORDER = [
   "/library",
   "/career-advisor",
   "/careers",
-  "/career-events",
+  "/events-opportunities",
   "/insights",
 ];
 

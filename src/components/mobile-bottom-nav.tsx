@@ -102,7 +102,7 @@ export const youthDrawerSections: NavSection[] = [
     title: "Explore",
     items: [
       { href: "/careers", label: "Explore Careers", icon: Compass },
-      { href: "/career-events", label: "Youth Events", icon: Calendar },
+      { href: "/events-opportunities", label: "Events & Opportunities", icon: Calendar },
       { href: "/insights", label: "Industry Insights", icon: BarChart3 },
     ],
   },

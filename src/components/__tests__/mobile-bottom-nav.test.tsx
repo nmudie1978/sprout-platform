@@ -34,7 +34,7 @@ const REQUIRED_YOUTH_ROUTES = [
   '/my-journey',        // Journey / bottom bar
   '/careers',           // Explore Careers / bottom bar
   '/careers/radar',     // My Career Radar — previously missing from mobile
-  '/career-events',     // Youth Events — previously missing from mobile
+  '/events-opportunities', // Events & Opportunities — replaces Youth Events
   '/insights',          // Industry Insights — previously missing from mobile
   '/career-advisor',    // AI Advisor — now under "Yours"
   '/library',           // My Library — saved careers, comparisons, reflections

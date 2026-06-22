@@ -94,9 +94,9 @@ export const STEPS: WalkthroughStep[] = [
     icon: Calendar,
     iconColor: "text-rose-500",
     iconBg: "bg-rose-500/10",
-    title: "Youth Events",
-    body: "Workshops, open days and meet-ups for young people exploring careers — a low-pressure way to see things up close.",
-    target: "/career-events",
+    title: "Events & Opportunities",
+    body: "Career events plus real-world next steps — apprenticeships, internships, graduate programs, student jobs and entry-level roles, with trusted places to look.",
+    target: "/events-opportunities",
   },
   {
     icon: BarChart3,

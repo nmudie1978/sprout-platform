@@ -377,7 +377,7 @@ export function SidebarNav({ userRole, userName, userEmail, userProfilePic }: Si
 
             <NavSection title="Explore" collapsed={collapsed}>
               <NavItem href="/careers" icon={Compass} label="Explore Careers" active={pathname === "/careers"} collapsed={collapsed} tooltip="Browse hundreds of careers with salary, growth and skills. Filter by what fits you." />
-              <NavItem href="/career-events" icon={Calendar} label="Youth Events" active={isActive("/career-events")} collapsed={collapsed} tooltip="Workshops, open days and meet-ups for young people exploring careers." />
+              <NavItem href="/events-opportunities" icon={Calendar} label="Events & Opportunities" active={isActive("/events-opportunities")} collapsed={collapsed} tooltip="Career events plus real-world next steps — apprenticeships, internships, graduate programs, student jobs and entry-level roles." />
               <NavItem href="/insights" icon={BarChart3} label="Industry Insights" active={isActive("/insights")} collapsed={collapsed} tooltip="What's actually happening in different industries — hiring, pay, and outlook." />
             </NavSection>
 
