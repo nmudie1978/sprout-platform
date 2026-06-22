@@ -18,6 +18,7 @@ import { useMemo, useRef, useState, useCallback } from "react";
 import { Plus, Minus, Maximize, ExternalLink } from "lucide-react";
 import type { BridgeMindmap, BridgeBranch } from "@/lib/journey/bridge-mindmap-types";
 import { ROUTE_META, ROUTE_COLOR_CLASSES, type MapRouteKind } from "./route-meta";
+import { getRouteLadders, ROUTE_VIEW_KEYS, ROUTE_VIEW_LABELS, ROUTE_VIEW_BLURB, type RouteViewKey } from "./route-ladders";
 import { useCareerCatalog } from "@/hooks/use-career-catalog";
 import { getDisciplineForCareer } from "@/lib/education/alternatives";
 import { getCareersForDiscipline } from "@/lib/discover/degree-to-careers";
@@ -39,7 +40,7 @@ function Stars({ n }: { n: number }) {
   );
 }
 
-const VIEWS = ["Full map", "Shortest", "Most realistic", "Highest success"] as const;
+type ViewKey = "full" | RouteViewKey;
 
 export function CareerTransitionMap({
   model,
@@ -51,6 +52,8 @@ export function CareerTransitionMap({
   previousOccupation: string | null;
 }) {
   const { getCareerById } = useCareerCatalog();
+  const [view, setView] = useState<ViewKey>("full");
+  const ladders = useMemo(() => getRouteLadders(targetCareer), [targetCareer]);
 
   // Related careers — same discipline as the target, excluding it. Best-effort.
   const related = useMemo(() => {
@@ -95,38 +98,114 @@ export function CareerTransitionMap({
     <div className="flex h-full flex-col">
       {/* View toggle */}
       <div className="flex flex-wrap items-center gap-1.5 px-1 pb-3">
-        {VIEWS.map((v, i) => (
-          <button
-            key={v}
-            type="button"
-            disabled={i !== 0}
-            className={cn(
-              "rounded-full px-3 py-1 text-[11px] font-medium border transition-colors",
-              i === 0
-                ? "border-teal-500/40 bg-teal-500/15 text-teal-300"
-                : "border-border/30 bg-muted/10 text-muted-foreground/40 cursor-not-allowed",
-            )}
-            title={i === 0 ? "All routes" : "Coming soon"}
-          >
-            {v}
-            {i !== 0 && <span className="ml-1 text-[9px] uppercase tracking-wide opacity-70">soon</span>}
-          </button>
-        ))}
+        <button
+          type="button"
+          onClick={() => setView("full")}
+          className={cn(
+            "rounded-full px-3 py-1 text-[11px] font-medium border transition-colors",
+            view === "full" ? "border-teal-500/40 bg-teal-500/15 text-teal-300" : "border-border/30 bg-muted/10 text-muted-foreground/70 hover:bg-muted/20",
+          )}
+        >
+          Full map
+        </button>
+        {ROUTE_VIEW_KEYS.map((k) => {
+          const enabled = !!ladders;
+          return (
+            <button
+              key={k}
+              type="button"
+              disabled={!enabled}
+              onClick={() => enabled && setView(k)}
+              title={enabled ? ROUTE_VIEW_BLURB[k] : "A detailed route for this career is coming soon"}
+              className={cn(
+                "rounded-full px-3 py-1 text-[11px] font-medium border transition-colors",
+                view === k
+                  ? "border-teal-500/40 bg-teal-500/15 text-teal-300"
+                  : enabled
+                    ? "border-border/30 bg-muted/10 text-muted-foreground/70 hover:bg-muted/20"
+                    : "border-border/30 bg-muted/10 text-muted-foreground/40 cursor-not-allowed",
+              )}
+            >
+              {ROUTE_VIEW_LABELS[k]}
+              {!enabled && <span className="ml-1 text-[9px] uppercase tracking-wide opacity-70">soon</span>}
+            </button>
+          );
+        })}
       </div>
 
-      {/* Desktop: zoom/pan canvas. Mobile: vertical stack. */}
-      <DesktopCanvas
-        cards={cards}
-        targetCareer={targetCareer}
-        previousOccupation={previousOccupation}
-      />
-      <div className="md:hidden flex-1 overflow-y-auto space-y-3 pb-6">
-        <HeroCard targetCareer={targetCareer} previousOccupation={previousOccupation} />
-        {cards.map((c) => (
-          <RouteCardView key={c.id} card={c} />
-        ))}
-        <NavNote />
-      </div>
+      {view === "full" ? (
+        <>
+          {/* Desktop: zoom/pan canvas. Mobile: vertical stack. */}
+          <DesktopCanvas cards={cards} targetCareer={targetCareer} previousOccupation={previousOccupation} />
+          <div className="md:hidden flex-1 overflow-y-auto space-y-3 pb-6">
+            <HeroCard targetCareer={targetCareer} previousOccupation={previousOccupation} />
+            {cards.map((c) => (
+              <RouteCardView key={c.id} card={c} />
+            ))}
+            <NavNote />
+          </div>
+        </>
+      ) : (
+        ladders && (
+          <RouteLadderView
+            key={view}
+            steps={ladders[view]}
+            viewKey={view}
+            from={previousOccupation}
+          />
+        )
+      )}
+    </div>
+  );
+}
+
+/* ── Route ladder (Shortest / Most realistic / …) ─────────────────── */
+function RouteLadderView({
+  steps,
+  viewKey,
+  from,
+}: {
+  steps: { role: string; duration: string; why: string }[];
+  viewKey: RouteViewKey;
+  from: string | null;
+}) {
+  return (
+    <div className="flex-1 overflow-y-auto px-1 pb-6 animate-in fade-in duration-200">
+      <p className="mb-5 max-w-xl text-[12.5px] leading-snug text-muted-foreground/80">{ROUTE_VIEW_BLURB[viewKey]}</p>
+      <ol className="relative mx-auto max-w-xl space-y-4 border-l border-border/40 pl-6">
+        {/* start */}
+        <li className="relative">
+          <span className="absolute -left-[31px] top-1 h-3 w-3 rounded-full border-2 border-muted-foreground/40 bg-background" />
+          <p className="text-[11px] uppercase tracking-wide text-muted-foreground/55">{from ? `From ${from}` : "Where you are now"}</p>
+        </li>
+        {steps.map((s, i) => {
+          const isTarget = i === steps.length - 1;
+          return (
+            <li key={i} className="relative">
+              <span
+                className={cn(
+                  "absolute -left-[33px] top-0.5 flex h-4 w-4 items-center justify-center rounded-full text-[9px] font-bold",
+                  isTarget ? "bg-indigo-500 text-white" : "bg-teal-500/80 text-white",
+                )}
+              >
+                {isTarget ? "★" : i + 1}
+              </span>
+              <div
+                className={cn(
+                  "rounded-xl border p-3.5 shadow-sm",
+                  isTarget ? "border-indigo-400/40 bg-indigo-500/10" : "border-border/40 bg-card/70",
+                )}
+              >
+                <div className="flex items-start justify-between gap-2">
+                  <p className={cn("text-sm font-semibold leading-tight", isTarget ? "text-indigo-200" : "text-foreground/90")}>{s.role}</p>
+                  <span className="shrink-0 rounded-full bg-muted/40 px-2 py-0.5 text-[10px] text-muted-foreground/80">{s.duration}</span>
+                </div>
+                <p className="mt-1 text-[12px] leading-snug text-muted-foreground/75">{s.why}</p>
+              </div>
+            </li>
+          );
+        })}
+      </ol>
     </div>
   );
 }
@@ -134,14 +213,14 @@ export function CareerTransitionMap({
 /* ── Hero ─────────────────────────────────────────────────────────── */
 function HeroCard({ targetCareer, previousOccupation }: { targetCareer: string; previousOccupation: string | null }) {
   return (
-    <div className="relative overflow-hidden rounded-2xl border border-teal-400/30 bg-gradient-to-br from-teal-600/90 to-emerald-700/80 p-5 shadow-xl shadow-teal-900/30">
-      <div className="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-teal-300/20 blur-2xl" />
-      <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-teal-100/90">Your bridge</span>
+    <div className="relative overflow-hidden rounded-2xl border border-indigo-400/30 bg-gradient-to-br from-indigo-600/85 to-indigo-900/90 p-5 shadow-xl shadow-indigo-950/40">
+      <div className="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-indigo-400/20 blur-2xl" />
+      <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-indigo-200/90">Your bridge to</span>
       <p className="mt-1 text-xl font-bold leading-tight text-white">{targetCareer}</p>
       {previousOccupation && (
-        <p className="mt-0.5 text-sm text-teal-100/90">from {previousOccupation}</p>
+        <p className="mt-0.5 text-sm text-indigo-200/90">from {previousOccupation}</p>
       )}
-      <div className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-black/15 px-2.5 py-1 text-[11px] font-medium text-teal-50">
+      <div className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-black/25 px-2.5 py-1 text-[11px] font-medium text-indigo-50">
         Estimated transition · 12–36 months
       </div>
     </div>
