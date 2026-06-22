@@ -4,8 +4,12 @@ import {
   EVENT_CATEGORIES,
   OPPORTUNITY_CATEGORIES,
   ALL_EVENT_OPP_URLS,
+  GLOBAL_SOURCES,
   filterSources,
   filterCategories,
+  getSourcesForCountry,
+  getLocationOptions,
+  eventSearchQuery,
 } from "../events-opportunities";
 
 describe("events-opportunities data", () => {
@@ -59,5 +63,78 @@ describe("events-opportunities data", () => {
     const r = filterCategories(OPPORTUNITY_CATEGORIES, "apprentice");
     expect(r.length).toBeGreaterThan(0);
     expect(r.every((c) => `${c.name} ${c.description}`.toLowerCase().includes("appren") || (c.searchTerms ?? []).join(" ").includes("appren"))).toBe(true);
+  });
+});
+
+describe("events-opportunities — country tailoring", () => {
+  const ids = (country?: string | null) => getSourcesForCountry(country).map((s) => s.id);
+
+  it("Norway shows NAV/FINN/Jobbnorge and NOT Spanish/Swedish portals", () => {
+    const no = ids("Norway");
+    expect(no).toContain("nav-arbeidsplassen");
+    expect(no).toContain("finn-jobb");
+    expect(no).toContain("jobbnorge");
+    expect(no).not.toContain("sepe");
+    expect(no).not.toContain("arbetsformedlingen");
+  });
+
+  it("Spain shows SEPE/InfoJobs and NOT Norwegian portals", () => {
+    const es = ids("Spain");
+    expect(es).toContain("sepe");
+    expect(es).toContain("infojobs");
+    expect(es).not.toContain("nav-arbeidsplassen");
+    expect(es).not.toContain("finn-jobb");
+  });
+
+  it("Sweden shows Arbetsförmedlingen; Denmark shows Jobnet", () => {
+    expect(ids("Sweden")).toContain("arbetsformedlingen");
+    expect(ids("Denmark")).toContain("jobnet");
+    expect(ids("Sweden")).not.toContain("nav-arbeidsplassen");
+  });
+
+  it("global sources appear for every country, known or not", () => {
+    const globalIds = GLOBAL_SOURCES.map((s) => s.id);
+    for (const country of ["Norway", "Spain", "Sweden", "Denmark", "Germany", null, undefined]) {
+      for (const g of globalIds) expect(ids(country)).toContain(g);
+    }
+    expect(globalIds).toContain("linkedin-pathways");
+    expect(globalIds).toContain("eures");
+  });
+
+  it("unknown/missing country falls back to GLOBAL only (no wrong-country portals)", () => {
+    expect(ids("Germany")).toEqual(GLOBAL_SOURCES.map((s) => s.id));
+    expect(ids(null)).toEqual(GLOBAL_SOURCES.map((s) => s.id));
+    expect(ids("Germany")).not.toContain("nav-arbeidsplassen");
+    expect(ids("Germany")).not.toContain("sepe");
+  });
+
+  it("location options are country-aware", () => {
+    const no = getLocationOptions("Norway");
+    expect(no[0]).toEqual({ value: "all", label: "All Norway" });
+    expect(no.map((o) => o.value)).toContain("oslo");
+    expect(no.map((o) => o.value)).not.toContain("madrid");
+
+    const es = getLocationOptions("Spain");
+    expect(es[0]).toEqual({ value: "all", label: "All Spain" });
+    expect(es.map((o) => o.value)).toContain("madrid");
+
+    // Unknown country → neutral "All locations" + remote, no cities.
+    const xx = getLocationOptions("Germany");
+    expect(xx[0]).toEqual({ value: "all", label: "All locations" });
+    expect(xx.map((o) => o.value)).toEqual(["all", "remote"]);
+  });
+
+  it("every country's location options end with Remote / Online", () => {
+    for (const country of ["Norway", "Spain", "Sweden", "Denmark", "Germany"]) {
+      const opts = getLocationOptions(country);
+      expect(opts[opts.length - 1]).toEqual({ value: "remote", label: "Remote / Online" });
+    }
+  });
+
+  it("event search query is tailored to the country", () => {
+    expect(eventSearchQuery("job-fairs", "Spain")).toBe("job fair career fair Spain");
+    expect(eventSearchQuery("open-days", "Norway")).toBe("university open day Norway");
+    // No country → generic query (no trailing space).
+    expect(eventSearchQuery("job-fairs", null)).toBe("job fair career fair");
   });
 });
