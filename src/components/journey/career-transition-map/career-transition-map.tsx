@@ -15,8 +15,9 @@
  */
 
 import { useMemo, useRef, useState, useCallback, useLayoutEffect, useEffect } from "react";
-import { Plus, Minus, Maximize, ExternalLink, StickyNote, Pencil } from "lucide-react";
+import { Plus, Minus, Maximize, ExternalLink, StickyNote, Pencil, Download } from "lucide-react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { toast } from "@/hooks/use-toast";
 import type { BridgeMindmap, BridgeBranch } from "@/lib/journey/bridge-mindmap-types";
 import { applyBranchNote, type BridgeNotes } from "@/lib/journey/bridge-notes";
 import { ROUTE_META, ROUTE_COLOR_CLASSES, type MapRouteKind } from "./route-meta";
@@ -153,6 +154,34 @@ export function CareerTransitionMap({
   const { notes, saveNote } = useBridgeNotes();
   const ladders = useMemo(() => getRouteLadders(targetCareer), [targetCareer]);
 
+  // Download — capture the full mindmap as a PNG. We capture the desktop
+  // canvas's untransformed content node (full size, unclipped) when it's
+  // visible, else the mobile vertical stack. Mirrors the roadmap export.
+  const desktopMapRef = useRef<HTMLDivElement>(null);
+  const mobileMapRef = useRef<HTMLDivElement>(null);
+  const [downloading, setDownloading] = useState(false);
+  const handleDownload = useCallback(async () => {
+    const el = desktopMapRef.current?.offsetParent ? desktopMapRef.current : mobileMapRef.current;
+    if (!el) return;
+    setDownloading(true);
+    try {
+      const { default: html2canvas } = await import("html2canvas");
+      const bgVar = getComputedStyle(document.documentElement).getPropertyValue("--background").trim();
+      const backgroundColor = bgVar
+        ? `hsl(${bgVar.replace(/\s+/g, ", ")})`
+        : document.documentElement.classList.contains("dark") ? "#0f1117" : "#ffffff";
+      const canvas = await html2canvas(el, { backgroundColor, scale: 2, useCORS: true });
+      const a = document.createElement("a");
+      a.href = canvas.toDataURL("image/png");
+      a.download = `transition-map-${targetCareer.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "") || "career"}.png`;
+      a.click();
+    } catch {
+      toast({ title: "Couldn't download the map", description: "Please try again.", variant: "destructive" });
+    } finally {
+      setDownloading(false);
+    }
+  }, [targetCareer]);
+
   // Related careers — same discipline as the target, excluding it. Best-effort.
   const related = useMemo(() => {
     const discipline = getDisciplineForCareer(targetCareer);
@@ -198,42 +227,59 @@ export function CareerTransitionMap({
           target. On the career-changer map (no curated ladders) the Full map
           is the only view, so we hide the toggle entirely rather than show
           disabled "Soon" buttons. */}
-      {ladders && (
-        <div className="flex flex-wrap items-center gap-1.5 px-1 pb-3">
-          <button
-            type="button"
-            onClick={() => setView("full")}
-            className={cn(
-              "rounded-full px-3 py-1 text-[11px] font-medium border transition-colors",
-              view === "full" ? "border-teal-500/40 bg-teal-500/15 text-teal-300" : "border-border/30 bg-muted/10 text-muted-foreground/70 hover:bg-muted/20",
-            )}
-          >
-            Full map
-          </button>
-          {ROUTE_VIEW_KEYS.map((k) => (
-            <button
-              key={k}
-              type="button"
-              onClick={() => setView(k)}
-              title={ROUTE_VIEW_BLURB[k]}
-              className={cn(
-                "rounded-full px-3 py-1 text-[11px] font-medium border transition-colors",
-                view === k
-                  ? "border-teal-500/40 bg-teal-500/15 text-teal-300"
-                  : "border-border/30 bg-muted/10 text-muted-foreground/70 hover:bg-muted/20",
-              )}
-            >
-              {ROUTE_VIEW_LABELS[k]}
-            </button>
-          ))}
+      {/* Actions row — view toggle (when curated views exist) on the left,
+          map actions (Download) on the right. Always rendered so the
+          Download button is available on every transition map. */}
+      <div className="flex flex-wrap items-center justify-between gap-2 px-1 pb-3">
+        <div className="flex flex-wrap items-center gap-1.5">
+          {ladders && (
+            <>
+              <button
+                type="button"
+                onClick={() => setView("full")}
+                className={cn(
+                  "rounded-full px-3 py-1 text-[11px] font-medium border transition-colors",
+                  view === "full" ? "border-teal-500/40 bg-teal-500/15 text-teal-300" : "border-border/30 bg-muted/10 text-muted-foreground/70 hover:bg-muted/20",
+                )}
+              >
+                Full map
+              </button>
+              {ROUTE_VIEW_KEYS.map((k) => (
+                <button
+                  key={k}
+                  type="button"
+                  onClick={() => setView(k)}
+                  title={ROUTE_VIEW_BLURB[k]}
+                  className={cn(
+                    "rounded-full px-3 py-1 text-[11px] font-medium border transition-colors",
+                    view === k
+                      ? "border-teal-500/40 bg-teal-500/15 text-teal-300"
+                      : "border-border/30 bg-muted/10 text-muted-foreground/70 hover:bg-muted/20",
+                  )}
+                >
+                  {ROUTE_VIEW_LABELS[k]}
+                </button>
+              ))}
+            </>
+          )}
         </div>
-      )}
+        <button
+          type="button"
+          onClick={handleDownload}
+          disabled={downloading}
+          title="Download this map as an image"
+          className="inline-flex items-center gap-1.5 rounded-full border border-border/40 bg-muted/20 px-3 py-1 text-[11px] font-medium text-foreground/80 transition-colors hover:bg-muted/40 hover:text-foreground disabled:opacity-50"
+        >
+          <Download className="h-3.5 w-3.5" />
+          {downloading ? "Preparing…" : "Download"}
+        </button>
+      </div>
 
       {view === "full" ? (
         <>
           {/* Desktop: zoom/pan canvas. Mobile: vertical stack. */}
-          <DesktopCanvas cards={cards} targetCareer={targetCareer} previousOccupation={previousOccupation} notes={notes} onSaveNote={saveNote} />
-          <div className="md:hidden flex-1 overflow-y-auto space-y-3 pb-6">
+          <DesktopCanvas cards={cards} targetCareer={targetCareer} previousOccupation={previousOccupation} notes={notes} onSaveNote={saveNote} contentRef={desktopMapRef} />
+          <div ref={mobileMapRef} className="md:hidden flex-1 overflow-y-auto space-y-3 pb-6">
             <HeroCard targetCareer={targetCareer} previousOccupation={previousOccupation} />
             {cards.map((c) => (
               <RouteCardView key={c.id} card={c} note={notes[c.id]} onSaveNote={(t) => saveNote(c.id, t)} />
@@ -398,12 +444,14 @@ function DesktopCanvas({
   previousOccupation,
   notes,
   onSaveNote,
+  contentRef,
 }: {
   cards: RouteCard[];
   targetCareer: string;
   previousOccupation: string | null;
   notes: BridgeNotes;
   onSaveNote: (branchId: string, note: string) => void;
+  contentRef?: React.Ref<HTMLDivElement>;
 }) {
   const [t, setT] = useState({ scale: 1, x: 0, y: 0 });
   const drag = useRef<{ x: number; y: number; tx: number; ty: number } | null>(null);
@@ -510,7 +558,7 @@ function DesktopCanvas({
         onPointerUp={onPointerUp}
         onPointerCancel={onPointerUp}
       >
-        <div style={{ position: "relative", width: canvasW, height: layout.contentH }}>
+        <div ref={contentRef} style={{ position: "relative", width: canvasW, height: layout.contentH }}>
           {/* connectors */}
           <svg className="absolute inset-0 pointer-events-none" width={canvasW} height={layout.contentH} aria-hidden>
             {/* hero → each card */}
