@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { toast } from '@/hooks/use-toast';
 import {
@@ -25,7 +26,7 @@ import {
   ExternalLink,
 } from 'lucide-react';
 import { Lightbulb } from 'lucide-react';
-import { FOUNDATION_ITEM_ID } from '../renderers/foundation-banner';
+import { FOUNDATION_ITEM_ID, FOUNDATION_MICRO_ACTIONS } from '../renderers/foundation-banner';
 import { ProgrammePicker } from './programme-picker';
 import { SUBJECT_GROUPS, ALL_SUBJECTS } from '@/lib/education/subject-list';
 import { getCertificationPath } from '@/lib/education';
@@ -298,12 +299,15 @@ export function TimelineDetailDialog({
   const [schoolName, setSchoolName] = useState('');
   const [studyProgram, setStudyProgram] = useState('');
   const [currentRole, setCurrentRole] = useState('');
+  // For "In work" (other): the year the user started their current role.
+  const [workStartYear, setWorkStartYear] = useState('');
   const [expectedCompletion, setExpectedCompletion] = useState('');
-  // Bridge-routes mindmap inputs — collected for the "Working" (other) and
-  // "Not working right now" (between) stages.
+  // Bridge-routes mindmap inputs — collected for the "Not working right now"
+  // (between) stage only.
   const [previousOccupation, setPreviousOccupation] = useState('');
   const [withNav, setWithNav] = useState(false);
   const [triedRoutes, setTriedRoutes] = useState<TriedRoute[]>([]);
+  const [triedDropdownOpen, setTriedDropdownOpen] = useState(false);
   const [blocker, setBlocker] = useState<Blocker | ''>('');
   const [showRoutes, setShowRoutes] = useState(false);
   const [subjects, setSubjects] = useState<string[]>([]);
@@ -362,6 +366,7 @@ export function TimelineDetailDialog({
             setSchoolName(ctx.schoolName || '');
             setStudyProgram(ctx.studyProgram || '');
             setCurrentRole(ctx.currentRole || '');
+            setWorkStartYear(ctx.workStartYear || '');
             setPreviousOccupation(ctx.previousOccupation || '');
             setWithNav(!!ctx.withNav);
             setTriedRoutes(Array.isArray(ctx.triedRoutes) ? ctx.triedRoutes : []);
@@ -437,6 +442,7 @@ export function TimelineDetailDialog({
                 ? studyProgram.trim() || undefined
                 : undefined,
             currentRole: currentRole.trim() || undefined,
+            workStartYear: workStartYear.trim() || undefined,
             previousOccupation: previousOccupation.trim() || undefined,
             withNav,
             triedRoutes,
@@ -477,6 +483,20 @@ export function TimelineDetailDialog({
 
     setSaving(false);
     setDirty(false);
+
+    // Confirm the save with a green tick + a short summary of what they entered.
+    if (isFoundation) {
+      const summary =
+        eduStage === 'other'
+          ? `In work${currentRole.trim() ? ` as ${currentRole.trim()}` : ''}${schoolName.trim() ? ` at ${schoolName.trim()}` : ''}`
+          : eduStage === 'between'
+            ? `Not in work${previousOccupation.trim() ? ` · was ${previousOccupation.trim()}` : ''}`
+            : `${eduStage === 'university' ? 'University' : eduStage === 'college' ? 'College' : 'School'}${schoolName.trim() ? ` · ${schoolName.trim()}` : ''}${(eduStage === 'university' || eduStage === 'college') && studyProgram.trim() ? ` · ${studyProgram.trim()}` : ''}`;
+      toast({
+        title: '✓ Starting point saved',
+        description: summary,
+      });
+    }
     onSaved?.();
     onOpenChange(false);
   };
@@ -488,7 +508,12 @@ export function TimelineDetailDialog({
     ? `Age ${item.startAge}\u2013${item.endAge}`
     : `Age ${item.startAge}`;
   const stepType = classifyStepType(item);
-  const hasMicroActions = item.microActions && item.microActions.length > 0;
+  // For the foundation card, the "what this involves" bullets follow the
+  // CURRENTLY selected stage (live), not the stale saved item.microActions —
+  // so switching to In work / Not in work immediately shows work-appropriate
+  // guidance instead of school subjects/teachers.
+  const microActions = isFoundation ? FOUNDATION_MICRO_ACTIONS[eduStage] : item.microActions;
+  const hasMicroActions = !!microActions && microActions.length > 0;
   const stepTip = isFoundation ? null : getStepTip(item, careerTitle);
 
   return (
@@ -521,46 +546,28 @@ export function TimelineDetailDialog({
                   re-pick a stage. */}
               {(() => {
                 const isAdult = typeof userAge === 'number' && userAge >= 18;
-                // Over ~35 the youth education stages (Vg3 "School" + 2-year
-                // "College") are implausible and read as insulting, so we drop
-                // them: an older user's honest starting points are Working,
-                // University (mature/retraining students exist), or not working.
-                const isOlderAdult = typeof userAge === 'number' && userAge >= 35;
                 // 17 and under: a minor's honest starting point is still in
-                // education, so we hide "Working" and "Not working right now".
-                // Those options don't apply at this age and can read as
-                // pressure/judgement. Unknown age keeps the full set — we only
-                // narrow when we actually know the user is a minor.
+                // education, so we hide "In work" and "Not in work". Unknown
+                // age keeps the full set — we only narrow when we actually
+                // know the user is a minor.
                 const isMinor = typeof userAge === 'number' && userAge <= 17;
 
-                // "Not working right now" is offered to everyone — a gap year,
-                // between jobs, or a mid-life pause all need an honest option
-                // (previously a non-working user was forced to pick "Working").
-                const notWorking = { value: 'between' as const, label: 'Not working right now' };
+                const notWorking = { value: 'between' as const, label: 'Not in work' };
 
-                // Order is age-aware. 35+: Working · University · Not working.
-                // 18–34: University first (most common), then the rest + Not
-                // working. 17 and under: education stages only (no Working / Not
-                // working). Unknown age: School-first youth set + Not working.
-                const orderedOptions = isOlderAdult
+                // Adults (18+) see the four real starting points in a stable
+                // order: University · College · In work · Not in work. School
+                // (Vg3) is youth-only. Minors (≤17) get the education stages
+                // only; unknown age keeps the full youth set + Not in work.
+                const orderedOptions = isAdult
                   ? [
-                      { value: 'other' as const, label: 'Working' },
                       { value: 'university' as const, label: 'University' },
+                      { value: 'college' as const, label: 'College' },
+                      { value: 'other' as const, label: 'In work' },
                       notWorking,
                     ]
-                  : isAdult
-                    ? [
-                        // School (Vg3) is dropped entirely for adults (18+) —
-                        // it read as the wrong assumption for anyone past
-                        // compulsory schooling. Minors (≤17) still see it below.
-                        { value: 'other' as const, label: 'Working' },
-                        { value: 'university' as const, label: 'University' },
-                        { value: 'college' as const, label: 'College' },
-                        notWorking,
-                      ]
-                    : isMinor
-                      ? STAGE_OPTIONS.filter(opt => opt.value !== 'other')
-                      : [...STAGE_OPTIONS, notWorking];
+                  : isMinor
+                    ? STAGE_OPTIONS.filter(opt => opt.value !== 'other')
+                    : [...STAGE_OPTIONS, notWorking];
                 return (
                   <div className="flex flex-wrap gap-1.5">
                     {orderedOptions.map(opt => {
@@ -607,18 +614,52 @@ export function TimelineDetailDialog({
               {/* Working / changing career → ask their current role instead of
                   school details. This anchors a career-transition roadmap. */}
               {eduStage === 'other' ? (
-                <div>
-                  <label className="text-[10px] text-muted-foreground/70 uppercase tracking-wider">
-                    What do you do now?
-                  </label>
-                  <input
-                    value={currentRole}
-                    onChange={(e) => { setCurrentRole(e.target.value); setDirty(true); }}
-                    placeholder="e.g. Marketing manager, electrician, teacher"
-                    className="w-full mt-1 rounded-lg border border-border/30 bg-muted/10 px-3 py-2 text-xs text-foreground/90 placeholder:text-muted-foreground/55 focus:outline-none focus:border-teal-500/40"
-                  />
-                  <p className="mt-1 text-[10px] text-muted-foreground/65 leading-snug">
-                    Your current role or field — we&rsquo;ll build a roadmap that moves you from here into your goal, using what you already bring.
+                <div className="space-y-3">
+                  <div>
+                    <label className="text-[10px] text-muted-foreground/70 uppercase tracking-wider">
+                      Where do you work?
+                    </label>
+                    <input
+                      value={schoolName}
+                      onChange={(e) => { setSchoolName(e.target.value); setDirty(true); }}
+                      placeholder="e.g. Telenor, Oslo kommune, self-employed"
+                      className="w-full mt-1 rounded-lg border border-border/30 bg-muted/10 px-3 py-2 text-xs text-foreground/90 placeholder:text-muted-foreground/55 focus:outline-none focus:border-teal-500/40"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[10px] text-muted-foreground/70 uppercase tracking-wider">
+                      What&rsquo;s your role?
+                    </label>
+                    <input
+                      value={currentRole}
+                      onChange={(e) => { setCurrentRole(e.target.value); setDirty(true); }}
+                      placeholder="e.g. Marketing manager, electrician, teacher"
+                      className="w-full mt-1 rounded-lg border border-border/30 bg-muted/10 px-3 py-2 text-xs text-foreground/90 placeholder:text-muted-foreground/55 focus:outline-none focus:border-teal-500/40"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[10px] text-muted-foreground/70 uppercase tracking-wider">
+                      When did you start?
+                    </label>
+                    {(() => {
+                      const thisYear = new Date().getFullYear();
+                      const years = Array.from({ length: 46 }, (_, i) => thisYear - i);
+                      return (
+                        <select
+                          value={workStartYear}
+                          onChange={(e) => { setWorkStartYear(e.target.value); setDirty(true); }}
+                          className="w-full mt-1 rounded-lg border border-border/30 bg-muted/10 px-3 py-2 text-xs text-foreground/90 focus:outline-none focus:border-teal-500/40 [color-scheme:light] dark:[color-scheme:dark]"
+                        >
+                          <option value="">Select a year…</option>
+                          {years.map((y) => (
+                            <option key={y} value={String(y)} className="bg-card text-foreground">{y}</option>
+                          ))}
+                        </select>
+                      );
+                    })()}
+                  </div>
+                  <p className="text-[10px] text-muted-foreground/65 leading-snug">
+                    Your current job — we&rsquo;ll build a roadmap that moves you from here toward your goal, using the experience you already bring.
                   </p>
                 </div>
               ) : eduStage === 'between' ? (
@@ -640,12 +681,15 @@ export function TimelineDetailDialog({
                 </div>
               )}
 
-              {/* Routes back into work — NAV support + a map of routes back into
-                  work. Shown for the "Working" (career-change) and "Not working
-                  right now" (out-of-work) starting points. */}
-              {(eduStage === 'other' || eduStage === 'between') && (
-                <div className="space-y-3 rounded-lg border border-teal-500/20 bg-teal-500/[0.03] p-3">
-                  <p className="text-[10px] uppercase tracking-wider text-teal-400/80 font-semibold">Routes back into work</p>
+              {/* Routes back into work — NAV support + a map of practical routes
+                  back into work. Only for "Not in work" (between); employed
+                  users don't need it. */}
+              {eduStage === 'between' && (
+                <div className="space-y-3.5 rounded-xl border border-teal-500/20 bg-teal-500/[0.04] p-4">
+                  <div>
+                    <p className="text-sm font-semibold text-teal-300">Routes back into work</p>
+                    <p className="text-[11px] text-muted-foreground/65 leading-snug mt-0.5">A calm map of practical ways back — shaped by what you tell us.</p>
+                  </div>
 
                   <div>
                     <label className="text-[10px] text-muted-foreground/70 uppercase tracking-wider">What did you do before? (optional)</label>
@@ -668,42 +712,72 @@ export function TimelineDetailDialog({
                   </label>
 
                   <div>
-                    <label className="text-[10px] text-muted-foreground/70 uppercase tracking-wider">What have you already tried?</label>
-                    <div className="flex flex-wrap gap-1.5 mt-1.5">
-                      {TRIED_ROUTES.map((r) => {
-                        const on = triedRoutes.includes(r);
-                        return (
-                          <button
-                            key={r}
-                            type="button"
-                            onClick={() => {
-                              setTriedRoutes((prev) => (on ? prev.filter((x) => x !== r) : [...prev, r]));
-                              setDirty(true);
-                            }}
-                            className={cn(
-                              'rounded-full px-2.5 py-1 text-[10px] border transition-colors',
-                              on
-                                ? 'border-teal-500/40 bg-teal-500/15 text-teal-300'
-                                : 'border-border/40 bg-muted/20 text-muted-foreground/75 hover:bg-muted/40',
-                            )}
-                          >
+                    <p className="text-sm font-medium text-foreground/90">What have you already tried?</p>
+                    <p className="text-[11px] text-muted-foreground/60 leading-snug mb-1.5">We&rsquo;ll set those aside and focus on the routes you haven&rsquo;t.</p>
+                    {/* selected pills */}
+                    {triedRoutes.length > 0 && (
+                      <div className="flex flex-wrap gap-1 mb-1.5">
+                        {triedRoutes.map((r) => (
+                          <span key={r} className="inline-flex items-center gap-1 rounded-full border border-teal-500/20 bg-teal-500/10 px-2 py-0.5 text-[10px] text-teal-300">
                             {TRIED_ROUTE_LABELS[r]}
-                          </button>
-                        );
-                      })}
-                    </div>
+                            <button type="button" onClick={() => { setTriedRoutes((prev) => prev.filter((x) => x !== r)); setDirty(true); }} className="hover:text-red-400 transition-colors">
+                              <X className="h-2.5 w-2.5" />
+                            </button>
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => setTriedDropdownOpen((v) => !v)}
+                      className="w-full flex items-center justify-between rounded-lg border border-border/30 bg-muted/10 px-3 py-2 text-xs text-left hover:border-border/50 transition-colors"
+                    >
+                      <span className={triedRoutes.length > 0 ? 'text-foreground/90' : 'text-muted-foreground/55'}>
+                        {triedRoutes.length > 0 ? `${triedRoutes.length} selected` : "Select what you've tried…"}
+                      </span>
+                      <ChevronDown className={cn('h-3.5 w-3.5 text-muted-foreground/70 transition-transform', triedDropdownOpen && 'rotate-180')} />
+                    </button>
+                    {triedDropdownOpen && (
+                      <>
+                        <div className="fixed inset-0 z-40" onClick={() => setTriedDropdownOpen(false)} />
+                        <div className="relative z-50 mt-1.5 rounded-lg border border-border/30 bg-card/95 backdrop-blur-sm shadow-lg overflow-hidden">
+                          <div className="max-h-[200px] overflow-y-auto p-1.5">
+                            {TRIED_ROUTES.map((r) => {
+                              const on = triedRoutes.includes(r);
+                              return (
+                                <button
+                                  key={r}
+                                  type="button"
+                                  onClick={() => {
+                                    setTriedRoutes((prev) => (on ? prev.filter((x) => x !== r) : [...prev, r]));
+                                    setDirty(true);
+                                  }}
+                                  className="w-full flex items-center gap-2 px-2 py-1.5 rounded-md text-[11px] text-left hover:bg-muted/30 transition-colors"
+                                >
+                                  <div className={cn('h-3.5 w-3.5 rounded border flex items-center justify-center shrink-0', on ? 'bg-teal-500 border-teal-500' : 'border-border/40')}>
+                                    {on && <Check className="h-2.5 w-2.5 text-white" />}
+                                  </div>
+                                  <span className={on ? 'text-foreground/90 font-medium' : 'text-foreground/70'}>{TRIED_ROUTE_LABELS[r]}</span>
+                                </button>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      </>
+                    )}
                   </div>
 
                   <div>
-                    <label className="text-[10px] text-muted-foreground/70 uppercase tracking-wider">What&apos;s blocking you most?</label>
+                    <p className="text-sm font-medium text-foreground/90">What&rsquo;s blocking you most?</p>
+                    <p className="text-[11px] text-muted-foreground/60 leading-snug mb-1.5">We&rsquo;ll lead with the routes that tackle this first.</p>
                     <select
                       value={blocker}
                       onChange={(e) => { setBlocker(e.target.value as Blocker | ''); setDirty(true); }}
-                      className="w-full mt-1 rounded-lg border border-border/30 bg-muted/10 px-3 py-2 text-xs text-foreground/90 focus:outline-none focus:border-teal-500/40"
+                      className="w-full rounded-lg border border-border/30 bg-muted/10 px-3 py-2 text-xs text-foreground/90 focus:outline-none focus:border-teal-500/40 [color-scheme:light] dark:[color-scheme:dark]"
                     >
                       <option value="">Select…</option>
                       {BLOCKERS.map((b) => (
-                        <option key={b} value={b}>{BLOCKER_LABELS[b]}</option>
+                        <option key={b} value={b} className="bg-card text-foreground">{BLOCKER_LABELS[b]}</option>
                       ))}
                     </select>
                   </div>
@@ -715,7 +789,7 @@ export function TimelineDetailDialog({
                   >
                     See your options in mindmap form →
                   </button>
-                  {showRoutes && (
+                  {showRoutes && createPortal(
                     <div
                       className="fixed inset-0 z-[100] flex flex-col bg-background/98 backdrop-blur-sm animate-in fade-in duration-150"
                       role="dialog"
@@ -747,7 +821,8 @@ export function TimelineDetailDialog({
                           })}
                         />
                       </div>
-                    </div>
+                    </div>,
+                    document.body
                   )}
                 </div>
               )}
@@ -967,7 +1042,7 @@ export function TimelineDetailDialog({
             <div>
               <p className="text-xs font-medium text-foreground/75 mb-2">What this involves</p>
               <ul className="space-y-1.5">
-                {item.microActions!.map((action, i) => (
+                {microActions!.map((action, i) => (
                   <li key={i} className="flex items-start gap-2.5 px-2.5 py-1.5">
                     <span className="mt-1.5 h-1 w-1 rounded-full bg-muted-foreground/50 shrink-0" />
                     <span className="text-[13px] leading-snug text-foreground/75">{action}</span>
