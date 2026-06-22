@@ -33,7 +33,7 @@ import { getCertificationPath } from '@/lib/education';
 import { TRIED_ROUTES, BLOCKERS, type TriedRoute, type Blocker } from '@/lib/journey/bridge-mindmap-types';
 import { TRIED_ROUTE_LABELS } from '@/lib/journey/bridge-catalogue';
 import { buildBridgeMindmap } from '@/lib/journey/build-bridge-mindmap';
-import { BridgeMindmapView } from '@/components/journey/bridge-routes-mindmap';
+import { CareerTransitionMap } from '@/components/journey/career-transition-map/career-transition-map';
 import { Award, ExternalLink as ExtLink } from 'lucide-react';
 
 const BLOCKER_LABELS: Record<Blocker, string> = {
@@ -796,21 +796,22 @@ export function TimelineDetailDialog({
                   <button
                     type="button"
                     onClick={() => setShowRoutes(true)}
-                    className="text-xs font-medium text-teal-400 hover:text-teal-300"
+                    className="text-xs font-semibold text-teal-400 hover:text-teal-300"
                   >
-                    See your options in mindmap form →
+                    Open your Career Transition Map →
                   </button>
                   {showRoutes && createPortal(
                     <div
-                      className="fixed inset-0 z-[100] flex flex-col bg-background/98 backdrop-blur-sm animate-in fade-in duration-150"
+                      className="fixed inset-0 z-[100] flex flex-col bg-background/95 backdrop-blur-md animate-in fade-in duration-150"
                       role="dialog"
                       aria-modal="true"
-                      aria-label="Your options — routes back into work"
+                      aria-label="Career Transition Map"
                     >
                       <div className="flex items-center justify-between border-b border-border/40 px-4 py-2.5">
-                        <p className="text-sm font-semibold tracking-tight text-foreground/85">
-                          Your options — routes back into work
-                        </p>
+                        <div>
+                          <p className="text-sm font-semibold tracking-tight text-foreground/90">Career Transition Map</p>
+                          <p className="text-[11px] text-muted-foreground/60">Ways from where you are now to where you want to be.</p>
+                        </div>
                         <button
                           type="button"
                           onClick={() => setShowRoutes(false)}
@@ -821,8 +822,8 @@ export function TimelineDetailDialog({
                           Close
                         </button>
                       </div>
-                      <div className="flex-1 overflow-auto p-4 sm:p-8">
-                        <BridgeMindmapView
+                      <div className="flex-1 min-h-0 p-4 sm:p-6">
+                        <CareerTransitionMap
                           model={buildBridgeMindmap({
                             previousOccupation: previousOccupation.trim() || null,
                             targetCareer: careerTitle || 'your target role',
@@ -830,6 +831,8 @@ export function TimelineDetailDialog({
                             triedRoutes,
                             blocker: blocker || 'unknown-routes',
                           })}
+                          targetCareer={careerTitle || 'your target role'}
+                          previousOccupation={previousOccupation.trim() || null}
                         />
                       </div>
                     </div>,
