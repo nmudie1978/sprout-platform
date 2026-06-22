@@ -10,6 +10,7 @@ import { checkRateLimitAsync, getRateLimitHeaders, RateLimits, checkGlobalAiBudg
 import { logAndSwallow } from '@/lib/observability';
 import { generateFallbackTimeline, type EducationStage } from '@/lib/journey/generate-fallback-timeline';
 import { enrichFirstRoleStep } from '@/lib/journey/enrich-first-role';
+import { stripFormalEducationSteps } from '@/lib/journey/transition-roadmap';
 import { buildPromptRules } from '@/lib/journey/roadmap-rules';
 import type { Journey } from '@/lib/journey/career-journey-types';
 import { getAllCareers, inferEducationRoute, type EducationRoute } from '@/lib/career-pathways';
@@ -108,7 +109,7 @@ export async function POST(req: NextRequest) {
     // the saved education context (set via the Foundation card). The
     // request body can override it for explicit regeneration.
     const summary = (profile?.journeySummary as Record<string, unknown> | null) || null;
-    const ctx = summary?.educationContext as { stage?: string; expectedCompletion?: string; currentRole?: string } | undefined;
+    const ctx = summary?.educationContext as { stage?: string; expectedCompletion?: string; currentRole?: string; previousOccupation?: string } | undefined;
     // Prefer body.expectedCompletion (fresher — just saved) over the DB snapshot.
     const expectedCompletion =
       typeof body.expectedCompletion === 'string' && body.expectedCompletion.trim()
@@ -120,6 +121,16 @@ export async function POST(req: NextRequest) {
       typeof body.currentRole === 'string' && body.currentRole.trim()
         ? body.currentRole.trim()
         : typeof ctx?.currentRole === 'string' ? ctx.currentRole.trim() : '';
+    // Previous occupation for an out-of-work career-changer (stage 'between').
+    // They have no current role, but their background is the transferable-skill
+    // anchor for a return-to-work transition path.
+    const previousOccupation =
+      typeof body.previousOccupation === 'string' && body.previousOccupation.trim()
+        ? body.previousOccupation.trim()
+        : typeof ctx?.previousOccupation === 'string' ? ctx.previousOccupation.trim() : '';
+    // Cache identity for the transition anchor — current role if working,
+    // else the previous occupation for an out-of-work changer.
+    const transitionAnchor = currentRole || previousOccupation;
     const validStages: EducationStage[] = ['school', 'college', 'university', 'other'];
     // 'between' (not working right now) is recognised and treated like 'other'
     // (build from entry) so a "Not in work" starting point regenerates instead
@@ -172,15 +183,15 @@ export async function POST(req: NextRequest) {
     // anchored to "what they do now" (see the transition prompt below), so the
     // role MUST be part of the cache identity — otherwise editing the role on
     // the Foundation card returns the stale roadmap built from the old role.
-    const roleKey = currentRole
-      ? currentRole.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '').slice(0, 40)
+    const roleKey = transitionAnchor
+      ? transitionAnchor.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '').slice(0, 40)
       : 'none';
 
     // Check per-user cache first — must match career, age, stage,
     // foundation completion, expected finish year AND version. The
     // version stamp invalidates old cached timelines when roadmap
     // rules change (currently v2 = no-university-before-18).
-    const ROADMAP_CACHE_VERSION = 'v4';
+    const ROADMAP_CACHE_VERSION = 'v5';
     if (profile?.generatedTimeline) {
       const cached = profile.generatedTimeline as { version?: string; career?: string; stage?: string; complete?: string; finish?: string; role?: string; journey?: Journey };
       if (
@@ -191,7 +202,7 @@ export async function POST(req: NextRequest) {
         (cached.stage ?? 'default') === stageKey &&
         (cached.complete ?? 'open') === completeKey &&
         (cached.finish ?? 'none') === finishYearKey &&
-        (cached.role ?? '') === currentRole
+        (cached.role ?? '') === transitionAnchor
       ) {
         return NextResponse.json({ journey: cached.journey, cached: true });
       }
@@ -214,7 +225,7 @@ export async function POST(req: NextRequest) {
           // read above validates on the next request instead of always missing.
           prisma.youthProfile.update({
             where: { userId: session.user.id },
-            data: { generatedTimeline: JSON.parse(JSON.stringify({ version: ROADMAP_CACHE_VERSION, career, stage: stageKey, complete: completeKey, finish: finishYearKey, role: currentRole, generatedAt: new Date().toISOString(), journey: cachedJourney })) },
+            data: { generatedTimeline: JSON.parse(JSON.stringify({ version: ROADMAP_CACHE_VERSION, career, stage: stageKey, complete: completeKey, finish: finishYearKey, role: transitionAnchor, generatedAt: new Date().toISOString(), journey: cachedJourney })) },
           }).catch(logAndSwallow("timeline:perUserCache:hit"));
           return NextResponse.json({ journey: cachedJourney, cached: true });
         }
@@ -300,9 +311,14 @@ export async function POST(req: NextRequest) {
 
     // Career-transition instruction — when a working/career-changing user has
     // told us their current role, anchor a transition path from it.
+    const transitionBackground = currentRole
+      ? `currently works as "${currentRole}"`
+      : previousOccupation
+        ? `is not working right now; their background is in "${previousOccupation}"`
+        : `is not currently in formal education or work`;
     const transitionInstruction =
-      effectiveStage === 'other' && currentRole
-        ? ` The user currently works as "${currentRole}" and is exploring a move into ${career}. Build a CAREER-TRANSITION roadmap from that starting point: lead with the transferable skills and experience they already have, then ONLY the conversion, certification, or study genuinely required to switch, then a first role in the new field, then growth. Do NOT include school or videregående steps — anchor every step to their current age.`
+      effectiveStage === 'other'
+        ? ` The user ${transitionBackground} and wants to get into ${career}. Build a practical RETURN-TO-WORK / CAREER-TRANSITION roadmap, NOT a school-leaver path. Mandatory shape, every step anchored to their CURRENT age: (1) lean on the transferable skills from their background, (2) build proof — a small portfolio, project, or short placement that shows they can do the work, (3) a supported way in — a work placement, traineeship, NAV measure, or entry-level opening, (4) the first paid role in the new field, (5) growth into a senior/established role. Do NOT include a bachelor's, master's, university, or "complete your degree"/"graduate" step, and do NOT include school/videregående. If a qualification genuinely helps, mention ONLY a short course or certification done ALONGSIDE work — never a multi-year degree. Keep the path realistically short — a few years to the first paid role, not 10+.`
         : '';
 
     if (openai) {
@@ -362,10 +378,18 @@ export async function POST(req: NextRequest) {
       journey = generateFallbackTimeline(career, userAge, effectiveStage, foundationComplete, expectedCompletion);
     }
 
+    // Transition safety net: for a return-to-work / career-change start,
+    // strip any university-degree step the AI may have added despite the
+    // prompt, so the main roadmap never contradicts the bridge map with a
+    // multi-year degree spine. (Fagbrev, short courses and certs are kept.)
+    if (effectiveStage === 'other') {
+      journey = { ...journey, items: stripFormalEducationSteps(journey.items) };
+    }
+
     // Cache result (non-blocking) — stamp the version, stage,
     // completion AND finish year so future requests cleanly miss the
     // cache when any of them changes.
-    const cacheData = JSON.parse(JSON.stringify({ version: ROADMAP_CACHE_VERSION, career, stage: stageKey, complete: completeKey, finish: finishYearKey, role: currentRole, generatedAt: new Date().toISOString(), journey }));
+    const cacheData = JSON.parse(JSON.stringify({ version: ROADMAP_CACHE_VERSION, career, stage: stageKey, complete: completeKey, finish: finishYearKey, role: transitionAnchor, generatedAt: new Date().toISOString(), journey }));
     prisma.youthProfile.update({
       where: { userId: session.user.id },
       data: { generatedTimeline: cacheData },
