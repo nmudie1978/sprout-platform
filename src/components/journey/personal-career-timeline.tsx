@@ -904,7 +904,7 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney, read
           className="group mb-3 inline-flex items-center gap-1.5 rounded text-xs font-medium text-muted-foreground transition-colors hover:text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
         >
           <Route className="h-3.5 w-3.5 text-indigo-500/80" aria-hidden />
-          View your Career Transition Mindmap
+          Supporting mindmap
           <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-0.5" aria-hidden />
         </button>
       )}
