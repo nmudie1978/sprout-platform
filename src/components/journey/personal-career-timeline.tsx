@@ -525,6 +525,25 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney, read
     : firstAge;
   const spanYears = lastAge - firstAge;
 
+  // For a return-to-work ('between') or career-change ('other') starting
+  // point, the number that matters is "how long until I'm (back) in a role
+  // in this field" — not the full age span out to a senior position. A
+  // 12-year "Age 21–33" headline reads wrong for someone who just wants
+  // back into work. Measure instead to the first work milestone (the first
+  // experience/career step), falling back to the full span otherwise.
+  // `EducationStage` is typed without 'between' (a runtime-only value the
+  // Foundation editor saves for "Not in work"), so compare as string.
+  const stageStr = educationStage as string | undefined;
+  const isReturnToWork = stageStr === 'between' || stageStr === 'other';
+  const firstWorkAge = (() => {
+    const work = journey.items.filter((i) => i.stage === 'experience' || i.stage === 'career');
+    return (work.find((i) => i.isMilestone) ?? work[0])?.startAge;
+  })();
+  const transitionYears =
+    isReturnToWork && firstWorkAge != null ? Math.max(1, firstWorkAge - firstAge) : null;
+  const transitionLabel =
+    stageStr === 'between' ? 'Time to get back into work' : 'Time to transition';
+
   // Education track label — detect what kind of education path
   const eduStages = journey.items.filter((i) => i.stage === 'education');
   const eduLabel = eduStages.some((i) => i.title.toLowerCase().includes('university') || i.title.toLowerCase().includes('degree'))
@@ -543,14 +562,21 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney, read
           title="See your roadmap at a glance"
           className="text-[11px] text-muted-foreground/75 hover:text-foreground/80 transition-colors group flex items-center gap-1.5"
         >
-          {spanYears > 0 && (
+          {transitionYears != null ? (
+            <>
+              <FileText className="h-3 w-3 text-muted-foreground/65 group-hover:text-foreground/60 shrink-0" />
+              <span>
+                <span className="font-semibold text-foreground/85 group-hover:text-foreground">{transitionLabel}:</span> ~{transitionYears} year{transitionYears !== 1 ? 's' : ''}
+              </span>
+            </>
+          ) : spanYears > 0 ? (
             <>
               <FileText className="h-3 w-3 text-muted-foreground/65 group-hover:text-foreground/60 shrink-0" />
               <span>
                 <span className="font-semibold text-foreground/85 group-hover:text-foreground">Total roadmap:</span> ~{spanYears} year{spanYears !== 1 ? 's' : ''} · Age {firstAge}–{lastAge}
               </span>
             </>
-          )}
+          ) : null}
         </button>
         <div className="flex items-center gap-2">
           {/* Play Journey — inline play button. Gated on foundation:
