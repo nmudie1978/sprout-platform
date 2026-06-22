@@ -336,6 +336,10 @@ export function TimelineDetailDialog({
   // Load saved data when item changes
   useEffect(() => {
     if (item && open) {
+      // Always start with the mind-map closed — its overlay is a portal on
+      // document.body and the dialog's state survives close/reopen, so without
+      // this a left-open map lingers on top of the dialog (and blocks the tabs).
+      setShowRoutes(false);
       const data = loadCardData(item.id);
       setStatus(data.status || 'not_started');
       setCompletedActions(data.completedMicroActions || []);
