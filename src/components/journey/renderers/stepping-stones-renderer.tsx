@@ -21,7 +21,7 @@ import { getStepIcon, type StepState } from './shared-node';
 import { useRoadmapModel } from './shared-roadmap';
 import { Check } from 'lucide-react';
 
-const STONE_COL = 168;
+const STONE_COL = 140;
 
 export function SteppingStonesRenderer(props: RendererProps) {
   const { onItemClick, onProgressCycle, readOnly, cardDataMap } = props;
@@ -152,7 +152,7 @@ function Stone({
 
         {/* stage label */}
         <span
-          className="mt-4 text-[10px] font-semibold uppercase tracking-[0.16em]"
+          className="mt-3 text-[10px] font-semibold uppercase tracking-[0.16em]"
           style={{ color: accent }}
         >
           {stageLabel}
@@ -183,7 +183,7 @@ function Stone({
         ) : null}
 
         {/* age / year chip */}
-        <span className="mt-2 rounded-full bg-muted px-2.5 py-1 text-[10px] font-medium text-muted-foreground">
+        <span className="mt-1.5 rounded-full bg-muted px-2.5 py-1 text-[10px] font-medium text-muted-foreground">
           {label}
         </span>
 
