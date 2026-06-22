@@ -28,6 +28,7 @@ import { useRoadmapSimulation, type SimulationControls as SimCtrl } from '@/hook
 import { SimulationControls } from './simulation';
 import type { NarrationContext } from '@/lib/simulation/narration-generator';
 import { generateScenarios, buildScenarioOverlay, type Scenario } from '@/lib/simulation/scenario-engine';
+import { getTransitionDirections, buildDirectionJourney } from '@/lib/journey/transition-directions';
 
 function slugify(text: string): string {
   return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
@@ -416,29 +417,56 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney, read
     }
   }, [journey, guardedPlay]);
 
-  // ── Scenario toggle (university + employer path variations) ────────
+  // ── Scenario toggle ───────────────────────────────────────────────
+  // Career-changers (transition users) get the mindmap *directions* as
+  // scenarios — picking one reshapes the roadmap into that route ("try this
+  // direction… try that"). Everyone else gets the university+employer path
+  // variations (which annotate a single fixed path).
+  const transitionDirections = useMemo(
+    () => (isTransitionUser && bridgeModel ? getTransitionDirections(bridgeModel) : []),
+    [isTransitionUser, bridgeModel],
+  );
+  const usingDirections = transitionDirections.length > 0;
+
   const scenarios = useMemo<Scenario[]>(() => {
-    if (!primaryGoalTitle) return [];
+    if (usingDirections || !primaryGoalTitle) return [];
     const slug = primaryGoalTitle.toLowerCase().replace(/[^a-z0-9]+/g, '-');
     return generateScenarios(slug, primaryGoalTitle);
-  }, [primaryGoalTitle]);
+  }, [usingDirections, primaryGoalTitle]);
 
   const [scenarioIndex, setScenarioIndex] = useState<number | null>(null);
+  const toggleCount = usingDirections ? transitionDirections.length : scenarios.length;
 
-  const activeScenario = scenarioIndex !== null ? scenarios[scenarioIndex] ?? null : null;
+  const activeScenario =
+    !usingDirections && scenarioIndex !== null ? scenarios[scenarioIndex] ?? null : null;
+  const activeDirection =
+    usingDirections && scenarioIndex !== null ? transitionDirections[scenarioIndex] ?? null : null;
+
   const scenarioOverlay = useMemo(() => {
     if (!activeScenario || !journey) return null;
     return buildScenarioOverlay(journey.items, activeScenario);
   }, [activeScenario, journey]);
 
+  // When a direction is picked, reshape the roadmap into that route's steps.
+  const effectiveJourney = useMemo<Journey | null>(() => {
+    if (!journey || !activeDirection) return journey;
+    const items = buildDirectionJourney(activeDirection.id, {
+      targetCareer: primaryGoalTitle ?? 'your goal',
+      startAge: userAge ?? journey.startAge,
+      targetCategory: goalId ? getCategoryForCareer(goalId) : undefined,
+      previousOccupation: educationContextData?.educationContext?.previousOccupation ?? null,
+    });
+    return { ...journey, items };
+  }, [journey, activeDirection, primaryGoalTitle, userAge, goalId, getCategoryForCareer, educationContextData?.educationContext]);
+
   const cycleScenario = useCallback(() => {
-    if (scenarios.length === 0) return;
+    if (toggleCount === 0) return;
     setScenarioIndex((prev) => {
       if (prev === null) return 0;
       const next = prev + 1;
-      return next >= scenarios.length ? null : next;
+      return next >= toggleCount ? null : next;
     });
-  }, [scenarios.length]);
+  }, [toggleCount]);
 
   // Build per-node card data summaries for visual indicators on the roadmap
   const cardDataMap = useMemo<Record<string, CardDataSummary>>(() => {
@@ -634,23 +662,30 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney, read
               Play
             </button>
           )}
-          {/* Scenario toggle — cycles through uni+employer path variations */}
-          {scenarios.length > 0 && (
+          {/* Scenario toggle — reshapes the roadmap by mindmap direction (for
+              career-changers) or cycles uni+employer path variations (everyone
+              else). */}
+          {toggleCount > 0 && (
             <button
               onClick={cycleScenario}
               className={cn(
                 'inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-[10px] font-semibold transition-colors',
-                activeScenario
+                activeScenario || activeDirection
                   ? 'bg-violet-500/15 border-violet-500/30 text-violet-300 hover:bg-violet-500/25'
                   : 'bg-muted/20 border-border/40 text-muted-foreground/60 hover:bg-muted/30',
               )}
-              title={activeScenario
-                ? `Showing: ${activeScenario.label}\n${activeScenario.university.name} (${activeScenario.university.city}) → ${activeScenario.employer.name} (${activeScenario.employer.city})\n\nClick to see the next scenario`
-                : 'Toggle through different university and employer path scenarios.\nEach click shows a different combination of where you could study and where you could work.'
+              title={
+                usingDirections
+                  ? activeDirection
+                    ? `Showing the "${activeDirection.label}" route. Click to try another way in.`
+                    : 'Try a different way back into work — each reshapes the roadmap (a structured route, building proof, going through people, targeted upskilling).'
+                  : activeScenario
+                    ? `Showing: ${activeScenario.label}\n${activeScenario.university.name} (${activeScenario.university.city}) → ${activeScenario.employer.name} (${activeScenario.employer.city})\n\nClick to see the next scenario`
+                    : 'Toggle through different university and employer path scenarios.\nEach click shows a different combination of where you could study and where you could work.'
               }
             >
               <Shuffle className="h-3 w-3" />
-              {activeScenario ? activeScenario.label : 'Scenarios'}
+              {activeDirection ? activeDirection.label : activeScenario ? activeScenario.label : 'Scenarios'}
             </button>
           )}
           {/* Years toggle — flips every step's label between
@@ -867,8 +902,8 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney, read
       {/* Roadmap */}
       <div ref={roadmapRef}>
         <Renderer
-          key={`${style}-${saveVersion}`}
-          journey={journey}
+          key={`${style}-${saveVersion}-${activeDirection?.id ?? 'base'}`}
+          journey={effectiveJourney ?? journey}
           onItemClick={simState.isPlaying ? () => {} : (item) => setSelectedItem(item)}
           overlayData={{}}
           activeLayers={{ progress: false, reflections: false, resources: false, confidence: false }}
@@ -890,7 +925,7 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney, read
               : undefined
           }
           scenarioOverrides={scenarioOverlay?.stepOverrides}
-          evolutionTail={readOnly || simState.isPlaying ? null : evolutionTail}
+          evolutionTail={readOnly || simState.isPlaying || activeDirection ? null : evolutionTail}
         />
       </div>
 
