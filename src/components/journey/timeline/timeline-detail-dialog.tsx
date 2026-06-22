@@ -318,6 +318,17 @@ export function TimelineDetailDialog({
   // with a Vg3-only subtitle so it doesn't read as the assumed answer).
   const [userAge, setUserAge] = useState<number | null>(null);
 
+  // Close the full-screen routes/mindmap overlay on Escape. Capture phase +
+  // stopPropagation so it closes only the overlay, not the foundation dialog.
+  useEffect(() => {
+    if (!showRoutes) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') { e.stopPropagation(); setShowRoutes(false); }
+    };
+    window.addEventListener('keydown', onKey, true);
+    return () => window.removeEventListener('keydown', onKey, true);
+  }, [showRoutes]);
+
   const isFoundation = item?.id === FOUNDATION_ITEM_ID;
   const orderedIds = (allItems ?? []).map(it => it.id);
   const unlocked = item ? isStepUnlocked(item.id, orderedIds) : true;
@@ -803,11 +814,11 @@ export function TimelineDetailDialog({
                         <button
                           type="button"
                           onClick={() => setShowRoutes(false)}
-                          className="rounded-full p-1.5 text-muted-foreground/70 transition-colors hover:bg-muted/40 hover:text-foreground"
-                          aria-label="Close options"
-                          title="Close"
+                          className="inline-flex items-center gap-1.5 rounded-full border border-border/40 bg-muted/30 px-3 py-1.5 text-xs font-medium text-foreground/80 transition-colors hover:bg-muted/50 hover:text-foreground"
+                          aria-label="Close"
                         >
-                          <X className="h-4 w-4" />
+                          <X className="h-3.5 w-3.5" />
+                          Close
                         </button>
                       </div>
                       <div className="flex-1 overflow-auto p-4 sm:p-8">

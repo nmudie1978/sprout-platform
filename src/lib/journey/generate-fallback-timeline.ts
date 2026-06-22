@@ -161,7 +161,9 @@ export function generateFallbackTimeline(
   // them to 'school' produces a nonsensical "Complete Videregående"
   // roadmap. For older users with no declared stage, assume they're past
   // formal education ('other' = working / self-taught / between things).
-  const stage: EducationStage = educationStage ?? (userAge >= 24 ? 'other' : 'school');
+  // 'between' (not working right now) builds from entry like 'other'.
+  const normalizedStage = (educationStage as string) === 'between' ? 'other' : educationStage;
+  const stage: EducationStage = normalizedStage ?? (userAge >= 24 ? 'other' : 'school');
 
   // If the user is still in upper secondary and the career is a
   // vocational one (hairdresser, beauty therapist, electrician, chef,

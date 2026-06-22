@@ -121,13 +121,17 @@ export async function POST(req: NextRequest) {
         ? body.currentRole.trim()
         : typeof ctx?.currentRole === 'string' ? ctx.currentRole.trim() : '';
     const validStages: EducationStage[] = ['school', 'college', 'university', 'other'];
-    const bodyStage = typeof body.educationStage === 'string' ? body.educationStage : undefined;
-    const educationStage: EducationStage | undefined =
-      (bodyStage && validStages.includes(bodyStage as EducationStage))
-        ? (bodyStage as EducationStage)
-        : (ctx?.stage && validStages.includes(ctx.stage as EducationStage))
-          ? (ctx.stage as EducationStage)
+    // 'between' (not working right now) is recognised and treated like 'other'
+    // (build from entry) so a "Not in work" starting point regenerates instead
+    // of silently falling back.
+    const normStage = (s: unknown): EducationStage | undefined =>
+      s === 'between'
+        ? 'other'
+        : (typeof s === 'string' && validStages.includes(s as EducationStage))
+          ? (s as EducationStage)
           : undefined;
+    const bodyStage = typeof body.educationStage === 'string' ? body.educationStage : undefined;
+    const educationStage: EducationStage | undefined = normStage(bodyStage) ?? normStage(ctx?.stage);
 
     // Effective stage for users who never filled in the Foundation card.
     // A 24+ user with no declared stage is not in school — assume 'other'
