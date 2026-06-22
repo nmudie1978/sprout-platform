@@ -823,7 +823,7 @@ export function TimelineDetailDialog({
                   </button>
                   {showRoutes && createPortal(
                     <div
-                      className="fixed inset-0 z-[100] flex flex-col bg-background/95 backdrop-blur-md animate-in fade-in duration-150"
+                      className="fixed inset-0 z-[200] flex flex-col bg-background animate-in fade-in duration-150"
                       role="dialog"
                       aria-modal="true"
                       aria-label="Career Transition Map"
