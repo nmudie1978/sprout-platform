@@ -77,6 +77,18 @@ export function buildCatalogueBranches(input: BridgeInput): BridgeBranch[] {
         leaf('network', 2, 'Ask for informational chats', 'Short, low-pressure conversations open doors that job ads never will.', { mapsToTriedRoute: 'networking' }),
       ],
     },
+    {
+      id: 'programmes',
+      kind: 'programmes',
+      title: 'Entry-level routes & programmes',
+      emphasis: false,
+      leaves: [
+        leaf('programmes', 0, 'Apprenticeships (lærling)', 'Explore apprenticeships and the trades that offer a læreplass — earn while you train.', { url: 'https://utdanning.no' }),
+        leaf('programmes', 1, 'Entry-level & trainee jobs', "Norway's biggest job board — filter for entry-level, graduate and trainee roles.", { url: 'https://www.finn.no/job' }),
+        leaf('programmes', 2, 'Early-career programmes (global)', "LinkedIn's guide to internships, apprenticeships and graduate programmes.", { url: 'https://careers.linkedin.com/pathways-programs' }),
+        leaf('programmes', 3, 'Know what "entry-level" really asks', 'Most entry-level ads list nice-to-haves, not requirements. Apply if you meet the core — not every line.'),
+      ],
+    },
   ];
 
   return branches;

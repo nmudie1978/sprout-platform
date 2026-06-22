@@ -20,9 +20,9 @@ import { buildCatalogueBranches, TRIED_ROUTE_LABELS } from './bridge-catalogue';
 
 /** Branch priority per blocker (first = floated to top + emphasised). */
 const BLOCKER_ORDER: Record<Blocker, BranchKind[]> = {
-  'no-callbacks': ['workplace-nav', 'network', 'anchor', 'proof', 'training'],
-  'no-experience': ['proof', 'workplace-nav', 'anchor', 'network', 'training'],
-  'unknown-routes': ['anchor', 'workplace-nav', 'proof', 'network', 'training'],
+  'no-callbacks': ['workplace-nav', 'network', 'anchor', 'proof', 'training', 'programmes'],
+  'no-experience': ['proof', 'workplace-nav', 'anchor', 'network', 'training', 'programmes'],
+  'unknown-routes': ['anchor', 'workplace-nav', 'proof', 'network', 'training', 'programmes'],
 };
 
 function orderIndex(order: BranchKind[], kind: BranchKind): number {

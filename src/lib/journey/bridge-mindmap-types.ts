@@ -33,6 +33,7 @@ export type BranchKind =
   | 'proof'
   | 'training'
   | 'network'
+  | 'programmes'
   | 'tried';
 
 export interface BridgeInput {
@@ -56,6 +57,9 @@ export interface BridgeLeaf {
   state: 'untried' | 'tried';
   /** NAV leaf → factual treatment + nav.no pointer. */
   navFact?: boolean;
+  /** External resource link — when set, the leaf renders as a link (e.g.
+   *  entry-level programme portals). Must be a real, stable http(s) URL. */
+  url?: string;
   /** If this route is in the user's triedRoutes, the leaf is dropped from its
    *  home branch (the tried branch represents it once instead). */
   mapsToTriedRoute?: TriedRoute;
