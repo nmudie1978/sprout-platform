@@ -298,9 +298,18 @@ function DesktopCanvas({
   const reset = useCallback(() => setT({ scale: 1, x: 0, y: 0 }), []);
 
   const onWheel = useCallback((e: React.WheelEvent) => {
-    if (!e.ctrlKey && !e.metaKey) return; // only zoom on ctrl/⌘ + wheel; plain wheel scrolls
     e.preventDefault();
-    setT((p) => ({ ...p, scale: Math.min(2, Math.max(0.5, +(p.scale - e.deltaY * 0.002).toFixed(2))) }));
+    if (e.ctrlKey || e.metaKey) {
+      // ⌘/Ctrl + wheel → zoom
+      setT((p) => ({ ...p, scale: Math.min(2, Math.max(0.5, +(p.scale - e.deltaY * 0.002).toFixed(2))) }));
+    } else {
+      // plain wheel → scroll/pan the canvas (vertical, or horizontal with Shift)
+      setT((p) => ({
+        ...p,
+        x: p.x - (e.shiftKey ? e.deltaY : e.deltaX),
+        y: p.y - (e.shiftKey ? 0 : e.deltaY),
+      }));
+    }
   }, []);
   const onPointerDown = (e: React.PointerEvent) => {
     drag.current = { x: e.clientX, y: e.clientY, tx: t.x, ty: t.y };
@@ -329,7 +338,7 @@ function DesktopCanvas({
         <button type="button" onClick={() => zoom(-0.2)} className="rounded-md border border-border/40 bg-card/80 p-1.5 text-muted-foreground hover:text-foreground" title="Zoom out"><Minus className="h-3.5 w-3.5" /></button>
         <button type="button" onClick={reset} className="rounded-md border border-border/40 bg-card/80 p-1.5 text-muted-foreground hover:text-foreground" title="Reset view"><Maximize className="h-3.5 w-3.5" /></button>
       </div>
-      <p className="absolute left-3 bottom-2 z-10 text-[10px] text-muted-foreground/50">Drag to pan · ⌘/Ctrl + scroll to zoom</p>
+      <p className="absolute left-3 bottom-2 z-10 text-[10px] text-muted-foreground/50">Scroll or drag to move · ⌘/Ctrl + scroll to zoom</p>
 
       <div
         className="absolute left-8 top-8 cursor-grab active:cursor-grabbing touch-none"
