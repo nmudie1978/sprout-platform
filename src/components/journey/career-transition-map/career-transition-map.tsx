@@ -14,7 +14,7 @@
  * here as "Soon".
  */
 
-import { useMemo, useRef, useState, useCallback } from "react";
+import { useMemo, useRef, useState, useCallback, useLayoutEffect } from "react";
 import { Plus, Minus, Maximize, ExternalLink } from "lucide-react";
 import type { BridgeMindmap, BridgeBranch } from "@/lib/journey/bridge-mindmap-types";
 import { ROUTE_META, ROUTE_COLOR_CLASSES, type MapRouteKind } from "./route-meta";
@@ -96,42 +96,40 @@ export function CareerTransitionMap({
 
   return (
     <div className="flex h-full flex-col">
-      {/* View toggle */}
-      <div className="flex flex-wrap items-center gap-1.5 px-1 pb-3">
-        <button
-          type="button"
-          onClick={() => setView("full")}
-          className={cn(
-            "rounded-full px-3 py-1 text-[11px] font-medium border transition-colors",
-            view === "full" ? "border-teal-500/40 bg-teal-500/15 text-teal-300" : "border-border/30 bg-muted/10 text-muted-foreground/70 hover:bg-muted/20",
-          )}
-        >
-          Full map
-        </button>
-        {ROUTE_VIEW_KEYS.map((k) => {
-          const enabled = !!ladders;
-          return (
+      {/* View toggle — only shown when curated route-views exist for this
+          target. On the career-changer map (no curated ladders) the Full map
+          is the only view, so we hide the toggle entirely rather than show
+          disabled "Soon" buttons. */}
+      {ladders && (
+        <div className="flex flex-wrap items-center gap-1.5 px-1 pb-3">
+          <button
+            type="button"
+            onClick={() => setView("full")}
+            className={cn(
+              "rounded-full px-3 py-1 text-[11px] font-medium border transition-colors",
+              view === "full" ? "border-teal-500/40 bg-teal-500/15 text-teal-300" : "border-border/30 bg-muted/10 text-muted-foreground/70 hover:bg-muted/20",
+            )}
+          >
+            Full map
+          </button>
+          {ROUTE_VIEW_KEYS.map((k) => (
             <button
               key={k}
               type="button"
-              disabled={!enabled}
-              onClick={() => enabled && setView(k)}
-              title={enabled ? ROUTE_VIEW_BLURB[k] : "A detailed route for this career is coming soon"}
+              onClick={() => setView(k)}
+              title={ROUTE_VIEW_BLURB[k]}
               className={cn(
                 "rounded-full px-3 py-1 text-[11px] font-medium border transition-colors",
                 view === k
                   ? "border-teal-500/40 bg-teal-500/15 text-teal-300"
-                  : enabled
-                    ? "border-border/30 bg-muted/10 text-muted-foreground/70 hover:bg-muted/20"
-                    : "border-border/30 bg-muted/10 text-muted-foreground/40 cursor-not-allowed",
+                  : "border-border/30 bg-muted/10 text-muted-foreground/70 hover:bg-muted/20",
               )}
             >
               {ROUTE_VIEW_LABELS[k]}
-              {!enabled && <span className="ml-1 text-[9px] uppercase tracking-wide opacity-70">soon</span>}
             </button>
-          );
-        })}
-      </div>
+          ))}
+        </div>
+      )}
 
       {view === "full" ? (
         <>
@@ -279,7 +277,22 @@ function RouteCardView({ card, className }: { card: RouteCard; className?: strin
   );
 }
 
-/* ── Desktop zoom/pan canvas ──────────────────────────────────────── */
+/* ── Desktop zoom/pan canvas (mindmap) ────────────────────────────────
+ * hero (left) → route cards (middle column). Click a card to fan its
+ * sub-items out as their own connected child nodes to the right — a true
+ * mindmap branch, not stacked text. The vertical layout is *measured*
+ * (real node heights) so an expanded branch never overlaps the next one.
+ */
+const HERO_W = 260, HERO_H = 150;
+const CARD_W = 300, CHILD_W = 250;
+const COL_GAP = 96;        // hero → card column
+const CHILD_GAP_X = 64;    // card → child column
+const V_GAP = 20;          // between card "slots"
+const CHILD_V_GAP = 12;    // between child nodes
+const cardX = HERO_W + COL_GAP;
+const childX = cardX + CARD_W + CHILD_GAP_X;
+const CANVAS_W = childX + CHILD_W;
+
 function DesktopCanvas({
   cards,
   targetCareer,
@@ -291,6 +304,7 @@ function DesktopCanvas({
 }) {
   const [t, setT] = useState({ scale: 1, x: 0, y: 0 });
   const drag = useRef<{ x: number; y: number; tx: number; ty: number } | null>(null);
+  const [expandedId, setExpandedId] = useState<string | null>(null);
 
   const zoom = useCallback((delta: number) => {
     setT((p) => ({ ...p, scale: Math.min(2, Math.max(0.5, +(p.scale + delta).toFixed(2))) }));
@@ -300,10 +314,8 @@ function DesktopCanvas({
   const onWheel = useCallback((e: React.WheelEvent) => {
     e.preventDefault();
     if (e.ctrlKey || e.metaKey) {
-      // ⌘/Ctrl + wheel → zoom
       setT((p) => ({ ...p, scale: Math.min(2, Math.max(0.5, +(p.scale - e.deltaY * 0.002).toFixed(2))) }));
     } else {
-      // plain wheel → scroll/pan the canvas (vertical, or horizontal with Shift)
       setT((p) => ({
         ...p,
         x: p.x - (e.shiftKey ? e.deltaY : e.deltaX),
@@ -321,24 +333,71 @@ function DesktopCanvas({
   };
   const onPointerUp = () => { drag.current = null; };
 
-  // Simple layout: hero on the left, route cards stacked on the right.
-  const HERO_W = 280, CARD_W = 320, GAP = 18, CARD_H = 132, HERO_H = 150;
-  const colX = HERO_W + 120;
-  const totalH = Math.max(cards.length * (CARD_H + GAP) - GAP, HERO_H);
-  const heroY = totalH / 2 - HERO_H / 2;
+  // Measure real node heights so the layout never overlaps.
+  const elRefs = useRef<Map<string, HTMLDivElement>>(new Map());
+  const setRef = useCallback(
+    (key: string) => (el: HTMLDivElement | null) => {
+      if (el) elRefs.current.set(key, el);
+      else elRefs.current.delete(key);
+    },
+    [],
+  );
+  const [heights, setHeights] = useState<Record<string, number>>({});
+  // Measure intrinsic node heights after the set of nodes changes (cards or
+  // which card is expanded). Heights are content-based, not position-based, so
+  // one measure pass per change is enough; the guard makes the update a no-op
+  // when nothing moved, so this never loops.
+  useLayoutEffect(() => {
+    const next: Record<string, number> = {};
+    elRefs.current.forEach((el, key) => { next[key] = el.offsetHeight; });
+    setHeights((prev) => {
+      const keys = Object.keys(next);
+      const same = keys.length === Object.keys(prev).length && keys.every((k) => prev[k] === next[k]);
+      return same ? prev : next;
+    });
+  }, [cards, expandedId]);
+
+  const expanded = expandedId ? cards.find((c) => c.id === expandedId) ?? null : null;
+
+  // Vertical stacking: each card gets a "slot" tall enough for itself or its
+  // expanded children, whichever is larger; the card sits centred in its slot.
+  const layout = useMemo(() => {
+    const cardPos: Record<string, { x: number; y: number; h: number }> = {};
+    const childPos: Record<string, { x: number; y: number; h: number }> = {};
+    let y = 0;
+    for (const card of cards) {
+      const ch = heights[`card:${card.id}`] ?? 130;
+      let slotH = ch;
+      if (card.id === expandedId && card.leaves.length) {
+        const chs = card.leaves.map((l) => heights[`child:${card.id}:${l.id}`] ?? 52);
+        const totalChildH = chs.reduce((a, b) => a + b, 0) + (chs.length - 1) * CHILD_V_GAP;
+        slotH = Math.max(ch, totalChildH);
+        let cy = y + slotH / 2 - totalChildH / 2;
+        card.leaves.forEach((l, idx) => {
+          childPos[`${card.id}:${l.id}`] = { x: childX, y: cy, h: chs[idx] };
+          cy += chs[idx] + CHILD_V_GAP;
+        });
+      }
+      cardPos[card.id] = { x: cardX, y: y + slotH / 2 - ch / 2, h: ch };
+      y += slotH + V_GAP;
+    }
+    const contentH = Math.max(y - V_GAP, HERO_H);
+    return { cardPos, childPos, contentH, heroY: contentH / 2 - HERO_H / 2 };
+  }, [cards, expandedId, heights]);
+
+  const canvasW = expanded ? CANVAS_W : cardX + CARD_W;
 
   return (
     <div
       className="relative hidden md:block flex-1 overflow-hidden rounded-xl border border-border/20 bg-[radial-gradient(circle_at_30%_20%,rgba(20,184,166,0.06),transparent_60%)]"
       onWheel={onWheel}
     >
-      {/* controls */}
       <div className="absolute right-3 top-3 z-10 flex flex-col gap-1.5">
         <button type="button" onClick={() => zoom(0.2)} className="rounded-md border border-border/40 bg-card/80 p-1.5 text-muted-foreground hover:text-foreground" title="Zoom in"><Plus className="h-3.5 w-3.5" /></button>
         <button type="button" onClick={() => zoom(-0.2)} className="rounded-md border border-border/40 bg-card/80 p-1.5 text-muted-foreground hover:text-foreground" title="Zoom out"><Minus className="h-3.5 w-3.5" /></button>
         <button type="button" onClick={reset} className="rounded-md border border-border/40 bg-card/80 p-1.5 text-muted-foreground hover:text-foreground" title="Reset view"><Maximize className="h-3.5 w-3.5" /></button>
       </div>
-      <p className="absolute left-3 bottom-2 z-10 text-[10px] text-muted-foreground/50">Scroll or drag to move · ⌘/Ctrl + scroll to zoom</p>
+      <p className="absolute left-3 bottom-2 z-10 text-[10px] text-muted-foreground/50">Click a route to open its branches · scroll or drag to move · ⌘/Ctrl + scroll to zoom</p>
 
       <div
         className="absolute left-8 top-8 cursor-grab active:cursor-grabbing touch-none"
@@ -348,26 +407,113 @@ function DesktopCanvas({
         onPointerUp={onPointerUp}
         onPointerCancel={onPointerUp}
       >
-        <div style={{ position: "relative", width: colX + CARD_W, height: totalH }}>
-          {/* edges */}
-          <svg className="absolute inset-0 pointer-events-none" width={colX + CARD_W} height={totalH} aria-hidden>
-            {cards.map((_, i) => {
-              const cy = i * (CARD_H + GAP) + CARD_H / 2;
-              const x1 = HERO_W, y1 = heroY + HERO_H / 2, x2 = colX, y2 = cy;
+        <div style={{ position: "relative", width: canvasW, height: layout.contentH }}>
+          {/* connectors */}
+          <svg className="absolute inset-0 pointer-events-none" width={canvasW} height={layout.contentH} aria-hidden>
+            {/* hero → each card */}
+            {cards.map((card) => {
+              const cp = layout.cardPos[card.id];
+              const x1 = HERO_W, y1 = layout.heroY + HERO_H / 2, x2 = cp.x, y2 = cp.y + cp.h / 2;
               const mx = (x1 + x2) / 2;
-              return <path key={i} d={`M${x1},${y1} C${mx},${y1} ${mx},${y2} ${x2},${y2}`} fill="none" className="stroke-teal-500/30" strokeWidth={2} />;
+              return <path key={card.id} d={`M${x1},${y1} C${mx},${y1} ${mx},${y2} ${x2},${y2}`} fill="none" className={cn("stroke-teal-500/30", card.id === expandedId && "stroke-teal-400/60")} strokeWidth={2} />;
+            })}
+            {/* expanded card → each child */}
+            {expanded?.leaves.map((l) => {
+              const cp = layout.cardPos[expanded.id];
+              const kp = layout.childPos[`${expanded.id}:${l.id}`];
+              if (!kp) return null;
+              const x1 = cp.x + CARD_W, y1 = cp.y + cp.h / 2, x2 = kp.x, y2 = kp.y + kp.h / 2;
+              const mx = (x1 + x2) / 2;
+              return <path key={l.id} d={`M${x1},${y1} C${mx},${y1} ${mx},${y2} ${x2},${y2}`} fill="none" className="stroke-teal-400/40" strokeWidth={1.5} />;
             })}
           </svg>
+
           {/* hero */}
-          <div style={{ position: "absolute", left: 0, top: heroY, width: HERO_W }}>
+          <div ref={setRef("hero")} style={{ position: "absolute", left: 0, top: layout.heroY, width: HERO_W }}>
             <HeroCard targetCareer={targetCareer} previousOccupation={previousOccupation} />
           </div>
+
           {/* route cards */}
-          {cards.map((card, i) => (
-            <div key={card.id} style={{ position: "absolute", left: colX, top: i * (CARD_H + GAP), width: CARD_W }}>
-              <RouteCardView card={card} />
+          {cards.map((card) => {
+            const cp = layout.cardPos[card.id];
+            return (
+              <div key={card.id} ref={setRef(`card:${card.id}`)} style={{ position: "absolute", left: cp.x, top: cp.y, width: CARD_W }}>
+                <CanvasCard
+                  card={card}
+                  expanded={card.id === expandedId}
+                  onToggle={() => setExpandedId((id) => (id === card.id ? null : card.id))}
+                />
+              </div>
+            );
+          })}
+
+          {/* children of the expanded card */}
+          {expanded?.leaves.map((l) => {
+            const kp = layout.childPos[`${expanded.id}:${l.id}`];
+            if (!kp) return null;
+            const meta = ROUTE_META[expanded.kind];
+            return (
+              <div key={l.id} ref={setRef(`child:${expanded.id}:${l.id}`)} style={{ position: "absolute", left: kp.x, top: kp.y, width: CHILD_W }}>
+                <ChildNode leaf={l} color={ROUTE_COLOR_CLASSES[meta.color]} />
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ── Canvas card (header only; children render as separate nodes) ──── */
+function CanvasCard({ card, expanded, onToggle }: { card: RouteCard; expanded: boolean; onToggle: () => void }) {
+  const meta = ROUTE_META[card.kind];
+  const c = ROUTE_COLOR_CLASSES[meta.color];
+  const hasLeaves = card.leaves.length > 0;
+  return (
+    <button
+      type="button"
+      onClick={onToggle}
+      className={cn(
+        "w-full rounded-xl border bg-card/90 p-3.5 text-left shadow-lg backdrop-blur-sm transition-colors",
+        c.border, c.glow,
+        expanded && "ring-1 ring-teal-400/40",
+      )}
+    >
+      <div className="flex items-start gap-2.5">
+        <span className={cn("mt-1.5 h-2 w-2 shrink-0 rounded-full", c.dot)} />
+        <div className="min-w-0 flex-1">
+          <div className="flex items-start justify-between gap-2">
+            <p className="text-sm font-semibold leading-tight text-foreground/90">{meta.title}</p>
+            {card.kind !== "tried" && card.kind !== "related" && card.kind !== "reality" && <Stars n={meta.likelihood} />}
+          </div>
+          <p className="mt-1 text-[12px] leading-snug text-muted-foreground/80">{meta.blurb}</p>
+          {meta.duration !== "—" && (
+            <div className="mt-2 flex flex-wrap gap-x-3 gap-y-0.5 text-[10.5px] text-muted-foreground/70">
+              <span><span className="text-muted-foreground/50">Duration:</span> {meta.duration}</span>
+              <span><span className="text-muted-foreground/50">Difficulty:</span> {meta.difficulty}</span>
             </div>
-          ))}
+          )}
+          {hasLeaves && (
+            <span className="mt-2 inline-flex items-center gap-1 text-[10.5px] font-medium text-teal-300/90">
+              {expanded ? <Minus className="h-3 w-3" /> : <Plus className="h-3 w-3" />}
+              {expanded ? "Hide branches" : `${card.leaves.length} branch${card.leaves.length === 1 ? "" : "es"}`}
+            </span>
+          )}
+        </div>
+      </div>
+    </button>
+  );
+}
+
+/* ── Child node (one sub-branch leaf) ─────────────────────────────── */
+function ChildNode({ leaf, color }: { leaf: RouteCard["leaves"][number]; color: (typeof ROUTE_COLOR_CLASSES)[keyof typeof ROUTE_COLOR_CLASSES] }) {
+  return (
+    <div className={cn("rounded-lg border bg-card/80 px-3 py-2 shadow-md backdrop-blur-sm", color.border, leaf.tried && "opacity-60")}>
+      <div className="flex items-start gap-2">
+        <span className={cn("mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full", leaf.navFact ? "bg-teal-400" : color.dot)} />
+        <div className="min-w-0">
+          <p className={cn("text-[12.5px] font-medium leading-tight text-foreground/90", leaf.tried && "line-through")}>{leaf.label}</p>
+          {leaf.detail && <p className="mt-0.5 text-[11px] leading-snug text-muted-foreground/70">{leaf.detail}</p>}
         </div>
       </div>
     </div>
