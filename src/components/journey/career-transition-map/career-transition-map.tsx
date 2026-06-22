@@ -458,6 +458,15 @@ function NavNote() {
 }
 
 /* ── Route card ───────────────────────────────────────────────────── */
+/** Small tag marking a branch whose routes are NAV-specific schemes. */
+function NavTag() {
+  return (
+    <span className="shrink-0 rounded bg-teal-500/15 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide text-teal-600 ring-1 ring-teal-500/30 dark:text-teal-300">
+      NAV
+    </span>
+  );
+}
+
 function RouteCardView({ card, className, note, onSaveNote }: { card: RouteCard; className?: string; note?: string; onSaveNote?: (text: string) => void }) {
   const meta = ROUTE_META[card.kind];
   const c = ROUTE_COLOR_CLASSES[meta.color];
@@ -469,7 +478,10 @@ function RouteCardView({ card, className, note, onSaveNote }: { card: RouteCard;
           <span className={cn("mt-1.5 h-2 w-2 shrink-0 rounded-full", c.dot)} />
           <div className="min-w-0 flex-1">
             <div className="flex items-start justify-between gap-2">
-              <p className="text-sm font-semibold text-foreground/90 leading-tight">{meta.title}</p>
+              <span className="flex min-w-0 items-center gap-1.5">
+                <p className="text-sm font-semibold text-foreground/90 leading-tight">{meta.title}</p>
+                {card.leaves.some((l) => l.navFact) && <NavTag />}
+              </span>
               {card.kind !== "tried" && card.kind !== "related" && card.kind !== "reality" && <Stars n={meta.likelihood} />}
             </div>
             <p className="mt-1 text-[12px] leading-snug text-muted-foreground/80">{meta.blurb}</p>
@@ -722,7 +734,10 @@ function CanvasCard({ card, expanded, onToggle, note, onSaveNote }: { card: Rout
         <span className={cn("mt-1.5 h-2 w-2 shrink-0 rounded-full", c.dot)} />
         <div className="min-w-0 flex-1">
           <div className="flex items-start justify-between gap-2">
-            <p className="text-sm font-semibold leading-tight text-foreground/90">{meta.title}</p>
+            <span className="flex min-w-0 items-center gap-1.5">
+              <p className="text-sm font-semibold leading-tight text-foreground/90">{meta.title}</p>
+              {card.leaves.some((l) => l.navFact) && <NavTag />}
+            </span>
             {card.kind !== "tried" && card.kind !== "related" && card.kind !== "reality" && <Stars n={meta.likelihood} />}
           </div>
           <p className="mt-1 text-[12px] leading-snug text-muted-foreground/80">{meta.blurb}</p>
