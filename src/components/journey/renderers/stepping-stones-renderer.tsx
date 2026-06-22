@@ -26,16 +26,15 @@ const STONE_COL = 140;
 export function SteppingStonesRenderer(props: RendererProps) {
   const { onItemClick, onProgressCycle, readOnly, cardDataMap } = props;
   const {
-    items,
     foundationItem,
     foundationStatus,
     foundationState,
     foundationEmpty,
-    computedSteps,
+    columns,
     FOUNDATION_ITEM_ID,
   } = useRoadmapModel(props);
 
-  const colCount = items.length + 1;
+  const colCount = columns.length + 1;
   const minWidth = colCount * STONE_COL;
 
   return (
@@ -48,34 +47,53 @@ export function SteppingStonesRenderer(props: RendererProps) {
             style={{ left: STONE_COL / 2, right: STONE_COL / 2 }}
             aria-hidden
           />
-          <ol className="relative flex">
-            <Stone
-              item={foundationItem}
-              state={foundationState}
-              progressStatus={foundationStatus}
-              label="Now"
-              isFoundation
-              glow={foundationEmpty}
-              onClick={() => !readOnly && onItemClick(foundationItem)}
-              onProgressCycle={
-                onProgressCycle && !readOnly
-                  ? () => onProgressCycle(FOUNDATION_ITEM_ID)
-                  : undefined
-              }
-            />
-            {computedSteps.map((step) => (
+          <ol className="relative flex items-start">
+            <li
+              className="flex shrink-0 flex-col items-center px-2 text-center"
+              style={{ width: STONE_COL }}
+            >
               <Stone
-                key={step.item.id}
-                item={step.item}
-                state={step.state}
-                progressStatus={cardDataMap?.[step.item.id]?.status}
-                label={step.ageLabel}
-                scenarioAnnotation={step.scenarioAnnotation}
-                onClick={() => onItemClick(step.item)}
+                item={foundationItem}
+                state={foundationState}
+                progressStatus={foundationStatus}
+                label="Now"
+                isFoundation
+                glow={foundationEmpty}
+                onClick={() => !readOnly && onItemClick(foundationItem)}
                 onProgressCycle={
-                  onProgressCycle ? () => onProgressCycle(step.item.id) : undefined
+                  onProgressCycle && !readOnly
+                    ? () => onProgressCycle(FOUNDATION_ITEM_ID)
+                    : undefined
                 }
               />
+            </li>
+            {columns.map((column) => (
+              <li
+                key={column[0].item.id}
+                className="flex shrink-0 flex-col items-center px-2 text-center"
+                style={{ width: STONE_COL }}
+              >
+                {column.map((step, si) => (
+                  <div key={step.item.id} className={si > 0 ? 'mt-3' : ''}>
+                    <Stone
+                      item={step.item}
+                      state={step.state}
+                      progressStatus={cardDataMap?.[step.item.id]?.status}
+                      label={step.ageLabel}
+                      scenarioAnnotation={step.scenarioAnnotation}
+                      onClick={() => onItemClick(step.item)}
+                      onProgressCycle={
+                        onProgressCycle ? () => onProgressCycle(step.item.id) : undefined
+                      }
+                    />
+                  </div>
+                ))}
+                {column.length > 1 && (
+                  <span className="mt-2 rounded-full bg-teal-500/10 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-teal-600 dark:text-teal-300">
+                    at the same time
+                  </span>
+                )}
+              </li>
             ))}
           </ol>
         </div>
@@ -110,10 +128,6 @@ function Stone({
   const emphasised = isFoundation || state === 'next'; // calm "you are here" / next emphasis
 
   return (
-    <li
-      className="flex shrink-0 flex-col items-center px-2 text-center"
-      style={{ width: STONE_COL }}
-    >
       <button
         onClick={onClick}
         className="group flex flex-col items-center rounded-2xl px-1 pb-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
@@ -193,6 +207,5 @@ function Stone({
           </span>
         )}
       </button>
-    </li>
   );
 }

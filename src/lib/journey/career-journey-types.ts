@@ -31,6 +31,14 @@ export interface JourneyItem {
   subtitle?: string;
   startAge: number;
   endAge?: number;
+  /**
+   * Optional grouping key for steps that happen IN PARALLEL. Consecutive items
+   * sharing the same non-empty `concurrentGroup` are rendered stacked in a
+   * single timeline column ("at the same time") instead of one-after-another —
+   * used to condense a transition roadmap (e.g. leverage skills + build a
+   * portfolio together). Omit for normal sequential steps.
+   */
+  concurrentGroup?: string;
   isMilestone: boolean;
   icon?: string;
   description?: string;

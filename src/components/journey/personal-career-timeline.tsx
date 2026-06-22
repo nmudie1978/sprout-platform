@@ -29,6 +29,7 @@ import { SimulationControls } from './simulation';
 import type { NarrationContext } from '@/lib/simulation/narration-generator';
 import { generateScenarios, buildScenarioOverlay, type Scenario } from '@/lib/simulation/scenario-engine';
 import { getTransitionDirections, buildDirectionJourney } from '@/lib/journey/transition-directions';
+import { groupConcurrentTransitionSteps } from '@/lib/journey/concurrent-transition-steps';
 
 function slugify(text: string): string {
   return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
@@ -449,15 +450,24 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney, read
 
   // When a direction is picked, reshape the roadmap into that route's steps.
   const effectiveJourney = useMemo<Journey | null>(() => {
-    if (!journey || !activeDirection) return journey;
-    const items = buildDirectionJourney(activeDirection.id, {
-      targetCareer: primaryGoalTitle ?? 'your goal',
-      startAge: userAge ?? journey.startAge,
-      targetCategory: goalId ? getCategoryForCareer(goalId) : undefined,
-      previousOccupation: educationContextData?.educationContext?.previousOccupation ?? null,
-    });
-    return { ...journey, items };
-  }, [journey, activeDirection, primaryGoalTitle, userAge, goalId, getCategoryForCareer, educationContextData?.educationContext]);
+    if (!journey) return journey;
+    // A picked direction reshapes the whole roadmap into that route's steps.
+    if (activeDirection) {
+      const items = buildDirectionJourney(activeDirection.id, {
+        targetCareer: primaryGoalTitle ?? 'your goal',
+        startAge: userAge ?? journey.startAge,
+        targetCategory: goalId ? getCategoryForCareer(goalId) : undefined,
+        previousOccupation: educationContextData?.educationContext?.previousOccupation ?? null,
+      });
+      return { ...journey, items };
+    }
+    // Base transition roadmap: condense by running the early "leverage skills"
+    // + "build a portfolio" steps in parallel (one stacked stop).
+    if (isTransitionUser) {
+      return { ...journey, items: groupConcurrentTransitionSteps(journey.items) };
+    }
+    return journey;
+  }, [journey, activeDirection, isTransitionUser, primaryGoalTitle, userAge, goalId, getCategoryForCareer, educationContextData?.educationContext]);
 
   const cycleScenario = useCallback(() => {
     if (toggleCount === 0) return;
