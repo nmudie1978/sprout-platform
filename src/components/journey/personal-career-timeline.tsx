@@ -3,7 +3,7 @@
 import { useState, useCallback, useRef, useMemo, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Target, AlertCircle, RefreshCw, Play, FileText, X, Shuffle, ArrowRight, Maximize2 } from 'lucide-react';
+import { Target, AlertCircle, RefreshCw, Play, FileText, X, Shuffle, ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from '@/hooks/use-toast';
 import type { JourneyItem, Journey } from '@/lib/journey/career-journey-types';
@@ -60,19 +60,7 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney, read
   // Quick aggregated milestone view — a lightweight "when do I hit each step"
   // popup, distinct from the full PDF-style report.
   const [summaryOpen, setSummaryOpen] = useState(false);
-  // Full-screen roadmap view — opens the same roadmap in a maximised overlay.
-  const [fullscreenOpen, setFullscreenOpen] = useState(false);
   const { style, setStyle } = useTimelineStyle();
-
-  // Close the full-screen roadmap on Escape.
-  useEffect(() => {
-    if (!fullscreenOpen) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setFullscreenOpen(false);
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [fullscreenOpen]);
   // "Show years" toggle — persists across sessions via localStorage so
   // users who prefer calendar-year stamps on every step don't have to
   // re-toggle on each visit. Hydrated in an effect (not the useState
@@ -545,37 +533,6 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney, read
       ? 'Apprenticeship'
       : 'Education';
 
-  // The roadmap renderer, reused inline and in the full-screen overlay.
-  // `fullscreen` fits it to the wider container.
-  const roadmapNode = (fullscreen: boolean) => (
-    <Renderer
-      key={`${style}-${saveVersion}${fullscreen ? '-fs' : ''}`}
-      journey={journey}
-      onItemClick={simState.isPlaying ? () => {} : (item) => setSelectedItem(item)}
-      overlayData={{}}
-      activeLayers={{ progress: false, reflections: false, resources: false, confidence: false }}
-      userAge={journey.startAge}
-      cardDataMap={cardDataMap}
-      onProgressCycle={handleProgressCycle}
-      careerTitle={primaryGoalTitle ?? undefined}
-      readOnly={readOnly || simState.isPlaying}
-      fitToWidth={fullscreen ? true : fitToWidth}
-      showYears={showYears}
-      birthYear={userAge != null ? new Date().getFullYear() - userAge : undefined}
-      simulation={
-        simState.isPlaying || simState.isPaused
-          ? {
-              isPlaying: simState.isPlaying,
-              currentStepIndex: simState.currentStepIndex,
-              progress: simState.narrationProgress,
-            }
-          : undefined
-      }
-      scenarioOverrides={scenarioOverlay?.stepOverrides}
-      evolutionTail={readOnly || simState.isPlaying ? null : evolutionTail}
-    />
-  );
-
   return (
     <div>
       {/* Header row */}
@@ -654,17 +611,6 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney, read
               {showYears ? 'Years on' : 'Show years'}
             </button>
           )}
-          {/* Full-screen — subtle icon that opens the roadmap in a maximised
-              overlay for a wider, distraction-free view. */}
-          <button
-            type="button"
-            onClick={() => setFullscreenOpen(true)}
-            className="inline-flex items-center justify-center rounded-full border border-border/40 bg-muted/20 p-1.5 text-muted-foreground/60 transition-colors hover:bg-muted/40 hover:text-foreground/80"
-            title="View roadmap full screen"
-            aria-label="View roadmap full screen"
-          >
-            <Maximize2 className="h-3 w-3" />
-          </button>
           <TimelineStyleSelector value={style} onChange={setStyle} />
         </div>
       </div>
@@ -842,36 +788,33 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney, read
 
       {/* Roadmap */}
       <div ref={roadmapRef}>
-        {roadmapNode(false)}
+        <Renderer
+          key={`${style}-${saveVersion}`}
+          journey={journey}
+          onItemClick={simState.isPlaying ? () => {} : (item) => setSelectedItem(item)}
+          overlayData={{}}
+          activeLayers={{ progress: false, reflections: false, resources: false, confidence: false }}
+          userAge={journey.startAge}
+          cardDataMap={cardDataMap}
+          onProgressCycle={handleProgressCycle}
+          careerTitle={primaryGoalTitle ?? undefined}
+          readOnly={readOnly || simState.isPlaying}
+          fitToWidth={fitToWidth}
+          showYears={showYears}
+          birthYear={userAge != null ? new Date().getFullYear() - userAge : undefined}
+          simulation={
+            simState.isPlaying || simState.isPaused
+              ? {
+                  isPlaying: simState.isPlaying,
+                  currentStepIndex: simState.currentStepIndex,
+                  progress: simState.narrationProgress,
+                }
+              : undefined
+          }
+          scenarioOverrides={scenarioOverlay?.stepOverrides}
+          evolutionTail={readOnly || simState.isPlaying ? null : evolutionTail}
+        />
       </div>
-
-      {/* Full-screen roadmap overlay */}
-      {fullscreenOpen && (
-        <div
-          className="fixed inset-0 z-50 flex flex-col bg-background/98 backdrop-blur-sm animate-in fade-in duration-150"
-          role="dialog"
-          aria-modal="true"
-          aria-label="Roadmap — full screen"
-        >
-          <div className="flex items-center justify-between border-b border-border/40 px-4 py-2.5">
-            <p className="text-sm font-semibold tracking-tight text-foreground/85">
-              {primaryGoalTitle ? `${primaryGoalTitle} — your roadmap` : 'Your roadmap'}
-            </p>
-            <button
-              type="button"
-              onClick={() => setFullscreenOpen(false)}
-              className="rounded-full p-1.5 text-muted-foreground/70 transition-colors hover:bg-muted/40 hover:text-foreground"
-              title="Close full screen (Esc)"
-              aria-label="Close full screen"
-            >
-              <X className="h-4 w-4" />
-            </button>
-          </div>
-          <div className="flex-1 overflow-auto p-4 sm:p-8">
-            {roadmapNode(true)}
-          </div>
-        </div>
-      )}
 
       {/* Simulation controls — sticky bar at the bottom during playback */}
       {(simState.isPlaying || simState.isPaused || simState.isCompleted) && (
