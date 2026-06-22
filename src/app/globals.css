@@ -4,25 +4,24 @@
 
 @layer base {
   :root {
-    /* ── Light mode theme tokens — X · Decent ──
-       A soft, airy pale-teal "spa" paper: a gentle two-stop wash from
-       teal (#4ca1af) to pale sky (#c4e0e5), the lightest of the cool
-       variants. Cards are pure white so they sit crisply on the wash.
-       The teal brand, achievement gold and semantic hues are retained.
-       No harsh contrast, no neon.
+    /* ── Light mode theme tokens — 24 · Deep Sea ──
+       A deep, teal-leaning blue "paper": grounded and calm, the deepest
+       cyan of the blue family so it sits naturally next to the teal brand.
+       Cards step lighter than the canvas; the teal brand, achievement gold
+       and semantic hues are retained. No harsh contrast, no neon.
        Dark mode (.dark) is the app DEFAULT and is left untouched. */
-    --background: 189 40% 72%;          /* X · Decent — airy pale-teal paper canvas */
-    --foreground: 200 30% 18%;          /* deep teal-slate ink, never harsh black */
-    --card: 187 44% 87%;                /* green-blue surface — clearly tinted (stronger), never white */
-    --card-foreground: 200 30% 18%;
-    --popover: 187 44% 88%;             /* matching green-blue popover surface */
-    --popover-foreground: 200 30% 18%;
+    --background: 198 32% 79%;          /* 24 · Deep Sea — deep teal-blue canvas */
+    --foreground: 202 30% 14%;          /* deep teal-slate ink, never harsh black */
+    --card: 199 38% 84%;                /* blue surface, a clear step lighter than the canvas */
+    --card-foreground: 202 30% 14%;
+    --popover: 199 38% 85%;             /* matching blue popover surface */
+    --popover-foreground: 202 30% 14%;
     --primary: 178 69% 29%;             /* #177D7A — grounded teal brand (retained) */
     --primary-foreground: 0 0% 100%;
-    --secondary: 189 30% 90%;           /* secondary pale-teal surface */
-    --secondary-foreground: 200 30% 18%;
-    --muted: 188 38% 81%;               /* nested/sunken surface — a clear step DARKER than --card so sub-panels read below their parent */
-    --muted-foreground: 200 12% 40%;    /* calm secondary text; faint /50–/40 variants stay legible */
+    --secondary: 199 30% 88%;           /* secondary lighter blue surface */
+    --secondary-foreground: 202 30% 14%;
+    --muted: 198 30% 80%;               /* nested/sunken surface — a clear step DARKER than --card so sub-panels read below their parent */
+    --muted-foreground: 200 14% 34%;    /* calm secondary text; faint /50–/40 variants stay legible */
     --accent: 40 61% 57%;               /* #D4A84F — soft achievement gold highlight (retained) */
     --accent-foreground: 30 30% 18%;    /* warm ink — reads on the gold accent */
     /* Restrained semantic palette — the ONLY non-teal/gold hues allowed.
@@ -33,13 +32,13 @@
     --info: 205 21% 37%;                /* #4A6172 — warm slate (DS "secondary") */
     --destructive: 0 72% 50%;           /* calm danger */
     --destructive-foreground: 0 0% 100%;
-    --border: 187 30% 60%;              /* stronger teal border so tinted cards/sections stay clearly separated in light mode */
-    --input: 187 28% 64%;
+    --border: 197 26% 62%;              /* stronger blue border so tinted cards/sections stay clearly separated in light mode */
+    --input: 197 24% 66%;
     --ring: 178 69% 29%;
     --radius: 0.75rem;
-    --sidebar: 189 36% 88%;             /* pale-teal sidebar — tuned to the canvas */
-    --sidebar-foreground: 200 30% 18%;
-    --sidebar-border: 186 42% 52%;      /* defined teal splitter between sidebar and canvas (light mode) */
+    --sidebar: 197 28% 77%;             /* deep-blue sidebar — tuned to the canvas */
+    --sidebar-foreground: 202 30% 14%;
+    --sidebar-border: 196 30% 58%;      /* defined splitter between sidebar and canvas (light mode) */
     /* Glow brand — teal, used by the Glow component in light mode */
     --brand: 178 69% 32%;
     --brand-foreground: 178 60% 38%;
