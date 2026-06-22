@@ -1237,11 +1237,6 @@ export default function DashboardPage() {
             tooltip={t('savedCareers.tooltip')}
             className="mb-0"
             fixedHeight="h-[180px] overflow-y-auto"
-            action={
-              <Link href="/library?tab=saved" className="text-xs text-primary/70 hover:text-primary transition-colors">
-                {t('dashboard.seeAll')} →
-              </Link>
-            }
           >
             {savedCareers.length > 0 ? (
               <>
@@ -1334,11 +1329,6 @@ export default function DashboardPage() {
             tooltip={t('dashboard.recommendedTooltip')}
             className="mb-0"
             fixedHeight="h-[180px] overflow-y-auto"
-            action={
-              <Link href="/careers" className="text-xs text-primary/70 hover:text-primary transition-colors">
-                {t('dashboard.seeAll')} →
-              </Link>
-            }
           >
             <RecommendedForYou signals={recommendationSignals} onSelect={setSavedCareerDetail} />
           </DashboardSection>
