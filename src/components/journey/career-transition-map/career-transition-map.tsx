@@ -15,11 +15,12 @@
  */
 
 import { useMemo, useRef, useState, useCallback, useLayoutEffect, useEffect } from "react";
-import { Plus, Minus, Maximize, ExternalLink, StickyNote, Pencil, Download } from "lucide-react";
+import { Plus, Minus, Maximize, ExternalLink, StickyNote, Pencil, Download, BookmarkPlus, BookmarkCheck } from "lucide-react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "@/hooks/use-toast";
 import type { BridgeMindmap, BridgeBranch } from "@/lib/journey/bridge-mindmap-types";
 import { applyBranchNote, type BridgeNotes } from "@/lib/journey/bridge-notes";
+import { TRANSITION_MAP_TAG } from "@/lib/insights/saved-content";
 import { ROUTE_META, ROUTE_COLOR_CLASSES, type MapRouteKind } from "./route-meta";
 import { getRouteLadders, ROUTE_VIEW_KEYS, ROUTE_VIEW_LABELS, ROUTE_VIEW_BLURB, type RouteViewKey } from "./route-ladders";
 import { useCareerCatalog } from "@/hooks/use-career-catalog";
@@ -182,6 +183,43 @@ export function CareerTransitionMap({
     }
   }, [targetCareer]);
 
+  // Save to My Library — store the map as a saved item (generic type +
+  // transition-map tag), so it surfaces under My Library → My Content →
+  // Mindmaps. The map itself is deterministic + the user's notes persist
+  // separately, so this is a lightweight reference back to it.
+  const [savedToLibrary, setSavedToLibrary] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const handleSaveToLibrary = useCallback(async () => {
+    if (savedToLibrary || saving) return;
+    setSaving(true);
+    try {
+      const res = await fetch("/api/journey/saved-items", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          type: "ARTICLE",
+          title: `Career Transition Map — ${targetCareer}`,
+          url: `${window.location.origin}/my-journey`,
+          source: "Endeavrly",
+          tags: [TRANSITION_MAP_TAG],
+          description: previousOccupation
+            ? `Your routes into ${targetCareer} from ${previousOccupation}.`
+            : `Your routes into ${targetCareer}.`,
+        }),
+      });
+      if (res.ok) {
+        setSavedToLibrary(true);
+        toast({ title: "Saved to My Library", description: "Find it under My Library → My Content → Mindmaps." });
+      } else {
+        toast({ title: "Couldn't save to My Library", description: "Please try again.", variant: "destructive" });
+      }
+    } catch {
+      toast({ title: "Couldn't save to My Library", description: "Please try again.", variant: "destructive" });
+    } finally {
+      setSaving(false);
+    }
+  }, [savedToLibrary, saving, targetCareer, previousOccupation]);
+
   // Related careers — same discipline as the target, excluding it. Best-effort.
   const related = useMemo(() => {
     const discipline = getDisciplineForCareer(targetCareer);
@@ -263,16 +301,33 @@ export function CareerTransitionMap({
             </>
           )}
         </div>
-        <button
-          type="button"
-          onClick={handleDownload}
-          disabled={downloading}
-          title="Download this map as an image"
-          className="inline-flex items-center gap-1.5 rounded-full border border-border/40 bg-muted/20 px-3 py-1 text-[11px] font-medium text-foreground/80 transition-colors hover:bg-muted/40 hover:text-foreground disabled:opacity-50"
-        >
-          <Download className="h-3.5 w-3.5" />
-          {downloading ? "Preparing…" : "Download"}
-        </button>
+        <div className="flex items-center gap-1.5">
+          <button
+            type="button"
+            onClick={handleSaveToLibrary}
+            disabled={saving || savedToLibrary}
+            title="Save this map to My Library"
+            className={cn(
+              "inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-[11px] font-medium transition-colors disabled:opacity-60",
+              savedToLibrary
+                ? "border-teal-500/40 bg-teal-500/15 text-teal-600 dark:text-teal-300"
+                : "border-border/40 bg-muted/20 text-foreground/80 hover:bg-muted/40 hover:text-foreground",
+            )}
+          >
+            {savedToLibrary ? <BookmarkCheck className="h-3.5 w-3.5" /> : <BookmarkPlus className="h-3.5 w-3.5" />}
+            {savedToLibrary ? "Saved" : saving ? "Saving…" : "Save to Library"}
+          </button>
+          <button
+            type="button"
+            onClick={handleDownload}
+            disabled={downloading}
+            title="Download this map as an image"
+            className="inline-flex items-center gap-1.5 rounded-full border border-border/40 bg-muted/20 px-3 py-1 text-[11px] font-medium text-foreground/80 transition-colors hover:bg-muted/40 hover:text-foreground disabled:opacity-50"
+          >
+            <Download className="h-3.5 w-3.5" />
+            {downloading ? "Preparing…" : "Download"}
+          </button>
+        </div>
       </div>
 
       {view === "full" ? (
