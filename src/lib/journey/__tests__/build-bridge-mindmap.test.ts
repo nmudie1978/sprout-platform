@@ -10,6 +10,28 @@ const base: BridgeInput = {
   blocker: 'unknown-routes',
 };
 
+describe('buildBridgeMindmap — Structured ways in (trainee programmes)', () => {
+  it('names matching trainee programmes as leaves for a finance career', () => {
+    const finance = { ...base, targetCareer: 'Financial Analyst', targetCategory: 'FINANCE_BANKING' as const };
+    const b = buildBridgeMindmap(finance).branches.find((x) => x.kind === 'programmes')!;
+    expect(b.title).toMatch(/structured ways in/i);
+    expect(b.leaves.some((l) => l.label.includes('DNB'))).toBe(true);
+  });
+
+  it('omits named programmes when the category has none, but keeps apprenticeships', () => {
+    const health = { ...base, targetCareer: 'Nurse', targetCategory: 'HEALTHCARE_LIFE_SCIENCES' as const };
+    const b = buildBridgeMindmap(health).branches.find((x) => x.kind === 'programmes')!;
+    expect(b.leaves.some((l) => l.label.includes('DNB'))).toBe(false);
+    expect(b.leaves.some((l) => /apprentice|lærling/i.test(l.label))).toBe(true);
+  });
+
+  it('no targetCategory → no named programmes, still has the generic leaves', () => {
+    const b = buildBridgeMindmap(base).branches.find((x) => x.kind === 'programmes')!;
+    expect(b.leaves.some((l) => /programme$/i.test(l.label))).toBe(false);
+    expect(b.leaves.length).toBeGreaterThanOrEqual(4);
+  });
+});
+
 describe('buildBridgeMindmap — workplace branch (NAV-aware)', () => {
   it('always includes the "get into a workplace" branch, with or without NAV', () => {
     expect(buildBridgeMindmap(base).branches.some((b) => b.kind === 'workplace-nav')).toBe(true);

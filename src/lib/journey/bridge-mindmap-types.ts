@@ -41,6 +41,12 @@ export interface BridgeInput {
   previousOccupation: string | null;
   /** The journey goal — the centre of the map. */
   targetCareer: string;
+  /**
+   * The target career's category — drives the named trainee/graduate programmes
+   * in the "Structured ways in" branch. Caller-resolved (via
+   * getCategoryForCareerByName) so the heavy catalogue stays out of this bundle.
+   */
+  targetCategory?: import('@/lib/career-pathways').CareerCategory;
   /** Whether the user is currently working with NAV — gates the NAV branch. */
   withNav: boolean;
   /** Routes the user has already tried — powers tried/untried. */
