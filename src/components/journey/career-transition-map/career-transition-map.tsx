@@ -14,15 +14,112 @@
  * here as "Soon".
  */
 
-import { useMemo, useRef, useState, useCallback, useLayoutEffect } from "react";
-import { Plus, Minus, Maximize, ExternalLink } from "lucide-react";
+import { useMemo, useRef, useState, useCallback, useLayoutEffect, useEffect } from "react";
+import { Plus, Minus, Maximize, ExternalLink, StickyNote, Pencil } from "lucide-react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import type { BridgeMindmap, BridgeBranch } from "@/lib/journey/bridge-mindmap-types";
+import { applyBranchNote, type BridgeNotes } from "@/lib/journey/bridge-notes";
 import { ROUTE_META, ROUTE_COLOR_CLASSES, type MapRouteKind } from "./route-meta";
 import { getRouteLadders, ROUTE_VIEW_KEYS, ROUTE_VIEW_LABELS, ROUTE_VIEW_BLURB, type RouteViewKey } from "./route-ladders";
 import { useCareerCatalog } from "@/hooks/use-career-catalog";
 import { getDisciplineForCareer } from "@/lib/education/alternatives";
 import { getCareersForDiscipline } from "@/lib/discover/degree-to-careers";
 import { cn } from "@/lib/utils";
+
+/** Per-user notes on the (generic) mindmap branches — one set, all careers. */
+function useBridgeNotes(): { notes: BridgeNotes; saveNote: (branchId: string, note: string) => void } {
+  const qc = useQueryClient();
+  const { data } = useQuery<{ notes: BridgeNotes }>({
+    queryKey: ["bridge-notes"],
+    queryFn: async () => {
+      const r = await fetch("/api/journey/bridge-notes");
+      if (!r.ok) return { notes: {} };
+      return r.json();
+    },
+    staleTime: 60_000,
+  });
+  const notes = data?.notes ?? {};
+  const saveNote = useCallback(
+    (branchId: string, note: string) => {
+      // Optimistic local update, then persist.
+      qc.setQueryData<{ notes: BridgeNotes }>(["bridge-notes"], (prev) => ({
+        notes: applyBranchNote(prev?.notes, branchId, note),
+      }));
+      fetch("/api/journey/bridge-notes", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ branchId, note }),
+      })
+        .then((r) => (r.ok ? r.json() : null))
+        .then((d) => { if (d?.notes) qc.setQueryData(["bridge-notes"], { notes: d.notes }); })
+        .catch(() => {});
+    },
+    [qc],
+  );
+  return { notes, saveNote };
+}
+
+/**
+ * Inline per-branch note. Always visible under the branch (a margin note).
+ * Empty → a faint "Add a note"; set → the note text + edit. stopPropagation
+ * keeps clicks/drags off the parent card and the pan/zoom canvas.
+ */
+function BranchNote({ note, onSave }: { note?: string; onSave: (text: string) => void }) {
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState(note ?? "");
+  useEffect(() => { setDraft(note ?? ""); }, [note]);
+  const stop = (e: React.SyntheticEvent) => e.stopPropagation();
+  const commit = () => {
+    setEditing(false);
+    const t = draft.trim();
+    if (t !== (note ?? "")) onSave(t);
+  };
+  if (editing) {
+    return (
+      <div className="border-t border-border/15 px-3.5 py-2" onPointerDown={stop} onClick={stop}>
+        <textarea
+          autoFocus
+          value={draft}
+          maxLength={500}
+          rows={2}
+          placeholder="Your note…"
+          onChange={(e) => setDraft(e.target.value)}
+          onBlur={commit}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) { e.preventDefault(); commit(); }
+            if (e.key === "Escape") { setDraft(note ?? ""); setEditing(false); }
+          }}
+          className="w-full resize-none rounded-md border border-teal-500/30 bg-background/80 px-2 py-1 text-[11.5px] leading-snug text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus-visible:ring-1 focus-visible:ring-teal-500"
+        />
+      </div>
+    );
+  }
+  if (note) {
+    return (
+      <button
+        type="button"
+        onPointerDown={stop}
+        onClick={(e) => { stop(e); setEditing(true); }}
+        className="group/note flex w-full items-start gap-1.5 border-t border-border/15 px-3.5 py-2 text-left text-[11.5px] leading-snug text-foreground/80 hover:bg-teal-500/[0.04]"
+        title="Edit your note"
+      >
+        <StickyNote className="mt-0.5 h-3 w-3 shrink-0 text-teal-500" aria-hidden />
+        <span className="flex-1 italic">{note}</span>
+        <Pencil className="mt-0.5 h-2.5 w-2.5 shrink-0 text-muted-foreground/40 group-hover/note:text-muted-foreground/70" aria-hidden />
+      </button>
+    );
+  }
+  return (
+    <button
+      type="button"
+      onPointerDown={stop}
+      onClick={(e) => { stop(e); setEditing(true); }}
+      className="flex items-center gap-1 border-t border-border/15 px-3.5 py-1.5 text-[11px] text-muted-foreground/50 hover:text-teal-500"
+    >
+      <Plus className="h-3 w-3" aria-hidden /> Add a note
+    </button>
+  );
+}
 
 /** A normalised route card the map renders. */
 interface RouteCard {
@@ -53,6 +150,7 @@ export function CareerTransitionMap({
 }) {
   const { getCareerById } = useCareerCatalog();
   const [view, setView] = useState<ViewKey>("full");
+  const { notes, saveNote } = useBridgeNotes();
   const ladders = useMemo(() => getRouteLadders(targetCareer), [targetCareer]);
 
   // Related careers — same discipline as the target, excluding it. Best-effort.
@@ -134,11 +232,11 @@ export function CareerTransitionMap({
       {view === "full" ? (
         <>
           {/* Desktop: zoom/pan canvas. Mobile: vertical stack. */}
-          <DesktopCanvas cards={cards} targetCareer={targetCareer} previousOccupation={previousOccupation} />
+          <DesktopCanvas cards={cards} targetCareer={targetCareer} previousOccupation={previousOccupation} notes={notes} onSaveNote={saveNote} />
           <div className="md:hidden flex-1 overflow-y-auto space-y-3 pb-6">
             <HeroCard targetCareer={targetCareer} previousOccupation={previousOccupation} />
             {cards.map((c) => (
-              <RouteCardView key={c.id} card={c} />
+              <RouteCardView key={c.id} card={c} note={notes[c.id]} onSaveNote={(t) => saveNote(c.id, t)} />
             ))}
             <NavNote />
           </div>
@@ -234,7 +332,7 @@ function NavNote() {
 }
 
 /* ── Route card ───────────────────────────────────────────────────── */
-function RouteCardView({ card, className }: { card: RouteCard; className?: string }) {
+function RouteCardView({ card, className, note, onSaveNote }: { card: RouteCard; className?: string; note?: string; onSaveNote?: (text: string) => void }) {
   const meta = ROUTE_META[card.kind];
   const c = ROUTE_COLOR_CLASSES[meta.color];
   const [open, setOpen] = useState(false);
@@ -258,6 +356,7 @@ function RouteCardView({ card, className }: { card: RouteCard; className?: strin
           </div>
         </div>
       </button>
+      {onSaveNote && <BranchNote note={note} onSave={onSaveNote} />}
       {open && card.leaves.length > 0 && (
         <ul className="space-y-1.5 border-t border-border/20 px-3.5 py-3">
           {card.leaves.map((lf) => (
@@ -297,10 +396,14 @@ function DesktopCanvas({
   cards,
   targetCareer,
   previousOccupation,
+  notes,
+  onSaveNote,
 }: {
   cards: RouteCard[];
   targetCareer: string;
   previousOccupation: string | null;
+  notes: BridgeNotes;
+  onSaveNote: (branchId: string, note: string) => void;
 }) {
   const [t, setT] = useState({ scale: 1, x: 0, y: 0 });
   const drag = useRef<{ x: number; y: number; tx: number; ty: number } | null>(null);
@@ -355,7 +458,7 @@ function DesktopCanvas({
       const same = keys.length === Object.keys(prev).length && keys.every((k) => prev[k] === next[k]);
       return same ? prev : next;
     });
-  }, [cards, expandedId]);
+  }, [cards, expandedId, notes]);
 
   const expanded = expandedId ? cards.find((c) => c.id === expandedId) ?? null : null;
 
@@ -442,6 +545,8 @@ function DesktopCanvas({
                   card={card}
                   expanded={card.id === expandedId}
                   onToggle={() => setExpandedId((id) => (id === card.id ? null : card.id))}
+                  note={notes[card.id]}
+                  onSaveNote={(t) => onSaveNote(card.id, t)}
                 />
               </div>
             );
@@ -465,20 +570,19 @@ function DesktopCanvas({
 }
 
 /* ── Canvas card (header only; children render as separate nodes) ──── */
-function CanvasCard({ card, expanded, onToggle }: { card: RouteCard; expanded: boolean; onToggle: () => void }) {
+function CanvasCard({ card, expanded, onToggle, note, onSaveNote }: { card: RouteCard; expanded: boolean; onToggle: () => void; note?: string; onSaveNote: (text: string) => void }) {
   const meta = ROUTE_META[card.kind];
   const c = ROUTE_COLOR_CLASSES[meta.color];
   const hasLeaves = card.leaves.length > 0;
   return (
-    <button
-      type="button"
-      onClick={onToggle}
+    <div
       className={cn(
-        "w-full rounded-xl border bg-card/90 p-3.5 text-left shadow-lg backdrop-blur-sm transition-colors",
+        "w-full overflow-hidden rounded-xl border bg-card/90 text-left shadow-lg backdrop-blur-sm transition-colors",
         c.border, c.glow,
         expanded && "ring-1 ring-teal-400/40",
       )}
     >
+      <button type="button" onClick={onToggle} className="w-full p-3.5 text-left">
       <div className="flex items-start gap-2.5">
         <span className={cn("mt-1.5 h-2 w-2 shrink-0 rounded-full", c.dot)} />
         <div className="min-w-0 flex-1">
@@ -501,7 +605,9 @@ function CanvasCard({ card, expanded, onToggle }: { card: RouteCard; expanded: b
           )}
         </div>
       </div>
-    </button>
+      </button>
+      <BranchNote note={note} onSave={onSaveNote} />
+    </div>
   );
 }
 
