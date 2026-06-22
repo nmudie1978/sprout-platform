@@ -531,8 +531,14 @@ export function TimelineDetailDialog({
   const hasMicroActions = !!microActions && microActions.length > 0;
   const stepTip = isFoundation ? null : getStepTip(item, careerTitle);
 
+  // While the fullscreen Career Transition Map is open we drop the dialog to
+  // non-modal. A modal Radix dialog sets `pointer-events: none` on <body> and
+  // installs a react-remove-scroll wheel trap; since the map renders in a portal
+  // on <body> (outside the dialog layer) it inherited that lockdown, so drag-pan,
+  // the zoom buttons and wheel-scroll all did nothing. Non-modal lifts the
+  // lockdown; onInteractOutside (below) still keeps it from closing.
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={onOpenChange} modal={!showRoutes}>
       <DialogContent
         className="sm:max-w-md"
         // The Career Transition Map renders in a portal on <body>, OUTSIDE this
