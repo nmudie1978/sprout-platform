@@ -133,13 +133,15 @@ export async function POST(req: NextRequest) {
     const bodyStage = typeof body.educationStage === 'string' ? body.educationStage : undefined;
     const educationStage: EducationStage | undefined = normStage(bodyStage) ?? normStage(ctx?.stage);
 
-    // Effective stage for users who never filled in the Foundation card.
-    // A 24+ user with no declared stage is not in school — assume 'other'
-    // (working / self-taught / between things) so the roadmap doesn't open
-    // with "Complete Videregående". Under-24 undeclared users keep the
-    // existing implicit-school behaviour.
+    // Effective stage for users who never filled in the Foundation card,
+    // anchored to Norwegian ages (videregående/VG3 finishes at ~18-19) so
+    // the roadmap never opens with "Complete Videregående" for someone
+    // clearly past it. 26+ → 'other' (working / past formal education),
+    // 19-25 → 'university' (the youth audience's most likely track, and
+    // what the Foundation editor pre-selects), under-19 → undefined so the
+    // age-aware AI prompt decides (school for the core teen audience).
     const effectiveStage: EducationStage | undefined =
-      educationStage ?? (userAge >= 24 ? 'other' : undefined);
+      educationStage ?? (userAge >= 26 ? 'other' : userAge >= 19 ? 'university' : undefined);
 
     // Foundation completion drives whether we drop the leading
     // education steps. Body wins over DB so toggling Complete in the
