@@ -218,7 +218,8 @@ const VERBS = [
   // junk like "Begin consider professional certifications".
   'consider', 'explore', 'pursue', 'develop', 'specialise', 'specialize',
   'qualify', 'register', 'volunteer', 'shadow', 'attend', 'research',
-  'prepare', 'practise', 'practice', 'become', 'move',
+  'prepare', 'practise', 'practice', 'become', 'move', 'land', 'secure',
+  'transition', 'switch', 'retrain', 'reskill', 'work', 'grow', 'progress',
 ];
 
 const NOUN_PREFIX_FIXES: Array<[RegExp, string]> = [
@@ -290,7 +291,11 @@ export function verbLead(title: string): string {
   }
 
   const firstWord = trimmed.split(/\s+/)[0]?.toLowerCase().replace(/[,.;:]+$/, '');
-  if (firstWord && VERBS.includes(firstWord)) return trimmed;
+  // Already verb-led — keep it, but ensure the leading letter is capitalised
+  // (the AI sometimes emits a lower-case opener like "land your first role").
+  if (firstWord && VERBS.includes(firstWord)) {
+    return trimmed.charAt(0).toUpperCase() + trimmed.slice(1);
+  }
   for (const [pattern, replacement] of NOUN_PREFIX_FIXES) {
     if (pattern.test(trimmed)) return trimmed.replace(pattern, replacement);
   }

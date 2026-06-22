@@ -533,7 +533,18 @@ export function TimelineDetailDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent
+        className="sm:max-w-md"
+        // The Career Transition Map renders in a portal on <body>, OUTSIDE this
+        // content. While it's open, Radix would treat pan/zoom/clicks inside it
+        // as "interact outside" and dismiss the whole dialog (taking the map
+        // with it). Keep the dialog mounted while the map is up — the map owns
+        // its own close (button + Escape).
+        onPointerDownOutside={(e) => { if (showRoutes) e.preventDefault(); }}
+        onInteractOutside={(e) => { if (showRoutes) e.preventDefault(); }}
+        onFocusOutside={(e) => { if (showRoutes) e.preventDefault(); }}
+        onEscapeKeyDown={(e) => { if (showRoutes) e.preventDefault(); }}
+      >
         <DialogHeader>
           <div className="flex items-center gap-2 mb-1">
             <div className="h-2 w-2 rounded-full" style={{ backgroundColor: stage.color }} />
