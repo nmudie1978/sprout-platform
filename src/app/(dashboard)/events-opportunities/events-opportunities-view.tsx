@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { YouthEventsTable } from "@/components/insights/youth-events-table";
 import { cn } from "@/lib/utils";
 import {
   EVENT_CATEGORIES,
@@ -74,31 +75,41 @@ export function EventsOpportunitiesView({ country }: { country?: string | null }
         </TabsList>
 
         {/* Events */}
-        <TabsContent value="events" className="mt-5">
-          {eventCards.length === 0 ? (
-            <EmptyState />
-          ) : (
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-              {eventCards.map((c) => (
-                <CategoryTile
-                  key={c.id}
-                  card={c}
-                  icon={EVENT_ICON[c.id] ?? Users}
-                  accentType="events"
-                  action={
-                    <a
-                      href={googleSearch(eventSearchQuery(c.id, country, c.name))}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label={`Search externally for ${c.name}`}
-                      className="inline-flex items-center gap-1.5 text-[12px] font-medium text-primary hover:underline"
-                    >
-                      Search externally <ExternalLink className="h-3 w-3" aria-hidden />
-                    </a>
-                  }
-                />
-              ))}
-            </div>
+        <TabsContent value="events" className="mt-5 space-y-6">
+          {/* The real, dated events — a crisp chronological list (verified
+              career events, job fairs, open days, webinars). */}
+          <section>
+            <h2 className="mb-2 text-xs font-bold uppercase tracking-wider text-foreground/70">Upcoming events</h2>
+            <YouthEventsTable defaultPageSize={8} />
+          </section>
+
+          {/* Secondary: browse by type / search externally where we don't
+              hold a dated listing. The external search is tailored to country. */}
+          {eventCards.length > 0 && (
+            <section>
+              <h2 className="mb-2 text-xs font-bold uppercase tracking-wider text-foreground/70">Find more, by type</h2>
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                {eventCards.map((c) => (
+                  <CategoryTile
+                    key={c.id}
+                    card={c}
+                    icon={EVENT_ICON[c.id] ?? Users}
+                    accentType="events"
+                    action={
+                      <a
+                        href={googleSearch(eventSearchQuery(c.id, country, c.name))}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={`Search externally for ${c.name}`}
+                        className="inline-flex items-center gap-1.5 text-[12px] font-medium text-primary hover:underline"
+                      >
+                        Search externally <ExternalLink className="h-3 w-3" aria-hidden />
+                      </a>
+                    }
+                  />
+                ))}
+              </div>
+            </section>
           )}
         </TabsContent>
 
