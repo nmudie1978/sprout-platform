@@ -854,23 +854,11 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney, read
         <button
           type="button"
           onClick={() => setCtmOpen(true)}
-          className="group mb-3 flex w-full items-center gap-3 rounded-card border border-indigo-500/30 bg-indigo-500/[0.06] px-4 py-3 text-left transition-colors hover:border-indigo-500/50 hover:bg-indigo-500/[0.11] focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500/60"
+          className="group mb-3 inline-flex items-center gap-1.5 rounded text-xs font-medium text-muted-foreground transition-colors hover:text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
         >
-          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-indigo-500/15 ring-1 ring-indigo-500/30">
-            <Route className="h-4 w-4 text-indigo-500" aria-hidden />
-          </span>
-          <span className="min-w-0 flex-1">
-            <span className="block text-sm font-semibold text-foreground">
-              Open your Career Transition Map
-            </span>
-            <span className="block text-xs text-muted-foreground/80 leading-snug">
-              Practical routes from where you are now to {primaryGoalTitle ?? 'your goal'} — updates when you edit your starting point.
-            </span>
-          </span>
-          <span className="hidden sm:inline-flex shrink-0 items-center gap-1 text-xs font-semibold text-indigo-600 dark:text-indigo-300">
-            View map
-            <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" aria-hidden />
-          </span>
+          <Route className="h-3.5 w-3.5 text-indigo-500/80" aria-hidden />
+          View your Career Transition Mindmap
+          <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-0.5" aria-hidden />
         </button>
       )}
 
