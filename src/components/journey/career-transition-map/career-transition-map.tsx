@@ -127,7 +127,7 @@ function BranchNote({ note, onSave }: { note?: string; onSave: (text: string) =>
 interface RouteCard {
   id: string;
   kind: MapRouteKind;
-  leaves: { id: string; label: string; detail?: string; navFact?: boolean; tried?: boolean }[];
+  leaves: { id: string; label: string; detail?: string; navFact?: boolean; tried?: boolean; url?: string }[];
 }
 
 function Stars({ n }: { n: number }) {
@@ -242,6 +242,7 @@ export function CareerTransitionMap({
         detail: l.detail,
         navFact: l.navFact,
         tried: l.state === "tried",
+        url: l.url,
       })),
     }));
     const reality: RouteCard = {
@@ -465,7 +466,14 @@ function RouteCardView({ card, className, note, onSaveNote }: { card: RouteCard;
               <span className="flex items-start gap-2">
                 <span className={cn("mt-1 h-1 w-1 shrink-0 rounded-full", lf.navFact ? "bg-teal-400" : c.dot)} />
                 <span>
-                  <span className="font-medium text-foreground/85">{lf.label}</span>
+                  {lf.url ? (
+                    <a href={lf.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 font-medium text-primary hover:underline">
+                      {lf.label}
+                      <ExternalLink className="h-3 w-3 shrink-0 opacity-60" />
+                    </a>
+                  ) : (
+                    <span className="font-medium text-foreground/85">{lf.label}</span>
+                  )}
                   {lf.detail && <span className="block text-[11px] text-muted-foreground/70">{lf.detail}</span>}
                 </span>
               </span>
@@ -721,7 +729,14 @@ function ChildNode({ leaf, color }: { leaf: RouteCard["leaves"][number]; color: 
       <div className="flex items-start gap-2">
         <span className={cn("mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full", leaf.navFact ? "bg-teal-400" : color.dot)} />
         <div className="min-w-0">
-          <p className={cn("text-[12.5px] font-medium leading-tight text-foreground/90", leaf.tried && "line-through")}>{leaf.label}</p>
+          {leaf.url ? (
+            <a href={leaf.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-[12.5px] font-medium leading-tight text-primary hover:underline">
+              {leaf.label}
+              <ExternalLink className="h-3 w-3 shrink-0 opacity-60" />
+            </a>
+          ) : (
+            <p className={cn("text-[12.5px] font-medium leading-tight text-foreground/90", leaf.tried && "line-through")}>{leaf.label}</p>
+          )}
           {leaf.detail && <p className="mt-0.5 text-[11px] leading-snug text-muted-foreground/70">{leaf.detail}</p>}
         </div>
       </div>

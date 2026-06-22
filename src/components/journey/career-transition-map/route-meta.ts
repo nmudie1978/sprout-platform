@@ -67,6 +67,14 @@ export const ROUTE_META: Record<MapRouteKind, RouteMeta> = {
     likelihood: 4,
     color: 'orange',
   },
+  programmes: {
+    title: 'Entry-level routes & programmes',
+    blurb: 'Where to find graduate schemes, apprenticeships and entry-level openings — plus what they really ask for.',
+    duration: 'Ongoing',
+    difficulty: 'Low',
+    likelihood: 4,
+    color: 'slate',
+  },
   related: {
     title: 'Related careers',
     blurb: 'Close cousins of your target — if the first choice stalls, these are still open to you.',
