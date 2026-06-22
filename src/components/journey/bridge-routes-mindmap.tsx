@@ -109,7 +109,7 @@ function MindmapAccordion({ model }: { model: BridgeMindmap }) {
           className={`rounded-xl border ${branch.kind === "tried" ? "border-border bg-muted/40" : "border-teal-500/40"}`}
         >
           <summary className="cursor-pointer list-none px-3 py-2.5 text-sm font-semibold flex items-center gap-2">
-            {branch.kind === "workplace-nav" && (
+            {branch.leaves.some((l) => l.navFact) && (
               <span className="text-[9px] font-bold rounded bg-teal-700 text-white px-1.5 py-0.5">NAV</span>
             )}
             <span className={branch.kind === "tried" ? "text-muted-foreground" : ""}>{branch.title}</span>
@@ -133,13 +133,16 @@ function MindmapAccordion({ model }: { model: BridgeMindmap }) {
 
 /** Inner visual — usable on a page or inside the dialog. */
 export function BridgeMindmapView({ model }: { model: BridgeMindmap }) {
+  const hasNavFacts = model.branches.some((b) => b.leaves.some((l) => l.navFact));
   return (
     <div className="min-w-0 max-w-full overflow-x-hidden">
       <MindmapFan model={model} />
       <MindmapAccordion model={model} />
-      <p className="mt-4 text-[11px] text-muted-foreground flex items-center gap-1">
-        <ExternalLink className="h-3 w-3" /> NAV routes are guidance — confirm details with your NAV advisor on nav.no.
-      </p>
+      {hasNavFacts && (
+        <p className="mt-4 text-[11px] text-muted-foreground flex items-center gap-1">
+          <ExternalLink className="h-3 w-3" /> NAV routes are guidance — confirm details with your NAV advisor on nav.no.
+        </p>
+      )}
     </div>
   );
 }

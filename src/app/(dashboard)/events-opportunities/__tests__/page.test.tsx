@@ -14,6 +14,14 @@ function renderView(country: string | null = "Norway") {
   );
 }
 
+// Opportunities is no longer the default tab (Events is), so opportunities
+// content is unmounted on first render — switch to it before asserting on it.
+function openOpportunities() {
+  const tab = screen.getByRole("tab", { name: "Opportunities" });
+  fireEvent.focus(tab);
+  fireEvent.click(tab);
+}
+
 beforeEach(() => {
   vi.stubGlobal("fetch", vi.fn(async () => ({
     ok: true,
@@ -32,17 +40,19 @@ describe("Events & Opportunities view", () => {
 
   it("does not render the Opportunity Types cards block", () => {
     renderView();
+    openOpportunities();
     // The opportunity-type description cards are gone — the Type filter drives
     // the view directly.
     expect(screen.queryByText("Apprenticeships (Lærling)")).not.toBeInTheDocument();
     expect(screen.queryByText(/Short-term work experience, often for students/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/Structured entry routes for recent graduates/i)).not.toBeInTheDocument();
-    // The sources directory ("Where to look") is shown by default instead.
+    // The sources directory ("Where to look") is shown instead.
     expect(screen.getByText(/Where to look/i)).toBeInTheDocument();
   });
 
   it("renders external links that open safely in a new tab", () => {
     renderView();
+    openOpportunities();
     const nav = screen.getByRole("link", { name: /Open NAV Arbeidsplassen/i });
     expect(nav).toHaveAttribute("href", "https://arbeidsplassen.nav.no/");
     expect(nav).toHaveAttribute("target", "_blank");
@@ -65,7 +75,7 @@ describe("Events & Opportunities view", () => {
 
   it("shows the filters but no search bar on the Opportunities tab", () => {
     renderView();
-    // Opportunities is the default tab.
+    openOpportunities();
     expect(screen.getByLabelText("Type")).toBeInTheDocument();
     expect(screen.getByLabelText("Location")).toBeInTheDocument();
     expect(screen.getByLabelText("Audience")).toBeInTheDocument();
@@ -86,6 +96,7 @@ describe("Events & Opportunities view", () => {
 
   it("selecting a type shows only its 'Where to look' section", () => {
     renderView();
+    openOpportunities();
     fireEvent.change(screen.getByLabelText("Type"), { target: { value: "graduate-programs" } });
     expect(screen.getByText(/Where to look · Graduate Programs/i)).toBeInTheDocument();
     // Still no opportunity-type cards block.
@@ -94,6 +105,7 @@ describe("Events & Opportunities view", () => {
 
   it("type filter narrows the source directory (Apprenticeships)", () => {
     renderView();
+    openOpportunities();
     fireEvent.change(screen.getByLabelText("Type"), { target: { value: "apprenticeships" } });
     expect(screen.getByRole("link", { name: /Open Jobbnorge/i })).toBeInTheDocument();
     expect(screen.queryByRole("link", { name: /Open Glassdoor Norway Internships/i })).not.toBeInTheDocument();
@@ -101,6 +113,7 @@ describe("Events & Opportunities view", () => {
 
   it("type filter works for Internships", () => {
     renderView();
+    openOpportunities();
     fireEvent.change(screen.getByLabelText("Type"), { target: { value: "internships" } });
     expect(screen.getByRole("link", { name: /Open Glassdoor Norway Internships/i })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /Open The Hub/i })).toBeInTheDocument();
@@ -110,6 +123,7 @@ describe("Events & Opportunities view", () => {
 describe("Events & Opportunities view — country tailoring", () => {
   it("a Norwegian user sees Norwegian portals and an 'All Norway' location", () => {
     renderView("Norway");
+    openOpportunities();
     expect(screen.getByRole("link", { name: /Open NAV Arbeidsplassen/i })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /Open FINN Jobb/i })).toBeInTheDocument();
     // Global sources are shared.
@@ -121,6 +135,7 @@ describe("Events & Opportunities view — country tailoring", () => {
 
   it("a Spanish user sees Spanish portals (SEPE/InfoJobs), not Norwegian ones", () => {
     renderView("Spain");
+    openOpportunities();
     expect(screen.getByRole("link", { name: /Open SEPE/i })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /Open InfoJobs/i })).toBeInTheDocument();
     // Global sources still present.
@@ -135,6 +150,7 @@ describe("Events & Opportunities view — country tailoring", () => {
 
   it("an unknown country sees global sources only (no wrong-country portals)", () => {
     renderView("Germany");
+    openOpportunities();
     expect(screen.getByRole("link", { name: /Open LinkedIn Jobs/i })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /Open EURES/i })).toBeInTheDocument();
     expect(screen.queryByRole("link", { name: /Open NAV Arbeidsplassen/i })).not.toBeInTheDocument();

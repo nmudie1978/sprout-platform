@@ -29,7 +29,7 @@ export type MapRouteKind = BranchKind | 'related' | 'reality';
 export const ROUTE_META: Record<MapRouteKind, RouteMeta> = {
   'workplace-nav': {
     title: 'Get into a workplace',
-    blurb: 'Practical, often funded routes in — placements, supported hiring and NAV measures.',
+    blurb: 'Practical routes into a workplace — work trials, placements and supported hiring.',
     duration: '1–6 months',
     difficulty: 'Low–Medium',
     likelihood: 5,

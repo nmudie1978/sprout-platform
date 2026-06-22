@@ -269,6 +269,14 @@ export function CareerTransitionMap({
     return [...fromBranches, ...(relatedCard ? [relatedCard] : []), reality];
   }, [model.branches, related]);
 
+  // The NAV guidance note only makes sense when the map actually contains NAV
+  // schemes (i.e. the user told us they're working with NAV). Off NAV the
+  // workplace branch carries general placement routes, so the note is hidden.
+  const hasNavFacts = useMemo(
+    () => model.branches.some((b: BridgeBranch) => b.leaves.some((l) => l.navFact)),
+    [model.branches],
+  );
+
   return (
     <div className="flex h-full flex-col">
       {/* Off-screen landscape poster used only for the PNG download. Kept in
@@ -356,7 +364,7 @@ export function CareerTransitionMap({
             {cards.map((c) => (
               <RouteCardView key={c.id} card={c} note={notes[c.id]} onSaveNote={(t) => saveNote(c.id, t)} />
             ))}
-            <NavNote />
+            {hasNavFacts && <NavNote />}
           </div>
         </>
       ) : (

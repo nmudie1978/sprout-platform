@@ -42,7 +42,7 @@ export function EventsOpportunitiesView({ country }: { country?: string | null }
   const [type, setType] = useState<OppType | "all">("all");
   const [location, setLocation] = useState<LocationKey>("all");
   const [audience, setAudience] = useState<Audience | "all">("all");
-  const [tab, setTab] = useState<"events" | "opportunities">("opportunities");
+  const [tab, setTab] = useState<"events" | "opportunities">("events");
 
   const locationOptions = useMemo(() => getLocationOptions(country), [country]);
 
