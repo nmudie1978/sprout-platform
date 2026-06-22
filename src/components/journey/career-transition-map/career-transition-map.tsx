@@ -14,7 +14,7 @@
  * here as "Soon".
  */
 
-import { useMemo, useRef, useState, useCallback, useLayoutEffect, useEffect } from "react";
+import { useMemo, useRef, useState, useCallback, useLayoutEffect, useEffect, forwardRef } from "react";
 import { Plus, Minus, Maximize, ExternalLink, StickyNote, Pencil, Download, BookmarkPlus, BookmarkCheck } from "lucide-react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "@/hooks/use-toast";
@@ -27,6 +27,9 @@ import { useCareerCatalog } from "@/hooks/use-career-catalog";
 import { getDisciplineForCareer } from "@/lib/education/alternatives";
 import { getCareersForDiscipline } from "@/lib/discover/degree-to-careers";
 import { cn } from "@/lib/utils";
+
+/** Fixed width of the landscape download poster (px). */
+const EXPORT_WIDTH = 1680;
 
 /** Per-user notes on the (generic) mindmap branches — one set, all careers. */
 function useBridgeNotes(): { notes: BridgeNotes; saveNote: (branchId: string, note: string) => void } {
@@ -155,14 +158,14 @@ export function CareerTransitionMap({
   const { notes, saveNote } = useBridgeNotes();
   const ladders = useMemo(() => getRouteLadders(targetCareer), [targetCareer]);
 
-  // Download — capture the full mindmap as a PNG. We capture the desktop
-  // canvas's untransformed content node (full size, unclipped) when it's
-  // visible, else the mobile vertical stack. Mirrors the roadmap export.
-  const desktopMapRef = useRef<HTMLDivElement>(null);
-  const mobileMapRef = useRef<HTMLDivElement>(null);
+  // Download — capture a purpose-built, WIDE landscape "poster" rendered
+  // off-screen (solid surfaces, generous spacing), NOT the cramped on-screen
+  // pan/zoom canvas. This avoids the squished/portrait output and html2canvas's
+  // trouble with backdrop-blur, and gives a crisp, print-friendly image.
+  const exportRef = useRef<HTMLDivElement>(null);
   const [downloading, setDownloading] = useState(false);
   const handleDownload = useCallback(async () => {
-    const el = desktopMapRef.current?.offsetParent ? desktopMapRef.current : mobileMapRef.current;
+    const el = exportRef.current;
     if (!el) return;
     setDownloading(true);
     try {
@@ -171,7 +174,13 @@ export function CareerTransitionMap({
       const backgroundColor = bgVar
         ? `hsl(${bgVar.replace(/\s+/g, ", ")})`
         : document.documentElement.classList.contains("dark") ? "#0f1117" : "#ffffff";
-      const canvas = await html2canvas(el, { backgroundColor, scale: 2, useCORS: true });
+      const canvas = await html2canvas(el, {
+        backgroundColor,
+        scale: 2.5,
+        useCORS: true,
+        width: EXPORT_WIDTH,
+        windowWidth: EXPORT_WIDTH,
+      });
       const a = document.createElement("a");
       a.href = canvas.toDataURL("image/png");
       a.download = `transition-map-${targetCareer.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "") || "career"}.png`;
@@ -262,6 +271,13 @@ export function CareerTransitionMap({
 
   return (
     <div className="flex h-full flex-col">
+      {/* Off-screen landscape poster used only for the PNG download. Kept in
+          the DOM (not display:none) so html2canvas can render it, but pushed
+          far off-screen and hidden from AT. */}
+      <div aria-hidden style={{ position: "fixed", left: -100000, top: 0, pointerEvents: "none" }}>
+        <TransitionMapExport ref={exportRef} cards={cards} targetCareer={targetCareer} previousOccupation={previousOccupation} notes={notes} />
+      </div>
+
       {/* View toggle — only shown when curated route-views exist for this
           target. On the career-changer map (no curated ladders) the Full map
           is the only view, so we hide the toggle entirely rather than show
@@ -334,8 +350,8 @@ export function CareerTransitionMap({
       {view === "full" ? (
         <>
           {/* Desktop: zoom/pan canvas. Mobile: vertical stack. */}
-          <DesktopCanvas cards={cards} targetCareer={targetCareer} previousOccupation={previousOccupation} notes={notes} onSaveNote={saveNote} contentRef={desktopMapRef} />
-          <div ref={mobileMapRef} className="md:hidden flex-1 overflow-y-auto space-y-3 pb-6">
+          <DesktopCanvas cards={cards} targetCareer={targetCareer} previousOccupation={previousOccupation} notes={notes} onSaveNote={saveNote} />
+          <div className="md:hidden flex-1 overflow-y-auto space-y-3 pb-6">
             <HeroCard targetCareer={targetCareer} previousOccupation={previousOccupation} />
             {cards.map((c) => (
               <RouteCardView key={c.id} card={c} note={notes[c.id]} onSaveNote={(t) => saveNote(c.id, t)} />
@@ -743,3 +759,65 @@ function ChildNode({ leaf, color }: { leaf: RouteCard["leaves"][number]; color: 
     </div>
   );
 }
+
+/* ── Landscape download poster ─────────────────────────────────────────
+ * A wide, print-friendly rendering used ONLY for the PNG download. Solid
+ * surfaces (no backdrop-blur), generous spacing and a fixed wide width so
+ * the output is crisp landscape, never the squished on-screen canvas. */
+const TransitionMapExport = forwardRef<HTMLDivElement, {
+  cards: RouteCard[];
+  targetCareer: string;
+  previousOccupation: string | null;
+  notes: BridgeNotes;
+}>(function TransitionMapExport({ cards, targetCareer, previousOccupation, notes }, ref) {
+  return (
+    <div ref={ref} style={{ width: EXPORT_WIDTH }} className="bg-background p-12 text-foreground">
+      <div className="mb-7 flex items-end justify-between border-b border-border/50 pb-6">
+        <div>
+          <p className="text-[13px] font-semibold uppercase tracking-[0.25em] text-primary">Career Transition Map</p>
+          <h1 className="mt-1.5 text-4xl font-bold leading-tight">Your bridge to {targetCareer}</h1>
+          {previousOccupation && <p className="mt-1 text-lg text-muted-foreground">from {previousOccupation}</p>}
+        </div>
+        <p className="text-[13px] font-semibold text-muted-foreground/70">Endeavrly</p>
+      </div>
+
+      <div className="grid grid-cols-3 gap-6">
+        {cards.map((card) => {
+          const meta = ROUTE_META[card.kind];
+          const c = ROUTE_COLOR_CLASSES[meta.color];
+          const note = notes[card.id];
+          return (
+            <div key={card.id} className={cn("rounded-2xl border-2 bg-card p-6", c.border)}>
+              <div className="flex items-center gap-2.5">
+                <span className={cn("h-3 w-3 shrink-0 rounded-full", c.dot)} />
+                <h2 className="text-xl font-bold leading-tight text-foreground">{meta.title}</h2>
+              </div>
+              <p className="mt-2 text-[14px] leading-snug text-muted-foreground">{meta.blurb}</p>
+              {meta.duration !== "—" && (
+                <p className="mt-1.5 text-[12px] text-muted-foreground/70">{meta.duration} · {meta.difficulty}</p>
+              )}
+              <ul className="mt-4 space-y-3">
+                {card.leaves.map((lf) => (
+                  <li key={lf.id} className="text-[14px] leading-snug">
+                    <span className="block font-semibold text-foreground/90">• {lf.label}</span>
+                    {lf.detail && <span className="mt-0.5 block break-words pl-3.5 text-[12.5px] text-muted-foreground/80">{lf.detail}</span>}
+                    {lf.url && <span className="mt-0.5 block break-all pl-3.5 text-[12px] text-primary">{lf.url}</span>}
+                  </li>
+                ))}
+              </ul>
+              {note && (
+                <div className="mt-4 rounded-lg border border-primary/40 bg-primary/5 p-2.5 text-[13px] italic text-foreground/85">
+                  📝 {note}
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+
+      <p className="mt-7 text-[12px] text-muted-foreground/60">
+        Trusted starting points — not live listings. NAV routes are guidance; confirm details on nav.no. Generated by Endeavrly.
+      </p>
+    </div>
+  );
+});
