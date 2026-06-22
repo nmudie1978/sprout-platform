@@ -31,6 +31,35 @@ export interface ComputedStep {
   scenarioAnnotation?: string;
 }
 
+/**
+ * Group computed steps into timeline columns. Consecutive steps that share the
+ * same non-empty `concurrentGroup` collapse into one column (rendered stacked,
+ * "at the same time"); every other step is its own column. Pure + deterministic.
+ */
+export function groupIntoColumns(steps: ComputedStep[]): ComputedStep[][] {
+  const columns: ComputedStep[][] = [];
+  for (const step of steps) {
+    const group = step.item.concurrentGroup;
+    const last = columns[columns.length - 1];
+    if (group && last && last[0].item.concurrentGroup === group) {
+      last.push(step);
+    } else {
+      columns.push([step]);
+    }
+  }
+  return columns;
+}
+
+/** Combined age label for a column of one-or-more concurrent steps. */
+export function columnAgeLabel(column: ComputedStep[]): string {
+  if (column.length === 1) return column[0].ageLabel;
+  const starts = column.map((c) => c.item.startAge);
+  const ends = column.map((c) => c.item.endAge ?? c.item.startAge);
+  const lo = Math.min(...starts);
+  const hi = Math.max(...ends);
+  return lo === hi ? `Age ${lo}` : `Age ${lo}–${hi}`;
+}
+
 export interface AlignmentGate {
   level: 'aligned' | 'partial' | 'gap';
   tooltip: string;
@@ -93,6 +122,8 @@ export function useRoadmapModel(props: RendererProps) {
     });
   }, [items, cardDataMap, youAreHereIndex, scenarioOverrides, showYears, birthYear]);
 
+  const columns = useMemo(() => groupIntoColumns(computedSteps), [computedSteps]);
+
   const educationIndex = useMemo(
     () => items.findIndex((it) => it.stage === 'education'),
     [items],
@@ -148,6 +179,7 @@ export function useRoadmapModel(props: RendererProps) {
     foundationSubjects,
     youAreHereIndex,
     computedSteps,
+    columns,
     educationIndex,
     alignmentGate,
     FOUNDATION_ITEM_ID,

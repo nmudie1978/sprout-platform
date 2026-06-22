@@ -75,15 +75,16 @@ export function WindingRoadRenderer(props: RendererProps) {
     foundationState,
     foundationEmpty,
     foundationSubjects,
-    computedSteps,
+    columns,
     educationIndex,
     alignmentGate,
     FOUNDATION_ITEM_ID,
   } = useRoadmapModel(props);
 
-  // Node 0 = foundation, nodes 1..N = items. Even index sits low (card above),
-  // odd index sits high (card below) → the road weaves.
-  const nodeCount = items.length + 1;
+  // Node 0 = foundation, nodes 1..N = COLUMNS (a concurrent group is one stop,
+  // which also condenses the road). Even index sits low (card above), odd index
+  // sits high (card below) → the road weaves.
+  const nodeCount = columns.length + 1;
   const points: Pt[] = useMemo(
     () =>
       Array.from({ length: nodeCount }, (_, i) => ({
@@ -279,10 +280,13 @@ export function WindingRoadRenderer(props: RendererProps) {
             subjects={foundationSubjects}
           />
 
-          {/* Journey items */}
-          {computedSteps.map((step) => {
-            const point = points[step.index + 1];
-            const cardAbove = (step.index + 1) % 2 === 0;
+          {/* Journey columns — one stop per column (a concurrent group is one
+              stop, with its parallel partners listed inside the card). */}
+          {columns.map((column, ci) => {
+            const step = column[0];
+            const point = points[ci + 1];
+            const cardAbove = (ci + 1) % 2 === 0;
+            const concurrentWith = column.slice(1).map((c) => c.item.title);
             return (
               <RoadStop
                 key={step.item.id}
@@ -292,6 +296,7 @@ export function WindingRoadRenderer(props: RendererProps) {
                 progressStatus={cardDataMap?.[step.item.id]?.status}
                 ageLabel={step.ageLabel}
                 scenarioAnnotation={step.scenarioAnnotation}
+                concurrentWith={concurrentWith}
                 cardAbove={cardAbove}
                 onClick={() => onItemClick(step.item)}
                 onProgressCycle={
@@ -435,6 +440,7 @@ function RoadStop({
   onClick,
   onProgressCycle,
   subjects,
+  concurrentWith,
 }: {
   point: Pt;
   item: JourneyItem;
@@ -448,6 +454,7 @@ function RoadStop({
   onClick: () => void;
   onProgressCycle?: () => void;
   subjects?: string[];
+  concurrentWith?: string[];
 }) {
   const accent = STAGE_CONFIG[item.stage].color;
   return (
@@ -482,6 +489,7 @@ function RoadStop({
           scenarioAnnotation={scenarioAnnotation}
           isFoundation={isFoundation}
           glow={glow}
+          concurrentWith={concurrentWith}
           onClick={onClick}
         />
         {isFoundation && subjects && subjects.length > 0 && (
@@ -503,6 +511,7 @@ function RoadCard({
   scenarioAnnotation,
   isFoundation,
   glow,
+  concurrentWith,
   onClick,
 }: {
   item: JourneyItem;
@@ -512,6 +521,7 @@ function RoadCard({
   scenarioAnnotation?: string;
   isFoundation?: boolean;
   glow?: boolean;
+  concurrentWith?: string[];
   onClick: () => void;
 }) {
   const stateClasses: Record<StepState, string> = {
@@ -578,6 +588,12 @@ function RoadCard({
           {item.subtitle}
         </p>
       ) : null}
+      {concurrentWith && concurrentWith.length > 0 && (
+        <p className="mt-1.5 rounded-md bg-teal-500/10 px-1.5 py-1 text-[9.5px] font-medium leading-snug text-teal-600 dark:text-teal-300">
+          <span className="font-semibold uppercase tracking-wide">At the same time:</span>{' '}
+          {concurrentWith.join(' · ')}
+        </p>
+      )}
       {scenarioAnnotation && (
         <p className="mt-1 text-[10px] font-medium leading-snug text-violet-500 dark:text-violet-300/90">
           {scenarioAnnotation}
