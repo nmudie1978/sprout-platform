@@ -28,6 +28,7 @@ import {
 import { Lightbulb } from 'lucide-react';
 import { FOUNDATION_ITEM_ID, FOUNDATION_MICRO_ACTIONS } from '../renderers/foundation-banner';
 import { ProgrammePicker } from './programme-picker';
+import { CareerPicker } from './career-picker';
 import { SUBJECT_GROUPS, ALL_SUBJECTS } from '@/lib/education/subject-list';
 import { getCertificationPath } from '@/lib/education';
 import { TRIED_ROUTES, BLOCKERS, type TriedRoute, type Blocker } from '@/lib/journey/bridge-mindmap-types';
@@ -717,40 +718,28 @@ export function TimelineDetailDialog({
                   back into work. Only for "Not in work" (between); employed
                   users don't need it. */}
               {eduStage === 'between' && (
-                <div className="space-y-3.5 rounded-xl border border-teal-500/20 bg-teal-500/[0.04] p-4">
-                  <div>
-                    <p className="text-sm font-semibold text-teal-300">Routes back into work</p>
-                    <p className="text-[11px] text-muted-foreground/65 leading-snug mt-0.5">A calm map of practical ways back — shaped by what you tell us.</p>
+                <div className="space-y-4 rounded-xl border border-indigo-500/25 bg-indigo-500/[0.05] p-4">
+                  <div className="flex items-center gap-2">
+                    <span className="h-1.5 w-1.5 rounded-full bg-indigo-400" />
+                    <p className="text-sm font-semibold text-indigo-300">Routes back into work</p>
                   </div>
 
                   <div>
-                    <label className="text-[10px] text-muted-foreground/70 uppercase tracking-wider">What did you do before? (optional)</label>
-                    <input
+                    <label className="text-[10px] uppercase tracking-wider text-muted-foreground/70">
+                      What did you do before? <span className="normal-case opacity-70">(optional)</span>
+                    </label>
+                    <CareerPicker
                       value={previousOccupation}
-                      onChange={(e) => { setPreviousOccupation(e.target.value); setDirty(true); }}
-                      placeholder="e.g. Interior designer"
-                      className="w-full mt-1 rounded-lg border border-border/30 bg-muted/10 px-3 py-2 text-xs text-foreground/90 placeholder:text-muted-foreground/55 focus:outline-none focus:border-teal-500/40"
+                      onChange={(v) => { setPreviousOccupation(v); setDirty(true); }}
                     />
                   </div>
 
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={withNav}
-                      onChange={(e) => { setWithNav(e.target.checked); setDirty(true); }}
-                      className="h-3.5 w-3.5 accent-teal-500"
-                    />
-                    <span className="text-xs text-foreground/85">I&apos;m working with NAV right now</span>
-                  </label>
-
                   <div>
-                    <p className="text-sm font-medium text-foreground/90">What have you already tried?</p>
-                    <p className="text-[11px] text-muted-foreground/60 leading-snug mb-1.5">We&rsquo;ll set those aside and focus on the routes you haven&rsquo;t.</p>
-                    {/* selected pills */}
+                    <label className="text-[10px] uppercase tracking-wider text-muted-foreground/70">Already tried?</label>
                     {triedRoutes.length > 0 && (
-                      <div className="flex flex-wrap gap-1 mb-1.5">
+                      <div className="mt-1 flex flex-wrap gap-1">
                         {triedRoutes.map((r) => (
-                          <span key={r} className="inline-flex items-center gap-1 rounded-full border border-teal-500/20 bg-teal-500/10 px-2 py-0.5 text-[10px] text-teal-300">
+                          <span key={r} className="inline-flex items-center gap-1 rounded-full border border-indigo-500/25 bg-indigo-500/10 px-2 py-0.5 text-[10px] text-indigo-300">
                             {TRIED_ROUTE_LABELS[r]}
                             <button type="button" onClick={() => { setTriedRoutes((prev) => prev.filter((x) => x !== r)); setDirty(true); }} className="hover:text-red-400 transition-colors">
                               <X className="h-2.5 w-2.5" />
@@ -762,10 +751,10 @@ export function TimelineDetailDialog({
                     <button
                       type="button"
                       onClick={() => setTriedDropdownOpen((v) => !v)}
-                      className="w-full flex items-center justify-between rounded-lg border border-border/30 bg-muted/10 px-3 py-2 text-xs text-left hover:border-border/50 transition-colors"
+                      className="mt-1 w-full flex items-center justify-between rounded-lg border border-border/30 bg-muted/10 px-3 py-2 text-xs text-left hover:border-border/50 transition-colors"
                     >
                       <span className={triedRoutes.length > 0 ? 'text-foreground/90' : 'text-muted-foreground/55'}>
-                        {triedRoutes.length > 0 ? `${triedRoutes.length} selected` : "Select what you've tried…"}
+                        {triedRoutes.length > 0 ? `${triedRoutes.length} selected` : 'Add what you’ve tried…'}
                       </span>
                       <ChevronDown className={cn('h-3.5 w-3.5 text-muted-foreground/70 transition-transform', triedDropdownOpen && 'rotate-180')} />
                     </button>
@@ -786,7 +775,7 @@ export function TimelineDetailDialog({
                                   }}
                                   className="w-full flex items-center gap-2 px-2 py-1.5 rounded-md text-[11px] text-left hover:bg-muted/30 transition-colors"
                                 >
-                                  <div className={cn('h-3.5 w-3.5 rounded border flex items-center justify-center shrink-0', on ? 'bg-teal-500 border-teal-500' : 'border-border/40')}>
+                                  <div className={cn('h-3.5 w-3.5 rounded border flex items-center justify-center shrink-0', on ? 'bg-indigo-500 border-indigo-500' : 'border-border/40')}>
                                     {on && <Check className="h-2.5 w-2.5 text-white" />}
                                   </div>
                                   <span className={on ? 'text-foreground/90 font-medium' : 'text-foreground/70'}>{TRIED_ROUTE_LABELS[r]}</span>
@@ -800,12 +789,11 @@ export function TimelineDetailDialog({
                   </div>
 
                   <div>
-                    <p className="text-sm font-medium text-foreground/90">What&rsquo;s blocking you most?</p>
-                    <p className="text-[11px] text-muted-foreground/60 leading-snug mb-1.5">We&rsquo;ll lead with the routes that tackle this first.</p>
+                    <label className="text-[10px] uppercase tracking-wider text-muted-foreground/70">Biggest blocker?</label>
                     <select
                       value={blocker}
                       onChange={(e) => { setBlocker(e.target.value as Blocker | ''); setDirty(true); }}
-                      className="w-full rounded-lg border border-border/30 bg-muted/10 px-3 py-2 text-xs text-foreground/90 focus:outline-none focus:border-teal-500/40 [color-scheme:light] dark:[color-scheme:dark]"
+                      className="mt-1 w-full rounded-lg border border-border/30 bg-muted/10 px-3 py-2 text-xs text-foreground/90 focus:outline-none focus:border-indigo-500/40 [color-scheme:light] dark:[color-scheme:dark]"
                     >
                       <option value="">Select…</option>
                       {BLOCKERS.map((b) => (
@@ -814,10 +802,20 @@ export function TimelineDetailDialog({
                     </select>
                   </div>
 
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={withNav}
+                      onChange={(e) => { setWithNav(e.target.checked); setDirty(true); }}
+                      className="h-3.5 w-3.5 accent-indigo-500"
+                    />
+                    <span className="text-xs text-foreground/85">I&apos;m working with NAV right now</span>
+                  </label>
+
                   <button
                     type="button"
                     onClick={() => setShowRoutes(true)}
-                    className="text-xs font-semibold text-teal-400 hover:text-teal-300"
+                    className="w-full inline-flex items-center justify-center gap-1.5 rounded-lg bg-indigo-600 px-3 py-2.5 text-xs font-semibold text-white shadow-sm transition-colors hover:bg-indigo-500"
                   >
                     Open your Career Transition Map →
                   </button>
