@@ -1,10 +1,16 @@
 /**
  * Events & Opportunities — structured directory.
  *
- * Curated, trusted STARTING POINTS (events categories, opportunity categories,
- * and a directory of reputable external sources). This is deliberately NOT a
- * live job board — we never claim live availability; these are signposts to
- * places worth looking, Norway-first.
+ * Curated, trusted STARTING POINTS (event categories + a directory of reputable
+ * external sources). This is deliberately NOT a live job board — we never claim
+ * live availability; these are signposts to places worth looking.
+ *
+ * COUNTRY-AWARE: the source directory is split into GLOBAL_SOURCES (applicable
+ * everywhere — LinkedIn, EURES, pan-European graduate platforms) and
+ * COUNTRY_SOURCES (nation-specific portals like NAV/FINN for Norway, SEPE/
+ * InfoJobs for Spain). `getSourcesForCountry()` resolves the right set from a
+ * user's `YouthProfile.country`. Unknown/missing countries fall back to GLOBAL
+ * only — we never show a Spanish user Norwegian portals (and vice versa).
  *
  * Pure data + filtering (no React) so it's easy to test and to validate the
  * external URLs from a script.
@@ -55,18 +61,10 @@ export const AUDIENCE_LABEL: Record<Audience, string> = {
   returning: "Returning to work",
 };
 
-export type LocationKey = "all" | "oslo" | "bergen" | "trondheim" | "stavanger" | "remote";
+/** A location filter value: "all", "remote", or a city slug (e.g. "oslo"). */
+export type LocationKey = string;
 
-export const LOCATION_LABEL: Record<LocationKey, string> = {
-  all: "All Norway",
-  oslo: "Oslo",
-  bergen: "Bergen",
-  trondheim: "Trondheim",
-  stavanger: "Stavanger",
-  remote: "Remote / Online",
-};
-
-/** A category "explainer" card (Events tab + Opportunities tab headers). */
+/** A category "explainer" card (Events tab). */
 export interface CategoryCard {
   /** Stable id, also used to map an icon in the page. */
   id: string;
@@ -87,11 +85,11 @@ export const EVENT_CATEGORIES: CategoryCard[] = [
 ];
 
 export const OPPORTUNITY_CATEGORIES: CategoryCard[] = [
-  { id: "apprenticeships", type: "apprenticeships", name: "Apprenticeships (Lærling)", description: "Structured work-based learning routes where you train while gaining real experience.", searchTerms: ["lærling", "læreplass", "apprenticeship", "fagbrev"] },
-  { id: "internships", type: "internships", name: "Internships", description: "Short-term work experience, often for students or early-career users.", searchTerms: ["internship", "praktikant", "intern", "summer internship"] },
-  { id: "graduate-programs", type: "graduate-programs", name: "Graduate Programs", description: "Structured entry routes for recent graduates, often with rotations and mentoring.", searchTerms: ["graduate", "trainee", "nyutdannet", "graduate programme"] },
-  { id: "student-jobs", type: "student-jobs", name: "Student Jobs", description: "Part-time, flexible, or summer roles that fit around study.", searchTerms: ["deltid", "student", "summer job", "sommerjobb", "part-time"] },
-  { id: "entry-level", type: "entry-level", name: "Entry-Level Jobs", description: "First-step roles where experience requirements are low or training is provided.", searchTerms: ["junior", "entry level", "nyutdannet", "no experience"] },
+  { id: "apprenticeships", type: "apprenticeships", name: "Apprenticeships", description: "Structured work-based learning routes where you train while gaining real experience.", searchTerms: ["apprenticeship", "trainee", "work-based learning"] },
+  { id: "internships", type: "internships", name: "Internships", description: "Short-term work experience, often for students or early-career users.", searchTerms: ["internship", "intern", "summer internship", "placement"] },
+  { id: "graduate-programs", type: "graduate-programs", name: "Graduate Programs", description: "Structured entry routes for recent graduates, often with rotations and mentoring.", searchTerms: ["graduate", "trainee", "graduate programme"] },
+  { id: "student-jobs", type: "student-jobs", name: "Student Jobs", description: "Part-time, flexible, or summer roles that fit around study.", searchTerms: ["student job", "summer job", "part-time"] },
+  { id: "entry-level", type: "entry-level", name: "Entry-Level Jobs", description: "First-step roles where experience requirements are low or training is provided.", searchTerms: ["junior", "entry level", "no experience"] },
 ];
 
 /** A curated external source in the directory. */
@@ -101,36 +99,21 @@ export interface ExternalSource {
   url: string;
   /** Filterable types this source is genuinely useful for. */
   categories: OppType[];
-  /** Free-text display pills (e.g. "Lærling", "Norway"). */
+  /** Free-text display pills (e.g. "Internship", "Norway"). */
   tags: string[];
   /** One-line "best for" summary. */
   bestFor: string;
   /** Optional notes / suggested search terms. */
   notes?: string;
   searchTerms?: string[];
-  /** Where it's most relevant; omit = everywhere. */
+  /** City slugs where it's most relevant; omit = nation-wide / everywhere. */
   locations?: LocationKey[];
 }
 
-export const EXTERNAL_SOURCES: ExternalSource[] = [
-  {
-    id: "nav-arbeidsplassen",
-    name: "NAV Arbeidsplassen",
-    url: "https://arbeidsplassen.nav.no/",
-    categories: ["apprenticeships", "student-jobs", "entry-level", "internships"],
-    tags: ["Lærling", "Student Jobs", "Entry-Level", "Norway"],
-    bestFor: "Apprenticeships, summer jobs, part-time and entry-level roles",
-    notes: "Norway's public job portal — strong for young people, summer jobs, apprenticeships, part-time and entry-level roles.",
-  },
-  {
-    id: "finn-jobb",
-    name: "FINN Jobb",
-    url: "https://www.finn.no/job/",
-    categories: ["internships", "graduate-programs", "entry-level", "apprenticeships"],
-    tags: ["Trainee", "Internship", "Lærling", "Graduate", "Norway"],
-    bestFor: "Internships, trainee and graduate roles, entry-level jobs",
-    searchTerms: ["trainee", "internship", "lærling", "graduate", "student", "junior", "nyutdannet"],
-  },
+// ── Global sources (shown for EVERY country) ─────────────────────────────────
+// Pan-European / worldwide platforms. These are the safe default for users in
+// countries we don't yet have a localised list for.
+export const GLOBAL_SOURCES: ExternalSource[] = [
   {
     id: "linkedin-pathways",
     name: "LinkedIn Pathways / Entry-Level Programs",
@@ -142,77 +125,269 @@ export const EXTERNAL_SOURCES: ExternalSource[] = [
   },
   {
     id: "linkedin-jobs",
-    name: "LinkedIn Jobs (Norway)",
+    name: "LinkedIn Jobs",
     url: "https://www.linkedin.com/jobs/",
     categories: ["internships", "graduate-programs", "entry-level"],
-    tags: ["Internship", "Graduate", "Entry-Level", "Norway"],
-    bestFor: "Internships, graduate and entry-level roles across Norway",
-    searchTerms: ["internship Norway", "graduate Norway", "trainee Norway", "junior Norway"],
-  },
-  {
-    id: "academic-work",
-    name: "Academic Work Norway",
-    url: "https://www.academicwork.no/",
-    categories: ["student-jobs", "internships", "graduate-programs"],
-    tags: ["Student Jobs", "Graduate", "Young Professionals", "Norway"],
-    bestFor: "Students, graduates and young professionals",
-    notes: "Recruitment agency strong for students, graduates and young professionals.",
+    tags: ["Internship", "Graduate", "Entry-Level", "Global"],
+    bestFor: "Internships, graduate and entry-level roles worldwide",
+    searchTerms: ["internship", "graduate", "trainee", "junior"],
   },
   {
     id: "graduateland",
     name: "Graduateland",
     url: "https://graduateland.com/",
     categories: ["internships", "graduate-programs", "student-jobs"],
-    tags: ["Internship", "Graduate", "Student Jobs"],
-    bestFor: "Internships, graduate programs and student jobs",
+    tags: ["Internship", "Graduate", "Student Jobs", "Europe"],
+    bestFor: "Internships, graduate programs and student jobs across Europe",
   },
   {
     id: "the-hub",
     name: "The Hub",
     url: "https://thehub.io/",
     categories: ["internships", "student-jobs", "entry-level"],
-    tags: ["Startup", "Internship", "Student Jobs", "Entry-Level", "Nordics"],
-    bestFor: "Startup opportunities across Norway and the Nordics",
-    notes: "Useful for startup opportunities in Norway and the Nordics.",
+    tags: ["Startup", "Internship", "Entry-Level", "Europe"],
+    bestFor: "Startup and scale-up opportunities across Europe",
+    notes: "Useful for startup and scale-up opportunities, strongest in the Nordics but pan-European.",
   },
   {
-    id: "glassdoor-internships",
-    name: "Glassdoor Norway Internships",
-    url: "https://www.glassdoor.com/Job/norway-internship-jobs-SRCH_IL.0,6_IN180_KO7,17.htm",
-    categories: ["internships", "entry-level"],
-    tags: ["Internship", "Entry-Level", "Norway"],
-    bestFor: "Internships and entry-level roles in Norway",
-  },
-  {
-    id: "study-in-norway",
-    name: "Study in Norway — Working While Studying",
-    url: "https://studyinnorway.no/working-while-studying",
-    categories: ["student-jobs", "internships"],
-    tags: ["Guidance", "Student Jobs", "Norway"],
-    bestFor: "Guidance for students who want to work while studying",
-    notes: "A guidance source rather than a job board — good context for students in Norway.",
-  },
-  {
-    id: "uio-careers",
-    name: "University of Oslo — Career Opportunities",
-    url: "https://www.uio.no/english/studies/career/career-opportunities/",
-    categories: ["student-jobs", "internships", "graduate-programs"],
-    tags: ["Student Jobs", "Internship", "Volunteering", "Graduate"],
-    bestFor: "Student jobs, internships, volunteering and graduate roles",
-    locations: ["oslo"],
-  },
-  {
-    id: "jobbnorge",
-    name: "Jobbnorge",
-    url: "https://www.jobbnorge.no/",
-    categories: ["graduate-programs", "entry-level", "apprenticeships"],
-    tags: ["Public sector", "Academia", "Graduate", "Norway"],
-    bestFor: "Public-sector and academic roles, incl. graduate and entry-level",
+    id: "eures",
+    name: "EURES — European Job Mobility Portal",
+    url: "https://eures.europa.eu/",
+    categories: ["internships", "graduate-programs", "entry-level", "student-jobs"],
+    tags: ["EU/EEA", "Jobs", "Traineeships", "Europe"],
+    bestFor: "Jobs, traineeships and apprenticeships across the EU/EEA",
+    notes: "Official EU portal — strong for moving or working across European countries.",
   },
 ];
 
-/** Every configured external URL — used by the link-validation script + tests. */
-export const ALL_EVENT_OPP_URLS: string[] = EXTERNAL_SOURCES.map((s) => s.url);
+// ── Country-specific sources (keyed by ISO 3166-1 alpha-2) ───────────────────
+export const COUNTRY_SOURCES: Record<string, ExternalSource[]> = {
+  NO: [
+    {
+      id: "nav-arbeidsplassen",
+      name: "NAV Arbeidsplassen",
+      url: "https://arbeidsplassen.nav.no/",
+      categories: ["apprenticeships", "student-jobs", "entry-level", "internships"],
+      tags: ["Lærling", "Student Jobs", "Entry-Level", "Norway"],
+      bestFor: "Apprenticeships, summer jobs, part-time and entry-level roles",
+      notes: "Norway's public job portal — strong for young people, summer jobs, apprenticeships, part-time and entry-level roles.",
+    },
+    {
+      id: "finn-jobb",
+      name: "FINN Jobb",
+      url: "https://www.finn.no/job/",
+      categories: ["internships", "graduate-programs", "entry-level", "apprenticeships"],
+      tags: ["Trainee", "Internship", "Lærling", "Graduate", "Norway"],
+      bestFor: "Internships, trainee and graduate roles, entry-level jobs",
+      searchTerms: ["trainee", "internship", "lærling", "graduate", "student", "junior", "nyutdannet"],
+    },
+    {
+      id: "academic-work",
+      name: "Academic Work Norway",
+      url: "https://www.academicwork.no/",
+      categories: ["student-jobs", "internships", "graduate-programs"],
+      tags: ["Student Jobs", "Graduate", "Young Professionals", "Norway"],
+      bestFor: "Students, graduates and young professionals",
+      notes: "Recruitment agency strong for students, graduates and young professionals.",
+    },
+    {
+      id: "glassdoor-internships",
+      name: "Glassdoor Norway Internships",
+      url: "https://www.glassdoor.com/Job/norway-internship-jobs-SRCH_IL.0,6_IN180_KO7,17.htm",
+      categories: ["internships", "entry-level"],
+      tags: ["Internship", "Entry-Level", "Norway"],
+      bestFor: "Internships and entry-level roles in Norway",
+    },
+    {
+      id: "study-in-norway",
+      name: "Study in Norway — Working While Studying",
+      url: "https://studyinnorway.no/working-while-studying",
+      categories: ["student-jobs", "internships"],
+      tags: ["Guidance", "Student Jobs", "Norway"],
+      bestFor: "Guidance for students who want to work while studying",
+      notes: "A guidance source rather than a job board — good context for students in Norway.",
+    },
+    {
+      id: "uio-careers",
+      name: "University of Oslo — Career Opportunities",
+      url: "https://www.uio.no/english/studies/career/career-opportunities/",
+      categories: ["student-jobs", "internships", "graduate-programs"],
+      tags: ["Student Jobs", "Internship", "Volunteering", "Graduate"],
+      bestFor: "Student jobs, internships, volunteering and graduate roles",
+      locations: ["oslo"],
+    },
+    {
+      id: "jobbnorge",
+      name: "Jobbnorge",
+      url: "https://www.jobbnorge.no/",
+      categories: ["graduate-programs", "entry-level", "apprenticeships"],
+      tags: ["Public sector", "Academia", "Graduate", "Norway"],
+      bestFor: "Public-sector and academic roles, incl. graduate and entry-level",
+    },
+  ],
+  SE: [
+    {
+      id: "arbetsformedlingen",
+      name: "Arbetsförmedlingen (Platsbanken)",
+      url: "https://arbetsformedlingen.se/",
+      categories: ["apprenticeships", "student-jobs", "entry-level", "internships"],
+      tags: ["Public", "Entry-Level", "Sweden"],
+      bestFor: "Sweden's public employment service — entry-level, apprenticeships and summer jobs",
+      notes: "Sweden's public job portal (Platsbanken) — strong for young people, apprenticeships (lärling) and summer jobs.",
+    },
+    {
+      id: "academic-work-se",
+      name: "Academic Work Sweden",
+      url: "https://www.academicwork.se/",
+      categories: ["student-jobs", "internships", "graduate-programs"],
+      tags: ["Student Jobs", "Graduate", "Young Professionals", "Sweden"],
+      bestFor: "Students, graduates and young professionals in Sweden",
+    },
+  ],
+  ES: [
+    {
+      id: "sepe",
+      name: "SEPE — Servicio Público de Empleo Estatal",
+      url: "https://www.sepe.es/",
+      categories: ["apprenticeships", "entry-level", "student-jobs", "internships"],
+      tags: ["Public", "Entry-Level", "Spain"],
+      bestFor: "Spain's public employment service — training, apprenticeships (FP dual) and entry-level",
+      notes: "Spain's public employment service — good for vocational training (FP dual), apprenticeships and entry-level routes.",
+    },
+    {
+      id: "infojobs",
+      name: "InfoJobs",
+      url: "https://www.infojobs.net/",
+      categories: ["internships", "entry-level", "student-jobs", "graduate-programs"],
+      tags: ["Internship", "Entry-Level", "Spain"],
+      bestFor: "Spain's largest job board — internships, graduate and entry-level roles",
+      searchTerms: ["prácticas", "becario", "junior", "sin experiencia", "trainee"],
+    },
+    {
+      id: "jobandtalent",
+      name: "Jobandtalent",
+      url: "https://www.jobandtalent.com/",
+      categories: ["entry-level", "student-jobs"],
+      tags: ["Entry-Level", "Student Jobs", "Spain"],
+      bestFor: "Entry-level, temporary and flexible roles in Spain",
+    },
+  ],
+  DK: [
+    {
+      id: "jobnet",
+      name: "Jobnet",
+      url: "https://job.jobnet.dk/",
+      categories: ["apprenticeships", "student-jobs", "entry-level", "internships"],
+      tags: ["Public", "Entry-Level", "Denmark"],
+      bestFor: "Denmark's public job portal — entry-level, apprenticeships and student jobs",
+      notes: "Denmark's public job portal — strong for apprenticeships (lærling), student jobs and entry-level roles.",
+    },
+    {
+      id: "workindenmark",
+      name: "WorkinDenmark",
+      url: "https://www.workindenmark.dk/",
+      categories: ["graduate-programs", "entry-level", "internships"],
+      tags: ["Official", "Graduate", "Denmark"],
+      bestFor: "Official service for working in Denmark — graduate and entry-level roles",
+    },
+    {
+      id: "academic-work-dk",
+      name: "Academic Work Denmark",
+      url: "https://www.academicwork.dk/",
+      categories: ["student-jobs", "internships", "graduate-programs"],
+      tags: ["Student Jobs", "Graduate", "Young Professionals", "Denmark"],
+      bestFor: "Students, graduates and young professionals in Denmark",
+    },
+  ],
+};
+
+/** `YouthProfile.country` display name → ISO alpha-2 key used above. */
+const COUNTRY_KEY: Record<string, string> = {
+  Norway: "NO",
+  Sweden: "SE",
+  Spain: "ES",
+  Denmark: "DK",
+};
+
+/**
+ * Resolve the curated source directory for a user's country: the country's
+ * own portals first, then the global sources. Unknown/missing country →
+ * GLOBAL only (never a wrong-country portal). Never throws.
+ */
+export function getSourcesForCountry(country?: string | null): ExternalSource[] {
+  const key = (country && COUNTRY_KEY[country]) || null;
+  const local = key ? (COUNTRY_SOURCES[key] ?? []) : [];
+  return [...local, ...GLOBAL_SOURCES];
+}
+
+// ── Country-aware location options ───────────────────────────────────────────
+/** Major cities per country (city slug → display label). */
+const COUNTRY_CITIES: Record<string, { value: string; label: string }[]> = {
+  NO: [
+    { value: "oslo", label: "Oslo" },
+    { value: "bergen", label: "Bergen" },
+    { value: "trondheim", label: "Trondheim" },
+    { value: "stavanger", label: "Stavanger" },
+  ],
+  SE: [
+    { value: "stockholm", label: "Stockholm" },
+    { value: "gothenburg", label: "Gothenburg" },
+    { value: "malmo", label: "Malmö" },
+    { value: "uppsala", label: "Uppsala" },
+  ],
+  ES: [
+    { value: "madrid", label: "Madrid" },
+    { value: "barcelona", label: "Barcelona" },
+    { value: "valencia", label: "Valencia" },
+    { value: "seville", label: "Seville" },
+  ],
+  DK: [
+    { value: "copenhagen", label: "Copenhagen" },
+    { value: "aarhus", label: "Aarhus" },
+    { value: "odense", label: "Odense" },
+    { value: "aalborg", label: "Aalborg" },
+  ],
+};
+
+/**
+ * Build the Location filter options for a user's country: "All <Country>"
+ * (or "All locations" when unknown), the country's major cities, then Remote.
+ */
+export function getLocationOptions(country?: string | null): { value: string; label: string }[] {
+  const key = (country && COUNTRY_KEY[country]) || null;
+  const allLabel = key && country ? `All ${country}` : "All locations";
+  const cities = key ? (COUNTRY_CITIES[key] ?? []) : [];
+  return [
+    { value: "all", label: allLabel },
+    ...cities,
+    { value: "remote", label: "Remote / Online" },
+  ];
+}
+
+// ── Country-aware external event search (Events tab) ─────────────────────────
+/** English search phrases per event category; `{country}` is filled at runtime. */
+const EVENT_SEARCH_TEMPLATE: Record<string, string> = {
+  "job-fairs": "job fair career fair",
+  "open-days": "university open day",
+  "career-workshops": "career workshop CV interview",
+  webinars: "career webinar online event",
+  "employer-discovery": "employer presentation career event",
+};
+
+/** A safe external Google search for an event category, tailored to the country. */
+export function eventSearchQuery(categoryId: string, country?: string | null, fallbackName?: string): string {
+  const base = EVENT_SEARCH_TEMPLATE[categoryId] ?? fallbackName ?? categoryId;
+  return [base, country?.trim()].filter(Boolean).join(" ");
+}
+
+/** Back-compat: the Norway + global directory (Norway is the platform default). */
+export const EXTERNAL_SOURCES: ExternalSource[] = getSourcesForCountry("Norway");
+
+/** Every configured external URL across all countries — for the link-validation script + tests. */
+export const ALL_EVENT_OPP_URLS: string[] = [
+  ...GLOBAL_SOURCES,
+  ...Object.values(COUNTRY_SOURCES).flat(),
+].map((s) => s.url);
 
 export interface SourceFilter {
   query?: string;
@@ -227,7 +402,7 @@ export function filterSources(sources: ExternalSource[], f: SourceFilter): Exter
   return sources.filter((s) => {
     if (f.type && f.type !== "all" && f.type !== "events" && !s.categories.includes(f.type)) return false;
     if (f.location && f.location !== "all" && f.location !== "remote") {
-      // A source scoped to specific locations must include the chosen one;
+      // A source scoped to specific cities must include the chosen one;
       // nation-wide sources (no `locations`) always match a city.
       if (s.locations && !s.locations.includes(f.location)) return false;
     }
