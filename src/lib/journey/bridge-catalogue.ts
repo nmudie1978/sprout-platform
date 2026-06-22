@@ -8,6 +8,7 @@
 
 import type { BridgeBranch, BridgeInput, BridgeLeaf, TriedRoute } from './bridge-mindmap-types';
 import { resolveAnchorRoles } from './bridge-domain-adjacency';
+import { getTraineeProgrammesForCategory } from './trainee-programmes';
 
 const NAV_URL = 'Ask your NAV advisor — more on nav.no';
 
@@ -89,9 +90,22 @@ export function buildCatalogueBranches(input: BridgeInput): BridgeBranch[] {
     {
       id: 'programmes',
       kind: 'programmes',
-      title: 'Entry-level routes & programmes',
+      title: 'Structured ways in',
       emphasis: false,
+      // Named, sector-matched trainee/graduate programmes first (only when the
+      // target career's category has any), then the always-relevant
+      // apprenticeship + entry-level routes. Never empty — the generic leaves
+      // below hold for every career.
       leaves: [
+        ...getTraineeProgrammesForCategory(input.targetCategory).map((p, i) =>
+          leaf(
+            'programmes',
+            100 + i,
+            `${p.company} — ${p.kind} programme`,
+            `${p.windowNote}. Opens annually; apply through their careers page.`,
+            { url: p.url },
+          ),
+        ),
         leaf('programmes', 0, 'Apprenticeships (lærling)', 'Explore apprenticeships and the trades that offer a læreplass — earn while you train.', { url: 'https://utdanning.no' }),
         leaf('programmes', 1, 'Entry-level & trainee jobs', "Norway's biggest job board — filter for entry-level, graduate and trainee roles.", { url: 'https://www.finn.no/job' }),
         leaf('programmes', 2, 'Early-career programmes (global)', "LinkedIn's guide to internships, apprenticeships and graduate programmes.", { url: 'https://careers.linkedin.com/pathways-programs' }),

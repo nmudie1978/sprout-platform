@@ -92,6 +92,12 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney, read
   const goalId = primaryGoalTitle ? slugify(primaryGoalTitle) : undefined;
   useRoadmapCardData(goalId);
 
+  // Career catalog (fetched async from the cached /api/careers/catalog) so the
+  // ~740KB CAREER_PATHWAYS constant stays OUT of the /my-journey + /dashboard
+  // client bundles. Returns empty until loaded → category resolves to undefined
+  // and the mindmap just shows its generic programme leaves until it loads.
+  const { getCareerById, getAllCareers, getCategoryForCareer } = useCareerCatalog();
+
   // Foundation card data — persisted at profile level (survives goal
   // changes). Source of truth is `/api/journey/foundation-data` which
   // reads/writes `youthProfile.foundationCardData`. The timeline
@@ -205,11 +211,12 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney, read
     return buildBridgeMindmap({
       previousOccupation: ctx?.previousOccupation?.trim() || null,
       targetCareer: primaryGoalTitle,
+      targetCategory: goalId ? getCategoryForCareer(goalId) : undefined,
       withNav: ctx?.withNav ?? false,
       triedRoutes: ctx?.triedRoutes ?? [],
       blocker: ctx?.blocker ?? 'unknown-routes',
     });
-  }, [isTransitionUser, primaryGoalTitle, educationContextData?.educationContext]);
+  }, [isTransitionUser, primaryGoalTitle, educationContextData?.educationContext, goalId, getCategoryForCareer]);
 
   // The user's age — needed by the client-side fallback so it renders
   // an accurate placeholder roadmap while the AI version loads. Without
@@ -326,11 +333,6 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney, read
   const careerName = journey?.career ?? '';
 
   // ── Voice-guided simulation ───────────────────────────────────────
-  // Catalog fetched async (from the cached /api/careers/catalog) instead of a
-  // static import, so the ~740KB CAREER_PATHWAYS constant stays out of the
-  // /my-journey + /dashboard client bundles. Returns empty until loaded; the
-  // only use here is an optional salary lookup, so it degrades gracefully.
-  const { getCareerById, getAllCareers } = useCareerCatalog();
 
   const narrationCtx = useMemo<NarrationContext | null>(() => {
     if (!journey || !primaryGoalTitle) return null;
