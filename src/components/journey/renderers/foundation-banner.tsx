@@ -22,6 +22,33 @@ import type { JourneyItem } from '@/lib/journey/career-journey-types';
 export const FOUNDATION_ITEM_ID = 'my-foundation';
 
 /**
+ * The "Your Starting Point" subtitle shown on the roadmap foundation card.
+ * Pure + deterministic so it can be unit-tested. For career-changers (the
+ * `between` "Not working" stage) it now also names where they're heading —
+ * e.g. "Not working · was Medical Specialist → transitioning to Psychologist".
+ */
+export function buildFoundationSubtitle(
+  eduContext: EducationContext | null | undefined,
+  careerTitle?: string,
+): string {
+  if (!eduContext) return 'Tap to add details';
+  if (eduContext.stage === 'other') {
+    return eduContext.currentRole
+      ? `In work · ${eduContext.currentRole}${eduContext.schoolName ? ` at ${eduContext.schoolName}` : ''}`
+      : eduContext.schoolName
+        ? `In work · ${eduContext.schoolName}`
+        : 'In work';
+  }
+  if (eduContext.stage === 'between') {
+    const target = careerTitle ? ` → transitioning to ${careerTitle}` : '';
+    return eduContext.previousOccupation
+      ? `Not working · was ${eduContext.previousOccupation}${target}`
+      : `Not working right now${target}`;
+  }
+  return `${EDUCATION_STAGE_CONFIG[eduContext.stage].label}${eduContext.schoolName ? ` · ${eduContext.schoolName}` : ''}`;
+}
+
+/**
  * "What this involves" suggestions, tailored to the user's current stage.
  * Previously hardcoded to school language ("school subjects", "your
  * teachers"), which read wrong for university, college, and older users
@@ -105,15 +132,7 @@ export function useFoundationData({
     id: FOUNDATION_ITEM_ID,
     stage: 'foundation',
     title: 'Your Starting Point',
-    subtitle: !eduContext
-      ? 'Tap to add details'
-      : eduContext.stage === 'other'
-        ? (eduContext.currentRole
-            ? `In work · ${eduContext.currentRole}${eduContext.schoolName ? ` at ${eduContext.schoolName}` : ''}`
-            : (eduContext.schoolName ? `In work · ${eduContext.schoolName}` : 'In work'))
-        : eduContext.stage === 'between'
-          ? (eduContext.previousOccupation ? `Not working · was ${eduContext.previousOccupation}` : 'Not working right now')
-          : `${EDUCATION_STAGE_CONFIG[eduContext.stage].label}${eduContext.schoolName ? ` · ${eduContext.schoolName}` : ''}`,
+    subtitle: buildFoundationSubtitle(eduContext, careerTitle),
     startAge: userAge ?? journeyStartAge,
     isMilestone: false,
     icon: 'Target',
@@ -125,7 +144,7 @@ export function useFoundationData({
           ? `You're not working right now${eduContext.previousOccupation ? `, after working as ${eduContext.previousOccupation}` : ''} — that's your starting point. Your roadmap builds from here toward your goal.`
           : `Your current education: ${EDUCATION_STAGE_CONFIG[eduContext.stage].label}.${eduContext.studyProgram ? ` Studying ${eduContext.studyProgram}.` : ''}${eduContext.expectedCompletion ? ` Finishing ${eduContext.expectedCompletion}.` : ''} This is your starting point — everything builds from here.`,
     microActions: FOUNDATION_MICRO_ACTIONS[eduContext?.stage ?? 'school'],
-  }), [eduContext, userAge, journeyStartAge]);
+  }), [eduContext, userAge, journeyStartAge, careerTitle]);
 
   // The user's OWN subjects (what they've told us they study) — drives the
   // "Subjects" badge on the Starting Point card. Never the career's

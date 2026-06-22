@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { createPortal } from 'react-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { toast } from '@/hooks/use-toast';
 import {
@@ -33,8 +32,6 @@ import { SUBJECT_GROUPS, ALL_SUBJECTS } from '@/lib/education/subject-list';
 import { getCertificationPath } from '@/lib/education';
 import { TRIED_ROUTES, BLOCKERS, type TriedRoute, type Blocker } from '@/lib/journey/bridge-mindmap-types';
 import { TRIED_ROUTE_LABELS } from '@/lib/journey/bridge-catalogue';
-import { buildBridgeMindmap } from '@/lib/journey/build-bridge-mindmap';
-import { CareerTransitionMap } from '@/components/journey/career-transition-map/career-transition-map';
 import { Award, ExternalLink as ExtLink } from 'lucide-react';
 
 const BLOCKER_LABELS: Record<Blocker, string> = {
@@ -310,7 +307,6 @@ export function TimelineDetailDialog({
   const [triedRoutes, setTriedRoutes] = useState<TriedRoute[]>([]);
   const [triedDropdownOpen, setTriedDropdownOpen] = useState(false);
   const [blocker, setBlocker] = useState<Blocker | ''>('');
-  const [showRoutes, setShowRoutes] = useState(false);
   const [subjects, setSubjects] = useState<string[]>([]);
   const [newSubject, setNewSubject] = useState('');
   const [subjectDropdownOpen, setSubjectDropdownOpen] = useState(false);
@@ -319,17 +315,6 @@ export function TimelineDetailDialog({
   // with a Vg3-only subtitle so it doesn't read as the assumed answer).
   const [userAge, setUserAge] = useState<number | null>(null);
 
-  // Close the full-screen routes/mindmap overlay on Escape. Capture phase +
-  // stopPropagation so it closes only the overlay, not the foundation dialog.
-  useEffect(() => {
-    if (!showRoutes) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') { e.stopPropagation(); setShowRoutes(false); }
-    };
-    window.addEventListener('keydown', onKey, true);
-    return () => window.removeEventListener('keydown', onKey, true);
-  }, [showRoutes]);
-
   const isFoundation = item?.id === FOUNDATION_ITEM_ID;
   const orderedIds = (allItems ?? []).map(it => it.id);
   const unlocked = item ? isStepUnlocked(item.id, orderedIds) : true;
@@ -337,10 +322,6 @@ export function TimelineDetailDialog({
   // Load saved data when item changes
   useEffect(() => {
     if (item && open) {
-      // Always start with the mind-map closed — its overlay is a portal on
-      // document.body and the dialog's state survives close/reopen, so without
-      // this a left-open map lingers on top of the dialog (and blocks the tabs).
-      setShowRoutes(false);
       const data = loadCardData(item.id);
       setStatus(data.status || 'not_started');
       setCompletedActions(data.completedMicroActions || []);
@@ -532,26 +513,9 @@ export function TimelineDetailDialog({
   const hasMicroActions = !!microActions && microActions.length > 0;
   const stepTip = isFoundation ? null : getStepTip(item, careerTitle);
 
-  // While the fullscreen Career Transition Map is open we drop the dialog to
-  // non-modal. A modal Radix dialog sets `pointer-events: none` on <body> and
-  // installs a react-remove-scroll wheel trap; since the map renders in a portal
-  // on <body> (outside the dialog layer) it inherited that lockdown, so drag-pan,
-  // the zoom buttons and wheel-scroll all did nothing. Non-modal lifts the
-  // lockdown; onInteractOutside (below) still keeps it from closing.
   return (
-    <Dialog open={open} onOpenChange={onOpenChange} modal={!showRoutes}>
-      <DialogContent
-        className="sm:max-w-md"
-        // The Career Transition Map renders in a portal on <body>, OUTSIDE this
-        // content. While it's open, Radix would treat pan/zoom/clicks inside it
-        // as "interact outside" and dismiss the whole dialog (taking the map
-        // with it). Keep the dialog mounted while the map is up — the map owns
-        // its own close (button + Escape).
-        onPointerDownOutside={(e) => { if (showRoutes) e.preventDefault(); }}
-        onInteractOutside={(e) => { if (showRoutes) e.preventDefault(); }}
-        onFocusOutside={(e) => { if (showRoutes) e.preventDefault(); }}
-        onEscapeKeyDown={(e) => { if (showRoutes) e.preventDefault(); }}
-      >
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <div className="flex items-center gap-2 mb-1">
             <div className="h-2 w-2 rounded-full" style={{ backgroundColor: stage.color }} />
@@ -812,51 +776,6 @@ export function TimelineDetailDialog({
                     <span className="text-xs text-foreground/85">I&apos;m working with NAV right now</span>
                   </label>
 
-                  <button
-                    type="button"
-                    onClick={() => setShowRoutes(true)}
-                    className="w-full inline-flex items-center justify-center gap-1.5 rounded-lg bg-indigo-600 px-3 py-2.5 text-xs font-semibold text-white shadow-sm transition-colors hover:bg-indigo-500"
-                  >
-                    Open your Career Transition Map →
-                  </button>
-                  {showRoutes && createPortal(
-                    <div
-                      className="fixed inset-0 z-[200] flex flex-col bg-background animate-in fade-in duration-150"
-                      role="dialog"
-                      aria-modal="true"
-                      aria-label="Career Transition Map"
-                    >
-                      <div className="flex items-center justify-between border-b border-border/40 px-4 py-2.5">
-                        <div>
-                          <p className="text-sm font-semibold tracking-tight text-foreground/90">Career Transition Map</p>
-                          <p className="text-[11px] text-muted-foreground/60">Ways from where you are now to where you want to be.</p>
-                        </div>
-                        <button
-                          type="button"
-                          onClick={() => setShowRoutes(false)}
-                          className="inline-flex items-center gap-1.5 rounded-full border border-border/40 bg-muted/30 px-3 py-1.5 text-xs font-medium text-foreground/80 transition-colors hover:bg-muted/50 hover:text-foreground"
-                          aria-label="Close"
-                        >
-                          <X className="h-3.5 w-3.5" />
-                          Close
-                        </button>
-                      </div>
-                      <div className="flex-1 min-h-0 p-4 sm:p-6">
-                        <CareerTransitionMap
-                          model={buildBridgeMindmap({
-                            previousOccupation: previousOccupation.trim() || null,
-                            targetCareer: careerTitle || 'your target role',
-                            withNav,
-                            triedRoutes,
-                            blocker: blocker || 'unknown-routes',
-                          })}
-                          targetCareer={careerTitle || 'your target role'}
-                          previousOccupation={previousOccupation.trim() || null}
-                        />
-                      </div>
-                    </div>,
-                    document.body
-                  )}
                 </div>
               )}
 
