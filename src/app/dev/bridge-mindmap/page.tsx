@@ -11,7 +11,7 @@
 
 import { buildBridgeMindmap } from "../../../lib/journey/build-bridge-mindmap";
 import type { BridgeInput } from "../../../lib/journey/bridge-mindmap-types";
-import { BridgeMindmapView } from "../../../components/journey/bridge-routes-mindmap";
+import { CareerTransitionMap } from "../../../components/journey/career-transition-map/career-transition-map";
 
 const PERSONAS: { name: string; input: BridgeInput }[] = [
   {
@@ -38,13 +38,17 @@ const PERSONAS: { name: string; input: BridgeInput }[] = [
 
 export default function BridgeMindmapDevPage() {
   return (
-    <div className="space-y-10">
-      <h1 className="text-xl font-semibold">Bridge Routes Mindmap — preview</h1>
+    <div className="space-y-10 p-6">
+      <h1 className="text-xl font-semibold">Career Transition Map — preview</h1>
       {PERSONAS.map((p) => (
         <section key={p.name} className="space-y-3">
           <h2 className="text-sm text-muted-foreground">{p.name}</h2>
-          <div className="rounded-2xl border bg-card p-4">
-            <BridgeMindmapView model={buildBridgeMindmap(p.input)} />
+          <div className="h-[640px] rounded-2xl border bg-card p-4">
+            <CareerTransitionMap
+              model={buildBridgeMindmap(p.input)}
+              targetCareer={p.input.targetCareer}
+              previousOccupation={p.input.previousOccupation}
+            />
           </div>
         </section>
       ))}
