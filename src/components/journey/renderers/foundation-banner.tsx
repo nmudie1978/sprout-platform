@@ -27,7 +27,7 @@ export const FOUNDATION_ITEM_ID = 'my-foundation';
  * teachers"), which read wrong for university, college, and older users
  * who are out of formal education. Keyed by the Foundation stage.
  */
-const FOUNDATION_MICRO_ACTIONS: Record<EducationContext['stage'], string[]> = {
+export const FOUNDATION_MICRO_ACTIONS: Record<EducationContext['stage'], string[]> = {
   school: [
     'Identify which school subjects are most relevant to your goal',
     'Talk to your teachers about this career direction',
@@ -108,7 +108,9 @@ export function useFoundationData({
     subtitle: !eduContext
       ? 'Tap to add details'
       : eduContext.stage === 'other'
-        ? (eduContext.currentRole ? `Currently: ${eduContext.currentRole}` : 'Working / exploring a change')
+        ? (eduContext.currentRole
+            ? `In work · ${eduContext.currentRole}${eduContext.schoolName ? ` at ${eduContext.schoolName}` : ''}`
+            : (eduContext.schoolName ? `In work · ${eduContext.schoolName}` : 'In work'))
         : eduContext.stage === 'between'
           ? (eduContext.previousOccupation ? `Not working · was ${eduContext.previousOccupation}` : 'Not working right now')
           : `${EDUCATION_STAGE_CONFIG[eduContext.stage].label}${eduContext.schoolName ? ` · ${eduContext.schoolName}` : ''}`,
@@ -118,7 +120,7 @@ export function useFoundationData({
     description: !eduContext
       ? 'Where you are today. Tap to add details about your current situation.'
       : eduContext.stage === 'other'
-        ? `${eduContext.currentRole ? `You currently work as ${eduContext.currentRole}. ` : 'You\'re working or exploring a change. '}Your roadmap builds from here toward your goal, using the experience you already bring.`
+        ? `${eduContext.currentRole ? `You work as ${eduContext.currentRole}${eduContext.schoolName ? ` at ${eduContext.schoolName}` : ''}. ` : "You're in work. "}Your roadmap builds from here toward your goal, using the experience you already bring.`
         : eduContext.stage === 'between'
           ? `You're not working right now${eduContext.previousOccupation ? `, after working as ${eduContext.previousOccupation}` : ''} — that's your starting point. Your roadmap builds from here toward your goal.`
           : `Your current education: ${EDUCATION_STAGE_CONFIG[eduContext.stage].label}.${eduContext.studyProgram ? ` Studying ${eduContext.studyProgram}.` : ''}${eduContext.expectedCompletion ? ` Finishing ${eduContext.expectedCompletion}.` : ''} This is your starting point — everything builds from here.`,

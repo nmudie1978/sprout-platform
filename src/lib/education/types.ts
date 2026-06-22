@@ -49,6 +49,8 @@ export interface EducationContext {
    * a career-transition roadmap rather than a school→degree ladder.
    */
   currentRole?: string;
+  /** For working users (stage 'other'): the year they started their current role. */
+  workStartYear?: string;
   updatedAt: string;
 
   // ── Bridge-routes mindmap inputs (stages `other` + `between`; all optional) ──

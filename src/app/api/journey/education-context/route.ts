@@ -39,7 +39,7 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = await req.json();
-    const { stage, currentSubjects, ageBand, schoolName, yearLevel, studyProgram, expectedCompletion, currentRole } = body;
+    const { stage, currentSubjects, ageBand, schoolName, yearLevel, studyProgram, expectedCompletion, currentRole, workStartYear } = body;
 
     if (!stage || !Array.isArray(currentSubjects)) {
       return NextResponse.json({ error: 'stage and currentSubjects are required' }, { status: 400 });
@@ -67,6 +67,7 @@ export async function POST(req: NextRequest) {
       studyProgram: str(studyProgram, 80),
       expectedCompletion: str(expectedCompletion, 10),
       currentRole: str(currentRole, 80),
+      workStartYear: str(workStartYear, 10),
       updatedAt: new Date().toISOString(),
       // Bridge-routes mindmap inputs (stages `other` + `between`; harmless otherwise)
       ...sanitizeBridgeContext(body),
