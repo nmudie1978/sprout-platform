@@ -10,19 +10,26 @@ const base: BridgeInput = {
   blocker: 'unknown-routes',
 };
 
-describe('buildBridgeMindmap — NAV gate', () => {
-  it('includes workplace-nav branch only when withNav', () => {
+describe('buildBridgeMindmap — workplace branch (NAV-aware)', () => {
+  it('always includes the "get into a workplace" branch, with or without NAV', () => {
     expect(buildBridgeMindmap(base).branches.some((b) => b.kind === 'workplace-nav')).toBe(true);
     expect(
       buildBridgeMindmap({ ...base, withNav: false }).branches.some((b) => b.kind === 'workplace-nav'),
-    ).toBe(false);
+    ).toBe(true);
   });
 
-  it('nav leaves are factual with a nav.no pointer', () => {
+  it('on NAV → leaves are factual with a nav.no pointer', () => {
     const nav = buildBridgeMindmap(base).branches.find((b) => b.kind === 'workplace-nav')!;
     expect(nav.leaves.length).toBeGreaterThan(0);
     expect(nav.leaves.every((l) => l.navFact)).toBe(true);
     expect(nav.leaves.some((l) => (l.detail ?? '').includes('nav.no'))).toBe(true);
+  });
+
+  it('off NAV → general placement leaves, no NAV facts and no nav.no pointer', () => {
+    const wp = buildBridgeMindmap({ ...base, withNav: false }).branches.find((b) => b.kind === 'workplace-nav')!;
+    expect(wp.leaves.length).toBeGreaterThan(0);
+    expect(wp.leaves.every((l) => !l.navFact)).toBe(true);
+    expect(wp.leaves.some((l) => (l.detail ?? '').includes('nav.no'))).toBe(false);
   });
 });
 
@@ -45,9 +52,9 @@ describe('buildBridgeMindmap — blocker ordering + emphasis', () => {
     expect(m.branches.every((b) => !b.emphasis)).toBe(true);
   });
 
-  it('emphasis falls through when the target branch is gated out', () => {
+  it('no-callbacks still floats the workplace branch first off NAV (always present)', () => {
     const m = buildBridgeMindmap({ ...base, withNav: false, blocker: 'no-callbacks' });
-    expect(m.branches[0].kind).toBe('network');
+    expect(m.branches[0].kind).toBe('workplace-nav');
     expect(m.branches[0].emphasis).toBe(true);
   });
 });

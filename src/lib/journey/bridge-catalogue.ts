@@ -38,11 +38,20 @@ export function buildCatalogueBranches(input: BridgeInput): BridgeBranch[] {
       kind: 'workplace-nav',
       title: 'Get into a workplace',
       emphasis: false,
-      leaves: [
-        leaf('nav', 0, 'Praksisplass (work placement)', `A real placement where NAV can cover your wage during the trial, so an employer takes you on with no salary risk. ${NAV_URL}`, { navFact: true, mapsToTriedRoute: 'placement' }),
-        leaf('nav', 1, 'Lønnstilskudd (wage subsidy)', `NAV pays part of your salary for an agreed period, lowering the risk of hiring a career-changer. ${NAV_URL}`, { navFact: true }),
-        leaf('nav', 2, 'AMO labour-market course', `Short, job-focused training NAV funds when it leads toward real vacancies — targeted, not a full degree. ${NAV_URL}`, { navFact: true }),
-      ],
+      // NAV-aware leaves: factual NAV schemes when the user is working with NAV,
+      // otherwise general placement routes that don't depend on NAV. The branch
+      // itself is always shown — getting inside a workplace matters either way.
+      leaves: input.withNav
+        ? [
+            leaf('nav', 0, 'Praksisplass (work placement)', `A real placement where NAV can cover your wage during the trial, so an employer takes you on with no salary risk. ${NAV_URL}`, { navFact: true, mapsToTriedRoute: 'placement' }),
+            leaf('nav', 1, 'Lønnstilskudd (wage subsidy)', `NAV pays part of your salary for an agreed period, lowering the risk of hiring a career-changer. ${NAV_URL}`, { navFact: true }),
+            leaf('nav', 2, 'AMO labour-market course', `Short, job-focused training NAV funds when it leads toward real vacancies — targeted, not a full degree. ${NAV_URL}`, { navFact: true }),
+          ]
+        : [
+            leaf('workplace', 0, 'Propose a work trial directly', 'Offer an employer a short, no-pressure trial period so they can see you in the role before committing. With little risk on their side, many will say yes.', { mapsToTriedRoute: 'placement' }),
+            leaf('workplace', 1, 'Open internships & placements', 'Apply to internship and placement schemes that welcome adults and career-changers — not just students fresh out of school.'),
+            leaf('workplace', 2, 'Start part-time or fixed-term', 'A part-time or fixed-term role is a lower-risk hire for an employer and a foot in the door you can grow into a permanent one.'),
+          ],
     },
     {
       id: 'proof',

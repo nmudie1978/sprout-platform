@@ -2,8 +2,8 @@
  * Bridge Routes Mindmap — engine
  *
  * Pure, deterministic. Turns a BridgeInput into a BridgeMindmap by:
- *   1. building the curated source branches,
- *   2. gating the NAV branch on `withNav`,
+ *   1. building the curated source branches (the "get into a workplace"
+ *      branch is always present; `withNav` switches its leaves),
  *   3. dropping tried-mapped leaves from live branches,
  *   4. ordering + emphasising branches by the user's blocker,
  *   5. appending a single "Already tried" branch.
@@ -47,10 +47,10 @@ function buildTriedBranch(input: BridgeInput): BridgeBranch {
 export function buildBridgeMindmap(input: BridgeInput): BridgeMindmap {
   const tried = new Set(input.triedRoutes);
 
-  // 1 + 2: source branches, NAV-gated.
-  let branches = buildCatalogueBranches(input).filter(
-    (b) => b.kind !== 'workplace-nav' || input.withNav,
-  );
+  // 1 + 2: source branches. The "get into a workplace" branch is always
+  //    present; `withNav` only switches its leaves between NAV schemes and
+  //    general placement routes (handled in buildCatalogueBranches).
+  let branches = buildCatalogueBranches(input);
 
   // 3: drop tried-mapped leaves from their home branch (represented once in
   //    the tried branch instead).

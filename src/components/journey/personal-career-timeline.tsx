@@ -1,9 +1,13 @@
 'use client';
 
 import { useState, useCallback, useRef, useMemo, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { useQuery } from '@tanstack/react-query';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Target, AlertCircle, RefreshCw, Play, FileText, X, Shuffle, ArrowRight } from 'lucide-react';
+import { Target, AlertCircle, RefreshCw, Play, FileText, X, Shuffle, ArrowRight, Route } from 'lucide-react';
+import { CareerTransitionMap } from '@/components/journey/career-transition-map/career-transition-map';
+import { buildBridgeMindmap } from '@/lib/journey/build-bridge-mindmap';
+import type { TriedRoute, Blocker } from '@/lib/journey/bridge-mindmap-types';
 import { cn } from '@/lib/utils';
 import { toast } from '@/hooks/use-toast';
 import type { JourneyItem, Journey } from '@/lib/journey/career-journey-types';
@@ -54,6 +58,9 @@ const RENDERERS = {
 export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney, readOnly = false, onSimulationReady, fitToWidth }: PersonalCareerTimelineProps) {
   const [selectedItem, setSelectedItem] = useState<JourneyItem | null>(null);
   const [saveVersion, setSaveVersion] = useState(0);
+  // Career Transition Map overlay (surfaced on the roadmap for users who are
+  // between jobs / changing career — the "between" foundation stage).
+  const [ctmOpen, setCtmOpen] = useState(false);
   // Report dialog open state — declared with the other top-level hooks so it
   // is never called after one of this component's early returns below.
   const [reportOpen, setReportOpen] = useState(false);
@@ -160,7 +167,15 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney, read
   // steps) stays in sync with what the user has told us about where
   // they actually are.
   const { data: educationContextData } = useQuery<{
-    educationContext: { stage?: EducationStage; expectedCompletion?: string; currentRole?: string } | null;
+    educationContext: {
+      stage?: EducationStage;
+      expectedCompletion?: string;
+      currentRole?: string;
+      previousOccupation?: string;
+      withNav?: boolean;
+      triedRoutes?: TriedRoute[];
+      blocker?: Blocker;
+    } | null;
   }>({
     queryKey: ['education-context'],
     queryFn: async () => {
@@ -176,6 +191,25 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney, read
     educationContextData?.educationContext?.expectedCompletion;
   const currentRole: string | undefined =
     educationContextData?.educationContext?.currentRole;
+
+  // Career-transition users (between jobs / job-seeking) get the Career
+  // Transition Map surfaced directly on the roadmap, not buried in the
+  // foundation editor. Built from the same persisted foundation inputs, so it
+  // regenerates whenever the foundation is saved (which invalidates this query).
+  // `between` isn't in this file's narrow EducationStage union, so compare as a
+  // string (the stored education-context stage can be 'between').
+  const isTransitionUser = (educationStage as string | undefined) === 'between';
+  const bridgeModel = useMemo(() => {
+    if (!isTransitionUser || !primaryGoalTitle) return null;
+    const ctx = educationContextData?.educationContext;
+    return buildBridgeMindmap({
+      previousOccupation: ctx?.previousOccupation?.trim() || null,
+      targetCareer: primaryGoalTitle,
+      withNav: ctx?.withNav ?? false,
+      triedRoutes: ctx?.triedRoutes ?? [],
+      blocker: ctx?.blocker ?? 'unknown-routes',
+    });
+  }, [isTransitionUser, primaryGoalTitle, educationContextData?.educationContext]);
 
   // The user's age — needed by the client-side fallback so it renders
   // an accurate placeholder roadmap while the AI version loads. Without
@@ -812,6 +846,34 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney, read
         </button>
       )}
 
+      {/* Career Transition Map entry — for between-jobs / job-seeking users,
+          surfaced right on the roadmap (not buried in the foundation editor).
+          Hidden until the starting point is filled in (the map needs those
+          inputs) and during read-only / playback. */}
+      {bridgeModel && !readOnly && !startingPointEmpty && !simState.isPlaying && (
+        <button
+          type="button"
+          onClick={() => setCtmOpen(true)}
+          className="group mb-3 flex w-full items-center gap-3 rounded-card border border-indigo-500/30 bg-indigo-500/[0.06] px-4 py-3 text-left transition-colors hover:border-indigo-500/50 hover:bg-indigo-500/[0.11] focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500/60"
+        >
+          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-indigo-500/15 ring-1 ring-indigo-500/30">
+            <Route className="h-4 w-4 text-indigo-500" aria-hidden />
+          </span>
+          <span className="min-w-0 flex-1">
+            <span className="block text-sm font-semibold text-foreground">
+              Open your Career Transition Map
+            </span>
+            <span className="block text-xs text-muted-foreground/80 leading-snug">
+              Practical routes from where you are now to {primaryGoalTitle ?? 'your goal'} — updates when you edit your starting point.
+            </span>
+          </span>
+          <span className="hidden sm:inline-flex shrink-0 items-center gap-1 text-xs font-semibold text-indigo-600 dark:text-indigo-300">
+            View map
+            <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" aria-hidden />
+          </span>
+        </button>
+      )}
+
       {/* Roadmap */}
       <div ref={roadmapRef}>
         <Renderer
@@ -864,6 +926,40 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney, read
           if (!open) setSelectedItem(null);
         }}
       />
+
+      {/* Career Transition Map — full-screen overlay opened from the roadmap. */}
+      {ctmOpen && bridgeModel && createPortal(
+        <div
+          className="fixed inset-0 z-[200] flex flex-col bg-background animate-in fade-in duration-150"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Career Transition Map"
+        >
+          <div className="flex items-center justify-between border-b border-border/40 px-4 py-2.5">
+            <div>
+              <p className="text-sm font-semibold tracking-tight text-foreground/90">Career Transition Map</p>
+              <p className="text-[11px] text-muted-foreground/60">Ways from where you are now to where you want to be.</p>
+            </div>
+            <button
+              type="button"
+              onClick={() => setCtmOpen(false)}
+              className="inline-flex items-center gap-1.5 rounded-full border border-border/40 bg-muted/30 px-3 py-1.5 text-xs font-medium text-foreground/80 transition-colors hover:bg-muted/50 hover:text-foreground"
+              aria-label="Close"
+            >
+              <X className="h-3.5 w-3.5" />
+              Close
+            </button>
+          </div>
+          <div className="flex-1 min-h-0 p-4 sm:p-6">
+            <CareerTransitionMap
+              model={bridgeModel}
+              targetCareer={primaryGoalTitle || 'your target role'}
+              previousOccupation={educationContextData?.educationContext?.previousOccupation?.trim() || null}
+            />
+          </div>
+        </div>,
+        document.body
+      )}
     </div>
   );
 }
