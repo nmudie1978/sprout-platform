@@ -19,6 +19,7 @@ import { deriveRoleEvolutionTail } from '@/lib/journey/role-evolution-tail';
 import type { CardDataSummary } from './renderers/types';
 import { WindingRoadRenderer, SteppingStonesRenderer } from './renderers';
 import { FOUNDATION_ITEM_ID } from './renderers/foundation-banner';
+import { RoadmapTipsCard } from './roadmap-tips-card';
 import { TimelineStyleSelector } from './timeline-style-selector';
 import { TimelineDetailDialog, loadCardData, cycleProgress, isStepUnlocked, enforceProgressChain } from './timeline';
 import { useCareerCatalog } from '@/hooks/use-career-catalog';
@@ -629,6 +630,9 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney, read
 
   return (
     <div>
+      {/* First-run orientation — explains Starting Point + Scenarios once. */}
+      {!readOnly && <RoadmapTipsCard showScenarios={toggleCount > 0} />}
+
       {/* Header row */}
       <div className="flex items-center justify-between mb-2">
         <button
