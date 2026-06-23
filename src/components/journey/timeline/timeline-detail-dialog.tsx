@@ -947,6 +947,31 @@ export function TimelineDetailDialog({
             </div>
           )}
 
+          {/* Where to look — external resources attached to this step (e.g. the
+              entry-level routes & programmes for the structured transition
+              scenario). Wires JourneyItem.suggestedResources. */}
+          {!isFoundation && item.suggestedResources && item.suggestedResources.length > 0 && (
+            <div className="rounded-lg bg-indigo-500/[0.05] border border-indigo-500/15 px-3.5 py-3">
+              <p className="text-[11px] font-semibold uppercase tracking-wider text-indigo-300/80">Where to look</p>
+              <ul className="mt-2 space-y-1.5">
+                {item.suggestedResources.map((r) => (
+                  <li key={r.url}>
+                    <a
+                      href={r.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group inline-flex items-center gap-1.5 text-[12px] text-foreground/80 hover:text-indigo-300 transition-colors"
+                    >
+                      <span className="h-1 w-1 rounded-full bg-indigo-400/70 shrink-0" />
+                      <span className="font-medium">{r.label}</span>
+                      <ExternalLink className="h-2.5 w-2.5 text-muted-foreground/65 group-hover:text-indigo-300 transition-colors" />
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
           {/* Contextual tip — one key nudge per step type */}
           {stepTip && (
             <div className="flex items-start gap-2.5 rounded-lg bg-teal-500/[0.06] border border-teal-500/15 px-3.5 py-3">

@@ -37,6 +37,12 @@ describe('getTransitionDirections', () => {
     const dirs = getTransitionDirections(buildBridgeMindmap({ ...input, blocker: 'no-experience' }));
     expect(dirs[0].id).toBe('proof');
   });
+
+  it('labels the programmes direction "Entry-level routes & programmes"', () => {
+    const dirs = getTransitionDirections(buildBridgeMindmap(input));
+    const structured = dirs.find((d) => d.id === 'structured');
+    expect(structured?.label).toBe('Entry-level routes & programmes');
+  });
 });
 
 describe('buildDirectionJourney', () => {
@@ -79,5 +85,29 @@ describe('buildDirectionJourney', () => {
 
   it('is deterministic (same input → identical output)', () => {
     expect(buildDirectionJourney('proof', ctx)).toEqual(buildDirectionJourney('proof', ctx));
+  });
+
+  it('structured route attaches programme details (links) to the apply step', () => {
+    const items = buildDirectionJourney('structured', { ...ctx, targetCategory: 'FINANCE_BANKING' });
+    const withResources = items.find((i) => (i.suggestedResources?.length ?? 0) > 0);
+    expect(withResources).toBeTruthy();
+    const urls = withResources!.suggestedResources!.map((r) => r.url);
+    // includes the three always-on portals
+    expect(urls).toEqual(
+      expect.arrayContaining([
+        'https://utdanning.no',
+        'https://www.finn.no/job',
+        'https://careers.linkedin.com/pathways-programs',
+      ]),
+    );
+    // and a description carrying the entry-level reality tip
+    expect(withResources!.description ?? '').toMatch(/entry-level/i);
+  });
+
+  it('only the structured route carries resources (proof/network/training do not)', () => {
+    for (const id of ['proof', 'network', 'training'] as const) {
+      const items = buildDirectionJourney(id, ctx);
+      expect(items.every((i) => !i.suggestedResources)).toBe(true);
+    }
   });
 });
