@@ -4,6 +4,7 @@ import { useState, useCallback, useRef, useMemo, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { useQuery } from '@tanstack/react-query';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Target, AlertCircle, RefreshCw, Play, FileText, X, Shuffle, ArrowRight, Route } from 'lucide-react';
 import { CareerTransitionMap } from '@/components/journey/career-transition-map/career-transition-map';
 import { buildBridgeMindmap } from '@/lib/journey/build-bridge-mindmap';
@@ -898,15 +899,23 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney, read
           Hidden until the starting point is filled in (the map needs those
           inputs) and during read-only / playback. */}
       {bridgeModel && !readOnly && !startingPointEmpty && !simState.isPlaying && (
-        <button
-          type="button"
-          onClick={() => setCtmOpen(true)}
-          className="group mb-3 inline-flex items-center gap-1.5 rounded text-xs font-medium text-muted-foreground transition-colors hover:text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-        >
-          <Route className="h-3.5 w-3.5 text-indigo-500/80" aria-hidden />
-          Supporting mindmap
-          <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-0.5" aria-hidden />
-        </button>
+        <TooltipProvider delayDuration={200}>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                type="button"
+                onClick={() => setCtmOpen(true)}
+                aria-label="Open the supporting mindmap"
+                className="mb-3 inline-flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-indigo-500/10 hover:text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              >
+                <Route className="h-4 w-4 text-indigo-500/80" aria-hidden />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent side="right" sideOffset={8} showArrow>
+              Supporting mindmap
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       )}
 
       {/* Roadmap */}
