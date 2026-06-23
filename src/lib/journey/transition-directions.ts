@@ -13,10 +13,11 @@
  * sector-matched named trainee programmes from {@link trainee-programmes}.
  */
 
-import type { JourneyItem } from './career-journey-types';
+import type { JourneyItem, SuggestedResource } from './career-journey-types';
 import type { BridgeMindmap, BranchKind } from './bridge-mindmap-types';
 import type { CareerCategory } from '@/lib/career-pathways';
 import { getTraineeProgrammesForCategory } from './trainee-programmes';
+import { getEntryLevelProgrammeResources, ENTRY_LEVEL_REALITY_TIP } from './entry-level-programmes';
 
 export type DirectionId = 'structured' | 'proof' | 'network' | 'training';
 
@@ -36,7 +37,7 @@ export interface DirectionContext {
 
 /** Which mindmap branch kinds map to a roadmap direction (and their labels). */
 const DIRECTION_FOR_KIND: Partial<Record<BranchKind, { id: DirectionId; label: string }>> = {
-  programmes: { id: 'structured', label: 'Via a structured route' },
+  programmes: { id: 'structured', label: 'Entry-level routes & programmes' },
   proof: { id: 'proof', label: 'Build proof first' },
   network: { id: 'network', label: 'Through people' },
   training: { id: 'training', label: 'Targeted upskilling' },
@@ -67,6 +68,10 @@ interface StepSpec {
   to?: number;
   milestone?: boolean;
   icon?: string;
+  /** Longer body shown in the step popup. */
+  description?: string;
+  /** External links surfaced in the step popup (e.g. programme portals). */
+  suggestedResources?: SuggestedResource[];
 }
 
 function toItems(id: DirectionId, startAge: number, specs: StepSpec[]): JourneyItem[] {
@@ -79,6 +84,8 @@ function toItems(id: DirectionId, startAge: number, specs: StepSpec[]): JourneyI
     endAge: s.to != null ? startAge + s.to : undefined,
     isMilestone: s.milestone ?? false,
     icon: s.icon,
+    description: s.description,
+    suggestedResources: s.suggestedResources,
   }));
 }
 
@@ -115,7 +122,16 @@ export function buildDirectionJourney(id: DirectionId, ctx: DirectionContext): J
         : 'Apply to graduate, trainee and apprenticeship schemes (incl. lærling) in your field.';
       return toItems('structured', startAge, [
         { stage: 'experience', title: 'Prepare a strong application', subtitle: 'Tailor your CV to the programme and brush up the basics it expects.', from: 0, to: 1, icon: 'FileText' },
-        { stage: 'experience', title: 'Apply to a structured programme', subtitle: applyNote, from: 1, milestone: true, icon: 'Send' },
+        {
+          stage: 'experience',
+          title: 'Apply to a structured programme',
+          subtitle: applyNote,
+          from: 1,
+          milestone: true,
+          icon: 'Send',
+          description: `Apprenticeships, trainee and graduate schemes hire for potential and train you up. ${ENTRY_LEVEL_REALITY_TIP}`,
+          suggestedResources: getEntryLevelProgrammeResources(targetCategory),
+        },
         { stage: 'experience', title: 'Trainee / structured role', subtitle: 'Learn on the job with training and support built in.', from: 1, to: 3, icon: 'GraduationCap' },
         FIRST_ROLE,
         GROW,
