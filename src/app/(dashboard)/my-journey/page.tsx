@@ -684,12 +684,15 @@ function DiscoverTab({
         );
       })()}
 
-      {/* Hero: Video + Overview */}
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
+      {/* Hero: Video + Overview — kept equal-height when both are expanded
+          (the grid columns stretch; both cards fill and vertically centre
+          their content) so the video card and the overview card always match.
+          Guarded on bothExpanded so collapsing one doesn't balloon the other. */}
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 lg:items-stretch">
         {/* Video — 2 cols */}
-        <SectionCard className="lg:col-span-2 border-primary/30">
+        <SectionCard className={cn('lg:col-span-2 border-primary/30', !dCollapsed('d-video') && !dCollapsed('d-overview') && 'h-full flex flex-col')}>
           <SectionHeader icon={Play} title="A Day in the Life" centered collapsed={dCollapsed('d-video')} onToggle={() => dToggle('d-video')} />
-          {!dCollapsed('d-video') && <div className="p-4">
+          {!dCollapsed('d-video') && <div className={cn('p-4', !dCollapsed('d-overview') && 'flex-1 flex flex-col justify-center')}>
             {videoId ? (
               <div className="space-y-2">
                 <div className="relative rounded-control overflow-hidden">
@@ -764,10 +767,10 @@ function DiscoverTab({
         {/* Day Simulation moved to Understand tab → "A Typical Day" section */}
 
         {/* Overview stats — 3 cols */}
-        <div className="lg:col-span-3 space-y-4">
-          <SectionCard className="border-primary/30">
+        <div className="lg:col-span-3 flex flex-col gap-4">
+          <SectionCard className={cn('border-primary/30', !dCollapsed('d-video') && !dCollapsed('d-overview') && 'flex-1 flex flex-col')}>
             <SectionHeader icon={BarChart3} title="Career Overview" centered collapsed={dCollapsed('d-overview')} onToggle={() => dToggle('d-overview')} />
-            {!dCollapsed('d-overview') && <div className="p-4 flex flex-col items-center gap-3">
+            {!dCollapsed('d-overview') && <div className={cn('p-4 flex flex-col items-center gap-3', !dCollapsed('d-video') && 'flex-1 justify-center')}>
               {(() => {
                 const sector = getSectorForCareer(career.id);
                 const pensionNote = getPensionNote(sector);
