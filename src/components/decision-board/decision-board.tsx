@@ -94,21 +94,14 @@ export function DecisionBoardTab() {
 
   return (
     <div className="mx-auto max-w-3xl space-y-4">
-      {/* Lean headline — the synthesis */}
+      {/* Synthesis caption — the leading career is marked with a "Your pick"
+          badge on its row below, so the headline just carries the count +
+          reason context (the old "You're leaning X" sentence was dropped). */}
       {leader && (
-        <div className="flex items-center gap-3 rounded-card border border-primary/25 bg-primary/[0.06] px-4 py-3">
-          <span className="shrink-0 text-2xl leading-none">{leader.emoji}</span>
-          <div className="min-w-0">
-            <p className="text-sm text-foreground/90">
-              You&apos;re leaning{" "}
-              <span className="font-semibold text-foreground">{leader.title}</span>
-            </p>
-            <p className="mt-0.5 text-xs text-muted-foreground/70">
-              {ranked.length} {ranked.length === 1 ? "career" : "careers"} explored
-              {leadReason(leader) ? ` · ${leadReason(leader)}` : ""}
-            </p>
-          </div>
-        </div>
+        <p className="px-1 text-xs text-muted-foreground/70">
+          {ranked.length} {ranked.length === 1 ? "career" : "careers"} explored
+          {leadReason(leader) ? ` · ${leadReason(leader)}` : ""}
+        </p>
       )}
 
       {/* Standings — a calm stack of ranked cards */}
