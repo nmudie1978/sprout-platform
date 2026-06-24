@@ -115,7 +115,7 @@ describe('buildDiscoverOpener', () => {
       whoThisIsGoodFor: ['Enjoys solving practical problems', 'Loves working with their hands'],
       growthOutlook: 'high',
     });
-    expect(out).toContain('It suits people who enjoy solving practical problems and people who love working with their hands.');
+    expect(out).toContain('It suits people who enjoy solving practical problems and love working with their hands.');
   });
 
   it('keeps an embedded-"who" noun phrase verbatim (no double "people who")', () => {
@@ -133,7 +133,26 @@ describe('buildDiscoverOpener', () => {
       whoThisIsGoodFor: ['Visual thinkers', 'Good at working in teams'],
       growthOutlook: 'high',
     });
-    expect(out).toContain('It suits people who are visual thinkers and people who are good at working in teams.');
+    expect(out).toContain('It suits people who are visual thinkers and good at working in teams.');
+  });
+
+  it('dedupes a shared "people who" subject across both traits', () => {
+    const out = buildDiscoverOpener({
+      description: CARPENTER,
+      whoThisIsGoodFor: ['People who love precision', 'People who notice details others miss'],
+      growthOutlook: 'high',
+    });
+    expect(out).toContain('It suits people who love precision and notice details others miss.');
+    expect(out).not.toContain('and people who');
+  });
+
+  it('does NOT dedupe when the two subjects differ ("people who" vs "those who")', () => {
+    const out = buildDiscoverOpener({
+      description: CARPENTER,
+      whoThisIsGoodFor: ['People who love precision', 'Those who stay calm under pressure'],
+      growthOutlook: 'high',
+    });
+    expect(out).toContain('It suits people who love precision and those who stay calm under pressure.');
   });
 
   it('does not double the subject when a trait already has one', () => {

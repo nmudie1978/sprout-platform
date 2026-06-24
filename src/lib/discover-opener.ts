@@ -114,6 +114,26 @@ function firstSentence(description: string): string {
   return sentence;
 }
 
+/**
+ * Join two normalised trait fragments with "and". When both share the same
+ * synthesised subject ("people who …" / "those who …"), drop it from the second
+ * so the clause reads "people who enjoy X and like Y" rather than the repetitive
+ * "people who enjoy X and people who like Y". Different subjects are left intact.
+ */
+function joinTraits(a: string, b: string): string {
+  // Try the longest shared subject first ("people who are ") so the copula isn't
+  // repeated ("…visual thinkers and are good…"), then the bare subject.
+  const SUBJECTS = [/^(people|those) who are /i, /^(people|those) who /i];
+  for (const re of SUBJECTS) {
+    const ma = a.match(re);
+    const mb = b.match(re);
+    if (ma && mb && ma[0].toLowerCase() === mb[0].toLowerCase()) {
+      return `${a} and ${b.slice(mb[0].length)}`;
+    }
+  }
+  return `${a} and ${b}`;
+}
+
 function growthSuffix(growthOutlook?: string | null): string {
   if (growthOutlook === 'high') return 'Demand is high and growing.';
   if (growthOutlook === 'medium') return 'The field is growing steadily.';
@@ -127,7 +147,7 @@ export function buildDiscoverOpener(input: DiscoverOpenerInput): string {
     .slice(0, 2);
 
   const character =
-    traits.length === 2 ? `${traits[0]} and ${traits[1]}` :
+    traits.length === 2 ? joinTraits(traits[0], traits[1]) :
     traits.length === 1 ? traits[0] :
     '';
 
