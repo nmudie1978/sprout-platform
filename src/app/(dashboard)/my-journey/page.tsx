@@ -834,7 +834,7 @@ function DiscoverTab({
         <div className="rounded-card border border-primary/30 bg-card/50 p-4">
           <div className="flex items-center gap-2 mb-2">
             <MapPin className="h-3.5 w-3.5 text-foreground" />
-            <span className="text-xs font-semibold text-foreground uppercase tracking-wider">Where you&apos;ll work</span>
+            <span className="text-xs font-semibold text-foreground uppercase tracking-wider">Work Environment</span>
           </div>
           {dDetails?.typicalDay.environment ? (
             <p className="text-xs text-foreground/70 leading-relaxed">{dDetails.typicalDay.environment}</p>
