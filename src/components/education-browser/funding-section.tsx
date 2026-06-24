@@ -15,6 +15,9 @@ import { getFundingForCareer, type FundingSource } from '@/lib/education/funding
 
 interface FundingSectionProps {
   careerId: string | null;
+  /** Viewer's country (ISO-2) — selects the national student-finance scheme
+   *  (Lånekassen / CSN / SU / Kela / Menntasjóður). Defaults to Norway. */
+  country?: string;
 }
 
 function CompactCard({ source, highlight }: { source: FundingSource; highlight?: boolean }) {
@@ -51,8 +54,8 @@ function CompactCard({ source, highlight }: { source: FundingSource; highlight?:
   );
 }
 
-export function FundingSection({ careerId }: FundingSectionProps) {
-  const funding = useMemo(() => getFundingForCareer(careerId), [careerId]);
+export function FundingSection({ careerId, country }: FundingSectionProps) {
+  const funding = useMemo(() => getFundingForCareer(careerId, country), [careerId, country]);
   const all = useMemo(() => [
     ...funding.careerSpecific.map((s) => ({ source: s, highlight: true })),
     ...funding.universal.map((s) => ({ source: s, highlight: false })),

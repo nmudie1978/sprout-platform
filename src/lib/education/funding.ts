@@ -79,6 +79,134 @@ const UNIVERSAL_FUNDING: FundingSource[] = [
     country: "NO",
     tags: ["universal", "grant", "vocational"],
   },
+
+  // ── Sweden — CSN ─────────────────────────────────────────────────
+  {
+    id: "csn-studiemedel",
+    name: "CSN — Studiemedel (grant + loan)",
+    provider: "Centrala studiestödsnämnden (CSN)",
+    description:
+      "Every eligible student gets studiemedel: a grant (studiebidrag) plus an optional low-interest loan (studielån). No competitive application — you just apply to CSN.",
+    eligibility: "Swedish students in approved higher or upper-secondary education",
+    amount: "~3,900 SEK/month grant + up to ~8,200 SEK/month loan (full-time)",
+    url: "https://www.csn.se",
+    country: "SE",
+    tags: ["universal", "loan", "grant"],
+  },
+  {
+    id: "csn-studiebidrag",
+    name: "CSN — Studiebidrag (gymnasium)",
+    provider: "Centrala studiestödsnämnden (CSN)",
+    description:
+      "Students aged 16-20 in gymnasium (upper secondary) automatically receive a monthly study allowance (studiebidrag) — a pure grant, no application needed.",
+    eligibility: "Students aged 16-20 in Swedish upper-secondary education",
+    amount: "~1,250 SEK/month (grant)",
+    url: "https://www.csn.se/bidrag-och-lan/studiestod/bidrag-for-gymnasiestudier.html",
+    country: "SE",
+    tags: ["universal", "grant"],
+  },
+  {
+    id: "csn-abroad",
+    name: "CSN — Studying Abroad",
+    provider: "Centrala studiestödsnämnden (CSN)",
+    description:
+      "Swedish students can take studiemedel abroad, and CSN may also cover tuition costs (merkostnadslån) for approved foreign institutions.",
+    eligibility: "Swedish students at approved institutions abroad",
+    amount: "Studiemedel + possible tuition loan",
+    url: "https://www.csn.se/bidrag-och-lan/studiestod/studera-utomlands.html",
+    country: "SE",
+    tags: ["universal", "abroad", "loan", "grant"],
+  },
+
+  // ── Denmark — SU ─────────────────────────────────────────────────
+  {
+    id: "su-stipend",
+    name: "SU — Statens Uddannelsesstøtte",
+    provider: "Uddannelses- og Forskningsstyrelsen (SU)",
+    description:
+      "Danish students in higher education get a monthly SU grant (no repayment) plus an optional low-interest SU loan. The grant is means-tested against your own income.",
+    eligibility: "Danish students aged 18+ in approved higher education",
+    amount: "~6,600 DKK/month grant (living away from home) + ~3,500 DKK/month optional loan",
+    url: "https://www.su.dk",
+    country: "DK",
+    tags: ["universal", "grant", "loan"],
+  },
+  {
+    id: "su-ungdom",
+    name: "SU — Ungdomsuddannelse (upper secondary)",
+    provider: "Uddannelses- og Forskningsstyrelsen (SU)",
+    description:
+      "Students aged 18+ in a youth/upper-secondary education can receive SU; under-18s may get a smaller youth grant depending on parental income.",
+    eligibility: "Students in Danish upper-secondary education (mainly 18+)",
+    amount: "Varies by age and parental income",
+    url: "https://www.su.dk/su/su-til-ungdomsuddannelser",
+    country: "DK",
+    tags: ["universal", "grant"],
+  },
+  {
+    id: "su-abroad",
+    name: "SU — Studying Abroad",
+    provider: "Uddannelses- og Forskningsstyrelsen (SU)",
+    description:
+      "You can usually take your SU abroad for a full degree or an exchange at an approved institution.",
+    eligibility: "Danish students at approved institutions abroad",
+    amount: "SU grant (+ optional loan), as at home",
+    url: "https://www.su.dk/su-i-udlandet",
+    country: "DK",
+    tags: ["universal", "abroad", "grant"],
+  },
+
+  // ── Finland — Kela ───────────────────────────────────────────────
+  {
+    id: "kela-opintotuki",
+    name: "Kela — Opintotuki (study grant + loan guarantee)",
+    provider: "Kela (Social Insurance Institution of Finland)",
+    description:
+      "Kela's financial aid for students: a monthly study grant (opintoraha) plus a state-guaranteed student loan. Both higher-education and upper-secondary students qualify.",
+    eligibility: "Finnish students in approved higher or upper-secondary education",
+    amount: "Up to ~280 €/month grant + ~650 €/month state-guaranteed loan (higher ed)",
+    url: "https://www.kela.fi/financial-aid-for-students",
+    country: "FI",
+    tags: ["universal", "grant", "loan"],
+  },
+  {
+    id: "kela-abroad",
+    name: "Kela — Studying Abroad",
+    provider: "Kela (Social Insurance Institution of Finland)",
+    description:
+      "Finnish students can receive study aid for a full degree or an exchange abroad at an approved institution.",
+    eligibility: "Finnish students at approved institutions abroad",
+    amount: "Study grant + state-guaranteed loan, as at home",
+    url: "https://www.kela.fi/financial-aid-for-students-studies-abroad",
+    country: "FI",
+    tags: ["universal", "abroad", "grant", "loan"],
+  },
+
+  // ── Iceland — Menntasjóður námsmanna ─────────────────────────────
+  {
+    id: "menntasjodur-loan",
+    name: "Menntasjóður — Student loans + completion grant",
+    provider: "Menntasjóður námsmanna (Icelandic Student Loan Fund)",
+    description:
+      "Icelandic students can take needs-based student loans; 30% of the loan is converted to a grant if you finish your programme on time.",
+    eligibility: "Icelandic students in approved higher education",
+    amount: "Needs-based loan; 30% converts to a grant on timely completion",
+    url: "https://menntasjodur.is",
+    country: "IS",
+    tags: ["universal", "loan", "grant"],
+  },
+  {
+    id: "menntasjodur-abroad",
+    name: "Menntasjóður — Studying Abroad",
+    provider: "Menntasjóður námsmanna (Icelandic Student Loan Fund)",
+    description:
+      "The loans (and the 30% completion grant) are also available for approved study abroad.",
+    eligibility: "Icelandic students at approved institutions abroad",
+    amount: "Needs-based loan + completion grant, as at home",
+    url: "https://menntasjodur.is",
+    country: "IS",
+    tags: ["universal", "abroad", "loan", "grant"],
+  },
 ];
 
 // ── Career-specific scholarships ───────────────────────────────────
@@ -142,13 +270,24 @@ const CAREER_SCHOLARSHIPS: Record<string, FundingSource[]> = {
 // ── Public API ─────────────────────────────────────────────────────
 
 /**
- * Get funding sources for a career. Returns universal sources (always)
- * plus any career-specific scholarships if available.
+ * Get funding sources for a career, scoped to the viewer's country.
+ * Returns that country's universal national student finance (Lånekassen for
+ * NO, CSN for SE, SU for DK, Kela for FI, Menntasjóður for IS) plus any
+ * country-matching career-specific scholarships. Countries without curated
+ * funding data (e.g. ES) return empty lists so the section hides itself
+ * rather than showing the wrong country's scheme.
+ *
+ * Defaults to Norway when no country is given (backwards compatible).
  */
-export function getFundingForCareer(careerId: string | null): FundingResult {
+export function getFundingForCareer(
+  careerId: string | null,
+  country: string = "NO",
+): FundingResult {
   return {
-    universal: UNIVERSAL_FUNDING,
-    careerSpecific: careerId ? (CAREER_SCHOLARSHIPS[careerId] ?? []) : [],
+    universal: UNIVERSAL_FUNDING.filter((f) => f.country === country),
+    careerSpecific: (careerId ? (CAREER_SCHOLARSHIPS[careerId] ?? []) : []).filter(
+      (f) => f.country === country,
+    ),
   };
 }
 
