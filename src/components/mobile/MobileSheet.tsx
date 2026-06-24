@@ -18,6 +18,13 @@ interface MobileSheetProps {
   maxHeightPercent?: number;
   /** Force bottom sheet style even on desktop */
   forceSheet?: boolean;
+  /**
+   * Render as a centered dialog even on mobile (instead of a bottom sheet).
+   * Use when the sheet has a confirm action that must stay reachable: a
+   * centered modal sits mid-screen with the footer pinned and the content
+   * scrolling internally, so the action button never falls below the fold.
+   */
+  centerOnMobile?: boolean;
 }
 
 /**
@@ -37,9 +44,12 @@ export function MobileSheet({
   showClose = true,
   maxHeightPercent = 85,
   forceSheet = false,
+  centerOnMobile = false,
 }: MobileSheetProps) {
   const isMobile = useIsMobile();
-  const showAsSheet = isMobile || forceSheet;
+  // centerOnMobile wins: render the centered-dialog variant everywhere so the
+  // pinned footer stays on-screen even on a phone.
+  const showAsSheet = (isMobile || forceSheet) && !centerOnMobile;
 
   // Handle escape key
   useEffect(() => {
@@ -125,7 +135,7 @@ export function MobileSheet({
                 "w-full max-w-md",
               ]
             )}
-            style={!showAsSheet ? { maxHeight: `${maxHeightPercent}vh` } : undefined}
+            style={!showAsSheet ? { maxHeight: `${maxHeightPercent}dvh` } : undefined}
             onClick={(e) => e.stopPropagation()}
           >
             {/* Close button */}
