@@ -22,6 +22,9 @@ import { checkRateLimitAsync, getRateLimitHeaders, RateLimits } from "@/lib/rate
 import { isSchoolEmail } from "@/lib/education/school-domains";
 import { normaliseCountry, defaultLocaleForCountry } from "@/lib/countries";
 import { LOCALE_COOKIE } from "@/i18n/config";
+import { sendMail } from "@/lib/mail";
+import { buildWelcomeEmail } from "@/lib/email/welcome-email";
+import { logAndSwallow } from "@/lib/observability";
 
 // Transient DB/connection errors worth a quick retry on serverless cold
 // starts (can't-reach-db, connection closed, pool timeout, too many
@@ -315,6 +318,21 @@ export async function POST(req: NextRequest) {
       ipAddress,
       userAgent,
     });
+
+    // Fire-and-forget welcome email. Strictly transactional (a one-time
+    // "account is ready" note that nudges into My Journey) so it's
+    // consent-clean for every age. Deliberately NOT awaited and error-swallowed
+    // so a mail hiccup can never delay or fail account creation; sendMail skips
+    // silently when Resend isn't configured (see src/lib/mail.ts).
+    const appUrl =
+      process.env.NEXT_PUBLIC_APP_URL || process.env.NEXTAUTH_URL || "https://endeavrly.com";
+    const welcome = buildWelcomeEmail(trimmedFirst, `${appUrl}/my-journey`);
+    void sendMail({
+      to: email,
+      subject: welcome.subject,
+      html: welcome.html,
+      text: welcome.text,
+    }).catch(logAndSwallow("signup:welcomeEmail"));
 
     // Return success with account status info
     const res = NextResponse.json({
