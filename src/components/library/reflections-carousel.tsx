@@ -120,7 +120,7 @@ export function ReflectionsCarousel({ groups }: { groups: ReflectionGroup[] }) {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: dir >= 0 ? -24 : 24 }}
           transition={{ duration: 0.22, ease: "easeOut" }}
-          className="rounded-card border border-border/60 bg-card/40 overflow-hidden"
+          className="rounded-card border-2 border-border bg-card/40 shadow-md overflow-hidden"
         >
           {/* Header doubles as a collapse toggle for the active card. */}
           <button
