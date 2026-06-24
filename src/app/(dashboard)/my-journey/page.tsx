@@ -43,6 +43,7 @@ import { useGoals } from '@/hooks/use-goals';
 import type { Career } from '@/lib/career-pathways';
 import { useCareerCatalog } from '@/hooks/use-career-catalog';
 import { localizeCareer } from '@/lib/career-localization';
+import { buildDiscoverOpener } from '@/lib/discover-opener';
 import { displaySalary, displayEducation, showsSalaryProgression } from '@/lib/career-localization/display';
 import type { CareerDetails } from '@/lib/career-typical-days';
 import type { CareerProgression } from '@/lib/career-progressions';
@@ -609,24 +610,11 @@ function DiscoverTab({
       {/* Role overview */}
       <div className="rounded-card border-2 border-primary/30 bg-primary/[0.04] shadow-sm p-5">
         <p className="text-sm text-foreground/70 leading-[1.8]">
-          {dDetails?.whoThisIsGoodFor?.length
-            ? (() => {
-                // Clean each trait: strip trailing punctuation, trim,
-                // lowercase, and remove leading "people who are" etc.
-                // so the sentence reads naturally when assembled.
-                const clean = (s: string) =>
-                  s.replace(/[.,;:!]+$/g, '').trim().toLowerCase()
-                   .replace(/^people who (are |)/i, '')
-                   .replace(/^those who (are |)/i, '');
-                const traits = dDetails.whoThisIsGoodFor.slice(0, 3).map(clean).filter(Boolean);
-                if (traits.length === 0) return career.description;
-                if (traits.length === 1) return `This role suits people who are ${traits[0]}.`;
-                if (traits.length === 2) return `This role suits people who are ${traits[0]} and ${traits[1]}.`;
-                return `This role suits people who are ${traits[0]}, ${traits[1]}, and ${traits[2]}.`;
-              })()
-            : career.description
-          }
-          {career.growthOutlook === 'high' ? ' Demand is high and growing.' : career.growthOutlook === 'medium' ? ' The field is growing steadily.' : ' This is a stable career.'}
+          {buildDiscoverOpener({
+            description: career.description,
+            whoThisIsGoodFor: dDetails?.whoThisIsGoodFor,
+            growthOutlook: career.growthOutlook,
+          })}
         </p>
       </div>
 
