@@ -1571,6 +1571,13 @@
     "scientific-illustrator": "creative-arts-design",
     "archaeologist": "history-philosophy",
     "anthropologist": "history-philosophy",
-    "historian": "history-philosophy"
+    "historian": "history-philosophy",
+    "ordinary-seaman": "maritime",
+    "able-seaman": "maritime",
+    "deck-cadet": "maritime",
+    "deck-officer": "maritime",
+    "chief-officer": "maritime",
+    "master-mariner": "maritime",
+    "maritime-pilot": "maritime"
   }
 }
