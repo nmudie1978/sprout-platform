@@ -281,6 +281,20 @@ export interface CareerPathProgression {
 }
 
 const careerPathProgressionMap: Record<string, CareerPathProgression> = {
+  // Merchant fleet — the deck career ladder (ratings → cadet → officer ranks →
+  // master mariner), then a fork into command/pilotage or marine-offshore.
+  "master-mariner": {
+    entry: ["Ordinary Seaman", "Able Seaman", "Deck Cadet (maritime college)", "Officer of the Watch", "Chief Officer (1st Mate)"],
+    core: ["Master Mariner (Captain)"],
+    nextExpert: ["Maritime Pilot", "Marine Offshore (DP / Offshore Officer)"],
+    nextLead: ["Marine Superintendent", "Fleet / Port Operations Manager"],
+  },
+  "deck-officer": {
+    entry: ["Ordinary Seaman", "Able Seaman", "Deck Cadet (maritime college)"],
+    core: ["Deck Officer (Officer of the Watch)"],
+    nextExpert: ["Chief Officer (1st Mate)", "Master Mariner (Captain)"],
+    nextLead: ["Marine Offshore (DP / Offshore Officer)", "Marine Superintendent (ashore)"],
+  },
   // Technology & IT
   "cloud-engineer": {
     entry: ["IT Support", "Junior SysAdmin", "DevOps Intern"],
