@@ -1658,10 +1658,11 @@ function UnderstandTab({
                         </p>
                       </div>
                     )}
-                    {/* Funding & Scholarships — always shown (Lånekassen
-                        is universal), with career-specific scholarships
-                        highlighted when available. */}
-                    <FundingSection careerId={career?.id ?? null} />
+                    {/* Funding & Scholarships — the viewer's national student
+                        finance (Lånekassen / CSN / SU / Kela / Menntasjóður),
+                        with career-specific scholarships highlighted when
+                        available. Hidden for countries without funding data. */}
+                    <FundingSection careerId={career?.id ?? null} country={educationCountry} />
                   </TabsContent>
 
                   {/* ── Certifications tab ─────────────────────────── */}
