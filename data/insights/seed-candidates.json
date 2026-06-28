@@ -1,5 +1,43 @@
 [
   {
+    "title": "Exploring the societal impacts of AI",
+    "summary": "During the AI and Society Forum, leading MIT researchers examined critical questions about AI’s influence on employment and democracy.",
+    "sourceName": "MIT News",
+    "sourceUrl": "https://news.mit.edu/2026/exploring-societal-impacts-of-ai-0623",
+    "contentType": "article",
+    "tags": [
+      "jobs",
+      "future-of-work",
+      "ai"
+    ],
+    "publishDate": "2026-06-23"
+  },
+  {
+    "title": "MIT’s Initiative for New Manufacturing builds momentum",
+    "summary": "In its first year, INM has worked across research, workforce development, and industry engagement to help accelerate new manufacturing technologies and their real-world deployment.",
+    "sourceName": "MIT News",
+    "sourceUrl": "https://news.mit.edu/2026/mit-initiative-for-new-manufacturing-builds-momentum-0616",
+    "contentType": "article",
+    "tags": [
+      "jobs",
+      "future-of-work"
+    ],
+    "publishDate": "2026-06-16"
+  },
+  {
+    "title": "MIT takes manufacturing education across the country",
+    "summary": "The new TechAMP program teaches production principles to workers, helping them advance their careers and identify savings at their firms.",
+    "sourceName": "MIT News",
+    "sourceUrl": "https://news.mit.edu/2025/mit-takes-manufacturing-education-across-country-1210",
+    "contentType": "article",
+    "tags": [
+      "jobs",
+      "future-of-work",
+      "education"
+    ],
+    "publishDate": "2025-12-10"
+  },
+  {
     "title": "Turning curiosity about engineering into careers",
     "summary": "A collaboration between MIT’s Leaders for Global Operations, Boeing, and Engineering Tomorrow brings aspiring engineers from the classroom to the factory floor.",
     "sourceName": "MIT News",
@@ -335,19 +373,6 @@
       "skills"
     ],
     "publishDate": "2026-04-01"
-  },
-  {
-    "title": "Is Your Job Safe from AI? A Career Consultant + a YouTuber Answer",
-    "summary": "A workplace expert and a creator team up to break down how to thrive through career chaos and stay employable as AI changes the rules.",
-    "sourceName": "TED",
-    "sourceUrl": "https://www.youtube.com/watch?v=plbqT4dBNwo",
-    "contentType": "video",
-    "tags": [
-      "ai",
-      "future-of-work",
-      "career-planning"
-    ],
-    "publishDate": "2025-06-17"
   },
   {
     "title": "I'll Probably Lose My Job to AI. Here's Why That's OK",

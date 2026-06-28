@@ -1,12 +1,12 @@
 {
-  "lastRefreshISO": "2026-06-16T07:04:50.393Z",
-  "totalItems": 34,
-  "totalVerified": 34,
+  "lastRefreshISO": "2026-06-28T07:54:06.530Z",
+  "totalItems": 37,
+  "totalVerified": 37,
   "totalFailed": 0,
   "totalPending": 0,
-  "duplicatesRejected": 31,
+  "duplicatesRejected": 33,
   "byType": {
-    "article": 24,
+    "article": 27,
     "video": 5,
     "stat_report": 5,
     "pdf": 0
@@ -25,7 +25,7 @@
     "ted.com": 1,
     "ourworldindata.org": 1,
     "visualcapitalist.com": 4,
-    "news.mit.edu": 6
+    "news.mit.edu": 9
   },
   "verificationHealth": [
     {
@@ -33,98 +33,98 @@
       "checked": 4,
       "passed": 4,
       "failed": 0,
-      "lastCheckedAt": "2026-06-15T22:06:42.391Z"
+      "lastCheckedAt": "2026-06-28T07:53:54.673Z"
     },
     {
       "domain": "oecd.org",
       "checked": 3,
       "passed": 3,
       "failed": 0,
-      "lastCheckedAt": "2026-06-15T22:06:42.933Z"
+      "lastCheckedAt": "2026-06-28T07:53:55.201Z"
     },
     {
       "domain": "deloitte.com",
       "checked": 2,
       "passed": 2,
       "failed": 0,
-      "lastCheckedAt": "2026-06-15T22:06:43.238Z"
+      "lastCheckedAt": "2026-06-28T07:53:56.498Z"
     },
     {
       "domain": "accenture.com",
       "checked": 3,
       "passed": 3,
       "failed": 0,
-      "lastCheckedAt": "2026-06-15T22:06:43.671Z"
+      "lastCheckedAt": "2026-06-28T07:53:56.743Z"
     },
     {
       "domain": "unesco.org",
       "checked": 1,
       "passed": 1,
       "failed": 0,
-      "lastCheckedAt": "2026-06-15T22:06:43.754Z"
+      "lastCheckedAt": "2026-06-28T07:53:56.790Z"
     },
     {
       "domain": "undp.org",
       "checked": 1,
       "passed": 1,
       "failed": 0,
-      "lastCheckedAt": "2026-06-15T22:06:44.056Z"
+      "lastCheckedAt": "2026-06-28T07:53:59.630Z"
     },
     {
       "domain": "wipo.int",
       "checked": 1,
       "passed": 1,
       "failed": 0,
-      "lastCheckedAt": "2026-06-15T22:06:46.763Z"
+      "lastCheckedAt": "2026-06-28T07:54:00.095Z"
     },
     {
       "domain": "who.int",
       "checked": 1,
       "passed": 1,
       "failed": 0,
-      "lastCheckedAt": "2026-06-15T22:06:46.979Z"
+      "lastCheckedAt": "2026-06-28T07:54:01.209Z"
     },
     {
       "domain": "worldbank.org",
       "checked": 2,
       "passed": 2,
       "failed": 0,
-      "lastCheckedAt": "2026-06-15T22:06:47.142Z"
+      "lastCheckedAt": "2026-06-28T07:54:01.584Z"
     },
     {
       "domain": "youtube.com",
       "checked": 4,
       "passed": 4,
       "failed": 0,
-      "lastCheckedAt": "2026-06-15T22:06:50.062Z"
+      "lastCheckedAt": "2026-06-28T07:54:04.161Z"
     },
     {
       "domain": "ted.com",
       "checked": 1,
       "passed": 1,
       "failed": 0,
-      "lastCheckedAt": "2026-06-15T22:06:47.949Z"
+      "lastCheckedAt": "2026-06-28T07:54:02.406Z"
     },
     {
       "domain": "ourworldindata.org",
       "checked": 1,
       "passed": 1,
       "failed": 0,
-      "lastCheckedAt": "2026-06-15T22:06:50.787Z"
+      "lastCheckedAt": "2026-06-28T07:54:04.856Z"
     },
     {
       "domain": "visualcapitalist.com",
       "checked": 4,
       "passed": 4,
       "failed": 0,
-      "lastCheckedAt": "2026-06-15T22:06:51.094Z"
+      "lastCheckedAt": "2026-06-28T07:54:05.186Z"
     },
     {
       "domain": "news.mit.edu",
-      "checked": 6,
-      "passed": 6,
+      "checked": 9,
+      "passed": 9,
       "failed": 0,
-      "lastCheckedAt": "2026-06-16T07:04:50.298Z"
+      "lastCheckedAt": "2026-06-28T07:54:06.487Z"
     }
   ]
 }
