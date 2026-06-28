@@ -46,5 +46,71 @@
     "ok": true,
     "checkedAtISO": "2026-01-22T21:54:42.525Z",
     "ttlExpiresAtISO": "2026-01-23T21:54:42.984Z"
+  },
+  "https://www.utdanningogkarriere.no/studentfairs/sandefjord/": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-06-28T06:08:29.708Z",
+    "ttlExpiresAtISO": "2026-06-29T06:08:31.771Z"
+  },
+  "https://www.utdanningogkarriere.no/studentfairs/alesund/": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-06-28T06:08:29.709Z",
+    "ttlExpiresAtISO": "2026-06-29T06:08:31.824Z"
+  },
+  "https://www.utdanningogkarriere.no/studentfairs/kristiansand/": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-06-28T06:08:29.708Z",
+    "ttlExpiresAtISO": "2026-06-29T06:08:31.933Z"
+  },
+  "https://www.utdanningogkarriere.no/studentfairs/stavanger/": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-06-28T06:08:29.709Z",
+    "ttlExpiresAtISO": "2026-06-29T06:08:31.983Z"
+  },
+  "https://www.utdanningogkarriere.no/studentfairs/bergen/": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-06-28T06:08:29.709Z",
+    "ttlExpiresAtISO": "2026-06-29T06:08:31.986Z"
+  },
+  "https://www.utdanningogkarriere.no/studentfairs/kristiansund/": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-06-28T06:08:31.772Z",
+    "ttlExpiresAtISO": "2026-06-29T06:08:33.779Z"
+  },
+  "https://www.utdanningogkarriere.no/studentfairs/trondheim/": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-06-28T06:08:31.824Z",
+    "ttlExpiresAtISO": "2026-06-29T06:08:33.848Z"
+  },
+  "https://www.utdanningogkarriere.no/studentfairs/oslo/": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-06-28T06:08:31.983Z",
+    "ttlExpiresAtISO": "2026-06-29T06:08:33.901Z"
+  },
+  "https://www.utdanningogkarriere.no/studentfairs/tromso/": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-06-28T06:08:31.933Z",
+    "ttlExpiresAtISO": "2026-06-29T06:08:33.965Z"
+  },
+  "https://www.utdanningogkarriere.no/studentfairs/transport-services/": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-06-28T06:08:31.986Z",
+    "ttlExpiresAtISO": "2026-06-29T06:08:33.974Z"
+  },
+  "https://www.utdanningogkarriere.no/studentfairs/check-list-for-exhibitors/#": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-06-28T06:08:33.848Z",
+    "ttlExpiresAtISO": "2026-06-29T06:08:35.195Z"
   }
 }
