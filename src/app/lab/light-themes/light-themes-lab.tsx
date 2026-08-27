@@ -140,7 +140,7 @@ const FAMILIES: Family[] = [
       { id: 12, name: "Oat", vibe: "softer, oatier, less yellow", bg: "38 26% 86%" },
       { id: 13, name: "Sandstone", vibe: "more pigment — proper sand", bg: "34 28% 84%" },
       { id: 14, name: "Parchment", vibe: "palest of the warm set", bg: "42 24% 89%" },
-      { id: 15, name: "Wheat", vibe: "sunnier, golden lean", bg: "44 32% 87%", current: true },
+      { id: 15, name: "Wheat", vibe: "sunnier, golden lean", bg: "44 32% 87%" },
     ],
   },
   {
@@ -390,7 +390,7 @@ function Tile({ p, selected, onPick }: { p: Palette; selected: boolean; onPick: 
 }
 
 export function LightThemesLab() {
-  const [selectedId, setSelectedId] = useState(15); // opens on the live tone
+  const [selectedId, setSelectedId] = useState(15);
   const previewRef = useRef<HTMLDivElement | null>(null);
   const topRef = useRef<HTMLDivElement | null>(null);
 
@@ -437,6 +437,9 @@ export function LightThemesLab() {
         <p style={{ fontSize: 13, color: "#6b655e", margin: "10px 0 0", lineHeight: 1.55 }}>
           Click any tile to load it into the big preview. Tell me a number and it gets wired into{" "}
           <code style={{ background: "#e8e5df", borderRadius: 4, padding: "1px 5px" }}>globals.css</code>.
+          {" "}<strong style={{ color: "#3f3a33" }}>None of these is live right now</strong> — the light
+          theme currently runs the warm-dark &ldquo;rowds shop&rdquo; gradient instead. These remain the
+          light-canvas options if you want to go back to a light theme.
         </p>
       </header>
 

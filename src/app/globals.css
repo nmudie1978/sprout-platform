@@ -4,50 +4,61 @@
 
 @layer base {
   :root {
-    /* ── Light mode theme tokens — 15 · Wheat ──
-       A sunny, golden-leaning warm paper: the canvas has a clear gold lean
-       while staying a toned paper, never a white page. Owner-picked from the
-       /lab/light-themes review (was 24 · Deep Sea, a deep teal-blue).
-       Surfaces keep the ordering the blue theme established — sidebar-border <
-       border < input < sidebar < background < muted < card < popover <
-       secondary — so every relationship survives the hue swap. The teal brand,
-       achievement gold and semantic hues are retained.
-       Dark mode (.dark) is the app DEFAULT and is left untouched. */
-    --background: 44 32% 87%;           /* 15 · Wheat — sunny golden paper canvas */
-    --foreground: 202 30% 14%;          /* deep slate ink, never harsh black — held from the review, where ink was constant across all 50 tones */
-    --card: 45 38% 92%;                 /* warm surface, a clear step lighter than the canvas */
-    --card-foreground: 202 30% 14%;
-    --popover: 45 38% 93%;              /* matching warm popover surface */
-    --popover-foreground: 202 30% 14%;
-    --primary: 178 69% 29%;             /* #177D7A — grounded teal brand (retained) */
+    /* ── "Light" mode theme tokens — rowds shop v1 (warm dark) ──
+       OWNER-DIRECTED, and deliberately not light: the light theme now runs the
+       21st.dev "background rowds shop v1" gradient — #16130E → #372F20 →
+       #9C8D63 at 170deg, with grain. That recipe is DARK (7% → 50% lightness),
+       so the ink is flipped to near-white and every surface is re-derived
+       upward from the canvas, exactly as .dark does.
+
+       This replaces 15 · Wheat (44 32% 87%), which replaced 24 · Deep Sea.
+       The app therefore has TWO dark themes and no light one — intended.
+
+       Hues stay in the gradient's 38–44 family and saturation eases off as
+       surfaces lift, mirroring .dark (Sapphire). Lightness offsets from the
+       canvas are Sapphire's, which are already proven on a dark canvas:
+       sidebar -2, card +4, muted +7, sidebar-border +8, secondary +10,
+       border/input +14.
+
+       The teal brand, gold accent and semantic hues take their .dark values,
+       not the old light ones — the light values were tuned to read on an 87%
+       canvas and would disappear here. */
+    --background: 38 22% 7%;            /* #16130E — the gradient's base, so any surface that isn't covered by the ambient canvas still matches it */
+    --foreground: 40 20% 95%;           /* warm near-white ink, never harsh white */
+    --card: 39 20% 11%;                 /* warm surface, a clear step ABOVE the canvas (dark-mode direction) */
+    --card-foreground: 40 20% 95%;
+    --popover: 39 20% 11%;
+    --popover-foreground: 40 20% 95%;
+    --primary: 166 72% 50%;             /* lifted teal — the light theme's #177D7A (29% L) is far too dark to read on this canvas. Same value .dark already uses. */
     --primary-foreground: 0 0% 100%;
-    --secondary: 45 30% 94%;            /* lightest surface. Capped at 94%: Wheat's canvas sits 8 points lighter than the old blue one, so the "step lighter" surfaces compress against the ceiling — pushing this to the blue theme's +9 offset would land at 96% and read as white, against the no-white direction. Borders carry the separation instead. */
-    --secondary-foreground: 202 30% 14%;
-    --muted: 44 30% 88%;                /* nested/sunken surface — a clear step DARKER than --card so sub-panels read below their parent */
-    --muted-foreground: 200 14% 34%;    /* calm secondary text; faint /50–/40 variants stay legible */
-    --accent: 40 61% 57%;               /* #D4A84F — soft achievement gold highlight (retained) */
-    --accent-foreground: 30 30% 18%;    /* warm ink — reads on the gold accent */
-    /* Restrained semantic palette — the ONLY non-teal/gold hues allowed.
-       Use these for category colour-coding instead of raw Tailwind blues/
-       greens/violets so everything stays calm and paper-friendly. */
-    --success: 129 22% 46%;             /* #5B8F63 — sage green */
-    --warning: 34 55% 51%;              /* #C68B3C — warm amber */
-    --info: 205 21% 37%;                /* #4A6172 — warm slate (DS "secondary") */
-    --destructive: 0 72% 50%;           /* calm danger */
-    --destructive-foreground: 0 0% 100%;
-    --border: 43 26% 70%;               /* stronger warm border so tinted cards/sections stay clearly separated in light mode */
-    --input: 43 24% 74%;
-    --ring: 178 69% 29%;
+    --secondary: 40 16% 17%;
+    --secondary-foreground: 40 20% 95%;
+    --muted: 39 18% 14%;                /* nested/sunken surface — sits between card and secondary */
+    --muted-foreground: 40 12% 66%;     /* calm secondary text; faint /50–/40 variants stay legible */
+    --accent: 40 30% 24%;               /* warm gold-tinted surface on the dark canvas */
+    --accent-foreground: 40 58% 70%;    /* soft gold */
+    /* Restrained semantic palette — the brighter .dark values, since the
+       canvas is now dark. The light-mode versions were too dark to read. */
+    --success: 129 30% 60%;
+    --warning: 34 60% 62%;
+    --info: 205 28% 62%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 40 15% 21%;               /* warm border — separates surfaces that are only a few points apart in lightness */
+    --input: 40 15% 21%;
+    --ring: 166 72% 50%;
     --radius: 0.75rem;
-    --sidebar: 43 28% 85%;              /* warm sidebar — tuned to the canvas */
-    --sidebar-foreground: 202 30% 14%;
-    --sidebar-border: 42 30% 66%;       /* defined splitter between sidebar and canvas (light mode) */
-    /* Glow brand — teal, used by the Glow component in light mode */
-    --brand: 178 69% 32%;
-    --brand-foreground: 178 60% 38%;
+    --sidebar: 38 24% 5%;               /* sits BELOW the canvas, as .dark's does */
+    --sidebar-foreground: 40 12% 66%;
+    --sidebar-border: 40 16% 15%;       /* defined splitter between sidebar and canvas */
+    /* Glow brand — teal. Lifted to the .dark values: the previous
+       178 69% 32% / 178 60% 38% were tuned to glow against a light canvas
+       and vanish against this one. */
+    --brand: 172 72% 55%;
+    --brand-foreground: 166 66% 65%;
     /* gradient-1 paints the onboarding walkthrough panel (it uses light
-       text), so keep it a teal panel — readable + on-brand. The warm
-       paper page canvas lives in AmbientLightBackground, not here. */
+       text), so keep it a teal panel — readable + on-brand. The page canvas
+       itself lives in AmbientLightBackground, not here. */
     --gradient-1: linear-gradient(140deg, hsl(178 69% 32%) 0%, hsl(178 70% 22%) 100%);
     --gradient-2: linear-gradient(140deg, hsl(178 69% 32%) 0%, hsl(178 70% 22%) 100%);
     --gradient-3: linear-gradient(140deg, hsl(178 69% 32% / 0.08) 0%, hsl(178 70% 22% / 0.08) 100%);
@@ -115,9 +126,8 @@
      `bg-background/60` use a different generated class so they keep
      their intended translucency.
 
-     Cards and popovers use a soft green-blue tint (never white) so they
-     sit calmly on the teal canvas — distinct via tone + a defined border
-     rather than a stark white block. */
+     Cards and popovers are warm dark surfaces stepping UP from the canvas
+     — distinct via tone + a defined border, never a stark block. */
   :root:not(.dark) .bg-background {
     background-color: transparent;
   }
@@ -127,10 +137,12 @@
   :root:not(.dark) .bg-popover {
     background-color: hsl(var(--popover));
   }
-  /* Kill stark white in light mode: many components hardcode Tailwind's
-     `bg-white`. Remap solid white to the green-blue card tint so no surface
-     reads as a harsh white block (the owner's "no white" direction). Dark
-     mode is untouched; translucent `bg-white/NN` overlays are left alone. */
+  /* Kill stark white: many components hardcode Tailwind's `bg-white`. Remap
+     solid white to the card surface so no surface reads as a harsh white block
+     (the owner's "no white" direction). This matters MORE now that this theme
+     is dark — an un-remapped `bg-white` would be a blinding panel rather than
+     merely a flat one. `.dark` is untouched; translucent `bg-white/NN`
+     overlays are left alone. */
   :root:not(.dark) .bg-white {
     background-color: hsl(var(--card));
   }
