@@ -91,13 +91,23 @@ function normaliseCached(raw: unknown): YouTubeSearchResult {
   return EMPTY_RESULT;
 }
 
-/** One raw YouTube search → mapped, id-validated videos (no relevance filter). */
+// Upstream budget per YouTube call. A career can trigger up to 4 of them, and
+// this route has no `maxDuration` override, so an unbounded fetch against a
+// slow/black-holed upstream burns the whole function budget and 504s.
+const YOUTUBE_FETCH_TIMEOUT_MS = 6000;
+
+/**
+ * One raw YouTube search → mapped, id-validated videos (no relevance filter).
+ *
+ * `failed` distinguishes "YouTube said there is nothing" from "we never got an
+ * answer" — the caller must not cache the latter as an empty result.
+ */
 async function fetchYouTubeVideos(
   query: string,
   lang: string,
   region: string | undefined,
   apiKey: string,
-): Promise<YouTubeVideo[]> {
+): Promise<{ videos: YouTubeVideo[]; failed: boolean }> {
   const params = new URLSearchParams({
     part: 'snippet',
     q: query,
@@ -109,18 +119,29 @@ async function fetchYouTubeVideos(
   });
   if (region) params.set('regionCode', region);
 
-  const res = await fetch(`https://www.googleapis.com/youtube/v3/search?${params.toString()}`, { cache: 'no-store' });
-  if (!res.ok) {
-    console.error('[YouTube Search] API error:', res.status);
-    return [];
+  try {
+    const res = await fetch(`https://www.googleapis.com/youtube/v3/search?${params.toString()}`, {
+      cache: 'no-store',
+      signal: AbortSignal.timeout(YOUTUBE_FETCH_TIMEOUT_MS),
+    });
+    if (!res.ok) {
+      // 403 here is usually quota exhaustion — transient, and must not be
+      // cached as "this career has no videos".
+      console.error('[YouTube Search] API error:', res.status);
+      return { videos: [], failed: true };
+    }
+    const data = await res.json();
+    const videos = (data.items ?? [])
+      .map((it: { id?: { videoId?: string }; snippet?: { title?: string } }) => ({
+        videoId: it.id?.videoId ?? '',
+        title: it.snippet?.title ?? null,
+      }))
+      .filter((v: YouTubeVideo) => Boolean(v.videoId));
+    return { videos, failed: false };
+  } catch (error) {
+    console.error('[YouTube Search] Upstream fetch failed:', error);
+    return { videos: [], failed: true };
   }
-  const data = await res.json();
-  return (data.items ?? [])
-    .map((it: { id?: { videoId?: string }; snippet?: { title?: string } }) => ({
-      videoId: it.id?.videoId ?? '',
-      title: it.snippet?.title ?? null,
-    }))
-    .filter((v: YouTubeVideo) => Boolean(v.videoId));
 }
 
 /** Strict English title-relevance filter — drops loosely-related junk. */
@@ -206,26 +227,40 @@ export async function GET(req: NextRequest) {
 
   const apiKey = process.env.YOUTUBE_API_KEY;
   if (!apiKey) {
+    // Loud: this silently blanks the Day-in-the-Life panel for EVERY career,
+    // and nothing else in the app surfaces it (there is no env validation for
+    // this key). Return empty without caching, so it self-heals on config fix.
+    console.error(
+      '[YouTube Search] YOUTUBE_API_KEY is not set — every career will show ' +
+      '"No videos found". Set it in the deployment environment.',
+    );
     return NextResponse.json(EMPTY_RESULT);
   }
+
+  // Any failed upstream call makes this response untrustworthy as a cache
+  // entry: caching an empty result from a quota blip or timeout "poisons" the
+  // career until expiry (see the empty-TTL note below).
+  let upstreamFailed = false;
 
   try {
     // 1) Localized search. For non-English we relax the (English) title-token
     //    relevance filter — the career token is English, so it would reject the
     //    Spanish/Norwegian titles we deliberately asked for. We trust
     //    relevanceLanguage + regionCode to keep results on-topic instead.
-    const rawLocalized = await fetchYouTubeVideos(localizedQuery, locale.lang, locale.region, apiKey);
+    const localized = await fetchYouTubeVideos(localizedQuery, locale.lang, locale.region, apiKey);
+    upstreamFailed ||= localized.failed;
     let videos = locale.lang === 'en'
-      ? applyRelevanceFilter(rawLocalized, career)
-      : rawLocalized;
+      ? applyRelevanceFilter(localized.videos, career)
+      : localized.videos;
     let usedFallback = false;
 
     // 2) English fallback — if the localized search found nothing, fall back to
     //    the English search so a localized user never sees FEWER videos than an
     //    English user would for the same career.
     if (videos.length === 0 && locale.lang !== 'en') {
-      const rawEnglish = await fetchYouTubeVideos(buildEnglishDayInLifeQuery(career), 'en', undefined, apiKey);
-      videos = applyRelevanceFilter(rawEnglish, career);
+      const english = await fetchYouTubeVideos(buildEnglishDayInLifeQuery(career), 'en', undefined, apiKey);
+      upstreamFailed ||= english.failed;
+      videos = applyRelevanceFilter(english.videos, career);
       usedFallback = videos.length > 0;
     }
 
@@ -236,8 +271,9 @@ export async function GET(req: NextRequest) {
     //    localized). Merged in to supplement when results are thin; one extra
     //    call per career, cached for a week.
     if (locale.lang === 'en' && videos.length < 5) {
-      const rawExplainer = await fetchYouTubeVideos(buildEnglishExplainerQuery(career), 'en', undefined, apiKey);
-      videos = mergeVideos(videos, applyRelevanceFilter(rawExplainer, career));
+      const explainer = await fetchYouTubeVideos(buildEnglishExplainerQuery(career), 'en', undefined, apiKey);
+      upstreamFailed ||= explainer.failed;
+      videos = mergeVideos(videos, applyRelevanceFilter(explainer.videos, career));
     }
 
     // 4) Broaden niche/qualified titles when still empty: "IT Programme Manager"
@@ -246,13 +282,14 @@ export async function GET(req: NextRequest) {
     if (videos.length === 0) {
       const broad = broadenCareer(career);
       if (broad) {
-        const [rawBroadDay, rawBroadEx] = await Promise.all([
+        const [broadDay, broadEx] = await Promise.all([
           fetchYouTubeVideos(buildEnglishDayInLifeQuery(broad), 'en', undefined, apiKey),
           fetchYouTubeVideos(buildEnglishExplainerQuery(broad), 'en', undefined, apiKey),
         ]);
+        upstreamFailed ||= broadDay.failed || broadEx.failed;
         videos = mergeVideos(
-          applyRelevanceFilter(rawBroadDay, broad),
-          applyRelevanceFilter(rawBroadEx, broad),
+          applyRelevanceFilter(broadDay.videos, broad),
+          applyRelevanceFilter(broadEx.videos, broad),
         );
         usedFallback = usedFallback || videos.length > 0;
       }
@@ -276,17 +313,23 @@ export async function GET(req: NextRequest) {
     //    all stuck empty for a day.)
     //  - English-fallback hit → 1 day (so newly-indexed local content is found).
     //  - Localized hit → 7 days.
+    // Don't cache an empty result we never actually got an answer for — a
+    // quota 403 or an upstream timeout would otherwise be stored as fact and
+    // served to every visitor of that career until it expires. Retry next view.
+    const cacheable = videos.length > 0 || !upstreamFailed;
     const cachePayload = result as unknown as Prisma.InputJsonValue;
     const ttlMs = videos.length === 0
       ? 60 * 60 * 1000
       : usedFallback
       ? 1 * 24 * 60 * 60 * 1000
       : 7 * 24 * 60 * 60 * 1000;
-    prisma.videoCache.upsert({
-      where: { cacheKey },
-      create: { cacheKey, data: cachePayload, expiresAt: new Date(Date.now() + ttlMs) },
-      update: { data: cachePayload, expiresAt: new Date(Date.now() + ttlMs) },
-    }).catch(logAndSwallow('youtubeSearch:cache:write'));
+    if (cacheable) {
+      prisma.videoCache.upsert({
+        where: { cacheKey },
+        create: { cacheKey, data: cachePayload, expiresAt: new Date(Date.now() + ttlMs) },
+        update: { data: cachePayload, expiresAt: new Date(Date.now() + ttlMs) },
+      }).catch(logAndSwallow('youtubeSearch:cache:write'));
+    }
 
     return NextResponse.json(result, {
       headers: { 'Cache-Control': 'public, s-maxage=86400, stale-while-revalidate=86400' },
