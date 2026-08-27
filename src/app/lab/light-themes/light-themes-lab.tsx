@@ -114,7 +114,7 @@ const FAMILIES: Family[] = [
     title: "Teal & Sea",
     blurb: "Brand-native. The canvas shares a hue family with the teal, so nothing clashes.",
     bases: [
-      { id: 1, name: "Deep Sea", vibe: "the tone live today — deep teal-blue paper", bg: "198 32% 79%", current: true },
+      { id: 1, name: "Deep Sea", vibe: "the previous light theme — deep teal-blue paper", bg: "198 32% 79%" },
       { id: 2, name: "Shallow Sea", vibe: "same hue, lifted — lighter and airier", bg: "196 34% 84%" },
       { id: 3, name: "Lagoon", vibe: "greener, brighter water", bg: "186 30% 82%" },
       { id: 4, name: "Seafoam", vibe: "soft, desaturated sea-green", bg: "172 26% 85%" },
@@ -140,7 +140,7 @@ const FAMILIES: Family[] = [
       { id: 12, name: "Oat", vibe: "softer, oatier, less yellow", bg: "38 26% 86%" },
       { id: 13, name: "Sandstone", vibe: "more pigment — proper sand", bg: "34 28% 84%" },
       { id: 14, name: "Parchment", vibe: "palest of the warm set", bg: "42 24% 89%" },
-      { id: 15, name: "Wheat", vibe: "sunnier, golden lean", bg: "44 32% 87%" },
+      { id: 15, name: "Wheat", vibe: "sunnier, golden lean", bg: "44 32% 87%", current: true },
     ],
   },
   {
@@ -390,7 +390,7 @@ function Tile({ p, selected, onPick }: { p: Palette; selected: boolean; onPick: 
 }
 
 export function LightThemesLab() {
-  const [selectedId, setSelectedId] = useState(1);
+  const [selectedId, setSelectedId] = useState(15); // opens on the live tone
   const previewRef = useRef<HTMLDivElement | null>(null);
   const topRef = useRef<HTMLDivElement | null>(null);
 
