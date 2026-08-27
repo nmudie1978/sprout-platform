@@ -324,7 +324,16 @@ export async function GET(req: NextRequest) {
       ? 1 * 24 * 60 * 60 * 1000
       : 7 * 24 * 60 * 60 * 1000;
     if (cacheable) {
-      prisma.videoCache.upsert({
+      // AWAIT the write. This runs as a serverless function, so anything still
+      // pending when the response is flushed may never run — the instance can
+      // be frozen or reclaimed immediately. A dropped write here isn't a lost
+      // optimisation: the next view of this career repeats 2-4 YouTube searches
+      // at 100 quota units each against one 10k/day key, which is the exact
+      // pressure that poisoned the cache in #282. One DB round-trip on the
+      // (rare) miss path is nothing next to the upstream calls we just made.
+      // `.catch()` keeps a write failure from ever costing the user their
+      // videos. Matches career-reality/route.ts, which writes the same table.
+      await prisma.videoCache.upsert({
         where: { cacheKey },
         create: { cacheKey, data: cachePayload, expiresAt: new Date(Date.now() + ttlMs) },
         update: { data: cachePayload, expiresAt: new Date(Date.now() + ttlMs) },

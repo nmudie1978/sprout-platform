@@ -386,19 +386,27 @@ export async function POST(req: NextRequest) {
       journey = { ...journey, items: stripFormalEducationSteps(journey.items) };
     }
 
-    // Cache result (non-blocking) — stamp the version, stage,
-    // completion AND finish year so future requests cleanly miss the
-    // cache when any of them changes.
+    // Cache result — stamp the version, stage, completion AND finish year so
+    // future requests cleanly miss the cache when any of them changes.
+    //
+    // These are AWAITED, not fire-and-forget. On serverless, work still pending
+    // when the response is flushed may never run: the instance can be frozen
+    // the moment we return. Dropping either write means paying for this whole
+    // AI generation again on the very next request, so two DB round-trips are
+    // cheap insurance. Failures stay swallowed — a cache miss is recoverable,
+    // failing the user's roadmap is not.
     const cacheData = JSON.parse(JSON.stringify({ version: ROADMAP_CACHE_VERSION, career, stage: stageKey, complete: completeKey, finish: finishYearKey, role: transitionAnchor, generatedAt: new Date().toISOString(), journey }));
-    prisma.youthProfile.update({
-      where: { userId: session.user.id },
-      data: { generatedTimeline: cacheData },
-    }).catch(logAndSwallow("timeline:perUserCache:write"));
-    prisma.videoCache.upsert({
-      where: { cacheKey: globalCacheKey },
-      create: { cacheKey: globalCacheKey, data: JSON.parse(JSON.stringify({ journey })), expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) },
-      update: { data: JSON.parse(JSON.stringify({ journey })), expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) },
-    }).catch(logAndSwallow("timeline:globalCache:write"));
+    await Promise.all([
+      prisma.youthProfile.update({
+        where: { userId: session.user.id },
+        data: { generatedTimeline: cacheData },
+      }).catch(logAndSwallow("timeline:perUserCache:write")),
+      prisma.videoCache.upsert({
+        where: { cacheKey: globalCacheKey },
+        create: { cacheKey: globalCacheKey, data: JSON.parse(JSON.stringify({ journey })), expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) },
+        update: { data: JSON.parse(JSON.stringify({ journey })), expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) },
+      }).catch(logAndSwallow("timeline:globalCache:write")),
+    ]);
 
     return NextResponse.json({ journey, cached: false });
   } catch (error) {
