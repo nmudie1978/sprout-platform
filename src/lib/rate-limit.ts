@@ -80,11 +80,31 @@ function isRedisConfigured(): boolean {
 // so we open at most one TCP+TLS connection per running instance.
 let redisClient: RedisClientType | null = null;
 let connectPromise: Promise<RedisClientType | null> | null = null;
+// Set after a failed connect: skip Redis entirely until this timestamp so a
+// dead host costs one timeout per cooldown window, not one per request.
+let redisUnavailableUntil = 0;
+
+// Connect budget. Redis is an OPTIONAL accelerator here — the in-memory
+// fallback is always available — so waiting on it must never approach a
+// serverless function's wall-clock limit.
+const CONNECT_BUDGET_MS = 2000;
+// Retries before we stop reconnecting. Must be finite: node-redis retries
+// forever while the strategy keeps returning a delay, which leaves
+// `connect()` pending indefinitely against a dead host.
+const MAX_RECONNECT_RETRIES = 10;
+// How long to stay on in-memory after a failed connect before retrying.
+const UNAVAILABLE_COOLDOWN_MS = 30_000;
 
 /**
  * Get or lazily create a connected node-redis client.
- * Returns null when Redis is unconfigured or the connection fails (the
- * caller then falls back to in-memory).
+ * Returns null when Redis is unconfigured, the connection fails, or the
+ * connect exceeds its budget (the caller then falls back to in-memory).
+ *
+ * Never rejects and never outlasts CONNECT_BUDGET_MS: a lapsed Redis
+ * subscription once left REDIS_URL pointing at a dead host, and the
+ * unbounded reconnect loop meant `connect()` never settled — every
+ * rate-limited route hung until the platform returned a 504. Degrading is
+ * always preferable to hanging.
  *
  * Exported so other server-only modules (e.g. the admin token denylist)
  * share this single connection rather than opening their own.
@@ -92,15 +112,20 @@ let connectPromise: Promise<RedisClientType | null> | null = null;
 export async function getRedisClient(): Promise<RedisClientType | null> {
   if (!isRedisConfigured()) return null;
   if (redisClient?.isOpen) return redisClient;
+  if (Date.now() < redisUnavailableUntil) return null;
   if (connectPromise) return connectPromise;
 
   connectPromise = (async () => {
+    let client: RedisClientType | null = null;
     try {
-      const client: RedisClientType = createClient({
+      client = createClient({
         url: process.env.REDIS_URL!,
         socket: {
-          // Bounded backoff so a flaky connection can't spin forever.
-          reconnectStrategy: (retries) => Math.min(retries * 50, 1000),
+          // Bounded backoff that eventually GIVES UP — returning false makes
+          // `connect()` reject so we can fall back, instead of retrying a
+          // dead host forever behind a pending promise.
+          reconnectStrategy: (retries) =>
+            retries >= MAX_RECONNECT_RETRIES ? false : Math.min(retries * 50, 1000),
           connectTimeout: 5000,
         },
       });
@@ -109,12 +134,29 @@ export async function getRedisClient(): Promise<RedisClientType | null> {
       client.on("error", (err) => {
         console.error("[Rate Limit] Redis client error:", err);
       });
-      await client.connect();
+
+      // Belt and braces: even with a bounded strategy, cap the wait. DNS
+      // black-holes and TLS stalls can outlive the retry budget.
+      const connected = client.connect();
+      // The race leaves this promise dangling on timeout — claim its rejection
+      // so it can't surface as an unhandled rejection and kill the instance.
+      connected.catch(() => {});
+      await withConnectBudget(connected);
+
       redisClient = client;
+      redisUnavailableUntil = 0;
       return client;
     } catch (error) {
-      console.error("[Rate Limit] Failed to connect to Redis:", error);
+      console.error("[Rate Limit] Redis unavailable, using in-memory limits:", error);
+      // Abandon the half-open client, otherwise its reconnect loop keeps
+      // running (and holding a socket) for the life of the instance.
+      try {
+        client?.destroy();
+      } catch {
+        /* already dead — nothing to release */
+      }
       redisClient = null;
+      redisUnavailableUntil = Date.now() + UNAVAILABLE_COOLDOWN_MS;
       return null;
     } finally {
       connectPromise = null;
@@ -122,6 +164,20 @@ export async function getRedisClient(): Promise<RedisClientType | null> {
   })();
 
   return connectPromise;
+}
+
+/** Reject if `promise` hasn't settled within the connect budget. */
+function withConnectBudget(promise: Promise<unknown>): Promise<unknown> {
+  let timer: ReturnType<typeof setTimeout>;
+  const budget = new Promise<never>((_resolve, reject) => {
+    timer = setTimeout(
+      () => reject(new Error(`connect exceeded ${CONNECT_BUDGET_MS}ms budget`)),
+      CONNECT_BUDGET_MS,
+    );
+    // Don't hold the process open on a timer nobody is waiting for.
+    timer.unref?.();
+  });
+  return Promise.race([promise, budget]).finally(() => clearTimeout(timer));
 }
 
 // ============================================
