@@ -131,8 +131,10 @@ export async function POST(req: NextRequest) {
 
     const examples = parsed.examples.slice(0, 2);
 
-    // Cache for 30 days (non-blocking)
-    prisma.videoCache.upsert({
+    // Cache for 30 days. AWAITED: on serverless a write still pending when the
+    // response is flushed may never run, and losing it means paying for this AI
+    // generation again on the next request. Failure stays swallowed.
+    await prisma.videoCache.upsert({
       where: { cacheKey },
       create: { cacheKey, data: JSON.parse(JSON.stringify({ examples })), expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) },
       update: { data: JSON.parse(JSON.stringify({ examples })), expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) },
