@@ -1,37 +1,29 @@
 "use client"
 
+import { GradientBackground } from "@/components/ui/background-rowds-shop-v1"
+
 /**
  * AmbientLightBackground
  *
- * Light-mode canvas, anchored to the active light theme (15 · Wheat):
- * a sunny golden "paper" with a subtle deeper-wheat depth in the top-right
- * and a faint gold warmth lower-left so it never reads flat.
+ * The "light"-theme canvas. Despite the name it is now a WARM DARK canvas:
+ * the 21st.dev "background rowds shop v1" gradient (#16130E → #372F20 →
+ * #9C8D63 at 170deg, plus grain), owner-picked to replace 15 · Wheat.
  *
- * The base is the `--background` token (Wheat), NOT a hardcoded wash, so
- * this canvas always matches the theme tokens in globals.css instead of
- * drifting from them. (It previously painted the old lighter "Decent"
- * teal → pale-sky gradient, which sat ON TOP of the Deep Sea token and made
- * the new theme invisible.) Dark mode is untouched (`dark:hidden`).
+ * The recipe lives in <GradientBackground>, imported rather than copied, so
+ * the canvas and the component can't drift apart. Its palette is fixed inside
+ * that component, NOT token-derived — so if the theme is ever swapped again,
+ * `--background` in globals.css and this gradient must move together. They are
+ * kept in sync today: `--background: 38 22% 7%` is the gradient's #16130E base,
+ * which is what shows through anywhere the ambient layer doesn't reach.
+ *
+ * `.bg-background` is transparent in light mode (globals.css) so this shows
+ * through across the app. Dark mode is untouched (`dark:hidden`).
  * Mounted once in the dashboard layout.
  */
 export function AmbientLightBackground() {
   return (
-    <div
-      aria-hidden
-      className="fixed inset-0 z-0 pointer-events-none dark:hidden"
-      style={{
-        background:
-          // Subtle deeper-wheat depth, top-right (premium, grounded). This one
-          // is hardcoded rather than token-derived, so it MUST be retinted
-          // alongside --background — at 0.38 alpha a stale hue lays a visible
-          // wash of the old theme over the new canvas.
-          "radial-gradient(120% 90% at 88% 6%, hsl(44 44% 66% / 0.38) 0%, transparent 55%)," +
-          // faint soft-gold warmth, lower-left (keeps it from feeling clinical)
-          "radial-gradient(90% 80% at 8% 100%, hsl(40 55% 55% / 0.06) 0%, transparent 46%)," +
-          // Wheat canvas — tracks the --background token so it never
-          // drifts from the theme.
-          "hsl(var(--background))",
-      }}
-    />
+    <div aria-hidden className="fixed inset-0 z-0 pointer-events-none dark:hidden">
+      <GradientBackground className="h-full w-full" />
+    </div>
   )
 }
