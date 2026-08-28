@@ -2623,14 +2623,21 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
             <option value="all">All Sectors</option>
             <option value="private">Private</option>
           </select>
-          {/* Preset filter dropdown — narrows the radar to a curated
-              slice of careers (common, high-earning, work-life balance,
-              fast-growing, low-entry, academic, future-proof, no-degree,
-              physically demanding, highly competitive). An inline clear
-              (×) button lets the user drop the preset without hunting
-              for the "Clear filter" option in the list, so it's clear
-              the preset is purely additive to their "what I like"
-              preferences and can always be switched off. */}
+          {/* Preset filter dropdown — swaps the radar to a curated slice of
+              careers (common, high-earning, work-life balance, fast-growing,
+              low-entry, academic, future-proof, no-degree, physically
+              demanding, highly competitive). An inline clear (×) button lets
+              the user drop the preset without opening the list, so the preset
+              always reads as switchable and never as a change to their
+              "what I like" preferences.
+
+              The empty option is BOTH the resting placeholder and the clear
+              action, so its label depends on state. It used to read "Clear
+              filter — show all careers" in both, which was wrong twice over:
+              as a placeholder it announced an action rather than the current
+              state, and it promised "all careers" when clearing actually
+              returns you to your ranked matches (trimmed by dynamicLimit
+              above) — never the full catalogue. */}
           <div className="relative inline-flex items-center">
             <Filter className={cn(
               "h-3 w-3 absolute left-2 pointer-events-none",
@@ -2652,7 +2659,9 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
               title="Filter by preset career type — this is purely a view filter and does not change your 'what I like' preferences."
               aria-label="Preset career filter"
             >
-              <option value="">Clear filter — show all careers</option>
+              <option value="">
+                {presetFilter ? "Remove preset — back to your matches" : "Select preset filter"}
+              </option>
               {PRESET_FILTER_OPTIONS.map((opt) => (
                 <option key={opt.key} value={opt.key}>
                   {opt.label}
