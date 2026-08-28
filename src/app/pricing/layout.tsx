@@ -1,0 +1,69 @@
+import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { BrandMark } from "@/components/brand-mark";
+import { LanguageDropdown } from "@/components/language-dropdown";
+
+export default function PricingLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-background via-background to-muted/20">
+      {/* Header */}
+      <header className="sticky top-0 z-50 border-b backdrop-blur-lg bg-background/80">
+        <div className="container mx-auto px-4 h-16 flex items-center justify-between">
+          <BrandMark
+            size="lg"
+            href="/"
+            wordmarkClassName="font-bold bg-gradient-to-r from-green-600 to-emerald-500 bg-clip-text text-transparent"
+          />
+          <div className="flex items-center gap-2 sm:gap-3">
+            <LanguageDropdown iconOnly />
+            <Button variant="ghost" size="sm" asChild>
+              <Link href="/">
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                Back to Home
+              </Link>
+            </Button>
+          </div>
+        </div>
+      </header>
+
+      {/* Content */}
+      <main id="main-content" className="container mx-auto px-4 py-12 max-w-5xl">
+        {children}
+      </main>
+
+      {/* Footer */}
+      <footer className="border-t py-8 mt-12">
+        <div className="container mx-auto px-4 max-w-4xl">
+          <div className="flex flex-wrap justify-center gap-4 md:gap-6 text-sm text-muted-foreground">
+            <Link href="/about" className="hover:text-foreground transition-colors font-medium">
+              About
+            </Link>
+            <Link href="/about/research" className="hover:text-foreground transition-colors">
+              Research &amp; Evidence
+            </Link>
+            <Link href="/legal/terms" className="hover:text-foreground transition-colors">
+              Terms of Service
+            </Link>
+            <Link href="/legal/privacy" className="hover:text-foreground transition-colors">
+              Privacy Policy
+            </Link>
+            <Link href="/legal/eligibility" className="hover:text-foreground transition-colors">
+              Age &amp; Eligibility
+            </Link>
+            <Link href="/legal/disclaimer" className="hover:text-foreground transition-colors">
+              Disclaimer
+            </Link>
+          </div>
+          <p className="text-center text-sm text-muted-foreground mt-4">
+            © {new Date().getFullYear()} Endeavrly. All rights reserved.
+          </p>
+        </div>
+      </footer>
+    </div>
+  );
+}

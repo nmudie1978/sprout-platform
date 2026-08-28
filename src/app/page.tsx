@@ -548,6 +548,12 @@ export default async function LandingPage() {
               >
                 {t('footer.disclaimer')}
               </Link>
+              <Link
+                href="/pricing"
+                className="hover:text-foreground transition-colors"
+              >
+                {t('footer.pricing')}
+              </Link>
             </div>
             <p className="text-xs text-muted-foreground/70">
               {t('footer.copyright', { year: new Date().getFullYear() })}
