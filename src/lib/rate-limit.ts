@@ -43,7 +43,7 @@ let redisConfigured: boolean | null = null;
  * Check if Redis is configured. Hard-fails in production so a misconfigured
  * deploy can't silently run on bypassable in-memory limits.
  */
-function isRedisConfigured(): boolean {
+export function isRedisConfigured(): boolean {
   if (redisConfigured !== null) return redisConfigured;
 
   const url = process.env.REDIS_URL;
