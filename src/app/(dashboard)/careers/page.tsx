@@ -10,6 +10,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { PageHeader } from "@/components/page-header";
 import { CareerCardV2, LIST_GRID, type ViewMode } from "@/components/career-card-v2";
+import { CareerViewSwitcher, CAREER_VIEW_MODES } from "@/components/careers/career-view-switcher";
+import { useViewMode } from "@/hooks/useViewMode";
 import { CareerScoreCard } from "@/components/careers/career-score-card";
 import { CareerDetailSheet } from "@/components/career-detail-sheet";
 import { CareerFilterBar } from "@/components/careers/career-filter-bar";
@@ -84,7 +86,14 @@ function CareersPageContent() {
   // Track previous filter state to detect changes
   const prevFiltersRef = useRef<string>("");
 
-  const viewMode: ViewMode = "list";
+  // Three renderers already exist in career-card-v2 (ListRow / SmallCard /
+  // LargeCard); this was hard-coded to "list", so two of them were dead ends.
+  // The choice persists per person, defaulting to the table.
+  const { viewMode, setViewMode } = useViewMode<ViewMode>({
+    storageKey: "endeavrly:careers:view",
+    allowed: CAREER_VIEW_MODES,
+    defaultMode: "list",
+  });
 
   const isYouth = session?.user?.role === "YOUTH";
 
@@ -379,7 +388,11 @@ function CareersPageContent() {
         />
       )}
 
-      <div className="flex items-center justify-center gap-3 mb-3 mt-4">
+      <div className="flex items-center justify-between gap-3 mb-3 mt-4">
+        {/* Spacer mirroring the switcher's width so the count stays optically
+            centred over the results rather than drifting left. */}
+        <div className="hidden md:block w-[15.5rem]" aria-hidden="true" />
+        <div className="flex items-center justify-center gap-3 flex-1">
         <p className="text-xs text-foreground/80 dark:text-muted-foreground">
           {totalItems > PAGE_SIZE ? (
             <>
@@ -403,6 +416,8 @@ function CareersPageContent() {
             </Badge>
           )}
         </div>
+        </div>
+        <CareerViewSwitcher viewMode={viewMode} onChange={setViewMode} />
       </div>
 
       {/* Results */}
