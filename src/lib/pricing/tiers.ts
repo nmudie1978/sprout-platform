@@ -8,6 +8,10 @@
  * Prices are indicative ranges shared publicly to make the commercial model
  * legible to institutions; the final figure depends on volume, modules and
  * agreement length.
+ *
+ * Owner-set ceiling: no tier exceeds MAX_ANNUAL_PRICE_EUR per year. The tiers
+ * are laddered so each still reads as a distinct step under that cap rather
+ * than several tiers all bunched at the ceiling.
  */
 
 export type PricingTier = {
@@ -29,6 +33,12 @@ export type PricingTier = {
   /** Lifts the card with the primary accent. At most one per group. */
   featured?: boolean;
 };
+
+/**
+ * Hard ceiling on any advertised annual price, in euros (owner-set,
+ * 2026-08-28). Raising this is a commercial decision, not a formatting one.
+ */
+export const MAX_ANNUAL_PRICE_EUR = 100_000;
 
 /** Enquiry address for institutional and family pricing conversations. */
 export const PRICING_CONTACT_EMAIL = "hello@endeavrly.no";
@@ -77,7 +87,7 @@ export const ORGANISATION_TIERS: PricingTier[] = [
     id: "education-plus",
     name: "Education Plus",
     audience: "Large schools, universities or education groups",
-    price: "€25K–€75K",
+    price: "€25K–€50K",
     priceNote: "/year",
     basis: "Users + modules + locations",
     features: [
@@ -92,7 +102,7 @@ export const ORGANISATION_TIERS: PricingTier[] = [
     id: "public-sector",
     name: "Public Sector",
     audience: "Municipalities, counties and career centres",
-    price: "€30K–€100K",
+    price: "€30K–€60K",
     priceNote: "/year",
     basis: "Population / users + functionality",
     features: [
@@ -106,7 +116,7 @@ export const ORGANISATION_TIERS: PricingTier[] = [
     id: "public-enterprise",
     name: "Public Enterprise",
     audience: "NAV and major national or regional public organisations",
-    price: "€100K–€500K+",
+    price: "€60K–€100K",
     priceNote: "/year",
     basis: "Enterprise licence + implementation",
     features: [
@@ -120,7 +130,7 @@ export const ORGANISATION_TIERS: PricingTier[] = [
     id: "workforce",
     name: "Workforce",
     audience: "Large employers and industry organisations",
-    price: "€25K–€100K",
+    price: "€25K–€60K",
     priceNote: "/year",
     basis: "Users / programmes",
     features: [
