@@ -41,6 +41,7 @@ export default function robots(): MetadataRoute.Robots {
           "/about/research",
           "/about/white-paper",
           "/landing-v3",
+          "/pricing",
           "/for-parents",
           "/parents-paths",
           "/contribute",
