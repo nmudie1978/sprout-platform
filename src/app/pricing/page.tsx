@@ -18,7 +18,7 @@ export default function PricingPage() {
   return (
     <div>
       {/* Header */}
-      <div className="mb-14 max-w-2xl">
+      <div className="mb-14">
         <p className="text-xs font-medium uppercase tracking-[0.18em] text-teal-600 dark:text-teal-400/80 mb-3">
           Pricing
         </p>
@@ -44,7 +44,7 @@ export default function PricingPage() {
             For organisations
           </h2>
         </div>
-        <p className="text-sm text-muted-foreground mb-8 max-w-2xl">
+        <p className="text-sm text-muted-foreground mb-8">
           Schools, colleges, municipalities, career services, national public bodies and
           employers. Most start with a pilot and grow from there.
         </p>
@@ -63,7 +63,7 @@ export default function PricingPage() {
             For families
           </h2>
         </div>
-        <p className="text-sm text-muted-foreground mb-8 max-w-2xl">
+        <p className="text-sm text-muted-foreground mb-8">
           If your school or municipality doesn&rsquo;t offer Endeavrly yet, a parent can
           arrange access directly for their household.
         </p>
@@ -80,7 +80,7 @@ export default function PricingPage() {
         <h2 className="text-xl font-semibold text-foreground mb-4">
           How this works
         </h2>
-        <ul className="space-y-3 text-muted-foreground leading-relaxed max-w-2xl">
+        <ul className="space-y-3 text-muted-foreground leading-relaxed">
           <li>
             <strong className="text-foreground">Every plan is arranged with us.</strong>{" "}
             There are no in-app payments and no checkout &mdash; you talk to a person,

@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   FAMILY_TIERS,
   ORGANISATION_TIERS,
+  MAX_ANNUAL_PRICE_EUR,
   PRICING_CONTACT_EMAIL,
   pricingEnquiryHref,
   type PricingTier,
@@ -34,6 +35,34 @@ describe("pricing tiers", () => {
 
   it("highlights at most one organisation tier", () => {
     expect(ORGANISATION_TIERS.filter((t) => t.featured)).toHaveLength(1);
+  });
+
+  it("keeps every advertised price at or under the owner-set ceiling", () => {
+    // "€25K–€50K" -> [25000, 50000]; "€99–€199" -> [99, 199]
+    const parse = (price: string): number[] =>
+      [...price.matchAll(/€([\d.]+)(K?)/g)].map(
+        ([, n, k]) => Number(n) * (k ? 1_000 : 1)
+      );
+
+    for (const tier of ALL_TIERS) {
+      const amounts = parse(tier.price);
+      expect(amounts.length, `${tier.id} price is unparseable`).toBeGreaterThan(0);
+      for (const amount of amounts) {
+        expect(amount, `${tier.id} (${tier.price}) exceeds the ceiling`)
+          .toBeLessThanOrEqual(MAX_ANNUAL_PRICE_EUR);
+      }
+      // An open-ended top ("€100K+") would sail past the ceiling in practice.
+      expect(tier.price, `${tier.id} advertises an open-ended price`).not.toContain("+");
+    }
+  });
+
+  it("keeps the organisation tiers distinguishable from one another", () => {
+    // Not an ascending ladder: Workforce sells to employers, a different
+    // segment, so it sits below Public Enterprise by design. What must hold
+    // is that no two tiers advertise the same range — that would make the
+    // choice between them meaningless on the page.
+    const ranges = ORGANISATION_TIERS.map((t) => t.price);
+    expect(new Set(ranges).size).toBe(ranges.length);
   });
 
   it("builds a mailto enquiry link, not a checkout", () => {
