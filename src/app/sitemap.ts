@@ -20,6 +20,7 @@ const PUBLIC_PATHS = [
   "/about",
   "/about/research",
   "/about/white-paper",
+  "/pricing",
   "/for-parents",
   "/parents-paths",
   "/contribute",
