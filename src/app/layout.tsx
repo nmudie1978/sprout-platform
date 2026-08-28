@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Inter, DM_Serif_Display } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/providers";
+import { AmbientLightBackground } from "@/components/ui/ambient-light-background";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
 import { getServerSession } from "next-auth";
@@ -65,9 +66,21 @@ export default async function RootLayout({
         >
           Skip to content
         </a>
-        <NextIntlClientProvider locale={locale} messages={messages}>
-          <Providers session={session}>{children}</Providers>
-        </NextIntlClientProvider>
+        {/* Light-mode ambient canvas — the "Silk Blend" gradient. Mounted here
+            rather than in the dashboard shell so EVERY route inherits it:
+            marketing, auth and legal pages set `.bg-background`, which light
+            mode makes transparent, so without a canvas behind them they fell
+            through to bare white. Hidden in dark mode. */}
+        <AmbientLightBackground />
+        {/* Everything else sits above that canvas. The canvas is `fixed z-0`,
+            and a positioned element paints over non-positioned siblings, so
+            page content needs its own positioned layer or the backdrop would
+            cover it. One wrapper here saves every page from having to know. */}
+        <div className="relative z-10">
+          <NextIntlClientProvider locale={locale} messages={messages}>
+            <Providers session={session}>{children}</Providers>
+          </NextIntlClientProvider>
+        </div>
         {/* No analytics / tracking beacons. The Cookie Policy promises no
             third-party analytics and consent-before-any-future-analytics;
             Vercel <Analytics/> + <SpeedInsights/> were removed to honour

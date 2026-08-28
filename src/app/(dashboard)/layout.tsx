@@ -3,7 +3,6 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { SidebarNav } from "@/components/sidebar-nav";
 import { MobileBottomNav } from "@/components/mobile-bottom-nav";
-import { AmbientLightBackground } from "@/components/ui/ambient-light-background";
 import { AmbientBackdrop } from "@/components/ui/ambient-backdrop";
 import { ThemeTallyPing } from "@/components/theme-tally-ping";
 import { ReportModal } from "@/components/report-modal";
@@ -87,10 +86,6 @@ export default async function DashboardLayout({
           }}
         />
       </div>
-
-      {/* Light-mode ambient canvas — calm premium backdrop.
-          Rendered once at shell level so every page inherits it. */}
-      <AmbientLightBackground />
 
       {/* Ambient presence — faint drifting blobs + a slow breathing glow so
           the app never feels dead at rest. Sits above the light canvas but

@@ -1,3 +1,10 @@
+// SUPERSEDED — no longer mounted anywhere. The light-mode canvas is now
+// components/ui/silk-blend-gradient.tsx ("Silk Blend"). Kept because the
+// light theme has been swapped several times (Deep Sea → 15 · Wheat → this →
+// Silk Blend) and this is a working revert target; note that reverting to it
+// also means re-inverting the :root tokens in globals.css back to dark ink,
+// since this recipe is dark and Silk Blend is not.
+//
 // GradientBackground — "background rowds shop v1", made with the 21st.dev Gradient
 // Builder and exported as live CSS (the builder's own Copy-CSS background,
 // plus its soften-blur and grain passes). Zero dependencies: one <div> that

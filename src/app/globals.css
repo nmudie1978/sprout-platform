@@ -4,61 +4,66 @@
 
 @layer base {
   :root {
-    /* ── "Light" mode theme tokens — rowds shop v1 (warm dark) ──
-       OWNER-DIRECTED, and deliberately not light: the light theme now runs the
-       21st.dev "background rowds shop v1" gradient — #16130E → #372F20 →
-       #9C8D63 at 170deg, with grain. That recipe is DARK (7% → 50% lightness),
-       so the ink is flipped to near-white and every surface is re-derived
-       upward from the canvas, exactly as .dark does.
+    /* ── Light-mode theme tokens — "Silk Blend" ──────────────────
+       OWNER-DIRECTED. The light theme runs the 21st.dev "Silk Blend" gradient
+       as its canvas: blue → lilac → pink at 170deg, with grain. Unlike the two
+       themes it replaces (rowds shop v1, and 15 · Wheat before it) this canvas
+       is genuinely LIGHT, so the ink is dark and surfaces step UP toward
+       near-white — the normal light-mode direction, and the opposite of what
+       this block used to do.
 
-       This replaces 15 · Wheat (44 32% 87%), which replaced 24 · Deep Sea.
-       The app therefore has TWO dark themes and no light one — intended.
+       The canvas recipe lives in components/ui/silk-blend-gradient.tsx and is
+       NOT token-derived, so `--background` below must equal its first stop
+       (#7B93CC). That is what shows anywhere the ambient layer doesn't reach.
 
-       Hues stay in the gradient's 38–44 family and saturation eases off as
-       surfaces lift, mirroring .dark (Sapphire). Lightness offsets from the
-       canvas are Sapphire's, which are already proven on a dark canvas:
-       sidebar -2, card +4, muted +7, sidebar-border +8, secondary +10,
-       border/input +14.
+       Every value here was picked against measured WCAG contrast, not by eye:
+         foreground / card ......... 16.66:1
+         muted-foreground / card .... 8.87:1
+         primary / card ............. 5.01:1
+         foreground / canvas ........ 5.76:1 (blue) → 11.93:1 (pink)
+         muted-foreground / canvas .. 4.69:1 (lilac) → 6.35:1 (pink)
 
-       The teal brand, gold accent and semantic hues take their .dark values,
-       not the old light ones — the light values were tuned to read on an 87%
-       canvas and would disappear here. */
-    --background: 38 22% 7%;            /* #16130E — the gradient's base, so any surface that isn't covered by the ambient canvas still matches it */
-    --foreground: 40 20% 95%;           /* warm near-white ink, never harsh white */
-    --card: 39 20% 11%;                 /* warm surface, a clear step ABOVE the canvas (dark-mode direction) */
-    --card-foreground: 40 20% 95%;
-    --popover: 39 20% 11%;
-    --popover-foreground: 40 20% 95%;
-    --primary: 166 72% 50%;             /* lifted teal — the light theme's #177D7A (29% L) is far too dark to read on this canvas. Same value .dark already uses. */
+       KNOWN LIMIT: muted-foreground directly on the canvas's blue top is
+       3.07:1 — fine for large text, under AA for small text. Secondary text
+       belongs on a card, which is how the dashboard is built; the exception is
+       marketing prose sitting straight on the canvas. Don't "fix" this by
+       darkening --muted-foreground: reaching 4.5:1 there needs L≈17%, which is
+       so close to --foreground (11%) that the primary/secondary text hierarchy
+       collapses. Put the prose on a surface instead. */
+    --background: 222 44% 64%;          /* exactly #7B93CC — the gradient's first stop, so uncovered surfaces still match the canvas */
+    --foreground: 230 18% 11%;          /* near-black with a cool cast, never pure #000 */
+    --card: 228 40% 98%;                /* near-white surface lifting off the coloured canvas — off-white, not stark */
+    --card-foreground: 230 18% 11%;
+    --popover: 228 40% 98%;
+    --popover-foreground: 230 18% 11%;
+    --primary: 178 68% 28%;             /* deep teal — the canvas is light again, so the brand returns to its dark-on-light value */
     --primary-foreground: 0 0% 100%;
-    --secondary: 40 16% 17%;
-    --secondary-foreground: 40 20% 95%;
-    --muted: 39 18% 14%;                /* nested/sunken surface — sits between card and secondary */
-    --muted-foreground: 40 12% 66%;     /* calm secondary text; faint /50–/40 variants stay legible */
-    --accent: 40 30% 24%;               /* warm gold-tinted surface on the dark canvas */
-    --accent-foreground: 40 58% 70%;    /* soft gold */
-    /* Restrained semantic palette — the brighter .dark values, since the
-       canvas is now dark. The light-mode versions were too dark to read. */
-    --success: 129 30% 60%;
-    --warning: 34 60% 62%;
-    --info: 205 28% 62%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 40 15% 21%;               /* warm border — separates surfaces that are only a few points apart in lightness */
-    --input: 40 15% 21%;
-    --ring: 166 72% 50%;
+    --secondary: 228 32% 93%;
+    --secondary-foreground: 230 18% 11%;
+    --muted: 228 30% 95%;               /* nested/sunken surface — one step DOWN from card, the light-mode direction */
+    --muted-foreground: 230 13% 30%;    /* secondary text: clearly softer than foreground on a card, still legible on the canvas's lilac and pink */
+    --accent: 40 62% 91%;               /* warm gold-tinted light surface */
+    --accent-foreground: 36 62% 26%;    /* deep gold */
+    /* Semantic palette back to dark-on-light values — the lifted .dark
+       versions were tuned for a dark canvas and wash out on near-white cards. */
+    --success: 140 45% 28%;
+    --warning: 30 70% 32%;
+    --info: 205 55% 32%;
+    --destructive: 0 70% 42%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 228 24% 85%;              /* visible against a 98% card without becoming a hard rule */
+    --input: 228 24% 85%;
+    --ring: 178 68% 28%;
     --radius: 0.75rem;
-    --sidebar: 38 24% 5%;               /* sits BELOW the canvas, as .dark's does */
-    --sidebar-foreground: 40 12% 66%;
-    --sidebar-border: 40 16% 15%;       /* defined splitter between sidebar and canvas */
-    /* Glow brand — teal. Lifted to the .dark values: the previous
-       178 69% 32% / 178 60% 38% were tuned to glow against a light canvas
-       and vanish against this one. */
-    --brand: 172 72% 55%;
-    --brand-foreground: 166 66% 65%;
-    /* gradient-1 paints the onboarding walkthrough panel (it uses light
-       text), so keep it a teal panel — readable + on-brand. The page canvas
-       itself lives in AmbientLightBackground, not here. */
+    --sidebar: 228 34% 94%;             /* sits just below card, so the rail reads as recessed from the content */
+    --sidebar-foreground: 230 14% 34%;
+    --sidebar-border: 228 24% 86%;
+    /* Glow brand — teal, at the dark-on-light value so it reads against cards. */
+    --brand: 178 68% 28%;
+    --brand-foreground: 178 60% 34%;
+    /* gradient-1 paints the onboarding walkthrough panel, which uses light
+       text, so it stays a deep teal panel regardless of canvas. The page
+       canvas itself lives in AmbientLightBackground, not here. */
     --gradient-1: linear-gradient(140deg, hsl(178 69% 32%) 0%, hsl(178 70% 22%) 100%);
     --gradient-2: linear-gradient(140deg, hsl(178 69% 32%) 0%, hsl(178 70% 22%) 100%);
     --gradient-3: linear-gradient(140deg, hsl(178 69% 32% / 0.08) 0%, hsl(178 70% 22% / 0.08) 100%);
