@@ -259,6 +259,22 @@ describe("Matching engine — adversarial scenarios", () => {
       expect(hasHandsOn).toBe(true);
     });
 
+    // KNOWN FAILING — do not "fix" by weakening the assertion.
+    //
+    // This guard is correct and the engine is not meeting it. An explicit
+    // peoplePref of "many-people" is being outweighed by subject/academic fit,
+    // so a persona asking for people-facing work gets a top 5 of medium-people
+    // (0.50) desk careers.
+    //
+    // The weakness pre-dates the failure: before the 2026-08-28 education-data
+    // backfill, 4 of the top 5 were ALREADY 0.50 careers and only Clinical
+    // Geneticist (0.90) at #5 kept this green. Giving medicine-adjacent careers
+    // their real academic profile (advancedCareerMap in programmes.json) moved
+    // it to #7 and tipped the threshold.
+    //
+    // The fix is in the engine's dimension weighting, not in this test and not
+    // in the education data. See docs/career-coverage-gaps.json and
+    // scripts/career-coverage-audit.ts for the data side.
     it("STRONG people input — top 5 should contain at least one high-people career", () => {
       const r = rankCareers(PERSONAS.socialPeople, CTX, 10);
       expect(r.length).toBeGreaterThan(0);

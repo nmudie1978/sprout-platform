@@ -1,11 +1,13 @@
 {
   "generated": "career-coverage-audit",
+  "lastRun": "2026-08-28",
   "totals": {
     "careers": 1575,
-    "hollow": 480,
-    "tierA_mappable": 206,
-    "tierB_needsProgrammes": 274
+    "hollow": 374,
+    "tierA_mappable": 139,
+    "tierB_needsProgrammes": 235
   },
+  "note": "Tier grouping is by discipline and is INDICATIVE ONLY \u2014 several bases (engineer, biologist, chemist, designer, teacher, economist, it-engineer) have no discipline recorded, so good mappings can hide in tier B. Choose a base per career from educationPath, not from this grouping.",
   "tierA_map_to_existing_base": {
     "public-administration": {
       "existingBases": [
@@ -40,26 +42,6 @@
         {
           "id": "local-government-officer",
           "title": "Local Government Officer",
-          "category": "PUBLIC_SERVICE_SAFETY"
-        },
-        {
-          "id": "roads-policing-officer",
-          "title": "Roads Policing Officer",
-          "category": "PUBLIC_SERVICE_SAFETY"
-        },
-        {
-          "id": "armed-response-officer",
-          "title": "Armed Response Officer",
-          "category": "PUBLIC_SERVICE_SAFETY"
-        },
-        {
-          "id": "public-order-officer",
-          "title": "Public Order Officer",
-          "category": "PUBLIC_SERVICE_SAFETY"
-        },
-        {
-          "id": "counter-terrorism-officer",
-          "title": "Counter-Terrorism Officer",
           "category": "PUBLIC_SERVICE_SAFETY"
         },
         {
@@ -133,16 +115,6 @@
           "category": "PUBLIC_SERVICE_SAFETY"
         },
         {
-          "id": "surveillance-officer",
-          "title": "Surveillance Officer",
-          "category": "PUBLIC_SERVICE_SAFETY"
-        },
-        {
-          "id": "undercover-officer",
-          "title": "Undercover Officer",
-          "category": "PUBLIC_SERVICE_SAFETY"
-        },
-        {
           "id": "osint-analyst",
           "title": "Open-Source Intelligence Analyst",
           "category": "PUBLIC_SERVICE_SAFETY"
@@ -155,16 +127,6 @@
         {
           "id": "criminal-profiler",
           "title": "Criminal Profiler",
-          "category": "PUBLIC_SERVICE_SAFETY"
-        },
-        {
-          "id": "hostage-negotiator",
-          "title": "Hostage Negotiator",
-          "category": "PUBLIC_SERVICE_SAFETY"
-        },
-        {
-          "id": "close-protection-officer",
-          "title": "Close Protection Officer",
           "category": "PUBLIC_SERVICE_SAFETY"
         },
         {
@@ -201,296 +163,6 @@
           "id": "ski-patrol-officer",
           "title": "Ski Patrol Officer",
           "category": "PUBLIC_SERVICE_SAFETY"
-        }
-      ]
-    },
-    "medicine": {
-      "existingBases": [
-        "doctor",
-        "radiologic-technologist"
-      ],
-      "careers": [
-        {
-          "id": "telemedicine-specialist",
-          "title": "Telemedicine Specialist",
-          "category": "HEALTHCARE_LIFE_SCIENCES"
-        },
-        {
-          "id": "clinical-geneticist",
-          "title": "Clinical Geneticist",
-          "category": "HEALTHCARE_LIFE_SCIENCES"
-        },
-        {
-          "id": "medical-geneticist",
-          "title": "Medical Geneticist",
-          "category": "HEALTHCARE_LIFE_SCIENCES"
-        },
-        {
-          "id": "gynaecologist",
-          "title": "Gynaecologist",
-          "category": "HEALTHCARE_LIFE_SCIENCES"
-        },
-        {
-          "id": "reproductive-endocrinologist",
-          "title": "Reproductive Endocrinologist & Fertility Specialist",
-          "category": "HEALTHCARE_LIFE_SCIENCES"
-        },
-        {
-          "id": "maternal-fetal-medicine-specialist",
-          "title": "Maternal-Fetal Medicine Specialist",
-          "category": "HEALTHCARE_LIFE_SCIENCES"
-        },
-        {
-          "id": "urogynaecologist",
-          "title": "Urogynaecologist",
-          "category": "HEALTHCARE_LIFE_SCIENCES"
-        },
-        {
-          "id": "gynaecological-oncologist",
-          "title": "Gynaecological Oncologist",
-          "category": "HEALTHCARE_LIFE_SCIENCES"
-        },
-        {
-          "id": "menopause-specialist",
-          "title": "Menopause Specialist",
-          "category": "HEALTHCARE_LIFE_SCIENCES"
-        },
-        {
-          "id": "sexual-health-physician",
-          "title": "Sexual Health Physician",
-          "category": "HEALTHCARE_LIFE_SCIENCES"
-        },
-        {
-          "id": "family-planning-specialist",
-          "title": "Family Planning Specialist",
-          "category": "HEALTHCARE_LIFE_SCIENCES"
-        },
-        {
-          "id": "womens-health-physician",
-          "title": "Women's Health Physician",
-          "category": "HEALTHCARE_LIFE_SCIENCES"
-        },
-        {
-          "id": "adolescent-medicine-specialist",
-          "title": "Adolescent Medicine Specialist",
-          "category": "HEALTHCARE_LIFE_SCIENCES"
-        },
-        {
-          "id": "preventive-medicine-physician",
-          "title": "Preventive Medicine Physician",
-          "category": "HEALTHCARE_LIFE_SCIENCES"
-        },
-        {
-          "id": "andrologist",
-          "title": "Andrologist",
-          "category": "HEALTHCARE_LIFE_SCIENCES"
-        },
-        {
-          "id": "clinical-laboratory-geneticist",
-          "title": "Clinical Laboratory Geneticist",
-          "category": "HEALTHCARE_LIFE_SCIENCES"
-        },
-        {
-          "id": "geneticist",
-          "title": "Geneticist",
-          "category": "HEALTHCARE_LIFE_SCIENCES"
-        },
-        {
-          "id": "population-geneticist",
-          "title": "Population Geneticist",
-          "category": "HEALTHCARE_LIFE_SCIENCES"
-        },
-        {
-          "id": "agricultural-geneticist",
-          "title": "Agricultural Geneticist",
-          "category": "HEALTHCARE_LIFE_SCIENCES"
-        },
-        {
-          "id": "plant-geneticist",
-          "title": "Plant Geneticist",
-          "category": "HEALTHCARE_LIFE_SCIENCES"
-        },
-        {
-          "id": "animal-geneticist",
-          "title": "Animal Geneticist",
-          "category": "HEALTHCARE_LIFE_SCIENCES"
-        },
-        {
-          "id": "conservation-geneticist",
-          "title": "Conservation Geneticist",
-          "category": "HEALTHCARE_LIFE_SCIENCES"
-        },
-        {
-          "id": "physician-assistant",
-          "title": "Physician Assistant",
-          "category": "HEALTHCARE_LIFE_SCIENCES"
-        },
-        {
-          "id": "internal-medicine-physician",
-          "title": "Internal Medicine Physician",
-          "category": "HEALTHCARE_LIFE_SCIENCES"
-        },
-        {
-          "id": "oncologist",
-          "title": "Medical Oncologist",
-          "category": "HEALTHCARE_LIFE_SCIENCES"
-        },
-        {
-          "id": "endocrinologist",
-          "title": "Endocrinologist",
-          "category": "HEALTHCARE_LIFE_SCIENCES"
-        },
-        {
-          "id": "rheumatologist",
-          "title": "Rheumatologist",
-          "category": "HEALTHCARE_LIFE_SCIENCES"
-        },
-        {
-          "id": "intensive-care-physician",
-          "title": "Intensive Care Physician",
-          "category": "HEALTHCARE_LIFE_SCIENCES"
-        },
-        {
-          "id": "occupational-health-physician",
-          "title": "Occupational Health Physician",
-          "category": "HEALTHCARE_LIFE_SCIENCES"
-        },
-        {
-          "id": "sports-medicine-physician",
-          "title": "Sports Medicine Physician",
-          "category": "HEALTHCARE_LIFE_SCIENCES"
-        },
-        {
-          "id": "medical-science-liaison",
-          "title": "Medical Science Liaison",
-          "category": "HEALTHCARE_LIFE_SCIENCES"
-        },
-        {
-          "id": "crime-laboratory-geneticist",
-          "title": "Crime Laboratory Geneticist",
-          "category": "PUBLIC_SERVICE_SAFETY"
-        }
-      ]
-    },
-    "nursing-allied-health": {
-      "existingBases": [
-        "care-assistant",
-        "medical-laboratory-technician",
-        "nurse",
-        "optometrist",
-        "physiotherapist",
-        "speech-therapist"
-      ],
-      "careers": [
-        {
-          "id": "reproductive-genetic-specialist",
-          "title": "Reproductive Genetic Specialist",
-          "category": "HEALTHCARE_LIFE_SCIENCES"
-        },
-        {
-          "id": "human-genetics-researcher",
-          "title": "Human Genetics Researcher",
-          "category": "HEALTHCARE_LIFE_SCIENCES"
-        },
-        {
-          "id": "epigenetics-researcher",
-          "title": "Epigenetics Researcher",
-          "category": "HEALTHCARE_LIFE_SCIENCES"
-        },
-        {
-          "id": "stem-cell-researcher",
-          "title": "Stem Cell Researcher",
-          "category": "HEALTHCARE_LIFE_SCIENCES"
-        },
-        {
-          "id": "precision-medicine-specialist",
-          "title": "Precision Medicine Specialist",
-          "category": "HEALTHCARE_LIFE_SCIENCES"
-        },
-        {
-          "id": "gene-therapy-scientist",
-          "title": "Gene Therapy Scientist",
-          "category": "HEALTHCARE_LIFE_SCIENCES"
-        },
-        {
-          "id": "crispr-research-scientist",
-          "title": "CRISPR Research Scientist",
-          "category": "HEALTHCARE_LIFE_SCIENCES"
-        },
-        {
-          "id": "drug-discovery-scientist",
-          "title": "Drug Discovery Scientist",
-          "category": "HEALTHCARE_LIFE_SCIENCES"
-        },
-        {
-          "id": "molecular-diagnostics-scientist",
-          "title": "Molecular Diagnostics Scientist",
-          "category": "HEALTHCARE_LIFE_SCIENCES"
-        },
-        {
-          "id": "biomarker-scientist",
-          "title": "Biomarker Scientist",
-          "category": "HEALTHCARE_LIFE_SCIENCES"
-        },
-        {
-          "id": "bioprocess-scientist",
-          "title": "Bioprocess Scientist",
-          "category": "HEALTHCARE_LIFE_SCIENCES"
-        },
-        {
-          "id": "gene-editing-scientist",
-          "title": "Gene Editing Scientist",
-          "category": "HEALTHCARE_LIFE_SCIENCES"
-        },
-        {
-          "id": "crispr-engineer",
-          "title": "CRISPR Engineer",
-          "category": "HEALTHCARE_LIFE_SCIENCES"
-        },
-        {
-          "id": "longevity-research-scientist",
-          "title": "Longevity Research Scientist",
-          "category": "HEALTHCARE_LIFE_SCIENCES"
-        },
-        {
-          "id": "human-enhancement-researcher",
-          "title": "Human Enhancement Researcher",
-          "category": "HEALTHCARE_LIFE_SCIENCES"
-        },
-        {
-          "id": "art-therapist",
-          "title": "Art Therapist",
-          "category": "HEALTHCARE_LIFE_SCIENCES"
-        },
-        {
-          "id": "audiologist",
-          "title": "Audiologist",
-          "category": "HEALTHCARE_LIFE_SCIENCES"
-        },
-        {
-          "id": "respiratory-therapist",
-          "title": "Respiratory Therapist",
-          "category": "HEALTHCARE_LIFE_SCIENCES"
-        },
-        {
-          "id": "occupational-therapy-assistant",
-          "title": "Occupational Therapy Assistant",
-          "category": "HEALTHCARE_LIFE_SCIENCES"
-        },
-        {
-          "id": "health-informatics-specialist",
-          "title": "Health Informatics Specialist",
-          "category": "HEALTHCARE_LIFE_SCIENCES"
-        },
-        {
-          "id": "infectious-disease-specialist",
-          "title": "Infectious Disease Specialist",
-          "category": "HEALTHCARE_LIFE_SCIENCES"
-        },
-        {
-          "id": "clinical-scientist",
-          "title": "Clinical Scientist",
-          "category": "HEALTHCARE_LIFE_SCIENCES"
         }
       ]
     },
@@ -702,6 +374,88 @@
         }
       ]
     },
+    "nursing-allied-health": {
+      "existingBases": [
+        "care-assistant",
+        "medical-laboratory-technician",
+        "nurse",
+        "optometrist",
+        "physiotherapist",
+        "speech-therapist"
+      ],
+      "careers": [
+        {
+          "id": "stem-cell-researcher",
+          "title": "Stem Cell Researcher",
+          "category": "HEALTHCARE_LIFE_SCIENCES"
+        },
+        {
+          "id": "gene-therapy-scientist",
+          "title": "Gene Therapy Scientist",
+          "category": "HEALTHCARE_LIFE_SCIENCES"
+        },
+        {
+          "id": "drug-discovery-scientist",
+          "title": "Drug Discovery Scientist",
+          "category": "HEALTHCARE_LIFE_SCIENCES"
+        },
+        {
+          "id": "molecular-diagnostics-scientist",
+          "title": "Molecular Diagnostics Scientist",
+          "category": "HEALTHCARE_LIFE_SCIENCES"
+        },
+        {
+          "id": "biomarker-scientist",
+          "title": "Biomarker Scientist",
+          "category": "HEALTHCARE_LIFE_SCIENCES"
+        },
+        {
+          "id": "bioprocess-scientist",
+          "title": "Bioprocess Scientist",
+          "category": "HEALTHCARE_LIFE_SCIENCES"
+        },
+        {
+          "id": "crispr-engineer",
+          "title": "CRISPR Engineer",
+          "category": "HEALTHCARE_LIFE_SCIENCES"
+        },
+        {
+          "id": "human-enhancement-researcher",
+          "title": "Human Enhancement Researcher",
+          "category": "HEALTHCARE_LIFE_SCIENCES"
+        },
+        {
+          "id": "art-therapist",
+          "title": "Art Therapist",
+          "category": "HEALTHCARE_LIFE_SCIENCES"
+        },
+        {
+          "id": "audiologist",
+          "title": "Audiologist",
+          "category": "HEALTHCARE_LIFE_SCIENCES"
+        },
+        {
+          "id": "respiratory-therapist",
+          "title": "Respiratory Therapist",
+          "category": "HEALTHCARE_LIFE_SCIENCES"
+        },
+        {
+          "id": "occupational-therapy-assistant",
+          "title": "Occupational Therapy Assistant",
+          "category": "HEALTHCARE_LIFE_SCIENCES"
+        },
+        {
+          "id": "health-informatics-specialist",
+          "title": "Health Informatics Specialist",
+          "category": "HEALTHCARE_LIFE_SCIENCES"
+        },
+        {
+          "id": "clinical-scientist",
+          "title": "Clinical Scientist",
+          "category": "HEALTHCARE_LIFE_SCIENCES"
+        }
+      ]
+    },
     "creative-arts-design": {
       "existingBases": [
         "painter-decorator"
@@ -766,78 +520,6 @@
           "id": "bilingual-customer-support-specialist",
           "title": "Bilingual Customer Support Specialist",
           "category": "CREATIVE_MEDIA"
-        },
-        {
-          "id": "autonomous-workflow-designer",
-          "title": "Autonomous Workflow Designer",
-          "category": "ARTIFICIAL_INTELLIGENCE"
-        }
-      ]
-    },
-    "criminology-policing": {
-      "existingBases": [
-        "police-officer"
-      ],
-      "careers": [
-        {
-          "id": "digital-forensics-analyst",
-          "title": "Digital Forensics Analyst",
-          "category": "TECHNOLOGY_IT"
-        },
-        {
-          "id": "police-dog-handler",
-          "title": "Police Dog Handler",
-          "category": "PUBLIC_SERVICE_SAFETY"
-        },
-        {
-          "id": "financial-crime-investigator",
-          "title": "Financial Crime Investigator",
-          "category": "PUBLIC_SERVICE_SAFETY"
-        },
-        {
-          "id": "organized-crime-investigator",
-          "title": "Organized Crime Investigator",
-          "category": "PUBLIC_SERVICE_SAFETY"
-        },
-        {
-          "id": "anti-corruption-investigator",
-          "title": "Anti-Corruption Investigator",
-          "category": "PUBLIC_SERVICE_SAFETY"
-        },
-        {
-          "id": "drug-enforcement-investigator",
-          "title": "Drug Enforcement Investigator",
-          "category": "PUBLIC_SERVICE_SAFETY"
-        },
-        {
-          "id": "human-trafficking-investigator",
-          "title": "Human Trafficking Investigator",
-          "category": "PUBLIC_SERVICE_SAFETY"
-        },
-        {
-          "id": "crime-scene-investigator",
-          "title": "Crime Scene Investigator",
-          "category": "PUBLIC_SERVICE_SAFETY"
-        },
-        {
-          "id": "forensic-toxicologist",
-          "title": "Forensic Toxicologist",
-          "category": "PUBLIC_SERVICE_SAFETY"
-        },
-        {
-          "id": "anti-money-laundering-investigator",
-          "title": "Anti-Money Laundering Investigator",
-          "category": "PUBLIC_SERVICE_SAFETY"
-        },
-        {
-          "id": "border-force-officer",
-          "title": "Border Force Officer",
-          "category": "PUBLIC_SERVICE_SAFETY"
-        },
-        {
-          "id": "forensic-dna-analyst",
-          "title": "Forensic DNA Analyst",
-          "category": "PUBLIC_SERVICE_SAFETY"
         }
       ]
     },
@@ -848,11 +530,6 @@
         "mechanical-engineer"
       ],
       "careers": [
-        {
-          "id": "environmental-engineer",
-          "title": "Environmental Engineer",
-          "category": "MANUFACTURING_ENGINEERING"
-        },
         {
           "id": "ranch-worker",
           "title": "Ranch Worker",
@@ -922,16 +599,6 @@
           "category": "TECHNOLOGY_IT"
         },
         {
-          "id": "gpu-infrastructure-engineer",
-          "title": "GPU Infrastructure Engineer",
-          "category": "TECHNOLOGY_IT"
-        },
-        {
-          "id": "distinguished-engineer",
-          "title": "Distinguished Engineer",
-          "category": "TECHNOLOGY_IT"
-        },
-        {
           "id": "vp-technology",
           "title": "VP Technology",
           "category": "TECHNOLOGY_IT"
@@ -968,40 +635,58 @@
         }
       ]
     },
-    "law": {
+    "criminology-policing": {
       "existingBases": [
-        "lawyer"
+        "police-officer"
       ],
       "careers": [
         {
-          "id": "solicitor",
-          "title": "Solicitor",
-          "category": "BUSINESS_MANAGEMENT"
+          "id": "digital-forensics-analyst",
+          "title": "Digital Forensics Analyst",
+          "category": "TECHNOLOGY_IT"
         },
         {
-          "id": "barrister",
-          "title": "Barrister",
-          "category": "BUSINESS_MANAGEMENT"
-        },
-        {
-          "id": "patent-attorney",
-          "title": "Patent Attorney",
-          "category": "BUSINESS_MANAGEMENT"
-        },
-        {
-          "id": "trademark-attorney",
-          "title": "Trademark Attorney",
-          "category": "BUSINESS_MANAGEMENT"
-        },
-        {
-          "id": "magistrate",
-          "title": "Magistrate",
+          "id": "financial-crime-investigator",
+          "title": "Financial Crime Investigator",
           "category": "PUBLIC_SERVICE_SAFETY"
         },
         {
-          "id": "tribunal-judge",
-          "title": "Tribunal Judge",
+          "id": "anti-corruption-investigator",
+          "title": "Anti-Corruption Investigator",
           "category": "PUBLIC_SERVICE_SAFETY"
+        },
+        {
+          "id": "anti-money-laundering-investigator",
+          "title": "Anti-Money Laundering Investigator",
+          "category": "PUBLIC_SERVICE_SAFETY"
+        },
+        {
+          "id": "forensic-dna-analyst",
+          "title": "Forensic DNA Analyst",
+          "category": "PUBLIC_SERVICE_SAFETY"
+        }
+      ]
+    },
+    "medicine": {
+      "existingBases": [
+        "doctor",
+        "radiologic-technologist"
+      ],
+      "careers": [
+        {
+          "id": "telemedicine-specialist",
+          "title": "Telemedicine Specialist",
+          "category": "HEALTHCARE_LIFE_SCIENCES"
+        },
+        {
+          "id": "physician-assistant",
+          "title": "Physician Assistant",
+          "category": "HEALTHCARE_LIFE_SCIENCES"
+        },
+        {
+          "id": "medical-science-liaison",
+          "title": "Medical Science Liaison",
+          "category": "HEALTHCARE_LIFE_SCIENCES"
         }
       ]
     },
@@ -1011,23 +696,8 @@
       ],
       "careers": [
         {
-          "id": "building-services-engineer",
-          "title": "Building Services Engineer",
-          "category": "MANUFACTURING_ENGINEERING"
-        },
-        {
-          "id": "fire-engineer",
-          "title": "Fire Engineer",
-          "category": "MANUFACTURING_ENGINEERING"
-        },
-        {
           "id": "bim-manager",
           "title": "BIM Manager",
-          "category": "MANUFACTURING_ENGINEERING"
-        },
-        {
-          "id": "bim-coordinator",
-          "title": "BIM Coordinator",
           "category": "MANUFACTURING_ENGINEERING"
         },
         {
@@ -1123,40 +793,6 @@
         }
       ]
     },
-    "architecture": {
-      "existingBases": [
-        "architect"
-      ],
-      "careers": [
-        {
-          "id": "head-of-enterprise-architecture",
-          "title": "Head of Enterprise Architecture",
-          "category": "TECHNOLOGY_IT"
-        },
-        {
-          "id": "architectural-technologist",
-          "title": "Architectural Technologist",
-          "category": "MANUFACTURING_ENGINEERING"
-        }
-      ]
-    },
-    "accounting": {
-      "existingBases": [
-        "accountant"
-      ],
-      "careers": [
-        {
-          "id": "financial-controller",
-          "title": "Financial Controller",
-          "category": "FINANCE_BANKING"
-        },
-        {
-          "id": "tax-adviser",
-          "title": "Tax Adviser",
-          "category": "FINANCE_BANKING"
-        }
-      ]
-    },
     "beauty-wellness": {
       "existingBases": [
         "hairdresser"
@@ -1196,6 +832,30 @@
           "id": "neuropsychologist",
           "title": "Neuropsychologist",
           "category": "HEALTHCARE_LIFE_SCIENCES"
+        }
+      ]
+    },
+    "architecture": {
+      "existingBases": [
+        "architect"
+      ],
+      "careers": [
+        {
+          "id": "head-of-enterprise-architecture",
+          "title": "Head of Enterprise Architecture",
+          "category": "TECHNOLOGY_IT"
+        }
+      ]
+    },
+    "accounting": {
+      "existingBases": [
+        "accountant"
+      ],
+      "careers": [
+        {
+          "id": "financial-controller",
+          "title": "Financial Controller",
+          "category": "FINANCE_BANKING"
         }
       ]
     }
@@ -1388,183 +1048,6 @@
         "category": "SPORT_FITNESS"
       }
     ],
-    "data-science-ai": [
-      {
-        "id": "data-governance-manager",
-        "title": "Data Governance Manager",
-        "category": "TECHNOLOGY_IT"
-      },
-      {
-        "id": "location-intelligence-analyst",
-        "title": "Location Intelligence Analyst",
-        "category": "TECHNOLOGY_IT"
-      },
-      {
-        "id": "analytics-engineer",
-        "title": "Analytics Engineer",
-        "category": "TECHNOLOGY_IT"
-      },
-      {
-        "id": "population-analyst",
-        "title": "Population Analyst",
-        "category": "BUSINESS_MANAGEMENT"
-      },
-      {
-        "id": "head-of-ai",
-        "title": "Head of AI",
-        "category": "BUSINESS_MANAGEMENT"
-      },
-      {
-        "id": "director-of-ai",
-        "title": "Director of Artificial Intelligence",
-        "category": "BUSINESS_MANAGEMENT"
-      },
-      {
-        "id": "vp-of-ai",
-        "title": "VP of AI",
-        "category": "BUSINESS_MANAGEMENT"
-      },
-      {
-        "id": "ai-strategy-director",
-        "title": "AI Strategy Director",
-        "category": "BUSINESS_MANAGEMENT"
-      },
-      {
-        "id": "ai-practice-lead",
-        "title": "AI Practice Lead",
-        "category": "BUSINESS_MANAGEMENT"
-      },
-      {
-        "id": "ai-innovation-lead",
-        "title": "AI Innovation Lead",
-        "category": "BUSINESS_MANAGEMENT"
-      },
-      {
-        "id": "ai-program-manager",
-        "title": "AI Program Manager",
-        "category": "BUSINESS_MANAGEMENT"
-      },
-      {
-        "id": "ai-governance-specialist",
-        "title": "AI Governance Specialist",
-        "category": "BUSINESS_MANAGEMENT"
-      },
-      {
-        "id": "ai-risk-manager",
-        "title": "AI Risk Manager",
-        "category": "BUSINESS_MANAGEMENT"
-      },
-      {
-        "id": "ai-compliance-officer",
-        "title": "AI Compliance Officer",
-        "category": "BUSINESS_MANAGEMENT"
-      },
-      {
-        "id": "responsible-ai-lead",
-        "title": "Responsible AI Lead",
-        "category": "BUSINESS_MANAGEMENT"
-      },
-      {
-        "id": "chief-ai-officer",
-        "title": "Chief AI Officer",
-        "category": "BUSINESS_MANAGEMENT"
-      },
-      {
-        "id": "ai-regulation-specialist",
-        "title": "AI Regulation Specialist",
-        "category": "BUSINESS_MANAGEMENT"
-      },
-      {
-        "id": "ai-technical-account-manager",
-        "title": "AI Technical Account Manager",
-        "category": "SALES_MARKETING"
-      },
-      {
-        "id": "ai-customer-success-manager",
-        "title": "AI Customer Success Manager",
-        "category": "SALES_MARKETING"
-      },
-      {
-        "id": "ai-partner-manager",
-        "title": "AI Partner Manager",
-        "category": "SALES_MARKETING"
-      },
-      {
-        "id": "satellite-analytics-specialist",
-        "title": "Satellite Analytics Specialist",
-        "category": "ARTIFICIAL_INTELLIGENCE"
-      },
-      {
-        "id": "digital-twin-specialist",
-        "title": "Digital Twin Specialist",
-        "category": "ARTIFICIAL_INTELLIGENCE"
-      },
-      {
-        "id": "bioinformatician",
-        "title": "Bioinformatician",
-        "category": "ARTIFICIAL_INTELLIGENCE"
-      },
-      {
-        "id": "deep-learning-engineer",
-        "title": "Deep Learning Engineer",
-        "category": "ARTIFICIAL_INTELLIGENCE"
-      },
-      {
-        "id": "llm-engineer",
-        "title": "LLM Engineer",
-        "category": "ARTIFICIAL_INTELLIGENCE"
-      },
-      {
-        "id": "computer-vision-researcher",
-        "title": "Computer Vision Researcher",
-        "category": "ARTIFICIAL_INTELLIGENCE"
-      },
-      {
-        "id": "nlp-research-scientist",
-        "title": "NLP Research Scientist",
-        "category": "ARTIFICIAL_INTELLIGENCE"
-      },
-      {
-        "id": "reinforcement-learning-researcher",
-        "title": "Reinforcement Learning Researcher",
-        "category": "ARTIFICIAL_INTELLIGENCE"
-      },
-      {
-        "id": "feature-engineering-specialist",
-        "title": "Feature Engineering Specialist",
-        "category": "ARTIFICIAL_INTELLIGENCE"
-      },
-      {
-        "id": "autonomous-vehicle-engineer",
-        "title": "Autonomous Vehicle Engineer",
-        "category": "ARTIFICIAL_INTELLIGENCE"
-      },
-      {
-        "id": "human-robot-interaction-specialist",
-        "title": "Human-Robot Interaction Specialist",
-        "category": "ARTIFICIAL_INTELLIGENCE"
-      },
-      {
-        "id": "ai-agent-developer",
-        "title": "AI Agent Developer",
-        "category": "ARTIFICIAL_INTELLIGENCE"
-      },
-      {
-        "id": "ai-agent-operations-specialist",
-        "title": "AI Agent Operations Specialist",
-        "category": "ARTIFICIAL_INTELLIGENCE"
-      },
-      {
-        "id": "machine-learning-director",
-        "title": "Machine Learning Director",
-        "category": "ARTIFICIAL_INTELLIGENCE"
-      },
-      {
-        "id": "data-science-director",
-        "title": "Data Science Director",
-        "category": "ARTIFICIAL_INTELLIGENCE"
-      }
-    ],
     "business-management": [
       {
         "id": "infrastructure-director",
@@ -1607,16 +1090,6 @@
         "category": "BUSINESS_MANAGEMENT"
       },
       {
-        "id": "law-firm-partner",
-        "title": "Partner (Law Firm)",
-        "category": "BUSINESS_MANAGEMENT"
-      },
-      {
-        "id": "chief-commercial-officer",
-        "title": "Chief Commercial Officer (CCO)",
-        "category": "BUSINESS_MANAGEMENT"
-      },
-      {
         "id": "chief-revenue-officer",
         "title": "Chief Revenue Officer (CRO)",
         "category": "BUSINESS_MANAGEMENT"
@@ -1632,18 +1105,8 @@
         "category": "BUSINESS_MANAGEMENT"
       },
       {
-        "id": "chief-executive-officer",
-        "title": "Chief Executive Officer (CEO)",
-        "category": "BUSINESS_MANAGEMENT"
-      },
-      {
         "id": "carbon-analyst",
         "title": "Carbon Analyst",
-        "category": "BUSINESS_MANAGEMENT"
-      },
-      {
-        "id": "esg-counsel",
-        "title": "ESG Counsel",
         "category": "BUSINESS_MANAGEMENT"
       },
       {
@@ -1702,11 +1165,6 @@
         "category": "BUSINESS_MANAGEMENT"
       },
       {
-        "id": "asset-manager",
-        "title": "Asset Manager",
-        "category": "FINANCE_BANKING"
-      },
-      {
         "id": "call-centre-agent",
         "title": "Call Centre Agent",
         "category": "SALES_MARKETING"
@@ -1732,6 +1190,143 @@
         "category": "ARTIFICIAL_INTELLIGENCE"
       }
     ],
+    "data-science-ai": [
+      {
+        "id": "data-governance-manager",
+        "title": "Data Governance Manager",
+        "category": "TECHNOLOGY_IT"
+      },
+      {
+        "id": "location-intelligence-analyst",
+        "title": "Location Intelligence Analyst",
+        "category": "TECHNOLOGY_IT"
+      },
+      {
+        "id": "population-analyst",
+        "title": "Population Analyst",
+        "category": "BUSINESS_MANAGEMENT"
+      },
+      {
+        "id": "head-of-ai",
+        "title": "Head of AI",
+        "category": "BUSINESS_MANAGEMENT"
+      },
+      {
+        "id": "vp-of-ai",
+        "title": "VP of AI",
+        "category": "BUSINESS_MANAGEMENT"
+      },
+      {
+        "id": "ai-strategy-director",
+        "title": "AI Strategy Director",
+        "category": "BUSINESS_MANAGEMENT"
+      },
+      {
+        "id": "ai-practice-lead",
+        "title": "AI Practice Lead",
+        "category": "BUSINESS_MANAGEMENT"
+      },
+      {
+        "id": "ai-innovation-lead",
+        "title": "AI Innovation Lead",
+        "category": "BUSINESS_MANAGEMENT"
+      },
+      {
+        "id": "ai-program-manager",
+        "title": "AI Program Manager",
+        "category": "BUSINESS_MANAGEMENT"
+      },
+      {
+        "id": "ai-risk-manager",
+        "title": "AI Risk Manager",
+        "category": "BUSINESS_MANAGEMENT"
+      },
+      {
+        "id": "responsible-ai-lead",
+        "title": "Responsible AI Lead",
+        "category": "BUSINESS_MANAGEMENT"
+      },
+      {
+        "id": "ai-technical-account-manager",
+        "title": "AI Technical Account Manager",
+        "category": "SALES_MARKETING"
+      },
+      {
+        "id": "ai-customer-success-manager",
+        "title": "AI Customer Success Manager",
+        "category": "SALES_MARKETING"
+      },
+      {
+        "id": "ai-partner-manager",
+        "title": "AI Partner Manager",
+        "category": "SALES_MARKETING"
+      },
+      {
+        "id": "satellite-analytics-specialist",
+        "title": "Satellite Analytics Specialist",
+        "category": "ARTIFICIAL_INTELLIGENCE"
+      },
+      {
+        "id": "digital-twin-specialist",
+        "title": "Digital Twin Specialist",
+        "category": "ARTIFICIAL_INTELLIGENCE"
+      },
+      {
+        "id": "bioinformatician",
+        "title": "Bioinformatician",
+        "category": "ARTIFICIAL_INTELLIGENCE"
+      },
+      {
+        "id": "deep-learning-engineer",
+        "title": "Deep Learning Engineer",
+        "category": "ARTIFICIAL_INTELLIGENCE"
+      },
+      {
+        "id": "computer-vision-researcher",
+        "title": "Computer Vision Researcher",
+        "category": "ARTIFICIAL_INTELLIGENCE"
+      },
+      {
+        "id": "nlp-research-scientist",
+        "title": "NLP Research Scientist",
+        "category": "ARTIFICIAL_INTELLIGENCE"
+      },
+      {
+        "id": "reinforcement-learning-researcher",
+        "title": "Reinforcement Learning Researcher",
+        "category": "ARTIFICIAL_INTELLIGENCE"
+      },
+      {
+        "id": "autonomous-vehicle-engineer",
+        "title": "Autonomous Vehicle Engineer",
+        "category": "ARTIFICIAL_INTELLIGENCE"
+      },
+      {
+        "id": "human-robot-interaction-specialist",
+        "title": "Human-Robot Interaction Specialist",
+        "category": "ARTIFICIAL_INTELLIGENCE"
+      },
+      {
+        "id": "ai-agent-developer",
+        "title": "AI Agent Developer",
+        "category": "ARTIFICIAL_INTELLIGENCE"
+      },
+      {
+        "id": "ai-agent-operations-specialist",
+        "title": "AI Agent Operations Specialist",
+        "category": "ARTIFICIAL_INTELLIGENCE"
+      },
+      {
+        "id": "machine-learning-director",
+        "title": "Machine Learning Director",
+        "category": "ARTIFICIAL_INTELLIGENCE"
+      },
+      {
+        "id": "data-science-director",
+        "title": "Data Science Director",
+        "category": "ARTIFICIAL_INTELLIGENCE"
+      }
+    ],
     "geosciences-energy": [
       {
         "id": "paleontologist",
@@ -1751,11 +1346,6 @@
       {
         "id": "geologist",
         "title": "Geologist",
-        "category": "HEALTHCARE_LIFE_SCIENCES"
-      },
-      {
-        "id": "geochemist",
-        "title": "Geochemist",
         "category": "HEALTHCARE_LIFE_SCIENCES"
       },
       {
@@ -1824,11 +1414,6 @@
         "category": "TECHNOLOGY_IT"
       },
       {
-        "id": "solar-energy-engineer",
-        "title": "Solar Energy Engineer",
-        "category": "MANUFACTURING_ENGINEERING"
-      },
-      {
         "id": "drilling-manager",
         "title": "Drilling Manager",
         "category": "MANUFACTURING_ENGINEERING"
@@ -1839,114 +1424,7 @@
         "category": "MANUFACTURING_ENGINEERING"
       }
     ],
-    "economics-finance": [
-      {
-        "id": "health-economist",
-        "title": "Health Economist",
-        "category": "HEALTHCARE_LIFE_SCIENCES"
-      },
-      {
-        "id": "fintech-specialist",
-        "title": "FinTech Specialist",
-        "category": "FINANCE_BANKING"
-      },
-      {
-        "id": "private-equity-partner",
-        "title": "Private Equity Partner",
-        "category": "FINANCE_BANKING"
-      },
-      {
-        "id": "venture-capital-partner",
-        "title": "Venture Capital Partner",
-        "category": "FINANCE_BANKING"
-      },
-      {
-        "id": "portfolio-manager",
-        "title": "Portfolio Manager",
-        "category": "FINANCE_BANKING"
-      },
-      {
-        "id": "actuary",
-        "title": "Actuary",
-        "category": "FINANCE_BANKING"
-      },
-      {
-        "id": "credit-analyst",
-        "title": "Credit Analyst",
-        "category": "FINANCE_BANKING"
-      },
-      {
-        "id": "private-banker",
-        "title": "Private Banker",
-        "category": "FINANCE_BANKING"
-      },
-      {
-        "id": "chief-risk-officer",
-        "title": "Chief Risk Officer (CRO)",
-        "category": "FINANCE_BANKING"
-      },
-      {
-        "id": "chief-compliance-officer",
-        "title": "Chief Compliance Officer (CCO)",
-        "category": "FINANCE_BANKING"
-      },
-      {
-        "id": "chief-investment-officer",
-        "title": "Chief Investment Officer (CIO)",
-        "category": "FINANCE_BANKING"
-      },
-      {
-        "id": "valuation-specialist",
-        "title": "Valuation Specialist",
-        "category": "FINANCE_BANKING"
-      },
-      {
-        "id": "transaction-services-adviser",
-        "title": "Transaction Services Adviser",
-        "category": "FINANCE_BANKING"
-      },
-      {
-        "id": "fund-manager",
-        "title": "Fund Manager",
-        "category": "FINANCE_BANKING"
-      },
-      {
-        "id": "family-office-adviser",
-        "title": "Family Office Adviser",
-        "category": "FINANCE_BANKING"
-      },
-      {
-        "id": "pension-fund-manager",
-        "title": "Pension Fund Manager",
-        "category": "FINANCE_BANKING"
-      },
-      {
-        "id": "structured-finance-specialist",
-        "title": "Structured Finance Specialist",
-        "category": "FINANCE_BANKING"
-      },
-      {
-        "id": "project-finance-specialist",
-        "title": "Project Finance Specialist",
-        "category": "FINANCE_BANKING"
-      },
-      {
-        "id": "restructuring-adviser",
-        "title": "Restructuring Adviser",
-        "category": "FINANCE_BANKING"
-      }
-    ],
     "environmental-earth-science": [
-      {
-        "id": "oceanographer",
-        "title": "Oceanographer",
-        "category": "HEALTHCARE_LIFE_SCIENCES"
-      },
-      {
-        "id": "conservation-scientist",
-        "title": "Conservation Scientist",
-        "category": "HEALTHCARE_LIFE_SCIENCES"
-      },
       {
         "id": "polar-researcher",
         "title": "Polar Researcher",
@@ -2020,83 +1498,6 @@
       {
         "id": "environmental-intelligence-analyst",
         "title": "Environmental Intelligence Analyst",
-        "category": "ARTIFICIAL_INTELLIGENCE"
-      }
-    ],
-    "biology-life-sciences": [
-      {
-        "id": "zoologist",
-        "title": "Zoologist",
-        "category": "HEALTHCARE_LIFE_SCIENCES"
-      },
-      {
-        "id": "botanist",
-        "title": "Botanist",
-        "category": "HEALTHCARE_LIFE_SCIENCES"
-      },
-      {
-        "id": "ecologist",
-        "title": "Ecologist",
-        "category": "HEALTHCARE_LIFE_SCIENCES"
-      },
-      {
-        "id": "genomic-medicine-specialist",
-        "title": "Genomic Medicine Specialist",
-        "category": "HEALTHCARE_LIFE_SCIENCES"
-      },
-      {
-        "id": "cancer-genomics-specialist",
-        "title": "Cancer Genomics Specialist",
-        "category": "HEALTHCARE_LIFE_SCIENCES"
-      },
-      {
-        "id": "embryologist",
-        "title": "Embryologist (IVF Laboratory Scientist)",
-        "category": "HEALTHCARE_LIFE_SCIENCES"
-      },
-      {
-        "id": "genomics-research-scientist",
-        "title": "Genomics Research Scientist",
-        "category": "HEALTHCARE_LIFE_SCIENCES"
-      },
-      {
-        "id": "biotechnology-research-scientist",
-        "title": "Biotechnology Research Scientist",
-        "category": "HEALTHCARE_LIFE_SCIENCES"
-      },
-      {
-        "id": "biotechnology-scientist",
-        "title": "Biotechnology Scientist",
-        "category": "HEALTHCARE_LIFE_SCIENCES"
-      },
-      {
-        "id": "synthetic-genomics-engineer",
-        "title": "Synthetic Genomics Engineer",
-        "category": "HEALTHCARE_LIFE_SCIENCES"
-      },
-      {
-        "id": "genomics-director",
-        "title": "Genomics Director",
-        "category": "HEALTHCARE_LIFE_SCIENCES"
-      },
-      {
-        "id": "biotechnology-executive",
-        "title": "Biotechnology Executive",
-        "category": "HEALTHCARE_LIFE_SCIENCES"
-      },
-      {
-        "id": "computational-genomics-engineer",
-        "title": "Computational Genomics Engineer",
-        "category": "ARTIFICIAL_INTELLIGENCE"
-      },
-      {
-        "id": "clinical-genomics-analyst",
-        "title": "Clinical Genomics Analyst",
-        "category": "ARTIFICIAL_INTELLIGENCE"
-      },
-      {
-        "id": "computational-genomics-scientist",
-        "title": "Computational Genomics Scientist",
         "category": "ARTIFICIAL_INTELLIGENCE"
       }
     ],
@@ -2234,110 +1635,6 @@
         "category": "MILITARY_DEFENCE"
       }
     ],
-    "cybersecurity": [
-      {
-        "id": "cyber-threat-intelligence-analyst",
-        "title": "Cyber Threat Intelligence Analyst",
-        "category": "TECHNOLOGY_IT"
-      },
-      {
-        "id": "security-intelligence-researcher",
-        "title": "Security Intelligence Researcher",
-        "category": "TECHNOLOGY_IT"
-      },
-      {
-        "id": "insider-threat-analyst",
-        "title": "Insider Threat Analyst",
-        "category": "TECHNOLOGY_IT"
-      },
-      {
-        "id": "chief-information-security-officer",
-        "title": "Chief Information Security Officer (CISO)",
-        "category": "TECHNOLOGY_IT"
-      },
-      {
-        "id": "soc-analyst",
-        "title": "SOC Analyst",
-        "category": "TECHNOLOGY_IT"
-      },
-      {
-        "id": "head-of-cyber-security",
-        "title": "Head of Cyber Security",
-        "category": "TECHNOLOGY_IT"
-      },
-      {
-        "id": "cyber-security-manager",
-        "title": "Cyber Security Manager",
-        "category": "TECHNOLOGY_IT"
-      },
-      {
-        "id": "cybercrime-investigator",
-        "title": "Cybercrime Investigator",
-        "category": "PUBLIC_SERVICE_SAFETY"
-      },
-      {
-        "id": "cyberforsvaret-cyber-officer",
-        "title": "Cyber Officer (Cyberforsvaret)",
-        "category": "MILITARY_DEFENCE"
-      },
-      {
-        "id": "cyberforsvaret-cyber-intel-analyst",
-        "title": "Cyber Intelligence Analyst (Cyberforsvaret)",
-        "category": "MILITARY_DEFENCE"
-      }
-    ],
-    "music-performing-arts": [
-      {
-        "id": "security-operations-manager",
-        "title": "Security Operations Manager",
-        "category": "TECHNOLOGY_IT"
-      },
-      {
-        "id": "chief-operating-officer",
-        "title": "Chief Operating Officer (COO)",
-        "category": "BUSINESS_MANAGEMENT"
-      },
-      {
-        "id": "operating-partner",
-        "title": "Operating Partner",
-        "category": "BUSINESS_MANAGEMENT"
-      },
-      {
-        "id": "technology-operating-partner",
-        "title": "Technology Operating Partner",
-        "category": "BUSINESS_MANAGEMENT"
-      },
-      {
-        "id": "digital-operating-partner",
-        "title": "Digital Operating Partner",
-        "category": "BUSINESS_MANAGEMENT"
-      },
-      {
-        "id": "refinery-operator",
-        "title": "Refinery Operator",
-        "category": "MANUFACTURING_ENGINEERING"
-      },
-      {
-        "id": "recycling-plant-operator",
-        "title": "Recycling Plant Operator",
-        "category": "MANUFACTURING_ENGINEERING"
-      },
-      {
-        "id": "forsvaret-space-operations-officer",
-        "title": "Space Operations Officer (Forsvaret)",
-        "category": "MILITARY_DEFENCE"
-      },
-      {
-        "id": "stunt-performer",
-        "title": "Stunt Performer",
-        "category": "SPORT_FITNESS"
-      },
-      {
-        "id": "heavy-equipment-operator",
-        "title": "Heavy Equipment Operator",
-        "category": "CONSTRUCTION_TRADES"
-      }
-    ],
     "maritime": [
       {
         "id": "ordinary-seaman",
@@ -2388,6 +1685,194 @@
         "id": "tugboat-crew",
         "title": "Tugboat Crew Member",
         "category": "LOGISTICS_TRANSPORT"
+      }
+    ],
+    "biology-life-sciences": [
+      {
+        "id": "cancer-genomics-specialist",
+        "title": "Cancer Genomics Specialist",
+        "category": "HEALTHCARE_LIFE_SCIENCES"
+      },
+      {
+        "id": "embryologist",
+        "title": "Embryologist (IVF Laboratory Scientist)",
+        "category": "HEALTHCARE_LIFE_SCIENCES"
+      },
+      {
+        "id": "biotechnology-research-scientist",
+        "title": "Biotechnology Research Scientist",
+        "category": "HEALTHCARE_LIFE_SCIENCES"
+      },
+      {
+        "id": "biotechnology-scientist",
+        "title": "Biotechnology Scientist",
+        "category": "HEALTHCARE_LIFE_SCIENCES"
+      },
+      {
+        "id": "synthetic-genomics-engineer",
+        "title": "Synthetic Genomics Engineer",
+        "category": "HEALTHCARE_LIFE_SCIENCES"
+      },
+      {
+        "id": "biotechnology-executive",
+        "title": "Biotechnology Executive",
+        "category": "HEALTHCARE_LIFE_SCIENCES"
+      },
+      {
+        "id": "computational-genomics-engineer",
+        "title": "Computational Genomics Engineer",
+        "category": "ARTIFICIAL_INTELLIGENCE"
+      },
+      {
+        "id": "clinical-genomics-analyst",
+        "title": "Clinical Genomics Analyst",
+        "category": "ARTIFICIAL_INTELLIGENCE"
+      },
+      {
+        "id": "computational-genomics-scientist",
+        "title": "Computational Genomics Scientist",
+        "category": "ARTIFICIAL_INTELLIGENCE"
+      }
+    ],
+    "cybersecurity": [
+      {
+        "id": "cyber-threat-intelligence-analyst",
+        "title": "Cyber Threat Intelligence Analyst",
+        "category": "TECHNOLOGY_IT"
+      },
+      {
+        "id": "insider-threat-analyst",
+        "title": "Insider Threat Analyst",
+        "category": "TECHNOLOGY_IT"
+      },
+      {
+        "id": "chief-information-security-officer",
+        "title": "Chief Information Security Officer (CISO)",
+        "category": "TECHNOLOGY_IT"
+      },
+      {
+        "id": "soc-analyst",
+        "title": "SOC Analyst",
+        "category": "TECHNOLOGY_IT"
+      },
+      {
+        "id": "head-of-cyber-security",
+        "title": "Head of Cyber Security",
+        "category": "TECHNOLOGY_IT"
+      },
+      {
+        "id": "cyber-security-manager",
+        "title": "Cyber Security Manager",
+        "category": "TECHNOLOGY_IT"
+      },
+      {
+        "id": "cybercrime-investigator",
+        "title": "Cybercrime Investigator",
+        "category": "PUBLIC_SERVICE_SAFETY"
+      },
+      {
+        "id": "cyberforsvaret-cyber-officer",
+        "title": "Cyber Officer (Cyberforsvaret)",
+        "category": "MILITARY_DEFENCE"
+      },
+      {
+        "id": "cyberforsvaret-cyber-intel-analyst",
+        "title": "Cyber Intelligence Analyst (Cyberforsvaret)",
+        "category": "MILITARY_DEFENCE"
+      }
+    ],
+    "music-performing-arts": [
+      {
+        "id": "security-operations-manager",
+        "title": "Security Operations Manager",
+        "category": "TECHNOLOGY_IT"
+      },
+      {
+        "id": "operating-partner",
+        "title": "Operating Partner",
+        "category": "BUSINESS_MANAGEMENT"
+      },
+      {
+        "id": "technology-operating-partner",
+        "title": "Technology Operating Partner",
+        "category": "BUSINESS_MANAGEMENT"
+      },
+      {
+        "id": "digital-operating-partner",
+        "title": "Digital Operating Partner",
+        "category": "BUSINESS_MANAGEMENT"
+      },
+      {
+        "id": "refinery-operator",
+        "title": "Refinery Operator",
+        "category": "MANUFACTURING_ENGINEERING"
+      },
+      {
+        "id": "recycling-plant-operator",
+        "title": "Recycling Plant Operator",
+        "category": "MANUFACTURING_ENGINEERING"
+      },
+      {
+        "id": "forsvaret-space-operations-officer",
+        "title": "Space Operations Officer (Forsvaret)",
+        "category": "MILITARY_DEFENCE"
+      },
+      {
+        "id": "stunt-performer",
+        "title": "Stunt Performer",
+        "category": "SPORT_FITNESS"
+      },
+      {
+        "id": "heavy-equipment-operator",
+        "title": "Heavy Equipment Operator",
+        "category": "CONSTRUCTION_TRADES"
+      }
+    ],
+    "economics-finance": [
+      {
+        "id": "fintech-specialist",
+        "title": "FinTech Specialist",
+        "category": "FINANCE_BANKING"
+      },
+      {
+        "id": "venture-capital-partner",
+        "title": "Venture Capital Partner",
+        "category": "FINANCE_BANKING"
+      },
+      {
+        "id": "actuary",
+        "title": "Actuary",
+        "category": "FINANCE_BANKING"
+      },
+      {
+        "id": "credit-analyst",
+        "title": "Credit Analyst",
+        "category": "FINANCE_BANKING"
+      },
+      {
+        "id": "valuation-specialist",
+        "title": "Valuation Specialist",
+        "category": "FINANCE_BANKING"
+      },
+      {
+        "id": "transaction-services-adviser",
+        "title": "Transaction Services Adviser",
+        "category": "FINANCE_BANKING"
+      },
+      {
+        "id": "family-office-adviser",
+        "title": "Family Office Adviser",
+        "category": "FINANCE_BANKING"
+      },
+      {
+        "id": "project-finance-specialist",
+        "title": "Project Finance Specialist",
+        "category": "FINANCE_BANKING"
+      },
+      {
+        "id": "restructuring-adviser",
+        "title": "Restructuring Adviser",
+        "category": "FINANCE_BANKING"
       }
     ],
     "telecom-network": [
@@ -2528,12 +2013,24 @@
         "category": "MANUFACTURING_ENGINEERING"
       }
     ],
-    "marketing-communications": [
+    "history-philosophy": [
       {
-        "id": "capital-markets-adviser",
-        "title": "Capital Markets Adviser",
-        "category": "FINANCE_BANKING"
+        "id": "archaeologist",
+        "title": "Archaeologist",
+        "category": "EDUCATION_TRAINING"
       },
+      {
+        "id": "anthropologist",
+        "title": "Anthropologist",
+        "category": "EDUCATION_TRAINING"
+      },
+      {
+        "id": "historian",
+        "title": "Historian",
+        "category": "EDUCATION_TRAINING"
+      }
+    ],
+    "marketing-communications": [
       {
         "id": "telemarketer",
         "title": "Telemarketer",
@@ -2557,43 +2054,9 @@
         "category": "HEALTHCARE_LIFE_SCIENCES"
       },
       {
-        "id": "pharmaceutical-research-director",
-        "title": "Pharmaceutical Research Director",
-        "category": "HEALTHCARE_LIFE_SCIENCES"
-      },
-      {
         "id": "clinical-pharmacologist",
         "title": "Clinical Pharmacologist",
         "category": "HEALTHCARE_LIFE_SCIENCES"
-      }
-    ],
-    "history-philosophy": [
-      {
-        "id": "archaeologist",
-        "title": "Archaeologist",
-        "category": "EDUCATION_TRAINING"
-      },
-      {
-        "id": "anthropologist",
-        "title": "Anthropologist",
-        "category": "EDUCATION_TRAINING"
-      },
-      {
-        "id": "historian",
-        "title": "Historian",
-        "category": "EDUCATION_TRAINING"
-      }
-    ],
-    "electrical-engineering": [
-      {
-        "id": "battery-storage-engineer",
-        "title": "Battery Storage Engineer",
-        "category": "MANUFACTURING_ENGINEERING"
-      },
-      {
-        "id": "ev-infrastructure-engineer",
-        "title": "Electric Vehicle Infrastructure Engineer",
-        "category": "MANUFACTURING_ENGINEERING"
       }
     ],
     "journalism-media": [
