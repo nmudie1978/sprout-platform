@@ -74,6 +74,7 @@ import { PageContext } from "@/components/ui/page-context";
 import { GoalSelectionSheet } from "@/components/goals/GoalSelectionSheet";
 import { useSubtleHint } from "@/hooks/use-subtle-hint";
 import { SpotlightHint } from "@/components/ui/spotlight-hint";
+import { OrganisationContext } from "@/components/organisations/organisation-context";
 import { DiscoveryNudge } from "@/components/discovery/discovery-nudge";
 import { CareerTwinCta } from "@/components/career-twin/career-twin-cta";
 
@@ -1357,6 +1358,15 @@ export default function DashboardPage() {
         {/* The Small Jobs marketplace tile was removed — the jobs marketplace
             is permanently discontinued (see CLAUDE.md <removed_features_strict>),
             so it must not be re-enableable via an env flag. */}
+
+        {/* ── Institutional context ──────────────────────────────
+            Renders NOTHING for a user with no organisation membership,
+            which is the overwhelming majority. Only someone who joined a
+            school, municipality or programme sees this strip, and even
+            then their personal journey above is unchanged. ── */}
+        <div className="reveal-up" style={{ animationDelay: "240ms" }}>
+          <OrganisationContext />
+        </div>
 
       </div>
 
