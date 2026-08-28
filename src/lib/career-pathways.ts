@@ -1105,6 +1105,24 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
   // EDUCATION & TRAINING
   // ========================================
   EDUCATION_TRAINING: [
+    // Moved here from PUBLIC_SERVICE_SAFETY (2026-08-28). It sat under the
+    // "Social Services — child & family" grouping, which is defensible as
+    // authoring but wrong as a category: the category drives the employer
+    // fallback (it was being shown NAV, Politiet and Skatteetaten) AND the
+    // typical-day default, since this career has no curated day text. A
+    // barnehagelærer is education, and that is also where a young person
+    // would look for it.
+    {
+      id: "early-childhood-educator",
+      title: "Early Childhood Educator",
+      emoji: "🧸",
+      description: "Plan and lead learning activities for children under six in nurseries and kindergartens. Combines care, education, and developmental support.",
+      avgSalary: "470,000 - 600,000 kr/year",
+      educationPath: "Bachelor's in Early Childhood Education (3 years) — barnehagelærer",
+      keySkills: ["child development", "play-based learning", "patience", "communication with parents", "creativity"],
+      dailyTasks: ["Plan activities", "Lead small groups", "Observe development", "Communicate with parents", "Collaborate with team"],
+      growthOutlook: "high",
+    },
     // ── Archaeology, anthropology & history added 2026-06-24 ──
     { id: "archaeologist", title: "Archaeologist", emoji: "🏺", description: "Uncover and study traces of the past, from buried artefacts to ancient landscapes.", avgSalary: "480,000 - 820,000 kr/year", educationPath: "Master's/PhD in Archaeology (UiO / UiB / NTNU / UiS)", keySkills: ["excavation", "fieldwork", "documentation", "analysis", "cultural heritage"], dailyTasks: ["Survey and excavate sites", "Document finds and stratigraphy", "Analyse artefacts in the lab", "Write field reports", "Map locations with GIS"], growthOutlook: "stable", entryLevel: false, workSetting: "outdoors", peopleIntensity: "medium", sector: "public" },
     { id: "anthropologist", title: "Anthropologist", emoji: "🌍", description: "Study people, cultures and how communities live, believe and change over time.", avgSalary: "470,000 - 790,000 kr/year", educationPath: "Master's/PhD in Social Anthropology (UiO / UiB / NTNU)", keySkills: ["fieldwork", "interviewing", "ethnography", "writing", "cultural analysis"], dailyTasks: ["Conduct fieldwork and observation", "Interview people and communities", "Take detailed field notes", "Analyse cultural patterns", "Write reports and papers"], growthOutlook: "stable", entryLevel: false, workSetting: "mixed", peopleIntensity: "high", sector: "public" },
@@ -11790,17 +11808,6 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     // ──────────────────────────────────────────────
     // Social Services — child & family
     // ──────────────────────────────────────────────
-    {
-      id: "early-childhood-educator",
-      title: "Early Childhood Educator",
-      emoji: "🧸",
-      description: "Plan and lead learning activities for children under six in nurseries and kindergartens. Combines care, education, and developmental support.",
-      avgSalary: "470,000 - 600,000 kr/year",
-      educationPath: "Bachelor's in Early Childhood Education (3 years) — barnehagelærer",
-      keySkills: ["child development", "play-based learning", "patience", "communication with parents", "creativity"],
-      dailyTasks: ["Plan activities", "Lead small groups", "Observe development", "Communicate with parents", "Collaborate with team"],
-      growthOutlook: "high",
-    },
     {
       id: "case-worker",
       title: "Case Worker",

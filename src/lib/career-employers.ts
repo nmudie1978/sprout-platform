@@ -12,6 +12,7 @@
 // designer→NRK, auditor→DNB). Both re-import `Employer` type-only (no runtime
 // cycle); consulted in getTopEmployers below.
 import { REALISM_EMPLOYERS } from './career-employers-realism';
+import { REALISM_EMPLOYERS_QA, NO_CONVENTIONAL_EMPLOYER } from './career-employers-realism-qa';
 import { REALISM_EMPLOYERS_EXTRA } from './career-employers-realism-extra';
 import { REALISM_EMPLOYERS_PHYSICAL } from './career-employers-realism-physical';
 import { REALISM_EMPLOYERS_FUTUREPROOF } from './career-employers-realism-futureproof';
@@ -385,6 +386,7 @@ export function getTopEmployers(careerId: string): Employer[] {
     ?? REALISM_EMPLOYERS_BUILTSPORT[careerId]
     ?? REALISM_EMPLOYERS_SCIENCE[careerId]
     ?? REALISM_EMPLOYERS_MARITIME[careerId]
+    ?? REALISM_EMPLOYERS_QA[careerId]
     ?? [];
 }
 
@@ -394,6 +396,7 @@ export function getTopEmployers(careerId: string): Employer[] {
 export function hasTopEmployers(careerId: string): boolean {
   return (
     (CAREER_EMPLOYERS[careerId]?.length ?? 0) > 0 ||
+    (REALISM_EMPLOYERS_QA[careerId]?.length ?? 0) > 0 ||
     (REALISM_EMPLOYERS[careerId]?.length ?? 0) > 0 ||
     (REALISM_EMPLOYERS_EXTRA[careerId]?.length ?? 0) > 0 ||
     (REALISM_EMPLOYERS_PHYSICAL[careerId]?.length ?? 0) > 0 ||
@@ -1340,6 +1343,11 @@ export function getCareerEmployers(
 ): Employer[] {
   const ec = employerCountry(country);
   if (!ec) return [];
+
+  // Some careers have no conventional employer at all (sponsored athletes).
+  // Checked before every fallback: the sector list would otherwise supply a
+  // confidently wrong answer, which is worse than an empty section.
+  if (NO_CONVENTIONAL_EMPLOYER.has(careerId)) return [];
 
   // Consultancies are global firms (offices in both markets), so the same
   // list serves NO and ES. Checked before the sector fallback so a
