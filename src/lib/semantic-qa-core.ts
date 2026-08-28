@@ -96,6 +96,59 @@ WHAT YOU ACTUALLY DO: ${doing}
 Is this still accurate today? Classify as current / review / outdated.`;
 }
 
+/**
+ * Prompt for one career's "Where you'd work" employer list.
+ *
+ * Deliberately asks a NARROWER question than the myth/typical-day prompts:
+ * not "is this organisation still real" (link checks already cover liveness)
+ * but "would someone in THIS role plausibly be employed HERE". That is the
+ * failure the existing checks cannot see — a live, correctly-spelled employer
+ * that simply does not hire this role.
+ *
+ * The verdict bands are spelled out because the first pilot run over 40
+ * sector-fallback careers flagged 17 as "outdated", and almost all were false
+ * positives of one kind: the model treated a BROAD employer as a WRONG one.
+ * Norwegian university hospitals genuinely do employ urogynaecologists and
+ * andrologists; "generic" is not an error. Without this distinction the review
+ * queue is ~40% noise and a human stops trusting it.
+ */
+export function userPromptForEmployer(
+  careerId: string,
+  employers: { name: string; industry: string }[],
+  opts: { category?: string | null; source: "curated" | "fallback"; country: string },
+): string {
+  const list = employers.map((e) => `- ${e.name} (${e.industry})`).join("\n");
+  const provenance =
+    opts.source === "fallback"
+      ? `These were NOT chosen for this career. They are the generic list for the "${opts.category ?? "unknown"}" category, shown because no specific list exists for this role.`
+      : `These were hand-picked for this career.`;
+  return `Career: ${careerId}
+Country: ${opts.country}
+
+This list is shown to students under "Where you'd work" as the employers
+typical for this career. ${provenance}
+
+EMPLOYERS:
+${list}
+
+Question: would someone working as "${careerId}" realistically be employed by
+these organisations in ${opts.country}?
+
+Judge EMPLOYABILITY, not specificity. A large or broad employer is CORRECT if
+it really does employ this role — a national hospital trust employing a narrow
+medical sub-specialty is right, not wrong. Do not penalise a list for being
+broad, unsurprising, or not tailored to the role.
+
+Verdicts:
+- "current"  — every employer listed plausibly hires this role.
+- "review"   — all plausible, but the list misses the employer type where most
+               people in this role actually work (name that type).
+- "outdated" — at least one listed employer would NOT hire this role at all.
+               Name which, and why.
+
+Classify as current / review / outdated.`;
+}
+
 // ── Verdict parsing ─────────────────────────────────────────────────
 
 /** Parse a model JSON response into a normalised verdict; defaults to review. */

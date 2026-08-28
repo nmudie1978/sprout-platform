@@ -23,7 +23,13 @@
  * Targets:
  *   myths        — src/lib/career-myths.ts
  *   typical-days — src/lib/career-typical-days.ts (curated entries)
- *   employers    — src/lib/career-employers.ts (when added; placeholder for now)
+ *   employers    — src/lib/career-employers.ts ("Where you'd work")
+ *
+ * Employer runs default to --source=fallback: careers with NO curated list,
+ * which are served the generic list for their category. Those lists were
+ * written for a whole sector and never about the specific role they appear
+ * against, so that is where an implausible employer hides. --source=curated
+ * audits the hand-picked lists; --source=all does both.
  *
  * Cost: one chat completion per entry, gpt-4o-mini, ~$0.0005 each.
  * Bound runs with --limit during development.
@@ -36,10 +42,13 @@ import { resolve } from 'node:path';
 import OpenAI from 'openai';
 import { CAREER_MYTHS } from '../src/lib/career-myths';
 import { _CAREER_DETAILS_CURATED_FOR_QA } from '../src/lib/career-typical-days';
+import { getAllCareers, getCategoryForCareer } from '../src/lib/career-pathways';
+import { getCareerEmployers, getTopEmployers } from '../src/lib/career-employers';
 import {
   SYSTEM_PROMPT,
   userPromptForMyth,
   userPromptForTypicalDay,
+  userPromptForEmployer,
   parseVerdict,
   runReview,
   summarise,
@@ -70,6 +79,10 @@ function parseFlag(name: string): string | null {
 }
 
 const TARGET = (parseFlag('target') ?? 'myths') as 'myths' | 'typical-days' | 'employers';
+/** Employer-target only. Which provenance of list to audit. */
+const SOURCE = (parseFlag('source') ?? 'fallback') as 'fallback' | 'curated' | 'all';
+/** Employer lists are country-specific; audit one market per run. */
+const COUNTRY = parseFlag('country') ?? 'Norway';
 const LIMIT = parseFlag('limit') ? Number.parseInt(parseFlag('limit')!, 10) : Infinity;
 
 // ── OpenAI-backed reviewer ────────────────────────────────────────
@@ -114,13 +127,37 @@ function typicalDayItems(): ReviewItem[] {
   return items;
 }
 
+function employerItems(): ReviewItem[] {
+  const items: ReviewItem[] = [];
+  let index = 0;
+  for (const career of getAllCareers()) {
+    const category = getCategoryForCareer(career.id) ?? null;
+    const employers = getCareerEmployers(career.id, category, COUNTRY);
+    // Nothing shown to the user means nothing to audit.
+    if (employers.length === 0) continue;
+
+    // Provenance decides whether this list was ever about THIS career.
+    // getTopEmployers is the curated lookup getCareerEmployers consults
+    // first, so a hit here means hand-picked rather than sector fallback.
+    const source: 'curated' | 'fallback' =
+      getTopEmployers(career.id).length > 0 ? 'curated' : 'fallback';
+    if (SOURCE !== 'all' && source !== SOURCE) continue;
+
+    items.push({
+      target: 'employers',
+      careerId: career.id,
+      index: index++,
+      content: { source, category, employers },
+      prompt: userPromptForEmployer(career.title, employers, { category, source, country: COUNTRY }),
+    });
+  }
+  return items;
+}
+
 function itemsForTarget(): ReviewItem[] {
   if (TARGET === 'myths') return mythItems();
   if (TARGET === 'typical-days') return typicalDayItems();
-  if (TARGET === 'employers') {
-    console.warn('[qa-agent] target=employers not yet implemented (src/lib/career-employers.ts does not exist).');
-    return [];
-  }
+  if (TARGET === 'employers') return employerItems();
   console.error(`[qa-agent] unknown target: ${TARGET}`);
   process.exit(1);
 }

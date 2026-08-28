@@ -2,6 +2,7 @@ import { describe, it, expect, vi } from "vitest";
 import {
   userPromptForMyth,
   userPromptForTypicalDay,
+  userPromptForEmployer,
   parseVerdict,
   runReview,
   summarise,
@@ -105,5 +106,61 @@ describe("summarise", () => {
       { target: "t", careerId: "c", index: 3, content: {}, verdict: "review" as const, reasoning: "" },
     ];
     expect(summarise(entries)).toEqual({ current: 1, review: 2, outdated: 1, total: 4 });
+  });
+});
+
+describe("userPromptForEmployer", () => {
+  const employers = [
+    { name: "Equinor", industry: "Energy" },
+    { name: "NAV", industry: "Public sector" },
+  ];
+
+  it("tells the model a fallback list was never chosen for this career", () => {
+    const prompt = userPromptForEmployer("Marine Biologist", employers, {
+      category: "SCIENCE",
+      source: "fallback",
+      country: "Norway",
+    });
+    // The provenance is the whole point: a sector list judged as if it were
+    // hand-picked reads as merely uninspiring rather than wrong.
+    expect(prompt).toContain("NOT chosen for this career");
+    expect(prompt).toContain("SCIENCE");
+    expect(prompt).toContain("Equinor");
+    expect(prompt).toContain("Norway");
+  });
+
+  it("marks curated lists as hand-picked", () => {
+    const prompt = userPromptForEmployer("Petroleum Engineer", employers, {
+      category: "ENGINEERING",
+      source: "curated",
+      country: "Norway",
+    });
+    expect(prompt).toContain("hand-picked");
+    expect(prompt).not.toContain("NOT chosen for this career");
+  });
+
+  it("separates a broad employer from a wrong one", () => {
+    // The pilot run flagged 17/40 as outdated by treating "generic" as
+    // "incorrect". The verdict bands must make that distinction explicit or
+    // the review queue is mostly noise.
+    const prompt = userPromptForEmployer("Andrologist", employers, {
+      category: "HEALTHCARE_LIFE_SCIENCES",
+      source: "fallback",
+      country: "Norway",
+    });
+    expect(prompt).toContain("Judge EMPLOYABILITY, not specificity");
+    expect(prompt).toContain("would NOT hire this role");
+    expect(prompt).toContain("Do not penalise a list for being");
+  });
+
+  it("asks the plausibility question, not the liveness question", () => {
+    const prompt = userPromptForEmployer("Nurse", employers, {
+      category: null,
+      source: "fallback",
+      country: "Norway",
+    });
+    // Link checking already covers "does this employer exist".
+    expect(prompt).toContain("realistically be employed");
+    expect(prompt).toContain("current / review / outdated");
   });
 });
