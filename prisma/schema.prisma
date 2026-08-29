@@ -184,19 +184,19 @@ model User {
   updatedAt DateTime @updatedAt
 
   // Relations
-  youthProfile       YouthProfile?
-  swipes             Swipe[]
-  questions          ProQuestion[]
-  answers            ProAnswer[]
-  reports            Report[]
-  aiIntentLogs       AiIntentLog[]
-  aiChatMessages     AiChatMessage[]
-  careerTwinMessages CareerTwinMessage[]
-  accounts           Account[]
-  sessions           Session[]
+  youthProfile        YouthProfile?
+  swipes              Swipe[]
+  questions           ProQuestion[]
+  answers             ProAnswer[]
+  reports             Report[]
+  aiIntentLogs        AiIntentLog[]
+  aiChatMessages      AiChatMessage[]
+  careerTwinMessages  CareerTwinMessage[]
+  accounts            Account[]
+  sessions            Session[]
   passwordResetTokens PasswordResetToken[]
-  notifications      Notification[]
-  badges             Badge[]
+  notifications       Notification[]
+  badges              Badge[]
 
   // Messaging (universal - any user can message any user)
 
@@ -269,6 +269,16 @@ model User {
   // Never combined: role gating at the API layer.
   taughtCohorts     Cohort[]           @relation("TeacherCohorts")
   cohortMemberships CohortMembership[] @relation("YouthCohortMemberships")
+
+  // ── Institutional layer (additive; see the block at the end of this file)
+  // None of these are required. A user with zero organisation memberships
+  // and no PersonalSubscription is a perfectly normal direct consumer and
+  // resolves to the FREE platform baseline.
+  organisationMemberships OrganisationMembership[] @relation("UserOrgMemberships")
+  personalSubscription    PersonalSubscription?    @relation("UserPersonalSubscription")
+  accessCodeRedemptions   AccessCodeRedemption[]   @relation("UserAccessCodeRedemptions")
+  parentLinks             ParentChildLink[]        @relation("ParentLinks")
+  childLinks              ParentChildLink[]        @relation("ChildLinks")
 
   @@index([email])
   @@index([role])
@@ -2454,4 +2464,687 @@ model ThemeTally {
   theme     String   @id // "dark" | "light"
   count     Int      @default(0)
   updatedAt DateTime @updatedAt
+}
+
+// ═════════════════════════════════════════════════════════════════════════
+// INSTITUTIONAL, COMMERCIAL & ACCESS MANAGEMENT
+//
+// A B2B2C layer that sits ON TOP OF the existing personal user model.
+// Nothing here replaces `User`, `YouthProfile` or the personal journey —
+// every user keeps one Endeavrly identity and one personal experience.
+// Institutional membership is purely ADDITIVE context.
+//
+// Reading order:
+//   Organisation → OrganisationMembership → Licence → entitlements
+//   OrgCohort / AccessCode / OrganisationInvitation = joining mechanics
+//   PersonalSubscription = the direct-consumer half of the same engine
+//
+// NOTE ON COHORTS: the legacy `Cohort`/`CohortMembership` pair above is
+// "school mode" — teacher-owned, join-code, no organisation. It is left
+// untouched and still works. `OrgCohort` below is the organisation-scoped
+// model. See docs/institutional-architecture.md for the merge path.
+//
+// NOTE ON PAYMENTS: there is deliberately NO payment processing here.
+// `PersonalSubscription` carries a tier that feeds the entitlement engine;
+// tiers are set administratively. CLAUDE.md forbids in-app payments.
+// ═════════════════════════════════════════════════════════════════════════
+
+enum OrganisationType {
+  SCHOOL
+  UNIVERSITY
+  COLLEGE
+  MUNICIPALITY
+  PUBLIC_SECTOR
+  EMPLOYMENT_SERVICE
+  CAREER_GUIDANCE
+  EMPLOYER
+  TRAINING_PROVIDER
+  NON_PROFIT
+  OTHER
+}
+
+enum OrganisationStatus {
+  PROSPECT // in commercial conversation, no licence yet
+  ONBOARDING // licence signed, being set up
+  ACTIVE
+  SUSPENDED // non-payment / contract dispute — access frozen
+  CHURNED
+  ARCHIVED
+}
+
+/// Roles a user holds WITHIN one organisation. Deliberately separate from
+/// the platform-wide `UserRole` enum, which is untouched: a user's platform
+/// identity never changes because they joined an institution.
+enum OrgRole {
+  PARTICIPANT // student / young person / job seeker
+  PARENT // parent or guardian of a participant
+  ADVISOR // career/employment/NAV advisor — sees ASSIGNED participants
+  EDUCATOR // teacher/lecturer — sees their cohorts
+  MANAGER // programme owner — aggregated insight only
+  ORGANISATION_ADMIN // manages users, cohorts, codes, settings
+}
+
+enum OrgMembershipStatus {
+  INVITED
+  ACTIVE
+  SUSPENDED
+  EXPIRED
+  REMOVED
+}
+
+enum LicenceStatus {
+  TRIAL
+  ACTIVE
+  SUSPENDED
+  EXPIRED
+  CANCELLED
+}
+
+/// The full capability surface of the platform. Entitlements are expressed
+/// ONLY in these terms — never in terms of a plan name. Adding a module here
+/// is the single place a new gated capability is registered.
+enum EntitlementModule {
+  CORE
+  CAREER_DISCOVERY
+  CAREER_DNA
+  UNDERSTAND
+  CLARITY
+  CAREER_TWIN
+  AI_CAREER_GUIDANCE
+  CAREER_PATHWAYS
+  PARENT_PORTAL
+  LABOUR_MARKET_INTELLIGENCE
+  SKILLS_ANALYSIS
+  OPPORTUNITIES
+  INSTITUTION_ANALYTICS
+  ADVANCED_ANALYTICS
+  API_ACCESS
+  CUSTOM_INTEGRATIONS
+}
+
+enum OrgCohortStatus {
+  PLANNED
+  ACTIVE
+  COMPLETED
+  ARCHIVED
+}
+
+enum OrgCohortType {
+  CLASS
+  PROGRAMME
+  JOB_SEEKER_GROUP
+  APPRENTICESHIP
+  GRADUATE_PROGRAMME
+  EVENT
+  OTHER
+}
+
+enum AccessCodeStatus {
+  ACTIVE
+  INACTIVE
+  EXPIRED
+  EXHAUSTED
+}
+
+enum InvitationStatus {
+  PENDING
+  ACCEPTED
+  EXPIRED
+  REVOKED
+}
+
+/// What an organisation wants to happen when someone registers with an
+/// email on one of its verified domains. Never AUTO_JOIN by default —
+/// silent enrolment is a privacy failure, not a convenience.
+enum DomainEnrolmentPolicy {
+  DISABLED // domain recorded for reference only
+  OFFER // show the user an opt-in prompt (default)
+  AUTO_JOIN // enrol on registration — org must opt in explicitly
+}
+
+enum SubscriptionTier {
+  FREE
+  PREMIUM
+  FAMILY
+  FAMILY_PLUS
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  TRIALING
+  CANCELLED
+  EXPIRED
+}
+
+// NOTE: entitlement SOURCE provenance (PLATFORM_BASELINE, ORGANISATION_LICENCE,
+// …) is deliberately NOT a database enum. It is computed during resolution and
+// never stored, so it lives in TypeScript at src/lib/entitlements/types.ts.
+
+enum OrgAuditAction {
+  ORGANISATION_CREATED
+  ORGANISATION_UPDATED
+  ORGANISATION_STATUS_CHANGED
+  LICENCE_CREATED
+  LICENCE_UPDATED
+  LICENCE_STATUS_CHANGED
+  LICENCE_EXPIRED
+  LICENCE_PLAN_CREATED
+  LICENCE_PLAN_UPDATED
+  MEMBERSHIP_CREATED
+  MEMBERSHIP_ROLE_CHANGED
+  MEMBERSHIP_STATUS_CHANGED
+  MEMBERSHIP_REMOVED
+  INVITATION_SENT
+  INVITATION_REVOKED
+  INVITATION_ACCEPTED
+  ACCESS_CODE_CREATED
+  ACCESS_CODE_UPDATED
+  ACCESS_CODE_REDEEMED
+  COHORT_CREATED
+  COHORT_UPDATED
+  COHORT_ARCHIVED
+  COHORT_MEMBER_ADDED
+  COHORT_MEMBER_REMOVED
+  DOMAIN_ADDED
+  DOMAIN_VERIFIED
+  DOMAIN_REMOVED
+  SETTINGS_UPDATED
+  ADVISOR_ASSIGNED
+  ADVISOR_UNASSIGNED
+  SUBSCRIPTION_CHANGED
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// ORGANISATION
+// ─────────────────────────────────────────────────────────────────────────
+
+model Organisation {
+  id      String             @id @default(cuid())
+  name    String             @db.VarChar(160)
+  /// URL-safe identifier. Stable — renaming the org does not change it.
+  slug    String             @unique @db.VarChar(80)
+  type    OrganisationType
+  status  OrganisationStatus @default(PROSPECT)
+  /// ISO-3166-1 alpha-2, matching YouthProfile.country conventions.
+  country String?            @db.VarChar(2)
+  logoUrl String?            @db.Text
+
+  primaryContactName  String? @db.VarChar(120)
+  primaryContactEmail String? @db.VarChar(254)
+  billingEmail        String? @db.VarChar(254)
+  billingAddress      String? @db.Text
+  /// Free-text internal notes — commercial context, never shown to the org.
+  internalNotes       String? @db.Text
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  /// Soft delete. Tenant queries always filter this out.
+  deletedAt DateTime?
+
+  memberships  OrganisationMembership[]
+  licences     Licence[]
+  cohorts      OrgCohort[]
+  accessCodes  AccessCode[]
+  invitations  OrganisationInvitation[]
+  domains      OrganisationDomain[]
+  settings     OrganisationSettings?
+  auditLogs    OrgAuditLog[]
+  advisorLinks AdvisorAssignment[]
+
+  @@index([status])
+  @@index([type])
+  @@index([deletedAt])
+  @@index([country])
+}
+
+/// One row per organisation. Holds the configurable privacy/enrolment policy
+/// that section 19 of the spec requires be configurable rather than assumed.
+model OrganisationSettings {
+  id             String @id @default(cuid())
+  organisationId String @unique
+
+  /// Master switch: may ANY individual-level participant data be surfaced to
+  /// staff in this organisation? When false, every staff surface is aggregate
+  /// only, regardless of role. Defaults to false — opt in, never opt out.
+  allowIndividualParticipantView Boolean @default(false)
+  /// May ADVISORs see individual progress for participants explicitly
+  /// assigned to them? Only consulted when the master switch is true.
+  advisorCanViewAssignedDetail   Boolean @default(true)
+  /// May EDUCATORs see individual progress inside their own cohorts?
+  educatorCanViewCohortDetail    Boolean @default(false)
+  /// MANAGERs are aggregate-only by product policy; this exists so the
+  /// exception can be granted deliberately and audited, not assumed.
+  managerCanViewIndividualDetail Boolean @default(false)
+
+  /// Minimum group size before any aggregated statistic is rendered.
+  /// Below this, the UI shows "not enough data" rather than a number that
+  /// could identify one young person. 5 is the conventional floor.
+  minimumAggregateGroupSize Int @default(5)
+
+  /// Participants must actively agree to share journey progress with this
+  /// organisation before ANY individual-level view is possible.
+  requireParticipantDataSharingConsent Boolean @default(true)
+
+  /// Default membership expiry applied to new joins, in days. Null = none.
+  defaultMembershipDurationDays Int?
+
+  /// Shown to participants on the join screen, so they know who they are
+  /// sharing with and what the organisation will see.
+  participantPrivacyNotice String? @db.Text
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  organisation Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+}
+
+/// A verified email domain. Used to OFFER membership at registration —
+/// never to silently enrol unless the org has explicitly set AUTO_JOIN.
+model OrganisationDomain {
+  id                String                @id @default(cuid())
+  organisationId    String
+  /// Stored lowercase, without the leading "@". e.g. "exampleuniversity.edu"
+  domain            String                @db.VarChar(253)
+  verified          Boolean               @default(false)
+  verifiedAt        DateTime?
+  /// Token the org places in DNS TXT to prove ownership.
+  verificationToken String?               @db.VarChar(64)
+  enrolmentPolicy   DomainEnrolmentPolicy @default(OFFER)
+  /// Role granted to someone joining via this domain.
+  defaultRole       OrgRole               @default(PARTICIPANT)
+  defaultCohortId   String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  organisation  Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  defaultCohort OrgCohort?   @relation("DomainDefaultCohort", fields: [defaultCohortId], references: [id], onDelete: SetNull)
+
+  /// A domain maps to at most one organisation, so registration-time lookup
+  /// is unambiguous and no org can hijack another's domain.
+  @@unique([domain])
+  @@index([organisationId])
+  @@index([verified])
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// MEMBERSHIP
+// ─────────────────────────────────────────────────────────────────────────
+
+/// The join between a personal Endeavrly identity and an organisation.
+/// A user may hold many of these. Deleting one never touches personal data.
+model OrganisationMembership {
+  id             String              @id @default(cuid())
+  userId         String
+  organisationId String
+  role           OrgRole             @default(PARTICIPANT)
+  status         OrgMembershipStatus @default(ACTIVE)
+
+  joinedAt  DateTime  @default(now())
+  /// Hard stop for time-boxed programmes (a 6-month NAV pilot, a school
+  /// year). The nightly expiry job flips status to EXPIRED past this date;
+  /// entitlement resolution ALSO checks it, so a missed job can't grant
+  /// access it shouldn't.
+  expiresAt DateTime?
+
+  /// How this membership came to exist — for support and audit.
+  invitationId String? @unique
+  accessCodeId String?
+
+  /// Participant's explicit agreement to share journey progress with this
+  /// organisation. Null = never asked. Required before individual-level
+  /// staff views when the org's settings demand consent.
+  dataSharingConsentAt        DateTime?
+  dataSharingConsentRevokedAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user              User                    @relation("UserOrgMemberships", fields: [userId], references: [id], onDelete: Cascade)
+  organisation      Organisation            @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  invitation        OrganisationInvitation? @relation(fields: [invitationId], references: [id], onDelete: SetNull)
+  accessCode        AccessCode?             @relation(fields: [accessCodeId], references: [id], onDelete: SetNull)
+  cohortMemberships OrgCohortMembership[]
+  advisorLinks      AdvisorAssignment[]     @relation("ParticipantMembership")
+  advisingLinks     AdvisorAssignment[]     @relation("AdvisorMembership")
+
+  /// One membership per user per organisation. Re-joining reuses the row.
+  @@unique([userId, organisationId])
+  @@index([organisationId, status])
+  @@index([organisationId, role])
+  @@index([userId, status])
+  @@index([expiresAt])
+}
+
+/// Explicit advisor → participant assignment. An ADVISOR sees ONLY the
+/// participants linked here — never the whole organisation.
+model AdvisorAssignment {
+  id                      String @id @default(cuid())
+  organisationId          String
+  advisorMembershipId     String
+  participantMembershipId String
+
+  assignedAt DateTime  @default(now())
+  endedAt    DateTime?
+  notes      String?   @db.Text
+
+  organisation          Organisation           @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  advisorMembership     OrganisationMembership @relation("AdvisorMembership", fields: [advisorMembershipId], references: [id], onDelete: Cascade)
+  participantMembership OrganisationMembership @relation("ParticipantMembership", fields: [participantMembershipId], references: [id], onDelete: Cascade)
+
+  @@unique([advisorMembershipId, participantMembershipId])
+  @@index([organisationId])
+  @@index([participantMembershipId])
+  @@index([advisorMembershipId, endedAt])
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// COMMERCIAL: PLANS & LICENCES
+// ─────────────────────────────────────────────────────────────────────────
+
+/// A reusable commercial template. Editable by super admins at runtime —
+/// plans are DATA, never code. Application logic must never branch on
+/// `plan.key`; it asks the entitlement engine about a MODULE instead.
+model LicencePlan {
+  id          String  @id @default(cuid())
+  /// Stable machine key, e.g. "PILOT", "EDUCATION", "ENTERPRISE".
+  key         String  @unique @db.VarChar(48)
+  name        String  @db.VarChar(120)
+  description String? @db.Text
+
+  /// Modules a licence on this plan starts with. A licence can override.
+  defaultModules    EntitlementModule[]
+  defaultUserLimit  Int?
+  /// Default contract length in months, used to prefill the licence form.
+  defaultTermMonths Int?
+  /// Indicative list price, minor units, for the commercial dashboard only.
+  /// No payment is ever taken in-app.
+  listPriceMinor    Int?
+  currency          String?             @db.VarChar(3)
+
+  isActive  Boolean  @default(true)
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  licences Licence[]
+
+  @@index([isActive])
+}
+
+/// One commercial agreement between Endeavrly and one organisation.
+/// An organisation may have several over time; at most one should be
+/// TRIAL/ACTIVE at once (enforced in the service layer, not the DB, so
+/// overlapping renewals can be staged).
+model Licence {
+  id             String        @id @default(cuid())
+  organisationId String
+  licencePlanId  String?
+  status         LicenceStatus @default(TRIAL)
+
+  startDate DateTime
+  endDate   DateTime?
+
+  /// Null = unlimited seats.
+  userLimit       Int?
+  /// Denormalised seat count, refreshed by the seat-usage job and on join.
+  /// Never trusted for enforcement — the enforcement path counts live.
+  activeUserCount Int  @default(0)
+
+  /// The authoritative module list for this licence. Seeded from the plan
+  /// at creation, then independently editable so a bespoke contract needs
+  /// no new plan.
+  enabledModules EntitlementModule[]
+
+  /// Commercial metadata — surfaced only in the internal portal.
+  contractReference  String?   @db.VarChar(120)
+  contractValueMinor Int?
+  currency           String?   @db.VarChar(3)
+  /// Annualised value used for ARR roll-ups.
+  annualValueMinor   Int?
+  renewalDate        DateTime?
+  autoRenew          Boolean   @default(false)
+  trialEndsAt        DateTime?
+  commercialNotes    String?   @db.Text
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  organisation Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  plan         LicencePlan? @relation(fields: [licencePlanId], references: [id], onDelete: SetNull)
+
+  @@index([organisationId, status])
+  @@index([status])
+  @@index([endDate])
+  @@index([renewalDate])
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// COHORTS (organisation-scoped)
+// ─────────────────────────────────────────────────────────────────────────
+
+model OrgCohort {
+  id             String          @id @default(cuid())
+  organisationId String
+  name           String          @db.VarChar(140)
+  description    String?         @db.Text
+  type           OrgCohortType   @default(PROGRAMME)
+  status         OrgCohortStatus @default(ACTIVE)
+  startDate      DateTime?
+  endDate        DateTime?
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  organisation   Organisation             @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  memberships    OrgCohortMembership[]
+  accessCodes    AccessCode[]
+  invitations    OrganisationInvitation[]
+  domainDefaults OrganisationDomain[]     @relation("DomainDefaultCohort")
+
+  @@unique([organisationId, name])
+  @@index([organisationId, status])
+  @@index([deletedAt])
+}
+
+/// Cohort membership hangs off the ORGANISATION membership, not the user
+/// directly. That makes it structurally impossible to put a user in a
+/// cohort of an organisation they don't belong to.
+model OrgCohortMembership {
+  id           String   @id @default(cuid())
+  cohortId     String
+  membershipId String
+  addedAt      DateTime @default(now())
+
+  cohort     OrgCohort              @relation(fields: [cohortId], references: [id], onDelete: Cascade)
+  membership OrganisationMembership @relation(fields: [membershipId], references: [id], onDelete: Cascade)
+
+  @@unique([cohortId, membershipId])
+  @@index([membershipId])
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// JOINING: ACCESS CODES & INVITATIONS
+// ─────────────────────────────────────────────────────────────────────────
+
+model AccessCode {
+  id             String           @id @default(cuid())
+  organisationId String
+  /// Human-shareable, uppercase. e.g. "NAV-YOUTH-2027".
+  code           String           @unique @db.VarChar(64)
+  label          String?          @db.VarChar(160)
+  status         AccessCodeStatus @default(ACTIVE)
+
+  cohortId     String?
+  /// Role granted on redemption.
+  assignedRole OrgRole @default(PARTICIPANT)
+
+  /// Null = unlimited. `singleUse` is sugar for maxUses = 1 and is stored
+  /// explicitly so the intent survives an edit to maxUses.
+  maxUses     Int?
+  currentUses Int       @default(0)
+  singleUse   Boolean   @default(false)
+  expiresAt   DateTime?
+
+  /// If non-empty, the redeeming account's email domain must be in this list.
+  /// Stored lowercase without "@".
+  allowedEmailDomains String[]
+
+  /// Optional module grant ON TOP of the organisation's licence — for an
+  /// event or pilot cohort that needs one extra capability. Still filtered by
+  /// the redeemer's role permissions, so a code can never hand a PARTICIPANT
+  /// a staff-only module. See resolveEntitlements().
+  moduleOverrides EntitlementModule[]
+
+  /// Membership duration granted on redemption, in days. Null = org default.
+  membershipDurationDays Int?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  createdBy String?  @db.VarChar(160)
+
+  organisation Organisation             @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  cohort       OrgCohort?               @relation(fields: [cohortId], references: [id], onDelete: SetNull)
+  redemptions  AccessCodeRedemption[]
+  memberships  OrganisationMembership[]
+
+  @@index([organisationId, status])
+  @@index([expiresAt])
+}
+
+/// One row per successful redemption. Also the uniqueness guard that stops
+/// one account consuming a multi-use code repeatedly.
+model AccessCodeRedemption {
+  id           String   @id @default(cuid())
+  accessCodeId String
+  userId       String
+  redeemedAt   DateTime @default(now())
+
+  accessCode AccessCode @relation(fields: [accessCodeId], references: [id], onDelete: Cascade)
+  user       User       @relation("UserAccessCodeRedemptions", fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([accessCodeId, userId])
+  @@index([userId])
+}
+
+model OrganisationInvitation {
+  id             String           @id @default(cuid())
+  organisationId String
+  /// Lowercased at write time. NOT unique globally — the same person can be
+  /// invited by two organisations.
+  email          String           @db.VarChar(254)
+  role           OrgRole          @default(PARTICIPANT)
+  cohortId       String?
+  /// SHA-256 of the emailed token. The raw token is never stored, so a DB
+  /// leak cannot be replayed into memberships.
+  tokenHash      String           @unique @db.VarChar(64)
+  status         InvitationStatus @default(PENDING)
+  expiresAt      DateTime
+
+  invitedBy        String?   @db.VarChar(160)
+  acceptedAt       DateTime?
+  acceptedByUserId String?
+  revokedAt        DateTime?
+  message          String?   @db.Text
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  organisation Organisation            @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  cohort       OrgCohort?              @relation(fields: [cohortId], references: [id], onDelete: SetNull)
+  membership   OrganisationMembership?
+
+  @@unique([organisationId, email, status])
+  @@index([organisationId, status])
+  @@index([email])
+  @@index([expiresAt])
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// DIRECT CONSUMER SUBSCRIPTIONS
+//
+// Same entitlement engine, different source. NO payment processing — the
+// tier is set administratively. This exists so a direct user and an
+// institutional user resolve through exactly one code path.
+// ─────────────────────────────────────────────────────────────────────────
+
+model PersonalSubscription {
+  id     String             @id @default(cuid())
+  userId String             @unique
+  tier   SubscriptionTier   @default(FREE)
+  status SubscriptionStatus @default(ACTIVE)
+
+  startedAt   DateTime  @default(now())
+  /// Null = open-ended (the FREE baseline).
+  expiresAt   DateTime?
+  cancelledAt DateTime?
+
+  /// Bespoke grants on top of the tier — support gestures, beta access.
+  moduleOverrides EntitlementModule[]
+
+  /// Who granted this, for audit. No payment reference by design.
+  grantedBy String? @db.VarChar(160)
+  note      String? @db.Text
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation("UserPersonalSubscription", fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([tier, status])
+  @@index([expiresAt])
+}
+
+/// Parent ⇄ young person link. Consent-gated in BOTH directions: the parent
+/// requests, the young person confirms. Without `confirmedAt` a parent sees
+/// nothing about the child beyond that the link is pending.
+model ParentChildLink {
+  id                   String    @id @default(cuid())
+  parentUserId         String
+  childUserId          String
+  requestedAt          DateTime  @default(now())
+  confirmedAt          DateTime?
+  revokedAt            DateTime?
+  /// Scope of what the parent may see once confirmed. Deliberately coarse
+  /// and conservative; the young person controls it.
+  sharesJourneySummary Boolean   @default(false)
+
+  parent User @relation("ParentLinks", fields: [parentUserId], references: [id], onDelete: Cascade)
+  child  User @relation("ChildLinks", fields: [childUserId], references: [id], onDelete: Cascade)
+
+  @@unique([parentUserId, childUserId])
+  @@index([childUserId])
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// AUDIT
+//
+// Separate from the safeguarding `AuditLog` above: that one is about user
+// safety, this one about commercial/administrative actions. Keeping them
+// apart means a compliance export of one never leaks the other.
+// ─────────────────────────────────────────────────────────────────────────
+
+model OrgAuditLog {
+  id             String         @id @default(cuid())
+  /// Null for platform-level actions (e.g. licence-plan edits).
+  organisationId String?
+  action         OrgAuditAction
+  /// Free-form actor label: "super-admin:nicky" or "user:<id>". Not an FK,
+  /// so an audit row survives the actor's account deletion.
+  actor          String         @db.VarChar(160)
+  actorUserId    String?
+  targetType     String?        @db.VarChar(48)
+  targetId       String?        @db.VarChar(64)
+  summary        String?        @db.Text
+  metadata       Json?
+  ipAddress      String?        @db.VarChar(64)
+  createdAt      DateTime       @default(now())
+
+  organisation Organisation? @relation(fields: [organisationId], references: [id], onDelete: SetNull)
+
+  @@index([organisationId, createdAt])
+  @@index([action])
+  @@index([createdAt])
+  @@index([actorUserId])
 }

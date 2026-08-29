@@ -31,7 +31,8 @@
     "perf:journey": "vitest run tests/my-journey-performance/",
     "perf:journey:ci": "vitest run tests/my-journey-performance/regression/",
     "perf:journey:check": "tsx scripts/journey-perf-check.ts",
-    "prepare": "husky"
+    "prepare": "husky",
+    "db:seed-licence-plans": "tsx prisma/seed-licence-plans.ts"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.11.1",

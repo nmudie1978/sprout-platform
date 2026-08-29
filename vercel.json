@@ -15,6 +15,10 @@
     {
       "path": "/api/cron/ingest-insights",
       "schedule": "0 5 * * 1"
+    },
+    {
+      "path": "/api/cron/licence-lifecycle",
+      "schedule": "0 2 * * *"
     }
   ]
 }

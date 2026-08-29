@@ -1,0 +1,2082 @@
+{
+  "generated": "career-coverage-audit",
+  "lastRun": "2026-08-28",
+  "totals": {
+    "careers": 1575,
+    "hollow": 374,
+    "tierA_mappable": 139,
+    "tierB_needsProgrammes": 235
+  },
+  "note": "Tier grouping is by discipline and is INDICATIVE ONLY \u2014 several bases (engineer, biologist, chemist, designer, teacher, economist, it-engineer) have no discipline recorded, so good mappings can hide in tier B. Choose a base per career from educationPath, not from this grouping.",
+  "tierA_map_to_existing_base": {
+    "public-administration": {
+      "existingBases": [
+        "firefighter"
+      ],
+      "careers": [
+        {
+          "id": "housing-policy-officer",
+          "title": "Housing Policy Officer",
+          "category": "PUBLIC_SERVICE_SAFETY"
+        },
+        {
+          "id": "policy-analyst",
+          "title": "Policy Analyst",
+          "category": "PUBLIC_SERVICE_SAFETY"
+        },
+        {
+          "id": "emergency-management-officer",
+          "title": "Emergency Management Officer",
+          "category": "PUBLIC_SERVICE_SAFETY"
+        },
+        {
+          "id": "civil-service-officer",
+          "title": "Civil Service Officer",
+          "category": "PUBLIC_SERVICE_SAFETY"
+        },
+        {
+          "id": "border-migration-analyst",
+          "title": "Border & Migration Analyst",
+          "category": "PUBLIC_SERVICE_SAFETY"
+        },
+        {
+          "id": "local-government-officer",
+          "title": "Local Government Officer",
+          "category": "PUBLIC_SERVICE_SAFETY"
+        },
+        {
+          "id": "fingerprint-examiner",
+          "title": "Fingerprint Examiner",
+          "category": "PUBLIC_SERVICE_SAFETY"
+        },
+        {
+          "id": "ballistics-expert",
+          "title": "Ballistics Expert",
+          "category": "PUBLIC_SERVICE_SAFETY"
+        },
+        {
+          "id": "bloodstain-pattern-analyst",
+          "title": "Bloodstain Pattern Analyst",
+          "category": "PUBLIC_SERVICE_SAFETY"
+        },
+        {
+          "id": "intelligence-officer",
+          "title": "Intelligence Officer",
+          "category": "PUBLIC_SERVICE_SAFETY"
+        },
+        {
+          "id": "intelligence-analyst",
+          "title": "Intelligence Analyst (All-Source)",
+          "category": "PUBLIC_SERVICE_SAFETY"
+        },
+        {
+          "id": "strategic-intelligence-analyst",
+          "title": "Strategic Intelligence Analyst",
+          "category": "PUBLIC_SERVICE_SAFETY"
+        },
+        {
+          "id": "counterterrorism-analyst",
+          "title": "Counterterrorism Analyst",
+          "category": "PUBLIC_SERVICE_SAFETY"
+        },
+        {
+          "id": "intelligence-case-officer",
+          "title": "Intelligence Case Officer (HUMINT)",
+          "category": "PUBLIC_SERVICE_SAFETY"
+        },
+        {
+          "id": "technical-surveillance-officer",
+          "title": "Technical Surveillance Officer",
+          "category": "PUBLIC_SERVICE_SAFETY"
+        },
+        {
+          "id": "intelligence-collection-manager",
+          "title": "Intelligence Collection Manager",
+          "category": "PUBLIC_SERVICE_SAFETY"
+        },
+        {
+          "id": "counter-intelligence-officer",
+          "title": "Counter-Intelligence Officer",
+          "category": "PUBLIC_SERVICE_SAFETY"
+        },
+        {
+          "id": "protective-security-officer",
+          "title": "Protective Security & Vetting Officer",
+          "category": "PUBLIC_SERVICE_SAFETY"
+        },
+        {
+          "id": "chief-intelligence-officer",
+          "title": "Chief Intelligence Officer (Intelligence Director)",
+          "category": "PUBLIC_SERVICE_SAFETY"
+        },
+        {
+          "id": "criminal-intelligence-analyst",
+          "title": "Criminal Intelligence Analyst",
+          "category": "PUBLIC_SERVICE_SAFETY"
+        },
+        {
+          "id": "osint-analyst",
+          "title": "Open-Source Intelligence Analyst",
+          "category": "PUBLIC_SERVICE_SAFETY"
+        },
+        {
+          "id": "crime-analyst",
+          "title": "Crime Analyst",
+          "category": "PUBLIC_SERVICE_SAFETY"
+        },
+        {
+          "id": "criminal-profiler",
+          "title": "Criminal Profiler",
+          "category": "PUBLIC_SERVICE_SAFETY"
+        },
+        {
+          "id": "bomb-disposal-officer",
+          "title": "Bomb Disposal (EOD) Officer",
+          "category": "PUBLIC_SERVICE_SAFETY"
+        },
+        {
+          "id": "malware-analyst",
+          "title": "Malware Analyst",
+          "category": "PUBLIC_SERVICE_SAFETY"
+        },
+        {
+          "id": "dna-evidence-specialist",
+          "title": "DNA Evidence Specialist",
+          "category": "PUBLIC_SERVICE_SAFETY"
+        },
+        {
+          "id": "smokejumper",
+          "title": "Smokejumper",
+          "category": "PUBLIC_SERVICE_SAFETY"
+        },
+        {
+          "id": "coast-guard-rescue-swimmer",
+          "title": "Coast Guard Rescue Swimmer",
+          "category": "PUBLIC_SERVICE_SAFETY"
+        },
+        {
+          "id": "mountain-rescue-specialist",
+          "title": "Mountain Rescue Specialist",
+          "category": "PUBLIC_SERVICE_SAFETY"
+        },
+        {
+          "id": "ski-patrol-officer",
+          "title": "Ski Patrol Officer",
+          "category": "PUBLIC_SERVICE_SAFETY"
+        }
+      ]
+    },
+    "education-teaching": {
+      "existingBases": [
+        "childcare-assistant",
+        "preschool-teacher"
+      ],
+      "careers": [
+        {
+          "id": "health-educator",
+          "title": "Health Educator",
+          "category": "HEALTHCARE_LIFE_SCIENCES"
+        },
+        {
+          "id": "learning-experience-designer",
+          "title": "Learning Experience Designer",
+          "category": "EDUCATION_TRAINING"
+        },
+        {
+          "id": "ai-education-specialist",
+          "title": "AI Education Specialist",
+          "category": "EDUCATION_TRAINING"
+        },
+        {
+          "id": "workforce-development-specialist",
+          "title": "Workforce Development Specialist",
+          "category": "EDUCATION_TRAINING"
+        },
+        {
+          "id": "digital-skills-trainer",
+          "title": "Digital Skills Trainer",
+          "category": "EDUCATION_TRAINING"
+        },
+        {
+          "id": "driving-instructor",
+          "title": "Driving Instructor",
+          "category": "EDUCATION_TRAINING"
+        },
+        {
+          "id": "technical-instructor",
+          "title": "Technical Instructor",
+          "category": "EDUCATION_TRAINING"
+        },
+        {
+          "id": "lecturer",
+          "title": "Lecturer",
+          "category": "EDUCATION_TRAINING"
+        },
+        {
+          "id": "senior-lecturer",
+          "title": "Senior Lecturer",
+          "category": "EDUCATION_TRAINING"
+        },
+        {
+          "id": "professor",
+          "title": "Professor",
+          "category": "EDUCATION_TRAINING"
+        },
+        {
+          "id": "assistant-professor",
+          "title": "Assistant Professor",
+          "category": "EDUCATION_TRAINING"
+        },
+        {
+          "id": "associate-professor",
+          "title": "Associate Professor",
+          "category": "EDUCATION_TRAINING"
+        },
+        {
+          "id": "teaching-assistant",
+          "title": "Teaching Assistant",
+          "category": "EDUCATION_TRAINING"
+        },
+        {
+          "id": "online-instructor",
+          "title": "Online Instructor",
+          "category": "EDUCATION_TRAINING"
+        },
+        {
+          "id": "curriculum-developer",
+          "title": "Curriculum Developer",
+          "category": "EDUCATION_TRAINING"
+        },
+        {
+          "id": "instructional-designer",
+          "title": "Instructional Designer",
+          "category": "EDUCATION_TRAINING"
+        },
+        {
+          "id": "academic-advisor",
+          "title": "Academic Advisor",
+          "category": "EDUCATION_TRAINING"
+        },
+        {
+          "id": "learning-support-specialist",
+          "title": "Learning Support Specialist",
+          "category": "EDUCATION_TRAINING"
+        },
+        {
+          "id": "educational-trainer",
+          "title": "Educational Trainer",
+          "category": "EDUCATION_TRAINING"
+        },
+        {
+          "id": "principal-technical-program-manager",
+          "title": "Principal Technical Program Manager",
+          "category": "TECHNOLOGY_IT"
+        },
+        {
+          "id": "principal-advisor",
+          "title": "Principal Advisor",
+          "category": "BUSINESS_MANAGEMENT"
+        }
+      ]
+    },
+    "vocational-trades": {
+      "existingBases": [
+        "auto-mechanic",
+        "automation-technician",
+        "bricklayer",
+        "carpenter",
+        "cnc-machinist",
+        "electrician",
+        "industrial-electrician",
+        "industrial-mechanic",
+        "welder"
+      ],
+      "careers": [
+        {
+          "id": "data-center-technician",
+          "title": "Data Center Technician",
+          "category": "TECHNOLOGY_IT"
+        },
+        {
+          "id": "factory-operative",
+          "title": "Factory Operative",
+          "category": "MANUFACTURING_ENGINEERING"
+        },
+        {
+          "id": "production-line-worker",
+          "title": "Production Line Worker",
+          "category": "MANUFACTURING_ENGINEERING"
+        },
+        {
+          "id": "irrigation-technician",
+          "title": "Irrigation Technician",
+          "category": "MANUFACTURING_ENGINEERING"
+        },
+        {
+          "id": "water-network-technician",
+          "title": "Water Network Technician",
+          "category": "MANUFACTURING_ENGINEERING"
+        },
+        {
+          "id": "car-wash-attendant",
+          "title": "Car Wash Attendant",
+          "category": "HOSPITALITY_TOURISM"
+        },
+        {
+          "id": "renewable-energy-installer",
+          "title": "Renewable Energy Installer",
+          "category": "CONSTRUCTION_TRADES"
+        },
+        {
+          "id": "roofer",
+          "title": "Roofer",
+          "category": "CONSTRUCTION_TRADES"
+        },
+        {
+          "id": "stonemason",
+          "title": "Stonemason",
+          "category": "CONSTRUCTION_TRADES"
+        },
+        {
+          "id": "steel-erector",
+          "title": "Steel Erector",
+          "category": "CONSTRUCTION_TRADES"
+        },
+        {
+          "id": "concrete-finisher",
+          "title": "Concrete Finisher",
+          "category": "CONSTRUCTION_TRADES"
+        },
+        {
+          "id": "drywall-installer",
+          "title": "Drywall Installer",
+          "category": "CONSTRUCTION_TRADES"
+        },
+        {
+          "id": "glazier",
+          "title": "Glazier",
+          "category": "CONSTRUCTION_TRADES"
+        },
+        {
+          "id": "demolition-worker",
+          "title": "Demolition Worker",
+          "category": "CONSTRUCTION_TRADES"
+        },
+        {
+          "id": "asphalt-paver",
+          "title": "Asphalt Paver",
+          "category": "CONSTRUCTION_TRADES"
+        },
+        {
+          "id": "crane-rigger",
+          "title": "Crane Rigger",
+          "category": "CONSTRUCTION_TRADES"
+        }
+      ]
+    },
+    "nursing-allied-health": {
+      "existingBases": [
+        "care-assistant",
+        "medical-laboratory-technician",
+        "nurse",
+        "optometrist",
+        "physiotherapist",
+        "speech-therapist"
+      ],
+      "careers": [
+        {
+          "id": "stem-cell-researcher",
+          "title": "Stem Cell Researcher",
+          "category": "HEALTHCARE_LIFE_SCIENCES"
+        },
+        {
+          "id": "gene-therapy-scientist",
+          "title": "Gene Therapy Scientist",
+          "category": "HEALTHCARE_LIFE_SCIENCES"
+        },
+        {
+          "id": "drug-discovery-scientist",
+          "title": "Drug Discovery Scientist",
+          "category": "HEALTHCARE_LIFE_SCIENCES"
+        },
+        {
+          "id": "molecular-diagnostics-scientist",
+          "title": "Molecular Diagnostics Scientist",
+          "category": "HEALTHCARE_LIFE_SCIENCES"
+        },
+        {
+          "id": "biomarker-scientist",
+          "title": "Biomarker Scientist",
+          "category": "HEALTHCARE_LIFE_SCIENCES"
+        },
+        {
+          "id": "bioprocess-scientist",
+          "title": "Bioprocess Scientist",
+          "category": "HEALTHCARE_LIFE_SCIENCES"
+        },
+        {
+          "id": "crispr-engineer",
+          "title": "CRISPR Engineer",
+          "category": "HEALTHCARE_LIFE_SCIENCES"
+        },
+        {
+          "id": "human-enhancement-researcher",
+          "title": "Human Enhancement Researcher",
+          "category": "HEALTHCARE_LIFE_SCIENCES"
+        },
+        {
+          "id": "art-therapist",
+          "title": "Art Therapist",
+          "category": "HEALTHCARE_LIFE_SCIENCES"
+        },
+        {
+          "id": "audiologist",
+          "title": "Audiologist",
+          "category": "HEALTHCARE_LIFE_SCIENCES"
+        },
+        {
+          "id": "respiratory-therapist",
+          "title": "Respiratory Therapist",
+          "category": "HEALTHCARE_LIFE_SCIENCES"
+        },
+        {
+          "id": "occupational-therapy-assistant",
+          "title": "Occupational Therapy Assistant",
+          "category": "HEALTHCARE_LIFE_SCIENCES"
+        },
+        {
+          "id": "health-informatics-specialist",
+          "title": "Health Informatics Specialist",
+          "category": "HEALTHCARE_LIFE_SCIENCES"
+        },
+        {
+          "id": "clinical-scientist",
+          "title": "Clinical Scientist",
+          "category": "HEALTHCARE_LIFE_SCIENCES"
+        }
+      ]
+    },
+    "creative-arts-design": {
+      "existingBases": [
+        "painter-decorator"
+      ],
+      "careers": [
+        {
+          "id": "product-designer",
+          "title": "Product Designer",
+          "category": "TECHNOLOGY_IT"
+        },
+        {
+          "id": "game-designer",
+          "title": "Game Designer",
+          "category": "TECHNOLOGY_IT"
+        },
+        {
+          "id": "museum-curator",
+          "title": "Museum Curator",
+          "category": "CREATIVE_MEDIA"
+        },
+        {
+          "id": "museum-collections-manager",
+          "title": "Museum Collections Manager",
+          "category": "CREATIVE_MEDIA"
+        },
+        {
+          "id": "exhibit-designer",
+          "title": "Exhibit Designer",
+          "category": "CREATIVE_MEDIA"
+        },
+        {
+          "id": "architectural-visualisation-artist",
+          "title": "Architectural Visualisation Artist",
+          "category": "CREATIVE_MEDIA"
+        },
+        {
+          "id": "proofreader",
+          "title": "Proofreader",
+          "category": "CREATIVE_MEDIA"
+        },
+        {
+          "id": "subtitler",
+          "title": "Subtitler",
+          "category": "CREATIVE_MEDIA"
+        },
+        {
+          "id": "transcriptionist",
+          "title": "Transcriptionist",
+          "category": "CREATIVE_MEDIA"
+        },
+        {
+          "id": "voice-over-artist",
+          "title": "Voice-Over Artist",
+          "category": "CREATIVE_MEDIA"
+        },
+        {
+          "id": "language-data-annotator",
+          "title": "Language Data Annotator",
+          "category": "CREATIVE_MEDIA"
+        },
+        {
+          "id": "bilingual-customer-support-specialist",
+          "title": "Bilingual Customer Support Specialist",
+          "category": "CREATIVE_MEDIA"
+        }
+      ]
+    },
+    "mechanical-engineering": {
+      "existingBases": [
+        "boilermaker",
+        "civil-works-foreman",
+        "mechanical-engineer"
+      ],
+      "careers": [
+        {
+          "id": "ranch-worker",
+          "title": "Ranch Worker",
+          "category": "MANUFACTURING_ENGINEERING"
+        },
+        {
+          "id": "shepherd",
+          "title": "Shepherd",
+          "category": "MANUFACTURING_ENGINEERING"
+        },
+        {
+          "id": "logger",
+          "title": "Logger",
+          "category": "MANUFACTURING_ENGINEERING"
+        },
+        {
+          "id": "arborist",
+          "title": "Arborist",
+          "category": "MANUFACTURING_ENGINEERING"
+        },
+        {
+          "id": "tree-climber",
+          "title": "Tree Climber",
+          "category": "MANUFACTURING_ENGINEERING"
+        },
+        {
+          "id": "sewer-maintenance-worker",
+          "title": "Sewer Maintenance Worker",
+          "category": "MANUFACTURING_ENGINEERING"
+        },
+        {
+          "id": "mine-worker",
+          "title": "Mine Worker",
+          "category": "MANUFACTURING_ENGINEERING"
+        },
+        {
+          "id": "quarry-worker",
+          "title": "Quarry Worker",
+          "category": "MANUFACTURING_ENGINEERING"
+        },
+        {
+          "id": "foundry-worker",
+          "title": "Foundry Worker",
+          "category": "MANUFACTURING_ENGINEERING"
+        },
+        {
+          "id": "industrial-cleaner",
+          "title": "Industrial Cleaner",
+          "category": "MANUFACTURING_ENGINEERING"
+        },
+        {
+          "id": "material-handler",
+          "title": "Material Handler",
+          "category": "MANUFACTURING_ENGINEERING"
+        }
+      ]
+    },
+    "computer-science-software": {
+      "existingBases": [
+        "data-analyst",
+        "software-developer"
+      ],
+      "careers": [
+        {
+          "id": "gis-developer",
+          "title": "GIS Developer",
+          "category": "TECHNOLOGY_IT"
+        },
+        {
+          "id": "vp-technology",
+          "title": "VP Technology",
+          "category": "TECHNOLOGY_IT"
+        },
+        {
+          "id": "head-of-it",
+          "title": "Head of IT",
+          "category": "TECHNOLOGY_IT"
+        },
+        {
+          "id": "head-of-infrastructure",
+          "title": "Head of Infrastructure",
+          "category": "TECHNOLOGY_IT"
+        },
+        {
+          "id": "cloud-platform-lead",
+          "title": "Cloud Platform Lead",
+          "category": "TECHNOLOGY_IT"
+        },
+        {
+          "id": "head-of-cloud",
+          "title": "Head of Cloud",
+          "category": "TECHNOLOGY_IT"
+        },
+        {
+          "id": "fractional-ciso",
+          "title": "Fractional CISO",
+          "category": "TECHNOLOGY_IT"
+        },
+        {
+          "id": "hedge-fund-software-engineer",
+          "title": "Hedge Fund Software Engineer",
+          "category": "FINANCE_BANKING"
+        }
+      ]
+    },
+    "criminology-policing": {
+      "existingBases": [
+        "police-officer"
+      ],
+      "careers": [
+        {
+          "id": "digital-forensics-analyst",
+          "title": "Digital Forensics Analyst",
+          "category": "TECHNOLOGY_IT"
+        },
+        {
+          "id": "financial-crime-investigator",
+          "title": "Financial Crime Investigator",
+          "category": "PUBLIC_SERVICE_SAFETY"
+        },
+        {
+          "id": "anti-corruption-investigator",
+          "title": "Anti-Corruption Investigator",
+          "category": "PUBLIC_SERVICE_SAFETY"
+        },
+        {
+          "id": "anti-money-laundering-investigator",
+          "title": "Anti-Money Laundering Investigator",
+          "category": "PUBLIC_SERVICE_SAFETY"
+        },
+        {
+          "id": "forensic-dna-analyst",
+          "title": "Forensic DNA Analyst",
+          "category": "PUBLIC_SERVICE_SAFETY"
+        }
+      ]
+    },
+    "medicine": {
+      "existingBases": [
+        "doctor",
+        "radiologic-technologist"
+      ],
+      "careers": [
+        {
+          "id": "telemedicine-specialist",
+          "title": "Telemedicine Specialist",
+          "category": "HEALTHCARE_LIFE_SCIENCES"
+        },
+        {
+          "id": "physician-assistant",
+          "title": "Physician Assistant",
+          "category": "HEALTHCARE_LIFE_SCIENCES"
+        },
+        {
+          "id": "medical-science-liaison",
+          "title": "Medical Science Liaison",
+          "category": "HEALTHCARE_LIFE_SCIENCES"
+        }
+      ]
+    },
+    "civil-engineering": {
+      "existingBases": [
+        "civil-engineer"
+      ],
+      "careers": [
+        {
+          "id": "bim-manager",
+          "title": "BIM Manager",
+          "category": "MANUFACTURING_ENGINEERING"
+        },
+        {
+          "id": "structural-engineer",
+          "title": "Structural Engineer",
+          "category": "MANUFACTURING_ENGINEERING"
+        },
+        {
+          "id": "infrastructure-planner",
+          "title": "Infrastructure Planner",
+          "category": "PUBLIC_SERVICE_SAFETY"
+        }
+      ]
+    },
+    "aviation": {
+      "existingBases": [
+        "airline-pilot",
+        "helicopter-pilot"
+      ],
+      "careers": [
+        {
+          "id": "test-pilot",
+          "title": "Test Pilot",
+          "category": "LOGISTICS_TRANSPORT"
+        },
+        {
+          "id": "aviation-director",
+          "title": "Aviation Director",
+          "category": "LOGISTICS_TRANSPORT"
+        },
+        {
+          "id": "wingsuit-pilot",
+          "title": "Wingsuit Pilot",
+          "category": "SPORT_FITNESS"
+        }
+      ]
+    },
+    "tourism-hospitality": {
+      "existingBases": [
+        "flight-attendant"
+      ],
+      "careers": [
+        {
+          "id": "bartender",
+          "title": "Bartender",
+          "category": "HOSPITALITY_TOURISM"
+        },
+        {
+          "id": "cinema-attendant",
+          "title": "Cinema Attendant",
+          "category": "HOSPITALITY_TOURISM"
+        },
+        {
+          "id": "amusement-park-worker",
+          "title": "Amusement Park Worker",
+          "category": "HOSPITALITY_TOURISM"
+        }
+      ]
+    },
+    "humanities-languages": {
+      "existingBases": [
+        "interpreter",
+        "linguist"
+      ],
+      "careers": [
+        {
+          "id": "translational-scientist",
+          "title": "Translational Scientist",
+          "category": "HEALTHCARE_LIFE_SCIENCES"
+        },
+        {
+          "id": "intelligence-linguist",
+          "title": "Intelligence Linguist",
+          "category": "PUBLIC_SERVICE_SAFETY"
+        }
+      ]
+    },
+    "social-work": {
+      "existingBases": [
+        "healthcare-worker",
+        "social-worker"
+      ],
+      "careers": [
+        {
+          "id": "school-counselor",
+          "title": "School Counsellor",
+          "category": "EDUCATION_TRAINING"
+        },
+        {
+          "id": "humanitarian-aid-worker",
+          "title": "Humanitarian Aid Worker",
+          "category": "SOCIAL_CARE_COMMUNITY"
+        }
+      ]
+    },
+    "beauty-wellness": {
+      "existingBases": [
+        "hairdresser"
+      ],
+      "careers": [
+        {
+          "id": "esthetician",
+          "title": "Esthetician",
+          "category": "HOSPITALITY_TOURISM"
+        },
+        {
+          "id": "cosmetologist",
+          "title": "Cosmetologist",
+          "category": "HOSPITALITY_TOURISM"
+        }
+      ]
+    },
+    "dentistry": {
+      "existingBases": [
+        "dental-assistant",
+        "dentist"
+      ],
+      "careers": [
+        {
+          "id": "orthodontist",
+          "title": "Orthodontist",
+          "category": "HEALTHCARE_LIFE_SCIENCES"
+        }
+      ]
+    },
+    "psychology": {
+      "existingBases": [
+        "psychologist"
+      ],
+      "careers": [
+        {
+          "id": "neuropsychologist",
+          "title": "Neuropsychologist",
+          "category": "HEALTHCARE_LIFE_SCIENCES"
+        }
+      ]
+    },
+    "architecture": {
+      "existingBases": [
+        "architect"
+      ],
+      "careers": [
+        {
+          "id": "head-of-enterprise-architecture",
+          "title": "Head of Enterprise Architecture",
+          "category": "TECHNOLOGY_IT"
+        }
+      ]
+    },
+    "accounting": {
+      "existingBases": [
+        "accountant"
+      ],
+      "careers": [
+        {
+          "id": "financial-controller",
+          "title": "Financial Controller",
+          "category": "FINANCE_BANKING"
+        }
+      ]
+    }
+  },
+  "tierB_discipline_has_no_programmes": {
+    "sport-science": [
+      {
+        "id": "literacy-coach",
+        "title": "Literacy Coach",
+        "category": "EDUCATION_TRAINING"
+      },
+      {
+        "id": "basketball-player",
+        "title": "Basketball Player",
+        "category": "SPORT_FITNESS"
+      },
+      {
+        "id": "golf-professional",
+        "title": "Golf Professional",
+        "category": "SPORT_FITNESS"
+      },
+      {
+        "id": "formula-one-driver",
+        "title": "Formula 1 Driver",
+        "category": "SPORT_FITNESS"
+      },
+      {
+        "id": "competitive-swimmer",
+        "title": "Swimmer",
+        "category": "SPORT_FITNESS"
+      },
+      {
+        "id": "professional-cyclist",
+        "title": "Cyclist",
+        "category": "SPORT_FITNESS"
+      },
+      {
+        "id": "sporting-director",
+        "title": "Sporting Director",
+        "category": "SPORT_FITNESS"
+      },
+      {
+        "id": "sports-technology-specialist",
+        "title": "Sports Technology Specialist",
+        "category": "SPORT_FITNESS"
+      },
+      {
+        "id": "athletic-development-coach",
+        "title": "Athletic Development Coach",
+        "category": "SPORT_FITNESS"
+      },
+      {
+        "id": "gym-assistant",
+        "title": "Gym Assistant",
+        "category": "SPORT_FITNESS"
+      },
+      {
+        "id": "boxer",
+        "title": "Boxer",
+        "category": "SPORT_FITNESS"
+      },
+      {
+        "id": "mma-fighter",
+        "title": "MMA Fighter",
+        "category": "SPORT_FITNESS"
+      },
+      {
+        "id": "wrestler",
+        "title": "Wrestler",
+        "category": "SPORT_FITNESS"
+      },
+      {
+        "id": "rugby-player",
+        "title": "Rugby Player",
+        "category": "SPORT_FITNESS"
+      },
+      {
+        "id": "extreme-sports-athlete",
+        "title": "Professional Extreme Sports Athlete",
+        "category": "SPORT_FITNESS"
+      },
+      {
+        "id": "base-jumper",
+        "title": "BASE Jumper",
+        "category": "SPORT_FITNESS"
+      },
+      {
+        "id": "skydiving-instructor",
+        "title": "Skydiving Instructor",
+        "category": "SPORT_FITNESS"
+      },
+      {
+        "id": "paragliding-instructor",
+        "title": "Paragliding Instructor",
+        "category": "SPORT_FITNESS"
+      },
+      {
+        "id": "hang-gliding-instructor",
+        "title": "Hang Gliding Instructor",
+        "category": "SPORT_FITNESS"
+      },
+      {
+        "id": "big-wave-surf-instructor",
+        "title": "Surfing Instructor (Big Wave)",
+        "category": "SPORT_FITNESS"
+      },
+      {
+        "id": "freestyle-snowboard-instructor",
+        "title": "Snowboard Instructor (Freestyle/Backcountry)",
+        "category": "SPORT_FITNESS"
+      },
+      {
+        "id": "freestyle-ski-instructor",
+        "title": "Ski Instructor (Freestyle/Backcountry)",
+        "category": "SPORT_FITNESS"
+      },
+      {
+        "id": "bmx-rider",
+        "title": "BMX Rider",
+        "category": "SPORT_FITNESS"
+      },
+      {
+        "id": "skateboarder-pro",
+        "title": "Professional Skateboarder",
+        "category": "SPORT_FITNESS"
+      },
+      {
+        "id": "motocross-rider",
+        "title": "Motocross Rider",
+        "category": "SPORT_FITNESS"
+      },
+      {
+        "id": "rock-climbing-guide",
+        "title": "Rock Climbing Guide",
+        "category": "SPORT_FITNESS"
+      },
+      {
+        "id": "ice-climbing-guide",
+        "title": "Ice Climbing Guide",
+        "category": "SPORT_FITNESS"
+      },
+      {
+        "id": "mountaineering-guide",
+        "title": "Mountaineering Guide",
+        "category": "SPORT_FITNESS"
+      },
+      {
+        "id": "parkour-athlete",
+        "title": "Parkour Athlete",
+        "category": "SPORT_FITNESS"
+      },
+      {
+        "id": "extreme-sports-event-organizer",
+        "title": "Extreme Sports Event Organiser",
+        "category": "SPORT_FITNESS"
+      },
+      {
+        "id": "expedition-leader",
+        "title": "Expedition Leader",
+        "category": "SPORT_FITNESS"
+      },
+      {
+        "id": "whitewater-rafting-guide",
+        "title": "Whitewater Rafting Guide",
+        "category": "SPORT_FITNESS"
+      },
+      {
+        "id": "scuba-diving-instructor",
+        "title": "Scuba Diving Instructor",
+        "category": "SPORT_FITNESS"
+      },
+      {
+        "id": "freediving-instructor",
+        "title": "Freediving Instructor",
+        "category": "SPORT_FITNESS"
+      },
+      {
+        "id": "kitesurfing-instructor",
+        "title": "Kitesurfing Instructor",
+        "category": "SPORT_FITNESS"
+      },
+      {
+        "id": "windsurfing-instructor",
+        "title": "Windsurfing Instructor",
+        "category": "SPORT_FITNESS"
+      },
+      {
+        "id": "extreme-sports-safety-coordinator",
+        "title": "Safety Coordinator (Extreme Sports)",
+        "category": "SPORT_FITNESS"
+      }
+    ],
+    "business-management": [
+      {
+        "id": "infrastructure-director",
+        "title": "Infrastructure Director",
+        "category": "TECHNOLOGY_IT"
+      },
+      {
+        "id": "data-centre-director",
+        "title": "Data Centre Director",
+        "category": "TECHNOLOGY_IT"
+      },
+      {
+        "id": "security-director",
+        "title": "Security Director",
+        "category": "TECHNOLOGY_IT"
+      },
+      {
+        "id": "technical-program-manager",
+        "title": "Technical Program Manager",
+        "category": "TECHNOLOGY_IT"
+      },
+      {
+        "id": "customer-success-manager",
+        "title": "Customer Success Manager",
+        "category": "BUSINESS_MANAGEMENT"
+      },
+      {
+        "id": "revenue-operations-manager",
+        "title": "Revenue Operations Manager",
+        "category": "BUSINESS_MANAGEMENT"
+      },
+      {
+        "id": "sustainability-manager",
+        "title": "Sustainability Manager",
+        "category": "BUSINESS_MANAGEMENT"
+      },
+      {
+        "id": "associate-partner",
+        "title": "Associate Partner (Consulting)",
+        "category": "BUSINESS_MANAGEMENT"
+      },
+      {
+        "id": "chief-revenue-officer",
+        "title": "Chief Revenue Officer (CRO)",
+        "category": "BUSINESS_MANAGEMENT"
+      },
+      {
+        "id": "company-president",
+        "title": "President",
+        "category": "BUSINESS_MANAGEMENT"
+      },
+      {
+        "id": "technology-founder",
+        "title": "Technology Founder",
+        "category": "BUSINESS_MANAGEMENT"
+      },
+      {
+        "id": "carbon-analyst",
+        "title": "Carbon Analyst",
+        "category": "BUSINESS_MANAGEMENT"
+      },
+      {
+        "id": "company-secretary",
+        "title": "Company Secretary",
+        "category": "BUSINESS_MANAGEMENT"
+      },
+      {
+        "id": "contract-manager",
+        "title": "Contract Manager",
+        "category": "BUSINESS_MANAGEMENT"
+      },
+      {
+        "id": "managing-partner",
+        "title": "Managing Partner",
+        "category": "BUSINESS_MANAGEMENT"
+      },
+      {
+        "id": "consulting-director",
+        "title": "Consulting Director",
+        "category": "BUSINESS_MANAGEMENT"
+      },
+      {
+        "id": "mergers-acquisitions-technology-advisor",
+        "title": "M&A Technology Advisor",
+        "category": "BUSINESS_MANAGEMENT"
+      },
+      {
+        "id": "senior-advisor",
+        "title": "Senior Advisor",
+        "category": "BUSINESS_MANAGEMENT"
+      },
+      {
+        "id": "transformation-advisor",
+        "title": "Transformation Advisor",
+        "category": "BUSINESS_MANAGEMENT"
+      },
+      {
+        "id": "venture-partner",
+        "title": "Venture Partner",
+        "category": "BUSINESS_MANAGEMENT"
+      },
+      {
+        "id": "practice-lead",
+        "title": "Practice Lead",
+        "category": "BUSINESS_MANAGEMENT"
+      },
+      {
+        "id": "expert-witness-technology",
+        "title": "Expert Witness (Technology)",
+        "category": "BUSINESS_MANAGEMENT"
+      },
+      {
+        "id": "board-advisor-technology",
+        "title": "Board Advisor (Technology)",
+        "category": "BUSINESS_MANAGEMENT"
+      },
+      {
+        "id": "call-centre-agent",
+        "title": "Call Centre Agent",
+        "category": "SALES_MARKETING"
+      },
+      {
+        "id": "offshore-installation-manager",
+        "title": "Offshore Installation Manager",
+        "category": "MANUFACTURING_ENGINEERING"
+      },
+      {
+        "id": "director-oss",
+        "title": "Director, OSS",
+        "category": "TELECOMMUNICATIONS"
+      },
+      {
+        "id": "director-bss",
+        "title": "Director, BSS",
+        "category": "TELECOMMUNICATIONS"
+      },
+      {
+        "id": "bioinformatics-director",
+        "title": "Bioinformatics Director",
+        "category": "ARTIFICIAL_INTELLIGENCE"
+      }
+    ],
+    "data-science-ai": [
+      {
+        "id": "data-governance-manager",
+        "title": "Data Governance Manager",
+        "category": "TECHNOLOGY_IT"
+      },
+      {
+        "id": "location-intelligence-analyst",
+        "title": "Location Intelligence Analyst",
+        "category": "TECHNOLOGY_IT"
+      },
+      {
+        "id": "population-analyst",
+        "title": "Population Analyst",
+        "category": "BUSINESS_MANAGEMENT"
+      },
+      {
+        "id": "head-of-ai",
+        "title": "Head of AI",
+        "category": "BUSINESS_MANAGEMENT"
+      },
+      {
+        "id": "vp-of-ai",
+        "title": "VP of AI",
+        "category": "BUSINESS_MANAGEMENT"
+      },
+      {
+        "id": "ai-strategy-director",
+        "title": "AI Strategy Director",
+        "category": "BUSINESS_MANAGEMENT"
+      },
+      {
+        "id": "ai-practice-lead",
+        "title": "AI Practice Lead",
+        "category": "BUSINESS_MANAGEMENT"
+      },
+      {
+        "id": "ai-innovation-lead",
+        "title": "AI Innovation Lead",
+        "category": "BUSINESS_MANAGEMENT"
+      },
+      {
+        "id": "ai-program-manager",
+        "title": "AI Program Manager",
+        "category": "BUSINESS_MANAGEMENT"
+      },
+      {
+        "id": "ai-risk-manager",
+        "title": "AI Risk Manager",
+        "category": "BUSINESS_MANAGEMENT"
+      },
+      {
+        "id": "responsible-ai-lead",
+        "title": "Responsible AI Lead",
+        "category": "BUSINESS_MANAGEMENT"
+      },
+      {
+        "id": "ai-technical-account-manager",
+        "title": "AI Technical Account Manager",
+        "category": "SALES_MARKETING"
+      },
+      {
+        "id": "ai-customer-success-manager",
+        "title": "AI Customer Success Manager",
+        "category": "SALES_MARKETING"
+      },
+      {
+        "id": "ai-partner-manager",
+        "title": "AI Partner Manager",
+        "category": "SALES_MARKETING"
+      },
+      {
+        "id": "satellite-analytics-specialist",
+        "title": "Satellite Analytics Specialist",
+        "category": "ARTIFICIAL_INTELLIGENCE"
+      },
+      {
+        "id": "digital-twin-specialist",
+        "title": "Digital Twin Specialist",
+        "category": "ARTIFICIAL_INTELLIGENCE"
+      },
+      {
+        "id": "bioinformatician",
+        "title": "Bioinformatician",
+        "category": "ARTIFICIAL_INTELLIGENCE"
+      },
+      {
+        "id": "deep-learning-engineer",
+        "title": "Deep Learning Engineer",
+        "category": "ARTIFICIAL_INTELLIGENCE"
+      },
+      {
+        "id": "computer-vision-researcher",
+        "title": "Computer Vision Researcher",
+        "category": "ARTIFICIAL_INTELLIGENCE"
+      },
+      {
+        "id": "nlp-research-scientist",
+        "title": "NLP Research Scientist",
+        "category": "ARTIFICIAL_INTELLIGENCE"
+      },
+      {
+        "id": "reinforcement-learning-researcher",
+        "title": "Reinforcement Learning Researcher",
+        "category": "ARTIFICIAL_INTELLIGENCE"
+      },
+      {
+        "id": "autonomous-vehicle-engineer",
+        "title": "Autonomous Vehicle Engineer",
+        "category": "ARTIFICIAL_INTELLIGENCE"
+      },
+      {
+        "id": "human-robot-interaction-specialist",
+        "title": "Human-Robot Interaction Specialist",
+        "category": "ARTIFICIAL_INTELLIGENCE"
+      },
+      {
+        "id": "ai-agent-developer",
+        "title": "AI Agent Developer",
+        "category": "ARTIFICIAL_INTELLIGENCE"
+      },
+      {
+        "id": "ai-agent-operations-specialist",
+        "title": "AI Agent Operations Specialist",
+        "category": "ARTIFICIAL_INTELLIGENCE"
+      },
+      {
+        "id": "machine-learning-director",
+        "title": "Machine Learning Director",
+        "category": "ARTIFICIAL_INTELLIGENCE"
+      },
+      {
+        "id": "data-science-director",
+        "title": "Data Science Director",
+        "category": "ARTIFICIAL_INTELLIGENCE"
+      }
+    ],
+    "geosciences-energy": [
+      {
+        "id": "paleontologist",
+        "title": "Paleontologist",
+        "category": "HEALTHCARE_LIFE_SCIENCES"
+      },
+      {
+        "id": "vertebrate-paleontologist",
+        "title": "Vertebrate Paleontologist",
+        "category": "HEALTHCARE_LIFE_SCIENCES"
+      },
+      {
+        "id": "fossil-preparation-technician",
+        "title": "Fossil Preparation Technician",
+        "category": "HEALTHCARE_LIFE_SCIENCES"
+      },
+      {
+        "id": "geologist",
+        "title": "Geologist",
+        "category": "HEALTHCARE_LIFE_SCIENCES"
+      },
+      {
+        "id": "volcanologist",
+        "title": "Volcanologist",
+        "category": "HEALTHCARE_LIFE_SCIENCES"
+      },
+      {
+        "id": "sedimentologist",
+        "title": "Sedimentologist",
+        "category": "HEALTHCARE_LIFE_SCIENCES"
+      },
+      {
+        "id": "petroleum-geoscientist",
+        "title": "Petroleum Geoscientist",
+        "category": "HEALTHCARE_LIFE_SCIENCES"
+      },
+      {
+        "id": "speleologist",
+        "title": "Speleologist",
+        "category": "HEALTHCARE_LIFE_SCIENCES"
+      },
+      {
+        "id": "gis-analyst",
+        "title": "GIS Analyst",
+        "category": "TECHNOLOGY_IT"
+      },
+      {
+        "id": "geospatial-analyst",
+        "title": "Geospatial Analyst",
+        "category": "TECHNOLOGY_IT"
+      },
+      {
+        "id": "cartographer",
+        "title": "Cartographer",
+        "category": "TECHNOLOGY_IT"
+      },
+      {
+        "id": "remote-sensing-specialist",
+        "title": "Remote Sensing Specialist",
+        "category": "TECHNOLOGY_IT"
+      },
+      {
+        "id": "geomatics-specialist",
+        "title": "Geomatics Specialist",
+        "category": "TECHNOLOGY_IT"
+      },
+      {
+        "id": "mapping-technician",
+        "title": "Mapping Technician",
+        "category": "TECHNOLOGY_IT"
+      },
+      {
+        "id": "hydrographer",
+        "title": "Hydrographer",
+        "category": "TECHNOLOGY_IT"
+      },
+      {
+        "id": "drone-mapping-specialist",
+        "title": "Drone Mapping Specialist",
+        "category": "TECHNOLOGY_IT"
+      },
+      {
+        "id": "gis-manager",
+        "title": "GIS Manager",
+        "category": "TECHNOLOGY_IT"
+      },
+      {
+        "id": "drilling-manager",
+        "title": "Drilling Manager",
+        "category": "MANUFACTURING_ENGINEERING"
+      },
+      {
+        "id": "nuclear-engineer",
+        "title": "Nuclear Engineer",
+        "category": "MANUFACTURING_ENGINEERING"
+      }
+    ],
+    "environmental-earth-science": [
+      {
+        "id": "polar-researcher",
+        "title": "Polar Researcher",
+        "category": "HEALTHCARE_LIFE_SCIENCES"
+      },
+      {
+        "id": "climate-change-analyst",
+        "title": "Climate Change Analyst",
+        "category": "HEALTHCARE_LIFE_SCIENCES"
+      },
+      {
+        "id": "natural-resource-manager",
+        "title": "Natural Resource Manager",
+        "category": "HEALTHCARE_LIFE_SCIENCES"
+      },
+      {
+        "id": "research-scientist",
+        "title": "Research Scientist",
+        "category": "EDUCATION_TRAINING"
+      },
+      {
+        "id": "field-researcher",
+        "title": "Field Researcher",
+        "category": "EDUCATION_TRAINING"
+      },
+      {
+        "id": "earth-observation-specialist",
+        "title": "Earth Observation Specialist",
+        "category": "TECHNOLOGY_IT"
+      },
+      {
+        "id": "meteorologist",
+        "title": "Meteorologist",
+        "category": "TECHNOLOGY_IT"
+      },
+      {
+        "id": "climatologist",
+        "title": "Climatologist",
+        "category": "TECHNOLOGY_IT"
+      },
+      {
+        "id": "weather-forecaster",
+        "title": "Weather Forecaster",
+        "category": "TECHNOLOGY_IT"
+      },
+      {
+        "id": "renewable-energy-director",
+        "title": "Renewable Energy Director",
+        "category": "MANUFACTURING_ENGINEERING"
+      },
+      {
+        "id": "renewable-energy-engineer",
+        "title": "Renewable Energy Engineer",
+        "category": "MANUFACTURING_ENGINEERING"
+      },
+      {
+        "id": "disaster-risk-specialist",
+        "title": "Disaster Risk Specialist",
+        "category": "PUBLIC_SERVICE_SAFETY"
+      },
+      {
+        "id": "wildlife-crime-investigator",
+        "title": "Wildlife Crime Investigator",
+        "category": "PUBLIC_SERVICE_SAFETY"
+      },
+      {
+        "id": "earth-observation-scientist",
+        "title": "Earth Observation Scientist",
+        "category": "ARTIFICIAL_INTELLIGENCE"
+      },
+      {
+        "id": "environmental-intelligence-analyst",
+        "title": "Environmental Intelligence Analyst",
+        "category": "ARTIFICIAL_INTELLIGENCE"
+      }
+    ],
+    "logistics-supplychain": [
+      {
+        "id": "postal-worker",
+        "title": "Postal Worker",
+        "category": "LOGISTICS_TRANSPORT"
+      },
+      {
+        "id": "van-driver",
+        "title": "Van Driver",
+        "category": "LOGISTICS_TRANSPORT"
+      },
+      {
+        "id": "newspaper-delivery",
+        "title": "Newspaper Delivery",
+        "category": "LOGISTICS_TRANSPORT"
+      },
+      {
+        "id": "supply-chain-analyst",
+        "title": "Supply Chain Analyst",
+        "category": "LOGISTICS_TRANSPORT"
+      },
+      {
+        "id": "logistics-planner",
+        "title": "Logistics Planner",
+        "category": "LOGISTICS_TRANSPORT"
+      },
+      {
+        "id": "deckhand",
+        "title": "Deckhand",
+        "category": "LOGISTICS_TRANSPORT"
+      },
+      {
+        "id": "offshore-rigger",
+        "title": "Offshore Rigger",
+        "category": "LOGISTICS_TRANSPORT"
+      },
+      {
+        "id": "mover",
+        "title": "Mover",
+        "category": "LOGISTICS_TRANSPORT"
+      },
+      {
+        "id": "baggage-handler",
+        "title": "Baggage Handler",
+        "category": "LOGISTICS_TRANSPORT"
+      },
+      {
+        "id": "dock-worker",
+        "title": "Dock Worker",
+        "category": "LOGISTICS_TRANSPORT"
+      },
+      {
+        "id": "freight-handler",
+        "title": "Freight Handler",
+        "category": "LOGISTICS_TRANSPORT"
+      },
+      {
+        "id": "railway-track-worker",
+        "title": "Railway Track Worker",
+        "category": "LOGISTICS_TRANSPORT"
+      },
+      {
+        "id": "rally-driver",
+        "title": "Rally Driver (Off-road)",
+        "category": "SPORT_FITNESS"
+      }
+    ],
+    "military-defence": [
+      {
+        "id": "paratrooper",
+        "title": "Paratrooper",
+        "category": "MILITARY_DEFENCE"
+      },
+      {
+        "id": "navy-diver",
+        "title": "Navy Diver",
+        "category": "MILITARY_DEFENCE"
+      },
+      {
+        "id": "defence-intelligence-officer",
+        "title": "Defence Intelligence Officer",
+        "category": "MILITARY_DEFENCE"
+      },
+      {
+        "id": "sigint-operator",
+        "title": "Signals Intelligence (SIGINT) Operator",
+        "category": "MILITARY_DEFENCE"
+      },
+      {
+        "id": "reconnaissance-specialist",
+        "title": "Reconnaissance Specialist",
+        "category": "MILITARY_DEFENCE"
+      },
+      {
+        "id": "targeting-analyst",
+        "title": "Targeting Analyst",
+        "category": "MILITARY_DEFENCE"
+      },
+      {
+        "id": "geoint-analyst",
+        "title": "Geospatial Intelligence (GEOINT) Analyst",
+        "category": "MILITARY_DEFENCE"
+      },
+      {
+        "id": "forsvaret-cryptologist",
+        "title": "Military Cryptologist (Kryptolog)",
+        "category": "MILITARY_DEFENCE"
+      },
+      {
+        "id": "forsvaret-signals-officer",
+        "title": "Signals Officer (Sambandsoffiser)",
+        "category": "MILITARY_DEFENCE"
+      },
+      {
+        "id": "forsvaret-electronic-warfare-specialist",
+        "title": "Electronic Warfare Specialist (EK)",
+        "category": "MILITARY_DEFENCE"
+      },
+      {
+        "id": "etjenesten-sigint-analyst",
+        "title": "Signals Intelligence Analyst (E-tjenesten)",
+        "category": "MILITARY_DEFENCE"
+      },
+      {
+        "id": "forsvaret-combat-medic",
+        "title": "Combat Medic (Sanitetssoldat)",
+        "category": "MILITARY_DEFENCE"
+      },
+      {
+        "id": "forsvaret-chaplain",
+        "title": "Military Chaplain (Feltprest)",
+        "category": "MILITARY_DEFENCE"
+      }
+    ],
+    "maritime": [
+      {
+        "id": "ordinary-seaman",
+        "title": "Ordinary Seaman",
+        "category": "LOGISTICS_TRANSPORT"
+      },
+      {
+        "id": "able-seaman",
+        "title": "Able Seaman",
+        "category": "LOGISTICS_TRANSPORT"
+      },
+      {
+        "id": "deck-cadet",
+        "title": "Deck Cadet",
+        "category": "LOGISTICS_TRANSPORT"
+      },
+      {
+        "id": "deck-officer",
+        "title": "Deck Officer (Officer of the Watch)",
+        "category": "LOGISTICS_TRANSPORT"
+      },
+      {
+        "id": "chief-officer",
+        "title": "Chief Officer (First Mate)",
+        "category": "LOGISTICS_TRANSPORT"
+      },
+      {
+        "id": "master-mariner",
+        "title": "Master Mariner (Ship's Captain)",
+        "category": "LOGISTICS_TRANSPORT"
+      },
+      {
+        "id": "maritime-pilot",
+        "title": "Maritime Pilot",
+        "category": "LOGISTICS_TRANSPORT"
+      },
+      {
+        "id": "commercial-fisherman",
+        "title": "Commercial Fisherman",
+        "category": "LOGISTICS_TRANSPORT"
+      },
+      {
+        "id": "merchant-navy-sailor",
+        "title": "Merchant Navy Sailor",
+        "category": "LOGISTICS_TRANSPORT"
+      },
+      {
+        "id": "tugboat-crew",
+        "title": "Tugboat Crew Member",
+        "category": "LOGISTICS_TRANSPORT"
+      }
+    ],
+    "biology-life-sciences": [
+      {
+        "id": "cancer-genomics-specialist",
+        "title": "Cancer Genomics Specialist",
+        "category": "HEALTHCARE_LIFE_SCIENCES"
+      },
+      {
+        "id": "embryologist",
+        "title": "Embryologist (IVF Laboratory Scientist)",
+        "category": "HEALTHCARE_LIFE_SCIENCES"
+      },
+      {
+        "id": "biotechnology-research-scientist",
+        "title": "Biotechnology Research Scientist",
+        "category": "HEALTHCARE_LIFE_SCIENCES"
+      },
+      {
+        "id": "biotechnology-scientist",
+        "title": "Biotechnology Scientist",
+        "category": "HEALTHCARE_LIFE_SCIENCES"
+      },
+      {
+        "id": "synthetic-genomics-engineer",
+        "title": "Synthetic Genomics Engineer",
+        "category": "HEALTHCARE_LIFE_SCIENCES"
+      },
+      {
+        "id": "biotechnology-executive",
+        "title": "Biotechnology Executive",
+        "category": "HEALTHCARE_LIFE_SCIENCES"
+      },
+      {
+        "id": "computational-genomics-engineer",
+        "title": "Computational Genomics Engineer",
+        "category": "ARTIFICIAL_INTELLIGENCE"
+      },
+      {
+        "id": "clinical-genomics-analyst",
+        "title": "Clinical Genomics Analyst",
+        "category": "ARTIFICIAL_INTELLIGENCE"
+      },
+      {
+        "id": "computational-genomics-scientist",
+        "title": "Computational Genomics Scientist",
+        "category": "ARTIFICIAL_INTELLIGENCE"
+      }
+    ],
+    "cybersecurity": [
+      {
+        "id": "cyber-threat-intelligence-analyst",
+        "title": "Cyber Threat Intelligence Analyst",
+        "category": "TECHNOLOGY_IT"
+      },
+      {
+        "id": "insider-threat-analyst",
+        "title": "Insider Threat Analyst",
+        "category": "TECHNOLOGY_IT"
+      },
+      {
+        "id": "chief-information-security-officer",
+        "title": "Chief Information Security Officer (CISO)",
+        "category": "TECHNOLOGY_IT"
+      },
+      {
+        "id": "soc-analyst",
+        "title": "SOC Analyst",
+        "category": "TECHNOLOGY_IT"
+      },
+      {
+        "id": "head-of-cyber-security",
+        "title": "Head of Cyber Security",
+        "category": "TECHNOLOGY_IT"
+      },
+      {
+        "id": "cyber-security-manager",
+        "title": "Cyber Security Manager",
+        "category": "TECHNOLOGY_IT"
+      },
+      {
+        "id": "cybercrime-investigator",
+        "title": "Cybercrime Investigator",
+        "category": "PUBLIC_SERVICE_SAFETY"
+      },
+      {
+        "id": "cyberforsvaret-cyber-officer",
+        "title": "Cyber Officer (Cyberforsvaret)",
+        "category": "MILITARY_DEFENCE"
+      },
+      {
+        "id": "cyberforsvaret-cyber-intel-analyst",
+        "title": "Cyber Intelligence Analyst (Cyberforsvaret)",
+        "category": "MILITARY_DEFENCE"
+      }
+    ],
+    "music-performing-arts": [
+      {
+        "id": "security-operations-manager",
+        "title": "Security Operations Manager",
+        "category": "TECHNOLOGY_IT"
+      },
+      {
+        "id": "operating-partner",
+        "title": "Operating Partner",
+        "category": "BUSINESS_MANAGEMENT"
+      },
+      {
+        "id": "technology-operating-partner",
+        "title": "Technology Operating Partner",
+        "category": "BUSINESS_MANAGEMENT"
+      },
+      {
+        "id": "digital-operating-partner",
+        "title": "Digital Operating Partner",
+        "category": "BUSINESS_MANAGEMENT"
+      },
+      {
+        "id": "refinery-operator",
+        "title": "Refinery Operator",
+        "category": "MANUFACTURING_ENGINEERING"
+      },
+      {
+        "id": "recycling-plant-operator",
+        "title": "Recycling Plant Operator",
+        "category": "MANUFACTURING_ENGINEERING"
+      },
+      {
+        "id": "forsvaret-space-operations-officer",
+        "title": "Space Operations Officer (Forsvaret)",
+        "category": "MILITARY_DEFENCE"
+      },
+      {
+        "id": "stunt-performer",
+        "title": "Stunt Performer",
+        "category": "SPORT_FITNESS"
+      },
+      {
+        "id": "heavy-equipment-operator",
+        "title": "Heavy Equipment Operator",
+        "category": "CONSTRUCTION_TRADES"
+      }
+    ],
+    "economics-finance": [
+      {
+        "id": "fintech-specialist",
+        "title": "FinTech Specialist",
+        "category": "FINANCE_BANKING"
+      },
+      {
+        "id": "venture-capital-partner",
+        "title": "Venture Capital Partner",
+        "category": "FINANCE_BANKING"
+      },
+      {
+        "id": "actuary",
+        "title": "Actuary",
+        "category": "FINANCE_BANKING"
+      },
+      {
+        "id": "credit-analyst",
+        "title": "Credit Analyst",
+        "category": "FINANCE_BANKING"
+      },
+      {
+        "id": "valuation-specialist",
+        "title": "Valuation Specialist",
+        "category": "FINANCE_BANKING"
+      },
+      {
+        "id": "transaction-services-adviser",
+        "title": "Transaction Services Adviser",
+        "category": "FINANCE_BANKING"
+      },
+      {
+        "id": "family-office-adviser",
+        "title": "Family Office Adviser",
+        "category": "FINANCE_BANKING"
+      },
+      {
+        "id": "project-finance-specialist",
+        "title": "Project Finance Specialist",
+        "category": "FINANCE_BANKING"
+      },
+      {
+        "id": "restructuring-adviser",
+        "title": "Restructuring Adviser",
+        "category": "FINANCE_BANKING"
+      }
+    ],
+    "telecom-network": [
+      {
+        "id": "telecom-practice-lead",
+        "title": "Telecom Practice Lead",
+        "category": "TELECOMMUNICATIONS"
+      },
+      {
+        "id": "ma-telecom-advisor",
+        "title": "M&A Telecom Advisor",
+        "category": "TELECOMMUNICATIONS"
+      },
+      {
+        "id": "fiber-optic-technician",
+        "title": "Fiber Optic Technician",
+        "category": "TELECOMMUNICATIONS"
+      },
+      {
+        "id": "telecom-tower-climber",
+        "title": "Telecommunications Tower Climber",
+        "category": "TELECOMMUNICATIONS"
+      },
+      {
+        "id": "head-of-network-transformation",
+        "title": "Head of Network Transformation",
+        "category": "TELECOMMUNICATIONS"
+      },
+      {
+        "id": "head-of-service-assurance",
+        "title": "Head of Service Assurance",
+        "category": "TELECOMMUNICATIONS"
+      },
+      {
+        "id": "head-of-order-management",
+        "title": "Head of Order Management",
+        "category": "TELECOMMUNICATIONS"
+      },
+      {
+        "id": "head-of-provisioning",
+        "title": "Head of Provisioning",
+        "category": "TELECOMMUNICATIONS"
+      },
+      {
+        "id": "telecom-advisory-director",
+        "title": "Telecom Advisory Director",
+        "category": "TELECOMMUNICATIONS"
+      }
+    ],
+    "urban-planning": [
+      {
+        "id": "environmental-planner",
+        "title": "Environmental Planner",
+        "category": "BUSINESS_MANAGEMENT"
+      },
+      {
+        "id": "urban-designer",
+        "title": "Urban Designer",
+        "category": "CREATIVE_MEDIA"
+      },
+      {
+        "id": "town-planner",
+        "title": "Town Planner",
+        "category": "PUBLIC_SERVICE_SAFETY"
+      },
+      {
+        "id": "regional-planner",
+        "title": "Regional Planner",
+        "category": "PUBLIC_SERVICE_SAFETY"
+      },
+      {
+        "id": "transport-planner",
+        "title": "Transport Planner",
+        "category": "PUBLIC_SERVICE_SAFETY"
+      },
+      {
+        "id": "land-use-planner",
+        "title": "Land Use Planner",
+        "category": "PUBLIC_SERVICE_SAFETY"
+      },
+      {
+        "id": "development-planner",
+        "title": "Development Planner",
+        "category": "PUBLIC_SERVICE_SAFETY"
+      },
+      {
+        "id": "smart-city-planner",
+        "title": "Smart City Planner",
+        "category": "ARTIFICIAL_INTELLIGENCE"
+      }
+    ],
+    "political-science-ir": [
+      {
+        "id": "demographer",
+        "title": "Demographer",
+        "category": "BUSINESS_MANAGEMENT"
+      },
+      {
+        "id": "social-researcher",
+        "title": "Social Researcher",
+        "category": "BUSINESS_MANAGEMENT"
+      },
+      {
+        "id": "geopolitical-intelligence-analyst",
+        "title": "Geopolitical Intelligence Analyst & Risk Consultant",
+        "category": "PUBLIC_SERVICE_SAFETY"
+      },
+      {
+        "id": "regional-affairs-analyst",
+        "title": "Regional & Foreign-Affairs Analyst",
+        "category": "PUBLIC_SERVICE_SAFETY"
+      },
+      {
+        "id": "international-development-officer",
+        "title": "International Development Officer",
+        "category": "SOCIAL_CARE_COMMUNITY"
+      }
+    ],
+    "agriculture-food": [
+      {
+        "id": "crop-improvement-scientist",
+        "title": "Crop Improvement Scientist",
+        "category": "HEALTHCARE_LIFE_SCIENCES"
+      },
+      {
+        "id": "livestock-breeding-specialist",
+        "title": "Livestock Breeding Specialist",
+        "category": "HEALTHCARE_LIFE_SCIENCES"
+      },
+      {
+        "id": "farmer",
+        "title": "Farmer",
+        "category": "MANUFACTURING_ENGINEERING"
+      },
+      {
+        "id": "forestry-worker",
+        "title": "Forestry Worker",
+        "category": "MANUFACTURING_ENGINEERING"
+      }
+    ],
+    "history-philosophy": [
+      {
+        "id": "archaeologist",
+        "title": "Archaeologist",
+        "category": "EDUCATION_TRAINING"
+      },
+      {
+        "id": "anthropologist",
+        "title": "Anthropologist",
+        "category": "EDUCATION_TRAINING"
+      },
+      {
+        "id": "historian",
+        "title": "Historian",
+        "category": "EDUCATION_TRAINING"
+      }
+    ],
+    "marketing-communications": [
+      {
+        "id": "telemarketer",
+        "title": "Telemarketer",
+        "category": "SALES_MARKETING"
+      },
+      {
+        "id": "vp-sales",
+        "title": "VP Sales",
+        "category": "SALES_MARKETING"
+      },
+      {
+        "id": "chief-sales-officer",
+        "title": "Chief Sales Officer",
+        "category": "SALES_MARKETING"
+      }
+    ],
+    "pharmacy": [
+      {
+        "id": "pharmacogenomics-specialist",
+        "title": "Pharmacogenomics Specialist",
+        "category": "HEALTHCARE_LIFE_SCIENCES"
+      },
+      {
+        "id": "clinical-pharmacologist",
+        "title": "Clinical Pharmacologist",
+        "category": "HEALTHCARE_LIFE_SCIENCES"
+      }
+    ],
+    "journalism-media": [
+      {
+        "id": "science-communicator",
+        "title": "Science Communicator",
+        "category": "CREATIVE_MEDIA"
+      },
+      {
+        "id": "editor",
+        "title": "Editor",
+        "category": "CREATIVE_MEDIA"
+      }
+    ],
+    "mathematics-physics": [
+      {
+        "id": "planetary-scientist",
+        "title": "Planetary Scientist",
+        "category": "HEALTHCARE_LIFE_SCIENCES"
+      }
+    ]
+  }
+}
