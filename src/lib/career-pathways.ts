@@ -13320,6 +13320,94 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
   // SOCIAL CARE & COMMUNITY
   // ========================================
   SOCIAL_CARE_COMMUNITY: [
+    // ──────────────────────────────────────────────
+    // Faith & spiritual roles (added 2026-08-29, owner-approved)
+    //
+    // The coverage audit found no priest, pastor or imam anywhere in the
+    // catalogue — only "Military Chaplain". Den norske kirke is a significant
+    // Norwegian employer and theology is a live degree route at MF, UiO and
+    // VID, so the absence was a gap, not a position.
+    //
+    // Written descriptively, not devotionally: what the job involves, what it
+    // pays, what it takes to qualify — the same treatment every other career
+    // gets. More than one faith is represented deliberately; listing only the
+    // majority church would itself have been a statement.
+    // ──────────────────────────────────────────────
+    {
+      id: "parish-priest",
+      title: "Priest (Prest)",
+      emoji: "⛪",
+      description: "Lead services and rites of passage, and support people through birth, marriage, crisis and death in a local parish.",
+      avgSalary: "600,000 - 780,000 kr/year",
+      educationPath: "Profesjonsstudium i teologi (6 years — MF vitenskapelig høyskole, UiO Det teologiske fakultet or VID), then ordination",
+      keySkills: ["public speaking", "pastoral care", "listening in crisis", "text interpretation", "confidentiality"],
+      dailyTasks: ["Prepare and lead services", "Conduct funerals, weddings and baptisms", "Visit the sick and bereaved", "Support people in crisis", "Take part in parish administration"],
+      growthOutlook: "stable",
+      entryLevel: false,
+      workSetting: "mixed",
+      peopleIntensity: "high",
+      sector: "public",
+    },
+    {
+      id: "deacon",
+      title: "Deacon (Diakon)",
+      emoji: "🤲",
+      description: "Run a congregation's social and care work — reaching people who are isolated, grieving or struggling.",
+      avgSalary: "550,000 - 690,000 kr/year",
+      educationPath: "Bachelor in nursing, social work or education + Master i diakoni (VID vitenskapelige høgskole)",
+      keySkills: ["pastoral care", "safeguarding awareness", "volunteer coordination", "practical problem solving", "boundaries"],
+      dailyTasks: ["Visit people at home or in hospital", "Run grief and support groups", "Coordinate volunteers", "Work with the local welfare services", "Plan outreach activities"],
+      growthOutlook: "stable",
+      entryLevel: false,
+      workSetting: "mixed",
+      peopleIntensity: "high",
+      sector: "public",
+    },
+    {
+      id: "church-musician",
+      title: "Church Musician (Kantor / Organist)",
+      emoji: "🎹",
+      description: "Play organ and lead choirs and congregational singing for services, weddings and funerals.",
+      avgSalary: "520,000 - 690,000 kr/year",
+      educationPath: "Bachelor/Master i kirkemusikk (Norges musikkhøgskole) or equivalent organ study",
+      keySkills: ["organ performance", "choral direction", "sight-reading", "improvisation", "working to a service order"],
+      dailyTasks: ["Play for services and ceremonies", "Rehearse and direct choirs", "Choose music for the church year", "Teach and accompany singers", "Maintain the instrument"],
+      growthOutlook: "stable",
+      entryLevel: false,
+      workSetting: "creative",
+      peopleIntensity: "high",
+      sector: "public",
+    },
+    {
+      id: "imam",
+      title: "Imam",
+      emoji: "🕌",
+      description: "Lead prayer and teaching in a mosque, and advise community members on religious and family questions.",
+      avgSalary: "450,000 - 620,000 kr/year",
+      educationPath: "Islamic studies, usually abroad; no standardised Norwegian route yet, though UiO and MF now offer relevant study",
+      keySkills: ["Quranic and Arabic knowledge", "teaching", "counselling", "community leadership", "mediation"],
+      dailyTasks: ["Lead the five daily prayers", "Deliver the Friday khutbah", "Teach children and adults", "Advise families on religious questions", "Represent the mosque locally"],
+      growthOutlook: "stable",
+      entryLevel: false,
+      workSetting: "mixed",
+      peopleIntensity: "high",
+      sector: "private",
+    },
+    {
+      id: "hospital-chaplain",
+      title: "Hospital Chaplain (Sykehusprest)",
+      emoji: "🏥",
+      description: "Provide spiritual and existential support to patients, families and staff — of any faith or none.",
+      avgSalary: "620,000 - 780,000 kr/year",
+      educationPath: "Ordination or equivalent + clinical pastoral education; employed by the health trust",
+      keySkills: ["crisis presence", "existential conversation", "working across faiths", "emotional resilience", "teamwork with clinicians"],
+      dailyTasks: ["Sit with seriously ill patients", "Support families around a death", "Debrief staff after difficult cases", "Lead memorial services", "Join ethics discussions on the ward"],
+      growthOutlook: "stable",
+      entryLevel: false,
+      workSetting: "mixed",
+      peopleIntensity: "high",
+      sector: "public",
+    },
     // ── Geography-related careers added 2026-06-18 ──
     { id: "international-development-officer", title: "International Development Officer", emoji: "🌍", description: "Helps plan and run programmes that support communities in lower-income countries.", avgSalary: "550,000 - 750,000 kr/year", educationPath: "Bachelor's or master's in development studies, political science or international relations", educationRoute: "university", keySkills: ["Project coordination","Cross-cultural communication","Budget tracking","Report writing","Stakeholder management"], dailyTasks: ["Coordinate development project activities","Track budgets and spending","Write progress reports for funders","Liaise with local partners","Monitor results against goals"], growthOutlook: "medium", entryLevel: false, workSetting: "desk", peopleIntensity: "high", sector: "mixed" },
     { id: "humanitarian-aid-worker", title: "Humanitarian Aid Worker", emoji: "🤝", description: "Provides practical help and relief to people affected by crises, conflict or disasters.", avgSalary: "500,000 - 700,000 kr/year", educationPath: "Bachelor's in social science, health or development, plus field training", educationRoute: "university", keySkills: ["Adaptability","First aid awareness","Teamwork","Cross-cultural communication","Resilience"], dailyTasks: ["Distribute food, shelter or supplies","Support people in affected communities","Coordinate with local teams","Record needs and outcomes","Follow safety and security procedures"], growthOutlook: "medium", entryLevel: true, workSetting: "mixed", peopleIntensity: "high", sector: "mixed" },
