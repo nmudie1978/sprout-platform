@@ -76,15 +76,32 @@ describe('Programme validation filter — contract integrity', () => {
     expect(flagged).toEqual(['CLIENT_ERROR', 'DNS']);
   });
 
-  it('classifyHttpStatus + shouldHideFromUi round-trip: only 4xx hides', () => {
-    // Proof that a 404 response would both classify as CLIENT_ERROR
-    // AND be flagged as hideable, while a 503 would classify as
-    // SERVER_ERROR and NOT be flagged.
+  it('classifyHttpStatus + shouldHideFromUi round-trip: only a dead 4xx hides', () => {
+    // A 404 classifies as CLIENT_ERROR and is hideable; a 503 classifies as
+    // SERVER_ERROR and is not.
     expect(shouldHideFromUi(classifyHttpStatus(404))).toBe(true);
     expect(shouldHideFromUi(classifyHttpStatus(410))).toBe(true);
-    expect(shouldHideFromUi(classifyHttpStatus(403))).toBe(true);
     expect(shouldHideFromUi(classifyHttpStatus(503))).toBe(false);
     expect(shouldHideFromUi(classifyHttpStatus(200))).toBe(false);
     expect(shouldHideFromUi(classifyHttpStatus(301))).toBe(false);
+  });
+
+  it('does NOT hide on 401/403/405/429 — those describe the request, not the page', () => {
+    // CONTRACT CHANGE (2026-08-29). This previously asserted 403 hides.
+    //
+    // It was changed because the old contract actively lost content: on
+    // 2026-08-24 a CI run walked 16 vilbli.no URLs in quick succession, tripped
+    // rate limiting, and recorded 405 for every one. Under the old rule that
+    // would have hidden the entire vocational trades cluster — electrician,
+    // welder, industrial-mechanic and ~60 dependent careers — from Study Path.
+    // All 16 pages return 200 on a manual check.
+    //
+    // A host that answers 403/405/429 to a validator and 200 to a browser has
+    // told us about our request, not about the page. `BLOCKED` is the honest
+    // classification and it deliberately falls outside shouldHideFromUi.
+    for (const code of [401, 403, 405, 429]) {
+      expect(classifyHttpStatus(code)).toBe('BLOCKED');
+      expect(shouldHideFromUi(classifyHttpStatus(code))).toBe(false);
+    }
   });
 });
