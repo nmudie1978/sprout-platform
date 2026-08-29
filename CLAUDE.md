@@ -75,7 +75,8 @@ include in-app payments.
 <architecture_constraints>
 
 Stack:
-- Next.js 14 (App Router)
+- Next.js 16 (App Router)
+- React 19
 - Supabase (Auth + DB)
 - Prisma ORM
 - TypeScript (strict mode)
