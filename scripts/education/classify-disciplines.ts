@@ -15,6 +15,14 @@
  * `CATEGORY_NAME: [ ... ]` block) — this sidesteps TS module-loading issues
  * and is exactly what the coverage test re-derives.
  *
+ * ⚠️  DO NOT blindly overwrite the JSON with this script's output. Since the
+ * first generation the map has been hand-curated in ~130 places that these
+ * rules cannot reproduce (Paleontologist, Cartographer, GIS Analyst,
+ * Oceanographer, Museum Curator, Zoologist …). Re-running and committing the
+ * raw output silently reverts all of it. Use it to REVIEW: generate to a
+ * scratch file, diff against the committed map, and port over only the
+ * entries you actually mean to change.
+ *
  * Run: node_modules/.bin/tsx scripts/education/classify-disciplines.ts
  */
 import { readFileSync, writeFileSync } from "node:fs";
@@ -95,7 +103,7 @@ const KEYWORD_RULES: Array<[RegExp, DisciplineId]> = [
   // ---- Life sciences / chemistry / earth before generic health default ----
   [/biochemist|molecular biolog|cell biolog|geneticist|genomic|biomedical scien|bioengineer|biotechnolog|biolog|botan|ecolog|marine biolog|biophysic/, "biology-life-sciences"],
   [/\bchemist\b|chemistry|chemical scien|analytical chemist|materials scien/, "chemistry"],
-  [/geolog|geophysic|geoscien|seismolog|oceanograph|meteorolog|climatolog|hydrolog|volcanolog|glaciolog|geospatial|gis specialist/, "geosciences-energy"],
+  [/geolog|geophysic|geoscien|geochem|seismolog|oceanograph|meteorolog|climatolog|hydrolog|volcanolog|glaciolog|geospatial|gis specialist/, "geosciences-energy"],
   [/environmental scien|conservation|sustainab|ecology|climate scien|renewable|wildlife/, "environmental-earth-science"],
 
   // ---- Engineering splits (before generic mechanical default) ----
@@ -104,56 +112,59 @@ const KEYWORD_RULES: Array<[RegExp, DisciplineId]> = [
   [/chemical eng|process eng|petroleum eng|petrochemical|refinery eng|polymer eng|materials eng|metallurg/, "chemical-process-engineering"],
   [/aerospace eng|aeronautic|aircraft eng|avionics/, "aviation"],
   [/mechanical eng|mechanical engineer|automotive eng|marine eng|industrial eng|manufacturing eng|production eng|hvac eng/, "mechanical-engineering"],
-  [/marine eng|naval architect|ocean eng|offshore eng|subsea eng/, "maritime"],
+  [/marine eng|naval architect|ocean eng|offshore eng|subsea eng|maritime pilot/, "maritime"],
 
   // ---- Computing / data / security / telecom ----
   [/cyber|information security|infosec|security engineer|security analyst|penetration test|ethical hack|soc analyst|security architect/, "cybersecurity"],
   [/data scien|machine learn|\bml\b|\bai\b|artificial intelligen|deep learn|neural|nlp\b|computer vision|data engineer|big data|analytics engineer|ml engineer|ai engineer|prompt engineer|llm\b/, "data-science-ai"],
   [/network eng|telecom|telecommunication|5g\b|fibre|fiber optic|radio frequency|\brf eng|broadband|satellite comms|wireless/, "telecom-network"],
-  [/software|developer|programmer|web dev|full[- ]?stack|front[- ]?end|back[- ]?end|devops|cloud eng|cloud architect|site reliability|\bsre\b|qa engineer|test engineer|mobile dev|game dev|database admin|\bdba\b|systems admin|it support|it technician|computer scien|embedded (systems )?eng|firmware|platform eng|solutions architect|technical architect|blockchain/, "computer-science-software"],
+  [/software|(?<!(?:food|product|curriculum|property|estate|land|business|community|international|workforce)[\s-])\bdeveloper\b|programmer|web dev|full[- ]?stack|front[- ]?end|back[- ]?end|devops|cloud eng|cloud architect|site reliability|\bsre\b|qa engineer|test engineer|mobile dev|game dev|database admin|\bdba\b|systems admin|it support|it technician|computer scien|embedded (systems )?eng|firmware|platform eng|solutions architect|technical architect|blockchain/, "computer-science-software"],
 
   // ---- Built environment ----
-  [/architect(?!ure of|.*software|.*solution|.*cloud|.*enterprise|.*data|.*security|.*systems|.*technical|.*network)|architectural|landscape architect|interior architect/, "architecture"],
-  [/urban plan|town plan|city plan|regional plan|spatial plan|transport plan/, "urban-planning"],
+  [
+    /\barchitectural\b|landscape architect|interior architect|(?<!\b(?:data|enterprise|solutions?|cloud|network|security|systems?|platform|infrastructure|technical|integration|application|software|digital|intelligence|centre|center|telco|bss|oss|cpq|wan|chief|principal|lead|senior|transformation|orchestration|operations)[\s-])\barchitect\b/,
+    "architecture",
+  ],
+  [/urban plan|town plan|\bcity plan|regional plan|spatial plan|transport plan/, "urban-planning"],
 
   // ---- Law / policing / public admin ----
   [/lawyer|solicitor|barrister|\blegal\b|judge|magistrate|attorney|advocate|paralegal|legal counsel|notary|conveyanc|jurist/, "law"],
   [/police|detective|\bforensic|criminolog|crime scene|probation|prison officer|custody|investigator|fraud examiner|border (force|control)|immigration officer/, "criminology-policing"],
 
   // ---- Business / finance / accounting / HR / marketing ----
-  [/account|\baudit|\btax\b|bookkeep|payroll|financial controller|management accountant/, "accounting"],
+  [/\baccountan|\baccounting\b|\baudit|\btax\b|bookkeep|payroll|financial controller|management accountant/, "accounting"],
   [/economist|economics|\bfinanc|banking|investment|actuar|trader|portfolio manager|hedge fund|private equity|venture capital|quantitative analyst|\bquant\b|risk analyst|underwrit|insurance broker|wealth manager|fund manager|treasury/, "economics-finance"],
   [/market|\bbrand|advertis|\bpr\b|public relations|communications|copywrit|content strateg|social media manager|seo specialist|growth (marketer|hacker)|media buyer|campaign manager/, "marketing-communications"],
   [/human resourc|\bhr\b|recruit|talent acquisition|people (operations|partner)|learning and development|compensation and benefits|employee relations/, "human-resources"],
 
   // ---- Education / social ----
-  [/teacher|teaching|lecturer|\btutor|professor|educator|early years|kindergarten|montessori|special educational needs|\bsen\b|teaching assistant|instructional design|curriculum|head ?teacher|principal\b|education adviso/, "education-teaching"],
+  [/teacher|teaching|lecturer|\btutor|professor|educator|early years|kindergarten|montessori|special educational needs|\bsen\b|teaching assistant|instructional design|curriculum|head ?teacher|school principal|education adviso/, "education-teaching"],
   [/social work|social care|counsel(l)?or|youth work|family support|care worker|support worker|community develop|outreach worker|substance (misuse|abuse)|safeguard|welfare officer/, "social-work"],
 
   // ---- Humanities / politics / journalism ----
-  [/journalis|reporter|news (anchor|editor)|correspondent|editor\b|broadcast journalis|investigative journalis|sub-?editor|press officer/, "journalism-media"],
+  [/journalis|reporter|news (anchor|editor)|correspondent|(?<!(?:video|sound|photo|film|audio)[\s-])\beditor\b|broadcast journalis|investigative journalis|sub-?editor|press officer/, "journalism-media"],
   [/historian|philosoph|archaeolog|anthropolog|archivist|curator|librarian|theolog|classicist/, "history-philosophy"],
   [/political scien|diplomat|foreign (service|affairs)|international relations|policy analyst|policy adviso|lobbyist|legislative|parliament|civil servant.*polic/, "political-science-ir"],
-  [/translat|interpreter|linguist|language teacher|lexicograph|\bwriter\b|author|novelist|poet/, "humanities-languages"],
+  [/translator|\btranslation\b(?!al)|interpreter|linguist|language teacher|lexicograph|\bwriter\b|author|novelist|poet/, "humanities-languages"],
 
   // ---- Creative / music / film ----
   [/animat|film|filmmaker|cinematograph|director of photography|video edit|vfx|visual effects|motion graphic|videograph|screenwrit|documentary/, "film-animation"],
-  [/musician|composer|conductor|singer|vocalist|instrumentalist|sound engineer|music produc|dj\b|actor|actress|dancer|choreograph|theatre|performer|opera|orchestra/, "music-performing-arts"],
-  [/graphic design|illustrat|\bartist|painter|sculptor|photographer|fashion design|product design|ux design|ui design|interior design|game artist|3d artist|set design|costume design|jewellery design|industrial design|creative director|art director|designer/, "creative-arts-design"],
+  [/musician|composer|conductor|singer|vocalist|instrumentalist|sound engineer|music produc|dj\b|\bactor\b|actress|dancer|choreograph|theatre|performer|\bopera\b|operatic|\borchestra\b|orchestral|vocal coach/, "music-performing-arts"],
+  [/graphic design|illustrat|(?<!(?:makeup|tattoo)[\s-])\bartist|\bpainter\b(?!\s*(?:&|and|-)\s*decorat)|sculptor|photographer|fashion design|product design|ux design|ui design|interior design|game artist|3d artist|set design|costume design|jewellery design|industrial design|creative director|art director|designer/, "creative-arts-design"],
 
   // ---- Sport ----
-  [/\bsport|athlet|coach\b|fitness|personal trainer|physical educat|strength and condition|sports scien|sports therap|football|exercise physiolog|gym instructor|yoga|pilates instructor/, "sport-science"],
+  [/\bsport|athlet|(?<!(?:agile|career|literacy|vocal|life)[\s-])\bcoach\b|fitness|personal trainer|physical educat|strength and condition|sports scien|sports therap|football|exercise physiolog|gym instructor|yoga|pilates instructor|formula 1|rally driver|racing driver/, "sport-science"],
 
   // ---- Hospitality / culinary / tourism ----
   [/\bchef|culinary|\bcook\b|baker|patissier|pastry|sommelier|butcher|barista|cookery/, "culinary"],
   [/tourism|hospitality|hotel|travel (agent|consultant)|tour (guide|operator)|event (manager|planner|coordinat)|restaurant manager|concierge|cabin crew|flight attendant|cruise/, "tourism-hospitality"],
 
   // ---- Agriculture / food production ----
-  [/farmer|agricultur|agronom|horticultur|fishery|fish farm|aquacultur|forester|forestry|food scien|food technolog|food product|viticultur|winemaker|brewer|crop|livestock|dairy/, "agriculture-food"],
+  [/farmer|agricultur|agronom|horticultur|fishery|fish farm|aquacultur|forester|forestry|food scien|food technolog|food product|food quality|viticultur|winemaker|brewer|crop|livestock|dairy/, "agriculture-food"],
 
   // ---- Transport: aviation / maritime / logistics ----
   [/\bpilot|aviation|aircraft|aerospace|air traffic|cabin crew|flight (engineer|dispatcher)|drone (pilot|operator)/, "aviation"],
-  [/\bmariner|seafarer|\bcaptain\b|deck officer|ship\b|maritime|merchant navy|harbour|port (operations|manager)|ferry|tugboat|dredg|coastguard|fisher/, "maritime"],
+  [/\bmariner|seafarer|\bcaptain\b|deck officer|\bship\b|maritime|merchant navy|harbour|port (operations|manager)|ferry|tugboat|dredg|coastguard|fisher/, "maritime"],
   [/logistic|supply chain|warehouse|freight|haulage|shipping coordinat|distribution (manager|centre)|procurement|fleet manager|customs|inventory|courier|delivery driver|\bdriver\b|transport (manager|planner)/, "logistics-supplychain"],
 
   // ---- Energy / geoscience ----
@@ -248,7 +259,7 @@ for (let m: RegExpExecArray | null; (m = idRe.exec(body)); ) {
 const out = {
   meta: {
     source: "deterministic classifier (category + keyword)",
-    lastUpdated: "2026-06-18",
+    lastUpdated: "2026-08-31",
   },
   map,
 };
