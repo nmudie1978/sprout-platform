@@ -8,6 +8,16 @@ export interface FieldOption {
   aliases: string[];
   /** Curated career ids for synthetic fields that span multiple discipline buckets. */
   careerIds?: string[];
+  /**
+   * Curated careers to append to a discipline-backed field's own bucket.
+   * A degree fans out wider than the careers whose *primary* discipline it is:
+   * a chemistry graduate becomes a forensic scientist or a food technologist,
+   * neither of which is bucketed under Chemistry. Extras are additive only —
+   * they never move a career out of the bucket it belongs to, so the
+   * career→discipline map (which also drives university suggestions) is
+   * unaffected.
+   */
+  extraCareerIds?: string[];
 }
 
 // Build a lookup: disciplineId -> label (from the buckets JSON)
@@ -374,11 +384,116 @@ const ALIASES: Record<string, string[]> = {
   ],
 };
 
+/**
+ * Cross-listed careers for fields whose own bucket is thin. Every id must exist
+ * in the catalogue (asserted in field-options.test.ts). Keep these defensible:
+ * a career belongs here only if the degree is a realistic route into it.
+ */
+const EXTRA_CAREER_IDS: Record<string, string[]> = {
+  chemistry: [
+    "materials-engineer",
+    "petroleum-engineer",
+    "pharmacist",
+    "clinical-pharmacologist",
+    "pharmaceutical-research-director",
+    "forensic-scientist",
+    "forensic-toxicologist",
+    "food-scientist",
+    "food-technologist",
+    "quality-assurance-food",
+    "environmental-scientist",
+    "geochemist",
+    "biotechnology-research-scientist",
+    "quality-assurance-engineer",
+    "medical-laboratory-technician",
+    "lab-technician",
+  ],
+  "chemical-process-engineering": [
+    "chemist",
+    "quality-assurance-engineer",
+    "battery-storage-engineer",
+    "petroleum-geoscientist",
+    "water-treatment-plant-technician",
+    "food-technologist",
+    "environmental-scientist",
+    "refinery-operator",
+    "process-operator",
+    "hazardous-materials-technician",
+  ],
+  "mathematics-physics": [
+    "actuary",
+    "quantitative-analyst",
+    "data-scientist",
+    "senior-data-scientist",
+    "ai-research-scientist",
+    "research-scientist",
+    "mathematics-teacher",
+    "physics-teacher",
+    "meteorologist",
+    "nuclear-engineer",
+    "aerospace-engineer",
+    "space-systems-engineer",
+    "climate-data-scientist",
+    "astronaut",
+  ],
+  "human-resources": [
+    "head-of-talent",
+    "chief-people-officer",
+    "workforce-strategy-director",
+    "org-transformation-director",
+    "workforce-development-specialist",
+    "career-coach",
+  ],
+  veterinary: [
+    "wildlife-biologist",
+    "marine-biologist",
+    "ecologist",
+    "conservation-scientist",
+    "conservation-geneticist",
+    "animal-geneticist",
+    "livestock-breeding-specialist",
+    "park-ranger",
+  ],
+  "public-health": [
+    "health-educator",
+    "health-economist",
+    "nutritionist",
+    "dietitian",
+    "community-development-worker",
+    "community-outreach-worker",
+  ],
+  "political-science-ir": [
+    "civil-servant",
+    "civil-service-officer",
+    "local-government-officer",
+    "housing-policy-officer",
+    "intelligence-analyst",
+    "strategic-intelligence-analyst",
+    "geopolitical-intelligence-analyst",
+    "ngo-programme-manager",
+    "international-development-officer",
+    "government-lawyer",
+  ],
+  "civil-engineering": [
+    "construction-manager",
+    "construction-project-manager",
+    "site-manager",
+    "quantity-surveyor",
+    "building-surveyor",
+    "land-surveyor",
+    "bim-manager",
+    "bim-coordinator",
+    "building-services-engineer",
+    "infrastructure-planner",
+  ],
+};
+
 // Discipline-bucket-backed options (careerIds resolved via the discipline map).
 const disciplineOptions: FieldOption[] = [...usedDisciplineIds].map((id) => ({
   id,
   label: bucketLabelMap.get(id) ?? id,
   aliases: ALIASES[id] ?? [],
+  extraCareerIds: EXTRA_CAREER_IDS[id],
 }));
 
 /**
@@ -441,7 +556,11 @@ export const FIELD_OPTIONS: FieldOption[] = [...disciplineOptions, ...syntheticO
 export function getCareersForField(fieldId: string): string[] {
   const option = FIELD_OPTIONS.find((o) => o.id === fieldId);
   if (option?.careerIds) return option.careerIds;
-  return getCareersForDiscipline(fieldId);
+  const own = getCareersForDiscipline(fieldId);
+  if (!option?.extraCareerIds?.length) return own;
+  // Bucket members first (they're the closest fit), then the cross-listed
+  // extras, deduped in case an extra later moves into the bucket itself.
+  return [...new Set([...own, ...option.extraCareerIds])];
 }
 
 /**
