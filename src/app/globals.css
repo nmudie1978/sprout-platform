@@ -356,12 +356,21 @@
      9–10px labels (measured: "Strong match" at 9px on /careers). Readable
      type is a property of how the device is held, not of its pixel count.
 
-     But the touch arm is capped BELOW `xl` (1279px) deliberately. The
-     careers table is an `xl`-only 928px fixed grid whose 9–10px cells are
-     sized to fit it, and an iPad Pro in landscape is 1366px with a coarse
-     pointer — an uncapped touch arm would lift that table's type and
-     overflow the grid. Below `xl` no such fixed-width desktop layout
-     renders, so the floor cannot break one.
+     The touch arm is deliberately NOT capped at `xl`. I first capped it at
+     1279px to protect the careers table — an `xl`-only 928px grid whose
+     9–10px cells look like they are sized to their text — but that was a
+     precaution against a failure I had not reproduced. Measured: forcing
+     the floor on at 1280 and 1366 with a coarse pointer widens the table
+     by 0px and overflows nothing. The reason is that every track in
+     LIST_GRID is a fixed `rem`, which is root-relative, so a cell's
+     font-size cannot widen its track — the lift is absorbed as vertical
+     reflow inside the cell. Capping would have returned 8–10px text to
+     large tablets, a real readability regression, to prevent nothing.
+
+     REVISIT IF: any fixed-width grid gains a track sized to its content
+     (`ch`, `em`, `auto`, `min-content`, `max-content`, `fit-content`).
+     That is where a font-size lift propagates into track width, and the
+     cap would then be needed at whatever width that grid starts.
 
      `!important` is needed to beat the utility class's own specificity.
      (The `text-[11px]` selector is a deliberate no-op — it states where
@@ -381,8 +390,7 @@
      Honest limit: bounded is not verified-everywhere. The fixed-width
      subset above is enumerated; the rest was reasoned about, not rendered.
      ~12 routes were checked at 320px. */
-  @media (max-width: 639px),
-         ((hover: none) and (pointer: coarse) and (max-width: 1279px)) {
+  @media (max-width: 639px), ((hover: none) and (pointer: coarse)) {
     .text-\[8px\],
     .text-\[9px\],
     .text-\[10px\],
