@@ -69,12 +69,12 @@ export function CareerViewSwitcher({
             aria-pressed={active}
             title={description}
             className={cn(
-              // `.hit-44` (globals.css) projects an invisible centred 44x44 hit
-              // area — icon-only on mobile these were 34x22, too small to hit.
-              // Widening them instead pushed the three-button group to 130px,
-              // which no longer fit beside the result count at 320px and got
-              // clipped, so the hit area is added without any extra width.
-              "hit-44 inline-flex items-center justify-center gap-1.5 rounded-[calc(var(--radius)-0.35rem)] min-h-[32px] px-2.5 py-1 text-xs font-medium transition-colors",
+              // Real size, NOT `.hit-44`. A 44x44 projected hit area on buttons
+              // 2px apart (gap-0.5) overlaps its neighbour, and the later
+              // sibling wins the tap — measured: a press 3px inside the right
+              // edge of "Table" selected "Cards". `.hit-44` is right for an
+              // isolated icon button, wrong inside a segmented control.
+              "inline-flex items-center justify-center gap-1.5 rounded-[calc(var(--radius)-0.35rem)] min-h-[38px] px-2.5 py-1 text-xs font-medium transition-colors",
               "focus:outline-none focus-visible:ring-2 focus-visible:ring-ring",
               active
                 ? "bg-primary text-primary-foreground"
