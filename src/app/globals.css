@@ -851,7 +851,11 @@
 
      CURRENTLY UNUSED — every former call site was converted to real size.
      Kept because it IS the right tool where clearance is structurally
-     fixed, but read this before reaching for it:
+     fixed. It is listed in `safelist` in tailwind.config.ts, because a
+     custom utility with no call site is purged, and without that entry this
+     one survived only on the literal string appearing in two code comments
+     elsewhere — i.e. it would have silently become a no-op the moment
+     someone tidied them. Read this before reaching for it:
 
      The projected area is INVISIBLE, so it silently overlaps whatever is
      near it, and the LATER DOM SIBLING wins the shared band. It is safe
