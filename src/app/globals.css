@@ -811,11 +811,38 @@
   }
 
   /* ── Accessible touch target without changing visual density ──
-     Dense list/table rows need small icon buttons but WCAG/Pathora
-     mandate a 44×44px touch target. `.hit-44` keeps the icon its
-     visual size and projects an invisible, centred 44×44px hit area
-     via a pseudo-element. Apply to compact remove/pagination buttons.
-     The element must be `relative` (this sets it). */
+     Keeps an icon at its visual size and projects an invisible, centred
+     44×44px hit area via a pseudo-element. The element must be `relative`
+     (this sets it).
+
+     CURRENTLY UNUSED — every former call site was converted to real size.
+     Kept because it IS the right tool where clearance is structurally
+     fixed, but read this before reaching for it:
+
+     The projected area is INVISIBLE, so it silently overlaps whatever is
+     near it, and the LATER DOM SIBLING wins the shared band. It is safe
+     only when the nearest other interactive control is >=44px away
+     centre-to-centre. Two things disqualify it, and measuring harder does
+     not fix either:
+       (a) the clearance depends on rendered content — e.g. the dashboard
+           paginators sit either side of a `{page}/{total}` span, where
+           "1/2" vs "10/20" swings the gap ~14px;
+       (b) the element is in a SHARED component, so consumers set the
+           clearance — PageHeader's info button measured 144px on /careers
+           but 86px on /insights, and a future page can place a control
+           closer still.
+     Prefer real size on touch: `h-11 w-11 sm:h-auto sm:w-auto sm:p-0.5`.
+
+     This caused real bugs here, all found by measurement, none visible in
+     review: tapping the bottom of a saved-career's remove-X deleted the
+     career BELOW it; a press 3px inside the careers view-switcher's
+     "Table" selected "Cards".
+
+     TESTING NOTE — sample the PROJECTED area's edges (centre ±21), not the
+     element's visual box. A 16px button's whole box sits inside the safe
+     centre of its own projection, so box sampling returns a clean result on
+     a broken control. Also scrollIntoView first (elementFromPoint uses
+     viewport coords), and expect a `disabled` control to own no point. */
   .hit-44 {
     position: relative;
   }
