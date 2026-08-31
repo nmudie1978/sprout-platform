@@ -429,6 +429,40 @@
       ]
     },
     {
+      "id": "history-philosophy",
+      "label": "History & Philosophy",
+      "local": {
+        "NO": [
+          {
+            "name": "Universitetet i Oslo (UiO)",
+            "country": "NO",
+            "city": "Oslo",
+            "url": "https://www.uio.no"
+          },
+          {
+            "name": "Universitetet i Bergen (UiB)",
+            "country": "NO",
+            "city": "Bergen",
+            "url": "https://www.uib.no"
+          }
+        ]
+      },
+      "europe": [
+        {
+          "name": "Leiden University",
+          "country": "NL",
+          "city": "Leiden",
+          "url": "https://www.universiteitleiden.nl/en"
+        },
+        {
+          "name": "KU Leuven",
+          "country": "BE",
+          "city": "Leuven",
+          "url": "https://www.kuleuven.be/english"
+        }
+      ]
+    },
+    {
       "id": "political-science-ir",
       "label": "Political Science & International Relations",
       "local": {
