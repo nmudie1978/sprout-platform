@@ -830,13 +830,13 @@ export default function DashboardPage() {
               );
             })()}
           </div>
-          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+          <div className="flex items-center gap-1 sm:gap-3 shrink-0">
             {/* Replay walkthrough */}
             {!isFirstLogin && session?.user.role === "YOUTH" && (
               <button
                 type="button"
                 onClick={() => { isReplayRef.current = true; setShowOnboardingWizard(true); }}
-                className="h-7 w-7 rounded-pill border border-border/40 bg-background/60 flex items-center justify-center text-muted-foreground/70 hover:text-foreground hover:bg-muted/40 transition-colors hit-44"
+                className="h-11 w-11 sm:h-7 sm:w-7 rounded-pill border border-border/40 bg-background/60 flex items-center justify-center text-muted-foreground/70 hover:text-foreground hover:bg-muted/40 transition-colors"
                 title="Replay app walkthrough"
               >
                 <Compass className="h-3.5 w-3.5" />
@@ -881,7 +881,7 @@ export default function DashboardPage() {
                 <Link
                   href="/profile"
                   title={pct === 100 ? 'Profile complete' : `Profile ${pct}% complete`}
-                  className="relative p-1.5 rounded-control hover:bg-muted/50 transition-colors group hit-44"
+                  className="relative h-11 w-11 sm:h-auto sm:w-auto sm:p-1.5 inline-flex items-center justify-center rounded-control hover:bg-muted/50 transition-colors group"
                 >
                   <User className="h-4 w-4 text-muted-foreground/70 group-hover:text-muted-foreground transition-colors" />
                 </Link>
@@ -1168,7 +1168,7 @@ export default function DashboardPage() {
                                     e.stopPropagation();
                                     removeExploredJourney(goal.goalId);
                                   }}
-                                  className="p-0.5 rounded-control hit-44 text-muted-foreground/20 hover:text-destructive hover:bg-destructive/10 transition-colors"
+                                  className="h-11 w-11 sm:h-auto sm:w-auto sm:p-0.5 inline-flex items-center justify-center rounded-control text-muted-foreground/20 hover:text-destructive hover:bg-destructive/10 transition-colors"
                                   title="Remove journey"
                                   aria-label={`Remove ${goal.goalTitle}`}
                                 >
@@ -1286,7 +1286,7 @@ export default function DashboardPage() {
                           e.stopPropagation();
                           removeCuriosity(c.careerId);
                         }}
-                        className="p-0.5 rounded-control hit-44 text-muted-foreground/20 hover:text-destructive hover:bg-destructive/10 transition-colors shrink-0"
+                        className="h-11 w-11 sm:h-auto sm:w-auto sm:p-0.5 inline-flex items-center justify-center rounded-control text-muted-foreground/20 hover:text-destructive hover:bg-destructive/10 transition-colors shrink-0"
                         title="Remove"
                         aria-label={`Remove ${c.careerTitle}`}
                       >

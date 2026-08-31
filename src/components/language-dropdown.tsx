@@ -39,7 +39,7 @@ export function LanguageDropdown({
         title={iconOnly ? "Change language" : undefined}
         className={cn(
           iconOnly
-            ? "h-7 w-7 rounded-pill border border-border/40 bg-background/60 flex items-center justify-center text-muted-foreground/70 hover:text-foreground hover:bg-muted/40 transition-colors hit-44"
+            ? "h-11 w-11 sm:h-7 sm:w-7 rounded-pill border border-border/40 bg-background/60 flex items-center justify-center text-muted-foreground/70 hover:text-foreground hover:bg-muted/40 transition-colors"
             : "inline-flex items-center gap-1.5 rounded-lg border border-border/30 bg-card px-2 py-1.5 text-sm hover:bg-muted/40 transition-colors",
           className,
         )}
