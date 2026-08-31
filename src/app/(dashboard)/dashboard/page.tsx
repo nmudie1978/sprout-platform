@@ -1187,7 +1187,7 @@ export default function DashboardPage() {
                     <button
                       onClick={() => setJourneyPage((p) => Math.max(0, p - 1))}
                       disabled={page === 0}
-                      className="p-0.5 rounded-control hit-44 text-muted-foreground/60 hover:text-muted-foreground/60 disabled:opacity-30 transition-colors"
+                      className="h-11 w-11 sm:h-auto sm:w-auto sm:p-0.5 inline-flex items-center justify-center rounded-control text-muted-foreground/60 hover:text-muted-foreground/60 disabled:opacity-30 transition-colors"
                     >
                       <ChevronLeft className="h-3 w-3" />
                     </button>
@@ -1195,7 +1195,7 @@ export default function DashboardPage() {
                     <button
                       onClick={() => setJourneyPage((p) => Math.min(totalPages - 1, p + 1))}
                       disabled={page >= totalPages - 1}
-                      className="p-0.5 rounded-control hit-44 text-muted-foreground/60 hover:text-muted-foreground/60 disabled:opacity-30 transition-colors"
+                      className="h-11 w-11 sm:h-auto sm:w-auto sm:p-0.5 inline-flex items-center justify-center rounded-control text-muted-foreground/60 hover:text-muted-foreground/60 disabled:opacity-30 transition-colors"
                     >
                       <ChevronRight className="h-3 w-3" />
                     </button>
@@ -1301,7 +1301,7 @@ export default function DashboardPage() {
                       type="button"
                       onClick={() => setSavedCareersPage((p) => Math.max(0, p - 1))}
                       disabled={savedCareersPage === 0}
-                      className="p-0.5 hit-44 text-muted-foreground/70 hover:text-foreground disabled:opacity-30 disabled:cursor-not-allowed"
+                      className="h-11 w-11 sm:h-auto sm:w-auto sm:p-0.5 inline-flex items-center justify-center text-muted-foreground/70 hover:text-foreground disabled:opacity-30 disabled:cursor-not-allowed"
                       aria-label={t('common.previousPage')}
                     >
                       <ChevronLeft className="h-3 w-3" />
@@ -1313,7 +1313,7 @@ export default function DashboardPage() {
                       type="button"
                       onClick={() => setSavedCareersPage((p) => Math.min(savedCareersPageCount - 1, p + 1))}
                       disabled={savedCareersPage >= savedCareersPageCount - 1}
-                      className="p-0.5 hit-44 text-muted-foreground/70 hover:text-foreground disabled:opacity-30 disabled:cursor-not-allowed"
+                      className="h-11 w-11 sm:h-auto sm:w-auto sm:p-0.5 inline-flex items-center justify-center text-muted-foreground/70 hover:text-foreground disabled:opacity-30 disabled:cursor-not-allowed"
                       aria-label={t('common.nextPage')}
                     >
                       <ChevronRight className="h-3 w-3" />
