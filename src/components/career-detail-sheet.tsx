@@ -230,7 +230,10 @@ export function CareerDetailSheet({
   return (
     <>
       <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-        <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto overflow-x-hidden p-0 [&>*]:min-w-0">
+        {/* `sm:max-w-lg` / `sm:max-h-`: the un-prefixed values were overriding
+            the primitive's mobile bottom-sheet sizing, re-introducing the
+            `vh` overflow the primitive now avoids. */}
+        <DialogContent className="sm:max-w-lg max-h-[85dvh] sm:max-h-[90dvh] overflow-y-auto overflow-x-hidden p-0 [&>*]:min-w-0">
           {career && (
             <div className="min-w-0 w-full overflow-x-hidden">
               {/* Header */}

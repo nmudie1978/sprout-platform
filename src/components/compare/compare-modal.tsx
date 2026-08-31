@@ -89,7 +89,7 @@ export function CompareModal({ open, careers, preferences, onClose, onRemove }: 
       />
 
       {/* Panel */}
-      <div className="relative w-full sm:max-w-5xl sm:max-h-[90vh] sm:my-8 sm:mx-4 bg-card border-y sm:border sm:rounded-2xl sm:shadow-2xl flex flex-col overflow-hidden">
+      <div className="relative w-full sm:max-w-5xl sm:max-h-[90dvh] sm:my-8 sm:mx-4 bg-card border-y sm:border sm:rounded-2xl sm:shadow-2xl flex flex-col overflow-hidden">
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-3.5 border-b border-border/40">
           <div className="min-w-0">

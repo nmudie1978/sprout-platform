@@ -796,9 +796,16 @@ export default function DashboardPage() {
 
       <div className="max-w-4xl mx-auto px-3 sm:px-6 py-4 sm:py-5">
         {/* ── Header ─────────────────────────────────────────── */}
-        <div className="flex items-center justify-between mb-4 sm:mb-5">
-          <div className="flex items-center gap-2.5">
-            <h1 className="text-xl sm:text-2xl font-semibold tracking-tight text-foreground">
+        {/* `min-w-0` + `truncate`: at 320px "Good evening, <name>" wrapped to
+            three lines and shoved the control cluster into a cramped column.
+            The greeting now takes one line and elides; the controls keep
+            their full width. */}
+        <div className="flex items-center justify-between gap-2 mb-4 sm:mb-5">
+          <div className="flex items-center gap-2.5 min-w-0">
+            {/* text-lg below `sm`: at 20px "Good evening <name>" ran out of
+                room next to the control cluster and truncated away the name,
+                which is the part that matters. */}
+            <h1 className="text-lg sm:text-2xl font-semibold tracking-tight text-foreground truncate">
               {isFirstLogin ? (
                 <>{t('greeting.welcome')}, <span className="text-foreground">{displayName}</span></>
               ) : (
@@ -823,7 +830,7 @@ export default function DashboardPage() {
               );
             })()}
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
             {/* Replay walkthrough */}
             {!isFirstLogin && session?.user.role === "YOUTH" && (
               <button
@@ -839,7 +846,10 @@ export default function DashboardPage() {
                 control. This is the app's language entry point (the persistent
                 top bar was removed to save space). */}
             <LanguageDropdown iconOnly />
-            <span className="text-sm text-foreground/85">
+            {/* Hidden below `sm`: "Mon 31 Aug" wrapped onto two lines at
+                320px and pushed the whole cluster taller for no real value —
+                the date is ambient context, and the phone shows it anyway. */}
+            <span className="hidden sm:inline text-sm text-foreground/85">
               {dateStr}
             </span>
             {/* Guardian-consent signal — static dot with tooltip */}

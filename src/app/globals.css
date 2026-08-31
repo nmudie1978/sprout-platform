@@ -341,6 +341,27 @@
       font-size: 16px !important;
     }
   }
+
+  /* MOBILE TYPE FLOOR
+     The app uses arbitrary 8–10px type in a lot of dense, desktop-first
+     places (table columns, legends, badge captions, meta rows). At arm's
+     length on a phone those are not readable without pinch-zooming, and
+     there are far too many sites to fix one by one — so lift them here.
+
+     Scoped to `max-width: 639px`, i.e. below Tailwind's `sm`. Every dense
+     desktop layout that legitimately needs 9–10px type (the careers table,
+     the salary-chart axes) only renders at `sm` and up, so this cannot
+     make a desktop layout overflow. `!important` is needed to beat the
+     utility class's own specificity. */
+  @media (max-width: 639px) {
+    .text-\[8px\],
+    .text-\[9px\],
+    .text-\[10px\],
+    .text-\[11px\] {
+      font-size: 11px !important;
+      line-height: 1.4 !important;
+    }
+  }
 }
 
 @layer components {

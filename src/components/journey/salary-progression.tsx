@@ -6,8 +6,9 @@
  * via props, sorts by avg ascending, re-renders on data change.
  */
 
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { TrendingUp } from 'lucide-react';
+import { cn } from '@/lib/utils';
 import {
   BarChart,
   Bar,
@@ -153,6 +154,45 @@ export function SalaryChart({
     [data],
   );
 
+  // Which legend explanation is expanded (tap-to-reveal — see the legend).
+  const [openLegend, setOpenLegend] = useState<string | null>(null);
+
+  const legendItems = useMemo(
+    () =>
+      [
+        {
+          key: 'average',
+          label: 'Average',
+          description: 'Mid-point between min and max for this level.',
+          swatch: (
+            <span className="h-2 w-4 shrink-0 rounded-sm bg-[hsl(166,72%,45%)] opacity-85" />
+          ),
+        },
+        {
+          key: 'range',
+          label: 'Market range',
+          description:
+            'How much more than average the top earners at this level make.',
+          swatch: (
+            <span className="h-2 w-4 shrink-0 rounded-sm bg-[hsl(260,60%,60%)] opacity-20 border border-[hsl(260,60%,60%)]/30" />
+          ),
+        },
+        ...(medianK
+          ? [
+              {
+                key: 'median',
+                label: 'National median',
+                description: `Norway's median salary across all professions (~${formatSalary(medianK)} kr/year).`,
+                swatch: (
+                  <span className="h-px w-4 shrink-0 border-t border-dashed border-[hsl(215,10%,40%)]" />
+                ),
+              },
+            ]
+          : []),
+      ],
+    [medianK],
+  );
+
   if (data.length === 0) return null;
 
   const barHeight = data.length <= 4 ? 28 : data.length <= 6 ? 22 : 18;
@@ -249,32 +289,37 @@ export function SalaryChart({
         </ResponsiveContainer>
       </div>
 
-      {/* Legend */}
-      <div className="flex items-center gap-4 text-[9px] text-muted-foreground/70">
-        <span className="flex items-center gap-1.5 group relative cursor-default">
-          <span className="h-2 w-4 rounded-sm bg-[hsl(166,72%,45%)] opacity-85" />
-          Average
-          <span className="absolute bottom-full left-0 mb-1 hidden group-hover:block bg-[hsl(220,20%,14%)] border border-[hsl(220,15%,25%)] rounded px-2 py-1 text-[9px] text-foreground/80 whitespace-nowrap shadow-lg z-10">
-            Mid-point between min and max for this level
-          </span>
-        </span>
-        <span className="flex items-center gap-1.5 group relative cursor-default">
-          <span className="h-2 w-4 rounded-sm bg-[hsl(260,60%,60%)] opacity-20 border border-[hsl(260,60%,60%)]/30" />
-          Market range
-          <span className="absolute bottom-full left-0 mb-1 hidden group-hover:block bg-[hsl(220,20%,14%)] border border-[hsl(220,15%,25%)] rounded px-2 py-1 text-[9px] text-foreground/80 whitespace-nowrap shadow-lg z-10">
-            How much more than average the top earners at this level make
-          </span>
-        </span>
-        {medianK && (
-          <span className="flex items-center gap-1.5 group relative cursor-default">
-            <span className="h-px w-4 border-t border-dashed border-[hsl(215,10%,40%)]" />
-            National median
-            <span className="absolute bottom-full left-0 mb-1 hidden group-hover:block bg-[hsl(220,20%,14%)] border border-[hsl(220,15%,25%)] rounded px-2 py-1 text-[9px] text-foreground/80 whitespace-nowrap shadow-lg z-10">
-              Norway&apos;s median salary across all professions (~{formatSalary(medianK)} kr/year)
-            </span>
-          </span>
-        )}
+      {/* Legend. Each item's explanation used to live in a
+          `hidden group-hover:block` popover — invisible and unreachable on
+          touch, where there is no hover, so the meaning of "Market range" was
+          simply unavailable on a phone. Each item is now a real button that
+          toggles its explanation inline below the legend: it works with a tap,
+          with a mouse, and with a keyboard. */}
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-muted-foreground/70">
+        {legendItems.map((item) => {
+          const isOpen = openLegend === item.key;
+          return (
+            <button
+              key={item.key}
+              type="button"
+              onClick={() => setOpenLegend(isOpen ? null : item.key)}
+              aria-expanded={isOpen}
+              className={cn(
+                "flex items-center gap-1.5 min-h-[32px] rounded transition-colors",
+                isOpen ? "text-foreground" : "hover:text-foreground/90"
+              )}
+            >
+              {item.swatch}
+              {item.label}
+            </button>
+          );
+        })}
       </div>
+      {openLegend && (
+        <p className="text-[11px] leading-snug text-foreground/75">
+          {legendItems.find((i) => i.key === openLegend)?.description}
+        </p>
+      )}
 
       {note && (
         <p className="text-[9px] text-muted-foreground/45 italic">{note}</p>

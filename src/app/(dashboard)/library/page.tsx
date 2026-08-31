@@ -66,10 +66,15 @@ export default function LibraryPage() {
         </p>
       </header>
 
+      {/* Four tabs don't fit on a 320px phone — the last one ("Reflections")
+          was pushed past the page edge and clipped, so that section was
+          simply unreachable. Scroll the strip horizontally instead, with the
+          negative inset letting it bleed to the screen edges so it reads as
+          scrollable. */}
       <div
         role="tablist"
         aria-label="My Library sections"
-        className="flex gap-1.5 mb-5 border-b border-border/60"
+        className="flex gap-1.5 mb-5 border-b border-border/60 overflow-x-auto scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0"
       >
         {LIBRARY_TABS.map((t) => (
           <button
@@ -79,7 +84,7 @@ export default function LibraryPage() {
             aria-selected={active === t.key}
             onClick={() => setActive(t.key)}
             className={cn(
-              "px-3 py-2 text-sm rounded-t-md transition-colors -mb-px border-b-2",
+              "shrink-0 whitespace-nowrap px-3 min-h-[44px] text-sm rounded-t-md transition-colors -mb-px border-b-2",
               active === t.key
                 ? "border-primary text-primary font-medium"
                 : "border-transparent text-muted-foreground hover:text-foreground"

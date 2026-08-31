@@ -39,7 +39,7 @@ export function CareerDetailModal({
 }: CareerDetailModalProps) {
   return (
     <Dialog open onOpenChange={onClose}>
-      <DialogContent className="max-h-[90vh] max-w-3xl overflow-y-auto">
+      <DialogContent className="max-h-[90dvh] max-w-3xl overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-3 text-2xl">
             <Briefcase className="h-6 w-6 text-primary" />

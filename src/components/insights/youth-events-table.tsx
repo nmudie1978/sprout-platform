@@ -119,11 +119,14 @@ function EventListItem({ event }: { event: EventItem }) {
       className="border-b last:border-0 hover:bg-muted/30 transition-colors cursor-pointer"
       onClick={() => setExpanded(!expanded)}
     >
-      {/* Collapsed row */}
-      <div className="flex items-center gap-2 py-1.5 px-2.5">
+      {/* Collapsed row. Below `md` this is a stacked card, not a table row:
+          the meta line used to be a single non-wrapping strip of four
+          `flex-shrink-0` items, which overflowed under the Register button
+          and was cut off mid-word at 320–390px. */}
+      <div className="flex flex-wrap md:flex-nowrap items-start md:items-center gap-x-2 gap-y-1.5 py-2.5 md:py-1.5 px-2.5">
         {/* Date chip */}
         <div
-          className={`flex flex-col items-center justify-center w-9 h-9 rounded-lg flex-shrink-0 ${
+          className={`flex flex-col items-center justify-center w-10 h-10 md:w-9 md:h-9 rounded-lg flex-shrink-0 ${
             isUrgent
               ? "bg-amber-100 dark:bg-amber-900/30"
               : "bg-muted/50"
@@ -132,27 +135,34 @@ function EventListItem({ event }: { event: EventItem }) {
           <span className="text-xs font-semibold leading-none">
             {formatDay(event.startDateISO)}
           </span>
-          <span className="text-[8px] text-muted-foreground leading-tight mt-0.5">
+          <span className="text-[10px] md:text-[8px] text-muted-foreground leading-tight mt-0.5">
             {formatMonth(event.startDateISO)}
           </span>
         </div>
 
-        {/* Title + location */}
-        <div className="md:flex-[3] flex-1 min-w-0">
-          <p className="text-xs font-medium truncate">{event.title}</p>
-          <div className="flex items-center gap-1 text-[11px] text-muted-foreground">
+        {/* Title + location. On mobile it claims the rest of the first line
+            (everything but the 40px date chip), which pushes Register onto a
+            second line — otherwise the title was squeezed into ~110px and
+            wrapped to two lines *and* still truncated. */}
+        <div className="md:flex-[3] flex-1 basis-[calc(100%-3.75rem)] md:basis-auto min-w-0">
+          {/* Two lines on mobile so real event names ("ITxBergen Career
+              Day 2026") are legible rather than truncated to "ITxBergen C…". */}
+          <p className="text-sm md:text-xs font-medium line-clamp-2 md:truncate">
+            {event.title}
+          </p>
+          <div className="flex flex-wrap md:flex-nowrap items-center gap-x-1 gap-y-0.5 text-[11px] text-muted-foreground">
             {event.format === "Online" ? (
               <Video className="h-2.5 w-2.5 flex-shrink-0" />
             ) : (
               <MapPin className="h-2.5 w-2.5 flex-shrink-0" />
             )}
-            <span className="truncate">{event.locationLabel}</span>
+            <span className="truncate max-w-full">{event.locationLabel}</span>
             <span className="md:hidden text-muted-foreground/70">·</span>
-            <span className="md:hidden flex-shrink-0">{event.category}</span>
+            <span className="md:hidden">{event.category}</span>
             <span className="md:hidden text-muted-foreground/70">·</span>
-            <span className="md:hidden flex-shrink-0">{event.format}</span>
+            <span className="md:hidden">{event.format}</span>
             <span className="md:hidden text-muted-foreground/70">·</span>
-            <span className="md:hidden flex-shrink-0">{PROVIDER_DISPLAY_NAMES[event.provider]}</span>
+            <span className="md:hidden">{PROVIDER_DISPLAY_NAMES[event.provider]}</span>
             {isUrgent && (
               <span className="text-amber-600 dark:text-amber-400 font-medium ml-1">
                 {relative}
@@ -196,15 +206,21 @@ function EventListItem({ event }: { event: EventItem }) {
           {isNorway ? "🇳🇴" : "🌐"}
         </span>
 
-        {/* Register button */}
+        {/* Register button — 44px tall on touch (was 24px, well under the
+            WCAG target size), shrinking back to the compact table height
+            from `md` up. */}
         <a
           href={event.registrationUrl}
           target="_blank"
           rel="noopener noreferrer"
           onClick={(e) => e.stopPropagation()}
-          className="flex-shrink-0"
+          className="flex-shrink-0 ml-auto md:ml-0"
         >
-          <Button size="sm" variant="outline" className="text-[11px] h-6 px-2">
+          <Button
+            size="sm"
+            variant="outline"
+            className="text-[11px] h-11 md:h-6 px-3 md:px-2"
+          >
             Register
             <ExternalLink className="h-2.5 w-2.5 ml-1" />
           </Button>
@@ -285,14 +301,14 @@ function FilterBar({ filters, onFiltersChange, availableCities, availableProvide
             placeholder="Search events..."
             value={filters.query}
             onChange={(e) => onFiltersChange({ ...filters, query: e.target.value })}
-            className="pl-9 h-8 text-sm"
+            className="pl-9 h-11 sm:h-8 text-sm"
           />
         </div>
         <Button
           variant={hasActiveFilters ? "default" : "outline"}
           size="sm"
           onClick={() => setIsExpanded(!isExpanded)}
-          className="h-8"
+          className="h-11 sm:h-8"
         >
           <Filter className="h-3.5 w-3.5 mr-1" />
           Filters

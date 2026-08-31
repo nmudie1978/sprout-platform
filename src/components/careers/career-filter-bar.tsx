@@ -11,13 +11,14 @@ import {
   ChevronDown,
   Check,
   Shuffle,
+  SlidersHorizontal,
 } from "lucide-react";
 import { useDebounce } from "@/hooks/use-debounce";
 import type { CareerFilterState, CareerNature, SalaryRange, SectorFilter, AcademicDemandFilter } from "@/lib/career-filters/types";
 import { CAREER_NATURE_LABELS, CAREER_NATURE_EMOJIS } from "@/lib/career-filters/types";
 import { formatSalary } from "@/lib/career-filters/utils";
 
-const categoryConfig: Record<string, { label: string; emoji: string }> = {
+export const categoryConfig: Record<string, { label: string; emoji: string }> = {
   ALL: { label: "All", emoji: "\u{1F31F}" },
   HEALTHCARE_LIFE_SCIENCES: { label: "Healthcare", emoji: "\u{1F3E5}" },
   EDUCATION_TRAINING: { label: "Education", emoji: "\u{1F4DA}" },
@@ -39,14 +40,14 @@ const categoryConfig: Record<string, { label: string; emoji: string }> = {
   CONSTRUCTION_TRADES: { label: "Construction", emoji: "\u{1F3D7}\uFE0F" },
 };
 
-const growthFilters = [
+export const growthFilters = [
   { value: "all", label: "All Growth" },
   { value: "high", label: "High Growth" },
   { value: "medium", label: "Moderate" },
   { value: "stable", label: "Stable" },
 ];
 
-const NATURE_ORDER: CareerNature[] = [
+export const NATURE_ORDER: CareerNature[] = [
   "hands-on",
   "analytical",
   "people-focused",
@@ -147,6 +148,10 @@ interface CareerFilterBarProps {
   onNatureToggle: (nature: CareerNature) => void;
   /** Opens a random career — surfaced as a distinct option on the bar. */
   onSurprise?: () => void;
+  /** Opens the mobile filter sheet. Only rendered below `sm`. */
+  onOpenFilters?: () => void;
+  /** Count shown on the mobile Filters button. */
+  activeFilterCount?: number;
 }
 
 export function CareerFilterBar({
@@ -164,6 +169,8 @@ export function CareerFilterBar({
   selectedNatures,
   onNatureToggle,
   onSurprise,
+  onOpenFilters,
+  activeFilterCount = 0,
 }: CareerFilterBarProps) {
   const [localSearch, setLocalSearch] = useState(filters.searchQuery);
   const debouncedSearch = useDebounce(localSearch, 300);
@@ -198,7 +205,61 @@ export function CareerFilterBar({
 
   return (
     <div className="sticky top-0 z-40 -mx-3 px-3 sm:-mx-4 sm:px-4 py-2 bg-card/70 backdrop-blur-md border-b border-border/40 mb-4">
-      <div className="flex flex-wrap items-center justify-center gap-2">
+      {/* MOBILE (<sm): search + a single Filters button. The six inline
+          controls below wrap into an unreadable centred pile at 320–430px,
+          so on phones they move into a full-height bottom sheet instead. */}
+      <div className="flex items-center gap-2 sm:hidden">
+        <div className="relative flex-1 min-w-0">
+          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder="Search careers"
+            value={localSearch}
+            onChange={(e) => setLocalSearch(e.target.value)}
+            className="h-11 pl-8 pr-9 text-base bg-card border-input text-foreground placeholder:text-muted-foreground"
+          />
+          {localSearch && (
+            <button
+              type="button"
+              onClick={() => setLocalSearch("")}
+              aria-label="Clear search"
+              className="absolute right-1 top-1/2 -translate-y-1/2 h-9 w-9 flex items-center justify-center rounded active:bg-muted"
+            >
+              <X className="h-4 w-4 text-muted-foreground" />
+            </button>
+          )}
+        </div>
+        {onOpenFilters && (
+          <button
+            type="button"
+            onClick={onOpenFilters}
+            className="flex h-11 shrink-0 items-center gap-1.5 rounded-md border border-border bg-card px-3 text-sm font-medium text-foreground active:bg-muted"
+          >
+            <SlidersHorizontal className="h-4 w-4" />
+            Filters
+            {activeFilterCount > 0 && (
+              <Badge
+                variant="secondary"
+                className="h-5 min-w-5 justify-center px-1 text-xs bg-primary text-primary-foreground"
+              >
+                {activeFilterCount}
+              </Badge>
+            )}
+          </button>
+        )}
+        {onSurprise && (
+          <button
+            type="button"
+            onClick={onSurprise}
+            aria-label="Open a random career"
+            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md border border-violet-500/40 bg-violet-500/10 text-violet-600 dark:text-violet-300 active:bg-violet-500/20"
+          >
+            <Shuffle className="h-4 w-4" />
+          </button>
+        )}
+      </div>
+
+      {/* DESKTOP (sm+): the full inline bar, unchanged. */}
+      <div className="hidden sm:flex flex-wrap items-center justify-center gap-2">
         {/* Search */}
         <div className="relative w-full sm:flex-1 sm:w-auto sm:min-w-[160px] sm:max-w-xs">
           <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 sm:h-3.5 sm:w-3.5 text-muted-foreground" />

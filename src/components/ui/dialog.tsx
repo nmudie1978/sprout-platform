@@ -43,15 +43,21 @@ const DialogContent = React.forwardRef<
     <DialogPrimitive.Content
       ref={ref}
       className={cn(
-        // Mobile: bottom sheet style
-        "fixed z-[100] grid gap-4 border bg-card text-card-foreground shadow-lg duration-200 overflow-y-auto",
-        "inset-x-0 bottom-0 w-full rounded-t-2xl p-4 max-h-[85vh]",
+        // Mobile: bottom sheet style.
+        // `dvh`, not `vh`: on mobile Safari `vh` is the *large* viewport
+        // (address bar collapsed), so an 85vh sheet is taller than what the
+        // user can actually see whenever the bar is showing — the bottom of
+        // the sheet, and any action button in it, sits off-screen and cannot
+        // be scrolled to. `dvh` tracks the visible viewport. The bottom
+        // padding clears the iOS home indicator.
+        "fixed z-[100] grid gap-4 border bg-card text-card-foreground shadow-lg duration-200 overflow-y-auto overscroll-contain",
+        "inset-x-0 bottom-0 w-full rounded-t-2xl p-4 pb-[max(env(safe-area-inset-bottom,0px),1rem)] max-h-[85dvh]",
         "data-[state=open]:animate-in data-[state=closed]:animate-out",
         "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
         "data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom",
         // Desktop: centered modal
         "sm:inset-auto sm:left-[50%] sm:top-[50%] sm:translate-x-[-50%] sm:translate-y-[-50%] sm:bottom-auto",
-        "sm:w-full sm:max-w-lg sm:rounded-lg sm:p-6 sm:max-h-[calc(100vh-2rem)]",
+        "sm:w-full sm:max-w-lg sm:rounded-lg sm:p-6 sm:max-h-[calc(100dvh-2rem)]",
         "sm:data-[state=closed]:slide-out-to-top-[2%] sm:data-[state=open]:slide-in-from-top-[2%]",
         "sm:data-[state=closed]:zoom-out-95 sm:data-[state=open]:zoom-in-95",
         className

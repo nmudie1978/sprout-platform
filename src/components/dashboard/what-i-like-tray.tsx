@@ -113,7 +113,7 @@ export function WhatILikeTray({ topOffsetPx = 0, className }: WhatILikeTrayProps
         aria-label="What I Like"
         aria-hidden={!open}
         className={cn(
-          'w-[300px] sm:w-[340px]',
+          'w-[min(300px,calc(100vw-2rem))] sm:w-[340px]',
           'rounded-l-xl border border-r-0 border-border/40',
           'bg-card/95 backdrop-blur-md shadow-xl',
           'flex flex-col overflow-hidden',

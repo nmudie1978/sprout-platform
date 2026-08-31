@@ -529,10 +529,18 @@ export function CareerTwinView({
         ) : (
         <>
         {/* Chat area — height trimmed ~20% (420→336px) when embedded in
-            Clarity so the tab reads more compact; standalone keeps 420px. */}
+            Clarity so the tab reads more compact; standalone keeps 420px.
+            On phones the fixed pixel height is wrong in both directions: on a
+            320x568 handset 420px of transcript pushed the composer below the
+            fold, and on a tall handset it wasted half the screen. Below `sm`
+            the transcript is sized in `dvh` (the *visible* viewport, so
+            Safari's collapsing address bar can't hide the composer) with a
+            floor so it never collapses to nothing. */}
         <div ref={scrollRef} className={cn(
-          "overflow-y-auto px-4 sm:px-6 py-4 space-y-4 bg-gradient-to-b from-background to-muted/20",
-          embedded ? "h-[336px]" : "h-[420px]",
+          "overflow-y-auto overscroll-contain px-4 sm:px-6 py-4 space-y-4 bg-gradient-to-b from-background to-muted/20",
+          embedded
+            ? "h-[45dvh] min-h-[220px] sm:h-[336px]"
+            : "h-[55dvh] min-h-[260px] sm:h-[420px]",
         )}>
           {/* The proactive opener already greets a returning user warmly, so
               only show the standalone welcome-back banner when there's no
@@ -735,7 +743,7 @@ export function CareerTwinView({
             <Button
               type="submit"
               disabled={!input.trim() || sending}
-              className={cn("px-4", accentGradientR)}
+              className={cn("px-4 h-auto min-h-[52px] self-stretch", accentGradientR)}
               aria-label={t("send")}
             >
               {sending ? <Loader2 className="h-5 w-5 animate-spin" /> : <Send className="h-5 w-5" />}
