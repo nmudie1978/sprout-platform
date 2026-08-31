@@ -355,7 +355,23 @@
      desktop layout that legitimately needs 9–10px type (the careers table,
      the salary-chart axes) only renders at `sm` and up, so this cannot
      make a desktop layout overflow. `!important` is needed to beat the
-     utility class's own specificity. */
+     utility class's own specificity. (The `text-[11px]` selector is a
+     deliberate no-op — it states where the floor sits.)
+
+     BLAST RADIUS — this is a global rule, so it was bounded rather than
+     assumed. It touches 616 instances across 154 files. In a flexible
+     container the failure mode is vertical reflow (one extra line), which
+     is cosmetic. Overflow is only possible in a FIXED-WIDTH box, and there
+     are 17 of those: 15 are single-glyph or short-numeric badges (h-4/5/6
+     circles, avatar initials, `w-8` counters) or `<th>` hints that expand
+     anyway; `career-card-v2`'s `w-10` growth badge holds an icon and no
+     text AND sits in the `xl`-only table, so the rule cannot reach it; and
+     `compare-modal`'s `w-[64px]` label column is already proven at 11px by
+     its own sibling rows ("To qualify" renders there today).
+
+     Honest limit: bounded is not verified-everywhere. The fixed-width
+     subset above is enumerated; the rest was reasoned about, not rendered.
+     ~12 routes were checked at 320px. */
   @media (max-width: 639px) {
     .text-\[8px\],
     .text-\[9px\],
