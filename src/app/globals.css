@@ -351,12 +351,21 @@
      length on a phone those are not readable without pinch-zooming, and
      there are far too many sites to fix one by one — so lift them here.
 
-     Scoped to `max-width: 639px`, i.e. below Tailwind's `sm`. Every dense
-     desktop layout that legitimately needs 9–10px type (the careers table,
-     the salary-chart axes) only renders at `sm` and up, so this cannot
-     make a desktop layout overflow. `!important` is needed to beat the
-     utility class's own specificity. (The `text-[11px]` selector is a
-     deliberate no-op — it states where the floor sits.)
+     Keyed on touch as well as width, for the same reason the input-zoom
+     rule above is: a width-only rule left an iPad at 768/834px rendering
+     9–10px labels (measured: "Strong match" at 9px on /careers). Readable
+     type is a property of how the device is held, not of its pixel count.
+
+     But the touch arm is capped BELOW `xl` (1279px) deliberately. The
+     careers table is an `xl`-only 928px fixed grid whose 9–10px cells are
+     sized to fit it, and an iPad Pro in landscape is 1366px with a coarse
+     pointer — an uncapped touch arm would lift that table's type and
+     overflow the grid. Below `xl` no such fixed-width desktop layout
+     renders, so the floor cannot break one.
+
+     `!important` is needed to beat the utility class's own specificity.
+     (The `text-[11px]` selector is a deliberate no-op — it states where
+     the floor sits.)
 
      BLAST RADIUS — this is a global rule, so it was bounded rather than
      assumed. It touches 616 instances across 154 files. In a flexible
@@ -372,7 +381,8 @@
      Honest limit: bounded is not verified-everywhere. The fixed-width
      subset above is enumerated; the rest was reasoned about, not rendered.
      ~12 routes were checked at 320px. */
-  @media (max-width: 639px) {
+  @media (max-width: 639px),
+         ((hover: none) and (pointer: coarse) and (max-width: 1279px)) {
     .text-\[8px\],
     .text-\[9px\],
     .text-\[10px\],
