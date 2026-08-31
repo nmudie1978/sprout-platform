@@ -2615,7 +2615,7 @@ function ClarityTab({ goalTitle, career }: { goalTitle: string | null; career: C
                           href={s.url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="hit-44 inline-flex items-center justify-center gap-0.5 rounded-md border border-border/30 bg-background/40 px-1.5 py-0.5 text-[9px] font-medium text-foreground/70 hover:border-border/60 hover:text-foreground transition-colors"
+                          className="inline-flex items-center justify-center gap-0.5 rounded-md border border-border/30 bg-background/40 px-2.5 sm:px-1.5 min-h-[44px] sm:min-h-0 py-0.5 text-[9px] font-medium text-foreground/70 hover:border-border/60 hover:text-foreground transition-colors"
                         >
                           Open <ExternalLink className="h-2 w-2" />
                         </a>
@@ -2633,7 +2633,7 @@ function ClarityTab({ goalTitle, career }: { goalTitle: string | null; career: C
                             },
                           ]);
                         }}
-                        className="hit-44 inline-flex items-center justify-center gap-0.5 rounded-md border border-amber-500/50 bg-amber-500/15 dark:border-amber-500/30 dark:bg-amber-500/10 px-1.5 py-0.5 text-[9px] font-semibold text-amber-700 hover:bg-amber-500/25 dark:text-amber-300 dark:hover:bg-amber-500/20 transition-colors"
+                        className="inline-flex items-center justify-center gap-0.5 rounded-md border border-amber-500/50 bg-amber-500/15 dark:border-amber-500/30 dark:bg-amber-500/10 px-2.5 sm:px-1.5 min-h-[44px] sm:min-h-0 py-0.5 text-[9px] font-semibold text-amber-700 hover:bg-amber-500/25 dark:text-amber-300 dark:hover:bg-amber-500/20 transition-colors"
                         title="Add this as one of your momentum steps"
                       >
                         <Plus className="h-2 w-2" /> Add
@@ -2754,7 +2754,7 @@ function ClarityTab({ goalTitle, career }: { goalTitle: string | null; career: C
                 <button
                   onClick={addAction}
                   disabled={!newAction.trim()}
-                  className="hit-44 inline-flex items-center gap-0.5 rounded-lg border border-amber-500/50 bg-amber-500/15 dark:border-amber-500/30 dark:bg-amber-500/10 px-2.5 py-1.5 text-[10px] font-semibold text-amber-700 hover:bg-amber-500/25 dark:text-amber-300 dark:hover:bg-amber-500/20 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                  className="inline-flex items-center gap-0.5 rounded-lg border border-amber-500/50 bg-amber-500/15 dark:border-amber-500/30 dark:bg-amber-500/10 px-2.5 min-h-[44px] sm:min-h-0 py-1.5 text-[10px] font-semibold text-amber-700 hover:bg-amber-500/25 dark:text-amber-300 dark:hover:bg-amber-500/20 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
                 >
                   <Plus className="h-2.5 w-2.5" /> Add
                 </button>

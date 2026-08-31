@@ -80,7 +80,7 @@ export function PaginationControls({
         <Button
           variant="outline"
           size="icon"
-          className="hit-44 h-8 w-8 hidden sm:flex"
+          className="h-11 w-11 sm:h-8 sm:w-8 hidden sm:flex"
           onClick={() => onPageChange(1)}
           disabled={currentPage === 1}
           aria-label="First page"
@@ -92,7 +92,7 @@ export function PaginationControls({
         <Button
           variant="outline"
           size="icon"
-          className="hit-44 h-8 w-8"
+          className="h-11 w-11 sm:h-8 sm:w-8"
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage === 1}
           aria-label="Previous page"
@@ -116,7 +116,7 @@ export function PaginationControls({
                 variant={currentPage === page ? "default" : "outline"}
                 size="icon"
                 className={cn(
-                  "hit-44 h-8 w-8 text-xs",
+                  "h-11 w-11 sm:h-8 sm:w-8 text-xs",
                   currentPage === page && "pointer-events-none"
                 )}
                 onClick={() => onPageChange(page)}
@@ -133,7 +133,7 @@ export function PaginationControls({
         <Button
           variant="outline"
           size="icon"
-          className="hit-44 h-8 w-8"
+          className="h-11 w-11 sm:h-8 sm:w-8"
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
           aria-label="Next page"
@@ -145,7 +145,7 @@ export function PaginationControls({
         <Button
           variant="outline"
           size="icon"
-          className="hit-44 h-8 w-8 hidden sm:flex"
+          className="h-11 w-11 sm:h-8 sm:w-8 hidden sm:flex"
           onClick={() => onPageChange(totalPages)}
           disabled={currentPage === totalPages}
           aria-label="Last page"
