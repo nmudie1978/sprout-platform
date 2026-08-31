@@ -69,9 +69,12 @@ export function CareerViewSwitcher({
             aria-pressed={active}
             title={description}
             className={cn(
-              // min-h-[36px] + wider padding below `sm`: icon-only on mobile these
-              // were 34x22, too small to hit reliably.
-              "inline-flex items-center justify-center gap-1.5 rounded-[calc(var(--radius)-0.35rem)] min-h-[36px] min-w-[40px] px-3 sm:px-2.5 py-1 text-xs font-medium transition-colors",
+              // `.hit-44` (globals.css) projects an invisible centred 44x44 hit
+              // area — icon-only on mobile these were 34x22, too small to hit.
+              // Widening them instead pushed the three-button group to 130px,
+              // which no longer fit beside the result count at 320px and got
+              // clipped, so the hit area is added without any extra width.
+              "hit-44 inline-flex items-center justify-center gap-1.5 rounded-[calc(var(--radius)-0.35rem)] min-h-[32px] px-2.5 py-1 text-xs font-medium transition-colors",
               "focus:outline-none focus-visible:ring-2 focus-visible:ring-ring",
               active
                 ? "bg-primary text-primary-foreground"

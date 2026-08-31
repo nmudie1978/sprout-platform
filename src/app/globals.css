@@ -335,8 +335,11 @@
     -webkit-tap-highlight-color: transparent;
   }
 
-  /* Prevent iOS zoom on input focus (text-base = 16px) */
-  @media (max-width: 640px) {
+  /* Prevent iOS zoom on input focus (text-base = 16px).
+     Keyed on `pointer: coarse` as well as width: Safari zooms whenever a
+     focused field is under 16px on ANY touch device, and an iPad reports
+     768px+ so it fell outside a width-only rule and still zoomed. */
+  @media (max-width: 640px), (pointer: coarse) {
     input, select, textarea {
       font-size: 16px !important;
     }
