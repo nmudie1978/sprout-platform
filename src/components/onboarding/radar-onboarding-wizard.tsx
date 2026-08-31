@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Sparkles, ArrowRight, Loader2 } from "lucide-react";
+import { Sparkles, ArrowRight, Loader2, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "@/hooks/use-toast";
 import type { DiscoveryPreferences } from "@/lib/career-pathways";
@@ -13,17 +13,22 @@ import type { DiscoveryPreferences } from "@/lib/career-pathways";
 /**
  * Radar Onboarding Wizard
  * -----------------------
- * Three questions, ~60 seconds. Replaces the old 4-step priorities/availability
- * wizard with something that actually feeds the Career Radar — the feature most
+ * Four questions, ~90 seconds. Replaces the old priorities/availability wizard
+ * with something that actually feeds the Career Radar — the feature most
  * likely to make a brand-new user understand what the app is for.
  *
- * Q1: Subjects you enjoy (multi, max 3)
- * Q2: How you like to work (single)
- * Q3: With people, or on your own (single)
+ * Mirrors the four inputs of the deep quiz at /profile
+ * (discovery-quiz-dialog.tsx), in the same order, so the two surfaces ask the
+ * same things and a user who later opens the deep quiz recognises it:
  *
- * Auto-advances on single-select questions for momentum. Multi-select shows
- * a "Continue" button to let the user add more if they want. Skip is allowed
- * but quietly placed at the bottom (link, not button).
+ * Q1: Subjects you enjoy (multi, max 3)
+ * Q2: Things you enjoy — out-of-school activities (multi)
+ * Q3: How you like to work (multi — most people are a mix of these)
+ * Q4: With people, or on your own (single — it's one spectrum)
+ *
+ * Auto-advances on the single-select question for momentum. Multi-select
+ * questions show a "Continue" button to let the user add more if they want.
+ * Skip is allowed but quietly placed at the bottom (link, not button).
  */
 
 interface RadarOnboardingWizardProps {
@@ -46,6 +51,24 @@ const SUBJECTS = [
   { id: "health-social", label: "Health & Social" },
 ] as const;
 
+// Out-of-school activities. The deep quiz has 19; this is the onboarding
+// subset, spread across the interest→category map so every broad area of the
+// catalogue is reachable from one chip.
+const INTERESTS = [
+  { id: "coding", label: "Coding", emoji: "💻" },
+  { id: "gaming", label: "Gaming", emoji: "🎮" },
+  { id: "fixing-things", label: "Fixing things", emoji: "🔧" },
+  { id: "building", label: "Building things", emoji: "🏗️" },
+  { id: "adventure", label: "Adventure / outdoors", emoji: "⛰️" },
+  { id: "animals", label: "Animals", emoji: "🐾" },
+  { id: "drawing", label: "Drawing / art", emoji: "🎨" },
+  { id: "music-making", label: "Making music", emoji: "🎵" },
+  { id: "sport-fitness", label: "Sport / fitness", emoji: "⚽" },
+  { id: "helping-people", label: "Helping people", emoji: "❤️" },
+  { id: "money-business", label: "Business / money", emoji: "💰" },
+  { id: "photo-film", label: "Photography / film", emoji: "📸" },
+] as const;
+
 const WORK_STYLES = [
   { id: "hands-on", label: "Hands-on", emoji: "🛠️" },
   { id: "desk", label: "At a desk", emoji: "💻" },
@@ -62,13 +85,14 @@ const PEOPLE_PREFS = [
 
 const MAX_SUBJECTS = 3;
 
-type Step = 1 | 2 | 3;
+type Step = 1 | 2 | 3 | 4;
 
 export function RadarOnboardingWizard({ open, onComplete }: RadarOnboardingWizardProps) {
   const queryClient = useQueryClient();
   const [step, setStep] = useState<Step>(1);
   const [subjects, setSubjects] = useState<string[]>([]);
-  const [workStyle, setWorkStyle] = useState<string | null>(null);
+  const [interests, setInterests] = useState<string[]>([]);
+  const [workStyles, setWorkStyles] = useState<string[]>([]);
   const [peoplePref, setPeoplePref] = useState<string | null>(null);
 
   const toggleSubject = (id: string) => {
@@ -79,12 +103,25 @@ export function RadarOnboardingWizard({ open, onComplete }: RadarOnboardingWizar
     });
   };
 
+  const toggleInterest = (id: string) => {
+    setInterests((prev) =>
+      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
+    );
+  };
+
+  const toggleWorkStyle = (id: string) => {
+    setWorkStyles((prev) =>
+      prev.includes(id) ? prev.filter((w) => w !== id) : [...prev, id]
+    );
+  };
+
   // ── Save mutation ──────────────────────────────────────────────
   const saveMutation = useMutation({
     mutationFn: async () => {
       const prefs: DiscoveryPreferences = {
         subjects,
-        workStyles: workStyle ? [workStyle] : [],
+        interests,
+        workStyles,
         peoplePref: peoplePref || undefined,
       };
 
@@ -140,11 +177,7 @@ export function RadarOnboardingWizard({ open, onComplete }: RadarOnboardingWizar
     }
   };
 
-  // Auto-advance for single-select questions
-  const handleWorkStyle = (id: string) => {
-    setWorkStyle(id);
-    setTimeout(() => setStep(3), 250);
-  };
+  // Auto-advance for the single-select question
   const handlePeoplePref = (id: string) => {
     setPeoplePref(id);
     setTimeout(() => saveMutation.mutate(), 250);
@@ -153,18 +186,21 @@ export function RadarOnboardingWizard({ open, onComplete }: RadarOnboardingWizar
   // ── Render ─────────────────────────────────────────────────────
   return (
     <Dialog open={open} onOpenChange={() => {}}>
-      <DialogContent className="max-w-md p-0 overflow-hidden border-0 shadow-2xl">
+      {/* overflow-y-auto (not hidden) so the taller question steps stay
+          reachable on short screens — the base DialogContent already caps
+          height at 85dvh. */}
+      <DialogContent className="max-w-md p-0 overflow-y-auto border-0 shadow-2xl">
         {/* Header — calm, no distracting gradient */}
         <div className="px-6 pt-6 pb-4 border-b">
           <div className="flex items-center gap-2 mb-1">
             <Sparkles className="h-4 w-4 text-teal-500" />
             <span className="text-[10px] font-semibold uppercase tracking-wider text-teal-500">
-              Step {step} of 3
+              Step {step} of 4
             </span>
           </div>
           {/* Progress bar */}
           <div className="flex gap-1 mt-2">
-            {[1, 2, 3].map((n) => (
+            {[1, 2, 3, 4].map((n) => (
               <div
                 key={n}
                 className={cn(
@@ -246,44 +282,58 @@ export function RadarOnboardingWizard({ open, onComplete }: RadarOnboardingWizar
                 transition={{ duration: 0.2 }}
               >
                 <h2 className="text-xl font-bold tracking-tight">
-                  How do you like to work?
+                  What do you enjoy doing?
                 </h2>
                 <p className="text-sm text-muted-foreground mt-1 mb-4">
-                  Pick the one that fits best.
+                  Outside of school. Pick any that fit.
                 </p>
-                <div className="flex flex-col gap-2">
-                  {WORK_STYLES.map((w) => (
-                    <button
-                      key={w.id}
-                      type="button"
-                      onClick={() => handleWorkStyle(w.id)}
-                      className={cn(
-                        "flex items-center gap-3 px-4 py-3 rounded-xl border-2 text-left transition-all",
-                        workStyle === w.id
-                          ? "border-teal-500 bg-teal-500/10"
-                          : "border-border hover:border-teal-500/50 hover:bg-teal-500/5"
-                      )}
-                    >
-                      <span className="text-xl">{w.emoji}</span>
-                      <span className="text-sm font-medium">{w.label}</span>
-                    </button>
-                  ))}
+                <div className="flex flex-wrap gap-2">
+                  {INTERESTS.map((i) => {
+                    const selected = interests.includes(i.id);
+                    return (
+                      <button
+                        key={i.id}
+                        type="button"
+                        onClick={() => toggleInterest(i.id)}
+                        aria-pressed={selected}
+                        className={cn(
+                          "inline-flex items-center gap-1.5 px-3 py-2 rounded-full text-sm font-medium border-2 transition-all",
+                          selected
+                            ? "bg-teal-500 border-teal-500 text-white scale-[1.03]"
+                            : "border-border hover:border-teal-500/50 hover:bg-teal-500/5"
+                        )}
+                      >
+                        <span aria-hidden>{i.emoji}</span>
+                        {i.label}
+                      </button>
+                    );
+                  })}
                 </div>
-                <div className="mt-6 flex items-center justify-between">
-                  <button
-                    type="button"
-                    onClick={() => setStep(1)}
-                    className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+                <div className="mt-6 flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-4">
+                    <button
+                      type="button"
+                      onClick={() => setStep(1)}
+                      className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+                    >
+                      ← Back
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleSkip}
+                      className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+                    >
+                      Skip for now
+                    </button>
+                  </div>
+                  <Button
+                    onClick={() => setStep(3)}
+                    disabled={interests.length === 0}
+                    className="bg-teal-600 hover:bg-teal-700"
                   >
-                    ← Back
-                  </button>
-                  <button
-                    type="button"
-                    onClick={handleSkip}
-                    className="text-xs text-muted-foreground hover:text-foreground transition-colors"
-                  >
-                    Skip for now
-                  </button>
+                    Continue
+                    <ArrowRight className="h-4 w-4 ml-1.5" />
+                  </Button>
                 </div>
               </motion.div>
             )}
@@ -291,6 +341,71 @@ export function RadarOnboardingWizard({ open, onComplete }: RadarOnboardingWizar
             {step === 3 && (
               <motion.div
                 key="s3"
+                initial={{ opacity: 0, x: 16 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -16 }}
+                transition={{ duration: 0.2 }}
+              >
+                <h2 className="text-xl font-bold tracking-tight">
+                  How do you like to work?
+                </h2>
+                <p className="text-sm text-muted-foreground mt-1 mb-4">
+                  Pick as many as fit &mdash; most people are a mix.
+                </p>
+                <div className="flex flex-col gap-2">
+                  {WORK_STYLES.map((w) => (
+                    <button
+                      key={w.id}
+                      type="button"
+                      onClick={() => toggleWorkStyle(w.id)}
+                      aria-pressed={workStyles.includes(w.id)}
+                      className={cn(
+                        "flex items-center gap-3 px-4 py-3 rounded-xl border-2 text-left transition-all",
+                        workStyles.includes(w.id)
+                          ? "border-teal-500 bg-teal-500/10"
+                          : "border-border hover:border-teal-500/50 hover:bg-teal-500/5"
+                      )}
+                    >
+                      <span className="text-xl">{w.emoji}</span>
+                      <span className="text-sm font-medium">{w.label}</span>
+                      {workStyles.includes(w.id) && (
+                        <Check className="h-4 w-4 ml-auto text-teal-500" strokeWidth={3} />
+                      )}
+                    </button>
+                  ))}
+                </div>
+                <div className="mt-6 flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-4">
+                    <button
+                      type="button"
+                      onClick={() => setStep(2)}
+                      className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+                    >
+                      ← Back
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleSkip}
+                      className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+                    >
+                      Skip for now
+                    </button>
+                  </div>
+                  <Button
+                    onClick={() => setStep(4)}
+                    disabled={workStyles.length === 0}
+                    className="bg-teal-600 hover:bg-teal-700"
+                  >
+                    Continue
+                    <ArrowRight className="h-4 w-4 ml-1.5" />
+                  </Button>
+                </div>
+              </motion.div>
+            )}
+
+            {step === 4 && (
+              <motion.div
+                key="s4"
                 initial={{ opacity: 0, x: 16 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -16 }}
@@ -330,7 +445,7 @@ export function RadarOnboardingWizard({ open, onComplete }: RadarOnboardingWizar
                 <div className="mt-6 flex items-center justify-between">
                   <button
                     type="button"
-                    onClick={() => setStep(2)}
+                    onClick={() => setStep(3)}
                     className="text-xs text-muted-foreground hover:text-foreground transition-colors"
                   >
                     ← Back
