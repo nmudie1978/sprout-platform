@@ -11,6 +11,16 @@ export async function register() {
     // or placeholders, instead of surfacing as user-facing 500s later.
     const { validateEnv } = await import("@/lib/env");
     validateEnv();
+
+    // Say plainly when a dev server is pointed at a hosted database. This
+    // project has no staging environment, so `.env` points at production and
+    // a local signup writes a real row. A warning rather than a failure:
+    // production is currently the only database that exists, so blocking
+    // would stop all local work. See src/lib/db-guard.ts.
+    if (process.env.NODE_ENV !== "production") {
+      const { assertSafeDatabase } = await import("@/lib/db-guard");
+      assertSafeDatabase();
+    }
     await import("./sentry.server.config");
   }
   if (process.env.NEXT_RUNTIME === "edge") {

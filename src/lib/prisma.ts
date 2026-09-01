@@ -1,4 +1,10 @@
 import { PrismaClient, Prisma } from '@prisma/client';
+import {
+  describeDbTarget,
+  resolveEffectiveDbUrl,
+  blockedMessage,
+  OVERRIDE_VAR,
+} from '@/lib/db-guard';
 
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
@@ -37,6 +43,20 @@ function createClient(): PrismaClient {
       'direct-connection limit and 500s on heavy transactions. Set DATABASE_URL ' +
       'to the Supabase transaction-pooler URL (:6543, ?pgbouncer=true&connection_limit=1).',
     );
+  }
+
+  // TEST SAFETY. Prisma auto-loads `.env`, so a test run picks up the same
+  // DATABASE_URL the dev server uses — which on this project is production.
+  // Tests create, mutate and delete rows expecting nothing to survive, so
+  // opening that connection is refused here, at the only point where it can
+  // actually happen. Tests that mock `@/lib/prisma` never reach this line, so
+  // the overwhelming majority of the suite is unaffected.
+  if (process.env.VITEST && process.env[OVERRIDE_VAR] !== "true") {
+    const effective = resolveEffectiveDbUrl();
+    const target = describeDbTarget(effective);
+    if (target.isProductionLike) {
+      throw new Error(blockedMessage(target.host));
+    }
   }
 
   return new PrismaClient({
