@@ -10,6 +10,7 @@ import type { JWT } from "next-auth/jwt";
 import { checkRateLimitAsync, resetRateLimit, RateLimits } from "@/lib/rate-limit";
 import { normaliseEmail } from "@/lib/auth/email-verification";
 import { blocksSession, unverifiedSignInError } from "@/lib/auth/verification-gate";
+import { notifyAccountEvent } from "@/lib/account-notify";
 
 // Helper to calculate age from birthdate
 function calculateAge(birthDate: Date): number {
@@ -538,6 +539,24 @@ export const authOptions: NextAuthOptions = {
     },
   },
   events: {
+    /**
+     * Operator notification on every successful sign-in that isn't the
+     * operator's own. Fire-and-forget: `notifyAccountEvent` never throws, and
+     * it is deliberately NOT awaited so a slow mail provider can't add
+     * latency to someone's login.
+     */
+    async signIn({ user }) {
+      if (!user?.email) return;
+      void notifyAccountEvent({
+        kind: "signin",
+        email: user.email,
+        role: (user as { role?: string }).role ?? null,
+      }).then((outcome) => {
+        if (!outcome.sent && outcome.reason === "MAIL_FAILED") {
+          console.warn("[account-notify] sign-in notification failed:", outcome.error);
+        }
+      });
+    },
     async createUser({ user }) {
       // When a new OAuth user is created, set up their initial state
       // This runs after PrismaAdapter creates the user

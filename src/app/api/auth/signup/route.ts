@@ -22,6 +22,7 @@ import { checkRateLimitAsync, getRateLimitHeaders, RateLimits } from "@/lib/rate
 import { isSchoolEmail } from "@/lib/education/school-domains";
 import { normaliseCountry, defaultLocaleForCountry } from "@/lib/countries";
 import { LOCALE_COOKIE } from "@/i18n/config";
+import { notifyAccountEvent } from "@/lib/account-notify";
 import {
   issueVerificationEmail,
   sendExistingAccountNotice,
@@ -470,6 +471,20 @@ export async function POST(req: NextRequest) {
       firstName: trimmedFirst,
       respectCooldown: false,
     }).catch(logAndSwallow("signup:issue-verification"));
+
+    // Tell the operator someone joined. Fire-and-forget and never awaited:
+    // this is for their benefit, and must not add latency to — or be able to
+    // fail — a young person's registration.
+    void notifyAccountEvent({
+      kind: "signup",
+      email,
+      role,
+      country: rawCountry ?? null,
+    }).then((outcome) => {
+      if (!outcome.sent && outcome.reason === "MAIL_FAILED") {
+        console.warn("[account-notify] signup notification failed:", outcome.error);
+      }
+    });
 
     return signupAcceptedResponse(role, rawCountry, email);
   } catch (error) {
