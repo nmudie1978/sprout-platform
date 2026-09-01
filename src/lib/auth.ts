@@ -688,3 +688,74 @@ export const authOptions: NextAuthOptions = {
   },
   debug: process.env.NODE_ENV === "development", // Enable debug logs in development
 };
+
+// ── Minting a session outside the credentials flow ──────────────────
+//
+// Used by the email-verification link: consuming a single-use token proves
+// the person controls the inbox, which is the same fact a password reset
+// would establish, so we sign them in rather than bouncing them to a login
+// form they'd fill in seconds later.
+//
+// The payload MUST match what the `jwt` callback produces on a real sign-in
+// (id / email / authTime / the session-field block), because middleware and
+// every server component read those claims straight off the JWT. Building it
+// here rather than duplicating the shape elsewhere keeps the two in step.
+
+/** True when NextAuth would use the `__Secure-` cookie prefix. */
+function usesSecureCookiePrefix(): boolean {
+  return (process.env.NEXTAUTH_URL ?? "").startsWith("https://");
+}
+
+/** The cookie name NextAuth reads the session JWT from. */
+export function sessionCookieName(): string {
+  return usesSecureCookiePrefix()
+    ? "__Secure-next-auth.session-token"
+    : "next-auth.session-token";
+}
+
+/**
+ * Build a signed session JWT for `userId`, or null when the account can't
+ * hold a session (deleted, suspended, or otherwise revoked by
+ * applySessionFieldsToToken). Returning null is a fail-closed default: the
+ * caller falls back to the ordinary sign-in page.
+ */
+export async function mintSessionToken(userId: string): Promise<string | null> {
+  const [fields, account] = await Promise.all([
+    getSessionFields(userId, true),
+    prisma.user.findUnique({ where: { id: userId }, select: { email: true } }),
+  ]);
+  if (!fields || fields.deletedAt || !account?.email) return null;
+
+  const token: JWT = {
+    sub: userId,
+    id: userId,
+    email: account.email,
+    authTime: Date.now(),
+  } as JWT;
+  applySessionFieldsToToken(token, fields);
+
+  // applySessionFieldsToToken sets `revoked` for suspended/paused accounts.
+  // Never hand out a session in that state.
+  if ((token as { revoked?: boolean }).revoked) return null;
+
+  const { encode } = await import("next-auth/jwt");
+  const secret = process.env.NEXTAUTH_SECRET;
+  if (!secret) return null;
+
+  return encode({
+    token,
+    secret,
+    maxAge: authOptions.session?.maxAge ?? 30 * 24 * 60 * 60,
+  });
+}
+
+/** Cookie options matching NextAuth's own session cookie. */
+export function sessionCookieOptions() {
+  return {
+    httpOnly: true,
+    sameSite: "lax" as const,
+    path: "/",
+    secure: usesSecureCookiePrefix(),
+    maxAge: authOptions.session?.maxAge ?? 30 * 24 * 60 * 60,
+  };
+}

@@ -145,11 +145,11 @@ export async function sendExistingAccountNotice(email: string): Promise<void> {
  *
  * Returns only a coarse outcome — the caller must not surface token internals.
  */
-export async function consumeVerificationToken(
+export async function consumeVerificationTokenDetailed(
   rawToken: string,
   now = Date.now(),
-): Promise<VerificationOutcome> {
-  if (!rawToken) return "invalid";
+): Promise<{ outcome: VerificationOutcome; userId: string | null }> {
+  if (!rawToken) return { outcome: "invalid", userId: null };
 
   const tokenHash = hashVerificationToken(rawToken);
   const token = await prisma.emailVerificationToken.findUnique({
@@ -164,14 +164,14 @@ export async function consumeVerificationToken(
     },
   });
 
-  if (!token || !token.user || token.user.deletedAt) return "invalid";
+  if (!token || !token.user || token.user.deletedAt) return { outcome: "invalid", userId: null };
 
   // A link issued for a previous address must never verify the current one.
-  if (token.email !== token.user.email) return "invalid";
+  if (token.email !== token.user.email) return { outcome: "invalid", userId: null };
 
-  if (token.user.emailVerified) return "already";
-  if (token.usedAt) return "expired";
-  if (token.expiresAt.getTime() <= now) return "expired";
+  if (token.user.emailVerified) return { outcome: "already", userId: token.userId };
+  if (token.usedAt) return { outcome: "expired", userId: null };
+  if (token.expiresAt.getTime() <= now) return { outcome: "expired", userId: null };
 
   // ATOMIC SINGLE-USE CLAIM. Two requests arriving together (the classic case:
   // a link scanner and the human clicking at the same moment) both reach here
@@ -186,7 +186,9 @@ export async function consumeVerificationToken(
       where: { id: token.userId },
       select: { emailVerified: true },
     });
-    return fresh?.emailVerified ? "already" : "expired";
+    return fresh?.emailVerified
+      ? { outcome: "already" as const, userId: token.userId }
+      : { outcome: "expired" as const, userId: null };
   }
 
   await prisma.$transaction([
@@ -201,5 +203,17 @@ export async function consumeVerificationToken(
     }),
   ]);
 
-  return "success";
+  return { outcome: "success", userId: token.userId };
+}
+
+/**
+ * Back-compatible wrapper: the coarse outcome only. Most callers (and every
+ * existing test) want just this; the detailed form exists so the verify-email
+ * route can mint a session for the account it just confirmed.
+ */
+export async function consumeVerificationToken(
+  rawToken: string,
+  now = Date.now(),
+): Promise<VerificationOutcome> {
+  return (await consumeVerificationTokenDetailed(rawToken, now)).outcome;
 }

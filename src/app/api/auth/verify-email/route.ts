@@ -1,6 +1,7 @@
 export const dynamic = "force-dynamic";
 import { NextRequest, NextResponse } from "next/server";
-import { consumeVerificationToken } from "@/lib/auth/email-verification-service";
+import { consumeVerificationTokenDetailed } from "@/lib/auth/email-verification-service";
+import { mintSessionToken, sessionCookieName, sessionCookieOptions } from "@/lib/auth";
 import { safeRelativePath } from "@/lib/auth/app-url";
 import { checkRateLimitAsync, RateLimits } from "@/lib/rate-limit";
 import { logAndSwallow } from "@/lib/observability";
@@ -44,7 +45,26 @@ export async function GET(req: NextRequest) {
       return NextResponse.redirect(resultUrl("invalid"), 303);
     }
 
-    const outcome = await consumeVerificationToken(token);
+    const { outcome, userId } = await consumeVerificationTokenDetailed(token);
+
+    // Confirming the address proves control of the inbox — the same fact a
+    // password reset would establish — so sign the person in rather than
+    // bouncing them to a login form. Only on a fresh "success": "already"
+    // means the link was burned earlier (often by a mail scanner pre-fetching
+    // it), and we must not mint a session for a link someone else may have
+    // triggered.
+    if (outcome === "success" && userId) {
+      const sessionToken = await mintSessionToken(userId);
+      if (sessionToken) {
+        // Straight to the destination; no interstitial, no second sign-in.
+        const res = NextResponse.redirect(new URL(next, url.origin), 303);
+        res.cookies.set(sessionCookieName(), sessionToken, sessionCookieOptions());
+        return res;
+      }
+      // mintSessionToken returns null for suspended/deleted accounts. Fall
+      // through to the ordinary confirmation page, which routes to sign-in.
+    }
+
     return NextResponse.redirect(resultUrl(outcome), 303);
   } catch (error) {
     logAndSwallow("auth:verify-email")(error);

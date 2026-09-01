@@ -15,11 +15,20 @@ const consumed: string[] = [];
 let rateLimitOk = true;
 
 vi.mock("@/lib/auth/email-verification-service", () => ({
-  consumeVerificationToken: vi.fn(async (token: string) => {
+  consumeVerificationTokenDetailed: vi.fn(async (token: string) => {
     consumed.push(token);
     if (consumeError) throw consumeError;
-    return outcome;
+    return { outcome, userId: outcome === "success" ? "user_1" : null };
   }),
+}));
+
+// Signing in on confirmation is exercised here only for its effect on the
+// redirect; the token contents are the auth module's own concern.
+let mintedToken: string | null = "signed.jwt.value";
+vi.mock("@/lib/auth", () => ({
+  mintSessionToken: vi.fn(async () => mintedToken),
+  sessionCookieName: () => "next-auth.session-token",
+  sessionCookieOptions: () => ({ httpOnly: true, sameSite: "lax", path: "/" }),
 }));
 
 vi.mock("@/lib/rate-limit", async (orig) => {
@@ -57,23 +66,43 @@ beforeEach(() => {
 const TOKEN = "a".repeat(64);
 
 describe("outcomes", () => {
-  it("redirects to the success state and keeps the raw token out of the URL", async () => {
+  it("signs the user in and lands them on the destination, token not in the URL", async () => {
     const res = await GET(get(`?token=${TOKEN}`));
     expect(res.status).toBe(303);
 
     const url = location(res);
-    expect(url.pathname).toBe("/auth/verify-email");
-    expect(url.searchParams.get("status")).toBe("success");
+    // Confirming proves inbox control, so we go straight in rather than via
+    // an interstitial that asks for the password again.
+    expect(url.pathname).toBe("/dashboard");
+    expect(res.headers.get("set-cookie")).toContain("next-auth.session-token");
     // The token must not follow the user into the address bar or Referer.
     expect(url.toString()).not.toContain(TOKEN);
     expect(url.searchParams.get("token")).toBeNull();
   });
 
-  it("passes each outcome straight through", async () => {
-    for (const value of ["success", "already", "expired", "invalid"]) {
+  it("falls back to the confirmation page when no session can be minted", async () => {
+    mintedToken = null;
+    try {
+      const res = await GET(get(`?token=${TOKEN}`));
+      const url = location(res);
+      expect(url.pathname).toBe("/auth/verify-email");
+      expect(url.searchParams.get("status")).toBe("success");
+      expect(res.headers.get("set-cookie")).toBeNull();
+    } finally {
+      mintedToken = "signed.jwt.value";
+    }
+  });
+
+  it("passes every non-success outcome straight through", async () => {
+    // "already" deliberately does NOT sign anyone in: the link was burned
+    // earlier, often by a mail scanner pre-fetching it, so whoever is holding
+    // it now may not be the account owner.
+    for (const value of ["already", "expired", "invalid"]) {
       outcome = value;
       const res = await GET(get(`?token=${TOKEN}`));
+      expect(location(res).pathname).toBe("/auth/verify-email");
       expect(location(res).searchParams.get("status")).toBe(value);
+      expect(res.headers.get("set-cookie")).toBeNull();
     }
   });
 
@@ -90,19 +119,25 @@ describe("outcomes", () => {
 });
 
 describe("redirect safety", () => {
+  // These now assert where the user actually LANDS, not merely that a query
+  // parameter was sanitised — a stronger check, since success redirects
+  // straight to the destination.
   it("honours a same-origin relative destination on success", async () => {
     const res = await GET(get(`?token=${TOKEN}&next=%2Fmy-journey`));
-    expect(location(res).searchParams.get("next")).toBe("/my-journey");
+    expect(location(res).pathname).toBe("/my-journey");
+    expect(location(res).origin).toBe("https://endeavrly.test");
   });
 
   it("refuses to forward to another origin", async () => {
     const res = await GET(get(`?token=${TOKEN}&next=https%3A%2F%2Fevil.example`));
-    expect(location(res).searchParams.get("next")).toBe("/dashboard");
+    expect(location(res).origin).toBe("https://endeavrly.test");
+    expect(location(res).pathname).toBe("/dashboard");
   });
 
   it("refuses a protocol-relative destination", async () => {
     const res = await GET(get(`?token=${TOKEN}&next=%2F%2Fevil.example`));
-    expect(location(res).searchParams.get("next")).toBe("/dashboard");
+    expect(location(res).origin).toBe("https://endeavrly.test");
+    expect(location(res).pathname).toBe("/dashboard");
   });
 
   it("always redirects to our own origin", async () => {
