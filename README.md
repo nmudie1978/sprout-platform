@@ -87,7 +87,7 @@ Built with privacy, safety, and youth empowerment at its core.
 
 - Node.js 18+ and npm
 - PostgreSQL database
-- Email service (for magic links)
+- Email service — Resend (verification, password reset)
 
 ## 🚀 Getting Started
 
@@ -174,11 +174,19 @@ Key models:
 
 ## 🔐 Authentication
 
-Uses NextAuth with magic link (email) authentication:
-1. User enters email
-2. Receives magic link via email
-3. Clicks link to authenticate
-4. Session persists for 30 days
+Uses NextAuth with **email + password** (credentials + bcrypt). There is no
+magic-link provider, and Supabase Auth is not used — Supabase is the Postgres
+host only.
+
+1. User signs up with email + password
+2. A verification email is sent via Resend
+3. They confirm by clicking the link — **required before they can sign in**
+   (hard gate; kill switch `NEXT_PUBLIC_EMAIL_VERIFICATION_REQUIRED="false"`)
+4. Confirming signs them in, including when the link is opened on another
+   device — the waiting tab picks it up
+5. Session is a JWT, persisting 30 days, revoked on suspension or password reset
+
+Vipps OAuth exists but is gated behind `NEXT_PUBLIC_VIPPS_ENABLED`.
 
 ## 🎨 UI Components
 

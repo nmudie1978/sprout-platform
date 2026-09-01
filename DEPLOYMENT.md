@@ -15,12 +15,16 @@ DATABASE_URL=              # PostgreSQL connection string
 NEXTAUTH_URL=             # Your production URL (e.g., https://yourapp.com)
 NEXTAUTH_SECRET=          # Generate with: openssl rand -base64 32
 
-# Email (for magic links)
-EMAIL_SERVER_HOST=        # SMTP host (e.g., smtp.gmail.com)
-EMAIL_SERVER_PORT=        # SMTP port (e.g., 587)
-EMAIL_SERVER_USER=        # SMTP username
-EMAIL_SERVER_PASSWORD=    # SMTP password
-EMAIL_FROM=              # From email address
+# Email — Resend. REQUIRED IN PRODUCTION: email verification is a hard gate,
+# so if these are missing or the key is revoked, NOBODY CAN SIGN UP, and it
+# fails silently (the auth routes return a generic 200 either way).
+# /api/health probes the key and reports `mail`.
+RESEND_API_KEY=           # from resend.com, starts "re_"
+MAIL_FROM=                # e.g. "Endeavrly <noreply@endeavrly.com>"
+NEXT_PUBLIC_APP_URL=      # origin for emailed links, e.g. https://endeavrly.com
+
+# The EMAIL_SERVER_* / EMAIL_FROM SMTP vars are INERT — no EmailProvider is
+# configured. Delete them from your environment; nothing reads them.
 
 # Optional but recommended
 OPENAI_API_KEY=          # For AI assistant feature
@@ -438,18 +442,34 @@ Sentry.init({
 # Health check
 curl https://yourapp.com/api/health
 
-# Auth flow
-# - Visit /auth/signin
-# - Request magic link
-# - Verify email received
-# - Login successfully
+# Health — expect {"status":"ok","db":"up","redis":"up","mail":"up"}.
+#   "mail":"invalid-key"    -> the Resend key is present but revoked: NOBODY
+#                              can sign up, because verification is a hard gate
+#   "redis":"down"          -> rate limits and AI cost caps have silently
+#                              degraded to per-instance in-memory
+#   "commit"                -> compare against origin/main to catch a deploy
+#                              that never landed
+
+# Auth flow (the real one — credentials, no magic link)
+# - Visit /auth/signup, create an account
+# - Confirm the verification email actually ARRIVES (not just that signup 200s;
+#   the endpoints return a generic 200 whether or not mail was sent)
+# - Click the link; confirm you end up signed in
+# - Open the link on a DIFFERENT device: the original tab should sign itself in
+# - Try signing in before confirming: must be refused
+# - Sign up again with the same address: no second account, and the owner gets
+#   a "you already have an account" email
+# - Forgot password -> reset -> sign in with the new password
 
 # Core features
-# - Create job posting (employer)
-# - Apply for job (youth)
-# - Swipe careers
-# - Ask a question
-# - Use AI assistant
+# - Browse and compare careers
+# - My Journey: Discover / Understand / Clarity
+# - Career Radar preference matching
+# - Career Twin (AI) — check the usage caps hold
+#
+# NOTE: there are no job postings, applications or employer accounts. The jobs
+# marketplace was removed; see <removed_features_strict> in CLAUDE.md. If a
+# checklist asks you to test one, the checklist is out of date.
 ```
 
 ### **2. Database Verification**

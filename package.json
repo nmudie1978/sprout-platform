@@ -33,7 +33,8 @@
     "perf:journey:ci": "vitest run tests/my-journey-performance/regression/",
     "perf:journey:check": "tsx scripts/journey-perf-check.ts",
     "prepare": "husky",
-    "db:seed-licence-plans": "tsx prisma/seed-licence-plans.ts"
+    "db:seed-licence-plans": "tsx prisma/seed-licence-plans.ts",
+    "worktree": "bash scripts/new-worktree.sh"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.11.1",
