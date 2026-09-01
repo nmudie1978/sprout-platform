@@ -1,4 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
+import { readSigninGrant } from "@/lib/auth/signin-grant";
 
 /**
  * Duplicate-account prevention and the enumeration guard on POST /api/auth/signup.
@@ -216,6 +217,31 @@ describe("duplicate signup", () => {
 
     expect(dup.status).toBe(fresh.status);
     expect(dupBody).toEqual(freshBody);
+  });
+
+  // The sign-in grant is set on BOTH paths for exactly this reason: Set-Cookie
+  // is visible to whoever made the request, so a cookie that appeared only for
+  // new accounts would answer the question the identical body refuses to.
+  it("sets an indistinguishable sign-in grant whether or not the address was taken", async () => {
+    process.env.NEXTAUTH_SECRET = "test-secret-value-at-least-16-chars";
+
+    const fresh = await POST(request(payload({ email: "grant-new@example.com" })));
+    await POST(request(payload({ email: "grant-taken@example.com" })));
+    const dup = await POST(request(payload({ email: "grant-taken@example.com" })));
+
+    const real = fresh.cookies.get("endeavrly_signin_grant")?.value ?? "";
+    const decoy = dup.cookies.get("endeavrly_signin_grant")?.value ?? "";
+
+    expect(real).not.toBe("");
+    expect(decoy).not.toBe("");
+    expect(decoy.length).toBe(real.length);
+    expect(decoy).not.toBe(real);
+
+    // And the decoy names an account that does not exist, so it can never be
+    // exchanged for a session.
+    const parsed = readSigninGrant(decoy, { secret: process.env.NEXTAUTH_SECRET! });
+    expect(parsed).not.toBeNull();
+    expect(db.users.some((u) => u.id === parsed!.userId)).toBe(false);
   });
 
   it("does not leak existence through the old 409", async () => {

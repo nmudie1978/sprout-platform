@@ -157,10 +157,27 @@ export const PEOPLE_INTENSITY_TO_SCORE: Record<string, number> = {
 // ── People preference mapping ─────────────────────────────────────
 
 export const PEOPLE_PREF_TO_SCORE: Record<string, number> = {
+  // Canonical values, as emitted by the discovery quiz (PEOPLE_PREFS in
+  // discovery-quiz-dialog.tsx).
   "with-people": 0.85,
   mixed: 0.5,
   "mostly-alone": 0.15,
+
+  // Accepted synonyms. Several surfaces and fixtures describe the same three
+  // choices in "how many people" language rather than "with/without people"
+  // language. They mean the same thing, and an unrecognised value used to be
+  // scored as 0.5 while still counting as a stated preference — i.e. someone
+  // asking for people-facing work was matched as though they wanted
+  // medium-people desk work. Mapping them explicitly removes that trap.
+  "many-people": 0.85,
+  "small-team": 0.5,
+  solo: 0.15,
 };
+
+/** Whether a peoplePref value is one the engine actually understands. */
+export function isKnownPeoplePref(value: string | undefined | null): boolean {
+  return typeof value === "string" && value in PEOPLE_PREF_TO_SCORE;
+}
 
 // ── Academic demand mapping ───────────────────────────────────────
 

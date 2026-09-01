@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -9,6 +10,7 @@ import {
 } from "@/lib/auth/email-verification";
 import { safeRelativePath } from "@/lib/auth/app-url";
 import { isVerificationRequired } from "@/lib/auth/verification-gate";
+import { VerificationWatcher } from "@/components/auth/verification-watcher";
 
 export const dynamic = "force-dynamic";
 
@@ -21,6 +23,13 @@ export const dynamic = "force-dynamic";
  * explains WHY a link failed beyond expired-vs-not: the difference between
  * "no such token" and "token belongs to someone else" is exactly the kind of
  * detail an attacker probes for, and a user can't act on it either way.
+ *
+ * On a successful confirmation the card is wrapped in VerificationWatcher,
+ * which — when this is the same browser that signed up, the common case on a
+ * laptop — signs the user straight in instead of showing them a button that
+ * asks for a password they chose two minutes ago. Opened on a phone, or in a
+ * browser that never did the signup, nothing is found and the button below is
+ * exactly what it always was.
  */
 const STATES: Record<
   VerificationOutcome,
@@ -82,6 +91,10 @@ export default async function VerifyEmailResultPage({
   const gated = isVerificationRequired();
   const state = STATES[status];
   const Icon = state.icon;
+  // Only a confirmed address has anything to hand off. On the expired/invalid
+  // states there is no session to be had, and watching for one would just be a
+  // pointless request every few seconds.
+  const confirmed = status === "success" || status === "already";
 
   return (
     <div className="flex min-h-screen items-center justify-center px-4 py-8 relative overflow-hidden">
@@ -89,62 +102,74 @@ export default async function VerifyEmailResultPage({
       <div className="hidden sm:block absolute top-20 -left-4 w-72 h-72 bg-teal-500/10 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob" />
       <div className="hidden sm:block absolute top-20 -right-4 w-72 h-72 bg-blue-500/10 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob animation-delay-2000" />
 
-      <Card className="w-full max-w-md shadow-2xl border-2">
-        <CardHeader>
-          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-primary/20 to-blue-500/20">
-            <Icon className={`h-8 w-8 ${state.tone}`} />
-          </div>
-          <CardTitle className="text-center text-2xl">{state.title}</CardTitle>
-          <CardDescription className="text-center text-base">
-            {state.description}
-          </CardDescription>
-        </CardHeader>
+      <Watcher enabled={confirmed}>
+        <Card className="w-full max-w-md shadow-2xl border-2">
+          <CardHeader>
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-primary/20 to-blue-500/20">
+              <Icon className={`h-8 w-8 ${state.tone}`} />
+            </div>
+            <CardTitle className="text-center text-2xl">{state.title}</CardTitle>
+            <CardDescription className="text-center text-base">
+              {state.description}
+            </CardDescription>
+          </CardHeader>
 
-        <CardContent className="space-y-5">
-          <div className="rounded-lg bg-primary/5 border border-primary/10 p-4">
-            <p className="text-sm text-muted-foreground">{state.body}</p>
-          </div>
+          <CardContent className="space-y-5">
+            <div className="rounded-lg bg-primary/5 border border-primary/10 p-4">
+              <p className="text-sm text-muted-foreground">{state.body}</p>
+            </div>
 
-          {state.showResend && (
-            <ResendVerificationButton
-              variant="default"
-              className="w-full"
-              label="Send me a new link"
-            />
-          )}
+            {state.showResend && (
+              <ResendVerificationButton
+                variant="default"
+                className="w-full"
+                label="Send me a new link"
+              />
+            )}
 
-          <Button asChild variant={state.showResend ? "outline" : "default"} className="w-full">
-            <Link
-              href={
-                gated ? "/auth/signin" : status === "success" ? next : "/dashboard"
-              }
-            >
-              {gated
-                ? status === "success" || status === "already"
-                  ? "Sign in to Endeavrly"
-                  : "Back to sign in"
-                : status === "success" || status === "already"
-                  ? "Continue to Endeavrly"
-                  : "Back to Endeavrly"}
-            </Link>
-          </Button>
+            <Button asChild variant={state.showResend ? "outline" : "default"} className="w-full">
+              <Link
+                href={
+                  gated ? "/auth/signin" : status === "success" ? next : "/dashboard"
+                }
+              >
+                {gated
+                  ? status === "success" || status === "already"
+                    ? "Sign in to Endeavrly"
+                    : "Back to sign in"
+                  : status === "success" || status === "already"
+                    ? "Continue to Endeavrly"
+                    : "Back to Endeavrly"}
+              </Link>
+            </Button>
 
-          {state.showResend && !gated && (
-            <p className="text-center text-sm text-muted-foreground">
-              Not signed in?{" "}
-              <Link href="/auth/signin" className="text-primary hover:underline">
-                Sign in
-              </Link>{" "}
-              and we&apos;ll offer the link again from your dashboard.
-            </p>
-          )}
-          {state.showResend && gated && (
-            <p className="text-center text-sm text-muted-foreground">
-              Still stuck? Try signing in — we&apos;ll offer you a fresh link there.
-            </p>
-          )}
-        </CardContent>
-      </Card>
+            {state.showResend && !gated && (
+              <p className="text-center text-sm text-muted-foreground">
+                Not signed in?{" "}
+                <Link href="/auth/signin" className="text-primary hover:underline">
+                  Sign in
+                </Link>{" "}
+                and we&apos;ll offer the link again from your dashboard.
+              </p>
+            )}
+            {state.showResend && gated && (
+              <p className="text-center text-sm text-muted-foreground">
+                Still stuck? Try signing in — we&apos;ll offer you a fresh link there.
+              </p>
+            )}
+          </CardContent>
+        </Card>
+      </Watcher>
     </div>
   );
+}
+
+/**
+ * Mounts the handoff watcher only where it can do something. Kept local to this
+ * page because "wrap in a client component, or don't" is otherwise an awkward
+ * shape to express inline in JSX.
+ */
+function Watcher({ enabled, children }: { enabled: boolean; children: ReactNode }) {
+  if (!enabled) return <>{children}</>;
+  return <VerificationWatcher mode="once">{children}</VerificationWatcher>;
 }
