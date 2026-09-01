@@ -27,6 +27,7 @@ import {
   WORK_STYLE_LABELS,
   ANALYTICAL_KEYWORDS,
   POPULAR_CAREERS,
+  isKnownPeoplePref,
 } from "./config";
 // Types only — the engine is now CATALOG-FREE. It never value-imports
 // career-pathways.ts (the 740KB god-module); the caller supplies the careers
@@ -236,7 +237,15 @@ export function buildUserProfile(prefs: DiscoveryPreferences): UserMatchProfile 
   // If "mixed" or nothing selected, all stay 0.5 (neutral)
 
   // People preference
-  const hasPeoplePreference = !!prefs.peoplePref && prefs.peoplePref !== "mixed";
+  // FAIL SAFE ON AN UNKNOWN VALUE. This used to be `!!prefs.peoplePref &&
+  // !== "mixed"`, which treated any unrecognised string as a real preference
+  // while PEOPLE_PREF_TO_SCORE fell through to 0.5. The result was worse than
+  // ignoring the input: 0.5 is not "no opinion" to the scorer, it is "prefers
+  // medium-people work", so a young person asking for people-facing careers was
+  // actively ranked towards desk roles. An unknown value now means "no stated
+  // preference", which makes the dimension neutral for every career instead.
+  const hasPeoplePreference =
+    isKnownPeoplePref(prefs.peoplePref) && prefs.peoplePref !== "mixed";
   const peopleOrientation = PEOPLE_PREF_TO_SCORE[prefs.peoplePref || "mixed"] ?? 0.5;
 
   return {
