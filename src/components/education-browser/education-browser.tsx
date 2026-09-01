@@ -482,7 +482,7 @@ export function EducationBrowser({ careerTitle, careerId, country, programmesOnl
                   onClick={() => { setShowInternational((v) => !v); setPage(1); }}
                   aria-pressed={showInternational}
                   className={cn(
-                    'inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[10px] font-medium transition-colors shrink-0',
+                    'inline-flex items-center gap-1.5 rounded-full border px-3 min-h-[36px] sm:min-h-0 sm:px-2.5 sm:py-1 text-[10px] font-medium transition-colors shrink-0',
                     showInternational
                       ? 'border-primary/40 bg-primary/[0.08] text-primary'
                       : 'border-border text-muted-foreground/70 hover:text-foreground hover:border-border',
@@ -541,14 +541,21 @@ export function EducationBrowser({ careerTitle, careerId, country, programmesOnl
                 )}
 
                 {viewMode === 'list' && (
-                  <>
-                    <div className="inline-grid grid-cols-[1fr_10rem_6rem_5rem_5rem_7rem] items-center gap-x-4 px-3 py-2 border border-b-0 rounded-t-md bg-muted/40 text-[10px] font-bold uppercase tracking-wider text-muted-foreground/70 w-full">
+                  <div className="overflow-x-auto">
+                    {/* The 6-column desktop table is ~740px wide — it
+                        overflowed a 390px phone and, inside the app shell's
+                        overflow-hidden, the right-hand columns were simply
+                        clipped away. Below sm the row keeps the three
+                        columns that carry the decision (Programme,
+                        Institution, Alignment); the rest are hidden, and
+                        the whole row stays one tap target. */}
+                    <div className="inline-grid grid-cols-[minmax(0,1fr)_5.5rem_3rem] lg:grid-cols-[1fr_10rem_6rem_5rem_5rem_7rem] items-center gap-x-2 lg:gap-x-4 px-3 py-2 border border-b-0 rounded-t-md bg-muted/40 text-[10px] font-bold uppercase tracking-wider text-muted-foreground/70 w-full">
                       <span>Programme</span>
                       <span>Institution</span>
-                      <span>Location</span>
-                      <span className="text-center">Duration</span>
-                      <span className="text-center">Alignment</span>
-                      <span>Learn more</span>
+                      <span className="hidden lg:block">Location</span>
+                      <span className="hidden lg:block text-center">Duration</span>
+                      <span className="text-center">Fit</span>
+                      <span className="hidden lg:block">Learn more</span>
                     </div>
                     <div className="border rounded-b-md overflow-hidden bg-background w-full">
                       {pageData.map((prog) => {
@@ -560,7 +567,7 @@ export function EducationBrowser({ careerTitle, careerId, country, programmesOnl
                             href={prog.url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="grid grid-cols-[1fr_10rem_6rem_5rem_5rem_7rem] items-center gap-x-4 px-3 py-1.5 border-b border-border/25 hover:bg-muted/50 transition-colors text-left group"
+                            className="grid grid-cols-[minmax(0,1fr)_5.5rem_3rem] lg:grid-cols-[1fr_10rem_6rem_5rem_5rem_7rem] items-center gap-x-2 lg:gap-x-4 px-3 min-h-[44px] py-2 lg:min-h-0 lg:py-1.5 border-b border-border/25 hover:bg-muted/50 active:bg-muted/60 transition-colors text-left group"
                           >
                             <span className="flex items-center gap-2 min-w-0">
                               <span className="text-sm flex-shrink-0 leading-none">{COUNTRY_FLAGS[prog.country] ?? ''}</span>
@@ -569,7 +576,7 @@ export function EducationBrowser({ careerTitle, careerId, country, programmesOnl
                             <span className="text-[11px] text-muted-foreground truncate">
                               {inst?.name ?? prog.institution}
                             </span>
-                            <span className="text-[11px] text-muted-foreground truncate">
+                            <span className="hidden lg:block text-[11px] text-muted-foreground truncate">
                               {prog.city}
                             </span>
                             {/* Duration — strip the verbose programme
@@ -578,13 +585,13 @@ export function EducationBrowser({ careerTitle, careerId, country, programmesOnl
                                 number. The full string is preserved in
                                 the data and shown in the card view and
                                 on the institution's own programme page. */}
-                            <span className="text-[11px] text-muted-foreground text-center tabular-nums">
+                            <span className="hidden lg:block text-[11px] text-muted-foreground text-center tabular-nums">
                               {prog.duration.match(/^(\d+(?:\.\d+)?)/)?.[1] ?? prog.duration}
                             </span>
                             <span className="flex items-center justify-center">
                               <AlignmentBadge status={alignment?.status ?? 'unknown'} matchedSubjects={alignment?.matchedSubjects} missingSubjects={alignment?.missingSubjects} compact />
                             </span>
-                            <span className="text-[10px] text-primary font-medium flex items-center gap-0.5">
+                            <span className="hidden lg:flex text-[10px] text-primary font-medium items-center gap-0.5">
                               Visit page
                               <ChevronRight className="h-3 w-3" />
                             </span>
@@ -592,7 +599,7 @@ export function EducationBrowser({ careerTitle, careerId, country, programmesOnl
                         );
                       })}
                     </div>
-                  </>
+                  </div>
                 )}
 
                 {/* Pagination — only renders when there are ≥2 pages
@@ -727,7 +734,7 @@ function PathwayFallbackView({
       {schools.length > 0 && (
         <div>
           {/* Simple table — same style as the Explore Careers list. */}
-          <div className="grid grid-cols-[1fr_6.5rem_4.5rem_5rem] items-center gap-x-4 px-3 py-1.5 border border-border/40 border-b-0 rounded-t-control bg-muted/30 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/65">
+          <div className="grid grid-cols-[minmax(0,1fr)_4.5rem_4rem] sm:grid-cols-[1fr_6.5rem_4.5rem_5rem] items-center gap-x-2 sm:gap-x-4 px-3 py-1.5 border border-border/40 border-b-0 rounded-t-control bg-muted/30 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/65">
             <span>Institution</span>
             <span className="hidden sm:block">Location</span>
             <span>Duration</span>
@@ -750,7 +757,7 @@ function PathwayFallbackView({
                   target="_blank"
                   rel="noopener noreferrer"
                   className={cn(
-                    'grid grid-cols-[1fr_6.5rem_4.5rem_5rem] items-center gap-x-4 px-3 py-2 text-[11px] hover:bg-muted/50 transition-colors group',
+                    'grid grid-cols-[minmax(0,1fr)_4.5rem_4rem] sm:grid-cols-[1fr_6.5rem_4.5rem_5rem] items-center gap-x-2 sm:gap-x-4 px-3 min-h-[44px] py-2 sm:min-h-0 text-[11px] hover:bg-muted/50 active:bg-muted/60 transition-colors group',
                     idx > 0 && 'border-t border-border/20',
                   )}
                 >

@@ -116,7 +116,7 @@ export function IssueLicenceDialog({ organisationId, open, onOpenChange, onIssue
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="bg-slate-900 border-slate-700 text-slate-100 max-h-[90vh] overflow-y-auto">
+      <DialogContent className="bg-slate-900 border-slate-700 text-slate-100 max-h-[90dvh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Issue licence</DialogTitle>
           <DialogDescription className="text-slate-400">

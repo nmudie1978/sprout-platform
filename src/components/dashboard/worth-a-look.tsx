@@ -209,7 +209,7 @@ export function WorthALook({ careerIds }: { careerIds: string[] }) {
         onClick={handleShowAnother}
         title="Show another"
         aria-label="Show another"
-        className="absolute -top-1 right-0 inline-flex h-6 w-6 items-center justify-center rounded-md text-muted-foreground/65 hover:text-foreground hover:bg-muted/40 transition-colors"
+        className="absolute -top-2 right-0 z-10 inline-flex h-9 w-9 sm:-top-1 sm:h-6 sm:w-6 items-center justify-center rounded-md text-muted-foreground/65 hover:text-foreground hover:bg-muted/40 transition-colors"
       >
         <RefreshCw className={cn('h-3.5 w-3.5', isLoading && 'animate-spin')} />
       </button>
@@ -239,7 +239,7 @@ export function WorthALook({ careerIds }: { careerIds: string[] }) {
                     {fresh && ` · ${fresh}`}
                   </p>
                 </div>
-                <ExternalLink className="h-2.5 w-2.5 shrink-0 mt-1 opacity-0 group-hover:opacity-60 transition-opacity" />
+                <ExternalLink className="h-2.5 w-2.5 shrink-0 mt-1 opacity-50 sm:opacity-0 group-hover:opacity-60 transition-opacity" />
               </a>
               {/* Quick-save — sibling of the <a> (not nested, which would be
                   invalid) so it sits on top and saves without opening the link. */}
@@ -249,7 +249,7 @@ export function WorthALook({ careerIds }: { careerIds: string[] }) {
                 aria-label={savedIds.has(item.id) ? `Saved: ${item.title}` : `Save ${item.title}`}
                 aria-pressed={savedIds.has(item.id)}
                 title={savedIds.has(item.id) ? 'Saved to My Library' : 'Save to My Library'}
-                className="absolute right-2 top-1/2 -translate-y-1/2 inline-flex h-6 w-6 items-center justify-center rounded-md text-muted-foreground/55 hover:bg-muted/50 hover:text-foreground transition-colors"
+                className="absolute right-2 top-1/2 -translate-y-1/2 z-10 inline-flex h-9 w-9 sm:h-6 sm:w-6 items-center justify-center rounded-md text-muted-foreground/55 hover:bg-muted/50 hover:text-foreground transition-colors"
               >
                 <Bookmark className={cn('h-3.5 w-3.5', savedIds.has(item.id) && 'fill-current text-primary')} />
               </button>

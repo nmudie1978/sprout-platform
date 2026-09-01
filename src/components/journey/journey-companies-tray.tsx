@@ -147,7 +147,7 @@ export function JourneyCompaniesTray({
         aria-label="Companies where this role is common"
         aria-hidden={!open}
         className={cn(
-          "w-[340px] sm:w-[380px] h-[520px] max-h-[80vh]",
+          "w-[min(340px,calc(100vw-1.5rem))] sm:w-[380px] h-[520px] max-h-[80dvh]",
           "rounded-l-xl border border-r-0 border-border/40",
           "bg-card/95 backdrop-blur-md shadow-xl",
           "flex flex-col overflow-hidden",

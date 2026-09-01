@@ -83,22 +83,26 @@ export default function CareerViewsDevPage() {
 function ViewBlock({ mode }: { mode: ViewMode }) {
   return (
     <>
+      {/* Mirrors the real /careers list: one horizontal scroll container over
+          header + body, three columns below sm. Kept in sync so this sandbox
+          stays a faithful preview of the shipped table. */}
+      <div className={mode === "list" ? "overflow-x-auto" : undefined}>
       {mode === "list" && (
-        <div className={`grid ${LIST_GRID} items-center gap-x-4 px-3 py-1 border border-border border-b-0 rounded-t-control bg-muted/30 text-xs font-semibold uppercase tracking-wider text-muted-foreground/70 w-fit`}>
+        <div className={`grid ${LIST_GRID} items-center gap-x-2 md:gap-x-4 px-3 py-1 border border-border border-b-0 rounded-t-control bg-muted/30 text-xs font-semibold uppercase tracking-wider text-muted-foreground/70 w-full xl:w-fit`}>
           <span>Career</span>
           <span className="text-right">Salary</span>
-          <span className="text-center">Growth</span>
-          <span className="text-center">Sector</span>
-          <span className="text-center">Path</span>
-          <span className="text-center">Demand</span>
+          <span className="hidden md:block text-center">Growth</span>
+          <span className="hidden xl:block text-center">Sector</span>
+          <span className="hidden xl:block text-center">Path</span>
+          <span className="hidden xl:block text-center">Demand</span>
           <span className="text-center">Match</span>
-          <span>Learn more</span>
+          <span className="hidden md:block">Learn more</span>
         </div>
       )}
       <div
         className={
           mode === "list"
-            ? "border border-border rounded-b-control overflow-hidden bg-background w-fit"
+            ? "border border-border rounded-b-control overflow-hidden bg-background w-full xl:w-fit"
             : mode === "small"
             ? "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3"
             : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4"
@@ -112,6 +116,7 @@ function ViewBlock({ mode }: { mode: ViewMode }) {
             onLearnMore={() => {}}
           />
         ))}
+      </div>
       </div>
     </>
   );

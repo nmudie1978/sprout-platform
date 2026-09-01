@@ -27,10 +27,12 @@ export function StickyActionBar({
   return (
     <div
       className={cn(
-        "fixed bottom-0 left-0 right-0 z-40",
+        // Sits directly on top of the mobile bottom nav (which owns
+        // bottom: 0 and the home-indicator inset) rather than under it.
+        "fixed bottom-[calc(3.5rem+env(safe-area-inset-bottom,0px))] left-0 right-0 z-40 lg:bottom-0",
         "bg-background/95 backdrop-blur-md border-t",
         "px-4 py-3",
-        withSafeArea && "pb-safe",
+        withSafeArea && "lg:pb-safe",
         mobileOnly && "md:hidden",
         className
       )}

@@ -142,7 +142,7 @@ export default function FeedbackPage() {
             How would you rate Endeavrly?
             <span className="text-muted-foreground font-normal ml-2">(optional)</span>
           </h2>
-          <div className="flex items-center gap-1 mt-2">
+          <div className="flex flex-wrap items-center gap-1 mt-2">
             {[1, 2, 3, 4, 5].map((n) => {
               const filled = (rating ?? 0) >= n;
               return (
@@ -165,7 +165,7 @@ export default function FeedbackPage() {
                 </button>
               );
             })}
-            <span className="ml-2 text-xs text-muted-foreground min-w-[7rem]">
+            <span className="ml-0 mt-1 w-full text-xs text-muted-foreground sm:ml-2 sm:mt-0 sm:w-auto sm:min-w-[7rem]">
               {rating != null ? RATING_LABELS[rating] : "1 = poor · 5 = amazing"}
             </span>
           </div>
@@ -215,7 +215,7 @@ export default function FeedbackPage() {
                   onClick={() => setArea(active ? null : opt.value)}
                   aria-pressed={active}
                   className={cn(
-                    "rounded-full border px-3 py-1.5 text-xs font-medium transition-colors",
+                    "inline-flex items-center rounded-full border px-3 min-h-[36px] sm:min-h-0 sm:py-1.5 text-xs font-medium transition-colors",
                     active
                       ? "border-primary/40 bg-primary/[0.08] text-primary"
                       : "border-border text-muted-foreground/80 hover:text-foreground hover:border-border",
@@ -265,7 +265,7 @@ export default function FeedbackPage() {
                   onClick={() => setRole(active ? null : opt.value)}
                   aria-pressed={active}
                   className={cn(
-                    "rounded-full border px-3 py-1.5 text-xs font-medium transition-colors",
+                    "inline-flex items-center rounded-full border px-3 min-h-[36px] sm:min-h-0 sm:py-1.5 text-xs font-medium transition-colors",
                     active
                       ? "border-primary/40 bg-primary/[0.08] text-primary"
                       : "border-border text-muted-foreground/80 hover:text-foreground hover:border-border",

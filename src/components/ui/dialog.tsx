@@ -43,15 +43,21 @@ const DialogContent = React.forwardRef<
     <DialogPrimitive.Content
       ref={ref}
       className={cn(
-        // Mobile: bottom sheet style
-        "fixed z-[100] grid gap-4 border bg-card text-card-foreground shadow-lg duration-200 overflow-y-auto",
-        "inset-x-0 bottom-0 w-full rounded-t-2xl p-4 max-h-[85vh]",
+        // Mobile: bottom sheet style.
+        // `dvh` (not `vh`) so the sheet tracks the *visible* viewport — with
+        // the iOS URL bar showing, or a keyboard open, `vh` overshoots and
+        // the sheet's footer/actions end up off-screen. `overscroll-contain`
+        // stops a scroll at the sheet's edge from dragging the page behind
+        // it. The bottom padding clears the home indicator so the last
+        // control is always tappable.
+        "fixed z-[100] grid gap-4 border bg-card text-card-foreground shadow-lg duration-200 overflow-y-auto overscroll-contain",
+        "inset-x-0 bottom-0 w-full rounded-t-2xl p-4 pb-[calc(1rem+env(safe-area-inset-bottom,0px))] max-h-[85vh] max-h-[85dvh]",
         "data-[state=open]:animate-in data-[state=closed]:animate-out",
         "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
         "data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom",
         // Desktop: centered modal
         "sm:inset-auto sm:left-[50%] sm:top-[50%] sm:translate-x-[-50%] sm:translate-y-[-50%] sm:bottom-auto",
-        "sm:w-full sm:max-w-lg sm:rounded-lg sm:p-6 sm:max-h-[calc(100vh-2rem)]",
+        "sm:w-full sm:max-w-lg sm:rounded-lg sm:p-6 sm:pb-6 sm:max-h-[calc(100dvh-2rem)]",
         "sm:data-[state=closed]:slide-out-to-top-[2%] sm:data-[state=open]:slide-in-from-top-[2%]",
         "sm:data-[state=closed]:zoom-out-95 sm:data-[state=open]:zoom-in-95",
         className
@@ -88,7 +94,7 @@ const DialogFooter = ({
 }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
     className={cn(
-      "flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2",
+      "flex flex-col-reverse gap-2 sm:flex-row sm:justify-end sm:gap-2",
       className
     )}
     {...props}

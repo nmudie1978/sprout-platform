@@ -2,8 +2,10 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export default function DashboardLoading() {
   return (
-    <div className="min-h-[100vh] dark:bg-[#0c0f1a] text-slate-100">
-      <div className="max-w-6xl mx-auto px-6 py-8">
+    <div className="min-h-[100dvh] dark:bg-[#0c0f1a] text-slate-100">
+      {/* Mirrors the real dashboard container (max-w-4xl, px-3 sm:px-6) so
+          the skeleton doesn't jump sideways on a phone when content lands. */}
+      <div className="max-w-4xl mx-auto px-3 sm:px-6 py-4 sm:py-8">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <Skeleton className="h-7 w-48 bg-slate-800/50" />
@@ -11,9 +13,9 @@ export default function DashboardLoading() {
         </div>
 
         {/* Journey hero */}
-        <div className="rounded-3xl bg-slate-800/30 border border-slate-700/30 p-6 mb-6">
-          <div className="flex items-center gap-8">
-            <Skeleton className="w-24 h-24 rounded-full bg-slate-700/40 shrink-0" />
+        <div className="rounded-3xl bg-slate-800/30 border border-slate-700/30 p-4 sm:p-6 mb-6">
+          <div className="flex items-center gap-4 sm:gap-8">
+            <Skeleton className="w-16 h-16 sm:w-24 sm:h-24 rounded-full bg-slate-700/40 shrink-0" />
             <div className="flex-1 space-y-3">
               <Skeleton className="h-4 w-40 bg-slate-700/40" />
               <div className="grid grid-cols-4 gap-2">

@@ -38,7 +38,7 @@ export function WorkStylePills({ selected, onToggle, wrap }: WorkStylePillsProps
           <button
             key={nature}
             onClick={() => onToggle(nature)}
-            className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-medium whitespace-nowrap transition-all ${
+            className={`flex items-center gap-1 px-3 min-h-[36px] sm:min-h-0 sm:px-2.5 sm:py-1 rounded-full text-[10px] font-medium whitespace-nowrap transition-all ${
               isSelected
                 ? "bg-teal-500/15 text-teal-700 dark:text-teal-400 border border-teal-300 dark:border-teal-700"
                 : "bg-background border hover:bg-muted/80"

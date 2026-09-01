@@ -230,7 +230,7 @@ export function CareerDetailSheet({
   return (
     <>
       <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-        <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto overflow-x-hidden p-0 [&>*]:min-w-0">
+        <DialogContent className="max-w-lg max-h-[90dvh] overflow-y-auto overflow-x-hidden p-0 [&>*]:min-w-0">
           {career && (
             <div className="min-w-0 w-full overflow-x-hidden">
               {/* Header */}

@@ -122,7 +122,7 @@ export function GenerateModal({
               value={roleTarget}
               onChange={(e) => setRoleTarget(e.target.value)}
               placeholder="e.g., Software Engineer, Nurse"
-              className="h-8 text-xs mt-1.5"
+              className="h-11 sm:h-8 text-xs mt-1.5"
             />
           </div>
 
@@ -190,7 +190,7 @@ export function GenerateModal({
                 value={customFocus}
                 onChange={(e) => setCustomFocus(e.target.value)}
                 placeholder="Add custom focus..."
-                className="h-7 text-[10px]"
+                className="h-11 sm:h-7 text-[10px]"
                 onKeyDown={(e) => e.key === "Enter" && addCustomFocus()}
               />
               <Button

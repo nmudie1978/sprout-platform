@@ -2,13 +2,13 @@ import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { SidebarNav } from "@/components/sidebar-nav";
-import { MobileBottomNav } from "@/components/mobile-bottom-nav";
 import { AmbientLightBackground } from "@/components/ui/ambient-light-background";
 import { AmbientBackdrop } from "@/components/ui/ambient-backdrop";
 import { ThemeTallyPing } from "@/components/theme-tally-ping";
 import { ReportModal } from "@/components/report-modal";
 import { CompareHost } from "@/components/compare/compare-host";
 import { isAcceptanceCurrent } from "@/lib/legal/versions";
+import { VerifyEmailBanner } from "@/components/auth/verify-email-banner";
 import { headers } from "next/headers";
 import Link from "next/link";
 
@@ -103,7 +103,13 @@ export default async function DashboardLayout({
         {/* Main content with bottom padding for mobile nav. The language
             switcher now lives as an icon in the dashboard header (next to the
             walkthrough control) rather than a persistent top bar. */}
-        <main id="main-content" className="flex-1 pb-16 lg:pb-0">{children}</main>
+        {/* Soft email-verification nudge. `emailVerified` rides on the JWT
+            (refreshed on the same throttle as every other session field), so
+            this costs no query, and clears itself within a minute of the user
+            confirming. Never a blocker — see VerifyEmailBanner. */}
+        {session.user.emailVerified === false && <VerifyEmailBanner />}
+
+        <main id="main-content" className="flex-1 pb-bottom-nav">{children}</main>
 
         {/* Global compare experience — persistent shortlist, floating pill,
             compare modal, and the "you now have 3 — compare?" prompt. Youth
@@ -115,7 +121,7 @@ export default async function DashboardLayout({
             through continuously; dark mode keeps a subtle lift. */}
         <footer className="hidden lg:block py-4 mt-8 border-t border-border dark:border-white/10">
           <div className="px-6">
-            <div className="flex flex-wrap justify-center gap-4 text-xs text-muted-foreground dark:text-white/85">
+            <div className="flex flex-wrap justify-center gap-x-4 gap-y-1 text-xs text-muted-foreground dark:text-white/85 [&>a]:inline-flex [&>a]:min-h-[40px] [&>a]:items-center lg:[&>a]:min-h-0">
               <Link href="/legal/terms" className="hover:text-foreground dark:hover:text-white transition-colors">
                 Terms
               </Link>
@@ -150,8 +156,12 @@ export default async function DashboardLayout({
         </footer>
       </div>
 
-      {/* Mobile bottom nav — visible on mobile only */}
-      <MobileBottomNav />
+      {/* Mobile bottom nav is mounted globally in `providers.tsx`, which wraps
+          the root layout and therefore already covers every route in this
+          group (plus the authenticated routes outside it). It used to be
+          mounted here as well, so every dashboard page rendered TWO stacked
+          `fixed bottom-0 z-50` navs — duplicate event handlers, and a second
+          identical navigation landmark announced to screen readers. */}
 
       {/* Anonymous dark/light tally — once per session, signed-in only. */}
       <ThemeTallyPing />

@@ -341,10 +341,11 @@ export function WhitePaperPdf() {
 
           <View style={styles.cardGrid}>
             <Card title="Safety by Design">
-              Built from the ground up for minors. Verified adult accounts
-              before posting, one-tap report on every profile and job,
-              guardian consent first-class. No free-text chat between minors
-              and adults. No in-app payments.
+              Built from the ground up for minors. One-tap report on any
+              profile or content, with every report landing in an admin
+              moderation queue. No free-text chat between minors and adults.
+              No follower counts, leaderboards or public rankings. No in-app
+              payments.
             </Card>
             <Card title="Exploration Before Pressure">
               Young people don&rsquo;t need gamification — they need room to
@@ -410,10 +411,9 @@ export function WhitePaperPdf() {
             <Card title="Career Events — Where can I learn more in person?">
               Curated feed of verified events filtered by career interest.
             </Card>
-            <Card title="Parent / Guardian Dashboard">
-              First-class, calm, non-surveillant. Visibility of the
-              child&rsquo;s exploration, job applications, safety reports,
-              guardian consent flow. Dedicated contribution channel at
+            <Card title="For Parents &amp; Professionals">
+              Calm and non-surveillant: adults take part by contributing what
+              they know, not by monitoring an account. Dedicated channel at
               /contribute — professionals and parents share their real career
               timelines, moderated and shown back to students in Clarity as
               Real Career Paths.

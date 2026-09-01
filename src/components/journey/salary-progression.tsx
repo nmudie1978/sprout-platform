@@ -250,26 +250,26 @@ export function SalaryChart({
       </div>
 
       {/* Legend */}
-      <div className="flex items-center gap-4 text-[9px] text-muted-foreground/70">
-        <span className="flex items-center gap-1.5 group relative cursor-default">
+      <div className="flex flex-col gap-1.5 sm:flex-row sm:items-center sm:gap-4 text-[9px] text-muted-foreground/70">
+        <span className="flex flex-wrap items-center gap-x-1.5 gap-y-0.5 group relative cursor-default">
           <span className="h-2 w-4 rounded-sm bg-[hsl(166,72%,45%)] opacity-85" />
           Average
-          <span className="absolute bottom-full left-0 mb-1 hidden group-hover:block bg-[hsl(220,20%,14%)] border border-[hsl(220,15%,25%)] rounded px-2 py-1 text-[9px] text-foreground/80 whitespace-nowrap shadow-lg z-10">
+          <span className="block w-full text-[9px] leading-snug text-muted-foreground/55 sm:absolute sm:bottom-full sm:left-0 sm:mb-1 sm:hidden sm:w-auto sm:group-hover:block sm:bg-[hsl(220,20%,14%)] sm:border sm:border-[hsl(220,15%,25%)] sm:rounded sm:px-2 sm:py-1 sm:text-foreground/80 sm:whitespace-nowrap sm:shadow-lg sm:z-10">
             Mid-point between min and max for this level
           </span>
         </span>
-        <span className="flex items-center gap-1.5 group relative cursor-default">
+        <span className="flex flex-wrap items-center gap-x-1.5 gap-y-0.5 group relative cursor-default">
           <span className="h-2 w-4 rounded-sm bg-[hsl(260,60%,60%)] opacity-20 border border-[hsl(260,60%,60%)]/30" />
           Market range
-          <span className="absolute bottom-full left-0 mb-1 hidden group-hover:block bg-[hsl(220,20%,14%)] border border-[hsl(220,15%,25%)] rounded px-2 py-1 text-[9px] text-foreground/80 whitespace-nowrap shadow-lg z-10">
+          <span className="block w-full text-[9px] leading-snug text-muted-foreground/55 sm:absolute sm:bottom-full sm:left-0 sm:mb-1 sm:hidden sm:w-auto sm:group-hover:block sm:bg-[hsl(220,20%,14%)] sm:border sm:border-[hsl(220,15%,25%)] sm:rounded sm:px-2 sm:py-1 sm:text-foreground/80 sm:whitespace-nowrap sm:shadow-lg sm:z-10">
             How much more than average the top earners at this level make
           </span>
         </span>
         {medianK && (
-          <span className="flex items-center gap-1.5 group relative cursor-default">
+          <span className="flex flex-wrap items-center gap-x-1.5 gap-y-0.5 group relative cursor-default">
             <span className="h-px w-4 border-t border-dashed border-[hsl(215,10%,40%)]" />
             National median
-            <span className="absolute bottom-full left-0 mb-1 hidden group-hover:block bg-[hsl(220,20%,14%)] border border-[hsl(220,15%,25%)] rounded px-2 py-1 text-[9px] text-foreground/80 whitespace-nowrap shadow-lg z-10">
+            <span className="block w-full text-[9px] leading-snug text-muted-foreground/55 sm:absolute sm:bottom-full sm:left-0 sm:mb-1 sm:hidden sm:w-auto sm:group-hover:block sm:bg-[hsl(220,20%,14%)] sm:border sm:border-[hsl(220,15%,25%)] sm:rounded sm:px-2 sm:py-1 sm:text-foreground/80 sm:whitespace-nowrap sm:shadow-lg sm:z-10">
               Norway&apos;s median salary across all professions (~{formatSalary(medianK)} kr/year)
             </span>
           </span>

@@ -28,13 +28,19 @@ interface SheetContentProps
   side?: "top" | "right" | "bottom" | "left";
 }
 
+// Every side is height-capped and internally scrollable. Without this a
+// sheet taller than the phone simply overflowed the viewport with no way
+// to reach its bottom (the app shell clips horizontal/vertical overflow),
+// which silently hid primary actions on small screens. `dvh` tracks the
+// visible viewport so the iOS URL bar and the on-screen keyboard don't
+// push content out of reach.
 const sheetVariants: Record<string, string> = {
-  top: "inset-x-0 top-0 border-b data-[state=closed]:slide-out-to-top data-[state=open]:slide-in-from-top",
+  top: "inset-x-0 top-0 max-h-[90dvh] overflow-y-auto overscroll-contain border-b rounded-b-2xl pt-[calc(1.5rem+env(safe-area-inset-top,0px))] data-[state=closed]:slide-out-to-top data-[state=open]:slide-in-from-top",
   bottom:
-    "inset-x-0 bottom-0 border-t data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom",
-  left: "inset-y-0 left-0 h-full w-3/4 border-r data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left sm:max-w-sm",
+    "inset-x-0 bottom-0 max-h-[90dvh] overflow-y-auto overscroll-contain border-t rounded-t-2xl pb-[calc(1.5rem+env(safe-area-inset-bottom,0px))] data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom",
+  left: "inset-y-0 left-0 h-full max-h-[100dvh] w-[85%] max-w-[22rem] overflow-y-auto overscroll-contain border-r pb-[calc(1.5rem+env(safe-area-inset-bottom,0px))] data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left sm:max-w-sm",
   right:
-    "inset-y-0 right-0 h-full w-3/4 border-l data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right sm:max-w-sm",
+    "inset-y-0 right-0 h-full max-h-[100dvh] w-[85%] max-w-[22rem] overflow-y-auto overscroll-contain border-l pb-[calc(1.5rem+env(safe-area-inset-bottom,0px))] data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right sm:max-w-sm",
 };
 
 const SheetContent = React.forwardRef<
@@ -53,8 +59,8 @@ const SheetContent = React.forwardRef<
       {...props}
     >
       {children}
-      <DialogPrimitive.Close className="absolute right-2 top-2 p-2.5 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-secondary">
-        <X className="h-4 w-4" />
+      <DialogPrimitive.Close className="absolute right-2 top-2 p-2.5 rounded-md opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-secondary z-10">
+        <X className="h-5 w-5 sm:h-4 sm:w-4" />
         <span className="sr-only">Close</span>
       </DialogPrimitive.Close>
     </DialogPrimitive.Content>
@@ -82,7 +88,7 @@ const SheetFooter = ({
 }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
     className={cn(
-      "flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2",
+      "flex flex-col-reverse gap-2 sm:flex-row sm:justify-end sm:gap-2",
       className
     )}
     {...props}

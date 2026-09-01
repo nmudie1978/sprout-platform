@@ -25,8 +25,11 @@ export function FloatingCompareCTA({ shortlist, max, onCompare, onClear }: Float
   const canCompare = shortlist.length >= 2;
 
   return (
-    <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-40 pointer-events-none">
-      <div className="pointer-events-auto inline-flex items-center gap-2 rounded-full border border-teal-500/40 bg-card/95 backdrop-blur-md shadow-2xl shadow-teal-500/20 px-3 py-2">
+    // `bottom-above-nav` lifts the pill clear of the mobile bottom nav —
+    // at `bottom-4` it sat *behind* the 56px nav bar and was unusable on
+    // a phone. `max-w` + `px-4` keep it inside a 320px viewport.
+    <div className="fixed bottom-above-nav left-1/2 -translate-x-1/2 z-40 pointer-events-none w-full px-4 flex justify-center sm:w-auto sm:px-0">
+      <div className="pointer-events-auto inline-flex max-w-full items-center gap-2 rounded-full border border-teal-500/40 bg-card/95 backdrop-blur-md shadow-2xl shadow-teal-500/20 px-3 py-2">
         {/* Avatar stack */}
         <div className="flex items-center -space-x-1.5">
           {shortlist.slice(0, 3).map((c) => (
@@ -41,7 +44,7 @@ export function FloatingCompareCTA({ shortlist, max, onCompare, onClear }: Float
         </div>
 
         {/* Count */}
-        <span className="text-[11px] font-medium text-foreground/85 ml-0.5">
+        <span className="text-[11px] font-medium text-foreground/85 ml-0.5 whitespace-nowrap">
           {shortlist.length} of {max}
         </span>
 
@@ -51,7 +54,7 @@ export function FloatingCompareCTA({ shortlist, max, onCompare, onClear }: Float
           onClick={onCompare}
           disabled={!canCompare}
           className={cn(
-            'inline-flex items-center gap-1 rounded-full px-3 py-1 text-[11px] font-semibold transition-colors',
+            'inline-flex shrink-0 items-center gap-1 rounded-full px-3.5 min-h-[36px] text-xs font-semibold transition-colors',
             canCompare
               ? 'bg-teal-500 text-white hover:bg-teal-400'
               : 'bg-muted/40 text-muted-foreground/70 cursor-not-allowed',
@@ -66,7 +69,7 @@ export function FloatingCompareCTA({ shortlist, max, onCompare, onClear }: Float
         <button
           type="button"
           onClick={onClear}
-          className="h-6 w-6 rounded-full flex items-center justify-center text-muted-foreground/70 hover:text-foreground hover:bg-muted/30 transition-colors"
+          className="h-9 w-9 shrink-0 -mr-1 rounded-full flex items-center justify-center text-muted-foreground/70 hover:text-foreground hover:bg-muted/30 active:bg-muted/40 transition-colors"
           aria-label="Clear shortlist"
           title="Clear all"
         >

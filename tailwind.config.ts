@@ -7,6 +7,15 @@ const config: Config = {
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
+  // `hit-44` (see globals.css) currently has NO call sites — every control
+  // that wanted it failed one of the three adjacency tests documented there.
+  // It was still being emitted, but only because the literal string appears
+  // in two explanatory code comments: Tailwind's content scanner is a plain
+  // regex over file text and does not strip comments. That made a
+  // documentation comment silently load-bearing for a CSS rule — tidy the
+  // comment and the utility vanishes with no error. Safelisted so its
+  // retention is a decision rather than an accident.
+  safelist: ["hit-44"],
   theme: {
     container: {
       center: true,

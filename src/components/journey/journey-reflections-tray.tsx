@@ -172,7 +172,10 @@ export function JourneyReflectionsTray({
         aria-label="Journey reflections"
         aria-hidden={!open}
         className={cn(
-          "w-[340px] sm:w-[380px] h-[520px] max-h-[80vh]",
+          // Never wider than the phone it is on (340px overflowed a 320px
+          // screen and clipped the left edge of the panel), and height tracks
+          // the visible viewport so the Save control stays on screen.
+          "w-[min(340px,calc(100vw-1.5rem))] sm:w-[380px] h-[520px] max-h-[80dvh]",
           "rounded-l-xl border border-r-0 border-border/40",
           "bg-card/95 backdrop-blur-md shadow-xl",
           "flex flex-col overflow-hidden",

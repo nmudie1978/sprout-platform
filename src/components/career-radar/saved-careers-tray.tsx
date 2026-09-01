@@ -132,7 +132,7 @@ export function SavedCareersTray({ topOffsetPx = 80, className }: SavedCareersTr
         onMouseLeave={handleMouseLeave}
         aria-hidden={!open}
         className={cn(
-          "w-[300px] sm:w-[320px] h-[420px] max-h-[70vh]",
+          "w-[300px] sm:w-[320px] h-[420px] max-h-[70dvh]",
           "rounded-l-xl border border-r-0 border-border/40",
           "bg-card/95 backdrop-blur-md shadow-xl",
           "flex flex-col overflow-hidden",

@@ -87,7 +87,7 @@ function InsightCard({ item }: { item: PoolItem }) {
           className="font-semibold text-sm leading-snug hover:text-primary transition-colors line-clamp-2"
         >
           {item.title}
-          <ExternalLink className="inline h-3 w-3 ml-1 opacity-0 group-hover:opacity-60 transition-opacity" />
+          <ExternalLink className="inline h-3 w-3 ml-1 opacity-50 sm:opacity-0 group-hover:opacity-60 transition-opacity" />
         </a>
 
         {/* Summary */}

@@ -29,7 +29,21 @@ import { getAcademicProfile, getDemandLabel, getDemandColors } from "@/lib/educa
 export type ViewMode = "list" | "small" | "large";
 
 /** Grid template for the list view — shared with the column header in the careers page. */
-export const LIST_GRID = "grid-cols-[14rem_5rem_4rem_4.5rem_4.5rem_5.5rem_5rem_7rem]";
+// Three measured tiers. The full 8-column table is 928px (49.5rem of tracks
+// + 7 gaps + px-3), and the app shell clips overflow, so any viewport whose
+// CONTENT area is narrower than that loses its right-hand columns entirely.
+// The content area is not the viewport: from `lg` up the w-56 sidebar takes
+// 225px, so a 1024px laptop only has 767px to give — the full table does not
+// actually fit until ~1280px.
+//
+//   base  (<768px)  Career · Salary · Match                       (3 tracks)
+//   md    (≥768px)  + Growth · Learn more                         (5, 648px)
+//   xl    (≥1280px) + Sector · Path · Demand                      (8, 928px)
+//
+// Nothing is lost at the narrow tiers: the whole row is a single button, so
+// every career is still one tap away — only the at-a-glance columns thin out.
+export const LIST_GRID =
+  "grid-cols-[minmax(0,1fr)_3.75rem_3rem] md:grid-cols-[minmax(0,1fr)_5rem_4rem_5rem_7rem] xl:grid-cols-[14rem_5rem_4rem_4.5rem_4.5rem_5.5rem_5rem_7rem]";
 
 /** Derive a short path label from the full educationPath string. */
 function shortPath(educationPath: string): string {
@@ -111,7 +125,7 @@ function ListRow({ career, matchScore, onLearnMore, notTailoredLabel }: Omit<Car
     <button
       type="button"
       onClick={onLearnMore}
-      className={`grid ${LIST_GRID} items-center gap-x-4 px-3 py-1 border-b hover:bg-muted/50 transition-colors text-left focus:outline-none focus:bg-muted/50`}
+      className={`grid ${LIST_GRID} w-full items-center gap-x-2 md:gap-x-4 px-3 min-h-[44px] py-2 md:min-h-0 md:py-1 border-b hover:bg-muted/50 active:bg-muted/60 transition-colors text-left focus:outline-none focus:bg-muted/50`}
     >
       {/* Title */}
       <span className="flex items-center gap-2 min-w-0">
@@ -133,26 +147,26 @@ function ListRow({ career, matchScore, onLearnMore, notTailoredLabel }: Omit<Car
       </span>
 
       {/* Salary */}
-      <span className="text-xs text-muted-foreground tabular-nums text-right">
+      <span className="text-xs text-muted-foreground tabular-nums text-right truncate">
         {salaryShort}
       </span>
 
       {/* Growth */}
       <Badge
         variant="outline"
-        className={`text-[10px] px-1.5 py-0 ${growth.bg} border-0 flex-shrink-0 w-10 justify-center`}
+        className={`hidden md:flex text-[10px] px-1.5 py-0 ${growth.bg} border-0 flex-shrink-0 w-10 justify-center`}
       >
         <GrowthIcon className={`h-3 w-3 ${growth.color}`} />
       </Badge>
 
       {/* Sector */}
-      <span className="text-[10px] text-muted-foreground text-center">{sector}</span>
+      <span className="hidden xl:block text-[10px] text-muted-foreground text-center">{sector}</span>
 
       {/* Path */}
-      <span className="text-[10px] text-muted-foreground text-center">{path}</span>
+      <span className="hidden xl:block text-[10px] text-muted-foreground text-center">{path}</span>
 
       {/* Academic Demand */}
-      <span className={`text-[10px] text-center ${demandColor.text}`} title={academic.discoverHint}>
+      <span className={`hidden xl:block text-[10px] text-center ${demandColor.text}`} title={academic.discoverHint}>
         {getDemandLabel(academic.demand)}
       </span>
 
@@ -178,12 +192,16 @@ function ListRow({ career, matchScore, onLearnMore, notTailoredLabel }: Omit<Car
             </Tooltip>
           </TooltipProvider>
         ) : (
-          <span className="text-[10px] text-muted-foreground/65">—</span>
+          <>
+            <span className="hidden md:inline text-[10px] text-muted-foreground/65">—</span>
+            <ChevronRight className="h-4 w-4 text-muted-foreground/50 md:hidden" aria-hidden="true" />
+          </>
         )}
       </span>
 
-      {/* Learn more */}
-      <span className="text-[10px] text-primary font-medium flex items-center gap-0.5">
+      {/* Learn more — the label is desktop-only; on mobile the whole row
+          is the tap target, so a lone chevron carries the affordance. */}
+      <span className="hidden md:flex text-[10px] text-primary font-medium items-center gap-0.5">
         Learn more
         <ChevronRight className="h-3 w-3" />
       </span>

@@ -51,7 +51,7 @@ export function FiltersToolbar({ filters, onFiltersChange, onGenerateClick, stat
             placeholder="Search questions..."
             value={filters.searchQuery}
             onChange={(e) => onFiltersChange({ ...filters, searchQuery: e.target.value })}
-            className="h-8 pl-8 text-xs"
+            className="h-11 sm:h-8 pl-8 text-xs"
           />
         </div>
         <Button

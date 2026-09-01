@@ -65,7 +65,7 @@ export function SourceDrawer({ stat, open, onOpenChange }: SourceDrawerProps) {
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="right" className="w-[340px] sm:w-[400px] overflow-y-auto">
+      <SheetContent side="right" className="w-[88%] max-w-[340px] sm:w-[400px] sm:max-w-[400px] overflow-y-auto">
         <SheetHeader className="pb-4">
           <SheetTitle className="text-base pr-6">{stat.title}</SheetTitle>
           <SheetDescription>{stat.subtitle}</SheetDescription>

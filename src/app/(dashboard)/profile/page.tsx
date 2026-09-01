@@ -256,8 +256,9 @@ export default function ProfilePage() {
     },
     onSuccess: () => {
       toast({
-        title: "Account deleted",
-        description: "Your account has been permanently deleted.",
+        title: "Account scheduled for deletion",
+        description:
+          "You've been signed out. Everything is erased permanently in 30 days — signing back in before then restores your account.",
       });
       // Sign out and redirect to home
       setTimeout(() => {
@@ -588,7 +589,7 @@ export default function ProfilePage() {
 
       <div className="grid gap-4 sm:gap-6 lg:grid-cols-3 relative z-10">
         {/* Main Profile Form */}
-        <div className="lg:col-span-2 space-y-4 sm:space-y-6 relative z-10">
+        <div className="min-w-0 lg:col-span-2 space-y-4 sm:space-y-6 relative z-10">
           {/* Profile */}
           <Card className="border shadow-sm relative z-10">
             <CardHeader className="pb-3">
@@ -628,7 +629,7 @@ export default function ProfilePage() {
                           placeholder="First name"
                           value={formData.displayName}
                           onChange={(e) => setFormData({ ...formData, displayName: e.target.value })}
-                          className="h-9 text-sm"
+                          className="h-11 sm:h-9 text-sm"
                         />
                         <p className="mt-1 text-xs text-muted-foreground/65">
                           First name <span className="text-warning">*</span>
@@ -640,7 +641,7 @@ export default function ProfilePage() {
                           placeholder="Surname"
                           value={formData.surname}
                           onChange={(e) => setFormData({ ...formData, surname: e.target.value })}
-                          className="h-9 text-sm"
+                          className="h-11 sm:h-9 text-sm"
                         />
                         <p className="mt-1 text-xs text-muted-foreground/65">
                           Surname
@@ -716,8 +717,9 @@ export default function ProfilePage() {
                 <p className="mt-0.5 text-xs text-muted-foreground/60">{formData.bio.length}/500</p>
               </div>
 
-              {/* Phone + City side by side */}
-              <div className="grid grid-cols-2 gap-3">
+              {/* Phone + City side by side (from sm up — at 320px each half
+                  is ~130px, which truncates both the number and the city). */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <Label htmlFor="phoneNumber" className="text-xs font-medium text-muted-foreground/70">
                     Phone <span className="text-warning">*</span>
@@ -730,7 +732,7 @@ export default function ProfilePage() {
                     placeholder="+47 123 45 678"
                     value={formData.phoneNumber}
                     onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
-                    className="h-8 mt-1 text-sm"
+                    className="h-11 sm:h-8 mt-1 text-sm"
                   />
                 </div>
                 <div>
@@ -742,7 +744,7 @@ export default function ProfilePage() {
                     placeholder="e.g., Oslo"
                     value={formData.city}
                     onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                    className="h-8 mt-1 text-sm"
+                    className="h-11 sm:h-8 mt-1 text-sm"
                   />
                 </div>
               </div>
@@ -843,7 +845,7 @@ export default function ProfilePage() {
                 Danger Zone
               </CardTitle>
               <CardDescription>
-                Permanently delete your account and all data
+                Delete your account and erase all your data
               </CardDescription>
             </CardHeader>
             <CardContent className="relative">
@@ -876,15 +878,24 @@ export default function ProfilePage() {
                           <AlertTriangle className="h-5 w-5 text-destructive" />
                           Are you sure you want to delete your account?
                         </AlertDialogTitle>
-                        <AlertDialogDescription>
-                          This action cannot be undone. This will permanently delete your
-                          account and remove all your data from our servers, including:
-                          <ul className="mt-2 ml-4 list-disc text-sm space-y-1">
-                            <li>Your profile and personal information</li>
-                            <li>All job applications and history</li>
-                            <li>Reviews and ratings</li>
-                            <li>Saved careers and preferences</li>
-                          </ul>
+                        <AlertDialogDescription asChild>
+                          <div className="text-left">
+                            <p>
+                              We&apos;ll sign you out straight away and schedule your account
+                              for deletion. After 30 days everything below is erased
+                              permanently and cannot be recovered:
+                            </p>
+                            <ul className="mt-2 ml-4 list-disc text-sm space-y-1">
+                              <li>Your profile and personal information</li>
+                              <li>Your Journey progress, reflections and notes</li>
+                              <li>Saved careers, comparisons and preferences</li>
+                              <li>Career Twin conversations</li>
+                            </ul>
+                            <p className="mt-3">
+                              Changed your mind? Signing back in within those 30 days
+                              cancels the deletion and restores your account.
+                            </p>
+                          </div>
                         </AlertDialogDescription>
                       </AlertDialogHeader>
                       <AlertDialogFooter className="flex-col sm:flex-row gap-2 sm:gap-0">
@@ -910,8 +921,9 @@ export default function ProfilePage() {
                         <AlertDialogDescription asChild>
                           <div>
                             <p className="mb-4">
-                              This is your last chance to cancel. Once deleted, your account
-                              and all associated data will be permanently removed and cannot be recovered.
+                              Your account is deactivated as soon as you confirm, and
+                              permanently erased 30 days later. Signing back in before then
+                              is the only way to cancel it.
                             </p>
                             <div className="space-y-2">
                               <Label htmlFor="delete-confirm" className="text-foreground font-medium">
@@ -950,7 +962,7 @@ export default function ProfilePage() {
                           disabled={deleteConfirmText !== "DELETE" || deleteAccountMutation.isPending}
                           className="h-11 sm:h-10 w-full sm:w-auto"
                         >
-                          {deleteAccountMutation.isPending ? "Deleting..." : "Permanently Delete Account"}
+                          {deleteAccountMutation.isPending ? "Deleting..." : "Delete My Account"}
                         </Button>
                       </AlertDialogFooter>
                     </>

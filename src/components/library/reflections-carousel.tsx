@@ -105,7 +105,7 @@ export function ReflectionsCarousel({ groups }: { groups: ReflectionGroup[] }) {
             type="button"
             onClick={() => go(-1)}
             aria-label="Previous career"
-            className="inline-flex h-7 w-7 items-center justify-center rounded-full border border-border/60 bg-card/40 text-muted-foreground/70 transition-colors hover:text-foreground hover:border-border"
+            className="inline-flex h-9 w-9 sm:h-7 sm:w-7 items-center justify-center rounded-full border border-border/60 bg-card/40 text-muted-foreground/70 transition-colors hover:text-foreground hover:border-border"
           >
             <ChevronUp className="h-4 w-4" />
           </button>
@@ -224,11 +224,18 @@ export function ReflectionsCarousel({ groups }: { groups: ReflectionGroup[] }) {
             type="button"
             onClick={() => go(1)}
             aria-label="Next career"
-            className="inline-flex h-7 w-7 items-center justify-center rounded-full border border-border/60 bg-card/40 text-muted-foreground/70 transition-colors hover:text-foreground hover:border-border"
+            className="inline-flex h-9 w-9 sm:h-7 sm:w-7 items-center justify-center rounded-full border border-border/60 bg-card/40 text-muted-foreground/70 transition-colors hover:text-foreground hover:border-border"
           >
             <ChevronDown className="h-4 w-4" />
           </button>
-          <div className="flex items-center gap-1.5">
+          {/* The dots themselves stay 6px — that IS the design — but the
+              BUTTON around each one is padded out to a real target. The dots
+              sit 6px apart, far too close for `.hit-44` (44px areas 12px
+              apart would hand almost every tap to a neighbour), so the box
+              grows vertically, where there is nothing to collide with, plus
+              a little horizontally. The row keeps its visual rhythm because
+              the padding is transparent. */}
+          <div className="flex items-center gap-0.5 sm:gap-1.5">
             {groups.map((g, i) => (
               <button
                 key={g.slug}
@@ -236,13 +243,17 @@ export function ReflectionsCarousel({ groups }: { groups: ReflectionGroup[] }) {
                 onClick={() => jumpTo(i)}
                 aria-label={`Show ${g.career.label}`}
                 aria-current={i === safeIndex}
-                className={cn(
-                  "h-1.5 rounded-full transition-all",
-                  i === safeIndex
-                    ? "w-4 bg-primary"
-                    : "w-1.5 bg-muted-foreground/30 hover:bg-muted-foreground/50",
-                )}
-              />
+                className="flex items-center justify-center px-1 py-2.5 sm:p-0"
+              >
+                <span
+                  className={cn(
+                    "block h-1.5 rounded-full transition-all",
+                    i === safeIndex
+                      ? "w-4 bg-primary"
+                      : "w-1.5 bg-muted-foreground/30 hover:bg-muted-foreground/50",
+                  )}
+                />
+              </button>
             ))}
           </div>
           <span className="text-[11px] tabular-nums text-muted-foreground/60">

@@ -99,8 +99,8 @@ export function ReflectionPanel({
       className={cn(
         "fixed z-40 flex flex-col border bg-card/95 backdrop-blur-sm shadow-xl rounded-t-xl sm:rounded-xl overflow-hidden transition-all",
         isMobile
-          ? "inset-x-0 bottom-0 max-h-[55vh]"
-          : "bottom-6 left-6 w-80 max-h-[50vh]"
+          ? "inset-x-0 bottom-0 max-h-[55dvh]"
+          : "bottom-6 left-6 w-80 max-h-[50dvh]"
       )}
     >
       {/* Header */}

@@ -69,7 +69,7 @@ export default function LibraryPage() {
       <div
         role="tablist"
         aria-label="My Library sections"
-        className="flex gap-1.5 mb-5 border-b border-border/60"
+        className="flex gap-1.5 mb-5 border-b border-border/60 overflow-x-auto no-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0 [&>button]:shrink-0"
       >
         {LIBRARY_TABS.map((t) => (
           <button

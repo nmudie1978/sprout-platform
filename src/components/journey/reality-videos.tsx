@@ -64,13 +64,13 @@ export function RealityVideos({
           Real voices
         </p>
         {videos.length > 1 && (
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-2 sm:gap-1">
             <button
               type="button"
               onClick={() => scrollByPage(-1)}
               disabled={atStart}
               aria-label="Previous videos"
-              className="flex h-6 w-6 items-center justify-center rounded-full border border-border/40 text-muted-foreground/70 transition-colors hover:text-foreground enabled:hover:border-border disabled:opacity-30"
+              className="flex h-9 w-9 sm:h-6 sm:w-6 items-center justify-center rounded-full border border-border/40 text-muted-foreground/70 transition-colors hover:text-foreground enabled:hover:border-border disabled:opacity-30"
             >
               <ChevronLeft className="h-3.5 w-3.5" />
             </button>
@@ -79,7 +79,7 @@ export function RealityVideos({
               onClick={() => scrollByPage(1)}
               disabled={atEnd}
               aria-label="More videos"
-              className="flex h-6 w-6 items-center justify-center rounded-full border border-border/40 text-muted-foreground/70 transition-colors hover:text-foreground enabled:hover:border-border disabled:opacity-30"
+              className="flex h-9 w-9 sm:h-6 sm:w-6 items-center justify-center rounded-full border border-border/40 text-muted-foreground/70 transition-colors hover:text-foreground enabled:hover:border-border disabled:opacity-30"
             >
               <ChevronRight className="h-3.5 w-3.5" />
             </button>

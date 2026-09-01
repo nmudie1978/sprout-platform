@@ -219,7 +219,9 @@ export default function AdminOrganisationsPage() {
         </div>
       ) : (
         <div className="rounded-lg border border-slate-700/50 overflow-hidden">
-          <table className="w-full text-sm">
+          {/* Horizontal scroll rather than a squeezed/clipped 5-column grid on a phone. */}
+          <div className="overflow-x-auto">
+          <table className="w-full min-w-[640px] text-sm">
             <thead className="bg-slate-800/80 text-slate-400 text-xs uppercase tracking-wide">
               <tr>
                 <th className="text-left font-medium px-4 py-2.5">Organisation</th>
@@ -290,6 +292,7 @@ export default function AdminOrganisationsPage() {
               ))}
             </tbody>
           </table>
+          </div>
         </div>
       )}
 

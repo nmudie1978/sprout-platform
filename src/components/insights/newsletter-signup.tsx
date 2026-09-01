@@ -54,7 +54,7 @@ export function NewsletterSignup() {
         placeholder="Your email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
-        className="h-9 text-sm"
+        className="h-11 sm:h-9 text-sm"
         required
       />
       <Button type="submit" size="sm" disabled={isLoading} className="shrink-0">

@@ -27,6 +27,7 @@ import { CompareModal } from "@/components/compare/compare-modal";
 import { toast } from "@/hooks/use-toast";
 import { SavedComparisonsTray } from "@/components/career-radar/saved-comparisons-tray";
 import { SavedCareersTray } from "@/components/career-radar/saved-careers-tray";
+import { useMediaQuery } from "@/hooks/use-media-query";
 
 /* ── Preset filters ────────────────────────────────────────────── */
 
@@ -2189,6 +2190,12 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
   }, [compareShortlist]);
   const [hovered, setHovered] = useState<PlacedDot | null>(null);
   const [zoom, setZoom] = useState(1);
+  // The radar SVG scales to its container, so every unit inside the viewBox
+  // shrinks with it. At 9 units the eight axis labels render at roughly 5.5px
+  // on a 320px phone — unreadable, and the kind of thing that forces a
+  // pinch-zoom. Below the board's intrinsic width they get scaled back up.
+  const isNarrowBoard = useMediaQuery("(max-width: 520px)");
+  const axisLabelSize = isNarrowBoard ? 14 : 9;
   // Multi-select tier filter — start with everything visible.
   // The active goal is always shown regardless of which tiers are toggled.
   type Tier = "top" | "strong" | "good";
@@ -2442,7 +2449,7 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
           topMatch && "bg-pink-500/[0.06]"
         )}
       >
-        <td className="px-3 py-1 align-middle">
+        <td className="px-3 py-2.5 sm:py-1 align-middle">
           <div className="flex items-center gap-2 min-w-0">
             <span className="text-sm leading-none shrink-0">{career.emoji}</span>
             <span className="text-foreground font-medium truncate">{career.title}</span>
@@ -2457,7 +2464,7 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
         <td className="hidden sm:table-cell px-3 py-1 align-middle text-foreground/70 whitespace-nowrap">
           {formatSalaryShort(career.avgSalary)}
         </td>
-        <td className="px-3 py-1 align-middle text-center">
+        <td className="px-3 py-2.5 sm:py-1 align-middle text-center">
           <span
             className={cn(
               "inline-block h-2.5 w-2.5 rounded-full cursor-help",
@@ -2486,7 +2493,7 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
               compareShortlist.toggle(career);
             }}
             className={cn(
-              "inline-flex items-center justify-center h-5 w-5 rounded border transition-all",
+              "inline-flex items-center justify-center h-7 w-7 sm:h-5 sm:w-5 rounded border transition-all",
               inList
                 ? "bg-teal-500/25 border-teal-500/60 text-teal-200 hover:bg-teal-500/35"
                 : "border-teal-500/30 text-teal-400/70 hover:border-teal-500/60 hover:text-teal-300 hover:bg-teal-500/15"
@@ -2678,7 +2685,7 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
                 onClick={() => {
                   setPresetFilter(null);
                 }}
-                className="absolute right-1 h-5 w-5 flex items-center justify-center rounded text-teal-700 dark:text-teal-400 hover:bg-teal-500/20"
+                className="absolute right-1 h-7 w-7 sm:h-5 sm:w-5 flex items-center justify-center rounded text-teal-700 dark:text-teal-400 hover:bg-teal-500/20"
                 title="Clear preset filter"
                 aria-label="Clear preset filter"
               >
@@ -2694,7 +2701,7 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
               type="button"
               onClick={zoomOut}
               disabled={zoom <= ZOOM_MIN}
-              className="h-7 w-7 flex items-center justify-center hover:bg-muted rounded-l-md disabled:opacity-40 disabled:cursor-not-allowed"
+              className="h-9 w-9 sm:h-7 sm:w-7 flex items-center justify-center hover:bg-muted rounded-l-md disabled:opacity-40 disabled:cursor-not-allowed"
               aria-label="Zoom out"
             >
               <ZoomOut className="h-3.5 w-3.5" />
@@ -2702,7 +2709,7 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
             <button
               type="button"
               onClick={zoomReset}
-              className="h-7 px-1.5 text-[10px] tabular-nums hover:bg-muted border-x"
+              className="h-9 sm:h-7 px-2.5 sm:px-1.5 text-[10px] tabular-nums hover:bg-muted border-x"
               aria-label="Reset zoom"
               title="Reset zoom"
             >
@@ -2712,7 +2719,7 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
               type="button"
               onClick={zoomIn}
               disabled={zoom >= ZOOM_MAX}
-              className="h-7 w-7 flex items-center justify-center hover:bg-muted rounded-r-md disabled:opacity-40 disabled:cursor-not-allowed"
+              className="h-9 w-9 sm:h-7 sm:w-7 flex items-center justify-center hover:bg-muted rounded-r-md disabled:opacity-40 disabled:cursor-not-allowed"
               aria-label="Zoom in"
             >
               <ZoomIn className="h-3.5 w-3.5" />
@@ -2838,7 +2845,7 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
                 textAnchor={anchor}
                 dominantBaseline="middle"
                 className="fill-muted-foreground"
-                style={{ fontSize: 9 }}
+                style={{ fontSize: axisLabelSize }}
               >
                 {CATEGORY_LABEL[cat]}
               </text>
@@ -3114,12 +3121,12 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
                 </span>
               </div>
               {bands.length > 1 && (
-                <div className="flex items-center gap-1">
+                <div className="flex items-center gap-2 sm:gap-1">
                   <button
                     type="button"
                     onClick={() => goTo(Math.max(0, safeIdx - 1))}
                     disabled={safeIdx === 0}
-                    className="h-6 w-6 flex items-center justify-center rounded-md border bg-background hover:bg-muted disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                    className="h-9 w-9 sm:h-6 sm:w-6 flex items-center justify-center rounded-md border bg-background hover:bg-muted disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
                     aria-label="Previous band"
                   >
                     <ChevronLeft className="h-3.5 w-3.5" />
@@ -3128,7 +3135,7 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
                     type="button"
                     onClick={() => goTo(Math.min(bands.length - 1, safeIdx + 1))}
                     disabled={safeIdx >= bands.length - 1}
-                    className="h-6 w-6 flex items-center justify-center rounded-md border bg-background hover:bg-muted disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                    className="h-9 w-9 sm:h-6 sm:w-6 flex items-center justify-center rounded-md border bg-background hover:bg-muted disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
                     aria-label="Next band"
                   >
                     <ChevronRight className="h-3.5 w-3.5" />
@@ -3299,7 +3306,7 @@ function CompareVault({
                     onClick={() => onRemove(career.id)}
                     title={`Remove ${career.title}`}
                     aria-label={`Remove ${career.title}`}
-                    className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-rose-500 hover:bg-rose-400 text-white flex items-center justify-center shadow-md ring-2 ring-background transition-all hover:scale-125"
+                    className="absolute -top-1 -right-1 h-5 w-5 sm:h-4 sm:w-4 rounded-full bg-rose-500 hover:bg-rose-400 text-white flex items-center justify-center shadow-md ring-2 ring-background transition-all hover:scale-125"
                   >
                     <X className="h-2.5 w-2.5" strokeWidth={3} />
                   </button>

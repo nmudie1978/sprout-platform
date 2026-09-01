@@ -366,9 +366,9 @@ export default function WhitePaperPage() {
             items={[
               { kind: "no", text: "Free-text chat between minors and adults" },
               { kind: "no", text: "In-app payments" },
-              { kind: "yes", text: "Verified adult accounts before posting" },
-              { kind: "yes", text: "One-tap report on every profile and job" },
-              { kind: "yes", text: "Guardian consent is first-class" },
+              { kind: "no", text: "Follower counts, leaderboards or public rankings" },
+              { kind: "yes", text: "One-tap report on any profile or content" },
+              { kind: "yes", text: "Every report lands in an admin moderation queue" },
             ]}
           />
 
@@ -587,19 +587,18 @@ export default function WhitePaperPage() {
 
         <ModuleCard
           icon={UserCog}
-          title="Parent / Guardian Dashboard"
-          tagline="How is my child doing on the platform?"
+          title="For Parents & Professionals"
+          tagline="How can I help the young person I know?"
         >
           <p>
-            Parents and guardians have a first-class dashboard — not an
-            afterthought.
+            Adults take part by contributing what they know — not by monitoring
+            a young person&rsquo;s account.
           </p>
           <Bullets
             items={[
-              "Visibility of the child's career exploration (which careers they've viewed, set as goals).",
-              "View of job applications and job-related interactions.",
-              "Safety reports and alerts linked to the child's account.",
-              "Guardian consent flow, including ability to unlink or escalate.",
+              "A dedicated page explaining how parents and professionals can help someone explore careers.",
+              "Share your own real career path — the route you actually took, including the detours.",
+              "Contributions are moderated before publication, then shown back to students as Real Career Paths.",
               "A calm, non-surveillant tone — built to support, not surveil.",
             ]}
           />

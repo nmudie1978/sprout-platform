@@ -400,7 +400,8 @@ export default function AdminOrganisationDetailPage({
             <EmptyPanel message="No administrative activity recorded yet." />
           ) : (
             <div className="rounded-lg border border-slate-700/50 overflow-hidden">
-              <table className="w-full text-sm">
+              <div className="overflow-x-auto">
+              <table className="w-full min-w-[560px] text-sm">
                 <tbody className="divide-y divide-slate-800">
                   {organisation.recentAudit.map((entry) => (
                     <tr key={entry.id} className="hover:bg-slate-800/40">
@@ -417,6 +418,7 @@ export default function AdminOrganisationDetailPage({
                   ))}
                 </tbody>
               </table>
+              </div>
             </div>
           )}
         </TabsContent>

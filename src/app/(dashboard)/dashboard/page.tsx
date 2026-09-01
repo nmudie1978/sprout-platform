@@ -366,7 +366,7 @@ function DidYouKnowCard() {
           <span className="text-xs text-muted-foreground shrink-0 mt-0.5">{fact.source}</span>
           <button
             onClick={refresh}
-            className="p-1 rounded-control text-muted-foreground/70 hover:text-foreground transition-colors shrink-0 hit-44"
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-control text-muted-foreground/70 hover:text-foreground transition-colors sm:h-auto sm:w-auto sm:p-1"
             title="Show another fact"
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 16h5v5"/></svg>
@@ -752,7 +752,7 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="min-h-[100vh] text-foreground dark:bg-background">
+    <div className="min-h-[100dvh] text-foreground dark:bg-background">
       {/* Guided orientation walkthrough — explains the platform. The user
           stays on the dashboard after finishing or cancelling it. */}
       <OrientationWalkthrough
@@ -796,9 +796,12 @@ export default function DashboardPage() {
 
       <div className="max-w-4xl mx-auto px-3 sm:px-6 py-4 sm:py-5">
         {/* ── Header ─────────────────────────────────────────── */}
-        <div className="flex items-center justify-between mb-4 sm:mb-5">
-          <div className="flex items-center gap-2.5">
-            <h1 className="text-xl sm:text-2xl font-semibold tracking-tight text-foreground">
+        <div className="flex items-center justify-between gap-2 mb-4 sm:mb-5">
+          <div className="flex min-w-0 items-center gap-2.5">
+            {/* `min-w-0` + `truncate`: the greeting carries a full display
+                name, and on a 320px screen it pushed the walkthrough /
+                language / date cluster clean off the right edge. */}
+            <h1 className="min-w-0 truncate text-lg sm:text-2xl font-semibold tracking-tight text-foreground">
               {isFirstLogin ? (
                 <>{t('greeting.welcome')}, <span className="text-foreground">{displayName}</span></>
               ) : (
@@ -823,13 +826,13 @@ export default function DashboardPage() {
               );
             })()}
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex shrink-0 items-center gap-2 sm:gap-3">
             {/* Replay walkthrough */}
             {!isFirstLogin && session?.user.role === "YOUTH" && (
               <button
                 type="button"
                 onClick={() => { isReplayRef.current = true; setShowOnboardingWizard(true); }}
-                className="h-7 w-7 rounded-pill border border-border/40 bg-background/60 flex items-center justify-center text-muted-foreground/70 hover:text-foreground hover:bg-muted/40 transition-colors hit-44"
+                className="h-9 w-9 sm:h-7 sm:w-7 rounded-pill border border-border/40 bg-background/60 flex items-center justify-center text-muted-foreground/70 hover:text-foreground hover:bg-muted/40 transition-colors"
                 title="Replay app walkthrough"
               >
                 <Compass className="h-3.5 w-3.5" />
@@ -839,7 +842,9 @@ export default function DashboardPage() {
                 control. This is the app's language entry point (the persistent
                 top bar was removed to save space). */}
             <LanguageDropdown iconOnly />
-            <span className="text-sm text-foreground/85">
+            {/* The date is orientation, not a control — it's the first
+                thing to give up its space on a narrow phone. */}
+            <span className="hidden sm:inline text-sm text-foreground/85">
               {dateStr}
             </span>
             {/* Guardian-consent signal — static dot with tooltip */}
@@ -871,7 +876,7 @@ export default function DashboardPage() {
                 <Link
                   href="/profile"
                   title={pct === 100 ? 'Profile complete' : `Profile ${pct}% complete`}
-                  className="relative p-1.5 rounded-control hover:bg-muted/50 transition-colors group hit-44"
+                  className="relative flex h-9 w-9 items-center justify-center rounded-control hover:bg-muted/50 transition-colors group sm:h-7 sm:w-7"
                 >
                   <User className="h-4 w-4 text-muted-foreground/70 group-hover:text-muted-foreground transition-colors" />
                 </Link>
@@ -1091,7 +1096,8 @@ export default function DashboardPage() {
             return (
               <>
                 <div className="rounded-control border border-border/60 overflow-hidden">
-                  <table className="w-full text-left">
+                  <div className="overflow-x-auto">
+                  <table className="w-full min-w-[320px] text-left">
                     <thead>
                       <tr className="text-xs font-semibold uppercase tracking-wider text-muted-foreground/70 border-b border-border/40 bg-muted/20">
                         <th className="px-2.5 py-1.5">{t('exploredJourneys.career')}</th>
@@ -1158,7 +1164,7 @@ export default function DashboardPage() {
                                     e.stopPropagation();
                                     removeExploredJourney(goal.goalId);
                                   }}
-                                  className="p-0.5 rounded-control hit-44 text-muted-foreground/20 hover:text-destructive hover:bg-destructive/10 transition-colors"
+                                  className="flex h-8 w-8 items-center justify-center rounded-control text-muted-foreground/20 hover:text-destructive hover:bg-destructive/10 transition-colors sm:h-6 sm:w-6"
                                   title="Remove journey"
                                   aria-label={`Remove ${goal.goalTitle}`}
                                 >
@@ -1171,13 +1177,14 @@ export default function DashboardPage() {
                       })}
                     </tbody>
                   </table>
+                  </div>
                 </div>
                 {totalPages > 1 && (
                   <div className="flex items-center justify-center gap-2 mt-2">
                     <button
                       onClick={() => setJourneyPage((p) => Math.max(0, p - 1))}
                       disabled={page === 0}
-                      className="p-0.5 rounded-control hit-44 text-muted-foreground/60 hover:text-muted-foreground/60 disabled:opacity-30 transition-colors"
+                      className="flex h-9 w-9 items-center justify-center rounded-control text-muted-foreground/60 hover:text-muted-foreground/60 disabled:opacity-30 transition-colors sm:h-auto sm:w-auto sm:p-0.5"
                     >
                       <ChevronLeft className="h-3 w-3" />
                     </button>
@@ -1185,7 +1192,7 @@ export default function DashboardPage() {
                     <button
                       onClick={() => setJourneyPage((p) => Math.min(totalPages - 1, p + 1))}
                       disabled={page >= totalPages - 1}
-                      className="p-0.5 rounded-control hit-44 text-muted-foreground/60 hover:text-muted-foreground/60 disabled:opacity-30 transition-colors"
+                      className="flex h-9 w-9 items-center justify-center rounded-control text-muted-foreground/60 hover:text-muted-foreground/60 disabled:opacity-30 transition-colors sm:h-auto sm:w-auto sm:p-0.5"
                     >
                       <ChevronRight className="h-3 w-3" />
                     </button>
@@ -1276,7 +1283,7 @@ export default function DashboardPage() {
                           e.stopPropagation();
                           removeCuriosity(c.careerId);
                         }}
-                        className="p-0.5 rounded-control hit-44 text-muted-foreground/20 hover:text-destructive hover:bg-destructive/10 transition-colors shrink-0"
+                        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-control text-muted-foreground/20 hover:text-destructive hover:bg-destructive/10 transition-colors sm:h-6 sm:w-6"
                         title="Remove"
                         aria-label={`Remove ${c.careerTitle}`}
                       >
@@ -1291,7 +1298,7 @@ export default function DashboardPage() {
                       type="button"
                       onClick={() => setSavedCareersPage((p) => Math.max(0, p - 1))}
                       disabled={savedCareersPage === 0}
-                      className="p-0.5 hit-44 text-muted-foreground/70 hover:text-foreground disabled:opacity-30 disabled:cursor-not-allowed"
+                      className="flex h-9 w-9 items-center justify-center text-muted-foreground/70 hover:text-foreground disabled:opacity-30 disabled:cursor-not-allowed sm:h-auto sm:w-auto sm:p-0.5"
                       aria-label={t('common.previousPage')}
                     >
                       <ChevronLeft className="h-3 w-3" />
@@ -1303,7 +1310,7 @@ export default function DashboardPage() {
                       type="button"
                       onClick={() => setSavedCareersPage((p) => Math.min(savedCareersPageCount - 1, p + 1))}
                       disabled={savedCareersPage >= savedCareersPageCount - 1}
-                      className="p-0.5 hit-44 text-muted-foreground/70 hover:text-foreground disabled:opacity-30 disabled:cursor-not-allowed"
+                      className="flex h-9 w-9 items-center justify-center text-muted-foreground/70 hover:text-foreground disabled:opacity-30 disabled:cursor-not-allowed sm:h-auto sm:w-auto sm:p-0.5"
                       aria-label={t('common.nextPage')}
                     >
                       <ChevronRight className="h-3 w-3" />

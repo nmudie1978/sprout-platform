@@ -415,7 +415,7 @@ function SectionHeader({ icon: Icon, title, badge, tooltip, collapsed, onToggle,
 
 function EmptyState({ icon: Icon, message }: { icon: typeof Target; message: string }) {
   return (
-    <div className="rounded-card border border-dashed border-border/30 p-12 text-center">
+    <div className="rounded-card border border-dashed border-border/30 p-6 sm:p-12 text-center">
       <Icon className="h-10 w-10 mx-auto text-muted-foreground/20 mb-3" />
       <p className="text-sm text-muted-foreground/70">{message}</p>
     </div>
@@ -850,7 +850,7 @@ function DiscoverTab({
       {showSalaryPopup && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60" onClick={() => setShowSalaryPopup(false)}>
           <div
-            className="bg-card border border-border/40 rounded-card max-w-2xl w-full p-5 shadow-sm max-h-[80vh] overflow-y-auto"
+            className="bg-card border border-border/40 rounded-card max-w-2xl w-full p-5 shadow-sm max-h-[80dvh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-4">
@@ -1011,18 +1011,18 @@ function UnderstandTab({
           <div className="p-4 sm:p-5">
             <Tabs defaultValue="tasks" className="w-full">
               <TabsList className={cn('grid w-full h-auto p-0 bg-transparent gap-0 border-b border-border/40 rounded-none', career?.id && hasMyths(career.id) ? 'grid-cols-4' : 'grid-cols-3')}>
-                <TabsTrigger value="tasks" className="relative rounded-none border-0 bg-transparent px-4 py-3.5 text-sm font-semibold text-muted-foreground/65 hover:text-foreground/85 transition-colors data-[state=active]:bg-muted/20 data-[state=active]:text-foreground data-[state=active]:shadow-none after:content-[''] after:absolute after:left-0 after:right-0 after:-bottom-px after:h-0.5 after:bg-primary after:scale-x-0 after:transition-transform after:duration-200 data-[state=active]:after:scale-x-100">
-                  <span className="inline-flex items-center gap-2"><Briefcase className="h-4 w-4" />What You&apos;ll Do</span>
+                <TabsTrigger value="tasks" className="relative rounded-none border-0 bg-transparent px-1.5 py-3 text-xs sm:px-4 sm:py-3.5 sm:text-sm font-semibold text-muted-foreground/65 hover:text-foreground/85 transition-colors data-[state=active]:bg-muted/20 data-[state=active]:text-foreground data-[state=active]:shadow-none after:content-[''] after:absolute after:left-0 after:right-0 after:-bottom-px after:h-0.5 after:bg-primary after:scale-x-0 after:transition-transform after:duration-200 data-[state=active]:after:scale-x-100">
+                  <span className="inline-flex flex-col items-center gap-1 sm:flex-row sm:gap-2"><Briefcase className="h-4 w-4" />What You&apos;ll Do</span>
                 </TabsTrigger>
-                <TabsTrigger value="reality" className="relative rounded-none border-0 bg-transparent px-4 py-3.5 text-sm font-semibold text-muted-foreground/65 hover:text-foreground/85 transition-colors data-[state=active]:bg-muted/20 data-[state=active]:text-foreground data-[state=active]:shadow-none after:content-[''] after:absolute after:left-0 after:right-0 after:-bottom-px after:h-0.5 after:bg-primary after:scale-x-0 after:transition-transform after:duration-200 data-[state=active]:after:scale-x-100">
-                  <span className="inline-flex items-center gap-2"><Eye className="h-4 w-4" />The Reality</span>
+                <TabsTrigger value="reality" className="relative rounded-none border-0 bg-transparent px-1.5 py-3 text-xs sm:px-4 sm:py-3.5 sm:text-sm font-semibold text-muted-foreground/65 hover:text-foreground/85 transition-colors data-[state=active]:bg-muted/20 data-[state=active]:text-foreground data-[state=active]:shadow-none after:content-[''] after:absolute after:left-0 after:right-0 after:-bottom-px after:h-0.5 after:bg-primary after:scale-x-0 after:transition-transform after:duration-200 data-[state=active]:after:scale-x-100">
+                  <span className="inline-flex flex-col items-center gap-1 sm:flex-row sm:gap-2"><Eye className="h-4 w-4" />The Reality</span>
                 </TabsTrigger>
-                <TabsTrigger value="tools" className="relative rounded-none border-0 bg-transparent px-4 py-3.5 text-sm font-semibold text-muted-foreground/65 hover:text-foreground/85 transition-colors data-[state=active]:bg-muted/20 data-[state=active]:text-foreground data-[state=active]:shadow-none after:content-[''] after:absolute after:left-0 after:right-0 after:-bottom-px after:h-0.5 after:bg-primary after:scale-x-0 after:transition-transform after:duration-200 data-[state=active]:after:scale-x-100">
-                  <span className="inline-flex items-center gap-2"><Wrench className="h-4 w-4" />Tools</span>
+                <TabsTrigger value="tools" className="relative rounded-none border-0 bg-transparent px-1.5 py-3 text-xs sm:px-4 sm:py-3.5 sm:text-sm font-semibold text-muted-foreground/65 hover:text-foreground/85 transition-colors data-[state=active]:bg-muted/20 data-[state=active]:text-foreground data-[state=active]:shadow-none after:content-[''] after:absolute after:left-0 after:right-0 after:-bottom-px after:h-0.5 after:bg-primary after:scale-x-0 after:transition-transform after:duration-200 data-[state=active]:after:scale-x-100">
+                  <span className="inline-flex flex-col items-center gap-1 sm:flex-row sm:gap-2"><Wrench className="h-4 w-4" />Tools</span>
                 </TabsTrigger>
                 {career?.id && hasMyths(career.id) && (
-                  <TabsTrigger value="myths" className="relative rounded-none border-0 bg-transparent px-4 py-3.5 text-sm font-semibold text-muted-foreground/65 hover:text-foreground/85 transition-colors data-[state=active]:bg-muted/20 data-[state=active]:text-foreground data-[state=active]:shadow-none after:content-[''] after:absolute after:left-0 after:right-0 after:-bottom-px after:h-0.5 after:bg-primary after:scale-x-0 after:transition-transform after:duration-200 data-[state=active]:after:scale-x-100">
-                    <span className="inline-flex items-center gap-2"><Shield className="h-4 w-4" />Misconceptions</span>
+                  <TabsTrigger value="myths" className="relative rounded-none border-0 bg-transparent px-1.5 py-3 text-xs sm:px-4 sm:py-3.5 sm:text-sm font-semibold text-muted-foreground/65 hover:text-foreground/85 transition-colors data-[state=active]:bg-muted/20 data-[state=active]:text-foreground data-[state=active]:shadow-none after:content-[''] after:absolute after:left-0 after:right-0 after:-bottom-px after:h-0.5 after:bg-primary after:scale-x-0 after:transition-transform after:duration-200 data-[state=active]:after:scale-x-100">
+                    <span className="inline-flex flex-col items-center gap-1 sm:flex-row sm:gap-2"><Shield className="h-4 w-4" />Misconceptions</span>
                   </TabsTrigger>
                 )}
               </TabsList>
@@ -1239,11 +1239,11 @@ function UnderstandTab({
             <div className="p-4 sm:p-5">
               <Tabs defaultValue="day" className="w-full">
                 <TabsList className="grid w-full grid-cols-2 h-auto p-0 bg-transparent gap-0 border-b border-border/40 rounded-none">
-                  <TabsTrigger value="day" className="relative rounded-none border-0 bg-transparent px-4 py-3.5 text-sm font-semibold text-muted-foreground/65 hover:text-foreground/85 transition-colors data-[state=active]:bg-muted/20 data-[state=active]:text-foreground data-[state=active]:shadow-none after:content-[''] after:absolute after:left-0 after:right-0 after:-bottom-px after:h-0.5 after:bg-primary after:scale-x-0 after:transition-transform after:duration-200 data-[state=active]:after:scale-x-100">
-                    <span className="inline-flex items-center gap-2"><Clock className="h-4 w-4" />A Typical Day</span>
+                  <TabsTrigger value="day" className="relative rounded-none border-0 bg-transparent px-1.5 py-3 text-xs sm:px-4 sm:py-3.5 sm:text-sm font-semibold text-muted-foreground/65 hover:text-foreground/85 transition-colors data-[state=active]:bg-muted/20 data-[state=active]:text-foreground data-[state=active]:shadow-none after:content-[''] after:absolute after:left-0 after:right-0 after:-bottom-px after:h-0.5 after:bg-primary after:scale-x-0 after:transition-transform after:duration-200 data-[state=active]:after:scale-x-100">
+                    <span className="inline-flex flex-col items-center gap-1 sm:flex-row sm:gap-2"><Clock className="h-4 w-4" />A Typical Day</span>
                   </TabsTrigger>
-                  <TabsTrigger value="employers" className="relative rounded-none border-0 bg-transparent px-4 py-3.5 text-sm font-semibold text-muted-foreground/65 hover:text-foreground/85 transition-colors data-[state=active]:bg-muted/20 data-[state=active]:text-foreground data-[state=active]:shadow-none after:content-[''] after:absolute after:left-0 after:right-0 after:-bottom-px after:h-0.5 after:bg-primary after:scale-x-0 after:transition-transform after:duration-200 data-[state=active]:after:scale-x-100">
-                    <span className="inline-flex items-center gap-2"><Building2 className="h-4 w-4" />Where People Work</span>
+                  <TabsTrigger value="employers" className="relative rounded-none border-0 bg-transparent px-1.5 py-3 text-xs sm:px-4 sm:py-3.5 sm:text-sm font-semibold text-muted-foreground/65 hover:text-foreground/85 transition-colors data-[state=active]:bg-muted/20 data-[state=active]:text-foreground data-[state=active]:shadow-none after:content-[''] after:absolute after:left-0 after:right-0 after:-bottom-px after:h-0.5 after:bg-primary after:scale-x-0 after:transition-transform after:duration-200 data-[state=active]:after:scale-x-100">
+                    <span className="inline-flex flex-col items-center gap-1 sm:flex-row sm:gap-2"><Building2 className="h-4 w-4" />Where People Work</span>
                   </TabsTrigger>
                 </TabsList>
 
@@ -1441,7 +1441,7 @@ function UnderstandTab({
                       value="readiness"
                       className="
                         relative rounded-none border-0 bg-transparent
-                        px-4 py-3.5 text-sm font-semibold
+                        px-1.5 py-3 text-xs sm:px-4 sm:py-3.5 sm:text-sm font-semibold
                         text-muted-foreground/65 hover:text-foreground/85 transition-colors
                         data-[state=active]:bg-muted/20 data-[state=active]:text-foreground
                         data-[state=active]:shadow-none
@@ -1450,7 +1450,7 @@ function UnderstandTab({
                         data-[state=active]:after:scale-x-100
                       "
                     >
-                      <span className="inline-flex items-center gap-2">
+                      <span className="inline-flex flex-col items-center gap-1 sm:flex-row sm:gap-2">
                         <GraduationCap className="h-4 w-4" />
                         School Readiness
                       </span>
@@ -1459,7 +1459,7 @@ function UnderstandTab({
                       value="study-path"
                       className="
                         relative rounded-none border-0 bg-transparent
-                        px-4 py-3.5 text-sm font-semibold
+                        px-1.5 py-3 text-xs sm:px-4 sm:py-3.5 sm:text-sm font-semibold
                         text-muted-foreground/65 hover:text-foreground/85 transition-colors
                         data-[state=active]:bg-muted/20 data-[state=active]:text-foreground
                         data-[state=active]:shadow-none
@@ -1468,7 +1468,7 @@ function UnderstandTab({
                         data-[state=active]:after:scale-x-100
                       "
                     >
-                      <span className="inline-flex items-center gap-2">
+                      <span className="inline-flex flex-col items-center gap-1 sm:flex-row sm:gap-2">
                         <BookOpen className="h-4 w-4" />
                         Study Path
                       </span>
@@ -1478,7 +1478,7 @@ function UnderstandTab({
                         value="certifications"
                         className="
                           relative rounded-none border-0 bg-transparent
-                          px-4 py-3.5 text-sm font-semibold
+                          px-1.5 py-3 text-xs sm:px-4 sm:py-3.5 sm:text-sm font-semibold
                           text-muted-foreground/65 hover:text-foreground/85 transition-colors
                           data-[state=active]:bg-muted/20 data-[state=active]:text-foreground
                           data-[state=active]:shadow-none
@@ -1487,7 +1487,7 @@ function UnderstandTab({
                           data-[state=active]:after:scale-x-100
                         "
                       >
-                        <span className="inline-flex items-center gap-2">
+                        <span className="inline-flex flex-col items-center gap-1 sm:flex-row sm:gap-2">
                           <Award className="h-4 w-4" />
                           Certifications
                         </span>
@@ -3229,7 +3229,7 @@ export default function MyJourneyPage() {
             in place of the category icon, and are click-disabled. The
             native title attribute surfaces why the tab is locked so the
             user never has to guess. */}
-        <div className="grid grid-cols-3 gap-2 mb-6">
+        <div className="grid grid-cols-3 gap-1.5 sm:gap-2 mb-6">
           {tabs.map((tab) => {
             const TabIcon = tab.icon;
             const isActive = activeTab === tab.id;
@@ -3242,7 +3242,13 @@ export default function MyJourneyPage() {
                 aria-disabled={locked}
                 title={locked ? tab.lockedTooltip : tab.tooltip}
                 className={cn(
-                  'relative rounded-xl border px-4 py-3.5 text-left transition-all duration-200',
+                  // On a phone each tab is ~88px wide; the desktop px-4 left
+                  // only ~55px of content, which shredded the label and turned
+                  // the subtitle into a five-line paragraph. Mobile keeps the
+                  // icon + label stacked and centred, and drops the subtitle
+                  // (still available via the title attribute).
+                  'relative rounded-xl border px-1.5 py-2.5 text-center transition-all duration-200',
+                  'sm:px-4 sm:py-3.5 sm:text-left',
                   locked
                     ? 'border-border/20 bg-muted/10 cursor-not-allowed opacity-55'
                     : isActive
@@ -3261,7 +3267,7 @@ export default function MyJourneyPage() {
                   background: `linear-gradient(180deg, rgba(${tab.rgb},0.18) 0%, rgba(${tab.rgb},0.06) 100%)`,
                 } : undefined}
               >
-                <div className="flex items-center gap-2 mb-0.5">
+                <div className="flex flex-col items-center gap-1 sm:flex-row sm:gap-2 sm:mb-0.5">
                   {locked ? (
                     <Lock className="h-3.5 w-3.5 text-muted-foreground/65" />
                   ) : (
@@ -3269,7 +3275,7 @@ export default function MyJourneyPage() {
                   )}
                   <span
                     className={cn(
-                      'text-sm font-semibold',
+                      'text-xs leading-tight sm:text-sm font-semibold',
                       locked
                         ? 'text-muted-foreground/45'
                         : isActive
@@ -3282,7 +3288,7 @@ export default function MyJourneyPage() {
                 </div>
                 <p
                   className={cn(
-                    'text-[11px]',
+                    'hidden sm:block text-[11px]',
                     locked
                       ? 'text-muted-foreground/25'
                       : isActive

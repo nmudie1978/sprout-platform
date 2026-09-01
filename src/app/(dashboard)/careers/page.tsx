@@ -298,12 +298,17 @@ function CareersPageContent() {
     setShowAdvancedFilters((prev) => !prev);
   }, []);
 
-  // Reset advanced filters only (for mobile drawer reset)
+  // Reset every filter the mobile sheet owns — which is now all of them
+  // except the search box (kept, since it lives outside the sheet).
   const handleResetAdvanced = useCallback(() => {
     updateFilter("salaryRange", null);
     updateFilter("educationLevels", []);
     updateFilter("skills", []);
     updateFilter("careerNatures", []);
+    updateFilter("category", "ALL");
+    updateFilter("growthFilter", "all");
+    updateFilter("sector", "all");
+    updateFilter("academicDemand", "all");
   }, [updateFilter]);
 
   return (
@@ -349,17 +354,28 @@ function CareersPageContent() {
         selectedNatures={filters.careerNatures}
         onNatureToggle={handleNatureToggle}
         onSurprise={handleSurprise}
+        onOpenMobileFilters={() => setShowAdvancedFilters(true)}
+        activeFilterCount={activeChips.filter((c) => c.type !== "search").length}
       />
 
-      {/* Mobile Filter Drawer */}
+      {/* Mobile Filter Drawer — the bar's "Filters" button is its only
+          trigger, and it carries the whole filter set (the desktop bar is
+          hidden below sm). Previously this had no trigger at all, so the
+          advanced filters were simply unreachable on a phone. */}
       {isMobile && (
         <MobileFilterDrawer
           isOpen={showAdvancedFilters}
           onClose={() => setShowAdvancedFilters(false)}
           filters={filters}
+          categoryCounts={categoryCounts}
           salaryBounds={salaryBounds}
           resultCount={filteredCareers.length}
           onReset={handleResetAdvanced}
+          onCategoryChange={handleCategoryChange}
+          onGrowthChange={handleGrowthChange}
+          onSectorChange={handleSectorChange}
+          onAcademicDemandChange={handleAcademicDemandChange}
+          onSalaryChange={handleSalaryChange}
           onNatureToggle={handleNatureToggle}
         />
       )}
@@ -392,8 +408,8 @@ function CareersPageContent() {
         {/* Spacer mirroring the switcher's width so the count stays optically
             centred over the results rather than drifting left. */}
         <div className="hidden md:block w-[15.5rem]" aria-hidden="true" />
-        <div className="flex items-center justify-center gap-3 flex-1">
-        <p className="text-xs text-foreground/80 dark:text-muted-foreground">
+        <div className="flex min-w-0 items-center justify-center gap-3 flex-1">
+        <p className="min-w-0 truncate text-xs text-foreground/80 dark:text-muted-foreground">
           {totalItems > PAGE_SIZE ? (
             <>
               Showing {((validCurrentPage - 1) * PAGE_SIZE) + 1}–{Math.min(validCurrentPage * PAGE_SIZE, totalItems)} of {totalItems} career{totalItems !== 1 ? "s" : ""}
@@ -417,7 +433,7 @@ function CareersPageContent() {
           )}
         </div>
         </div>
-        <CareerViewSwitcher viewMode={viewMode} onChange={setViewMode} />
+        <CareerViewSwitcher viewMode={viewMode} onChange={setViewMode} className="shrink-0" />
       </div>
 
       {/* Results */}
@@ -441,22 +457,29 @@ function CareersPageContent() {
               it doesn't sit at the left edge leaving dead space on the
               right. Needs `grid` (not `inline-grid`) for mx-auto to take
               effect — inline-level elements ignore auto horizontal margin. */}
+          {/* One scroll container wrapping BOTH the header row and the body so
+              they scroll together. The full 8-column table is ~930px — wider
+              than every phone AND every portrait tablet — and the app shell
+              clips overflow, so without this the right-hand columns were
+              unreachable anywhere below ~950px, not just on phones. Below sm
+              the table collapses to three columns and this never scrolls. */}
+          <div className={viewMode === "list" ? "overflow-x-auto -mx-4 px-4 xl:mx-0 xl:px-0" : undefined}>
           {viewMode === "list" && (
-            <div className={`grid ${LIST_GRID} items-center gap-x-4 px-3 py-1 border border-border dark:border-border border-b-0 rounded-t-control bg-foreground/10 dark:bg-muted/30 backdrop-blur-sm text-xs font-semibold uppercase tracking-wider text-foreground/85 dark:text-muted-foreground/70 w-fit mx-auto`}>
+            <div className={`grid ${LIST_GRID} items-center gap-x-2 md:gap-x-4 px-3 py-1 border border-border dark:border-border border-b-0 rounded-t-control bg-foreground/10 dark:bg-muted/30 backdrop-blur-sm text-xs font-semibold uppercase tracking-wider text-foreground/85 dark:text-muted-foreground/70 w-full xl:w-fit xl:mx-auto`}>
               <span>Career</span>
               <span className="text-right">Salary</span>
-              <span className="text-center">Growth</span>
-              <span className="text-center">Sector</span>
-              <span className="text-center">Path</span>
-              <span className="text-center">Demand</span>
+              <span className="hidden md:block text-center">Growth</span>
+              <span className="hidden xl:block text-center">Sector</span>
+              <span className="hidden xl:block text-center">Path</span>
+              <span className="hidden xl:block text-center">Demand</span>
               <span className="text-center">Match</span>
-              <span>Learn more</span>
+              <span className="hidden md:block">Learn more</span>
             </div>
           )}
           <div
             className={
               viewMode === "list"
-                ? "border border-border dark:border-border rounded-b-control overflow-hidden bg-background w-fit mx-auto"
+                ? "border border-border dark:border-border rounded-b-control overflow-hidden bg-background w-full xl:w-fit xl:mx-auto"
                 : viewMode === "small"
                 ? "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3"
                 : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4"
@@ -478,6 +501,7 @@ function CareersPageContent() {
                 />
               </motion.div>
             ))}
+          </div>
           </div>
 
           {/* Pagination Controls — PaginationControls uses justify-between

@@ -232,7 +232,10 @@ export default function IndustryInsightsPage() {
             />
             <button
               onClick={toggleContextHints}
-              className="absolute top-0 right-0 sm:top-8 flex items-center gap-2 text-xs text-muted-foreground/60 hover:text-muted-foreground transition-colors z-10"
+              // Absolutely positioned at the very top-right, this sat on top
+              // of the wrapped page title on a phone. Below sm it becomes a
+              // normal in-flow control under the header instead.
+              className="relative mt-3 mx-auto flex items-center gap-2 text-xs text-muted-foreground/60 hover:text-muted-foreground transition-colors z-10 min-h-[36px] sm:absolute sm:mt-0 sm:mx-0 sm:top-8 sm:right-0 sm:min-h-0"
               aria-pressed={showContextHints}
             >
               <span

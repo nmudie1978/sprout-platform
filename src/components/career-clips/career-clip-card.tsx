@@ -91,7 +91,7 @@ export function CareerClipCard({
         )}
 
         {/* Play overlay */}
-        <div className="absolute inset-0 flex items-center justify-center bg-black/20 opacity-0 transition-opacity group-hover:opacity-100">
+        <div className="absolute inset-0 flex items-center justify-center bg-black/20 opacity-100 sm:opacity-0 transition-opacity group-hover:opacity-100">
           <div className="rounded-full bg-white/90 p-3 shadow-lg">
             <Play className="h-6 w-6 text-gray-900" />
           </div>

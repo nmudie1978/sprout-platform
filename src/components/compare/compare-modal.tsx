@@ -89,7 +89,7 @@ export function CompareModal({ open, careers, preferences, onClose, onRemove }: 
       />
 
       {/* Panel */}
-      <div className="relative w-full sm:max-w-5xl sm:max-h-[90vh] sm:my-8 sm:mx-4 bg-card border-y sm:border sm:rounded-2xl sm:shadow-2xl flex flex-col overflow-hidden">
+      <div className="relative w-full sm:max-w-5xl sm:max-h-[90dvh] sm:my-8 sm:mx-4 bg-card border-y sm:border sm:rounded-2xl sm:shadow-2xl flex flex-col overflow-hidden">
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-3.5 border-b border-border/40">
           <div className="min-w-0">
@@ -101,7 +101,7 @@ export function CompareModal({ open, careers, preferences, onClose, onRemove }: 
           <div className="flex items-center gap-1.5 shrink-0">
             <button
               onClick={handleDownload}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-border/40 px-2.5 py-1.5 text-[11px] font-medium text-foreground/75 hover:text-foreground hover:bg-muted/30 hover:border-border/60 transition-colors"
+              className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-border/40 px-3 min-h-[40px] sm:min-h-0 sm:px-2.5 sm:py-1.5 text-[11px] font-medium text-foreground/75 hover:text-foreground hover:bg-muted/30 hover:border-border/60 transition-colors"
               title="Download this comparison as a file you can save, share, or print to PDF"
             >
               <Download className="h-3 w-3" />
@@ -109,7 +109,7 @@ export function CompareModal({ open, careers, preferences, onClose, onRemove }: 
             </button>
             <button
               onClick={onClose}
-              className="h-8 w-8 rounded-lg flex items-center justify-center text-muted-foreground/60 hover:text-foreground hover:bg-muted/30 transition-colors"
+              className="h-10 w-10 shrink-0 sm:h-8 sm:w-8 rounded-lg flex items-center justify-center text-muted-foreground/60 hover:text-foreground hover:bg-muted/30 transition-colors"
               aria-label="Close compare"
             >
               <X className="h-4 w-4" />
@@ -122,8 +122,10 @@ export function CompareModal({ open, careers, preferences, onClose, onRemove }: 
             aligns row-by-row across cards for clean comparison. */}
         <div
           className={cn(
-            'flex-1 overflow-auto',
-            'flex sm:grid sm:gap-4 sm:p-4',
+            'flex-1 overflow-auto overscroll-contain',
+            // `snap-x snap-mandatory` was missing, so the mobile carousel's
+            // `snap-start` cards never actually snapped.
+            'flex snap-x snap-mandatory pb-[env(safe-area-inset-bottom,0px)] sm:snap-none sm:pb-0 sm:grid sm:gap-4 sm:p-4',
             // One explicit row track per section. Cards span all of them
             // and use grid-rows-subgrid so a long description in one
             // card doesn't push that card's "Reality check" out of line
@@ -177,7 +179,7 @@ function CompareCard({ career, preferences, country, onRemove }: CompareCardProp
     <div
       className={cn(
         // Mobile: snap carousel item (margin gives breathing room)
-        'snap-start shrink-0 w-[85vw] mx-2 my-4',
+        'snap-start shrink-0 w-[85vw] max-w-[22rem] mx-2 my-4 sm:max-w-none',
         // Desktop: span all 5 row tracks of the parent grid so each
         // section row aligns row-by-row with sibling cards.
         'sm:w-auto sm:m-0 sm:grid sm:grid-rows-subgrid sm:row-span-8',
@@ -189,7 +191,7 @@ function CompareCard({ career, preferences, country, onRemove }: CompareCardProp
       <div className="relative p-4 border-b border-border/30">
         <button
           onClick={onRemove}
-          className="absolute top-2 right-2 h-6 w-6 rounded-md flex items-center justify-center text-muted-foreground/65 hover:text-foreground hover:bg-muted/30 transition-colors"
+          className="absolute top-1 right-1 h-9 w-9 sm:top-2 sm:right-2 sm:h-6 sm:w-6 rounded-md flex items-center justify-center text-muted-foreground/65 hover:text-foreground hover:bg-muted/30 transition-colors"
           aria-label={`Remove ${career.title}`}
           title="Remove from comparison"
         >
@@ -270,7 +272,7 @@ function CompareCard({ career, preferences, country, onRemove }: CompareCardProp
                       href={emp.careersUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="block rounded px-1 -mx-1 py-0.5 hover:bg-muted/30 transition-colors"
+                      className="block rounded px-1 -mx-1 py-1.5 sm:py-0.5 hover:bg-muted/30 active:bg-muted/40 transition-colors"
                     >
                       {inner}
                     </a>

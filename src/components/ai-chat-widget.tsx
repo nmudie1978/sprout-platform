@@ -162,11 +162,11 @@ export function AiChatWidget() {
 
   if (!isOpen) {
     return (
-      <div className="fixed bottom-6 right-6 z-40 flex items-start gap-1">
+      <div className="fixed bottom-above-nav right-4 lg:right-6 z-40 flex items-start gap-1">
         <button
           type="button"
           onClick={hideWidget}
-          className="h-5 w-5 flex items-center justify-center rounded-full bg-muted/80 border border-border/40 text-muted-foreground/70 hover:text-foreground hover:bg-muted transition-colors -mr-2 -mt-1 z-10"
+          className="h-8 w-8 flex items-center justify-center rounded-full bg-muted/80 border border-border/40 text-muted-foreground/70 hover:text-foreground hover:bg-muted transition-colors -mr-3 -mt-1 z-10"
           title="Hide assistant — re-enable in Profile"
         >
           <X className="h-3 w-3" />
@@ -185,8 +185,14 @@ export function AiChatWidget() {
   return (
     <Card
       className={cn(
-        "fixed bottom-6 right-6 flex flex-col shadow-2xl transition-all z-40",
-        isMinimized ? "h-16 w-80" : "h-[600px] w-96"
+        // Mobile: a near-full-screen panel pinned above the bottom nav —
+        // the old fixed 384x600 card overflowed a 320px phone and sat
+        // under the nav. Desktop keeps the familiar corner card.
+        "fixed z-40 flex flex-col shadow-2xl transition-all",
+        "inset-x-3 bottom-above-nav sm:inset-x-auto sm:right-6",
+        isMinimized
+          ? "h-16 sm:w-80"
+          : "h-[min(600px,70dvh)] sm:h-[600px] sm:w-96"
       )}
     >
       {/* Header */}
@@ -322,7 +328,7 @@ export function AiChatWidget() {
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={handleKeyPress}
                 placeholder="Ask about careers, jobs, or the platform..."
-                className="min-h-[60px] resize-none"
+                className="min-h-[44px] max-h-32 resize-none"
                 disabled={isLoading}
               />
               <Button

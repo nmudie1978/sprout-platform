@@ -323,7 +323,7 @@ export function TopJobsSection() {
             placeholder="Search roles, skills, tags..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-9 h-9 text-sm rounded-lg"
+            className="pl-9 h-11 sm:h-9 text-sm rounded-lg"
           />
           {searchQuery && (
             <button

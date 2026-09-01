@@ -231,7 +231,7 @@ export function DiscoveryQuizDialog({
 
   return (
     <Dialog open={open} onOpenChange={(o) => !o && onClose()}>
-      <DialogContent className="max-w-xl max-h-[90vh] overflow-y-auto p-0 gap-0">
+      <DialogContent className="max-w-xl max-h-[90dvh] overflow-y-auto p-0 gap-0">
         {/* Header — refined badge + tightened title, subtle divider beneath */}
         <DialogHeader className="space-y-0 px-6 pt-6 pb-4 border-b border-border/60">
           <div className="flex items-start gap-3.5">

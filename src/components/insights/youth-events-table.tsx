@@ -285,7 +285,7 @@ function FilterBar({ filters, onFiltersChange, availableCities, availableProvide
             placeholder="Search events..."
             value={filters.query}
             onChange={(e) => onFiltersChange({ ...filters, query: e.target.value })}
-            className="pl-9 h-8 text-sm"
+            className="pl-9 h-11 sm:h-8 text-sm"
           />
         </div>
         <Button

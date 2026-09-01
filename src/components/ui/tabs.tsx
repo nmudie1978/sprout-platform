@@ -14,7 +14,11 @@ const TabsList = React.forwardRef<
   <TabsPrimitive.List
     ref={ref}
     className={cn(
-      "inline-flex h-10 items-center justify-center rounded-md bg-muted p-1 text-muted-foreground",
+      // `max-w-full` + a hidden-scrollbar overflow lets a long inline tab list
+      // scroll horizontally on a phone instead of overflowing the card (the app
+      // shell clips, so the overflowing tabs simply vanished). Grid-based tab
+      // lists override `display` at the call site and are unaffected.
+      "inline-flex h-10 max-w-full items-center justify-center overflow-x-auto no-scrollbar rounded-md bg-muted p-1 text-muted-foreground",
       className
     )}
     {...props}
@@ -29,7 +33,11 @@ const TabsTrigger = React.forwardRef<
   <TabsPrimitive.Trigger
     ref={ref}
     className={cn(
-      "inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm",
+      // Tab labels here are real phrases ("Where People Work", "School
+      // Readiness"), and `whitespace-nowrap` inside a `grid-cols-N` list made
+      // them overflow their track and get clipped on a phone. Wrap below sm,
+      // keep the single-line desktop look from sm up.
+      "inline-flex min-w-0 items-center justify-center text-center leading-tight whitespace-normal sm:whitespace-nowrap rounded-sm px-3 py-1.5 min-h-[40px] sm:min-h-0 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm",
       className
     )}
     {...props}

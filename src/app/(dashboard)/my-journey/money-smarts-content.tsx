@@ -400,7 +400,7 @@ function MicroGuideDialog({
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="max-w-md max-h-[85vh] flex flex-col p-0 gap-0">
+      <DialogContent className="max-w-md max-h-[85dvh] flex flex-col p-0 gap-0">
         <DialogHeader className="text-left p-4 pb-3 border-b shrink-0">
           <div className="flex items-center gap-3">
             <div className={`p-2 rounded-control ${topic.bgColor}`}>

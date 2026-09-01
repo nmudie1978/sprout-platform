@@ -505,7 +505,7 @@ export default async function LandingPage() {
         <div className="mx-auto max-w-6xl px-5">
           <div className="flex flex-col items-center gap-5">
             <BrandMark size="md" wordmarkClassName="text-foreground" iconClassName="text-emerald-400 fill-emerald-400" />
-            <div className="flex flex-wrap justify-center gap-4 sm:gap-6 text-sm text-muted-foreground/80">
+            <div className="flex flex-wrap justify-center gap-x-4 gap-y-1 sm:gap-6 text-sm text-muted-foreground/80 [&>a]:inline-flex [&>a]:min-h-[40px] [&>a]:items-center sm:[&>a]:min-h-0">
               <Link
                 href="/about"
                 className="hover:text-foreground transition-colors"

@@ -131,7 +131,8 @@ export function PeopleClient({
         </div>
       ) : (
         <div className="rounded-xl border border-border/60 overflow-hidden">
-          <table className="w-full text-sm">
+          <div className="overflow-x-auto">
+          <table className="w-full min-w-[600px] text-sm">
             <thead className="bg-muted/40 text-muted-foreground text-xs uppercase tracking-wide">
               <tr>
                 <th className="text-left font-medium px-4 py-2.5">Name</th>
@@ -177,6 +178,7 @@ export function PeopleClient({
               ))}
             </tbody>
           </table>
+          </div>
         </div>
       )}
 

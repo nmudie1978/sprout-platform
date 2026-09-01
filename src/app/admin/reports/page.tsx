@@ -126,7 +126,8 @@ export default async function AdminReportsPage(props: PageProps) {
         </div>
       ) : (
         <div className="rounded-xl border border-border/40 overflow-hidden">
-          <table className="w-full text-sm">
+          <div className="overflow-x-auto">
+          <table className="w-full min-w-[720px] text-sm">
             <thead className="bg-muted/30">
               <tr>
                 <th className="text-left px-4 py-2.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Status</th>
@@ -203,6 +204,7 @@ export default async function AdminReportsPage(props: PageProps) {
               })}
             </tbody>
           </table>
+          </div>
         </div>
       )}
     </div>
