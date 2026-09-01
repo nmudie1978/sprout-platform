@@ -3,6 +3,7 @@ import { cookies } from "next/headers";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Mail, Inbox, FolderSearch } from "lucide-react";
 import { ResendVerificationButton } from "@/components/auth/resend-verification-button";
+import { AwaitingVerification } from "@/components/auth/awaiting-verification";
 import { VerificationPoller } from "@/components/auth/verification-poller";
 import {
   maskEmail,
@@ -82,6 +83,11 @@ export default async function CheckEmailPage() {
                 : "You can keep exploring Endeavrly while you wait. Confirming your email is what lets you reset your password later, so it's worth doing today. The link expires in 24 hours."}
             </p>
           </div>
+
+          {/* Watches for the confirmation happening elsewhere — another tab,
+              another device — and continues on its own. Without it this screen
+              is a dead end even after the person has done everything right. */}
+          <AwaitingVerification />
 
           <ResendVerificationButton
             variant="outline"

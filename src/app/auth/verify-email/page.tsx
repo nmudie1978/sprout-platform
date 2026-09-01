@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { CheckCircle2, Clock, ShieldAlert, BadgeCheck } from "lucide-react";
 import { ResendVerificationButton } from "@/components/auth/resend-verification-button";
+import { AnnounceVerified } from "@/components/auth/announce-verified";
 import {
   parseVerificationOutcome,
   type VerificationOutcome,
@@ -101,6 +102,10 @@ export default async function VerifyEmailResultPage({
         </CardHeader>
 
         <CardContent className="space-y-5">
+          {/* Wake up the tab the person signed up in, if it's still open in
+              this browser. Confirmation often happens in a second tab. */}
+          {(status === "success" || status === "already") && <AnnounceVerified />}
+
           <div className="rounded-lg bg-primary/5 border border-primary/10 p-4">
             <p className="text-sm text-muted-foreground">{state.body}</p>
           </div>
