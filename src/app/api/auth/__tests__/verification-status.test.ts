@@ -1,3 +1,4 @@
+// @vitest-environment node
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
 /**
@@ -12,18 +13,32 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 
 process.env.NEXTAUTH_SECRET = "test-secret-value-at-least-16-chars";
 
+// Deliberately a FULL user row, not just the fields this route selects. The
+// forged-cookie guard below is only meaningful if a reintroduced session-mint
+// would actually succeed here — a mock missing `id` or the fields
+// mintSessionToken reads would make that guard pass for the wrong reason.
 type UserRow = {
+  id: string;
+  email: string;
   emailVerified: Date | null;
   accountStatus: string;
   isPaused: boolean;
   deletedAt: Date | null;
+  role: string;
+  ageBracket: string | null;
+  isVerifiedAdult: boolean;
+  passwordChangedAt: Date | null;
+  youthProfile: null;
 } | null;
 
 let user: UserRow = null;
 let rateLimitOk = true;
 
 vi.mock("@/lib/prisma", () => ({
-  prisma: { user: { findUnique: vi.fn(async () => user) } },
+  prisma: {
+    user: { findUnique: vi.fn(async () => user) },
+    legalAcceptance: { findUnique: vi.fn(async () => null) },
+  },
 }));
 
 vi.mock("@/lib/rate-limit", async (orig) => {
@@ -59,12 +74,19 @@ function poll(cookie?: string) {
 }
 
 /** An account confirmed `ms` after the grant was issued. */
-function confirmedAfter(grantIssuedAt: number, ms: number): UserRow {
+function confirmedAfter(grantIssuedAt: number, ms: number): NonNullable<UserRow> {
   return {
+    id: "user-1",
+    email: "victim@example.com",
     emailVerified: new Date(grantIssuedAt + ms),
     accountStatus: "ACTIVE",
     isPaused: false,
     deletedAt: null,
+    role: "YOUTH",
+    ageBracket: null,
+    isVerifiedAdult: true,
+    passwordChangedAt: null,
+    youthProfile: null,
   };
 }
 
@@ -92,7 +114,7 @@ describe("waiting", () => {
 
   it("reports not-verified while the address is still unconfirmed", async () => {
     const now = Date.now();
-    user = { emailVerified: null, accountStatus: "ACTIVE", isPaused: false, deletedAt: null };
+    user = { ...confirmedAfter(now, 0), emailVerified: null };
     const res = await poll(createSigninGrant("user-1", { secret, now }));
     expect(await res.json()).toEqual({ verified: false });
   });
@@ -126,12 +148,7 @@ describe("refusals", () => {
   // the grant, so it proves nothing about who is holding this browser.
   it("refuses when the address was confirmed before the signup", async () => {
     const now = Date.now();
-    user = {
-      emailVerified: new Date(now - 86_400_000),
-      accountStatus: "ACTIVE",
-      isPaused: false,
-      deletedAt: null,
-    };
+    user = { ...confirmedAfter(now, 0), emailVerified: new Date(now - 86_400_000) };
     const res = await poll(createSigninGrant("victim", { secret, now }));
     expect(await res.json()).toEqual({ verified: false });
   });
@@ -143,8 +160,38 @@ describe("refusals", () => {
     ["deleted", { accountStatus: "ACTIVE", isPaused: false, deletedAt: new Date() }],
   ])("refuses a %s account", async (_label, state) => {
     const now = Date.now();
-    user = { emailVerified: new Date(now + 1_000), ...state } as UserRow;
+    user = { ...confirmedAfter(now, 1_000), ...state } as UserRow;
     const res = await poll(createSigninGrant("user-1", { secret, now }));
+    expect(await res.json()).toEqual({ verified: false });
+  });
+});
+
+// REGRESSION GUARD. An earlier draft of this endpoint resolved the account
+// from the plaintext `endeavrly_pending_verification` cookie and minted a
+// session from it. That is an account takeover from an address alone: httpOnly
+// stops page scripts touching a cookie, but it authenticates nothing — any
+// client can put any Cookie header on a request. The sealed grant exists
+// precisely so the value cannot be chosen by the caller.
+describe("forged cookies", () => {
+  it("hands out nothing for a plaintext pending-verification cookie", async () => {
+    const now = Date.now();
+    user = confirmedAfter(now, 1_000);
+    const res = await GET(
+      new NextRequest("https://endeavrly.test/api/auth/verification-status", {
+        headers: {
+          "x-forwarded-for": "203.0.113.7",
+          cookie: "endeavrly_pending_verification=victim@example.com",
+        },
+      }),
+    );
+    expect(await res.json()).toEqual({ verified: false });
+    expect(res.headers.getSetCookie().join("\n")).not.toMatch(/session-token=/);
+  });
+
+  it("hands out nothing for a grant cookie the caller made up", async () => {
+    const now = Date.now();
+    user = confirmedAfter(now, 1_000);
+    const res = await poll("endeavrly_signin_grant_forged_by_hand");
     expect(await res.json()).toEqual({ verified: false });
   });
 });

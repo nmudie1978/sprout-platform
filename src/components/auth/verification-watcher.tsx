@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 import { CheckCircle2, Loader2 } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { VERIFICATION_CHANNEL } from "@/lib/auth/verification-channel";
 import { Button } from "@/components/ui/button";
 
 /**
@@ -149,11 +150,38 @@ export function VerificationWatcher({
     document.addEventListener("visibilitychange", onWake);
     window.addEventListener("focus", onWake);
 
+    // Same-browser accelerator. When the link opens in another tab of THIS
+    // browser, that tab announces it (AnnounceVerified) and we check at once
+    // instead of waiting out the interval. Unlike onWake this ignores the
+    // hidden-tab guard: we have positive news that something changed, so it is
+    // worth one request even in the background.
+    //
+    // Strictly an optimisation — the poll above finds it regardless, so
+    // nothing breaks where BroadcastChannel is missing (Safari private mode).
+    // The message carries no payload and is not trusted: it only prompts the
+    // same server check every other path makes.
+    let channel: BroadcastChannel | null = null;
+    try {
+      channel = new BroadcastChannel(VERIFICATION_CHANNEL);
+      channel.onmessage = () => {
+        if (cancelled || settled.current) return;
+        if (timer) clearTimeout(timer);
+        timer = setTimeout(check, 0);
+      };
+    } catch {
+      // Unsupported or blocked — polling covers it.
+    }
+
     return () => {
       cancelled = true;
       if (timer) clearTimeout(timer);
       document.removeEventListener("visibilitychange", onWake);
       window.removeEventListener("focus", onWake);
+      try {
+        channel?.close();
+      } catch {
+        // Already closed.
+      }
     };
   }, [mode, completeSignIn]);
 
