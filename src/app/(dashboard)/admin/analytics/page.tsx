@@ -247,7 +247,7 @@ export default function AdminStatisticsPage() {
 
   if (!data) return null;
 
-  const { userGrowth, journeys, funnel, twin, retention, saved, interest, health } = data;
+  const { userGrowth, journeys, funnel, twin, retention, saved, interest, health, features } = data;
 
   const funnelSteps = [
     { label: "Viewed a career", value: funnel.viewed, estimated: true },
@@ -369,6 +369,54 @@ export default function AdminStatisticsPage() {
                   </AreaChart>
                 </ResponsiveContainer>
               )}
+            </CardContent>
+          </Card>
+        </Section>
+
+        {/* 1b. Which features get opened, and returned to. */}
+        <Section title="Feature adoption" icon={Compass}>
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-base flex items-center gap-2">
+                Opened, and returned to
+                <EstimatedBadge tip="Counted from records people chose to create — a rating, a save, a reflection, a Twin chat. There are no page views or timers, so someone who reads and leaves isn't counted. These are floors, never overcounts." />
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {features.rows.length === 0 || features.activeUsers === 0 ? (
+                <EmptyState message="Nothing recorded yet." />
+              ) : (
+                <div className="overflow-x-auto -mx-2 px-2">
+                  <table className="w-full text-sm min-w-[420px]">
+                    <thead>
+                      <tr className="text-left text-xs uppercase tracking-wider text-muted-foreground/70">
+                        <th className="py-2 pr-3 font-medium">Feature</th>
+                        <th className="py-2 px-3 font-medium text-right">Opened by</th>
+                        <th className="py-2 px-3 font-medium text-right">Came back</th>
+                        <th className="py-2 pl-3 font-medium text-right">Adoption</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {features.rows.map((row) => (
+                        <tr key={row.key} className="border-t border-border/40">
+                          <td className="py-2 pr-3 font-medium">{row.label}</td>
+                          <td className="py-2 px-3 text-right tabular-nums">{row.users}</td>
+                          <td className="py-2 px-3 text-right tabular-nums text-muted-foreground">
+                            {row.returned === null ? "—" : row.returned}
+                          </td>
+                          <td className="py-2 pl-3 text-right tabular-nums">{row.adoption}%</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+              <p className="mt-3 text-xs text-muted-foreground/70 leading-relaxed">
+                &ldquo;Came back&rdquo; means active on two or more separate days.
+                Time spent per feature is <strong>not measured</strong>: that needs
+                per-view timing, which is new behavioural data and would require a
+                Cookie/Privacy Policy change and a consent decision for under-16s.
+              </p>
             </CardContent>
           </Card>
         </Section>
