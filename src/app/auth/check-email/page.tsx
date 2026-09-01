@@ -3,6 +3,7 @@ import { cookies } from "next/headers";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Mail, Inbox, FolderSearch } from "lucide-react";
 import { ResendVerificationButton } from "@/components/auth/resend-verification-button";
+import { VerificationPoller } from "@/components/auth/verification-poller";
 import {
   maskEmail,
   PENDING_VERIFICATION_COOKIE,
@@ -87,6 +88,11 @@ export default async function CheckEmailPage() {
             className="w-full"
             label="Send it again"
           />
+
+          {/* Confirmation usually happens elsewhere — another tab, or the
+              phone the email was opened on. Watch for it so this tab doesn't
+              sit here after the account is already live. */}
+          <VerificationPoller />
 
           <div className="flex flex-col gap-2 text-center text-sm">
             {/* Under the hard gate there is nothing to continue TO — offering
