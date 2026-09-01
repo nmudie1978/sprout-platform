@@ -259,22 +259,21 @@ describe("Matching engine — adversarial scenarios", () => {
       expect(hasHandsOn).toBe(true);
     });
 
-    // KNOWN FAILING — do not "fix" by weakening the assertion.
+    // FIXED 2026-09-01. This was long-marked KNOWN FAILING with the diagnosis
+    // "an explicit peoplePref is being outweighed by subject/academic fit — the
+    // fix is in the engine's dimension weighting". That diagnosis was wrong.
     //
-    // This guard is correct and the engine is not meeting it. An explicit
-    // peoplePref of "many-people" is being outweighed by subject/academic fit,
-    // so a persona asking for people-facing work gets a top 5 of medium-people
-    // (0.50) desk careers.
+    // The real cause: this persona's `peoplePref: "many-people"` was not a key
+    // in PEOPLE_PREF_TO_SCORE, so it fell through `?? 0.5` — while
+    // `hasPeoplePreference` was still true. 0.5 does not mean "no opinion" to
+    // the scorer, it means "prefers medium-people work", so the engine ranked
+    // this persona TOWARDS 0.50 desk careers and away from the 0.90 ones. Top 6
+    // were all 0.50; the first high-people career sat at #7.
     //
-    // The weakness pre-dates the failure: before the 2026-08-28 education-data
-    // backfill, 4 of the top 5 were ALREADY 0.50 careers and only Clinical
-    // Geneticist (0.90) at #5 kept this green. Giving medicine-adjacent careers
-    // their real academic profile (advancedCareerMap in programmes.json) moved
-    // it to #7 and tipped the threshold.
-    //
-    // The fix is in the engine's dimension weighting, not in this test and not
-    // in the education data. See docs/career-coverage-gaps.json and
-    // scripts/career-coverage-audit.ts for the data side.
+    // Two fixes, neither of which touches the weighting: the value is now a
+    // recognised synonym of "with-people", and an unrecognised value now means
+    // "no stated preference" rather than a neutral-but-active one. Top 4 are now
+    // 0.90 careers. See the "unknown peoplePref" tests below.
     it("STRONG people input — top 5 should contain at least one high-people career", () => {
       const r = rankCareers(PERSONAS.socialPeople, CTX, 10);
       expect(r.length).toBeGreaterThan(0);
