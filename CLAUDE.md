@@ -77,15 +77,48 @@ include in-app payments.
 Stack:
 - Next.js 16 (App Router)
 - React 19
-- Supabase (Auth + DB)
+- **NextAuth v4** — authentication (credentials + bcrypt, JWT sessions).
+  Vipps OAuth is configured but gated behind NEXT_PUBLIC_VIPPS_ENABLED.
+- Supabase — **Postgres host ONLY**. Not Supabase Auth.
 - Prisma ORM
+- Resend — all transactional email
 - TypeScript (strict mode)
+
+AUTH: THE COMMON WRONG TURN.
+This file used to say "Supabase (Auth + DB)". It is not true and it has cost
+real time: there is no Supabase Auth, no supabase-js, no anon key, and
+src/lib/supabase.ts was deleted. So there is no Supabase dashboard where
+"email templates", "redirect URLs" or "email confirmation" can be configured
+— all of it lives in code:
+
+- sign-in / sessions        src/lib/auth.ts (authOptions)
+- signup                    src/app/api/auth/signup/route.ts
+- email verification        src/lib/auth/email-verification*.ts,
+                            src/app/api/auth/{verify-email,resend-verification,
+                            verification-status}
+- password reset            src/lib/auth/password-reset.ts
+- email delivery            src/lib/mail.ts (Resend)
+- link origins              src/lib/auth/app-url.ts (never hard-code a URL)
+
+Email verification is a HARD GATE: an unverified account cannot sign in.
+Kill switch: NEXT_PUBLIC_EMAIL_VERIFICATION_REQUIRED="false".
 
 Rules:
 - All data access via Prisma.
 - All server logic inside Server Actions or API routes.
-- Use RLS where appropriate.
+- Use RLS where appropriate. NOTE: RLS is enabled with ZERO policies on ~94
+  tables (deny-by-default). The app connects as a role with BYPASSRLS, so
+  policies are not the access model — do not add policies expecting them to
+  be consulted.
 - No business logic inside UI components.
+- No hard-coded environment URLs. Use src/lib/auth/app-url.ts.
+
+Local development:
+- `.env` DATABASE_URL points at PRODUCTION. There is no staging. The test
+  suite is blocked from connecting (src/lib/db-guard.ts); the dev server
+  warns. See docs/local-database.md before running anything destructive.
+- endeavrly.com is served by the **v0-youth-platform** Vercel project, NOT
+  `youth-platform`. Env-var changes must go on v0-youth-platform.
 
 </architecture_constraints>
 
@@ -285,6 +318,36 @@ Avoid:
 - School admin portal feel
 
 </ui_principles>
+
+
+<concurrent_sessions>
+
+Several sessions/agents often work in this repo at once, and they share ONE
+checkout. When two are active, one switching branches yanks the ground out from
+under the other: files change mid-edit, and commits made on the old branch stop
+being reachable from HEAD.
+
+This is not theoretical. In a single day it happened twice, once discarding a
+finished, tested commit that had to be recovered from the object store by hash.
+
+If there is any chance another session is active:
+
+    npm run worktree -- fix/your-thing
+
+That creates a sibling directory with its own branch and its own files, sharing
+one .git — so neither session can disturb the other. It links node_modules and
+copies .env for you.
+
+Also:
+- PUSH EARLY. An unpushed commit in a shared checkout is one `git checkout`
+  away from being invisible. A pushed branch cannot be lost this way.
+- Before assuming your work is gone, check `git reflog` and
+  `git cat-file -e <sha>^{commit}` — a discarded commit is usually still
+  there, just unreferenced.
+- Expect the database to move under you too: it is shared and it is
+  production. Row counts change between queries.
+
+</concurrent_sessions>
 
 
 <standards_and_conventions>
