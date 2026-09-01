@@ -541,7 +541,14 @@ export function EducationBrowser({ careerTitle, careerId, country, programmesOnl
                 )}
 
                 {viewMode === 'list' && (
-                  <>
+                  /* The grid below is ~630px of fixed columns. The app shell
+                     is `overflow-hidden`, so on a phone the right-hand
+                     columns were CLIPPED — not scrollable, simply gone. The
+                     wrapper makes the table a horizontal scroller of its own
+                     and gives it a floor width so the columns keep their
+                     shape while you swipe. */
+                  <div className="-mx-3 px-3 sm:mx-0 sm:px-0 overflow-x-auto overscroll-x-contain">
+                  <div className="min-w-[640px]">
                     <div className="inline-grid grid-cols-[1fr_10rem_6rem_5rem_5rem_7rem] items-center gap-x-4 px-3 py-2 border border-b-0 rounded-t-md bg-muted/40 text-[10px] font-bold uppercase tracking-wider text-muted-foreground/70 w-full">
                       <span>Programme</span>
                       <span>Institution</span>
@@ -592,7 +599,8 @@ export function EducationBrowser({ careerTitle, careerId, country, programmesOnl
                         );
                       })}
                     </div>
-                  </>
+                  </div>
+                  </div>
                 )}
 
                 {/* Pagination — only renders when there are ≥2 pages
@@ -727,7 +735,7 @@ function PathwayFallbackView({
       {schools.length > 0 && (
         <div>
           {/* Simple table — same style as the Explore Careers list. */}
-          <div className="grid grid-cols-[1fr_6.5rem_4.5rem_5rem] items-center gap-x-4 px-3 py-1.5 border border-border/40 border-b-0 rounded-t-control bg-muted/30 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/65">
+          <div className="grid grid-cols-[1fr_4.5rem_5rem] sm:grid-cols-[1fr_6.5rem_4.5rem_5rem] items-center gap-x-4 px-3 py-1.5 border border-border/40 border-b-0 rounded-t-control bg-muted/30 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/65">
             <span>Institution</span>
             <span className="hidden sm:block">Location</span>
             <span>Duration</span>
@@ -750,7 +758,7 @@ function PathwayFallbackView({
                   target="_blank"
                   rel="noopener noreferrer"
                   className={cn(
-                    'grid grid-cols-[1fr_6.5rem_4.5rem_5rem] items-center gap-x-4 px-3 py-2 text-[11px] hover:bg-muted/50 transition-colors group',
+                    'grid grid-cols-[1fr_4.5rem_5rem] sm:grid-cols-[1fr_6.5rem_4.5rem_5rem] items-center gap-x-4 px-3 py-2 text-[11px] hover:bg-muted/50 transition-colors group',
                     idx > 0 && 'border-t border-border/20',
                   )}
                 >

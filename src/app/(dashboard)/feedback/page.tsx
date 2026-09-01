@@ -142,7 +142,9 @@ export default function FeedbackPage() {
             How would you rate Endeavrly?
             <span className="text-muted-foreground font-normal ml-2">(optional)</span>
           </h2>
-          <div className="flex items-center gap-1 mt-2">
+          {/* Wraps on mobile: five 36px stars plus a 7rem label overflowed a
+              320px row, clipping the hint text off the right edge. */}
+          <div className="flex flex-wrap items-center gap-1 mt-2">
             {[1, 2, 3, 4, 5].map((n) => {
               const filled = (rating ?? 0) >= n;
               return (
@@ -152,7 +154,7 @@ export default function FeedbackPage() {
                   onClick={() => setRating(rating === n ? null : n)}
                   aria-label={`${n} star${n > 1 ? "s" : ""} — ${RATING_LABELS[n]}`}
                   aria-pressed={rating === n}
-                  className="rounded-control p-1 transition-transform hover:scale-110"
+                  className="rounded-control p-1.5 min-h-[44px] min-w-[44px] flex items-center justify-center transition-transform hover:scale-110"
                 >
                   <Star
                     className={cn(

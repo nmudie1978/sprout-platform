@@ -12,6 +12,7 @@
  */
 
 import { useState, useCallback } from "react";
+import { cn } from "@/lib/utils";
 import { useMutation } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import {
@@ -57,6 +58,10 @@ const STEP_ICONS: Record<SmallStep["icon"], typeof Plane> = {
 export function BeyondBordersSection() {
   const [expandedSlug, setExpandedSlug] = useState<string | null>(null);
   const [showAllSteps, setShowAllSteps] = useState(false);
+  // Which "small step" chip has its explanation open. The explanation used
+  // to be `invisible group-hover:visible`, so on touch it never appeared and
+  // the chips were unexplained labels.
+  const [openStep, setOpenStep] = useState<string | null>(null);
   const [savedSlugs, setSavedSlugs] = useState<Set<string>>(new Set());
   const locale = useLocale();
   const tc = useTranslations("common");
@@ -245,22 +250,34 @@ export function BeyondBordersSection() {
           {visibleSteps.map((step) => {
             const Icon = STEP_ICONS[step.icon];
             return (
-              <div
+              <button
                 key={step.id}
-                className="group relative inline-flex items-center gap-2 rounded-full border border-dashed border-teal-300 dark:border-teal-700 bg-background px-3 py-1.5 text-sm transition-colors hover:bg-teal-50 dark:hover:bg-teal-950/20"
+                type="button"
+                onClick={() => setOpenStep(openStep === step.id ? null : step.id)}
+                aria-expanded={openStep === step.id}
+                className="group relative inline-flex min-h-[44px] items-center gap-2 rounded-full border border-dashed border-teal-300 dark:border-teal-700 bg-background px-3 text-sm transition-colors hover:bg-teal-50 dark:hover:bg-teal-950/20"
               >
                 <Icon className="h-3.5 w-3.5 text-teal-500 shrink-0" />
                 <span className="font-medium text-foreground/90">
                   {getText(`bb-step-title-${step.id}`, step.title)}
                 </span>
-                {/* Tooltip on hover */}
-                <div className="invisible group-hover:visible absolute left-0 top-full mt-2 z-10 w-64 rounded-lg border bg-popover p-3 shadow-md text-sm">
+                {/* Explanation — opens on tap (and on hover for pointer
+                    users). `max-w` keeps the 16rem panel inside a 320px
+                    screen rather than running off the right edge. */}
+                <div
+                  className={cn(
+                    "absolute left-0 top-full mt-2 z-10 w-64 max-w-[calc(100vw-3rem)] rounded-lg border bg-popover p-3 text-left text-sm shadow-md",
+                    openStep === step.id
+                      ? "visible"
+                      : "invisible group-hover:visible"
+                  )}
+                >
                   <p className="text-foreground/80 mb-1">
                     {getText(`bb-step-desc-${step.id}`, step.description)}
                   </p>
                   <p className="text-xs italic text-muted-foreground">{step.reassurance}</p>
                 </div>
-              </div>
+              </button>
             );
           })}
         </div>

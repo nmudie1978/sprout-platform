@@ -335,10 +335,68 @@
     -webkit-tap-highlight-color: transparent;
   }
 
-  /* Prevent iOS zoom on input focus (text-base = 16px) */
-  @media (max-width: 640px) {
+  /* Prevent iOS zoom on input focus (text-base = 16px).
+     Keyed on `pointer: coarse` as well as width: Safari zooms whenever a
+     focused field is under 16px on ANY touch device, and an iPad reports
+     768px+ so it fell outside a width-only rule and still zoomed. */
+  @media (max-width: 640px), (pointer: coarse) {
     input, select, textarea {
       font-size: 16px !important;
+    }
+  }
+
+  /* MOBILE TYPE FLOOR
+     The app uses arbitrary 8–10px type in a lot of dense, desktop-first
+     places (table columns, legends, badge captions, meta rows). At arm's
+     length on a phone those are not readable without pinch-zooming, and
+     there are far too many sites to fix one by one — so lift them here.
+
+     Keyed on touch as well as width, for the same reason the input-zoom
+     rule above is: a width-only rule left an iPad at 768/834px rendering
+     9–10px labels (measured: "Strong match" at 9px on /careers). Readable
+     type is a property of how the device is held, not of its pixel count.
+
+     The touch arm is deliberately NOT capped at `xl`. I first capped it at
+     1279px to protect the careers table — an `xl`-only 928px grid whose
+     9–10px cells look like they are sized to their text — but that was a
+     precaution against a failure I had not reproduced. Measured: forcing
+     the floor on at 1280 and 1366 with a coarse pointer widens the table
+     by 0px and overflows nothing. The reason is that every track in
+     LIST_GRID is a fixed `rem`, which is root-relative, so a cell's
+     font-size cannot widen its track — the lift is absorbed as vertical
+     reflow inside the cell. Capping would have returned 8–10px text to
+     large tablets, a real readability regression, to prevent nothing.
+
+     REVISIT IF: any fixed-width grid gains a track sized to its content
+     (`ch`, `em`, `auto`, `min-content`, `max-content`, `fit-content`).
+     That is where a font-size lift propagates into track width, and the
+     cap would then be needed at whatever width that grid starts.
+
+     `!important` is needed to beat the utility class's own specificity.
+     (The `text-[11px]` selector is a deliberate no-op — it states where
+     the floor sits.)
+
+     BLAST RADIUS — this is a global rule, so it was bounded rather than
+     assumed. It touches 616 instances across 154 files. In a flexible
+     container the failure mode is vertical reflow (one extra line), which
+     is cosmetic. Overflow is only possible in a FIXED-WIDTH box, and there
+     are 17 of those: 15 are single-glyph or short-numeric badges (h-4/5/6
+     circles, avatar initials, `w-8` counters) or `<th>` hints that expand
+     anyway; `career-card-v2`'s `w-10` growth badge holds an icon and no
+     text AND sits in the `xl`-only table, so the rule cannot reach it; and
+     `compare-modal`'s `w-[64px]` label column is already proven at 11px by
+     its own sibling rows ("To qualify" renders there today).
+
+     Honest limit: bounded is not verified-everywhere. The fixed-width
+     subset above is enumerated; the rest was reasoned about, not rendered.
+     ~12 routes were checked at 320px. */
+  @media (max-width: 639px), ((hover: none) and (pointer: coarse)) {
+    .text-\[8px\],
+    .text-\[9px\],
+    .text-\[10px\],
+    .text-\[11px\] {
+      font-size: 11px !important;
+      line-height: 1.4 !important;
     }
   }
 }
@@ -787,11 +845,42 @@
   }
 
   /* ── Accessible touch target without changing visual density ──
-     Dense list/table rows need small icon buttons but WCAG/Pathora
-     mandate a 44×44px touch target. `.hit-44` keeps the icon its
-     visual size and projects an invisible, centred 44×44px hit area
-     via a pseudo-element. Apply to compact remove/pagination buttons.
-     The element must be `relative` (this sets it). */
+     Keeps an icon at its visual size and projects an invisible, centred
+     44×44px hit area via a pseudo-element. The element must be `relative`
+     (this sets it).
+
+     CURRENTLY UNUSED — every former call site was converted to real size.
+     Kept because it IS the right tool where clearance is structurally
+     fixed. It is listed in `safelist` in tailwind.config.ts, because a
+     custom utility with no call site is purged, and without that entry this
+     one survived only on the literal string appearing in two code comments
+     elsewhere — i.e. it would have silently become a no-op the moment
+     someone tidied them. Read this before reaching for it:
+
+     The projected area is INVISIBLE, so it silently overlaps whatever is
+     near it, and the LATER DOM SIBLING wins the shared band. It is safe
+     only when the nearest other interactive control is >=44px away
+     centre-to-centre. Two things disqualify it, and measuring harder does
+     not fix either:
+       (a) the clearance depends on rendered content — e.g. the dashboard
+           paginators sit either side of a `{page}/{total}` span, where
+           "1/2" vs "10/20" swings the gap ~14px;
+       (b) the element is in a SHARED component, so consumers set the
+           clearance — PageHeader's info button measured 144px on /careers
+           but 86px on /insights, and a future page can place a control
+           closer still.
+     Prefer real size on touch: `h-11 w-11 sm:h-auto sm:w-auto sm:p-0.5`.
+
+     This caused real bugs here, all found by measurement, none visible in
+     review: tapping the bottom of a saved-career's remove-X deleted the
+     career BELOW it; a press 3px inside the careers view-switcher's
+     "Table" selected "Cards".
+
+     TESTING NOTE — sample the PROJECTED area's edges (centre ±21), not the
+     element's visual box. A 16px button's whole box sits inside the safe
+     centre of its own projection, so box sampling returns a clean result on
+     a broken control. Also scrollIntoView first (elementFromPoint uses
+     viewport coords), and expect a `disabled` control to own no point. */
   .hit-44 {
     position: relative;
   }

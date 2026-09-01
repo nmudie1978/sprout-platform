@@ -730,7 +730,7 @@ export default function ProfilePage() {
                     placeholder="+47 123 45 678"
                     value={formData.phoneNumber}
                     onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
-                    className="h-8 mt-1 text-sm"
+                    className="h-11 sm:h-8 mt-1 text-sm"
                   />
                 </div>
                 <div>
@@ -742,7 +742,7 @@ export default function ProfilePage() {
                     placeholder="e.g., Oslo"
                     value={formData.city}
                     onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                    className="h-8 mt-1 text-sm"
+                    className="h-11 sm:h-8 mt-1 text-sm"
                   />
                 </div>
               </div>

@@ -25,7 +25,9 @@ export function FloatingCompareCTA({ shortlist, max, onCompare, onClear }: Float
   const canCompare = shortlist.length >= 2;
 
   return (
-    <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-40 pointer-events-none">
+    // Sits ABOVE the mobile bottom nav (h-14 + safe-area, z-50). At the
+    // previous bottom-4 the pill was rendered behind the nav and unreachable.
+    <div className="fixed bottom-[calc(3.5rem+env(safe-area-inset-bottom,0px)+0.75rem)] lg:bottom-4 left-1/2 -translate-x-1/2 z-40 pointer-events-none">
       <div className="pointer-events-auto inline-flex items-center gap-2 rounded-full border border-teal-500/40 bg-card/95 backdrop-blur-md shadow-2xl shadow-teal-500/20 px-3 py-2">
         {/* Avatar stack */}
         <div className="flex items-center -space-x-1.5">

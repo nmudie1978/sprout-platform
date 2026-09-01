@@ -298,13 +298,39 @@ function CareersPageContent() {
     setShowAdvancedFilters((prev) => !prev);
   }, []);
 
-  // Reset advanced filters only (for mobile drawer reset)
+  // Reset every filter the mobile sheet can set. It now carries category,
+  // growth, sector and academic demand as well, so resetting only the old
+  // "advanced" subset would leave visibly-active pills behind.
   const handleResetAdvanced = useCallback(() => {
     updateFilter("salaryRange", null);
     updateFilter("educationLevels", []);
     updateFilter("skills", []);
     updateFilter("careerNatures", []);
+    updateFilter("category", "ALL");
+    updateFilter("growthFilter", "all");
+    updateFilter("sector", "all");
+    updateFilter("academicDemand", "all");
   }, [updateFilter]);
+
+  // Badge on the mobile Filters button: how many filters are narrowing the
+  // list right now. Search is excluded — it has its own visible input.
+  const mobileFilterCount = useMemo(() => {
+    let n = 0;
+    if (filters.category !== "ALL") n += 1;
+    if (filters.growthFilter !== "all") n += 1;
+    if (filters.sector !== "all") n += 1;
+    if (filters.academicDemand !== "all") n += 1;
+    if (filters.salaryRange !== null) n += 1;
+    n += filters.careerNatures.length;
+    return n;
+  }, [
+    filters.category,
+    filters.growthFilter,
+    filters.sector,
+    filters.academicDemand,
+    filters.salaryRange,
+    filters.careerNatures,
+  ]);
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-6 relative">
@@ -318,8 +344,14 @@ function CareersPageContent() {
         infoTooltip={t('careers.infoTooltip')}
       />
 
-      {/* Quick Stats */}
-      <div className="flex items-center justify-center gap-2 sm:gap-3 mb-4 sm:mb-5 overflow-x-auto pb-1" style={{ scrollbarWidth: "none" }}>
+      {/* Quick Stats.
+          `justify-center` on an overflowing horizontal scroller centres the
+          content *past* the left edge, and the overflow to the left cannot be
+          scrolled back to — the first chip read as "reers 1603" on a 320px
+          screen with no way to reach it. Start-aligned while it scrolls, and
+          only centred from `sm` up where all three chips fit. The negative
+          inset lets it bleed to the screen edges so it reads as scrollable. */}
+      <div className="flex items-center justify-start sm:justify-center gap-2 sm:gap-3 mb-4 sm:mb-5 overflow-x-auto pb-1 -mx-4 px-4 sm:mx-0 sm:px-0" style={{ scrollbarWidth: "none" }}>
         {[
           { icon: Briefcase, label: t('careers.stats.careers'), value: getAllCareers().length, color: "text-primary" },
           { icon: Search, label: t('careers.stats.showing'), value: totalItems, color: "text-primary" },
@@ -349,20 +381,29 @@ function CareersPageContent() {
         selectedNatures={filters.careerNatures}
         onNatureToggle={handleNatureToggle}
         onSurprise={handleSurprise}
+        onOpenFilters={handleToggleAdvanced}
+        activeFilterCount={mobileFilterCount}
       />
 
-      {/* Mobile Filter Drawer */}
-      {isMobile && (
-        <MobileFilterDrawer
-          isOpen={showAdvancedFilters}
-          onClose={() => setShowAdvancedFilters(false)}
-          filters={filters}
-          salaryBounds={salaryBounds}
-          resultCount={filteredCareers.length}
-          onReset={handleResetAdvanced}
-          onNatureToggle={handleNatureToggle}
-        />
-      )}
+      {/* Mobile Filter Sheet — holds the full filter set that the inline bar
+          hides below `sm`. Mounted unconditionally (it renders nothing while
+          closed) rather than behind `isMobile`, so the first tap after
+          hydration can't miss it. */}
+      <MobileFilterDrawer
+        isOpen={showAdvancedFilters}
+        onClose={() => setShowAdvancedFilters(false)}
+        filters={filters}
+        categoryCounts={categoryCounts}
+        salaryBounds={salaryBounds}
+        resultCount={filteredCareers.length}
+        onReset={handleResetAdvanced}
+        onCategoryChange={handleCategoryChange}
+        onNatureToggle={handleNatureToggle}
+        onGrowthChange={handleGrowthChange}
+        onSectorChange={handleSectorChange}
+        onAcademicDemandChange={handleAcademicDemandChange}
+        onSalaryChange={handleSalaryChange}
+      />
 
       {/* Active Filter Chips */}
       {activeChips.length > 0 && (
@@ -392,8 +433,13 @@ function CareersPageContent() {
         {/* Spacer mirroring the switcher's width so the count stays optically
             centred over the results rather than drifting left. */}
         <div className="hidden md:block w-[15.5rem]" aria-hidden="true" />
-        <div className="flex items-center justify-center gap-3 flex-1">
-        <p className="text-xs text-foreground/80 dark:text-muted-foreground">
+        {/* `min-w-0` matters: a flex item defaults to `min-width: auto` and
+            will NOT shrink below its content, so this block could not yield
+            space and pushed the switcher past the right edge. With min-w-0
+            here and shrink-0 on the switcher, overflow is structurally
+            impossible whatever width the controls end up being. */}
+        <div className="flex items-center justify-center gap-3 flex-1 min-w-0">
+        <p className="text-xs text-foreground/80 dark:text-muted-foreground min-w-0">
           {totalItems > PAGE_SIZE ? (
             <>
               Showing {((validCurrentPage - 1) * PAGE_SIZE) + 1}–{Math.min(validCurrentPage * PAGE_SIZE, totalItems)} of {totalItems} career{totalItems !== 1 ? "s" : ""}
@@ -417,7 +463,7 @@ function CareersPageContent() {
           )}
         </div>
         </div>
-        <CareerViewSwitcher viewMode={viewMode} onChange={setViewMode} />
+        <CareerViewSwitcher viewMode={viewMode} onChange={setViewMode} className="shrink-0" />
       </div>
 
       {/* Results */}
@@ -441,8 +487,14 @@ function CareersPageContent() {
               it doesn't sit at the left edge leaving dead space on the
               right. Needs `grid` (not `inline-grid`) for mx-auto to take
               effect — inline-level elements ignore auto horizontal margin. */}
+          {/* Hidden below `xl`: the column labels head an ~928px fixed grid,
+              and ListRow renders a stacked row below that width instead, so
+              the labels would line up over nothing. The threshold is set by
+              the CONTENT area, not the viewport — the sidebar takes 224px
+              from `lg`, so a 1024px laptop leaves ~799px and the table still
+              overflowed it by 131px (measured). */}
           {viewMode === "list" && (
-            <div className={`grid ${LIST_GRID} items-center gap-x-4 px-3 py-1 border border-border dark:border-border border-b-0 rounded-t-control bg-foreground/10 dark:bg-muted/30 backdrop-blur-sm text-xs font-semibold uppercase tracking-wider text-foreground/85 dark:text-muted-foreground/70 w-fit mx-auto`}>
+            <div className={`hidden xl:grid ${LIST_GRID} items-center gap-x-4 px-3 py-1 border border-border dark:border-border border-b-0 rounded-t-control bg-foreground/10 dark:bg-muted/30 backdrop-blur-sm text-xs font-semibold uppercase tracking-wider text-foreground/85 dark:text-muted-foreground/70 w-fit mx-auto`}>
               <span>Career</span>
               <span className="text-right">Salary</span>
               <span className="text-center">Growth</span>
@@ -456,7 +508,12 @@ function CareersPageContent() {
           <div
             className={
               viewMode === "list"
-                ? "border border-border dark:border-border rounded-b-control overflow-hidden bg-background w-fit mx-auto"
+                ? // `w-fit` only from `xl` up: below that the rows are
+                  // full-width stacked rows, and `w-fit` would shrink the
+                  // container to the widest row and re-introduce clipping.
+                  // Rounded on all corners below `xl` (the column header that
+                  // would otherwise cap the table is hidden there).
+                  "border border-border dark:border-border rounded-control xl:rounded-t-none xl:rounded-b-control overflow-hidden bg-background w-full xl:w-fit xl:mx-auto"
                 : viewMode === "small"
                 ? "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3"
                 : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4"

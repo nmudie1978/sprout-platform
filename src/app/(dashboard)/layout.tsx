@@ -103,7 +103,23 @@ export default async function DashboardLayout({
         {/* Main content with bottom padding for mobile nav. The language
             switcher now lives as an icon in the dashboard header (next to the
             walkthrough control) rather than a persistent top bar. */}
-        <main id="main-content" className="flex-1 pb-16 lg:pb-0">{children}</main>
+        {/* pb must clear the real bottom nav: h-14 (56px) PLUS
+            env(safe-area-inset-bottom), which is ~34px on a notched iPhone.
+            The old flat pb-16 (64px) was ~26px short, so the last slice of
+            every page sat behind the nav.
+
+            VERIFICATION LIMIT: headless Chrome reports
+            env(safe-area-inset-bottom) as 0, so only the inset=0 arm is
+            measured (computed 64px against a 57px nav — clears it). The
+            notched-device case this was written for needs a real handset;
+            it is arithmetic, not an observation. Same caveat applies to
+            every `env(safe-area-inset-*)` in this branch. */}
+        <main
+          id="main-content"
+          className="flex-1 pb-[calc(3.5rem+env(safe-area-inset-bottom,0px)+0.5rem)] lg:pb-0"
+        >
+          {children}
+        </main>
 
         {/* Global compare experience — persistent shortlist, floating pill,
             compare modal, and the "you now have 3 — compare?" prompt. Youth

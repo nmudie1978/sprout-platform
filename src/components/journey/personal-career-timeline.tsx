@@ -752,7 +752,7 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney, read
           aria-label="Roadmap summary"
         >
           <div
-            className="relative w-full max-w-md max-h-[85vh] overflow-hidden rounded-2xl border border-border/60 bg-card shadow-2xl animate-in zoom-in-95 fade-in duration-200"
+            className="relative w-full max-w-md max-h-[85dvh] overflow-hidden rounded-2xl border border-border/60 bg-card shadow-2xl animate-in zoom-in-95 fade-in duration-200"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Accent bar */}
@@ -784,7 +784,7 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney, read
             </div>
 
             {/* Vertical milestone timeline */}
-            <div className="max-h-[52vh] overflow-y-auto px-6 pb-2">
+            <div className="max-h-[52dvh] overflow-y-auto px-6 pb-2">
               <ol className="relative ml-1 space-y-4 border-l border-border/40 pl-5">
                 {[...journey.items]
                   .sort((a, b) => a.startAge - b.startAge)
@@ -1028,7 +1028,7 @@ function RoadmapReportDialog({
         </div>
 
         {/* Table */}
-        <div className="max-h-[60vh] overflow-y-auto">
+        <div className="max-h-[60dvh] overflow-y-auto">
           <table className="w-full text-left">
             <thead>
               <tr className="text-[9px] font-semibold uppercase tracking-wider text-muted-foreground/70 border-b border-border/20">

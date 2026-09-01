@@ -1010,18 +1010,18 @@ function UnderstandTab({
         {!uCollapsed('u-role') && (
           <div className="p-4 sm:p-5">
             <Tabs defaultValue="tasks" className="w-full">
-              <TabsList className={cn('grid w-full h-auto p-0 bg-transparent gap-0 border-b border-border/40 rounded-none', career?.id && hasMyths(career.id) ? 'grid-cols-4' : 'grid-cols-3')}>
-                <TabsTrigger value="tasks" className="relative rounded-none border-0 bg-transparent px-4 py-3.5 text-sm font-semibold text-muted-foreground/65 hover:text-foreground/85 transition-colors data-[state=active]:bg-muted/20 data-[state=active]:text-foreground data-[state=active]:shadow-none after:content-[''] after:absolute after:left-0 after:right-0 after:-bottom-px after:h-0.5 after:bg-primary after:scale-x-0 after:transition-transform after:duration-200 data-[state=active]:after:scale-x-100">
+              <TabsList className={cn('flex w-full h-auto p-0 bg-transparent gap-0 border-b border-border/40 rounded-none overflow-x-auto scrollbar-hide justify-start sm:grid', career?.id && hasMyths(career.id) ? 'sm:grid-cols-4' : 'sm:grid-cols-3')}>
+                <TabsTrigger value="tasks" className="relative shrink-0 whitespace-nowrap rounded-none border-0 bg-transparent px-3 sm:px-4 py-3.5 text-sm font-semibold text-muted-foreground/65 hover:text-foreground/85 transition-colors data-[state=active]:bg-muted/20 data-[state=active]:text-foreground data-[state=active]:shadow-none after:content-[''] after:absolute after:left-0 after:right-0 after:-bottom-px after:h-0.5 after:bg-primary after:scale-x-0 after:transition-transform after:duration-200 data-[state=active]:after:scale-x-100">
                   <span className="inline-flex items-center gap-2"><Briefcase className="h-4 w-4" />What You&apos;ll Do</span>
                 </TabsTrigger>
-                <TabsTrigger value="reality" className="relative rounded-none border-0 bg-transparent px-4 py-3.5 text-sm font-semibold text-muted-foreground/65 hover:text-foreground/85 transition-colors data-[state=active]:bg-muted/20 data-[state=active]:text-foreground data-[state=active]:shadow-none after:content-[''] after:absolute after:left-0 after:right-0 after:-bottom-px after:h-0.5 after:bg-primary after:scale-x-0 after:transition-transform after:duration-200 data-[state=active]:after:scale-x-100">
+                <TabsTrigger value="reality" className="relative shrink-0 whitespace-nowrap rounded-none border-0 bg-transparent px-3 sm:px-4 py-3.5 text-sm font-semibold text-muted-foreground/65 hover:text-foreground/85 transition-colors data-[state=active]:bg-muted/20 data-[state=active]:text-foreground data-[state=active]:shadow-none after:content-[''] after:absolute after:left-0 after:right-0 after:-bottom-px after:h-0.5 after:bg-primary after:scale-x-0 after:transition-transform after:duration-200 data-[state=active]:after:scale-x-100">
                   <span className="inline-flex items-center gap-2"><Eye className="h-4 w-4" />The Reality</span>
                 </TabsTrigger>
-                <TabsTrigger value="tools" className="relative rounded-none border-0 bg-transparent px-4 py-3.5 text-sm font-semibold text-muted-foreground/65 hover:text-foreground/85 transition-colors data-[state=active]:bg-muted/20 data-[state=active]:text-foreground data-[state=active]:shadow-none after:content-[''] after:absolute after:left-0 after:right-0 after:-bottom-px after:h-0.5 after:bg-primary after:scale-x-0 after:transition-transform after:duration-200 data-[state=active]:after:scale-x-100">
+                <TabsTrigger value="tools" className="relative shrink-0 whitespace-nowrap rounded-none border-0 bg-transparent px-3 sm:px-4 py-3.5 text-sm font-semibold text-muted-foreground/65 hover:text-foreground/85 transition-colors data-[state=active]:bg-muted/20 data-[state=active]:text-foreground data-[state=active]:shadow-none after:content-[''] after:absolute after:left-0 after:right-0 after:-bottom-px after:h-0.5 after:bg-primary after:scale-x-0 after:transition-transform after:duration-200 data-[state=active]:after:scale-x-100">
                   <span className="inline-flex items-center gap-2"><Wrench className="h-4 w-4" />Tools</span>
                 </TabsTrigger>
                 {career?.id && hasMyths(career.id) && (
-                  <TabsTrigger value="myths" className="relative rounded-none border-0 bg-transparent px-4 py-3.5 text-sm font-semibold text-muted-foreground/65 hover:text-foreground/85 transition-colors data-[state=active]:bg-muted/20 data-[state=active]:text-foreground data-[state=active]:shadow-none after:content-[''] after:absolute after:left-0 after:right-0 after:-bottom-px after:h-0.5 after:bg-primary after:scale-x-0 after:transition-transform after:duration-200 data-[state=active]:after:scale-x-100">
+                  <TabsTrigger value="myths" className="relative shrink-0 whitespace-nowrap rounded-none border-0 bg-transparent px-3 sm:px-4 py-3.5 text-sm font-semibold text-muted-foreground/65 hover:text-foreground/85 transition-colors data-[state=active]:bg-muted/20 data-[state=active]:text-foreground data-[state=active]:shadow-none after:content-[''] after:absolute after:left-0 after:right-0 after:-bottom-px after:h-0.5 after:bg-primary after:scale-x-0 after:transition-transform after:duration-200 data-[state=active]:after:scale-x-100">
                     <span className="inline-flex items-center gap-2"><Shield className="h-4 w-4" />Misconceptions</span>
                   </TabsTrigger>
                 )}
@@ -1238,11 +1238,11 @@ function UnderstandTab({
           return (
             <div className="p-4 sm:p-5">
               <Tabs defaultValue="day" className="w-full">
-                <TabsList className="grid w-full grid-cols-2 h-auto p-0 bg-transparent gap-0 border-b border-border/40 rounded-none">
-                  <TabsTrigger value="day" className="relative rounded-none border-0 bg-transparent px-4 py-3.5 text-sm font-semibold text-muted-foreground/65 hover:text-foreground/85 transition-colors data-[state=active]:bg-muted/20 data-[state=active]:text-foreground data-[state=active]:shadow-none after:content-[''] after:absolute after:left-0 after:right-0 after:-bottom-px after:h-0.5 after:bg-primary after:scale-x-0 after:transition-transform after:duration-200 data-[state=active]:after:scale-x-100">
+                <TabsList className="flex w-full h-auto p-0 bg-transparent gap-0 border-b border-border/40 rounded-none overflow-x-auto scrollbar-hide justify-start sm:grid sm:grid-cols-2">
+                  <TabsTrigger value="day" className="relative shrink-0 whitespace-nowrap rounded-none border-0 bg-transparent px-3 sm:px-4 py-3.5 text-sm font-semibold text-muted-foreground/65 hover:text-foreground/85 transition-colors data-[state=active]:bg-muted/20 data-[state=active]:text-foreground data-[state=active]:shadow-none after:content-[''] after:absolute after:left-0 after:right-0 after:-bottom-px after:h-0.5 after:bg-primary after:scale-x-0 after:transition-transform after:duration-200 data-[state=active]:after:scale-x-100">
                     <span className="inline-flex items-center gap-2"><Clock className="h-4 w-4" />A Typical Day</span>
                   </TabsTrigger>
-                  <TabsTrigger value="employers" className="relative rounded-none border-0 bg-transparent px-4 py-3.5 text-sm font-semibold text-muted-foreground/65 hover:text-foreground/85 transition-colors data-[state=active]:bg-muted/20 data-[state=active]:text-foreground data-[state=active]:shadow-none after:content-[''] after:absolute after:left-0 after:right-0 after:-bottom-px after:h-0.5 after:bg-primary after:scale-x-0 after:transition-transform after:duration-200 data-[state=active]:after:scale-x-100">
+                  <TabsTrigger value="employers" className="relative shrink-0 whitespace-nowrap rounded-none border-0 bg-transparent px-3 sm:px-4 py-3.5 text-sm font-semibold text-muted-foreground/65 hover:text-foreground/85 transition-colors data-[state=active]:bg-muted/20 data-[state=active]:text-foreground data-[state=active]:shadow-none after:content-[''] after:absolute after:left-0 after:right-0 after:-bottom-px after:h-0.5 after:bg-primary after:scale-x-0 after:transition-transform after:duration-200 data-[state=active]:after:scale-x-100">
                     <span className="inline-flex items-center gap-2"><Building2 className="h-4 w-4" />Where People Work</span>
                   </TabsTrigger>
                 </TabsList>
@@ -1436,12 +1436,12 @@ function UnderstandTab({
                       clear active state (teal underline + solid
                       background) so they read as a primary navigation
                       control rather than a small pill filter. */}
-                  <TabsList className={cn("grid w-full h-auto p-0 bg-transparent gap-0 border-b border-border/40 rounded-none", certPath ? "grid-cols-3" : "grid-cols-2")}>
+                  <TabsList className={cn("flex w-full h-auto p-0 bg-transparent gap-0 border-b border-border/40 rounded-none overflow-x-auto scrollbar-hide justify-start sm:grid", certPath ? "sm:grid-cols-3" : "sm:grid-cols-2")}>
                     <TabsTrigger
                       value="readiness"
                       className="
-                        relative rounded-none border-0 bg-transparent
-                        px-4 py-3.5 text-sm font-semibold
+                        relative shrink-0 whitespace-nowrap rounded-none border-0 bg-transparent
+                        px-3 sm:px-4 py-3.5 text-sm font-semibold
                         text-muted-foreground/65 hover:text-foreground/85 transition-colors
                         data-[state=active]:bg-muted/20 data-[state=active]:text-foreground
                         data-[state=active]:shadow-none
@@ -1458,8 +1458,8 @@ function UnderstandTab({
                     <TabsTrigger
                       value="study-path"
                       className="
-                        relative rounded-none border-0 bg-transparent
-                        px-4 py-3.5 text-sm font-semibold
+                        relative shrink-0 whitespace-nowrap rounded-none border-0 bg-transparent
+                        px-3 sm:px-4 py-3.5 text-sm font-semibold
                         text-muted-foreground/65 hover:text-foreground/85 transition-colors
                         data-[state=active]:bg-muted/20 data-[state=active]:text-foreground
                         data-[state=active]:shadow-none
@@ -1477,8 +1477,8 @@ function UnderstandTab({
                       <TabsTrigger
                         value="certifications"
                         className="
-                          relative rounded-none border-0 bg-transparent
-                          px-4 py-3.5 text-sm font-semibold
+                          relative shrink-0 whitespace-nowrap rounded-none border-0 bg-transparent
+                          px-3 sm:px-4 py-3.5 text-sm font-semibold
                           text-muted-foreground/65 hover:text-foreground/85 transition-colors
                           data-[state=active]:bg-muted/20 data-[state=active]:text-foreground
                           data-[state=active]:shadow-none
@@ -2420,13 +2420,19 @@ function ClarityTab({ goalTitle, career }: { goalTitle: string | null; career: C
         className="border-orange-500/40"
         style={{ boxShadow: '0 0 20px rgba(234,88,12,0.08)' }}
       >
-        {/* Tab bar */}
+        {/* Tab bar. The three labels ("Your Roadmap", "Ask Future Me",
+            "Momentum") plus px-4 are wider than a 320px screen, and `flex-1`
+            cannot shrink a flex item below its content width — so "Momentum"
+            and the minimise button were pushed off the right edge and
+            clipped. The tabs now scroll horizontally below `sm` while the
+            minimise button stays pinned outside the scroller. */}
         <div className="flex border-b border-border/20">
+          <div className="flex-1 min-w-0 flex overflow-x-auto scrollbar-hide">
           <button
             type="button"
             onClick={() => setClaritySubTab('roadmap')}
             className={cn(
-              "flex-1 flex items-center justify-center gap-2 px-4 py-3 text-xs font-medium transition-colors",
+              "shrink-0 sm:flex-1 whitespace-nowrap flex items-center justify-center gap-2 px-3 sm:px-4 py-3 min-h-[44px] text-xs font-medium transition-colors",
               claritySubTab === 'roadmap'
                 ? "text-orange-500 border-b-2 border-orange-500 -mb-px"
                 : "text-muted-foreground/70 hover:text-muted-foreground"
@@ -2439,7 +2445,7 @@ function ClarityTab({ goalTitle, career }: { goalTitle: string | null; career: C
             type="button"
             onClick={() => setClaritySubTab('ask-future-me')}
             className={cn(
-              "flex-1 flex items-center justify-center gap-2 px-4 py-3 text-xs font-medium transition-colors",
+              "shrink-0 sm:flex-1 whitespace-nowrap flex items-center justify-center gap-2 px-3 sm:px-4 py-3 min-h-[44px] text-xs font-medium transition-colors",
               claritySubTab === 'ask-future-me'
                 ? "text-orange-500 border-b-2 border-orange-500 -mb-px"
                 : "text-muted-foreground/70 hover:text-muted-foreground"
@@ -2452,7 +2458,7 @@ function ClarityTab({ goalTitle, career }: { goalTitle: string | null; career: C
             type="button"
             onClick={() => setClaritySubTab('momentum')}
             className={cn(
-              "flex-1 flex items-center justify-center gap-2 px-4 py-3 text-xs font-medium transition-colors",
+              "shrink-0 sm:flex-1 whitespace-nowrap flex items-center justify-center gap-2 px-3 sm:px-4 py-3 min-h-[44px] text-xs font-medium transition-colors",
               claritySubTab === 'momentum'
                 ? "text-orange-500 border-b-2 border-orange-500 -mb-px"
                 : "text-muted-foreground/70 hover:text-muted-foreground"
@@ -2461,6 +2467,7 @@ function ClarityTab({ goalTitle, career }: { goalTitle: string | null; career: C
             <Zap className="h-3.5 w-3.5" />
             Momentum
           </button>
+          </div>
           {/* Minimise the whole consolidated card. Choice persists via
               localStorage so it survives reloads. */}
           <button
@@ -2608,7 +2615,7 @@ function ClarityTab({ goalTitle, career }: { goalTitle: string | null; career: C
                           href={s.url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex items-center justify-center gap-0.5 rounded-md border border-border/30 bg-background/40 px-1.5 py-0.5 text-[9px] font-medium text-foreground/70 hover:border-border/60 hover:text-foreground transition-colors"
+                          className="inline-flex items-center justify-center gap-0.5 rounded-md border border-border/30 bg-background/40 px-2.5 sm:px-1.5 min-h-[44px] sm:min-h-0 py-0.5 text-[9px] font-medium text-foreground/70 hover:border-border/60 hover:text-foreground transition-colors"
                         >
                           Open <ExternalLink className="h-2 w-2" />
                         </a>
@@ -2626,7 +2633,7 @@ function ClarityTab({ goalTitle, career }: { goalTitle: string | null; career: C
                             },
                           ]);
                         }}
-                        className="inline-flex items-center justify-center gap-0.5 rounded-md border border-amber-500/50 bg-amber-500/15 dark:border-amber-500/30 dark:bg-amber-500/10 px-1.5 py-0.5 text-[9px] font-semibold text-amber-700 hover:bg-amber-500/25 dark:text-amber-300 dark:hover:bg-amber-500/20 transition-colors"
+                        className="inline-flex items-center justify-center gap-0.5 rounded-md border border-amber-500/50 bg-amber-500/15 dark:border-amber-500/30 dark:bg-amber-500/10 px-2.5 sm:px-1.5 min-h-[44px] sm:min-h-0 py-0.5 text-[9px] font-semibold text-amber-700 hover:bg-amber-500/25 dark:text-amber-300 dark:hover:bg-amber-500/20 transition-colors"
                         title="Add this as one of your momentum steps"
                       >
                         <Plus className="h-2 w-2" /> Add
@@ -2747,7 +2754,7 @@ function ClarityTab({ goalTitle, career }: { goalTitle: string | null; career: C
                 <button
                   onClick={addAction}
                   disabled={!newAction.trim()}
-                  className="inline-flex items-center gap-0.5 rounded-lg border border-amber-500/50 bg-amber-500/15 dark:border-amber-500/30 dark:bg-amber-500/10 px-2.5 py-1.5 text-[10px] font-semibold text-amber-700 hover:bg-amber-500/25 dark:text-amber-300 dark:hover:bg-amber-500/20 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                  className="inline-flex items-center gap-0.5 rounded-lg border border-amber-500/50 bg-amber-500/15 dark:border-amber-500/30 dark:bg-amber-500/10 px-2.5 min-h-[44px] sm:min-h-0 py-1.5 text-[10px] font-semibold text-amber-700 hover:bg-amber-500/25 dark:text-amber-300 dark:hover:bg-amber-500/20 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
                 >
                   <Plus className="h-2.5 w-2.5" /> Add
                 </button>

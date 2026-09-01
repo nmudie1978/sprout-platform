@@ -108,11 +108,78 @@ function ListRow({ career, matchScore, onLearnMore, notTailoredLabel }: Omit<Car
   const demandColor = getDemandColors(academic.demand);
 
   return (
-    <button
-      type="button"
-      onClick={onLearnMore}
-      className={`grid ${LIST_GRID} items-center gap-x-4 px-3 py-1 border-b hover:bg-muted/50 transition-colors text-left focus:outline-none focus:bg-muted/50`}
-    >
+    <>
+      {/* STACKED ROW (<lg) — the eight-column table below measures ~928px
+          (49.5rem of columns + 7rem of gaps + padding) and was being clipped,
+          not scrolled: everything from Salary rightwards was unreachable.
+          The breakpoint is `xl`, and the number to measure against is the
+          CONTENT area, not the viewport: the sidebar is w-56 (224px) from
+          `lg`, so a 1024px laptop leaves ~799px for a 930px table (measured:
+          131px of overflow). It first fits around 1180px. Below `xl` the same
+          data is restacked as a full-width two-line row with a >=56px tap
+          target. */}
+      <button
+        type="button"
+        onClick={onLearnMore}
+        className="xl:hidden w-full min-h-[56px] flex items-center gap-3 px-3 py-2.5 border-b text-left transition-colors active:bg-muted/60 focus:outline-none focus-visible:bg-muted/50"
+      >
+        <span className="text-lg shrink-0 leading-none">{career.emoji}</span>
+        <span className="flex-1 min-w-0">
+          <span className="flex items-center gap-1.5 min-w-0">
+            <span className="text-sm font-medium truncate">{career.title}</span>
+            {career.entryLevel && (
+              <Badge
+                variant="secondary"
+                className="text-[11px] px-1.5 py-0 shrink-0 bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-400"
+              >
+                Entry
+              </Badge>
+            )}
+          </span>
+          {/* Second line carries the columns the table would have hidden.
+              Kept at 12px (not the table's 9–10px) so it is readable
+              without zooming. */}
+          <span className="mt-0.5 flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-xs text-muted-foreground">
+            {salaryShort && <span className="tabular-nums">{salaryShort}</span>}
+            {salaryShort && <span aria-hidden="true">·</span>}
+            <span className={growth.color}>{growth.label} growth</span>
+            {path && (
+              <>
+                <span aria-hidden="true">·</span>
+                <span>{path}</span>
+              </>
+            )}
+            <span aria-hidden="true">·</span>
+            <span>{sector}</span>
+            <span aria-hidden="true">·</span>
+            <span className={demandColor.text}>
+              {getDemandLabel(academic.demand)} demand
+            </span>
+            {notTailored && notTailoredLabel && (
+              <>
+                <span aria-hidden="true">·</span>
+                <span>{notTailoredLabel}</span>
+              </>
+            )}
+          </span>
+        </span>
+        {matchScore !== undefined && (
+          <Badge
+            variant="secondary"
+            className="shrink-0 text-[11px] px-1.5 py-0 bg-teal-100 text-teal-700 dark:bg-teal-950 dark:text-teal-400"
+          >
+            {matchScore}%
+          </Badge>
+        )}
+        <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground/70" />
+      </button>
+
+      {/* DESKTOP TABLE ROW (xl+) — unchanged. */}
+      <button
+        type="button"
+        onClick={onLearnMore}
+        className={`hidden xl:grid ${LIST_GRID} items-center gap-x-4 px-3 py-1 border-b hover:bg-muted/50 transition-colors text-left focus:outline-none focus:bg-muted/50`}
+      >
       {/* Title */}
       <span className="flex items-center gap-2 min-w-0">
         <span className="text-sm flex-shrink-0 leading-none">{career.emoji}</span>
@@ -187,7 +254,8 @@ function ListRow({ career, matchScore, onLearnMore, notTailoredLabel }: Omit<Car
         Learn more
         <ChevronRight className="h-3 w-3" />
       </span>
-    </button>
+      </button>
+    </>
   );
 }
 

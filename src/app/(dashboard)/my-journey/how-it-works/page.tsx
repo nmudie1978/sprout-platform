@@ -89,8 +89,12 @@ export default function HowItWorksPage() {
         </p>
       </div>
 
-      {/* Flow arrow indicator */}
-      <div className="flex items-center justify-center gap-2 mb-8">
+      {/* Flow indicator. Three pills plus two connectors are ~365px wide, so
+          `justify-center` pushed the first pill off the left edge at 320px —
+          "Discover" was half-cut and "Clarity" clipped on the right. Wrapping
+          keeps all three stages on screen; the connectors are decorative and
+          drop out below `sm` rather than forcing the row wider. */}
+      <div className="flex flex-wrap items-center justify-center gap-2 mb-8">
         {STAGES.map((stage, i) => (
           <div key={stage.label} className="flex items-center gap-2">
             <div className={`flex items-center gap-1.5 rounded-pill px-3 py-1.5 ${stage.iconBg}`}>
@@ -98,7 +102,7 @@ export default function HowItWorksPage() {
               <span className={`text-xs font-semibold ${stage.iconColor}`}>{stage.label}</span>
             </div>
             {i < STAGES.length - 1 && (
-              <div className="w-6 h-px bg-border" />
+              <div className="hidden sm:block w-6 h-px bg-border" />
             )}
           </div>
         ))}

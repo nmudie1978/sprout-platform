@@ -7,6 +7,15 @@ const config: Config = {
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
+  // `.hit-44` (globals.css) has zero call sites by design — every former one
+  // was converted to real size. It is kept as the correct tool for the case
+  // where clearance is structurally fixed. Without this entry it survives
+  // only because the literal string appears in two code COMMENTS in
+  // career-view-switcher.tsx: Tailwind's scanner is a naive regex over file
+  // content and does not strip comments. Tidying those comments would
+  // silently purge the utility, and the next person to apply `.hit-44` would
+  // get no hit area at all. Retention is explicit here instead.
+  safelist: ["hit-44"],
   theme: {
     container: {
       center: true,

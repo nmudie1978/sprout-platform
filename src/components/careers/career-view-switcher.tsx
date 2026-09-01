@@ -69,7 +69,12 @@ export function CareerViewSwitcher({
             aria-pressed={active}
             title={description}
             className={cn(
-              "inline-flex items-center gap-1.5 rounded-[calc(var(--radius)-0.35rem)] px-2.5 py-1 text-xs font-medium transition-colors",
+              // Real size, NOT `.hit-44`. A 44x44 projected hit area on buttons
+              // 2px apart (gap-0.5) overlaps its neighbour, and the later
+              // sibling wins the tap — measured: a press 3px inside the right
+              // edge of "Table" selected "Cards". `.hit-44` is right for an
+              // isolated icon button, wrong inside a segmented control.
+              "inline-flex items-center justify-center gap-1.5 rounded-[calc(var(--radius)-0.35rem)] min-h-[38px] px-2.5 py-1 text-xs font-medium transition-colors",
               "focus:outline-none focus-visible:ring-2 focus-visible:ring-ring",
               active
                 ? "bg-primary text-primary-foreground"

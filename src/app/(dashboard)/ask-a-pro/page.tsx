@@ -28,6 +28,7 @@ import {
   Search,
 } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
+import { cn } from "@/lib/utils";
 
 const CATEGORIES = [
   "Tech",
@@ -162,22 +163,30 @@ export default function AskAProPage() {
         icon={MessageSquare}
       />
 
-      {/* Tab Navigation */}
-      <div className="mb-6 flex gap-3">
+      {/* Tab Navigation — the two buttons together exceed 320px, and the
+          second one ("My Questions") was clipped off the right edge. Each
+          takes half the row on mobile so both stay reachable. */}
+      <div className="mb-6 grid grid-cols-2 gap-2 sm:flex sm:gap-3">
         <Button
           variant={selectedTab === "ask" ? "default" : "outline"}
           onClick={() => setSelectedTab("ask")}
-          className={selectedTab === "ask" ? "shadow-lg" : "border-2"}
+          className={cn(
+            "w-full sm:w-auto min-h-[44px] px-2 sm:px-4",
+            selectedTab === "ask" ? "shadow-lg" : "border-2"
+          )}
         >
-          <Send className="mr-2 h-4 w-4" />
+          <Send className="mr-1.5 sm:mr-2 h-4 w-4 shrink-0" />
           Ask Question
         </Button>
         <Button
           variant={selectedTab === "my-questions" ? "default" : "outline"}
           onClick={() => setSelectedTab("my-questions")}
-          className={selectedTab === "my-questions" ? "shadow-lg" : "border-2"}
+          className={cn(
+            "w-full sm:w-auto min-h-[44px] px-2 sm:px-4",
+            selectedTab === "my-questions" ? "shadow-lg" : "border-2"
+          )}
         >
-          <MessageSquare className="mr-2 h-4 w-4" />
+          <MessageSquare className="mr-1.5 sm:mr-2 h-4 w-4 shrink-0" />
           My Questions
         </Button>
       </div>

@@ -20,11 +20,22 @@ const buttonVariants = cva(
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
       },
+      // Touch-first heights: every size is at least 44px below `sm` (the
+      // WCAG 2.5.8 target size), then relaxes to the previous, denser
+      // desktop heights from `sm` up. `size="sm"` in particular was 36px,
+      // which is a small target for a thumb — and it is the size used for
+      // most secondary actions across the app.
+      //
+      // BLAST RADIUS — bounded, not assumed. `default` and `sm` changed
+      // HEIGHT only, which cannot cause horizontal overflow. `lg` is
+      // untouched. Only `icon` gained width (+4px on mobile), and all 29
+      // `size="icon"` call sites pin their own h-/w-, so the horizontal
+      // blast radius of this change is zero.
       size: {
-        default: "h-10 px-4 py-2",
-        sm: "h-9 rounded-md px-3",
+        default: "h-11 sm:h-10 px-4 py-2",
+        sm: "h-11 sm:h-9 rounded-md px-3",
         lg: "h-11 rounded-md px-8",
-        icon: "h-10 w-10",
+        icon: "h-11 w-11 sm:h-10 sm:w-10",
       },
     },
     defaultVariants: {

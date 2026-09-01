@@ -147,7 +147,7 @@ function MobileMoreMenu({
   return (
     <SheetContent
       side="bottom"
-      className="h-[85vh] max-h-[85vh] rounded-t-2xl border-t border-border/40 bg-background p-0 overflow-hidden flex flex-col"
+      className="h-[85dvh] max-h-[85dvh] rounded-t-2xl border-t border-border/40 bg-background p-0 overflow-hidden flex flex-col"
     >
       {/* Drawer header — matches the calm youth-first visual weight */}
       <div className="shrink-0 px-5 pt-4 pb-3 border-b border-border/30">
