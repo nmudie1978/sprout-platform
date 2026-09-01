@@ -10,6 +10,12 @@ import type { JWT } from "next-auth/jwt";
 import { checkRateLimitAsync, resetRateLimit, RateLimits } from "@/lib/rate-limit";
 import { normaliseEmail } from "@/lib/auth/email-verification";
 import { blocksSession, unverifiedSignInError } from "@/lib/auth/verification-gate";
+import {
+  HANDOFF_TOKEN_TTL_MS,
+  grantSecret,
+  readHandoffToken,
+  verificationSatisfiesGrant,
+} from "@/lib/auth/signin-grant";
 import { notifyAccountEvent } from "@/lib/account-notify";
 
 // Helper to calculate age from birthdate
@@ -361,6 +367,92 @@ export const authOptions: NextAuthOptions = {
           email: user.email,
           role: user.role,
         };
+      },
+    }),
+    // ── Post-verification handoff ────────────────────────────────────────
+    // The provider behind "you confirmed your email, so you're in" — used by
+    // the Check your email screen when it notices the link has been clicked,
+    // and by the confirmation screen itself when that happens in the same
+    // browser. Without it, a user who has just proved both that they know the
+    // password (they chose it 60 seconds ago) and that they own the inbox is
+    // still made to type the password again, on a screen that gives no sign
+    // anything happened.
+    //
+    // It accepts NO password and NO address. The only credential is a
+    // two-minute token that /api/auth/verification-status will mint only for a
+    // browser holding the sealed grant cookie from its own signup, and only
+    // once that account's confirmation has landed. Everything that makes this
+    // safe is documented in src/lib/auth/signin-grant.ts; the checks below are
+    // the second, independent enforcement of it, so a flaw in the status route
+    // alone cannot mint a session.
+    CredentialsProvider({
+      id: "verification-handoff",
+      name: "Email confirmation",
+      credentials: {
+        token: { label: "Handoff token", type: "text" },
+      },
+      async authorize(credentials, req) {
+        const secret = grantSecret();
+        if (!secret || !credentials?.token) throw new Error("Invalid credentials");
+
+        // Cheap guard on an unauthenticated endpoint: the token is an HMAC and
+        // therefore unguessable, but the attempt shouldn't be free either.
+        const ip = loginClientIp(req);
+        const attempts = await checkRateLimitAsync(
+          `verification-handoff:ip:${ip}`,
+          RateLimits.STRICT,
+        ).catch(() => null);
+        if (attempts && !attempts.success) throw new Error(LOGIN_THROTTLE_MESSAGE);
+
+        const handoff = readHandoffToken(credentials.token, { secret });
+        if (!handoff) throw new Error("Invalid credentials");
+
+        // SINGLE USE. The token's nonce is burned in the shared rate limiter,
+        // so the same token can't mint a second session. Best-effort: on a
+        // Redis outage this falls back to per-instance memory, which leaves
+        // replay possible within the token's two-minute life — the same
+        // fail-open posture as the login throttle, and a far smaller exposure
+        // than locking every new signup out of the product.
+        const burn = await checkRateLimitAsync(`verification-handoff:token:${handoff.nonce}`, {
+          interval: HANDOFF_TOKEN_TTL_MS,
+          maxRequests: 1,
+        }).catch(() => null);
+        if (burn && !burn.success) throw new Error("Invalid credentials");
+
+        const user = await prisma.user.findUnique({
+          where: { id: handoff.userId },
+          select: {
+            id: true,
+            email: true,
+            role: true,
+            emailVerified: true,
+            accountStatus: true,
+            isPaused: true,
+            deletedAt: true,
+          },
+        });
+        if (!user) throw new Error("Invalid credentials");
+
+        // Re-checked here, not merely trusted from the status route: the
+        // confirmation must post-date the grant, or signing up with someone
+        // else's already-confirmed address would be a way into their account.
+        if (!verificationSatisfiesGrant(user.emailVerified, handoff.grantIssuedAt)) {
+          throw new Error("Invalid credentials");
+        }
+
+        // Same account-state refusals as the password path. A deleted account
+        // is NOT restored here — that is a deliberate act by someone who knows
+        // the password, not something a signup-flow cookie should trigger.
+        if (
+          user.deletedAt ||
+          user.isPaused ||
+          user.accountStatus === "SUSPENDED" ||
+          user.accountStatus === "BANNED"
+        ) {
+          throw new Error("Invalid credentials");
+        }
+
+        return { id: user.id, email: user.email, role: user.role };
       },
     }),
   ],

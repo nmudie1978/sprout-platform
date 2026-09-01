@@ -32,6 +32,13 @@ import {
   PENDING_VERIFICATION_COOKIE,
   PENDING_VERIFICATION_MAX_AGE_S,
 } from "@/lib/auth/email-verification";
+import {
+  SIGNIN_GRANT_COOKIE,
+  SIGNIN_GRANT_TTL_MS,
+  createSigninGrant,
+  createDecoyGrant,
+  grantSecret,
+} from "@/lib/auth/signin-grant";
 import { logAndSwallow } from "@/lib/observability";
 
 // Transient DB/connection errors worth a quick retry on serverless cold
@@ -98,6 +105,11 @@ function signupAcceptedResponse(
   role: string,
   rawCountry: unknown,
   email: string,
+  /**
+   * The account this browser just created, or null on the existing-account and
+   * lost-race paths. Null gets a DECOY grant, not no grant — see below.
+   */
+  createdUserId: string | null,
 ): NextResponse {
   const res = NextResponse.json(SIGNUP_ACCEPTED);
 
@@ -121,6 +133,37 @@ function signupAcceptedResponse(
     path: "/",
     maxAge: PENDING_VERIFICATION_MAX_AGE_S,
   });
+
+  // THE SIGN-IN GRANT. Sealed proof that THIS browser created THIS account, so
+  // the "check your email" screen can notice the confirmation land and sign the
+  // user in rather than making them retype a password they set a minute ago.
+  // See src/lib/auth/signin-grant.ts for the trust model — in short, the grant
+  // alone does nothing: a session is only minted once the account's
+  // `emailVerified` is stamped AFTER this grant was issued.
+  //
+  // Set on EVERY accepted signup. The existing-account and lost-race paths get
+  // a decoy that names a random id: `Set-Cookie` is plainly visible to whoever
+  // made the request, so a grant that appeared only for new accounts would
+  // answer "was this address free?" — exactly the question this route is built
+  // never to answer. The decoy is encrypted, byte-for-byte the same length as a
+  // real grant, and resolves to nobody, so it can never mint a session.
+  const secret = grantSecret();
+  if (secret) {
+    res.cookies.set(
+      SIGNIN_GRANT_COOKIE,
+      createdUserId
+        ? createSigninGrant(createdUserId, { secret })
+        : createDecoyGrant({ secret }),
+      {
+        httpOnly: true,
+        sameSite: "lax",
+        secure: process.env.NODE_ENV === "production",
+        path: "/",
+        maxAge: Math.floor(SIGNIN_GRANT_TTL_MS / 1000),
+      },
+    );
+  }
+
   // Youth from a country whose UI language isn't the default get that language
   // automatically (e.g. Spain → Spanish). They can still switch via the
   // language toggle. Same cookie options as /api/locale.
@@ -366,7 +409,7 @@ export async function POST(req: NextRequest) {
       await sendExistingAccountNotice(email).catch(
         logAndSwallow("signup:existing-account-notice"),
       );
-      return signupAcceptedResponse(role, rawCountry, email);
+      return signupAcceptedResponse(role, rawCountry, email, null);
     }
 
     const acceptanceTimestamp = new Date();
@@ -439,7 +482,7 @@ export async function POST(req: NextRequest) {
         await sendExistingAccountNotice(email).catch(
           logAndSwallow("signup:existing-account-notice"),
         );
-        return signupAcceptedResponse(role, rawCountry, email);
+        return signupAcceptedResponse(role, rawCountry, email, null);
       }
       throw err;
     }
@@ -486,7 +529,7 @@ export async function POST(req: NextRequest) {
       }
     });
 
-    return signupAcceptedResponse(role, rawCountry, email);
+    return signupAcceptedResponse(role, rawCountry, email, newUser.id);
   } catch (error) {
     console.error("Signup error:", error);
     // Surface the Prisma error code (safe — codes like P1001/P2024 carry no
