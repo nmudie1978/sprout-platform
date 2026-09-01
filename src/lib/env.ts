@@ -51,9 +51,14 @@ const RECOMMENDED = [
   "DIRECT_URL",
   "OPENAI_API_KEY",
   "RESEND_API_KEY",
-  // Sender address for transactional email (password reset). Without it,
-  // sendMail silently skips — a warning here makes that visible at boot.
+  // Sender address for transactional email (signup verification, the
+  // existing-account notice, password reset). Without it, sendMail silently
+  // skips — a warning here makes that visible at boot.
   "MAIL_FROM",
+  // Origin for every emailed link. NEXTAUTH_URL is a required fallback, so
+  // this is a warning rather than a hard failure — but setting it explicitly
+  // is what keeps verification links pointing at the canonical domain.
+  "NEXT_PUBLIC_APP_URL",
   // Error monitoring. Sentry init is DSN-gated, so a missing DSN means ALL
   // error capture is a silent no-op — warn loudly at boot if it's absent.
   "SENTRY_DSN",
