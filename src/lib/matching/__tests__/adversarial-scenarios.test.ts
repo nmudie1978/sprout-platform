@@ -22,6 +22,8 @@ import type { DiscoveryPreferences } from "@/lib/career-pathways";
 // Engine now takes catalog data via ctx — build it from the real catalog.
 const CTX = { careers: getAllCareers(), findCategory: findCareerCategory };
 import { getAllCareers, findCareerCategory } from "@/lib/career-pathways";
+import { PEOPLE_PREF_TO_SCORE, WORK_STYLE_LABELS } from "../config";
+import { SUBJECT_CATEGORY_WEIGHTS } from "../lookups";
 
 // ── Personas ──────────────────────────────────────────────────────
 
@@ -30,16 +32,16 @@ const PERSONAS: Record<string, DiscoveryPreferences> = {
   practicalHandsOn: {
     subjects: ["physics", "design-tech", "food-tech"],
     workStyles: ["hands-on", "outdoors"],
-    peoplePref: "small-team",
+    peoplePref: "mixed",
     interests: ["building", "fixing", "engines"],
   },
 
   // Academically strong, classic STEM
   academicSTEM: {
-    subjects: ["maths", "physics", "chemistry", "biology"],
-    starredSubjects: ["maths", "physics"],
+    subjects: ["math", "physics", "chemistry", "biology"],
+    starredSubjects: ["math", "physics"],
     workStyles: ["desk"],
-    peoplePref: "solo",
+    peoplePref: "mostly-alone",
     interests: ["research", "analysis"],
   },
 
@@ -48,7 +50,7 @@ const PERSONAS: Record<string, DiscoveryPreferences> = {
     subjects: ["art", "drama", "music", "english"],
     starredSubjects: ["art"],
     workStyles: ["creative"],
-    peoplePref: "solo",
+    peoplePref: "mostly-alone",
     interests: ["design", "performance", "storytelling"],
   },
 
@@ -56,7 +58,7 @@ const PERSONAS: Record<string, DiscoveryPreferences> = {
   socialPeople: {
     subjects: ["psychology", "english", "biology"],
     workStyles: ["desk"],
-    peoplePref: "many-people",
+    peoplePref: "with-people",
     interests: ["helping people", "talking"],
   },
 
@@ -67,7 +69,7 @@ const PERSONAS: Record<string, DiscoveryPreferences> = {
 
   // Sparse: subjects only
   sparseSubjectsOnly: {
-    subjects: ["maths"],
+    subjects: ["math"],
   },
 
   // No input at all (should return empty list — guarded path)
@@ -75,9 +77,9 @@ const PERSONAS: Record<string, DiscoveryPreferences> = {
 
   // Contradiction: heavy creative + heavy maths/finance
   contradictoryCreativeAnalytical: {
-    subjects: ["art", "drama", "maths", "business"],
+    subjects: ["art", "drama", "math", "business"],
     workStyles: ["creative", "desk"],
-    peoplePref: "many-people",
+    peoplePref: "with-people",
     interests: ["design", "spreadsheets", "trading"],
   },
 
@@ -85,18 +87,18 @@ const PERSONAS: Record<string, DiscoveryPreferences> = {
   contradictoryOutdoorsOffice: {
     subjects: ["geography"],
     workStyles: ["outdoors", "hands-on"],
-    peoplePref: "small-team",
+    peoplePref: "mixed",
     interests: ["office work", "filing", "spreadsheets"],
   },
 
   // Over-specified: every subject selected
   overSpecified: {
     subjects: [
-      "maths","english","biology","chemistry","physics","computing",
+      "math","english","biology","chemistry","physics","computing",
       "art","drama","music","geography","history","psychology","food-tech",
     ],
     workStyles: ["desk", "hands-on", "outdoors", "creative"],
-    peoplePref: "many-people",
+    peoplePref: "with-people",
     interests: ["everything"],
   },
 
@@ -108,9 +110,9 @@ const PERSONAS: Record<string, DiscoveryPreferences> = {
 
   // High-income motivated proxy: business + maths + finance interests
   highIncome: {
-    subjects: ["maths", "business", "economics"],
+    subjects: ["math", "business"],
     workStyles: ["desk"],
-    peoplePref: "small-team",
+    peoplePref: "mixed",
     interests: ["money", "finance", "investing", "wealth"],
   },
 
@@ -118,23 +120,67 @@ const PERSONAS: Record<string, DiscoveryPreferences> = {
   workLifeBalance: {
     subjects: ["geography", "biology"],
     workStyles: ["outdoors", "hands-on"],
-    peoplePref: "small-team",
+    peoplePref: "mixed",
     interests: ["nature", "balance", "outdoor work"],
   },
 
   // Unusual casing (stress-test normalization)
   weirdCasing: {
-    subjects: ["MATHS", "Physics", "ChEmIsTrY"],
+    subjects: ["MATH", "Physics", "ChEmIsTrY"],
     workStyles: ["desk"],
     interests: ["DATA", "Coding"],
   },
 
   // Garbage interests
   garbageInterests: {
-    subjects: ["maths"],
+    subjects: ["math"],
     interests: ["asdfqwerty", "🦄", "this is a long sentence not a tag"],
   },
 };
+
+// ── Fixture vocabulary guard ──────────────────────────────────────
+//
+// Every persona above is an INPUT to the engine, and the engine looks its
+// values up in tables keyed on the exact strings the product's UI emits. A
+// value that isn't a key doesn't fail — it falls through to a neutral default.
+// That is the right behaviour at runtime (a stale stored preference must never
+// throw at a young person) but it is silent, and silence in a fixture means a
+// test can assert "STRONG people input" while handing the engine no preference
+// at all. That is exactly what happened here: five personas used invented
+// values (`many-people`, `small-team`, `solo`, `maths`, `economics`), so the
+// people dimension was neutralised across the whole suite and the subject
+// dimension was diluted, for months, with only one visible failure.
+//
+// This guard fails loudly the moment a fixture drifts from the real
+// vocabulary again.
+
+describe("fixture vocabulary matches what the engine actually understands", () => {
+  const PEOPLE_VALUES = Object.keys(PEOPLE_PREF_TO_SCORE);
+  const SUBJECT_KEYS = Object.keys(SUBJECT_CATEGORY_WEIGHTS);
+  const WORK_STYLE_VALUES = Object.keys(WORK_STYLE_LABELS);
+
+  it.each(Object.entries(PERSONAS))("%s uses a real peoplePref", (_name, p) => {
+    if (p.peoplePref === undefined) return;
+    expect(PEOPLE_VALUES).toContain(p.peoplePref);
+  });
+
+  it.each(Object.entries(PERSONAS))("%s uses real subject keys", (_name, p) => {
+    for (const subject of p.subjects ?? []) {
+      // The engine lower-cases before lookup, so casing stress-tests are fine.
+      expect(SUBJECT_KEYS).toContain(subject.toLowerCase());
+    }
+    for (const subject of p.starredSubjects ?? []) {
+      expect(SUBJECT_KEYS).toContain(subject.toLowerCase());
+    }
+  });
+
+  it.each(Object.entries(PERSONAS))("%s uses real workStyles", (_name, p) => {
+    for (const style of p.workStyles ?? []) {
+      expect(WORK_STYLE_VALUES).toContain(style);
+    }
+  });
+});
+
 
 // ── Invariant helpers ─────────────────────────────────────────────
 
@@ -259,22 +305,15 @@ describe("Matching engine — adversarial scenarios", () => {
       expect(hasHandsOn).toBe(true);
     });
 
-    // KNOWN FAILING — do not "fix" by weakening the assertion.
-    //
-    // This guard is correct and the engine is not meeting it. An explicit
-    // peoplePref of "many-people" is being outweighed by subject/academic fit,
-    // so a persona asking for people-facing work gets a top 5 of medium-people
-    // (0.50) desk careers.
-    //
-    // The weakness pre-dates the failure: before the 2026-08-28 education-data
-    // backfill, 4 of the top 5 were ALREADY 0.50 careers and only Clinical
-    // Geneticist (0.90) at #5 kept this green. Giving medicine-adjacent careers
-    // their real academic profile (advancedCareerMap in programmes.json) moved
-    // it to #7 and tipped the threshold.
-    //
-    // The fix is in the engine's dimension weighting, not in this test and not
-    // in the education data. See docs/career-coverage-gaps.json and
-    // scripts/career-coverage-audit.ts for the data side.
+    // Was failing for a while, and the cause was in this file, not the engine.
+    // The persona asked for `peoplePref: "many-people"` — a value the product
+    // never produces. `PEOPLE_PREF_TO_SCORE` is keyed on with-people / mixed /
+    // mostly-alone, so the lookup missed, the `?? 0.5` fallback silently turned
+    // "strong people preference" into "no preference", and the engine then
+    // quite correctly surfaced the 0.50-people careers nearest that neutral
+    // point. The engine was right; the fixture was speaking a language nothing
+    // else in the codebase speaks. See the vocabulary guard at the top of this
+    // file, which now makes that failure mode loud instead of silent.
     it("STRONG people input — top 5 should contain at least one high-people career", () => {
       const r = rankCareers(PERSONAS.socialPeople, CTX, 10);
       expect(r.length).toBeGreaterThan(0);
