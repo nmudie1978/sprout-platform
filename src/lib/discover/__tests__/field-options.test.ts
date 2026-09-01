@@ -116,6 +116,15 @@ describe("FIELD_OPTIONS", () => {
     }
   });
 
+  // Regression: `history-philosophy` was used by 5 careers but had no entry in
+  // discipline-buckets.json, so the label fell back to the raw id and the
+  // dropdown rendered "history-philosophy" as a field name.
+  it("no option falls back to its raw id as a label", () => {
+    for (const option of FIELD_OPTIONS) {
+      expect(option.label, `${option.id} is missing a discipline-bucket label`).not.toBe(option.id);
+    }
+  });
+
   it("each option has at least 2 aliases", () => {
     for (const option of FIELD_OPTIONS) {
       expect(option.aliases.length, `${option.id} should have ≥2 aliases`).toBeGreaterThanOrEqual(2);
@@ -231,6 +240,46 @@ describe("Robotics synthetic field", () => {
     const careers = getCareersForField("robotics");
     expect(careers).toEqual(ROBOTICS_CAREER_IDS);
     expect(careers.length).toBeGreaterThanOrEqual(10);
+  });
+});
+
+describe("cross-listed extraCareerIds", () => {
+  const withExtras = FIELD_OPTIONS.filter((o) => o.extraCareerIds?.length);
+
+  it("every extra career id exists in the catalogue", () => {
+    for (const option of withExtras) {
+      for (const id of option.extraCareerIds!) {
+        expect(map[id], `${option.id}: "${id}" is not a catalogue career`).toBeDefined();
+      }
+    }
+  });
+
+  it("no duplicates within a field's extras", () => {
+    for (const option of withExtras) {
+      const ids = option.extraCareerIds!;
+      expect(new Set(ids).size, `${option.id} has duplicate extras`).toBe(ids.length);
+    }
+  });
+
+  it("getCareersForField appends extras after the field's own bucket, deduped", () => {
+    for (const option of withExtras) {
+      const own = Object.keys(map).filter((id) => map[id] === option.id);
+      const all = getCareersForField(option.id);
+      expect(new Set(all).size, `${option.id} returned duplicates`).toBe(all.length);
+      for (const id of own) expect(all).toContain(id);
+      for (const id of option.extraCareerIds!) expect(all).toContain(id);
+    }
+  });
+
+  // The point of the extras: a student picking one of these fields used to see
+  // 2–3 careers, which reads as broken rather than as a short list.
+  it("no field resolves to fewer than 5 careers", () => {
+    for (const option of FIELD_OPTIONS) {
+      expect(
+        getCareersForField(option.id).length,
+        `${option.id} resolves to too few careers`,
+      ).toBeGreaterThanOrEqual(5);
+    }
   });
 });
 

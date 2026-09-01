@@ -97,22 +97,44 @@ function isSmallJobsPath(pathname: string): boolean {
   );
 }
 
+/**
+ * Trusted request headers this middleware sets for downstream handlers.
+ *
+ * They must be STRIPPED from the incoming request first. Next.js merges the
+ * headers we set with the ones the client sent, so without this an attacker
+ * could simply send `x-user-id: <someone else>` and — the moment any handler
+ * started trusting that header instead of the session — read another young
+ * person's data. Nothing reads them today; this makes sure nothing *can* be
+ * fooled by them tomorrow.
+ */
+const TRUSTED_HEADERS = ["x-user-id", "x-user-role", "x-requires-consent", "x-pathname"];
+
+/** Incoming headers with every trusted name removed. */
+function sanitisedHeaders(request: NextRequest): Headers {
+  const headers = new Headers(request.headers);
+  for (const name of TRUSTED_HEADERS) headers.delete(name);
+  return headers;
+}
+
 export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
 
   // ============================================
-  // DEV / TEST PREVIEW ROUTES — never reachable in production
+  // DEV / TEST / LAB PREVIEW ROUTES — never reachable in production
   // ============================================
-  // /dev/* and /test/* are unfinished demo/preview surfaces (theme
-  // previews, journey-renderer sandboxes, grow-* mockups). robots.txt
-  // disallows them but that's only advisory — block them outright in
-  // production so they never render to a real user (incl. minors).
+  // /dev/*, /test/* and /lab/* are unfinished demo/preview surfaces (theme
+  // previews, roadmap-renderer galleries, journey sandboxes, grow-* mockups).
+  // robots.txt disallows them but that's only advisory — block them outright
+  // in production so they never render to a real user (incl. minors).
+  // /lab was previously missing from both this list and robots.txt, leaving
+  // ~20 internal design galleries publicly reachable and indexable. View them
+  // with `npm run dev` instead.
+  const INTERNAL_PREVIEW_PREFIXES = ["/dev", "/test", "/lab"];
   if (
     process.env.VERCEL_ENV === "production" &&
-    (pathname === "/dev" ||
-      pathname.startsWith("/dev/") ||
-      pathname === "/test" ||
-      pathname.startsWith("/test/"))
+    INTERNAL_PREVIEW_PREFIXES.some(
+      (p) => pathname === p || pathname.startsWith(p + "/"),
+    )
   ) {
     return new NextResponse(null, { status: 404 });
   }
@@ -149,7 +171,7 @@ export async function middleware(request: NextRequest) {
         }
       }
       // Continue to login page
-      const requestHeaders = new Headers(request.headers);
+      const requestHeaders = sanitisedHeaders(request);
       requestHeaders.set("x-pathname", pathname);
       return NextResponse.next({
         request: { headers: requestHeaders },
@@ -173,7 +195,7 @@ export async function middleware(request: NextRequest) {
     }
 
     // Valid session - continue
-    const requestHeaders = new Headers(request.headers);
+    const requestHeaders = sanitisedHeaders(request);
     requestHeaders.set("x-pathname", pathname);
     return NextResponse.next({
       request: { headers: requestHeaders },
@@ -197,7 +219,7 @@ export async function middleware(request: NextRequest) {
 
   // Skip public routes
   if (isPublicRoute(pathname)) {
-    const requestHeaders = new Headers(request.headers);
+    const requestHeaders = sanitisedHeaders(request);
     requestHeaders.set("x-pathname", pathname);
     return NextResponse.next({
       request: { headers: requestHeaders },
@@ -238,7 +260,7 @@ export async function middleware(request: NextRequest) {
         );
       }
 
-      const requestHeaders = new Headers(request.headers);
+      const requestHeaders = sanitisedHeaders(request);
       requestHeaders.set("x-pathname", pathname);
 
       // Mark if this is a sensitive route (for downstream consent checks)
@@ -267,7 +289,7 @@ export async function middleware(request: NextRequest) {
   // REGULAR ROUTES
   // ============================================
   // Add pathname to headers so layout can access it
-  const requestHeaders = new Headers(request.headers);
+  const requestHeaders = sanitisedHeaders(request);
   requestHeaders.set("x-pathname", pathname);
 
   return NextResponse.next({

@@ -333,6 +333,25 @@ export function checkRateLimit(
 }
 
 /**
+ * Clear a rate-limit bucket.
+ *
+ * Used by the credentials sign-in throttle: failed attempts accumulate, and a
+ * SUCCESSFUL sign-in wipes the counter so a legitimate user who mistyped their
+ * password a few times is never left locked out by their own typos.
+ */
+export async function resetRateLimit(identifier: string): Promise<void> {
+  rateLimitStore.delete(identifier);
+  try {
+    const redis = await getRedisClient();
+    if (redis) await redis.del(`ratelimit:${identifier}`);
+  } catch (error) {
+    // Best-effort only — a failure here just means the counter expires on its
+    // own schedule. Never let it break a successful sign-in.
+    console.error("[Rate Limit] Failed to reset bucket:", error);
+  }
+}
+
+/**
  * Get rate limit headers for HTTP response
  */
 export function getRateLimitHeaders(
@@ -353,6 +372,34 @@ export function getRateLimitHeaders(
 export const RateLimits = {
   // Strict: 10 requests per minute (e.g., login attempts)
   STRICT: { interval: 60000, maxRequests: 10 },
+
+  // ─── Credentials sign-in brute-force guards ──────────────────────
+  // NextAuth's /api/auth/callback/credentials is a public, unauthenticated
+  // endpoint that checks a bcrypt hash. Without these, an attacker can guess
+  // passwords against any known account address as fast as the network allows.
+  // Two buckets, both must pass:
+  //   • per account — the tight one. Stops targeting ONE young person's
+  //     account, and can't be dodged by rotating source IPs.
+  //   • per IP — the broad one. Stops spraying one password across many
+  //     accounts from a single host. Deliberately loose enough that a whole
+  //     school behind one NAT address doesn't lock itself out.
+  // Counters are cleared on a successful sign-in, so a legitimate user who
+  // mistypes their password is never locked out by their own typos.
+  LOGIN_PER_ACCOUNT: { interval: 15 * 60_000, maxRequests: 10 },
+  LOGIN_PER_IP: { interval: 15 * 60_000, maxRequests: 50 },
+
+  // ─── Verification-email resend guards ────────────────────────────
+  // /api/auth/resend-verification causes mail to be sent to an address the
+  // caller picks, so an open version of it is a mail cannon pointed at any
+  // inbox. Both buckets are keyed by the ADDRESS (not the IP), so rotating
+  // source hosts doesn't multiply how much mail one person can be sent.
+  //   • COOLDOWN — the "you just asked" guard. One send per minute, checked
+  //     before any DB lookup so it behaves the same for addresses that don't
+  //     exist; that uniformity is what keeps the endpoint non-enumerating.
+  //   • RESEND — the daily-volume guard. Five confirmation emails an hour is
+  //     far more than any genuine user needs, and caps the nuisance ceiling.
+  EMAIL_VERIFICATION_COOLDOWN: { interval: 60_000, maxRequests: 1 },
+  EMAIL_VERIFICATION_RESEND: { interval: 60 * 60_000, maxRequests: 5 },
 
   // Standard: 60 requests per minute (e.g., general API)
   STANDARD: { interval: 60000, maxRequests: 60 },
@@ -396,9 +443,11 @@ export const RateLimits = {
   // Chat is the highest-traffic AI surface; generous monthly backstop so a
   // single account can't sustain 20/hr (≈14k/month) against the budget.
   AI_MONTHLY_CHAT: { interval: 30 * 24 * 3600_000, maxRequests: 1000 },
-  // Career Twin shares the AI_CHAT per-hour budget; this is its monthly
-  // backstop so a single account can't sustain 20/hr against the budget.
-  AI_MONTHLY_TWIN: { interval: 30 * 24 * 3600_000, maxRequests: 1000 },
+  // NOTE — Career Twin no longer uses a preset here. Its limits (5/min +
+  // 15 questions per rolling 24h + a monthly USD cost ceiling + kill switch)
+  // live in src/lib/ai-usage/config.ts, where they are env-tunable. The old
+  // AI_MONTHLY_TWIN preset (1000/month) was strictly looser than 15/day and
+  // has been removed rather than left to rot.
   // Career-presence is cached + has a deterministic fallback, so AI calls are
   // infrequent; this caps the rare cache-miss AI calls per account.
   AI_MONTHLY_PRESENCE: { interval: 30 * 24 * 3600_000, maxRequests: 200 },

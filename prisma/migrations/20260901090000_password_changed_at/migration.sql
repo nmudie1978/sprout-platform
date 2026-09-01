@@ -1,0 +1,11 @@
+-- Session invalidation on password change.
+--
+-- Sessions are stateless JWTs with a 30-day life, so before this column a
+-- password reset did NOT evict an attacker already holding a stolen session
+-- token — the victim changed their password and the intruder stayed signed in
+-- for up to a month. `passwordChangedAt` gives the JWT callback a watermark:
+-- any session issued before it is treated as revoked.
+--
+-- Nullable with no default, so existing rows are untouched and existing
+-- sessions stay valid (NULL means "never reset" — nothing to invalidate).
+ALTER TABLE "User" ADD COLUMN "passwordChangedAt" TIMESTAMP(3);

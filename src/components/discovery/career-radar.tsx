@@ -2613,7 +2613,10 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
               </>
             )}
           </div>
-          {/* Sector filter — "Public" category removed per product decision */}
+          {/* Sector filter — all three options: All Sectors (default), Public,
+              Private. "Public" was dropped in 783c6af0 per an earlier product
+              ask and restored on owner request; the filter logic and
+              getSectorForCareer() always supported it. */}
           <select
             value={sectorFilter}
             onChange={(e) => { setSectorFilter(e.target.value as SectorFilter); }}
@@ -2621,6 +2624,7 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
             title="Filter by sector"
           >
             <option value="all">All Sectors</option>
+            <option value="public">Public</option>
             <option value="private">Private</option>
           </select>
           {/* Preset filter dropdown — swaps the radar to a curated slice of

@@ -7,6 +7,9 @@ import type { Adapter } from "next-auth/adapters";
 import { logAuditAction } from "@/lib/safety";
 import { AuditAction, UserRole } from "@prisma/client";
 import type { JWT } from "next-auth/jwt";
+import { checkRateLimitAsync, resetRateLimit, RateLimits } from "@/lib/rate-limit";
+import { normaliseEmail } from "@/lib/auth/email-verification";
+import { blocksSession, unverifiedSignInError } from "@/lib/auth/verification-gate";
 
 // Helper to calculate age from birthdate
 function calculateAge(birthDate: Date): number {
@@ -58,6 +61,15 @@ async function loadSessionFields(userId: string) {
         accountStatus: true,
         isVerifiedAdult: true,
         deletedAt: true,
+        // Moderation state. Loaded here so suspension is enforced at the one
+        // chokepoint every authenticated request already passes through.
+        isPaused: true,
+        // Watermark for evicting sessions issued before a password reset.
+        passwordChangedAt: true,
+        // Drives the "confirm your email" banner. Cached on the JWT with
+        // everything else so the banner costs no per-navigation query, and
+        // refreshes within SESSION_REFRESH_MS of the user confirming.
+        emailVerified: true,
         youthProfile: {
           select: {
             displayName: true,
@@ -93,10 +105,57 @@ async function getSessionFields(userId: string, forceFresh = false): Promise<Ses
   return data;
 }
 
+/** Account states that must not hold a usable session. */
+function isAccountBlocked(user: {
+  accountStatus: string;
+  isPaused: boolean;
+  deletedAt: Date | null;
+}): boolean {
+  return (
+    user.deletedAt !== null ||
+    user.isPaused ||
+    user.accountStatus === "SUSPENDED" ||
+    user.accountStatus === "BANNED"
+  );
+}
+
 // Writes the freshly-loaded (or cached) user fields onto the JWT. A missing or
 // soft-deleted user marks the token revoked so the session callback blanks the id.
 function applySessionFieldsToToken(token: JWT, dbUser: SessionUserFields): void {
   if (!dbUser || dbUser.deletedAt) {
+    token.revoked = true;
+    return;
+  }
+  // SUSPENSION ENFORCEMENT. The admin panel and the safeguarding-report queue
+  // both "suspend" an account by setting isPaused / accountStatus, and until
+  // now nothing read either back — a young person suspended for harmful
+  // behaviour kept full access to the product. Revoking here means every
+  // `!session.user.id` guard in the app treats them as signed out, and the
+  // change takes effect within SESSION_REFRESH_MS. ONBOARDING and
+  // PENDING_VERIFICATION are deliberately NOT revoked: those users still need
+  // to reach the profile-completion flow.
+  if (isAccountBlocked(dbUser)) {
+    token.revoked = true;
+    return;
+  }
+  // SESSION INVALIDATION ON PASSWORD RESET. Sessions are stateless 30-day
+  // JWTs, so without this a reset changed the password but left anyone holding
+  // a stolen session token signed in for the rest of the month — exactly the
+  // situation a reset is meant to end. `authTime` is stamped once at sign-in
+  // (the jwt callback below) and never moves, unlike `iat`, which NextAuth
+  // refreshes on every token rotation.
+  if (dbUser.passwordChangedAt) {
+    const authTime = typeof token.authTime === "number" ? token.authTime : 0;
+    if (dbUser.passwordChangedAt.getTime() > authTime) {
+      token.revoked = true;
+      return;
+    }
+  }
+  // The same gate, applied to sessions that already exist. Without this, the
+  // hard gate would only bind at sign-in and anyone holding a 30-day JWT from
+  // before it landed would keep full access for a month. Revoking here means
+  // the policy takes effect within SESSION_REFRESH_MS for everyone.
+  if (blocksSession(dbUser)) {
     token.revoked = true;
     return;
   }
@@ -108,6 +167,59 @@ function applySessionFieldsToToken(token: JWT, dbUser: SessionUserFields): void 
   token.guardianConsent = dbUser.youthProfile?.guardianConsent ?? false;
   token.youthProfile = dbUser.youthProfile ?? null;
   token.legalAcceptance = dbUser.legalAcceptance ?? null;
+  // Boolean, not the timestamp — the banner only needs "confirmed or not", and
+  // a JWT is readable by anyone holding it, so we put the minimum on it.
+  token.emailVerified = dbUser.emailVerified !== null;
+}
+
+// ── Credentials sign-in brute-force throttle ────────────────────────────────
+// The credentials callback is a public endpoint that verifies a bcrypt hash,
+// so without a throttle it is an offline-speed password oracle for any account
+// whose email address an attacker knows. Two Redis-backed buckets (per account
+// and per source IP) are checked before the hash comparison, and both are
+// cleared on success. Redis-backed means the limit holds across Vercel's
+// multiple instances; see src/lib/rate-limit.ts.
+const LOGIN_THROTTLE_MESSAGE =
+  "Too many sign-in attempts. Please wait a few minutes and try again.";
+
+/** Best-effort client IP from the sign-in request. */
+function loginClientIp(req: unknown): string {
+  const headers = (req as { headers?: Record<string, string | string[] | undefined> })?.headers;
+  const raw = headers?.["x-forwarded-for"] ?? headers?.["x-real-ip"];
+  const value = Array.isArray(raw) ? raw[0] : raw;
+  return value?.split(",")[0]?.trim() || "unknown";
+}
+
+function loginBuckets(email: string, ip: string): { account: string; ip: string } {
+  return { account: `login:account:${email}`, ip: `login:ip:${ip}` };
+}
+
+/**
+ * Throws when either bucket is exhausted. Fails OPEN on an unexpected internal
+ * error — a throttle outage must not lock every user out of the product.
+ */
+async function assertLoginAllowed(email: string, ip: string): Promise<void> {
+  let denied = false;
+  try {
+    const buckets = loginBuckets(email, ip);
+    const [account, source] = await Promise.all([
+      checkRateLimitAsync(buckets.account, RateLimits.LOGIN_PER_ACCOUNT),
+      checkRateLimitAsync(buckets.ip, RateLimits.LOGIN_PER_IP),
+    ]);
+    denied = !account.success || !source.success;
+  } catch (error) {
+    console.error("[Auth] Login throttle check failed, allowing:", error);
+    return;
+  }
+  // Thrown outside the try so a genuine denial can't be swallowed as an
+  // "internal error" and turned into an allow.
+  if (denied) throw new Error(LOGIN_THROTTLE_MESSAGE);
+}
+
+/** Wipe both counters after a verified sign-in. */
+async function clearLoginThrottle(email: string, ip: string): Promise<void> {
+  const buckets = loginBuckets(email, ip);
+  await Promise.all([resetRateLimit(buckets.account), resetRateLimit(buckets.ip)]).catch(() => {});
 }
 
 export const authOptions: NextAuthOptions = {
@@ -138,7 +250,13 @@ export const authOptions: NextAuthOptions = {
         return {
           id: profile.sub,
           name: profile.name || undefined,
-          email: profile.email,
+          // NORMALISE. Postgres unique indexes are case-sensitive, so an
+          // address handed back as "Foo@Bar.com" would not collide with the
+          // stored "foo@bar.com" — the adapter would happily create a SECOND
+          // account for the same person. Credentials signup/signin have always
+          // lowercased; this path had not, which made it the one way to get
+          // two Endeavrly accounts on one address.
+          email: normaliseEmail(profile.email),
           image: null,
         };
       },
@@ -149,8 +267,15 @@ export const authOptions: NextAuthOptions = {
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
       },
-      async authorize(credentials) {
+      async authorize(credentials, req) {
         if (!credentials?.email || !credentials?.password) {
+          throw new Error("Invalid credentials");
+        }
+
+        // Bound the work an unauthenticated caller can make us do. bcrypt is
+        // deliberately slow, so an oversized password field is a cheap way to
+        // burn server CPU; bcrypt only reads the first 72 bytes anyway.
+        if (credentials.password.length > 200 || credentials.email.length > 320) {
           throw new Error("Invalid credentials");
         }
 
@@ -158,6 +283,11 @@ export const authOptions: NextAuthOptions = {
         // typed it (case / surrounding spaces). Accounts are stored
         // lowercased at signup — see /api/auth/signup.
         const email = credentials.email.trim().toLowerCase();
+
+        // Brute-force guard — BEFORE the DB lookup and the bcrypt compare, so
+        // a throttled attacker costs us neither.
+        const ip = loginClientIp(req);
+        await assertLoginAllowed(email, ip);
 
         const user = await prisma.user.findUnique({
           where: { email },
@@ -175,6 +305,41 @@ export const authOptions: NextAuthOptions = {
         if (!isPasswordValid) {
           throw new Error("Invalid credentials");
         }
+
+        // A suspended or banned account must not be able to sign back in.
+        // Checked AFTER the password so this can't be used to probe which
+        // addresses belong to moderated accounts. Note `deletedAt` is
+        // deliberately not part of this — a user-requested deletion is
+        // restorable by signing in, which is handled just below.
+        if (
+          user.isPaused ||
+          user.accountStatus === "SUSPENDED" ||
+          user.accountStatus === "BANNED"
+        ) {
+          throw new Error(
+            "This account is currently suspended. Please contact support if you think that's a mistake."
+          );
+        }
+
+        // EMAIL-VERIFICATION HARD GATE. An account whose address has never
+        // been confirmed cannot sign in.
+        //
+        // Checked AFTER the password, deliberately and for the same reason the
+        // suspension check is: reaching this line requires already knowing the
+        // password, so the distinct error cannot be used to discover which
+        // addresses have accounts or which are unconfirmed. Ordering it before
+        // the password compare would turn it into exactly that oracle.
+        //
+        // The failed-attempt counters are NOT cleared on this path — the
+        // credentials were right, but no session is issued, so treating it as
+        // a successful sign-in would hand an attacker a free throttle reset.
+        if (blocksSession(user)) {
+          throw unverifiedSignInError();
+        }
+
+        // Verified sign-in — drop the failed-attempt counters so a user who
+        // mistyped a couple of times isn't penalised afterwards.
+        await clearLoginThrottle(email, ip);
 
         // Soft-deleted account: signing back in within the 30-day grace
         // window cancels the pending deletion and restores the account.
@@ -223,7 +388,9 @@ export const authOptions: NextAuthOptions = {
 
         // Check if user with this email already exists
         const existingUser = await prisma.user.findUnique({
-          where: { email: vippsProfile.email },
+          // Same normalisation as the profile() callback above, or this
+          // lookup misses the existing account and we link nothing.
+          where: { email: normaliseEmail(vippsProfile.email) },
           include: { accounts: true },
         });
 
@@ -264,15 +431,33 @@ export const authOptions: NextAuthOptions = {
       return true;
     },
     async redirect({ url, baseUrl }) {
-      // If the URL is already a full URL (starts with http), use it
-      if (url.startsWith("http")) {
-        return url;
-      }
-      // If it's a relative URL, append to baseUrl
-      if (url.startsWith("/")) {
+      // OPEN-REDIRECT GUARD. `url` comes from the `callbackUrl` query
+      // parameter, i.e. straight from the attacker in a phishing link such as
+      // /api/auth/signin?callbackUrl=https://evil.example. This callback used
+      // to return any absolute http(s) URL verbatim, which turned Endeavrly's
+      // own sign-in page into a redirector to arbitrary sites — a credible
+      // phishing vector against young users, who are exactly the audience
+      // least likely to re-check the address bar after signing in.
+      //
+      // Rule now: relative paths are resolved against our own origin; absolute
+      // URLs are allowed ONLY when they are on that same origin; anything else
+      // falls back to the dashboard/home.
+
+      // Protocol-relative ("//evil.example") and backslash ("/\evil") forms
+      // are browser-absolute despite starting with "/", so screen them first.
+      if (url.startsWith("/") && !url.startsWith("//") && !url.startsWith("/\\")) {
         return `${baseUrl}${url}`;
       }
-      // Default to baseUrl
+
+      try {
+        const target = new URL(url, baseUrl);
+        if (target.origin === new URL(baseUrl).origin) {
+          return target.toString();
+        }
+      } catch {
+        // Unparseable — fall through to the safe default.
+      }
+
       return baseUrl;
     },
     async jwt({ token, user, account, profile, trigger }) {
@@ -282,6 +467,9 @@ export const authOptions: NextAuthOptions = {
         // middleware, which can't hit the DB and reads them from the JWT.
         token.id = user.id;
         token.email = user.email;
+        // Fixed for the life of this session — see the password-reset check in
+        // applySessionFieldsToToken.
+        token.authTime = Date.now();
         applySessionFieldsToToken(token, await getSessionFields(user.id, true));
       } else if (trigger === "update" && token.id) {
         // Explicit client update() (e.g. after a guardian grants consent or a
@@ -343,6 +531,7 @@ export const authOptions: NextAuthOptions = {
           session.user.isVerifiedAdult = token.isVerifiedAdult;
           session.user.youthProfile = token.youthProfile ?? null;
           session.user.legalAcceptance = token.legalAcceptance ?? null;
+          session.user.emailVerified = token.emailVerified ?? false;
         }
       }
       return session;
@@ -358,6 +547,11 @@ export const authOptions: NextAuthOptions = {
           data: {
             authProvider: "VIPPS",
             accountStatus: "ONBOARDING",
+            // VIPPS is a BankID-backed identity provider and only releases an
+            // address it has already confirmed, so there is nothing for us to
+            // verify. Stamping it here keeps the "confirm your email" banner
+            // away from users who never signed up with a password at all.
+            emailVerified: new Date(),
           },
         });
 

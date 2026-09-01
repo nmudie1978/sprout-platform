@@ -9,6 +9,8 @@
  *   status → expiry → usage limit → already-redeemed → domain rules
  */
 
+import { randomInt as cryptoRandomInt } from "crypto";
+
 import { AccessCodeStatus, EntitlementModule, OrgRole } from "@prisma/client";
 
 /** Confusable characters excluded, matching the existing school-mode codes. */
@@ -72,12 +74,20 @@ export function emailDomain(email: string): string {
  * "NAV-YOUTH-2027"-style codes; the random suffix keeps them unguessable
  * enough that a code can't be brute-forced into a school's cohort.
  *
- * `randomInt` is injected so generation is deterministic under test.
+ * The default source is `crypto.randomInt`, NOT `Math.random`. A code grants
+ * membership of a real organisation — and with it a young person's place in a
+ * cohort — so it is a credential. Math.random is a seeded PRNG whose internal
+ * state can be recovered from a handful of observed outputs, which would let
+ * anyone holding one legitimately-issued code predict the codes issued around
+ * it. `crypto.randomInt` is also rejection-sampled, so the 31-character
+ * alphabet stays uniform rather than modulo-biased.
+ *
+ * `randomInt` remains injectable so generation is deterministic under test.
  */
 export function generateAccessCode(
   prefix: string | null,
   length = 8,
-  randomInt: (max: number) => number = (max) => Math.floor(Math.random() * max)
+  randomInt: (max: number) => number = cryptoRandomInt
 ): string {
   let suffix = "";
   for (let i = 0; i < length; i += 1) {

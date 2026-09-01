@@ -495,12 +495,12 @@ export function CareerTwinView({
         {/* Mode chips */}
         <div className="px-4 sm:px-6 pt-3">
           <p className="text-xs font-medium text-muted-foreground mb-2">{t("modesLabel")}</p>
-          <div className="flex gap-2 overflow-x-auto pb-2 -mx-1 px-1 [scrollbar-width:thin]">
+          <div className="flex gap-2 overflow-x-auto pb-2 -mx-4 px-4 sm:-mx-1 sm:px-1 no-scrollbar">
             {modes.map((m) => (
               <button
                 key={m.id}
                 onClick={() => selectMode(m.id)}
-                className={`shrink-0 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
+                className={`shrink-0 rounded-full border px-3.5 min-h-[36px] inline-flex items-center text-xs font-medium transition-colors ${
                   !experienceActive && m.id === modeId
                     ? accentChipActive
                     : `bg-background ${accentHoverBorder}`
@@ -512,7 +512,7 @@ export function CareerTwinView({
             {/* Experience The Job — swaps the chat for the guided scenario runner. */}
             <button
               onClick={launchExperience}
-              className={`shrink-0 inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
+              className={`shrink-0 inline-flex items-center gap-1.5 rounded-full border px-3.5 min-h-[36px] text-xs font-medium transition-colors ${
                 experienceActive ? accentChipActive : `bg-background ${accentHoverBorder}`
               }`}
             >
@@ -529,10 +529,16 @@ export function CareerTwinView({
         ) : (
         <>
         {/* Chat area — height trimmed ~20% (420→336px) when embedded in
-            Clarity so the tab reads more compact; standalone keeps 420px. */}
+            Clarity so the tab reads more compact; standalone keeps 420px.
+            On phones the fixed pixel box pushed the composer below the fold
+            (and off-screen entirely once the keyboard opened), so the height
+            is capped against the *visible* viewport there and only becomes a
+            fixed box from sm: up. */}
         <div ref={scrollRef} className={cn(
-          "overflow-y-auto px-4 sm:px-6 py-4 space-y-4 bg-gradient-to-b from-background to-muted/20",
-          embedded ? "h-[336px]" : "h-[420px]",
+          "overflow-y-auto overscroll-contain px-4 sm:px-6 py-4 space-y-4 bg-gradient-to-b from-background to-muted/20",
+          embedded
+            ? "h-[min(336px,42dvh)] min-h-[220px] sm:h-[336px]"
+            : "h-[min(420px,48dvh)] min-h-[240px] sm:h-[420px]",
         )}>
           {/* The proactive opener already greets a returning user warmly, so
               only show the standalone welcome-back banner when there's no
@@ -559,7 +565,7 @@ export function CareerTwinView({
                   <div className={cn("shrink-0 p-2 rounded-full self-start", accentGradient)}>
                     <Sparkles className="h-4 w-4 text-white" />
                   </div>
-                  <div className="max-w-[82%]">
+                  <div className="max-w-[88%] min-w-0 sm:max-w-[82%]">
                     <div className="rounded-2xl px-4 py-2.5 text-sm whitespace-pre-wrap bg-muted">
                       {opener.text}
                     </div>
@@ -609,7 +615,7 @@ export function CareerTwinView({
                       <Sparkles className="h-4 w-4 text-white" />
                     </div>
                   )}
-                  <div className="max-w-[82%]">
+                  <div className="max-w-[88%] min-w-0 sm:max-w-[82%]">
                     <div
                       className={`rounded-2xl px-4 py-2.5 text-sm whitespace-pre-wrap ${
                         m.role === "user"
@@ -694,13 +700,13 @@ export function CareerTwinView({
             <p className="text-xs font-medium text-muted-foreground mb-2">
               {activeMode?.label ? `${activeMode.label} · ${t("suggested")}` : t("suggested")}
             </p>
-            <div className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1 [scrollbar-width:thin]">
+            <div className="flex gap-2 overflow-x-auto pb-1 -mx-4 px-4 sm:-mx-1 sm:px-1 no-scrollbar">
               {suggested.map((q, i) => (
                 <button
                   key={`${modeId}-${i}`}
                   onClick={() => send(q)}
                   disabled={sending}
-                  className={cn("shrink-0 rounded-full border px-3 py-1.5 text-xs bg-background disabled:opacity-50 transition-colors", accentHoverBorder)}
+                  className={cn("shrink-0 inline-flex items-center rounded-full border px-3.5 min-h-[36px] max-w-[85vw] truncate text-xs bg-background disabled:opacity-50 transition-colors", accentHoverBorder)}
                 >
                   {q}
                 </button>
@@ -715,7 +721,7 @@ export function CareerTwinView({
             e.preventDefault();
             send(input);
           }}
-          className="border-t p-3 sm:p-4 bg-background"
+          className="sticky bottom-0 z-10 border-t p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:pb-4 sm:p-4 bg-background"
         >
           <div className="flex gap-2">
             <textarea
@@ -735,7 +741,7 @@ export function CareerTwinView({
             <Button
               type="submit"
               disabled={!input.trim() || sending}
-              className={cn("px-4", accentGradientR)}
+              className={cn("shrink-0 h-auto self-stretch px-4", accentGradientR)}
               aria-label={t("send")}
             >
               {sending ? <Loader2 className="h-5 w-5 animate-spin" /> : <Send className="h-5 w-5" />}

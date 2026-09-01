@@ -54,6 +54,14 @@ export interface ValidationResult {
 // ── Classification ───────────────────────────────────────────────────
 
 /**
+ * Status codes that tell us about the REQUEST, not the page. A host may answer
+ * these to an automated client and 200 to a browser, so they can never be
+ * grounds for hiding a programme. `BLOCKED` is deliberately outside
+ * `shouldHideFromUi`, so these fall through as inconclusive.
+ */
+const INCONCLUSIVE_CODES = new Set([401, 403, 405, 429]);
+
+/**
  * Pure classifier: maps an HTTP status code to a ValidationStatus.
  * Exported for unit testing.
  */
@@ -61,6 +69,16 @@ export function classifyHttpStatus(code: number): ValidationStatus {
   if (code === 304) return 'LIVE';
   if (code >= 200 && code < 300) return 'LIVE';
   if (code >= 300 && code < 400) return 'REDIRECT';
+  // 401/403/405/429 mean "we would not serve THIS request", not "this page is
+  // gone". A bot-protected or rate-limited host answers them to a validator and
+  // 200 to a real browser, so treating them as dead hides working content.
+  //
+  // This is not hypothetical: on 2026-08-24 a CI run walked 16 vilbli.no URLs
+  // in quick succession, tripped rate limiting, recorded 405 for all of them,
+  // and produced a validation file that would have hidden the entire vocational
+  // trades cluster — electrician, welder, industrial-mechanic and their 60-odd
+  // dependent careers. Every one of those pages returns 200 on a manual check.
+  if (INCONCLUSIVE_CODES.has(code)) return 'BLOCKED';
   if (code >= 400 && code < 500) return 'CLIENT_ERROR';
   if (code >= 500 && code < 600) return 'SERVER_ERROR';
   return 'UNKNOWN';

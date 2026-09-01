@@ -103,8 +103,31 @@ export async function GET(request: NextRequest) {
     return apiError("UNAUTHORIZED", "Sign in to use a code.");
   }
 
+  // The preview endpoint answers "is this a real code, and whose is it?" — so
+  // without a limit it is a free oracle for guessing codes and mapping which
+  // organisations exist on the platform. POST was already throttled; GET was
+  // not, and GET is the one an attacker would actually loop on.
+  const preview = await checkRateLimitAsync(
+    `join-code-preview:${session.user.id}`,
+    RateLimits.STRICT
+  );
+  if (!preview.success) {
+    return apiError("RATE_LIMITED", "Too many code checks. Please wait a moment.", {
+      request,
+      headers: getRateLimitHeaders(preview.limit, preview.remaining, preview.reset),
+    });
+  }
+
   const raw = new URL(request.url).searchParams.get("code");
   if (!raw) return apiError("BAD_REQUEST", "No code given.", { request });
+
+  // Bound the lookup key — a code is at most a short prefix plus 8 characters.
+  if (raw.length > 64) {
+    return NextResponse.json(
+      { valid: false, reason: "CODE_NOT_FOUND", message: ACCESS_CODE_MESSAGES.CODE_NOT_FOUND },
+      { status: 200 }
+    );
+  }
 
   const code = await loadCode(normaliseAccessCode(raw));
   if (!code) {

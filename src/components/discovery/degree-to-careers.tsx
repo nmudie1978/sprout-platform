@@ -14,7 +14,12 @@ const GROWTH_META: Record<Career["growthOutlook"], { label: string; dot: string 
   stable: { label: "Stable", dot: "bg-sky-400" },
 };
 
-const DROPDOWN_CAP = 8;
+/**
+ * The suggestion list is scrollable (max-h below), so it shows every match
+ * rather than a slice. It used to be capped at 8, which made the ~50 fields
+ * look like a short fixed menu: an empty query rendered Accounting→Business
+ * and stopped, with nothing to say more existed.
+ */
 
 function salaryLabel(career: Career): string | null {
   const range = parseSalaryRange(career.avgSalary);
@@ -64,7 +69,7 @@ export function DegreeToCareers({ onOpen, defaultOpenFieldId, defaultQuery }: De
     return () => document.removeEventListener("mousedown", handleClick);
   }, []);
 
-  const suggestions = useMemo(() => searchFields(query).slice(0, DROPDOWN_CAP), [query]);
+  const suggestions = useMemo(() => searchFields(query), [query]);
   const showDropdown = dropdownOpen && suggestions.length > 0;
 
   const selectedFieldLabel = useMemo(
@@ -164,8 +169,14 @@ export function DegreeToCareers({ onOpen, defaultOpenFieldId, defaultQuery }: De
                 id="degree-field-suggestions"
                 role="listbox"
                 aria-label="Field suggestions"
-                className="mt-1 max-h-64 overflow-y-auto rounded-control border border-border bg-popover shadow-sm"
+                className="mt-1 max-h-72 overflow-y-auto rounded-control border border-border bg-popover shadow-sm"
               >
+                {/* Count + hint: tells the user the list is long and scrollable,
+                    so the first few visible rows don't read as the whole menu. */}
+                <p className="sticky top-0 z-10 border-b border-border/50 bg-popover px-3 py-1.5 text-[11px] text-muted-foreground">
+                  {suggestions.length} {suggestions.length === 1 ? "field" : "fields"}
+                  {query.trim() ? "" : " — scroll, or type to narrow"}
+                </p>
                 {suggestions.map((field) => (
                   <button
                     key={field.id}

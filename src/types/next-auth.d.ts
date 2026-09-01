@@ -29,6 +29,9 @@ declare module "next-auth" {
       /** Cached on the JWT so the dashboard layout can check current Terms/
        *  Privacy acceptance without a per-navigation DB query. */
       legalAcceptance?: { termsVersion: string; privacyVersion: string } | null;
+      /** Whether the account's email address has been confirmed. Drives the
+       *  dashboard "confirm your email" banner. */
+      emailVerified?: boolean;
     } & DefaultSession["user"];
   }
 
@@ -69,6 +72,15 @@ declare module "next-auth/jwt" {
     // Set when the account is soft-deleted/missing at the last refresh — the
     // session() callback blanks the user id so the request reads as signed-out.
     revoked?: boolean;
+    /** Whether User.emailVerified is set. Boolean rather than the timestamp —
+     *  a JWT is readable by whoever holds it, so it carries the minimum. */
+    emailVerified?: boolean;
+    /**
+     * Epoch ms when this session was established. Stamped once at sign-in and
+     * never refreshed, so it can be compared against `User.passwordChangedAt`
+     * to evict sessions that predate a password reset.
+     */
+    authTime?: number;
     // VIPPS OAuth fields
     isNewVippsUser?: boolean;
     vippsProfile?: VippsProfileData;

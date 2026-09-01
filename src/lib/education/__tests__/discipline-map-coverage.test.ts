@@ -33,4 +33,29 @@ describe("discipline map coverage", () => {
       expect(map[careerId], careerId).toBe(bucket);
     }
   });
+
+  // Regression: the classifier matched bare substrings, so "opera" caught every
+  // Operator / Operations / Operating role (Crane Operator, Chief Operating
+  // Officer, Refinery Operator — 30 of them) and "actor" caught Contractor.
+  // Music & Performing Arts was two-thirds industrial and management jobs.
+  it("keeps operators, operations and contractors out of performing arts", () => {
+    const wrong = Object.keys(map).filter(
+      (id) =>
+        map[id] === "music-performing-arts" &&
+        /operat(?:or|ing|ions)|contractor/.test(id),
+    );
+    expect(wrong).toEqual([]);
+  });
+
+  // Regression: the architecture rule's lookahead only excluded IT words that
+  // came AFTER "architect", so "Data Architect" / "Enterprise Architect" /
+  // "SD-WAN Architect" (~25 IT roles) were filed under building architecture.
+  it("keeps IT architects out of building architecture", () => {
+    const wrong = Object.keys(map).filter(
+      (id) =>
+        map[id] === "architecture" &&
+        /(?:data|enterprise|solution|cloud|network|security|system|platform|infrastructure|integration|bss|oss|cpq|wan)-architect/.test(id),
+    );
+    expect(wrong).toEqual([]);
+  });
 });

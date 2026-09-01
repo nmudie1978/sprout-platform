@@ -143,4 +143,11 @@ export interface BuildPromptInput {
   language?: string;
   /** What the Twin remembers about a returning user (built server-side). */
   memory?: TwinMemory | null;
+  /**
+   * Soft word budget for the reply. Paired with the hard `max_tokens` cap on
+   * the API call: the prompt aims comfortably BELOW the ceiling so answers end
+   * naturally instead of being cut off mid-sentence.
+   * Derived from `getCareerTwinConfig().maxOutputTokens` by the route.
+   */
+  maxWords?: number;
 }

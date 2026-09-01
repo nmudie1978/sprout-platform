@@ -6,7 +6,12 @@ import {
   isValidModeId,
 } from "../modes";
 import { buildPersona, UNCERTAINTY_DISCLAIMER } from "../persona";
-import { buildCareerTwinSystemPrompt, CAREER_TWIN_SAFETY_RULES } from "../prompt";
+import {
+  buildCareerTwinSystemPrompt,
+  buildLengthRule,
+  CAREER_TWIN_SAFETY_RULES,
+  DEFAULT_REPLY_MAX_WORDS,
+} from "../prompt";
 import { buildContextStarters } from "../starters";
 import type {
   CareerTwinCareerContext,
@@ -285,5 +290,37 @@ describe("Career Twin — context-aware starter chips", () => {
     );
     expect(chips.length).toBeLessThanOrEqual(3);
     expect(new Set(chips).size).toBe(chips.length);
+  });
+});
+
+/**
+ * Response size control. The hard `max_tokens` cap on the API call is the
+ * cost guardrail; this rule is what keeps a reply from RUNNING INTO that cap
+ * and getting truncated mid-sentence.
+ */
+describe("reply length rule", () => {
+  const persona = buildPersona({ userId: "u1", career: physio, profile: richProfile });
+  const promptWith = (maxWords?: number) =>
+    buildCareerTwinSystemPrompt({
+      persona,
+      mode: getMode("ask_future_me"),
+      career: physio,
+      profile: richProfile,
+      maxWords,
+    });
+
+  it("carries the configured word budget into the prompt", () => {
+    expect(promptWith(220)).toContain("under 220 words");
+  });
+
+  it("falls back to a sensible default when no budget is passed", () => {
+    expect(promptWith()).toContain(`under ${DEFAULT_REPLY_MAX_WORDS} words`);
+  });
+
+  it("asks for brevity without sacrificing warmth", () => {
+    const rule = buildLengthRule(160);
+    expect(rule).toMatch(/short/i);
+    expect(rule).toMatch(/warm|conversational/i);
+    expect(rule).toMatch(/never lecture/i);
   });
 });

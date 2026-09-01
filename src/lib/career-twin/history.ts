@@ -16,8 +16,21 @@ export interface TwinTurn {
   content: string;
 }
 
-/** How many recent turns to replay into the model context. */
+/**
+ * How many recent messages to replay into the model context.
+ *
+ * @deprecated Prefer `getCareerTwinConfig().maxContextTurns` (env-tunable) —
+ * kept as the fallback default and for existing callers/tests.
+ */
 export const TWIN_CONTEXT_TURNS = 6;
+
+/**
+ * How many messages of a thread to load when building context. Wide enough
+ * that the summariser can see what fell out of the verbatim window, bounded
+ * so a very long thread never loads without limit — anything older than this
+ * lives on in the rolling summary (see ./context.ts).
+ */
+export const TWIN_THREAD_LOAD_LIMIT = 60;
 
 /** Pure: clamp DB rows to the last `limit` valid turns for the model context. */
 export function toPromptHistory(rows: TwinRow[], limit: number): TwinTurn[] {
@@ -27,18 +40,25 @@ export function toPromptHistory(rows: TwinRow[], limit: number): TwinTurn[] {
     .map((r) => ({ role: r.role as "user" | "assistant", content: r.content.slice(0, 2000) }));
 }
 
-/** Load a user's prior turns for one career, oldest → newest. */
+/**
+ * Load a user's most recent turns for one career, returned oldest → newest.
+ *
+ * NB: ordered DESC then reversed. Ordering ascending with a `take` returns the
+ * OLDEST rows, which on a long thread meant we replayed the start of the
+ * conversation instead of the part the user is actually in.
+ */
 export async function loadTwinHistory(
   userId: string,
   careerId: string,
   limit = 12,
 ): Promise<TwinRow[]> {
-  return prisma.careerTwinMessage.findMany({
+  const rows = await prisma.careerTwinMessage.findMany({
     where: { userId, careerId },
-    orderBy: { createdAt: "asc" },
+    orderBy: { createdAt: "desc" },
     take: limit * 2,
     select: { role: true, content: true, mode: true, createdAt: true },
   });
+  return rows.reverse();
 }
 
 /**

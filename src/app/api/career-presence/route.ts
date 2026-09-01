@@ -2,7 +2,7 @@ export const dynamic = "force-dynamic";
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
-import { checkRateLimitAsync, RateLimits } from '@/lib/rate-limit';
+import { checkRateLimitAsync, checkGlobalAiBudget, RateLimits } from '@/lib/rate-limit';
 import { scoreCareerPresence } from '@/lib/career-presence/scoring';
 import { interpretPresence, buildFallbackResult } from '@/lib/career-presence/agent';
 import type { CareerPresenceResult } from '@/lib/career-presence/types';
@@ -74,12 +74,19 @@ export async function GET(req: NextRequest) {
     RateLimits.AI_MONTHLY_PRESENCE
   );
 
+  // Platform-wide daily backstop, on top of the per-user cap above. The
+  // per-user caps alone don't stop a flood of cheap accounts collectively
+  // running up the bill; this shared ceiling does. Every other AI route
+  // already consults it — this one was the gap.
+  const withinGlobalBudget = await checkGlobalAiBudget();
+  const useAi = monthlyRl.success && withinGlobalBudget;
+
   // Interpret via the agent (AI when under the cap, else deterministic)
-  const result = await interpretPresence(careerId, careerTitle, scored, monthlyRl.success);
+  const result = await interpretPresence(careerId, careerTitle, scored, useAi);
 
   // Only cache the AI-backed result — don't poison the shared cache with a
   // degraded (capped) result that other users would then be served.
-  if (monthlyRl.success) {
+  if (useAi) {
     cache.set(cacheKey, { result, expiresAt: Date.now() + CACHE_TTL });
   }
 

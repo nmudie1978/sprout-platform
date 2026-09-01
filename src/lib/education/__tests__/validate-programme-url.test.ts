@@ -290,3 +290,28 @@ describe('validateProgrammeUrl (mocked fetch)', () => {
     expect(result.httpCode).toBeNull();
   });
 });
+
+describe("a rate-limited or bot-protected host must never hide a working page", () => {
+  // Regression for the 2026-08-24 CI run: 16 vilbli.no URLs answered 405 to
+  // the validator in quick succession. Classified as CLIENT_ERROR, that run
+  // would have hidden the whole vocational trades cluster — electrician,
+  // welder, industrial-mechanic and ~60 dependent careers — even though every
+  // page returns 200 to a browser.
+  it.each([401, 403, 405, 429])("treats %i as inconclusive, not dead", (code) => {
+    expect(classifyHttpStatus(code)).toBe("BLOCKED");
+    expect(shouldHideFromUi(classifyHttpStatus(code))).toBe(false);
+  });
+
+  it("still treats a genuine 404 or 410 as dead", () => {
+    for (const code of [404, 410, 400, 451]) {
+      expect(classifyHttpStatus(code)).toBe("CLIENT_ERROR");
+      expect(shouldHideFromUi(classifyHttpStatus(code))).toBe(true);
+    }
+  });
+
+  it("never hides on a server error or timeout either", () => {
+    for (const status of ["SERVER_ERROR", "TIMEOUT", "BLOCKED", "UNKNOWN", "REDIRECT"] as const) {
+      expect(shouldHideFromUi(status)).toBe(false);
+    }
+  });
+});

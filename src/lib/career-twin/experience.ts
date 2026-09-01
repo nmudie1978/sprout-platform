@@ -244,7 +244,7 @@ export function buildExperienceSystemPrompt(input: BuildExperiencePromptInput): 
   sections.push(`NON-NEGOTIABLE SAFETY RULES:\n- ${CAREER_TWIN_SAFETY_RULES.join("\n- ")}`);
 
   sections.push(
-    `OUTPUT: Reply with a SINGLE valid JSON object and nothing else (no markdown, no prose outside the JSON). Only include the keys you are asked for in the user message. Never invent the user's private life; keep everything as one possible version of their future.`,
+    `OUTPUT: Reply with a SINGLE valid JSON object and nothing else (no markdown, no prose outside the JSON). Only include the keys you are asked for in the user message. Never invent the user's private life; keep everything as one possible version of their future. Keep every field tight — a few short sentences each, never an essay (the reply is length-capped, and a cut-off scene is worse than a brief one).`,
   );
 
   sections.push(`Remember the framing at all times: ${persona.uncertaintyDisclaimer}`);
