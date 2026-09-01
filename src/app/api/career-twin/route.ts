@@ -1,7 +1,7 @@
 export const dynamic = "force-dynamic";
 // AI/OpenAI calls can be slow; raise above Vercel's short default.
 export const maxDuration = 60;
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse, after } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import OpenAI from "openai";
@@ -21,10 +21,19 @@ import {
   detectNonEnglishResponse,
   localeToLanguage,
 } from "@/lib/ai-guardrails";
-import { checkRateLimitAsync, RateLimits, checkGlobalAiBudget } from "@/lib/rate-limit";
+import { checkGlobalAiBudget } from "@/lib/rate-limit";
 import { logAndSwallow, captureServerError } from "@/lib/observability";
-import { loadTwinHistory, loadLastTurnAt, appendTwinTurns, toPromptHistory, TWIN_CONTEXT_TURNS } from "@/lib/career-twin/history";
+import { loadTwinHistory, loadLastTurnAt, appendTwinTurns } from "@/lib/career-twin/history";
+import { loadTwinContext, buildSummaryBlock, refreshTwinSummaryIfNeeded } from "@/lib/career-twin/context";
 import { loadTwinMemory, isReturningAfterGap } from "@/lib/career-twin/memory";
+// ── AI usage guardrails: daily limit, rate limit, cost tracking, kill switch.
+// Every limit below is configured in src/lib/ai-usage/config.ts (env-tunable).
+import { checkCareerTwinGuardrails } from "@/lib/ai-usage/guard";
+import { recordAiUsage, recentSuccessfulRequests } from "@/lib/ai-usage/record";
+import { getCareerTwinConfig } from "@/lib/ai-usage/config";
+import { estimateTokens } from "@/lib/ai-usage/pricing";
+import { evaluateRollingWindow, DAY_MS } from "@/lib/ai-usage/limits";
+import { AI_FEATURES } from "@/lib/ai-usage/types";
 
 function isOpenAIConfigured(): boolean {
   const apiKey = process.env.OPENAI_API_KEY;
@@ -71,12 +80,26 @@ export async function GET(req: NextRequest) {
     // turn) once. loadTwinMemory and loadRecentActivity both need the latter
     // two, so injecting them avoids fetching the active goal and last turn 2-3×
     // across this open.
-    const [profile, history, activeGoal, lastTurn] = await Promise.all([
+    const twinConfig = getCareerTwinConfig();
+    const [profile, history, activeGoal, lastTurn, recentAsks] = await Promise.all([
       loadProfileContext(session.user.id),
       loadTwinHistory(session.user.id, career.id),
       loadActiveGoal(session.user.id),
       loadLastTurnAt(session.user.id, career.id),
+      // Remaining questions in the rolling 24h allowance, so the UI can show
+      // the limit before the user runs into it.
+      recentSuccessfulRequests(
+        session.user.id,
+        AI_FEATURES.CAREER_TWIN,
+        twinConfig.dailyQuestionLimit,
+        DAY_MS,
+      ),
     ]);
+    const dailyWindow = evaluateRollingWindow(
+      recentAsks,
+      twinConfig.dailyQuestionLimit,
+      DAY_MS,
+    );
     const persona = buildPersona({ userId: session.user.id, career, profile });
 
     const [memory, recentActivity] = await Promise.all([
@@ -119,6 +142,11 @@ export async function GET(req: NextRequest) {
         returning: isReturningAfterGap(memory.daysSinceLastVisit),
         daysSinceLastVisit: memory.daysSinceLastVisit,
       },
+      usage: {
+        dailyLimit: twinConfig.dailyQuestionLimit,
+        remaining: dailyWindow.remaining,
+        resetAt: dailyWindow.retryAt?.toISOString() ?? null,
+      },
     });
   } catch (error) {
     console.error("[Career Twin] GET error:", error);
@@ -147,27 +175,22 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Message is required" }, { status: 400 });
     }
 
-    // Rate limit (shares the AI chat budget: 20/hour)
-    const rl = await checkRateLimitAsync(`career-twin:${session.user.id}`, RateLimits.AI_CHAT);
-    if (!rl.success) {
+    // ── AI usage guardrails ─────────────────────────────────────────────
+    // Kill switch → 5 requests/minute → 15 questions/rolling 24h → monthly
+    // platform cost ceiling. Every refusal is recorded in the usage ledger and
+    // returns friendly copy WITHOUT ever calling the AI provider.
+    // These supersede the old 20/hour + 1000/month counters: 15/day is
+    // strictly tighter than both, so nothing here is a loosening.
+    // Tune the numbers in src/lib/ai-usage/config.ts (all env-overridable).
+    const guard = await checkCareerTwinGuardrails(session.user.id);
+    if (!guard.allowed) {
       return NextResponse.json({
-        message:
-          "We've talked a lot just now — take a short break and come back soon. Your future self isn't going anywhere.",
-        rateLimited: true,
-      });
-    }
-    // Monthly cost ceiling — caps total Twin spend per account over a rolling
-    // 30-day window so a single user can't drain the OpenAI budget by spreading
-    // calls across days (the per-hour limit alone allows ~14k/month).
-    const monthlyRl = await checkRateLimitAsync(
-      `career-twin-month:${session.user.id}`,
-      RateLimits.AI_MONTHLY_TWIN
-    );
-    if (!monthlyRl.success) {
-      return NextResponse.json({
-        message:
-          "You've explored a lot with your Career Twin this month. Take some time to sit with what you've learned — we'll be right here when you're ready for more.",
-        rateLimited: true,
+        message: guard.message,
+        // Distinct flags so the UI can tell "slow down" from "come back later".
+        rateLimited: guard.status === "rate_limited",
+        dailyLimitReached: guard.status === "daily_limit_reached",
+        unavailable: guard.status === "disabled" || guard.status === "cost_capped",
+        retryAt: guard.retryAt?.toISOString() ?? null,
       });
     }
 
@@ -191,25 +214,56 @@ export async function POST(req: NextRequest) {
     // degrades to the grounded fallback below instead of spending more.
     const openai = (await checkGlobalAiBudget()) ? getOpenAIClient() : null;
     if (!openai) {
+      // No key, or the platform-wide daily request backstop is spent. Recorded
+      // (at zero cost) so "why is everyone getting the fallback?" is answerable
+      // from the ledger; doesn't consume the user's daily allowance.
+      await recordAiUsage({
+        userId: session.user.id,
+        feature: AI_FEATURES.CAREER_TWIN,
+        status: "failed",
+        detail: "provider_unavailable",
+      });
       return NextResponse.json({ message: twinFallback(career.title), fallback: true });
     }
 
-    // Load profile + memory + history together (independent once the career is
-    // resolved) so the model call isn't waiting on a chain of round-trips.
-    const [profile, memory, dbHistory] = await Promise.all([
+    // Load profile + memory + conversation context together (independent once
+    // the career is resolved) so the model call isn't waiting on a chain of
+    // round-trips.
+    const cfg = getCareerTwinConfig();
+    const [profile, memory, context] = await Promise.all([
       loadProfileContext(session.user.id),
       loadTwinMemory(session.user.id, career.id),
-      loadTwinHistory(session.user.id, career.id),
+      loadTwinContext(session.user.id, career.id, cfg),
     ]);
     const persona = buildPersona({ userId: session.user.id, career, profile });
     const mode = getMode(modeId);
-    const systemPrompt = buildCareerTwinSystemPrompt({ persona, mode, career, profile, language: replyLanguage, memory });
+    // Bounded context: a rolling SUMMARY of older turns in the system prompt,
+    // plus the last few turns verbatim (capped by turn count AND token budget).
+    // The prompt therefore stays a fixed size however long the thread runs.
+    const systemPrompt =
+      buildCareerTwinSystemPrompt({
+        persona,
+        mode,
+        career,
+        profile,
+        language: replyLanguage,
+        memory,
+        // Soft word budget kept comfortably under the hard max_tokens cap, so
+        // replies finish naturally instead of being truncated at the ceiling.
+        maxWords: Math.floor(cfg.maxOutputTokens * 0.55),
+      }) + buildSummaryBlock(context.summary);
 
     const messages: OpenAI.Chat.ChatCompletionMessageParam[] = [
       { role: "system", content: systemPrompt },
     ];
-    toPromptHistory(dbHistory, TWIN_CONTEXT_TURNS).forEach((m) => messages.push({ role: m.role, content: m.content }));
+    context.recent.forEach((m) => messages.push({ role: m.role, content: m.content }));
     messages.push({ role: "user", content: message.slice(0, 2000) });
+
+    // Fallback token estimate, used only if the provider doesn't report usage.
+    const estimatedInputTokens = messages.reduce(
+      (sum, m) => sum + estimateTokens(typeof m.content === "string" ? m.content : "") + 4,
+      0,
+    );
 
     // Stream the reply token-by-token. The user sees text within a few hundred
     // ms instead of waiting for the whole completion (~3-8s). Safety is
@@ -217,8 +271,17 @@ export async function POST(req: NextRequest) {
     // every chunk (so a blocked term never finishes rendering), and the
     // completed text gets the non-English backstop — either failure emits a
     // `replace` event telling the client to swap in the grounded fallback.
+    // max_tokens keeps replies concise by default (config: maxOutputTokens);
+    // stream_options gives us the real token counts for the usage ledger.
     const openaiStream = await openai.chat.completions.create(
-      { model: "gpt-4o-mini", messages, temperature: 0.8, max_tokens: 500, stream: true },
+      {
+        model: cfg.model,
+        messages,
+        temperature: 0.8,
+        max_tokens: cfg.maxOutputTokens,
+        stream: true,
+        stream_options: { include_usage: true },
+      },
       { timeout: 25_000 },
     );
 
@@ -234,8 +297,27 @@ export async function POST(req: NextRequest) {
           controller.enqueue(encoder.encode(JSON.stringify(obj) + "\n"));
         let full = "";
         let replaced = false;
+        // Real token counts from the provider's final usage chunk
+        // (stream_options.include_usage); estimated only if it never arrives.
+        let promptTokens: number | null = null;
+        let completionTokens: number | null = null;
+        /** Ledger write — the ONLY place a Twin turn's cost is recorded. */
+        const record = (status: "successful" | "failed", detail?: string) =>
+          recordAiUsage({
+            userId,
+            feature: AI_FEATURES.CAREER_TWIN,
+            status,
+            model: cfg.model,
+            inputTokens: promptTokens ?? estimatedInputTokens,
+            outputTokens: completionTokens ?? estimateTokens(full),
+            detail,
+          });
         try {
           for await (const chunk of openaiStream) {
+            if (chunk.usage) {
+              promptTokens = chunk.usage.prompt_tokens;
+              completionTokens = chunk.usage.completion_tokens;
+            }
             const delta = chunk.choices[0]?.delta?.content ?? "";
             if (!delta) continue;
             const next = full + delta;
@@ -246,6 +328,10 @@ export async function POST(req: NextRequest) {
             if (!isResponseSafe(next).safe) {
               replaced = true;
               emit({ replace: fallbackText, fallback: true });
+              // The provider was called, so the spend is real and recorded —
+              // but the user never got a usable answer, so this must NOT burn
+              // one of their 15 daily questions.
+              await record("failed", "output_guardrail");
               break;
             }
             full = next;
@@ -260,13 +346,27 @@ export async function POST(req: NextRequest) {
               replyLanguage === "English" && detectNonEnglishResponse(finalText).isNonEnglish;
             if (!finalText || nonEnglishBad) {
               emit({ replace: fallbackText, fallback: true });
+              await record("failed", finalText ? "non_english" : "empty_response");
             } else {
               emit({ done: true, mode: modeForTurn });
+              // Only a delivered answer counts against the daily allowance.
+              await record("successful");
               try {
                 await appendTwinTurns(userId, careerId, [
                   { role: "user", content: message, mode: modeForTurn },
                   { role: "assistant", content: finalText, mode: modeForTurn },
                 ]);
+                // Fold anything that has fallen out of the verbatim window into
+                // the rolling summary. Runs AFTER the response is delivered
+                // (next/server `after`) so it never adds latency to the turn.
+                after(async () => {
+                  await refreshTwinSummaryIfNeeded(openai, {
+                    userId,
+                    careerId,
+                    careerTitle,
+                    cfg,
+                  });
+                });
               } catch (persistErr) {
                 logAndSwallow("career-twin:POST:persist")(persistErr);
               }
@@ -275,6 +375,7 @@ export async function POST(req: NextRequest) {
         } catch (streamErr) {
           captureServerError("career-twin:POST:stream", streamErr);
           emit({ replace: fallbackText, fallback: true });
+          await record("failed", "stream_error");
         } finally {
           controller.close();
         }

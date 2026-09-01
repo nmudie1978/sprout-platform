@@ -44,7 +44,18 @@ export async function POST(req: NextRequest) {
     const [updatedUser] = await prisma.$transaction([
       prisma.user.update({
         where: { id: token!.userId },
-        data: { password: hashed },
+        // passwordChangedAt evicts every session issued before this moment —
+        // a reset must sign out whoever else was holding a session token, not
+        // just change the password for next time. See src/lib/auth.ts.
+        // Completing a reset proves the person controls the inbox the link
+        // was sent to — that is exactly what email verification asserts, so
+        // record it here too rather than nagging a user who has just
+        // demonstrated ownership. Idempotent: re-setting the same fact is fine.
+        data: {
+          password: hashed,
+          passwordChangedAt: new Date(),
+          emailVerified: new Date(),
+        },
         select: { email: true },
       }),
       prisma.passwordResetToken.update({ where: { id: token!.id }, data: { usedAt: new Date() } }),

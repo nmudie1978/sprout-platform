@@ -73,6 +73,7 @@ export default function robots(): MetadataRoute.Robots {
           "/applications",
           "/dev/",
           "/test/",
+          "/lab/",
           "/explore",
           "/insights",
           "/feedback",

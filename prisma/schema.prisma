@@ -155,7 +155,11 @@ model User {
   accountStatus    AccountStatus @default(ONBOARDING) // Safety status
   deletedAt        DateTime? // GDPR soft-delete: set on deletion request; hard-purged after 30 days. Signing back in within the window restores the account.
   suspendedAt      DateTime? // When account was suspended/banned
-  suspensionReason String?       @db.Text // Why account was suspended/banned
+  suspensionReason String?       @db.Text
+  /// Set whenever the password changes (reset flow). Sessions issued BEFORE
+  /// this instant are treated as revoked, so resetting a password actually
+  /// evicts whoever was holding a stolen 30-day session token.
+  passwordChangedAt DateTime?
 
   // ============================================
   // SAFETY: Authentication & Identity Fields
@@ -192,9 +196,12 @@ model User {
   aiIntentLogs        AiIntentLog[]
   aiChatMessages      AiChatMessage[]
   careerTwinMessages  CareerTwinMessage[]
+  careerTwinSummaries CareerTwinSummary[]
+  aiUsageEvents       AiUsageEvent[]
   accounts            Account[]
   sessions            Session[]
   passwordResetTokens PasswordResetToken[]
+  emailVerificationTokens EmailVerificationToken[]
   notifications       Notification[]
   badges              Badge[]
 
@@ -333,6 +340,28 @@ model VerificationToken {
 model PasswordResetToken {
   id        String    @id @default(cuid())
   userId    String
+  tokenHash String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+// Email-verification tokens. Same shape and threat model as
+// PasswordResetToken: only a SHA-256 hash is persisted, the raw token exists
+// solely inside the emailed link, and each row is single-use (usedAt) and
+// short-lived (expiresAt).
+//
+// `email` records the address the token was issued FOR. Verifying compares it
+// against the account's current address, so a link issued for an old address
+// can never mark a changed address as verified.
+model EmailVerificationToken {
+  id        String    @id @default(cuid())
+  userId    String
+  email     String
   tokenHash String    @unique
   expiresAt DateTime
   usedAt    DateTime?
@@ -1335,6 +1364,78 @@ model CareerTwinMessage {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId, careerId, createdAt])
+}
+
+/// A rolling summary of the OLDER part of one Career Twin thread.
+///
+/// Conversation context must not grow without bound: the route replays only
+/// the last few turns verbatim and prepends this summary so the model still
+/// knows what came before without us re-sending (and re-paying for) the whole
+/// transcript on every turn. Refreshed AFTER a turn completes, never on the
+/// request path. One row per user+career thread.
+model CareerTwinSummary {
+  id        String   @id @default(uuid())
+  userId    String
+  careerId  String
+  /// Compact prose summary of everything up to `coveredThrough`.
+  summary   String   @db.Text
+  /// createdAt of the newest message folded into `summary` — messages after
+  /// this timestamp are still replayed verbatim or await the next refresh.
+  coveredThrough DateTime
+  /// How many messages the summary represents (observability / tests).
+  turnsCovered   Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, careerId])
+  @@index([userId, careerId])
+}
+
+// ============================================
+// AI USAGE & COST TRACKING (guardrails)
+// ============================================
+
+/// One row per AI request ATTEMPT on a metered feature (currently the Career
+/// Twin surfaces). Written for allowed calls AND for calls we refused, so the
+/// refusal reasons are as visible as the spend.
+///
+/// This table is the source of truth for:
+///   - the rolling 24h per-user question limit (status = "successful"),
+///   - the monthly platform cost ceiling (sum of estimatedCostUsd),
+///   - after-the-fact cost analysis per feature/model.
+///
+/// `status` is a plain String rather than an enum so a new refusal reason can
+/// ship without a migration. Known values (see src/lib/ai-usage/types.ts):
+///   successful | rate_limited | daily_limit_reached | failed | disabled |
+///   cost_capped
+///
+/// Privacy: usage metadata only. NEVER store prompt or response text here.
+model AiUsageEvent {
+  id       String @id @default(uuid())
+  userId   String
+  /// Metered feature key, e.g. "career_twin".
+  feature  String
+  status   String
+  /// Model the request was routed to (null when refused before routing).
+  model    String?
+  inputTokens  Int @default(0)
+  outputTokens Int @default(0)
+  totalTokens  Int @default(0)
+  /// Estimated USD cost of this request, from src/lib/ai-usage/pricing.ts.
+  estimatedCostUsd Decimal @default(0) @db.Decimal(12, 6)
+  /// Short machine-readable detail (e.g. an error class). No user content.
+  detail    String?
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Rolling 24h per-user limit lookup.
+  @@index([userId, feature, status, createdAt])
+  // Monthly cost aggregate.
+  @@index([createdAt])
+  @@index([feature, createdAt])
 }
 
 // ============================================

@@ -27,9 +27,25 @@ export const CAREER_TWIN_SAFETY_RULES = [
   "If the user sounds distressed, hopeless or unsafe, respond with warmth, avoid diagnosing, gently encourage them to talk to someone they trust or a support service, and offer one small, kind next step.",
   "Be honest about trade-offs: include both the good and the genuinely hard parts. Encourage and never manipulate.",
   "Stay grounded in the selected career. If asked about something unrelated or unsafe, kindly steer back to exploring their future.",
-  "Keep replies fairly short, warm and conversational.",
   "End every reply with exactly ONE warm, specific follow-up or reflective question that gently invites their next thought — so it feels like a real back-and-forth, not a question-and-answer machine. Make it grow naturally out of what you just said and what you know about them, in your future-self voice. Keep it calm and curious, never pushy, never a checklist of questions. If the user is distressed, skip the follow-up question and simply leave a kind, open door.",
 ];
+
+/** Default soft word budget when a caller doesn't pass one. */
+export const DEFAULT_REPLY_MAX_WORDS = 160;
+
+/**
+ * The length rule. Dynamic because the budget is configurable
+ * (src/lib/ai-usage/config.ts) and the prompt must stay in step with the hard
+ * `max_tokens` cap — a reply that runs into the ceiling gets truncated
+ * mid-sentence, which reads as a bug to a 16-year-old.
+ */
+export function buildLengthRule(maxWords: number): string {
+  return (
+    `Keep replies short, warm and conversational — usually 2-4 short paragraphs and ` +
+    `under ${maxWords} words. Say the most useful thing first. Never pad, never lecture, ` +
+    `and never list everything you know; leave room for them to ask more.`
+  );
+}
 
 export function buildCareerTwinSystemPrompt(input: BuildPromptInput): string {
   const { persona, mode, career, profile } = input;
@@ -129,7 +145,12 @@ export function buildCareerTwinSystemPrompt(input: BuildPromptInput): string {
   sections.push(`CURRENT MODE — ${mode.label}: ${mode.promptModifier}`);
 
   // ── Hard safety rules (every response) ──────────────────────────────
-  sections.push(`NON-NEGOTIABLE RULES:\n- ${CAREER_TWIN_SAFETY_RULES.join("\n- ")}`);
+  sections.push(
+    `NON-NEGOTIABLE RULES:\n- ${[
+      ...CAREER_TWIN_SAFETY_RULES,
+      buildLengthRule(input.maxWords ?? DEFAULT_REPLY_MAX_WORDS),
+    ].join("\n- ")}`,
+  );
 
   // ── Always-on disclaimer reminder ───────────────────────────────────
   sections.push(`Remember the framing at all times: ${persona.uncertaintyDisclaimer}`);

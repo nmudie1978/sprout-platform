@@ -5,7 +5,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { z } from "zod";
-import { checkRateLimitAsync, RateLimits } from "@/lib/rate-limit";
+import { checkRateLimitAsync, checkGlobalAiBudget, RateLimits } from "@/lib/rate-limit";
 import { translateText, translateBatch } from "@/lib/translate/translator";
 import { locales } from "@/i18n/config";
 
@@ -63,6 +63,17 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(
       { error: "Monthly translation quota reached. It resets after the rolling 30-day window." },
       { status: 429, headers: { "Retry-After": String(Math.ceil((monthlyRl.reset - Date.now()) / 1000)) } }
+    );
+  }
+
+  // Platform-wide daily backstop. The per-user monthly cap above stops one
+  // account draining the budget; this stops many accounts doing it together.
+  // Translation has a clean degradation: the caller falls back to the source
+  // language, which is what happens on any translation failure anyway.
+  if (!(await checkGlobalAiBudget())) {
+    return NextResponse.json(
+      { error: "Translation is temporarily unavailable. Showing the original text." },
+      { status: 503 }
     );
   }
 

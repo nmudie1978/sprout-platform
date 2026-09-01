@@ -22,6 +22,16 @@ import {
 import { isResponseSafe, localeToLanguage, classifyIntent, getFallbackResponse } from "@/lib/ai-guardrails";
 import { checkRateLimitAsync, RateLimits, checkGlobalAiBudget } from "@/lib/rate-limit";
 import { logAndSwallow, captureServerError } from "@/lib/observability";
+// Shared AI guardrails. The scenario runner is a Career Twin surface, so its
+// spend is metered into the SAME ledger and stopped by the SAME kill switch —
+// but it keeps its own request budget (a "day in the life" run is many calls,
+// and must not eat the 15 conversation questions).
+// Limits: src/lib/ai-usage/config.ts
+import { checkAiGuardrails } from "@/lib/ai-usage/guard";
+import { recordAiUsage } from "@/lib/ai-usage/record";
+import { getCareerTwinConfig } from "@/lib/ai-usage/config";
+import { estimateTokens } from "@/lib/ai-usage/pricing";
+import { AI_FEATURES } from "@/lib/ai-usage/types";
 
 function getOpenAIClient(): OpenAI | null {
   const apiKey = process.env.OPENAI_API_KEY;
@@ -29,31 +39,61 @@ function getOpenAIClient(): OpenAI | null {
   return ok ? new OpenAI({ apiKey }) : null;
 }
 
-/** One OpenAI JSON call. Returns the parsed object, or null on any failure. */
+/**
+ * One OpenAI JSON call. Returns the parsed object, or null on any failure.
+ * Every call — success or failure — is written to the AI usage ledger.
+ */
 async function jsonCompletion(
   openai: OpenAI,
+  userId: string,
   systemPrompt: string,
   userMessage: string,
 ): Promise<unknown | null> {
+  const cfg = getCareerTwinConfig();
+  const record = (
+    status: "successful" | "failed",
+    inputTokens: number,
+    outputTokens: number,
+    detail?: string,
+  ) =>
+    recordAiUsage({
+      userId,
+      feature: AI_FEATURES.CAREER_TWIN_EXPERIENCE,
+      status,
+      model: cfg.model,
+      inputTokens,
+      outputTokens,
+      detail,
+    });
+
   try {
     const completion = await openai.chat.completions.create(
       {
-        model: "gpt-4o-mini",
+        model: cfg.model,
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: userMessage },
         ],
         temperature: 0.85,
-        max_tokens: 750,
+        // A scenario is a structured JSON object, so it needs more room than a
+        // chat reply — but still a hard ceiling. [EXPERIENCE_MAX_OUTPUT_TOKENS]
+        max_tokens: Number(process.env.EXPERIENCE_MAX_OUTPUT_TOKENS) || 750,
         response_format: { type: "json_object" },
       },
       { timeout: 30_000 },
     );
     const raw = completion.choices[0]?.message?.content?.trim();
+    await record(
+      raw ? "successful" : "failed",
+      completion.usage?.prompt_tokens ?? estimateTokens(systemPrompt + userMessage),
+      completion.usage?.completion_tokens ?? estimateTokens(raw ?? ""),
+      raw ? undefined : "empty_response",
+    );
     if (!raw) return null;
     return JSON.parse(raw);
   } catch (e) {
     logAndSwallow("career-twin:experience:openai")(e);
+    await record("failed", estimateTokens(systemPrompt + userMessage), 0, "openai_error");
     return null;
   }
 }
@@ -77,13 +117,22 @@ export async function POST(req: NextRequest) {
     const lengthParam: string = (body.length ?? "").toString();
     const length = isValidExperienceLength(lengthParam) ? lengthParam : getExperienceLength(null).id;
 
-    // Two-tier rate limit: a short-window burst cap AND a 30-day per-user cap.
-    // The step loop is stateless (the client drives currentIndex), so the
-    // monthly cap is what actually bounds total spend per account.
-    const burst = await checkRateLimitAsync(`career-twin-exp:${session.user.id}`, RateLimits.AI_CHAT);
-    if (!burst.success) {
-      return NextResponse.json({ rateLimited: true }, { status: 200 });
+    // Kill switch + per-minute burst guard + monthly platform cost ceiling.
+    // `dailyLimit: 0` opts this surface out of the 15-questions/24h allowance —
+    // that budget belongs to the conversation, not the scenario runner.
+    const guard = await checkAiGuardrails({
+      userId: session.user.id,
+      feature: AI_FEATURES.CAREER_TWIN_EXPERIENCE,
+      dailyLimit: 0,
+    });
+    if (!guard.allowed) {
+      return guard.status === "rate_limited"
+        ? NextResponse.json({ rateLimited: true }, { status: 200 })
+        : NextResponse.json({ unavailable: true }, { status: 200 });
     }
+
+    // 30-day per-user cap. The step loop is stateless (the client drives
+    // currentIndex), so this is what bounds total spend per account.
     const monthly = await checkRateLimitAsync(
       `career-twin-exp-month:${session.user.id}`,
       RateLimits.AI_MONTHLY_EXPERIENCE,
@@ -107,7 +156,7 @@ export async function POST(req: NextRequest) {
 
     // ── START: produce the first scene ──
     if (action === "start") {
-      const parsed = await jsonCompletion(openai, systemPrompt, buildStartUserMessage(length));
+      const parsed = await jsonCompletion(openai, session.user.id, systemPrompt, buildStartUserMessage(length));
       const content = scenarioContentSchema.safeParse(parsed);
       if (!content.success || !allSafe(content.data?.context, content.data?.situation)) {
         return NextResponse.json({ unavailable: true }, { status: 200 });
@@ -147,6 +196,7 @@ export async function POST(req: NextRequest) {
 
       const parsed = await jsonCompletion(
         openai,
+        session.user.id,
         systemPrompt,
         buildRespondUserMessage({ length, currentIndex, userReply }),
       );

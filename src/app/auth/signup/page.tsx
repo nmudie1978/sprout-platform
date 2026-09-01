@@ -2,6 +2,7 @@
 
 import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { isVerificationRequired } from "@/lib/auth/verification-gate";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -162,7 +163,34 @@ function SignUpForm() {
         throw new Error(errorData.error || "Signup failed");
       }
 
-      // Auto-login immediately
+      // The API answers identically whether the address was free or already
+      // registered (see /api/auth/signup — ACCOUNT-ENUMERATION GUARD), so from
+      // here the client genuinely does not know which happened. Both paths end
+      // on the same "check your email" screen.
+      // No address in the URL — the API set an httpOnly cookie the screen
+      // reads server-side, so it stays out of history and the address bar.
+      const checkEmail = "/auth/check-email";
+
+      // Skip auto-sign-in when the hard gate is on: the account is not
+      // confirmed yet, so signIn() would be refused and the only thing the
+      // attempt would achieve is a pointless round-trip. This also closes the
+      // last enumeration side channel for free — with no sign-in attempt,
+      // nothing observable differs between a new and an existing address.
+      //
+      // NEXT_PUBLIC_SIGNUP_NO_AUTOLOGIN forces the same behaviour when the
+      // gate is off but you still want the strict privacy posture.
+      if (
+        isVerificationRequired() ||
+        process.env.NEXT_PUBLIC_SIGNUP_NO_AUTOLOGIN === "true"
+      ) {
+        router.push(checkEmail);
+        return;
+      }
+
+      // Sign in so a genuinely new account can start exploring immediately —
+      // the soft gate. This fails harmlessly when the address already belonged
+      // to someone (the password won't match), and that case lands on exactly
+      // the same screen rather than saying anything about the account.
       const signInResult = await signIn("credentials", {
         email: normalisedEmail,
         password,
@@ -170,20 +198,16 @@ function SignUpForm() {
       });
 
       if (signInResult?.error) {
-        toast({
-          title: "Account created",
-          description: "Please sign in to continue.",
-        });
-        router.push("/auth/signin");
+        router.push(checkEmail);
         return;
       }
 
       toast({
         title: "Welcome to Endeavrly",
-        description: "Let's get you set up.",
+        description: "We've emailed you a link to confirm your address.",
       });
 
-      router.push("/dashboard");
+      router.push(checkEmail);
     } catch (error: any) {
       toast({
         title: "Hold on",

@@ -10,6 +10,7 @@ import {
 } from "@/lib/auth/password-reset";
 import { checkRateLimitAsync, RateLimits } from "@/lib/rate-limit";
 import { logAndSwallow } from "@/lib/observability";
+import { absoluteUrl } from "@/lib/auth/app-url";
 
 // Generic response — identical whether or not the email exists, so this
 // endpoint can't be used to enumerate accounts.
@@ -48,9 +49,11 @@ export async function POST(req: NextRequest) {
         data: { userId: user.id, tokenHash, expiresAt: resetTokenExpiry(Date.now()) },
       });
 
-      const base =
-        process.env.NEXT_PUBLIC_APP_URL || process.env.NEXTAUTH_URL || "https://endeavrly.com";
-      const resetUrl = `${base.replace(/\/$/, "")}/auth/reset-password?token=${rawToken}`;
+      // Centralised so every auth email resolves its origin the same way and
+      // no environment URL is hard-coded here. See src/lib/auth/app-url.ts.
+      const resetUrl = absoluteUrl(
+        `/auth/reset-password?token=${encodeURIComponent(rawToken)}`,
+      );
       const { subject, html, text } = buildPasswordResetEmail(resetUrl);
       const sent = await sendMail({ to: email, subject, html, text });
       if (sent.skipped) {

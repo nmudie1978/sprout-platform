@@ -1,0 +1,21 @@
+-- ═══════════════════════════════════════════════════════════════════════════
+--  Case-insensitive uniqueness for User.email
+-- ═══════════════════════════════════════════════════════════════════════════
+--
+-- "User_email_key" is a plain unique index, and Postgres compares text
+-- case-sensitively — so "Foo@Bar.com" and "foo@bar.com" are two DIFFERENT
+-- rows as far as that constraint is concerned. Every application path
+-- lowercases before reading or writing (see normaliseEmail), which is why
+-- this has never bitten, but it means the guarantee lived in application code
+-- rather than in the database. One code path that forgets to normalise — the
+-- VIPPS OAuth callback did, until now — is enough to create a second account
+-- for a person who already has one.
+--
+-- This functional unique index moves the guarantee into the database, where
+-- it holds regardless of which code path does the insert.
+--
+-- Verified before writing this migration: no case-variant duplicates exist,
+-- so the index builds cleanly.
+--
+-- TO REVERSE: DROP INDEX "User_email_lower_key";
+CREATE UNIQUE INDEX "User_email_lower_key" ON "User" (lower("email"));

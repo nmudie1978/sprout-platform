@@ -93,6 +93,14 @@ export async function GET(req: NextRequest) {
       proAnswers,
       userPreferences,
       newsletterSubscriptions,
+      // Emotional-signal loop
+      arrivalCheckIns,
+      clarityShifts,
+      // Institutional layer
+      organisationMemberships,
+      accessCodeRedemptions,
+      personalSubscription,
+      parentChildLinks,
       // profile-owned
       savedCareers,
       savedItems,
@@ -148,6 +156,32 @@ export async function GET(req: NextRequest) {
       safe("proAnswers", () => prisma.proAnswer.findMany({ where: { answeredBy: userId } })),
       safe("userPreferences", () => prisma.userPreferences.findUnique(byUser)),
       safe("newsletterSubscriptions", () => prisma.newsletterSubscription.findMany({ where: { OR: [{ userId }, { email: user.email }] } })),
+      // Self-reported emotional signals. This is the most sensitive category
+      // the platform holds about a young person, so it must never be the part
+      // a subject-access request quietly omits.
+      safe("arrivalCheckIns", () => prisma.arrivalCheckIn.findMany({ ...byUser, orderBy: { createdAt: "asc" } })),
+      safe("clarityShifts", () => prisma.clarityShift.findMany({ ...byUser, orderBy: { createdAt: "asc" } })),
+      // Institutional layer: which organisation a young person belongs to, in
+      // what role, and how they joined. Personal data about them, held by us.
+      safe("organisationMemberships", () =>
+        prisma.organisationMembership.findMany({
+          ...byUser,
+          select: {
+            role: true,
+            status: true,
+            joinedAt: true,
+            expiresAt: true,
+            organisation: { select: { name: true, slug: true, type: true } },
+          },
+        })
+      ),
+      safe("accessCodeRedemptions", () => prisma.accessCodeRedemption.findMany(byUser)),
+      safe("personalSubscription", () => prisma.personalSubscription.findUnique(byUser)),
+      safe("parentChildLinks", () =>
+        prisma.parentChildLink.findMany({
+          where: { OR: [{ parentUserId: userId }, { childUserId: userId }] },
+        })
+      ),
       ofProfile("savedCareers", (a) => prisma.savedCareer.findMany(a)),
       ofProfile("savedItems", (a) => prisma.savedItem.findMany(a)),
       ofProfile("journeyReflections", (a) => prisma.journeyReflection.findMany(a)),
@@ -245,6 +279,14 @@ export async function GET(req: NextRequest) {
       careerTwinConversations: twinMessages,
       // Marketing
       newsletterSubscriptions,
+      // Emotional signals (self-reported check-ins and clarity ratings)
+      arrivalCheckIns,
+      clarityShifts,
+      // Organisation / school membership
+      organisationMemberships,
+      accessCodeRedemptions,
+      personalSubscription: personalSubscription ?? null,
+      parentChildLinks,
     };
 
     // Log successful export

@@ -4,6 +4,10 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 
 const withNextIntl = require('next-intl/plugin')('./src/i18n/request.ts');
 
+// Production builds get a stricter CSP than `next dev` (which needs
+// 'unsafe-eval' for Fast Refresh and the error overlay).
+const isProduction = process.env.NODE_ENV === 'production';
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
@@ -99,19 +103,23 @@ const nextConfig = {
             value: 'camera=(), microphone=(), geolocation=()',
           },
           // Content-Security-Policy — baseline XSS/clickjacking defence for a
-          // minors' platform. Now ENFORCED. The policy still allows
-          // 'unsafe-inline'/'unsafe-eval' on script-src because Next.js inline
-          // hydration + framer-motion require them; the meaningful protection
-          // here is default-src 'self', object-src 'none', a frame-src allowlist,
-          // frame-ancestors/base-uri/form-action 'self'. Follow-up hardening:
-          // move to nonce-based script-src and drop 'unsafe-inline'/'unsafe-eval'.
+          // minors' platform. ENFORCED. 'unsafe-inline' remains on script-src
+          // because Next.js emits inline hydration/bootstrap scripts; dropping
+          // it needs the nonce migration, which is the remaining follow-up.
+          // 'unsafe-eval' is now dropped in production (only the dev overlay
+          // and Fast Refresh need it), which removes the easiest route from an
+          // injected string to executing code. The rest of the protection is
+          // default-src 'self', object-src 'none', a frame-src allowlist, and
+          // frame-ancestors/base-uri/form-action 'self'.
           {
             key: 'Content-Security-Policy',
             value: [
               "default-src 'self'",
-              // Next.js hydration + framer-motion need inline/eval; tighten to
-              // nonces when moving to enforce.
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+              // Dev builds need 'unsafe-eval' for Fast Refresh / the error
+              // overlay; production builds do not.
+              isProduction
+                ? "script-src 'self' 'unsafe-inline'"
+                : "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
               // Tailwind / styled-jsx inject inline styles.
               "style-src 'self' 'unsafe-inline'",
               "img-src 'self' data: blob: https:",

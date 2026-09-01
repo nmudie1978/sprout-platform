@@ -8,7 +8,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { Navigation2, Loader2 } from "lucide-react";
+import { Navigation2, Loader2, MailWarning } from "lucide-react";
+import {
+  isUnverifiedError,
+  UNVERIFIED_SIGNIN_MESSAGE,
+} from "@/lib/auth/verification-gate";
 
 export default function SignInPage() {
   const { data: session, status } = useSession();
@@ -16,6 +20,11 @@ export default function SignInPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  // Set when the hard gate refuses an otherwise-correct sign-in. Holds the
+  // credentials so the user can ask for a fresh link without retyping them —
+  // the resend endpoint re-verifies the password before sending anything.
+  const [unverified, setUnverified] = useState<{ email: string; password: string } | null>(null);
+  const [resending, setResending] = useState(false);
 
   // If already authenticated, redirect immediately.
   //
@@ -36,6 +45,7 @@ export default function SignInPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setUnverified(null);
     setLoading(true);
 
     try {
@@ -46,7 +56,23 @@ export default function SignInPage() {
       });
 
       if (result?.error) {
-        throw new Error("Invalid email or password");
+        // The verification gate is its own case: the credentials were CORRECT,
+        // so "invalid email or password" would be a lie that sends the user
+        // round in circles. Show the real reason and the way out of it.
+        if (isUnverifiedError(result.error)) {
+          setUnverified({ email: email.trim().toLowerCase(), password });
+          setLoading(false);
+          return;
+        }
+
+        // Wrong credentials stay deliberately vague — naming which half was
+        // wrong would confirm whether an address has an account here.
+        // Throttling and suspension are different: the password may well be
+        // right, so telling the user "invalid email or password" would send
+        // them round in circles. Those two messages are passed through.
+        const explained =
+          result.error.includes("suspended") || result.error.includes("Too many");
+        throw new Error(explained ? result.error : "Invalid email or password");
       }
 
       if (result?.ok) {
@@ -125,6 +151,65 @@ export default function SignInPage() {
                   <span className="bg-background px-2 text-muted-foreground">
                     Or continue with email
                   </span>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* HARD GATE recovery. Shown only after a sign-in where the password
+              was right but the address is unconfirmed — so this panel is never
+              visible to someone guessing, and revealing the account's state
+              here tells them nothing they didn't already prove they knew. */}
+          {unverified && (
+            <div className="mb-4 rounded-lg border border-amber-500/30 bg-amber-500/5 p-4">
+              <div className="flex gap-3">
+                <MailWarning className="mt-0.5 h-5 w-5 shrink-0 text-amber-500" aria-hidden />
+                <div className="min-w-0 space-y-3">
+                  <p className="text-sm text-foreground">{UNVERIFIED_SIGNIN_MESSAGE}</p>
+                  <p className="text-xs text-muted-foreground">
+                    Remember to check your spam or junk folder — the first email from a
+                    new sender often lands there.
+                  </p>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    disabled={resending}
+                    onClick={async () => {
+                      setResending(true);
+                      try {
+                        const res = await fetch("/api/auth/resend-verification", {
+                          method: "POST",
+                          headers: { "Content-Type": "application/json" },
+                          body: JSON.stringify(unverified),
+                        });
+                        const data = await res.json().catch(() => ({}));
+                        toast({
+                          title: data.ok ? "On its way" : "Just a moment",
+                          description:
+                            data.message ??
+                            "If that address still needs confirming, we've sent a new link.",
+                        });
+                      } catch {
+                        toast({
+                          title: "Couldn't send just now",
+                          description: "Check your connection and try again.",
+                          variant: "destructive",
+                        });
+                      } finally {
+                        setResending(false);
+                      }
+                    }}
+                  >
+                    {resending ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Sending...
+                      </>
+                    ) : (
+                      "Send me a new confirmation link"
+                    )}
+                  </Button>
                 </div>
               </div>
             </div>
