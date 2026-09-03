@@ -534,12 +534,110 @@ export const defaultDetailsByCategory: Partial<Record<CareerCategory, CareerDeta
 };
 
 /**
- * Resolve the best default "typical day" for a career's category, falling back
- * to the global office default for categories without a tailored template.
+ * Earth, ocean and field-science research careers live in the
+ * HEALTHCARE_LIFE_SCIENCES category (it is the catalogue's "life sciences"
+ * bucket), so without an override a geologist or marine biologist inherited the
+ * clinical template and was told they would "assess and care for patients".
+ * These careers share a genuinely different shape of day — monitoring and
+ * sampling, lab analysis, modelling, writing — so they get their own honest
+ * default until each one is curated individually.
+ */
+const fieldScienceDefault: CareerDetails = {
+  typicalDay: {
+    morning: [
+      "Check overnight data, instruments or monitoring feeds",
+      "Plan the day's analysis, lab work or field session",
+      "Team catch-up on findings and priorities",
+    ],
+    midday: [
+      "Analyse samples, specimens or datasets",
+      "Run models and test them against what was observed",
+      "Record methods and results carefully",
+    ],
+    afternoon: [
+      "Write up findings, reports or research papers",
+      "Prepare funding applications or advice for decision-makers",
+      "Plan upcoming fieldwork, logistics and safety",
+    ],
+    environment:
+      "University, research institute or agency office and lab — with periods of fieldwork outdoors",
+  },
+  whatYouActuallyDo: [
+    "Collect samples, measurements or observations in the field",
+    "Analyse them in the lab and interpret what the data shows",
+    "Model how the system behaves and test the model against evidence",
+    "Publish findings and advise agencies, industry or the public",
+  ],
+  whoThisIsGoodFor: [
+    "People genuinely curious about how the natural world works",
+    "Patient analysts who are happy with long stretches of data and lab work",
+    "Those comfortable outdoors, sometimes in remote or rough conditions",
+  ],
+  topSkills: [
+    "Scientific method",
+    "Data analysis",
+    "Fieldwork and safety judgement",
+    "Attention to detail",
+    "Scientific writing",
+  ],
+  entryPaths: [
+    "Bachelor's in a relevant science (maths, physics, chemistry or biology from videregående)",
+    "Master's in the specialism — the normal entry point for research work",
+    "PhD for research and academic posts",
+    "Field schools, summer placements and research assistant work to build experience",
+  ],
+  realityCheck:
+    "Fascinating work, but far more office, lab and writing than the fieldwork photos suggest. Research posts are competitive and often funded project to project, so many people move into agencies, consultancy or industry — where the science still matters and the contracts are steadier.",
+};
+
+/**
+ * Careers that take {@link fieldScienceDefault} instead of their category's
+ * template. Kept as an explicit list so the override is reviewable — add an id
+ * here only when the clinical/office default is actively misleading for it.
+ *
+ * Every id below is now curated in `careerDetailsMap`, so this is a safety net
+ * rather than the live path: it only fires if a curated entry is removed, or if
+ * a new earth/field-science career is added to the catalogue and listed here
+ * before it is written up. The test suite asserts none of them can describe
+ * treating patients either way.
+ */
+const FIELD_SCIENCE_CAREER_IDS = new Set<string>([
+  "paleontologist",
+  "paleobiologist",
+  "vertebrate-paleontologist",
+  "fossil-preparation-technician",
+  "geologist",
+  "geochemist",
+  "volcanologist",
+  "oceanographer",
+  "sedimentologist",
+  "petroleum-geoscientist",
+  "marine-biologist",
+  "zoologist",
+  "botanist",
+  "wildlife-biologist",
+  "conservation-scientist",
+  "speleologist",
+  "polar-researcher",
+  "planetary-scientist",
+  "ecologist",
+  "climate-change-analyst",
+  "natural-resource-manager",
+]);
+
+/**
+ * Resolve the best default "typical day" for a career, falling back to the
+ * global office default for categories without a tailored template.
+ *
+ * A small set of field-science careers (see {@link FIELD_SCIENCE_CAREER_IDS})
+ * take precedence over their category, because the category template would be
+ * actively wrong for them rather than merely generic.
  */
 export function defaultDetailsForCategory(
   category: CareerCategory | undefined,
   globalDefault: CareerDetails,
+  careerId?: string,
 ): CareerDetails {
+  if (careerId && FIELD_SCIENCE_CAREER_IDS.has(careerId)) return fieldScienceDefault;
   return (category && defaultDetailsByCategory[category]) || globalDefault;
 }

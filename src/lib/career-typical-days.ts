@@ -13246,6 +13246,1296 @@ const careerDetailsMap: Record<string, CareerDetails> = {
     realityCheck: "Wellness coaching is unregulated in Norway — anyone can call themselves a coach, which makes the market noisy and credibility hard to establish. Building to a full-time income takes 2–3 years of consistent marketing; most coaches have a side income in that window. Scope-of-practice matters: overstep into medical advice and you risk harm + legal exposure. The upside: genuine impact on people's health trajectory, full control of your schedule and values, and a scalable business once you have reputation.",
   },
 
+  // ── Earth, ocean & field sciences ────────────────────────────────────────
+  // These 21 careers sit in HEALTHCARE_LIFE_SCIENCES (the catalogue's "life
+  // sciences" bucket) and had no curated or generated content, so Understand
+  // showed the clinical fallback ("assess and care for patients") and Discover
+  // showed a hospital work environment. Curated here so each one reads like the
+  // research, survey or land-management career it actually is. Norwegian
+  // context is deliberate — employers, universities and the honest local
+  // constraints (no mainland volcanoes, a short field season, an energy
+  // transition) are the part a 17-year-old cannot look up easily.
+  "paleontologist": {
+    typicalDay: {
+      morning: [
+        "Work through fossils from the last field season under the microscope",
+        "Compare specimens against museum collections and the literature",
+        "Plan the day's lab, collection or writing work",
+      ],
+      midday: [
+        "Prepare, measure and photograph specimens",
+        "Run analyses — CT scans, geochemistry or dating on the rock the fossil came from",
+        "Log everything into the museum's collection database",
+      ],
+      afternoon: [
+        "Write up papers, reports and field permits",
+        "Answer collection enquiries and supervise students",
+        "Plan the next excavation — permits, funding, logistics",
+      ],
+      tools: [
+        "Stereo and petrographic microscopes",
+        "CT scanning and photogrammetry",
+        "Air scribes and air abrasives",
+        "Collection databases",
+        "GIS",
+        "R / Python",
+      ],
+      environment:
+        "Museum, university lab and collection store — with a short excavation season in the field, in Norway usually Svalbard",
+    },
+    whatYouActuallyDo: [
+      "Excavate, document and protect fossils in the field",
+      "Prepare and identify specimens back in the lab",
+      "Read the rock layers around a fossil to date it and reconstruct its world",
+      "Publish findings and add specimens to a museum collection",
+      "Curate collections so other researchers can use them",
+      "Explain the science to school groups, media and the public",
+    ],
+    whoThisIsGoodFor: [
+      "People fascinated by the history of life on Earth",
+      "Meticulous people who enjoy slow, careful work",
+      "Those happy to spend most of the year indoors for a few weeks in the field",
+      "Anyone willing to compete hard for a small number of posts",
+    ],
+    topSkills: [
+      "Geology and stratigraphy",
+      "Comparative anatomy",
+      "Specimen preparation",
+      "Scientific writing",
+      "Statistics and data analysis",
+      "Patience",
+    ],
+    entryPaths: [
+      "Bachelor's in geology or biology (UiO, UiB, NTNU) — maths, physics, chemistry and biology from videregående",
+      "Master's in palaeontology or geology, ideally with a field-based thesis",
+      "PhD — effectively required for research and museum curator roles",
+      "Volunteer or intern in a museum collection early; hands-on preparation experience counts",
+      "Related routes: biostratigraphy for the energy industry, geological surveys (NGU), science communication",
+    ],
+    realityCheck:
+      "Palaeontology in Norway is a museum and university career — the Natural History Museum in Oslo, the university museums in Bergen and Trondheim — and there are only a handful of permanent posts in the whole country. Most of the year is microscope, database and writing work; the digging is a few weeks each summer, often in Svalbard where the marine reptile sites are. Dinosaurs are a tiny slice of the field, and the steadier paid work is micro-fossil biostratigraphy for energy and survey companies. If you want it, plan on a PhD, several postdoc contracts and a willingness to move abroad.",
+  },
+
+  "paleobiologist": {
+    typicalDay: {
+      morning: [
+        "Review datasets of fossil occurrences and measurements",
+        "Read new work on evolution and ancient ecosystems",
+        "Plan the day's lab or analysis work",
+      ],
+      midday: [
+        "Run lab analyses — stable isotopes, thin sections, CT data",
+        "Build and test evolutionary or ecological models in R or Python",
+        "Discuss interpretations with collaborators, often abroad",
+      ],
+      afternoon: [
+        "Write papers and funding applications",
+        "Supervise students and teach",
+        "Curate data so other people can reproduce the results",
+      ],
+      tools: [
+        "Stable isotope mass spectrometry",
+        "CT scanning and 3D morphometrics",
+        "R / Python",
+        "Phylogenetics software",
+        "Museum collection databases",
+      ],
+      environment:
+        "University or museum office and lab, with occasional fieldwork and visits to collections abroad",
+    },
+    whatYouActuallyDo: [
+      "Reconstruct how ancient organisms lived, not just what they looked like",
+      "Use chemistry and anatomy to work out diet, growth and environment",
+      "Model how ecosystems changed through mass extinctions and recoveries",
+      "Test evolutionary ideas against what the fossil record actually shows",
+      "Publish findings and apply for the funding that pays for the next project",
+    ],
+    whoThisIsGoodFor: [
+      "People who like biology and deep time in equal measure",
+      "Confident statisticians, because most of the evidence is quantitative",
+      "Patient people who enjoy long, careful analysis",
+      "Those prepared for a mobile, international early career",
+    ],
+    topSkills: [
+      "Evolutionary biology",
+      "Statistics and modelling",
+      "Lab analysis",
+      "Programming (R / Python)",
+      "Scientific writing",
+      "Critical reading",
+    ],
+    entryPaths: [
+      "Bachelor's in biology or geology (UiO, UiB, NTNU)",
+      "Master's in palaeobiology, evolution or Earth science — choose a quantitative thesis",
+      "PhD — the standard entry to research posts",
+      "Build coding and statistics early; they separate candidates more than fossil knowledge does",
+      "Related routes: evolutionary biology, museum curation, biodiversity data science",
+    ],
+    realityCheck:
+      "This is a research career, so it lives on grants: a PhD, then postdoc contracts of two to three years, often in different countries, before any shot at a permanent post. Norway has good groups in Oslo and Bergen but very few positions. Day to day it is far more spreadsheet, code and writing than fossil hunting. People who love the questions and can handle the insecurity stay; plenty move into data science, teaching or museum work, where the skills transfer well.",
+  },
+
+  "vertebrate-paleontologist": {
+    typicalDay: {
+      morning: [
+        "Examine skeletal material under the microscope or on CT scans",
+        "Compare bones against reference specimens and published descriptions",
+        "Agree preparation and imaging priorities with the technicians",
+      ],
+      midday: [
+        "Measure, photograph and 3D-scan specimens",
+        "Run phylogenetic analyses to place a species on the tree of life",
+        "Write descriptions precise enough for others to check",
+      ],
+      afternoon: [
+        "Draft papers, permits and funding applications",
+        "Host visiting researchers and answer collection requests",
+        "Plan the next field season — permits, safety, logistics, money",
+      ],
+      tools: [
+        "CT and surface scanning",
+        "3D modelling software",
+        "Phylogenetics software",
+        "Stereo microscopes",
+        "Collection databases",
+        "Field excavation kit",
+      ],
+      environment:
+        "Museum collection, lab and office — with short excavation seasons, in Norway usually Svalbard, otherwise abroad",
+    },
+    whatYouActuallyDo: [
+      "Excavate and stabilise fragile skeletal material in the field",
+      "Identify bones and work out which animal, and which part, they came from",
+      "Describe new species carefully enough to withstand peer review",
+      "Reconstruct how extinct animals moved, grew and fed",
+      "Curate specimens and make them available to other researchers",
+      "Explain the work publicly — this is a field people genuinely want to hear about",
+    ],
+    whoThisIsGoodFor: [
+      "People with a strong visual memory for anatomy",
+      "Careful, patient workers who enjoy detailed description",
+      "Those who accept the field is small and the competition is real",
+      "People willing to move country for the work",
+    ],
+    topSkills: [
+      "Comparative anatomy",
+      "Fossil excavation and handling",
+      "3D imaging",
+      "Phylogenetics",
+      "Scientific writing",
+      "Public communication",
+    ],
+    entryPaths: [
+      "Bachelor's in geology or biology (UiO, NTNU) with anatomy and evolution courses",
+      "Master's with a specimen-based thesis — get into a collection early",
+      "PhD in vertebrate palaeontology, usually taken abroad or in a specific Oslo group",
+      "Field school and volunteer preparation work to prove you can handle material",
+      "Related routes: comparative anatomy, museum curation, scientific illustration and outreach",
+    ],
+    realityCheck:
+      "This is one of the smallest specialisms in science. Norway has a real claim to it — the Svalbard marine reptile sites are world class — but there may be only a couple of paid positions in the country at any one time, and most careers are built abroad. Expect a decade of study and short contracts before anything stable. The upside is genuine: naming an animal nobody has ever described, in a field the public actually cares about.",
+  },
+
+  "fossil-preparation-technician": {
+    typicalDay: {
+      morning: [
+        "Assess the day's specimens and decide how to approach each one",
+        "Set up the bench — air scribe, microscope, extraction and dust control",
+        "Begin removing rock from fragile material, a millimetre at a time",
+      ],
+      midday: [
+        "Consolidate and glue fractured bone as it is exposed",
+        "Air-abrade fine detail where the matrix is stubborn",
+        "Photograph and log progress on every specimen",
+      ],
+      afternoon: [
+        "Mould and cast replicas for display, teaching or loan",
+        "Build supports and archival storage for finished specimens",
+        "Update the catalogue, and service the tools",
+      ],
+      tools: [
+        "Air scribes",
+        "Air abrasive units",
+        "Stereo microscope",
+        "Consolidants and adhesives",
+        "Silicone moulding and casting kit",
+        "Extraction and dust control",
+        "Collection database",
+      ],
+      environment:
+        "Museum preparation lab — a noisy, dusty bench with extraction — plus occasional fieldwork jacketing specimens",
+    },
+    whatYouActuallyDo: [
+      "Free fossils from the rock without damaging them",
+      "Repair and stabilise fragile material so it survives handling",
+      "Make moulds and casts for display and research loans",
+      "Build mounts and archival housing for long-term storage",
+      "Record exactly what you did to each specimen — preparation cannot be undone",
+      "Support researchers, and sometimes explain the work to visitors",
+    ],
+    whoThisIsGoodFor: [
+      "People with genuinely steady hands",
+      "Those who find deep focus satisfying rather than boring",
+      "Practical people who like solving problems with their hands",
+      "Anyone who takes care of things that cannot be replaced",
+    ],
+    topSkills: [
+      "Fine motor precision",
+      "Materials and adhesives knowledge",
+      "Microscope work",
+      "Moulding and casting",
+      "Documentation",
+      "Patience",
+    ],
+    entryPaths: [
+      "Bachelor's in geology, biology or conservation — or a strong practical craft background",
+      "Conservation or preparation training, most of it learned on the job in a museum",
+      "Volunteer or intern in a preparation lab; a portfolio of prepared specimens matters more than grades",
+      "Courses and workshops through museum and preparators' networks",
+      "Related routes: object conservation, exhibition technician, model and cast making",
+    ],
+    realityCheck:
+      "One of the very few fossil careers you can enter without a PhD — but there are only a handful of posts in Norway, mostly at the Natural History Museum in Oslo and the university museums, and many people start as volunteers or on short project contracts. The work is quiet, repetitive and physically static, with dust, noise and solvents to manage. If you want variety and conversation all day it will not suit you. If you like being the person a hundred-million-year-old specimen is trusted to, very little else compares.",
+  },
+
+  "geologist": {
+    typicalDay: {
+      morning: [
+        "Review site data, borehole logs or survey results",
+        "Team briefing on the projects running this week",
+        "Prepare for a site visit, or continue mapping and modelling",
+      ],
+      midday: [
+        "Field or site work — logging cores, mapping outcrops, sampling ground",
+        "Or desk work: modelling the subsurface and interpreting survey data",
+        "Check the model against what the ground actually shows",
+      ],
+      afternoon: [
+        "Write technical reports and advice for clients or agencies",
+        "Update GIS layers and 3D ground models",
+        "Coordinate with engineers, planners and drilling contractors",
+      ],
+      tools: [
+        "Field kit — hammer, hand lens, compass-clinometer",
+        "GIS (ArcGIS / QGIS)",
+        "Borehole and core logging software",
+        "3D ground modelling (Leapfrog)",
+        "GNSS / GPS",
+        "Python or MATLAB",
+      ],
+      environment:
+        "Consultancy, survey or agency office, with regular site and field work outdoors in most weather",
+    },
+    whatYouActuallyDo: [
+      "Work out what the ground is made of and how it will behave",
+      "Map rock and soil, and log drill cores and boreholes",
+      "Advise on foundations, tunnels, rockfall, landslides and quick clay",
+      "Assess groundwater, mineral resources and ground contamination",
+      "Turn all of it into reports engineers and planners can act on",
+      "Keep field and lab records that still stand up years later",
+    ],
+    whoThisIsGoodFor: [
+      "People who want a science career with regular time outdoors",
+      "Practical problem-solvers comfortable with incomplete information",
+      "Those happy writing clearly for non-geologists",
+      "People who don't mind rain, boots and early starts",
+    ],
+    topSkills: [
+      "Field mapping and core logging",
+      "Ground and 3D modelling",
+      "GIS",
+      "Technical report writing",
+      "Data interpretation",
+      "Safety awareness",
+    ],
+    entryPaths: [
+      "Bachelor's in geology or geosciences (UiB, UiO, NTNU, UiT) — maths, physics and chemistry from videregående",
+      "Master's is the normal entry qualification in Norway, often in engineering or environmental geology",
+      "Summer work with a consultancy, NGU or a drilling contractor while studying",
+      "Driving licence and field certificates (first aid, site or offshore safety) open doors",
+      "Related routes: geotechnics, hydrogeology, geohazards, mineral exploration, CO2 storage",
+    ],
+    realityCheck:
+      "Of all the earth sciences this is the one with genuine everyday demand in Norway, because the country is built on difficult ground: quick clay, rockfall, tunnels and dams all need geologists, and NGU, NVE, NGI and the big consultancies hire steadily. The trade-off is that consultancy is deadline-driven and billable — you will write far more reports than you expect, and field days are a minority of the year. Fieldwork can be cold, wet and physically hard. Pay is solid and the work is visible: things get built, or don't, on your advice.",
+  },
+
+  "geochemist": {
+    typicalDay: {
+      morning: [
+        "Prepare samples — crushing, dissolving, weighing to fine tolerances",
+        "Calibrate instruments and run standards before anything else",
+        "Check overnight runs for drift or contamination",
+      ],
+      midday: [
+        "Run analyses on ICP-MS, XRF or isotope mass spectrometers",
+        "Process results against blanks and reference materials",
+        "Chase anything that looks wrong before it becomes a conclusion",
+      ],
+      afternoon: [
+        "Model chemical processes — weathering, contamination, water chemistry",
+        "Write reports for clients, agencies or journals",
+        "Plan the next sampling campaign",
+      ],
+      tools: [
+        "ICP-MS and ICP-OES",
+        "XRF",
+        "Isotope ratio mass spectrometry",
+        "Electron microprobe",
+        "Geochemical modelling (PHREEQC)",
+        "R / Python",
+      ],
+      environment:
+        "Clean laboratory and office at a university, institute or consultancy, with sampling trips outdoors",
+    },
+    whatYouActuallyDo: [
+      "Measure what rock, soil, water and air are actually made of",
+      "Track how contaminants move through ground and water",
+      "Use chemistry and isotopes to date material and trace where it came from",
+      "Keep the analysis clean enough that the numbers can be trusted",
+      "Advise on contaminated land, mine waste, water quality and resources",
+      "Document methods so someone else can reproduce the result",
+    ],
+    whoThisIsGoodFor: [
+      "Meticulous people who take contamination control seriously",
+      "Those who enjoy chemistry and want to point it at the real world",
+      "Patient analysts comfortable with instruments and troubleshooting",
+      "People who like being the one whose numbers everyone else relies on",
+    ],
+    topSkills: [
+      "Analytical chemistry",
+      "Instrument operation and troubleshooting",
+      "Quality control",
+      "Data analysis",
+      "Geochemical modelling",
+      "Technical writing",
+    ],
+    entryPaths: [
+      "Bachelor's in chemistry or geosciences (UiO, UiB, NTNU) — chemistry and maths from videregående",
+      "Master's in geochemistry, environmental chemistry or Earth science",
+      "PhD for research posts; a master's is enough for lab and consultancy work",
+      "Lab assistant work while studying — instrument time on your CV counts for a lot",
+      "Related routes: environmental consultancy, water and mine-waste management, battery and materials analysis",
+    ],
+    realityCheck:
+      "A large part of this job is quality control: standards, blanks, duplicates, and the discipline to throw away a run that was contaminated. It is indoor, precise and slow, and one careless step can ruin weeks of sampling. Norwegian demand is steady through NGU, NIVA, NGI, SINTEF and environmental consultancies, and the skills carry into battery materials, mine remediation and CO2 storage. If you enjoy instruments and want your numbers to be the ones people trust, it is a stable, respected niche.",
+  },
+
+  "volcanologist": {
+    typicalDay: {
+      morning: [
+        "Check overnight monitoring feeds — seismicity, ground deformation, gas output",
+        "Compare today's readings against the baseline for each monitored volcano",
+        "Team briefing on anything unusual and what it might mean",
+      ],
+      midday: [
+        "Analyse samples in the lab — rock thin sections, ash grains, gas chemistry",
+        "Run or refine magma and eruption models against the data",
+        "Write up findings, papers or grant applications",
+      ],
+      afternoon: [
+        "Prepare hazard maps and advice for civil protection agencies",
+        "Supervise students or collaborate with international partners",
+        "Plan the logistics and safety case for the next field campaign",
+      ],
+      tools: [
+        "Seismometers",
+        "GNSS / GPS deformation networks",
+        "InSAR satellite imagery",
+        "MultiGAS and DOAS gas spectrometers",
+        "Thermal cameras and drones",
+        "Petrographic microscope and electron microprobe",
+        "Python / MATLAB",
+        "ArcGIS / QGIS",
+      ],
+      environment:
+        "Mostly a university, observatory or research-institute office and lab — with field campaigns on volcanoes, often abroad, for a few weeks a year",
+    },
+    whatYouActuallyDo: [
+      "Monitor volcanoes through seismic, deformation, gas and satellite data",
+      "Collect rock, ash and gas samples on field campaigns",
+      "Analyse samples in the lab to work out how a magma system behaves",
+      "Model eruption scenarios and assess the hazard to nearby communities",
+      "Advise civil protection agencies and brief the public during unrest",
+      "Publish research, apply for funding and supervise students",
+    ],
+    whoThisIsGoodFor: [
+      "People fascinated by how the Earth works",
+      "Patient people who don't mind long stretches of data and lab work",
+      "Those willing to spend years in study before the research work starts",
+      "Those who are physically fit and comfortable in remote, rough terrain",
+      "People prepared to move abroad for the work",
+      "Careful decision-makers — advice given during unrest carries real weight",
+    ],
+    topSkills: [
+      "Geology and petrology",
+      "Geophysics and data analysis",
+      "Programming (Python / MATLAB)",
+      "Fieldwork and safety judgement",
+      "Scientific writing",
+      "Clear communication with non-scientists",
+    ],
+    entryPaths: [
+      "Bachelor's in geosciences / geology (UiB, UiO, NTNU) — maths, physics and chemistry from videregående",
+      "Master's in geodynamics, petrology or geophysics; UiB is the strongest Norwegian base for volcanic and submarine systems",
+      "PhD — effectively required for research and monitoring roles",
+      "Field schools and summer placements abroad (Iceland, Italy, Hawai'i) to build field experience",
+      "Related entries: geothermal energy, hazard consultancy, geological surveys (NGU), seismology (NORSAR)",
+    ],
+    realityCheck:
+      "Norway has no active volcanoes on the mainland — Jan Mayen's Beerenberg is the only one — so a Norwegian volcanologist usually studies submarine volcanism (UiB's deep-sea work on the Mohn Ridge) or moves abroad to Iceland, Italy, Japan or the US. The job is far less lava than the photos suggest: most of it is data, lab analysis, modelling and writing, with a few weeks of fieldwork a year. It needs a PhD, permanent posts are scarce and postdoc contracts are the norm well into your thirties, so many people move into geothermal energy, hazard consulting or geological surveys. What you get in return is genuinely frontier science, a lot of travel, and work that can save lives when a volcano wakes up.",
+  },
+
+  "oceanographer": {
+    typicalDay: {
+      morning: [
+        "Check instrument feeds — moorings, gliders, floats, satellites",
+        "Quality-control yesterday's data before anything is built on it",
+        "Team meeting on cruise plans or model runs",
+      ],
+      midday: [
+        "Run and analyse ocean model output",
+        "Process CTD, current and water chemistry data",
+        "At sea: deploy instruments, run casts and stand your watch",
+      ],
+      afternoon: [
+        "Write papers, cruise reports or advice for management",
+        "Prepare equipment and paperwork for the next cruise",
+        "Work with modellers, biologists and forecasters",
+      ],
+      tools: [
+        "CTD rosettes",
+        "Moorings and current meters",
+        "Gliders and Argo floats",
+        "Ocean models (ROMS / NEMO)",
+        "MATLAB / Python",
+        "Satellite ocean data",
+      ],
+      environment:
+        "University or institute office, with research cruises of one to six weeks on ships like G.O. Sars or Kronprins Haakon",
+    },
+    whatYouActuallyDo: [
+      "Measure how the ocean moves, warms, mixes and changes chemistry",
+      "Maintain the instruments and moorings that keep the record going",
+      "Run models and test them against real measurements",
+      "Turn ocean data into advice on climate, fisheries and shipping",
+      "Publish findings and keep long time series alive",
+      "Spend real time at sea, on someone else's watch schedule",
+    ],
+    whoThisIsGoodFor: [
+      "People who want physics, maths and the sea in the same job",
+      "Those comfortable with code, because this is a quantitative field",
+      "People who can live and work well in close quarters at sea",
+      "Anyone drawn to climate and Arctic questions",
+    ],
+    topSkills: [
+      "Physics and maths",
+      "Programming (MATLAB / Python)",
+      "Instrument handling",
+      "Data quality control",
+      "Modelling",
+      "Teamwork at sea",
+    ],
+    entryPaths: [
+      "Bachelor's in physics, maths or geosciences — UiB's Geophysical Institute is the Norwegian home of this field",
+      "Master's in oceanography, meteorology or marine science (UiB, UiT, NTNU)",
+      "PhD for research posts; forecasting and monitoring roles take a master's",
+      "Get on a student cruise early — sea time is what makes you employable",
+      "Related routes: weather and ocean forecasting, marine consultancy, offshore metocean work",
+    ],
+    realityCheck:
+      "Norway is one of the best places in the world to do this — IMR, UiB, the Polar Institute and the Bjerknes and Nansen centres run real Arctic programmes with real ship time. The costs are honest ones: weeks away from home, seasickness that not everyone grows out of, night watches, and gear that fails in bad weather. On land it is largely a coding job — most days you are debugging a model or cleaning a dataset. Funding is project-based, so early careers are a chain of contracts.",
+  },
+
+  "sedimentologist": {
+    typicalDay: {
+      morning: [
+        "Log core in the store — grain size, structures, contacts, metre by metre",
+        "Photograph and describe what you see before interpreting it",
+        "Compare against wireline logs or seismic sections",
+      ],
+      midday: [
+        "Analyse samples — grain size, mineralogy, provenance dating",
+        "Build models of how the depositional environment behaved",
+        "Talk the interpretation through with the research or subsurface team",
+      ],
+      afternoon: [
+        "Write reports and papers",
+        "Update correlation panels and 3D models",
+        "Plan fieldwork or the next core request",
+      ],
+      tools: [
+        "Core logging kit and hand lens",
+        "Petrographic microscope",
+        "Grain size and XRD analysis",
+        "Seismic and well-log software (Petrel)",
+        "Drone and photogrammetry outcrop models",
+        "GIS",
+      ],
+      environment:
+        "Core store, lab and office — with field campaigns on outcrops, in Norway often Svalbard or the west coast",
+    },
+    whatYouActuallyDo: [
+      "Read sediment layers to reconstruct rivers, deltas, beaches and deep sea of the past",
+      "Log cores and outcrops in careful, consistent detail",
+      "Work out how a rock body will behave as a reservoir, aquifer or CO2 store",
+      "Date sediment and trace where it came from",
+      "Turn interpretations into models the rest of the team can use",
+      "Write it up so someone else can check your reasoning",
+    ],
+    whoThisIsGoodFor: [
+      "Visual thinkers who enjoy reading patterns and building a story from evidence",
+      "Patient, systematic people, because logging is long and detailed",
+      "Those who want a mix of outcrop fieldwork and desk interpretation",
+      "People comfortable that two experts can read the same core differently",
+    ],
+    topSkills: [
+      "Core and outcrop logging",
+      "Depositional models",
+      "Seismic and well-log interpretation",
+      "Petrography",
+      "3D modelling",
+      "Technical writing",
+    ],
+    entryPaths: [
+      "Bachelor's in geology (UiB, UiO, NTNU, UiS)",
+      "Master's in sedimentology, basin analysis or petroleum geoscience — field-based theses are valued",
+      "PhD for research; survey and industry work takes a master's",
+      "Field courses, ideally including Svalbard, plus summer work at NGU or an operator",
+      "Related routes: reservoir geology, CO2 storage, groundwater, offshore wind ground models",
+    ],
+    realityCheck:
+      "Most of the paid demand for sedimentology in Norway came from oil and gas, so the field is shifting: the same skills now go into CO2 storage on the shelf, offshore wind foundations and groundwater. That transition is real, but the number of jobs is smaller than a decade ago and academic posts are scarce. Core logging itself is slow, repetitive and done standing up in a cold store. What makes people stay is that you are reading an environment that vanished millions of years ago — and getting it right.",
+  },
+
+  "petroleum-geoscientist": {
+    typicalDay: {
+      morning: [
+        "Review well results and production data",
+        "Interpret seismic volumes — pick horizons and faults",
+        "Team meeting on prospect maturation or field development",
+      ],
+      midday: [
+        "Analyse well logs and core data, and tie them to the seismic",
+        "Update the subsurface model and volume estimates",
+        "Work through problems with reservoir engineers and geophysicists",
+      ],
+      afternoon: [
+        "Assess uncertainty and risk on a prospect",
+        "Prepare decision documents and present them to management",
+        "Data management and handover documentation",
+      ],
+      tools: [
+        "Petrel",
+        "Seismic interpretation software",
+        "Well log analysis (Techlog)",
+        "Geological modelling",
+        "Python",
+        "Diskos national subsurface data",
+      ],
+      environment:
+        "Operator or consultancy office — mostly Stavanger, Bergen and Oslo — with occasional core store and offshore visits",
+    },
+    whatYouActuallyDo: [
+      "Build a picture of rock kilometres below the seabed from indirect data",
+      "Decide where a well should go, and be honest about the odds",
+      "Estimate how much is there and how much can actually be produced",
+      "Quantify uncertainty rather than hiding it",
+      "Present the case for spending very large sums of money",
+      "Increasingly, apply the same skills to CO2 storage and geothermal",
+    ],
+    whoThisIsGoodFor: [
+      "Analytical people comfortable making calls on incomplete data",
+      "Those who like 3D spatial reasoning and visual interpretation",
+      "Team players — nothing here is decided alone",
+      "People who want a well-paid technical career and can handle industry cycles",
+    ],
+    topSkills: [
+      "Seismic interpretation",
+      "Well log analysis",
+      "Subsurface modelling",
+      "Risk and uncertainty assessment",
+      "Programming",
+      "Communicating with decision-makers",
+    ],
+    entryPaths: [
+      "Bachelor's in geology or geophysics (UiB, NTNU, UiO, UiS)",
+      "Master's in petroleum geoscience is the standard entry qualification",
+      "Graduate programmes at Equinor, Aker BP or Vår Energi — summer internships are the main way in",
+      "Add coding and data skills; subsurface teams increasingly expect them",
+      "Related routes: CO2 storage (Northern Lights and the Norwegian CCS projects), geothermal, offshore wind site characterisation",
+    ],
+    realityCheck:
+      "This is the best-paid earth-science career in Norway and also the most exposed. Hiring follows the oil price, layoffs have been deep in past downturns, and the energy transition means fewer graduate places than a decade ago even in good years. Be clear-eyed about the ethics too — this is fossil fuel production, and some people will not want that on their name. The counterweight is that the subsurface skills transfer almost directly into carbon storage, geothermal and offshore wind, which is where a lot of the discipline is heading.",
+  },
+
+  "marine-biologist": {
+    typicalDay: {
+      morning: [
+        "Check gear and weather before a boat or field day",
+        "Sort and identify yesterday's samples under the microscope",
+        "Log data and photographs into the project database",
+      ],
+      midday: [
+        "Fieldwork — surveys, dives, trawls, or fish health checks at a farm site",
+        "Or lab work: identification, dissection, water chemistry, genetics",
+        "Analyse survey data and compare it with previous years",
+      ],
+      afternoon: [
+        "Write monitoring reports, impact assessments or papers",
+        "Coordinate with regulators, aquaculture staff or other researchers",
+        "Prepare the next survey — permits, boats, kit",
+      ],
+      tools: [
+        "Field survey and sampling gear",
+        "Stereo microscope",
+        "Scientific diving equipment",
+        "eDNA and genetic sampling",
+        "R for statistics",
+        "GIS",
+      ],
+      environment:
+        "Institute or consultancy lab and office, with boat and coastal fieldwork and occasional research cruises",
+    },
+    whatYouActuallyDo: [
+      "Survey what lives in the sea and how it is changing",
+      "Identify species — a slow, exacting skill that takes years to build",
+      "Monitor fish stocks, coastal habitats and aquaculture impact",
+      "Assess the environmental effect of proposed developments",
+      "Advise regulators and industry on what the data actually supports",
+      "Write reports and papers, which is most of the year",
+    ],
+    whoThisIsGoodFor: [
+      "People who love the sea without romanticising the work",
+      "Careful observers with patience for identification work",
+      "Those comfortable on small boats in cold water",
+      "People able to give a client findings they did not want",
+    ],
+    topSkills: [
+      "Species identification",
+      "Survey design",
+      "Statistics (R)",
+      "Scientific diving or boat handling",
+      "Report writing",
+      "Independence",
+    ],
+    entryPaths: [
+      "Bachelor's in biology (UiB, UiT, NTNU, Nord) — biology, chemistry and maths from videregående",
+      "Master's in marine biology or fisheries science — the normal entry qualification",
+      "Scientific diving certification and boat and safety courses for field roles",
+      "Summer work or a thesis with IMR, Akvaplan-niva, NIVA or an aquaculture company",
+      "Related routes: aquaculture and fish health, environmental consultancy, fisheries management, coastal monitoring",
+    ],
+    realityCheck:
+      "The honest version is less dolphins and more mud, spreadsheets and cold hands. Norway has more marine biology work than almost anywhere — but a large share of it is aquaculture, fish health and environmental monitoring for industry, not free-roaming research. It is competitive, and pay sits below the geoscience end of the earth sciences. Fieldwork is seasonal, weather-dependent and physical. The people who thrive genuinely like identification and data, not just the sea.",
+  },
+
+  "zoologist": {
+    typicalDay: {
+      morning: [
+        "Early field session — observations, camera trap checks, transects",
+        "Or lab work: samples, measurements, genetics",
+        "Record data carefully while it is still fresh",
+      ],
+      midday: [
+        "Analyse behaviour or population data in R",
+        "Compare against previous seasons and published studies",
+        "Talk through with the team what the data actually supports",
+      ],
+      afternoon: [
+        "Write papers, reports or funding proposals",
+        "Maintain equipment, permits and animal-welfare paperwork",
+        "Plan the next field season",
+      ],
+      tools: [
+        "Camera traps",
+        "GPS tags and telemetry",
+        "Binoculars and field notebooks",
+        "Genetic sampling kits",
+        "R for statistics",
+        "GIS",
+      ],
+      environment:
+        "Institute, museum or university, with field seasons outdoors — often early mornings and remote sites",
+    },
+    whatYouActuallyDo: [
+      "Study how animals behave, live and fit into their ecosystem",
+      "Design surveys that actually produce conclusions you can defend",
+      "Collect field observations, samples and tracking data",
+      "Analyse populations and test hypotheses statistically",
+      "Work inside strict animal-welfare and permit rules",
+      "Publish findings and advise on management",
+    ],
+    whoThisIsGoodFor: [
+      "Patient observers who can stay still and pay attention for hours",
+      "Those comfortable with statistics, because modern zoology is data-heavy",
+      "People happy in cold, wet, early-morning field conditions",
+      "Anyone who cares about animals but can stay objective about them",
+    ],
+    topSkills: [
+      "Field observation",
+      "Survey and experimental design",
+      "Statistics (R)",
+      "Species knowledge",
+      "Scientific writing",
+      "Physical stamina",
+    ],
+    entryPaths: [
+      "Bachelor's in biology (UiO, NTNU, NMBU, UiT)",
+      "Master's in zoology, ecology or animal behaviour — get a field-based project",
+      "PhD for research posts; monitoring and management roles take a master's",
+      "Volunteer on field projects and ringing or tagging schemes early — field experience is the currency",
+      "Related routes: ecology and monitoring at NINA, wildlife management, museum curation, animal welfare work",
+    ],
+    realityCheck:
+      "Very few jobs actually carry the title zoologist. In Norway the work sits inside NINA, the universities, the natural history museums and the Environment Agency, usually labelled ecology or monitoring and funded project by project. Field seasons are intense and short; the rest of the year is analysis and writing. Pay is modest for the qualification level and competition for the interesting projects is heavy. People do it because the questions are genuinely fascinating and the fieldwork is unlike any office job.",
+  },
+
+  "botanist": {
+    typicalDay: {
+      morning: [
+        "Field season: survey plots and record species, or press and label specimens",
+        "Off-season: herbarium, lab or greenhouse work",
+        "Check identifications against reference collections and keys",
+      ],
+      midday: [
+        "Run growth or genetics experiments",
+        "Map species distributions and enter records into databases",
+        "Analyse vegetation data",
+      ],
+      afternoon: [
+        "Write survey reports, papers or management advice",
+        "Curate herbarium material and species records",
+        "Plan the next survey while the season allows it",
+      ],
+      tools: [
+        "Identification keys and floras",
+        "Hand lens and microscope",
+        "Herbarium press and archival storage",
+        "GPS and GIS",
+        "R for vegetation analysis",
+        "Species databases (Artsdatabanken)",
+      ],
+      environment:
+        "Institute, museum or university with greenhouse and herbarium — plus an intense outdoor field season in summer",
+    },
+    whatYouActuallyDo: [
+      "Identify plants accurately, including the genuinely difficult groups",
+      "Survey and map vegetation and habitats",
+      "Track rare, protected and invasive species",
+      "Run experiments on how plants grow, adapt and respond to change",
+      "Curate herbarium specimens and records for the long term",
+      "Advise on land management, restoration and conservation",
+    ],
+    whoThisIsGoodFor: [
+      "People with a sharp eye for small differences",
+      "Those content with quiet, methodical, often solitary work",
+      "Anyone happy to walk long days outdoors in a short summer season",
+      "People who like collections and records and getting things exactly right",
+    ],
+    topSkills: [
+      "Plant identification",
+      "Vegetation survey methods",
+      "Herbarium and curation practice",
+      "Statistics",
+      "GIS",
+      "Scientific writing",
+    ],
+    entryPaths: [
+      "Bachelor's in biology or plant science (NMBU, UiO, UiB, NTNU)",
+      "Master's in botany, plant ecology or plant science",
+      "Learn identification properly — field courses, floras, and time with experienced botanists",
+      "Summer survey work with NIBIO, NINA or a consultancy while studying",
+      "Related routes: plant breeding and agronomy at NIBIO, restoration ecology, seed banks, nature consultancy",
+    ],
+    realityCheck:
+      "Norway's field season is short, so botany here means a few very busy summer months and a long winter of herbarium, database and report work. Real identification skill takes years and is the thing employers actually struggle to find — it is worth more than a general degree. Paid roles cluster at NIBIO, NINA, the natural history museums and nature consultancies, and much of the money is in agriculture, forestry and impact assessment rather than pure botany. Quiet, absorbing work for the right person; too solitary for many.",
+  },
+
+  "wildlife-biologist": {
+    typicalDay: {
+      morning: [
+        "Check tracking data, camera traps and DNA sample returns",
+        "Field day: survey routes, snow tracking, tagging or den checks",
+        "Log observations before they blur together",
+      ],
+      midday: [
+        "Analyse population estimates and movement data",
+        "Handle samples for genetic identification of individual animals",
+        "Coordinate with rangers, landowners and other field teams",
+      ],
+      afternoon: [
+        "Write monitoring reports and management advice",
+        "Answer questions from agencies, farmers and sometimes the press",
+        "Maintain equipment, permits and welfare documentation",
+      ],
+      tools: [
+        "GPS collars and telemetry",
+        "Camera traps",
+        "DNA sampling kits",
+        "Snow tracking and field survey gear",
+        "R for population modelling",
+        "GIS",
+      ],
+      environment:
+        "Institute or agency office with heavy field time — forests, mountains and winter conditions",
+    },
+    whatYouActuallyDo: [
+      "Count and monitor wild populations, which is far harder than it sounds",
+      "Track individual animals with collars, cameras and DNA",
+      "Map habitat use, ranges and movement",
+      "Model how populations respond to hunting, predators and land use",
+      "Advise agencies on quotas, protection and management",
+      "Explain findings to people whose livelihoods are affected by them",
+    ],
+    whoThisIsGoodFor: [
+      "Physically fit people who can work in cold, remote conditions",
+      "Calm communicators who can work inside a real public argument",
+      "Those comfortable with statistics and uncertainty",
+      "People who can hold a line on evidence under pressure",
+    ],
+    topSkills: [
+      "Population survey and modelling",
+      "Tracking and telemetry",
+      "Statistics (R)",
+      "Fieldcraft and safety",
+      "GIS",
+      "Communicating in conflict",
+    ],
+    entryPaths: [
+      "Bachelor's in biology or natural resource management (NMBU, NTNU, UiT, Høgskolen i Innlandet)",
+      "Master's in ecology or wildlife biology — a field-based thesis is strongly preferred",
+      "Field experience: volunteer on monitoring projects, tracking courses, outdoor skills",
+      "Driving licence, first aid and winter field safety; firearms competence for some Arctic roles",
+      "Related routes: NINA and Rovdata monitoring, Statens naturoppsyn, Miljødirektoratet, county wildlife management",
+    ],
+    realityCheck:
+      "In Norway this work is politically charged — large carnivore monitoring sits in the middle of a long argument between conservation, farming and hunting interests, and your numbers will be challenged in public. That is part of the job, not a distraction from it. Field days are long, cold and physically demanding, and much of the year is modelling and writing. Posts are concentrated in NINA, Rovdata, SNO and the environmental agencies, funded project by project, so early careers are usually a run of contracts.",
+  },
+
+  "conservation-scientist": {
+    typicalDay: {
+      morning: [
+        "Review monitoring data from protected areas or restoration sites",
+        "Prepare advice or comments on a development proposal",
+        "Meeting with an agency, municipality or landowner",
+      ],
+      midday: [
+        "Site visit to check habitat condition or restoration progress",
+        "Or desk work: mapping, impact assessment, conservation planning",
+        "Analyse whether a measure is actually working",
+      ],
+      afternoon: [
+        "Write management plans, assessments and policy input",
+        "Coordinate across agencies, NGOs and land users",
+        "Prepare material for hearings and public consultations",
+      ],
+      tools: [
+        "GIS mapping",
+        "Habitat assessment protocols",
+        "Species databases (Artsdatabanken, Naturbase)",
+        "R for analysis",
+        "Impact assessment frameworks",
+      ],
+      environment:
+        "Agency, institute or NGO office with regular site visits — and a lot of meetings",
+    },
+    whatYouActuallyDo: [
+      "Assess the state of habitats and species and what threatens them",
+      "Design and evaluate conservation and restoration measures",
+      "Assess the environmental impact of proposed developments",
+      "Write management plans for protected areas",
+      "Negotiate between conservation, industry, farming and local interests",
+      "Check whether the measures actually changed anything",
+    ],
+    whoThisIsGoodFor: [
+      "Patient negotiators who can hold their ground politely",
+      "People who want science to change decisions, not just describe them",
+      "Those comfortable with policy, law and paperwork alongside ecology",
+      "People who can accept slow, partial wins",
+    ],
+    topSkills: [
+      "Habitat and impact assessment",
+      "GIS",
+      "Policy and regulation knowledge",
+      "Stakeholder negotiation",
+      "Data analysis",
+      "Writing clearly for non-scientists",
+    ],
+    entryPaths: [
+      "Bachelor's in biology, environmental science or natural resource management (NMBU, UiB, UiT, NTNU)",
+      "Master's in conservation, ecology or environmental management",
+      "Field survey experience plus GIS — the two things employers check first",
+      "Internship or trainee work at Miljødirektoratet, Statsforvalteren, NINA or an NGO",
+      "Related routes: environmental consultancy and impact assessment, protected area management, nature and climate policy",
+    ],
+    realityCheck:
+      "Far more of this job is meetings, hearings and documents than most people expect — you are working inside planning law and public administration, and progress is measured in years. You will lose cases, and you will sometimes advise a compromise you do not love. Demand in Norway is growing as nature reporting and restoration requirements tighten, so the job market is one of the healthier ones in this group. The reward is that your work ends up inside decisions that actually protect places.",
+  },
+
+  "speleologist": {
+    typicalDay: {
+      morning: [
+        "Plan the trip: route, rigging, water levels, air, callout time",
+        "Check ropes, lights and rescue kit — nothing goes underground unchecked",
+        "Or lab and desk work between expeditions",
+      ],
+      midday: [
+        "Underground: survey passages, sample sediments and formations, record features",
+        "Photograph and measure precisely in a hostile environment",
+        "Or process survey data into cave maps",
+      ],
+      afternoon: [
+        "Analyse samples — dating speleothems, sediment and water chemistry",
+        "Write up surveys, reports and papers",
+        "Plan the next expedition, its permits and its safety case",
+      ],
+      tools: [
+        "Cave survey instruments (DistoX)",
+        "Survey software (Therion / Survex)",
+        "SRT rope access and rescue kit",
+        "Sediment and speleothem sampling gear",
+        "Uranium-thorium dating (through lab partners)",
+        "GIS",
+      ],
+      environment:
+        "Underground — wet, cold and dark for long hours — plus university or institute lab and office work in between",
+    },
+    whatYouActuallyDo: [
+      "Explore and accurately survey cave systems",
+      "Study how karst forms and how water moves through it",
+      "Sample stalagmites and sediments that record past climate",
+      "Record cave life and fragile underground habitats",
+      "Advise on protecting caves and groundwater near quarries and tunnels",
+      "Publish maps and findings, usually alongside skilled volunteer cavers",
+    ],
+    whoThisIsGoodFor: [
+      "People genuinely comfortable in tight, dark, wet places underground",
+      "Disciplined, safety-first workers who follow procedure every single time",
+      "Strong, fit people with real stamina",
+      "Those who can do exact scientific work in bad conditions",
+    ],
+    topSkills: [
+      "Cave surveying and mapping",
+      "Single rope technique and rescue skills",
+      "Karst geology and hydrology",
+      "Risk assessment",
+      "Sampling and lab analysis",
+      "Scientific writing",
+    ],
+    entryPaths: [
+      "Bachelor's in geology or earth science (UiB, UiO, NTNU)",
+      "Master's or PhD in karst geology, hydrology or palaeoclimate — the science route",
+      "Caving skills through Norsk Grotteforbund, plus formal SRT and rescue training",
+      "Build a survey record with a club; expedition experience is what gets you invited",
+      "Related routes: hydrogeology, engineering geology and tunnelling, palaeoclimate research, cave guiding",
+    ],
+    realityCheck:
+      "Almost nobody is employed with the job title speleologist. It is a specialism you carry into a job in geology, hydrology or palaeoclimate research, and in Norway much of the exploration and mapping — especially in the Nordland marble karst — is done by skilled volunteers alongside university researchers. The safety demands are serious and non-negotiable, and an underground rescue is slow and difficult. Treat it as a passion that shapes a broader earth-science career, and take a qualification that pays alongside it.",
+  },
+
+  "polar-researcher": {
+    typicalDay: {
+      morning: [
+        "Check weather, ice and safety conditions before anything is decided",
+        "Field day: sampling, drilling, instrument servicing, ice or animal surveys",
+        "Or station and lab work when conditions close in",
+      ],
+      midday: [
+        "Process samples and data while they are fresh",
+        "Maintain instruments in conditions that break them",
+        "Log everything meticulously — you cannot come back next week",
+      ],
+      afternoon: [
+        "Analyse data and write up",
+        "Plan logistics: cargo, permits, safety and firearms training",
+        "Between seasons: proposals, papers and teaching",
+      ],
+      tools: [
+        "Ice and snow coring kit",
+        "Automatic weather and permafrost stations",
+        "Satellite and remote sensing data",
+        "Snowmobiles, small boats and survival gear",
+        "Python / R",
+        "Rifle and polar bear safety training",
+      ],
+      environment:
+        "Svalbard, Antarctica or the Arctic Ocean during field seasons — and a mainland university or institute office the rest of the year",
+    },
+    whatYouActuallyDo: [
+      "Collect measurements in places where getting there is half the work",
+      "Study sea ice, glaciers, permafrost, ocean and polar ecosystems",
+      "Keep long-running monitoring series intact year after year",
+      "Plan logistics and safety in serious detail",
+      "Analyse data and publish — which is most of the year",
+      "Compete for the funding and the ship or station time that makes it possible",
+    ],
+    whoThisIsGoodFor: [
+      "People who function well in cold, isolation and small teams",
+      "Meticulous planners, because improvising out there is dangerous",
+      "Those willing to be away for weeks or months at a time",
+      "Anyone drawn to climate questions where the change is fastest",
+    ],
+    topSkills: [
+      "Field logistics and safety",
+      "Cold-weather fieldwork",
+      "Data analysis and programming",
+      "Instrumentation",
+      "Teamwork under stress",
+      "Scientific writing",
+    ],
+    entryPaths: [
+      "Bachelor's in geosciences, physics or biology (UiT, UiB, UiO, NTNU)",
+      "Courses at UNIS in Svalbard — the most direct route into the polar research community",
+      "Master's, then PhD for research posts",
+      "Safety and skills training: glacier travel, firearms and polar bear safety, first aid, small boat",
+      "Related routes: Norsk Polarinstitutt, Meteorologisk institutt, expedition logistics, Arctic environmental management",
+    ],
+    realityCheck:
+      "The fieldwork is genuinely extraordinary and genuinely hard: cold, isolation, weeks without privacy, and a risk register that includes polar bears and thin ice. It is also a small fraction of the year — the rest is data, writing and grant applications on the mainland. Norway is exceptionally well placed for this through UNIS, the Polar Institute and the Fram Centre, but posts are project-funded and competitive, and long absences are hard on relationships. People either love this life or leave it quickly.",
+  },
+
+  "planetary-scientist": {
+    typicalDay: {
+      morning: [
+        "Pull down new spacecraft or telescope data",
+        "Process and calibrate images or spectra",
+        "Check overnight simulation runs",
+      ],
+      midday: [
+        "Analyse surfaces, atmospheres or interiors from remote sensing data",
+        "Run models and compare them against the observations",
+        "Video calls with collaborators in other countries",
+      ],
+      afternoon: [
+        "Write papers and mission or instrument proposals",
+        "Contribute to instrument calibration and planning work",
+        "Teach, supervise or do public outreach",
+      ],
+      tools: [
+        "Spacecraft data archives (ESA PSA, NASA PDS)",
+        "Python and scientific libraries",
+        "Spectral analysis software",
+        "GIS for planetary surfaces",
+        "Numerical models",
+        "High-performance computing",
+      ],
+      environment:
+        "University or agency office — a computational job, with occasional analogue fieldwork and mission meetings",
+    },
+    whatYouActuallyDo: [
+      "Turn spacecraft data into an understanding of another world",
+      "Model how planets, moons and asteroids formed and changed",
+      "Map surfaces and interpret their geology remotely",
+      "Help design and calibrate the instruments that collect the data",
+      "Publish, and compete for mission time and funding",
+      "Use Earth analogue sites — Svalbard is one — to test methods",
+    ],
+    whoThisIsGoodFor: [
+      "Strong programmers and mathematicians",
+      "People who like geology and physics but prefer to study them at a distance",
+      "Patient analysts — missions run over decades",
+      "Those prepared to build a career internationally",
+    ],
+    topSkills: [
+      "Programming (Python)",
+      "Remote sensing and image analysis",
+      "Physics and numerical modelling",
+      "Spectroscopy",
+      "Scientific writing",
+      "International collaboration",
+    ],
+    entryPaths: [
+      "Bachelor's in physics, astronomy or geosciences (UiO, UiB, NTNU) — heavy maths and physics from videregående",
+      "Master's in astrophysics, geophysics or space physics",
+      "PhD — required for research; the field is almost entirely academic and agency work",
+      "Internships with Norsk Romsenter, Andøya Space or ESA; ESA traineeships are a real route",
+      "Related routes: satellite Earth observation, space instrumentation, data science, science communication",
+    ],
+    realityCheck:
+      "Norway has a real space sector — Andøya, satellite ground stations, the Space Agency — but very little of it is planetary science, so this is a career you will most likely build abroad through ESA, a European university or the US. The work itself is computational: you are a programmer and data analyst who happens to be pointed at Mars, not an explorer. Missions take decades, so patience is structural. The people who stay love the questions enough to accept a long, mobile, competitive path.",
+  },
+
+  "ecologist": {
+    typicalDay: {
+      morning: [
+        "Field season: survey a site — species, habitat condition, transects",
+        "Check the survey plan against the permit and method statement",
+        "Log records into the database while the details are fresh",
+      ],
+      midday: [
+        "Analyse survey data and run statistics in R",
+        "Map habitats and constraints in GIS",
+        "Discuss findings with the project team or client",
+      ],
+      afternoon: [
+        "Write assessments, reports and recommended mitigation",
+        "Respond to client and planning queries",
+        "Plan the next site visit around season and weather",
+      ],
+      tools: [
+        "Field survey kit and identification keys",
+        "GPS and GIS",
+        "R for statistics",
+        "Species databases (Artsdatabanken, Naturbase)",
+        "Drone and remote sensing data",
+      ],
+      environment:
+        "Consultancy, institute or agency office with seasonal fieldwork outdoors",
+    },
+    whatYouActuallyDo: [
+      "Survey what lives on a site and what condition the habitat is in",
+      "Assess how a proposed development would affect it",
+      "Recommend mitigation, compensation or a different design",
+      "Analyse ecological data honestly, including when it is inconvenient",
+      "Write reports that planners, clients and regulators rely on",
+      "Monitor whether the mitigation actually worked",
+    ],
+    whoThisIsGoodFor: [
+      "People who enjoy identifying species in the field",
+      "Those comfortable with statistics and clear writing",
+      "Practical people happy outdoors in a short, intense season",
+      "Anyone able to deliver findings a client did not want to hear",
+    ],
+    topSkills: [
+      "Species and habitat identification",
+      "Survey design",
+      "Statistics (R)",
+      "GIS",
+      "Impact assessment",
+      "Report writing",
+    ],
+    entryPaths: [
+      "Bachelor's in biology, ecology or environmental science (NMBU, NTNU, UiB, UiO, UiT)",
+      "Master's is the normal entry point for assessment and research work",
+      "Build identification skill and take seasonal survey work while studying",
+      "Driving licence, first aid and outdoor safety training",
+      "Related routes: consultancy impact assessment, NINA and NIVA monitoring, municipal and county environmental roles, nature restoration",
+    ],
+    realityCheck:
+      "Most paid ecology in Norway is consultancy and monitoring rather than research: you survey a site for a road, a wind farm or a housing plan, and write the assessment. That is real, useful work, but it comes with deadlines, billable hours and clients who would prefer a different answer. The field season is short and concentrated; winter is reports. Demand is rising as nature accounting and restoration rules tighten, which makes this one of the more employable careers in this group.",
+  },
+
+  "climate-change-analyst": {
+    typicalDay: {
+      morning: [
+        "Pull the latest emissions, energy or climate data",
+        "Check it for gaps and inconsistencies before using it",
+        "Team meeting on the analysis or report in progress",
+      ],
+      midday: [
+        "Run scenarios — emissions pathways, climate risk, adaptation options",
+        "Build the charts and tables that will carry the argument",
+        "Cross-check every number against its official source",
+      ],
+      afternoon: [
+        "Write briefings, policy input or climate risk reports",
+        "Present findings to a municipality, agency or client",
+        "Track the policy and regulation changes that affect the work",
+      ],
+      tools: [
+        "Excel and Power BI",
+        "Python or R",
+        "Emissions data (Miljødirektoratet, SSB)",
+        "Climate projections (Norsk Klimaservicesenter)",
+        "Scenario and risk frameworks",
+        "Sustainability reporting standards (CSRD, TCFD)",
+      ],
+      environment:
+        "Office at a research centre, agency, municipality, consultancy or financial institution",
+    },
+    whatYouActuallyDo: [
+      "Turn messy climate and emissions data into something decision-makers can use",
+      "Assess what climate change means for a place, a business or a sector",
+      "Model scenarios and be explicit about the assumptions inside them",
+      "Write reports and briefings that survive scrutiny",
+      "Support climate risk and sustainability reporting",
+      "Explain uncertainty without letting it become an excuse for inaction",
+    ],
+    whoThisIsGoodFor: [
+      "Strong analysts who also write clearly",
+      "People interested in policy and economics as much as science",
+      "Those who can stay calm and factual on a politicised subject",
+      "Anyone who wants climate work that is mostly at a desk",
+    ],
+    topSkills: [
+      "Data analysis",
+      "Scenario modelling",
+      "Climate policy and regulation",
+      "Risk assessment",
+      "Clear writing",
+      "Presentation",
+    ],
+    entryPaths: [
+      "Bachelor's in environmental science, economics, geography or engineering",
+      "Master's in climate, energy, environmental economics or policy",
+      "Get strong with data — Excel first, then Python or R; it is the deciding skill",
+      "Internships at CICERO, Miljødirektoratet, NVE, a municipality or a consultancy",
+      "Related routes: sustainability reporting, energy analysis, municipal climate planning, climate risk in finance and insurance",
+    ],
+    realityCheck:
+      "This is a desk job. The fieldwork is other people's, and your day is data, scenarios, slides and reports. The data is often incomplete or inconsistent, and you will spend real effort just getting sources to agree. The work is politically exposed — your numbers get used in arguments — so precision and neutrality matter. Demand is the strongest in this group and still growing, because municipalities, agencies and companies now have reporting duties they cannot meet without analysts.",
+  },
+
+  "natural-resource-manager": {
+    typicalDay: {
+      morning: [
+        "Review applications, cases and monitoring data",
+        "Site visit — forest, watercourse, grazing land or protected area",
+        "Meeting with landowners, a municipality or an agency",
+      ],
+      midday: [
+        "Assess condition and use against the management plan",
+        "Check compliance with permits and regulations",
+        "Update maps, registers and case documentation",
+      ],
+      afternoon: [
+        "Write management plans, decisions and consultation responses",
+        "Prepare material for hearings and public meetings",
+        "Coordinate across departments and interest groups",
+      ],
+      tools: [
+        "GIS and map registers",
+        "Case and permit systems",
+        "Resource inventory data (NIBIO, Naturbase)",
+        "Field assessment kit",
+        "Regulatory and planning frameworks",
+      ],
+      environment:
+        "Public agency, municipality or land management office, with regular site visits",
+    },
+    whatYouActuallyDo: [
+      "Balance use and protection of land, forest, water and wildlife",
+      "Write and maintain management plans for areas and resources",
+      "Process permits and check that the conditions are being met",
+      "Assess the condition of resources and how they are changing",
+      "Bring landowners, industry, municipalities and conservation interests to a decision",
+      "Explain and defend those decisions publicly",
+    ],
+    whoThisIsGoodFor: [
+      "People who can hold a room of competing interests together",
+      "Those comfortable with regulation, process and documentation",
+      "Practical people who want a mix of office and outdoors",
+      "Anyone who can take a decision and stand behind it",
+    ],
+    topSkills: [
+      "Resource and land assessment",
+      "Regulatory and planning knowledge",
+      "Stakeholder facilitation",
+      "GIS",
+      "Decision-making",
+      "Clear written communication",
+    ],
+    entryPaths: [
+      "Bachelor's in natural resource management, forestry, environmental science or agriculture (NMBU, Høgskolen i Innlandet, Nord)",
+      "Master's for agency and specialist roles",
+      "Practical experience — forestry, farming, outdoor work — is valued alongside the degree",
+      "Trainee or case-handler roles at a municipality, Statsforvalteren or Statskog",
+      "Related routes: municipal planning, forestry management, water resource management, protected area administration",
+    ],
+    realityCheck:
+      "This is public administration with a science base: much of the day is casework, hearings, plans and email, and the site visits are the reward rather than the job. You sit between people who want incompatible things — grazing and predators, hydropower and rivers, cabins and wilderness — and someone is unhappy with most decisions. It is stable, pensionable public-sector work with genuine influence over how land is used, and it suits people as interested in the negotiation as in the ecology.",
+  },
+
 };
 
 /**
@@ -13268,7 +14558,7 @@ export function getCareerDetails(careerId: string): CareerDetails {
   //    day for healthcare, etc.) — far better than the single office/PM
   //    template for the ~12% of careers without curated/generated content.
   // 4. Global office default for categories without a tailored template.
-  return defaultDetailsForCategory(getCategoryForCareer(careerId), defaultDetails);
+  return defaultDetailsForCategory(getCategoryForCareer(careerId), defaultDetails, normalizedId);
 }
 
 /**
