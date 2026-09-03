@@ -33,21 +33,34 @@ describe("countries helpers", () => {
 });
 
 describe("launched countries", () => {
-  it("launches exactly Norway, Spain, Sweden and Denmark", () => {
-    expect(LAUNCHED_COUNTRIES.map((c) => c.name)).toEqual([
-      "Norway",
-      "Spain",
-      "Sweden",
-      "Denmark",
-    ]);
+  // Norway only for the commercial launch. Spain, Sweden and Denmark were
+  // withdrawn from signup on 2026-09-03 — see the note in src/lib/countries.ts
+  // before widening this.
+  it("launches exactly Norway", () => {
+    expect(LAUNCHED_COUNTRIES.map((c) => c.name)).toEqual(["Norway"]);
+  });
+
+  it("does not offer the withdrawn markets", () => {
+    for (const closed of ["Spain", "Sweden", "Denmark"]) {
+      expect(isLaunchedCountry(closed)).toBe(false);
+    }
   });
   it("is a subset of SUPPORTED_COUNTRIES", () => {
     const supported = new Set(SUPPORTED_COUNTRIES.map((c) => c.name));
     for (const c of LAUNCHED_COUNTRIES) expect(supported.has(c.name)).toBe(true);
   });
   it("isLaunchedCountry only true for launched", () => {
-    expect(isLaunchedCountry("Spain")).toBe(true);
+    expect(isLaunchedCountry("Norway")).toBe(true);
     expect(isLaunchedCountry("Italy")).toBe(false);
     expect(isLaunchedCountry(null)).toBe(false);
+  });
+
+  // Withdrawing a market must not remove it from the roadmap list: existing
+  // accounts still store these names and normaliseCountry must keep resolving
+  // them rather than silently rewriting someone's country to Norway.
+  it("keeps withdrawn markets resolvable for existing accounts", () => {
+    for (const closed of ["Spain", "Sweden", "Denmark"]) {
+      expect(normaliseCountry(closed)).toBe(closed);
+    }
   });
 });

@@ -326,3 +326,40 @@ describe("validation still applies before the duplicate branch", () => {
     expect(db.users).toHaveLength(0);
   });
 });
+
+// ── Commercial launch market gate ──────────────────────────────────────
+// Norway only. The picker hides the others, but a picker is presentation —
+// this endpoint is public, so the refusal has to hold server-side.
+describe("market gate", () => {
+  it.each(["Spain", "Sweden", "Denmark"])("refuses a signup from %s", async (closed) => {
+    const before = db.users.length;
+    const res = await POST(request(payload({ email: `${closed}@example.com`, country: closed })));
+    expect(res.status).toBe(400);
+    expect(JSON.stringify(await res.json())).toMatch(/Norway/);
+    // Nothing was created — the refusal is real, not cosmetic.
+    expect(db.users.length).toBe(before);
+  });
+
+  it("refuses the ISO code form too", async () => {
+    const res = await POST(request(payload({ email: "es@example.com", country: "ES" })));
+    expect(res.status).toBe(400);
+  });
+
+  it("still accepts Norway by name and by code", async () => {
+    for (const [i, value] of ["Norway", "NO"].entries()) {
+      const res = await POST(request(payload({ email: `no${i}@example.com`, country: value })));
+      expect(res.status).toBe(200);
+    }
+  });
+
+  it("still accepts a signup with no country supplied", async () => {
+    const res = await POST(request(payload({ email: "nocountry@example.com", country: undefined })));
+    expect(res.status).toBe(200);
+  });
+
+  it("refuses an unrecognised country rather than filing it as Norway", async () => {
+    const res = await POST(request(payload({ email: "atlantis@example.com", country: "Atlantis" })));
+    expect(res.status).toBe(400);
+    expect(db.users.some((u) => u.email === "atlantis@example.com")).toBe(false);
+  });
+});
