@@ -1,5 +1,42 @@
 [
   {
+    "title": "How 35 percent of US employees are left on the margins",
+    "summary": "In a new book, Paul Osterman details his research finding more than one-third of the country’s workers are “disposable,” with little security or chance of job advancement.",
+    "sourceName": "MIT News",
+    "sourceUrl": "https://news.mit.edu/2026/how-35-percent-us-employees-are-left-on-margins-paul-osterman-book-0818",
+    "contentType": "article",
+    "tags": [
+      "jobs",
+      "future-of-work"
+    ],
+    "publishDate": "2026-08-18"
+  },
+  {
+    "title": "Exploring the societal impacts of AI",
+    "summary": "During the AI and Society Forum, leading MIT researchers examined critical questions about AI’s influence on employment and democracy.",
+    "sourceName": "MIT News",
+    "sourceUrl": "https://news.mit.edu/2026/exploring-societal-impacts-of-ai-0623",
+    "contentType": "article",
+    "tags": [
+      "jobs",
+      "future-of-work",
+      "ai"
+    ],
+    "publishDate": "2026-06-23"
+  },
+  {
+    "title": "MIT’s Initiative for New Manufacturing builds momentum",
+    "summary": "In its first year, INM has worked across research, workforce development, and industry engagement to help accelerate new manufacturing technologies and their real-world deployment.",
+    "sourceName": "MIT News",
+    "sourceUrl": "https://news.mit.edu/2026/mit-initiative-for-new-manufacturing-builds-momentum-0616",
+    "contentType": "article",
+    "tags": [
+      "jobs",
+      "future-of-work"
+    ],
+    "publishDate": "2026-06-16"
+  },
+  {
     "title": "Turning curiosity about engineering into careers",
     "summary": "A collaboration between MIT’s Leaders for Global Operations, Boeing, and Engineering Tomorrow brings aspiring engineers from the classroom to the factory floor.",
     "sourceName": "MIT News",
@@ -233,19 +270,6 @@
     "publishDate": "2025-09-02"
   },
   {
-    "title": "Agents of Change: On the 10th Anniversary of World Youth Skills Day",
-    "summary": "UN leaders marked 10 years of World Youth Skills Day by pushing for every young person to get real digital and AI skills, warning that 62% of youth use AI but only 30% have had any training.",
-    "sourceName": "UNESCO",
-    "sourceUrl": "https://www.unesco.org/en/articles/agents-change-10th-anniversary-world-youth-skills-day-call-empower-youth-through-digital-and-ai",
-    "contentType": "article",
-    "tags": [
-      "skills",
-      "digital-skills",
-      "future-of-work"
-    ],
-    "publishDate": "2025-07-15"
-  },
-  {
     "title": "Listening to 200 young people about work, purpose and the future",
     "summary": "UNDP ran a Future of Work Academy where 200+ young people swapped notes on AI, green jobs and building meaningful careers — and the big takeaway was that curiosity beats content.",
     "sourceName": "UNDP",
@@ -257,32 +281,6 @@
       "career-planning"
     ],
     "publishDate": "2025-11-12"
-  },
-  {
-    "title": "Four Young Creators Transforming Local Ideas Into Global Solutions Using Intellectual Property",
-    "summary": "Four under-35 innovators from Angola, Brazil, the US and Vietnam show how understanding intellectual property turned their local ideas into real businesses solving global problems.",
-    "sourceName": "WIPO",
-    "sourceUrl": "https://www.wipo.int/en/web/youth-engagement/w/news/2025/eet-four-young-creators-and-innovators-transforming-local-ideas-into-global-solutions-using-intellectual-property",
-    "contentType": "article",
-    "tags": [
-      "career-planning",
-      "skills",
-      "development"
-    ],
-    "publishDate": "2025-08-12"
-  },
-  {
-    "title": "What 'mental health in all policies' can look like on the ground",
-    "summary": "WHO spotlights France's Working First and Housing First programmes as proof that having a job and a home can actively support mental health recovery, not just follow it.",
-    "sourceName": "World Health Organization",
-    "sourceUrl": "https://www.who.int/europe/news/item/28-07-2025-housing-and-employment-programmes-show-what--mental-health-in-all-policies--can-look-like-on-the-ground",
-    "contentType": "article",
-    "tags": [
-      "wellbeing",
-      "policy",
-      "jobs"
-    ],
-    "publishDate": "2025-07-28"
   },
   {
     "title": "Skills Training Is Opening Opportunities for Millions of Young People in Africa",
@@ -337,32 +335,6 @@
     "publishDate": "2026-04-01"
   },
   {
-    "title": "Is Your Job Safe from AI? A Career Consultant + a YouTuber Answer",
-    "summary": "A workplace expert and a creator team up to break down how to thrive through career chaos and stay employable as AI changes the rules.",
-    "sourceName": "TED",
-    "sourceUrl": "https://www.youtube.com/watch?v=plbqT4dBNwo",
-    "contentType": "video",
-    "tags": [
-      "ai",
-      "future-of-work",
-      "career-planning"
-    ],
-    "publishDate": "2025-06-17"
-  },
-  {
-    "title": "I'll Probably Lose My Job to AI. Here's Why That's OK",
-    "summary": "Journalist Megan J. McArdle reframes AI job loss through the story of the 19th-century Luddites, asking what we'd really give up by halting progress to protect today's jobs.",
-    "sourceName": "TED",
-    "sourceUrl": "https://www.youtube.com/watch?v=DM6UVe5jsxA",
-    "contentType": "video",
-    "tags": [
-      "ai",
-      "future-of-work",
-      "mindset"
-    ],
-    "publishDate": "2025-07-15"
-  },
-  {
     "title": "3 Possible Futures for AI — Which Will We Choose?",
     "summary": "After decades working in AI across the US and China, Alvin W. Graylin lays out three very different futures we could be heading toward — and why the choice is ours.",
     "sourceName": "TED",
@@ -387,19 +359,6 @@
       "economy"
     ],
     "publishDate": "2025-12-04"
-  },
-  {
-    "title": "Charted: The World's Fastest Growing Jobs (2025-2030)",
-    "summary": "Almost every one of the world's fastest-growing jobs is tied to AI or robotics — think Big Data Specialists, FinTech Engineers and AI/ML roles leading the pack to 2030.",
-    "sourceName": "Visual Capitalist",
-    "sourceUrl": "https://www.visualcapitalist.com/charted-the-worlds-fastest-growing-jobs-2025-2030/",
-    "contentType": "article",
-    "tags": [
-      "jobs",
-      "future-of-work",
-      "data-viz"
-    ],
-    "publishDate": "2025-08-11"
   },
   {
     "title": "Mapped: AI Adoption by Country in 2026",
