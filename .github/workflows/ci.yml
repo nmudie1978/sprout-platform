@@ -10,6 +10,14 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+# Least-privilege token. Without an explicit block the workflow token inherits
+# the repository default, which on many repos is read+WRITE across contents,
+# packages and more. This job only ever reads the checkout, so anything a
+# compromised dependency or action could do with a write token is removed by
+# saying so here.
+permissions:
+  contents: read
+
 jobs:
   lint-typecheck-test:
     name: Lint + Typecheck + Test
