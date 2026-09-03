@@ -11,6 +11,7 @@ import {
 import { safeRelativePath } from "@/lib/auth/app-url";
 import { isVerificationRequired } from "@/lib/auth/verification-gate";
 import { VerificationWatcher } from "@/components/auth/verification-watcher";
+import { AnnounceVerified } from "@/components/auth/announce-verified";
 
 export const dynamic = "force-dynamic";
 
@@ -171,5 +172,12 @@ export default async function VerifyEmailResultPage({
  */
 function Watcher({ enabled, children }: { enabled: boolean; children: ReactNode }) {
   if (!enabled) return <>{children}</>;
-  return <VerificationWatcher mode="once">{children}</VerificationWatcher>;
+  return (
+    <VerificationWatcher mode="once">
+      {/* Tell any other tab of this browser — typically the one still showing
+          "Check your email" — so it reacts now rather than on its next tick. */}
+      <AnnounceVerified />
+      {children}
+    </VerificationWatcher>
+  );
 }
