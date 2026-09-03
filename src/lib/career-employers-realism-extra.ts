@@ -374,7 +374,13 @@ export const REALISM_EMPLOYERS_EXTRA: Record<string, Employer[]> = {
   ],
   "criminal-defence-lawyer": [
     { name: "Elden", industry: "Law firm", size: "100+" },
-    { name: "Sulland", industry: "Car dealership", size: "500+" },
+    // Was "Sulland" / industry "Car dealership" — the semantic-QA agent caught
+    // this on 2026-08-28 and was right. Sulland Gruppen is a car dealership
+    // chain; the firm meant here is Advokatfirmaet Sulland, the Oslo criminal
+    // defence practice where Frode Sulland (Orderud, Forsvarergruppen) is a
+    // partner and was managing director for 28 years. Named in full so the
+    // collision cannot be re-introduced.
+    { name: "Advokatfirmaet Sulland", industry: "Law firm", size: "Varies" },
     { name: "Furuholmen Andenæs", industry: "Law firm", size: "Varies" },
     { name: "Hestenes og Dramer", industry: "Law firm", size: "Varies" },
     { name: "Glittertind", industry: "Law firm", size: "100+" },
