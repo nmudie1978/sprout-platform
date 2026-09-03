@@ -11,6 +11,7 @@ import {
   truncateUserAgent,
 } from "@/lib/feedback-validation";
 import { checkRateLimitAsync, RateLimits } from "@/lib/rate-limit";
+import { notifyNewFeedback } from "@/lib/feedback-notify";
 
 export async function POST(request: Request) {
   try {
@@ -49,7 +50,7 @@ export async function POST(request: Request) {
 
     const userAgent = truncateUserAgent(request.headers.get("user-agent"));
 
-    await prisma.feedback.create({
+    const created = await prisma.feedback.create({
       data: {
         createdByUserId: session?.user?.id || null,
         rating: data.rating ?? null,
@@ -61,7 +62,29 @@ export async function POST(request: Request) {
         userAgent,
         appVersion: process.env.npm_package_version || null,
       },
+      select: { id: true, createdAt: true, kind: true, area: true, role: true, rating: true },
     });
+
+    // Awaited deliberately, not fire-and-forget: a serverless function can be
+    // frozen the moment it responds, which would silently drop the send (same
+    // failure mode as the cache writes in #511). `notifyNewFeedback` never
+    // throws and returns in a few hundred ms, so the user is not made to wait
+    // on anything that can fail.
+    const notified = await notifyNewFeedback({
+      id: created.id,
+      kind: created.kind,
+      area: created.area,
+      role: created.role,
+      rating: created.rating,
+      message,
+      signedIn: Boolean(session?.user?.id),
+      submittedAt: created.createdAt,
+    });
+    if (!notified.sent && notified.reason === "MAIL_FAILED") {
+      // Logged, never surfaced — the feedback IS saved and visible in the
+      // portal regardless of whether the email got out.
+      console.error("[feedback] notification failed:", notified.error);
+    }
 
     return NextResponse.json(
       { success: true, message: "Thank you for your feedback!" },
