@@ -22,13 +22,26 @@ updates:
     commit-message:
       prefix: "chore(deps)"
 
-  # The build actions themselves — see the SHA-pinning note in ci.yml. Without
-  # this, pinned SHAs would silently rot and never receive security fixes.
+  # The build actions themselves — see the SHA-pinning note in the workflows.
+  # Without this, pinned SHAs would silently rot and never receive security
+  # fixes.
+  #
+  # GROUPED INCLUDING MAJORS, unlike the npm block above. The first run of this
+  # config opened four separate PRs — one per action, all major bumps — which
+  # is four CI runs and four reviews for what is really one decision: "move the
+  # build to current actions". One batched PR is more likely to be read
+  # properly, and CI gates the whole batch the same way it gated each part.
+  # A bad batch is one revert rather than four.
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "weekly"
       day: "monday"
+    open-pull-requests-limit: 3
+    groups:
+      actions:
+        patterns: ["*"]
+        update-types: ["major", "minor", "patch"]
     labels: ["dependencies", "ci"]
     commit-message:
       prefix: "chore(ci)"
