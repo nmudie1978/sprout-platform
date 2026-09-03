@@ -1,0 +1,34 @@
+# Dependency scanning. Nothing was watching this repo for vulnerable packages
+# before — `npm audit` only ran when someone remembered to type it.
+#
+# Grouped and weekly on purpose: a youth platform with one maintainer is worse
+# off drowning in daily single-package PRs than getting one reviewable batch,
+# because the realistic failure mode here is updates being ignored, not being
+# applied too slowly. Security updates are exempt from the grouping and arrive
+# on their own so they are never buried in a routine batch.
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 5
+    groups:
+      # Patch and minor bumps are the ones that are safe to review together.
+      routine:
+        update-types: ["minor", "patch"]
+    labels: ["dependencies"]
+    commit-message:
+      prefix: "chore(deps)"
+
+  # The build actions themselves — see the SHA-pinning note in ci.yml. Without
+  # this, pinned SHAs would silently rot and never receive security fixes.
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    labels: ["dependencies", "ci"]
+    commit-message:
+      prefix: "chore(ci)"
