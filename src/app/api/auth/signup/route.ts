@@ -20,7 +20,13 @@ import {
 } from "@/lib/safety/age";
 import { checkRateLimitAsync, getRateLimitHeaders, RateLimits } from "@/lib/rate-limit";
 import { isSchoolEmail } from "@/lib/education/school-domains";
-import { normaliseCountry, defaultLocaleForCountry } from "@/lib/countries";
+import {
+  normaliseCountry,
+  defaultLocaleForCountry,
+  isLaunchedCountry,
+  resolveCountryInput,
+  COUNTRY_NOT_LAUNCHED_MESSAGE,
+} from "@/lib/countries";
 import { LOCALE_COOKIE } from "@/i18n/config";
 import { notifyAccountEvent } from "@/lib/account-notify";
 import {
@@ -326,6 +332,34 @@ export async function POST(req: NextRequest) {
           { error: "Age bracket does not match your date of birth" },
           { status: 400 }
         );
+      }
+
+      // MARKET GATE. The signup picker only offers launched countries, but a
+      // picker is presentation, not enforcement — this endpoint is public and
+      // accepts whatever is posted to it. Checked here rather than trusting the
+      // client, and before the bcrypt hash below, so a closed-market request
+      // costs us nothing.
+      //
+      // Only when a country was actually supplied: an absent value falls
+      // through to normaliseCountry's Norway default, which is launched.
+      //
+      // Accepts a display name or an ISO code (see resolveCountryInput) — both
+      // shapes reach this endpoint, and rejecting a legitimate Norwegian signup
+      // over a format difference would be a worse bug than the one being fixed.
+      // Unrecognised input is refused rather than coerced: silently filing an
+      // unknown country as Norwegian is the same bad-data problem in a quieter
+      // form, and a Spanish user recorded as Norwegian is worse than being told
+      // plainly that we are not open there yet.
+      //
+      // Leaks nothing about who has an account — the answer depends only on the
+      // country posted, so it cannot be used to probe addresses.
+      if (rawCountry !== undefined && rawCountry !== null && rawCountry !== "") {
+        if (!isLaunchedCountry(resolveCountryInput(rawCountry))) {
+          return NextResponse.json(
+            { error: COUNTRY_NOT_LAUNCHED_MESSAGE },
+            { status: 400 },
+          );
+        }
       }
 
       // All youth (15–30) are ACTIVE on creation. Age personalises the
