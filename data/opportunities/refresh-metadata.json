@@ -1,20 +1,20 @@
 {
-  "lastRefreshISO": "2026-04-23T11:47:30.704Z",
-  "cadence": "mixed",
-  "totalFetched": 3,
-  "totalNormalized": 3,
-  "totalVerified": 3,
-  "totalFailed": 0,
-  "totalExpired": 0,
-  "duplicatesRemoved": 0,
+  "lastRefreshISO": "2026-09-05T08:57:10.474Z",
+  "cadence": "daily",
+  "totalFetched": 917,
+  "totalNormalized": 917,
+  "totalVerified": 711,
+  "totalFailed": 190,
+  "totalExpired": 3,
+  "duplicatesRemoved": 16,
   "providerStats": [
     {
       "provider": "nav-jobs",
-      "fetched": 3,
-      "normalized": 3,
-      "verified": 3,
-      "failed": 0,
-      "expired": 0,
+      "fetched": 917,
+      "normalized": 917,
+      "verified": 711,
+      "failed": 190,
+      "expired": 3,
       "errors": []
     }
   ],
@@ -22,10 +22,10 @@
     {
       "provider": "nav-jobs",
       "status": "healthy",
-      "lastRun": "2026-04-23T11:47:25.674Z",
+      "lastRun": "2026-09-05T08:41:31.398Z",
       "consecutiveFailures": 0,
-      "lastSuccess": "2026-04-23T11:47:30.223Z",
-      "itemsFound": 3
+      "lastSuccess": "2026-09-05T08:51:05.763Z",
+      "itemsFound": 917
     }
   ]
 }
