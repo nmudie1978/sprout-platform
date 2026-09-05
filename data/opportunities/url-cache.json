@@ -1,32 +1,2499 @@
 {
-  "https://iframe.coop.no/coop-ost-stillinger/?rmpage=apply&rmjob=3203&ref=nav.no&utm_medium=talentech_publishing&utm_source=nav": {
+  "https://candidate.webcruiter.com/cv?advertid=5175536824&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
     "status": 200,
     "ok": true,
-    "checkedAtISO": "2026-04-23T11:47:18.794Z",
-    "ttlExpiresAtISO": "2026-04-23T23:47:18.863Z"
+    "checkedAtISO": "2026-09-05T08:54:24.715Z",
+    "ttlExpiresAtISO": "2026-09-05T20:54:26.126Z"
   },
-  "https://jobs.mojob.io/45658/?utm_id=32775&utm_campaign=32775&utm_medium=job_share&utm_source=nav&utm_term=Pedagogisk+leder&utm_content=45658": {
-    "status": 200,
-    "ok": true,
-    "checkedAtISO": "2026-04-23T11:47:18.794Z",
-    "ttlExpiresAtISO": "2026-04-23T23:47:19.268Z"
+  "https://app.vilect.com/positions/11897?utm_source=Nav#apply-form": {
+    "status": 405,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:54:26.126Z",
+    "ttlExpiresAtISO": "2026-09-05T20:54:26.675Z",
+    "error": "HTTP 405"
   },
-  "https://candidate.webcruiter.com/cv?advertid=5117209510&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+  "https://candidate.webcruiter.com/cv?advertid=5175548570&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
     "status": 200,
     "ok": true,
-    "checkedAtISO": "2026-04-23T11:47:18.794Z",
-    "ttlExpiresAtISO": "2026-04-23T23:47:19.391Z"
+    "checkedAtISO": "2026-09-05T08:54:26.128Z",
+    "ttlExpiresAtISO": "2026-09-05T20:54:28.030Z"
   },
-  "https://candidate.webcruiter.com/cv?advertid=5117669120&language=nn&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
-    "status": 200,
-    "ok": true,
-    "checkedAtISO": "2026-04-23T11:47:18.794Z",
-    "ttlExpiresAtISO": "2026-04-23T23:47:19.438Z"
+  "https://sauda.easycruit.com/vacancy/application/3658553/200795?channel=NavRest&iso=nn": {
+    "status": null,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:54:16.212Z",
+    "ttlExpiresAtISO": "2026-09-05T20:54:28.445Z",
+    "error": "fetch failed"
   },
-  "https://candidate.webcruiter.com/cv?advertid=5115279518&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+  "https://norgesgruppen.wd3.myworkdayjobs.com/karriere/job/KIWI-Vettre/KIWI-Vettre-sker-etter-ryddehjelp-deltid-15--_JR10031946/apply?lang=nb-NO": {
     "status": 200,
     "ok": true,
-    "checkedAtISO": "2026-04-23T11:47:18.794Z",
-    "ttlExpiresAtISO": "2026-04-23T23:47:19.512Z"
+    "checkedAtISO": "2026-09-05T08:54:25.924Z",
+    "ttlExpiresAtISO": "2026-09-05T20:54:28.682Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5176034872&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:54:26.676Z",
+    "ttlExpiresAtISO": "2026-09-05T20:54:29.005Z"
+  },
+  "https://jobseeker.jobbnorge.no/apply/307417": {
+    "status": 405,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:54:28.683Z",
+    "ttlExpiresAtISO": "2026-09-05T20:54:29.462Z",
+    "error": "HTTP 405"
+  },
+  "https://norgesgruppen.wd3.myworkdayjobs.com/karriere/job/KIWI-Verdalen/KIWI-Verdalen-sker-etter-assisterende-butikksjef_JR10031973/apply?lang=nb-NO": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:54:29.463Z",
+    "ttlExpiresAtISO": "2026-09-05T20:54:30.294Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5100230421&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:54:28.446Z",
+    "ttlExpiresAtISO": "2026-09-05T20:54:30.691Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5175358381&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:54:29.005Z",
+    "ttlExpiresAtISO": "2026-09-05T20:54:31.215Z"
+  },
+  "https://senja.easycruit.com/vacancy/application/3655381/192455?channel=NavRest&iso=no": {
+    "status": null,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:54:18.460Z",
+    "ttlExpiresAtISO": "2026-09-05T20:54:31.352Z",
+    "error": "fetch failed"
+  },
+  "https://arbeidsplassen.nav.no/stillinger/stilling/511c094b-a43d-4b15-a5d5-cd61bea55a28": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:54:30.701Z",
+    "ttlExpiresAtISO": "2026-09-05T20:54:31.509Z"
+  },
+  "https://arbeidsplassen.nav.no/stillinger/stilling/516b5cc1-8223-4d99-a89a-148073896783": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:54:31.510Z",
+    "ttlExpiresAtISO": "2026-09-05T20:54:32.298Z"
+  },
+  "https://jobseeker.jobbnorge.no/apply/306928": {
+    "status": 405,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:54:31.216Z",
+    "ttlExpiresAtISO": "2026-09-05T20:54:32.326Z",
+    "error": "HTTP 405"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5174170132&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:54:30.294Z",
+    "ttlExpiresAtISO": "2026-09-05T20:54:32.580Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5174860799&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:54:31.352Z",
+    "ttlExpiresAtISO": "2026-09-05T20:54:32.792Z"
+  },
+  "https://hire.vismatalent.com/spa/public/apply?guidAssignment=874cc64f-cab9-45a9-900a-b7269c6c6047&publishCode=NAV&TK=37151926-3707-4631-8e05-a0a8f97891e0": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:54:32.581Z",
+    "ttlExpiresAtISO": "2026-09-05T20:54:33.062Z"
+  },
+  "https://norgesgruppen.wd3.myworkdayjobs.com/karriere/job/KIWI-Verdalen/KIWI-Verdalen-sker-etter-butikkmedarbeider-deltid-20--_JR10031975-2/apply?lang=nb-NO": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:54:32.298Z",
+    "ttlExpiresAtISO": "2026-09-05T20:54:33.075Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5167248636&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:54:32.327Z",
+    "ttlExpiresAtISO": "2026-09-05T20:54:33.851Z"
+  },
+  "https://kongsberg.easycruit.com/vacancy/application/3659141/79383?channel=NavRest&iso=no": {
+    "status": null,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:54:21.590Z",
+    "ttlExpiresAtISO": "2026-09-05T20:54:34.514Z",
+    "error": "fetch failed"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5173384428&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:54:32.792Z",
+    "ttlExpiresAtISO": "2026-09-05T20:54:34.653Z"
+  },
+  "https://adecco.com/nb-no/app/2374151": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:54:33.062Z",
+    "ttlExpiresAtISO": "2026-09-05T20:54:35.535Z"
+  },
+  "https://jobseeker.jobbnorge.no/apply/307196": {
+    "status": 405,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:54:35.535Z",
+    "ttlExpiresAtISO": "2026-09-05T20:54:36.029Z",
+    "error": "HTTP 405"
+  },
+  "https://adecco.com/nb-no/app/2374163": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:54:33.075Z",
+    "ttlExpiresAtISO": "2026-09-05T20:54:36.131Z"
+  },
+  "https://adecco.com/nb-no/app/2374149": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:54:33.851Z",
+    "ttlExpiresAtISO": "2026-09-05T20:54:36.301Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5172523053&language=nn&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:54:34.515Z",
+    "ttlExpiresAtISO": "2026-09-05T20:54:36.447Z"
+  },
+  "https://arbeidsplassen.nav.no/stillinger/stilling/2ed73f8b-070e-45b9-9f99-367220bae28e": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:54:36.132Z",
+    "ttlExpiresAtISO": "2026-09-05T20:54:36.923Z"
+  },
+  "https://medvindassistanse.attract.reachmee.com/jobs/rm?rmpage=apply&rmjob=1982&ref=nav.no&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:54:36.301Z",
+    "ttlExpiresAtISO": "2026-09-05T20:54:37.045Z"
+  },
+  "https://adecco.com/nb-no/app/2374291": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:54:34.653Z",
+    "ttlExpiresAtISO": "2026-09-05T20:54:37.359Z"
+  },
+  "https://burgerkingno.teamtailor.com/no/jobs/8135908-brenner-du-for-gode-gjesteopplevelser/applications/new?promotion=2178925-nav-no": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:54:36.923Z",
+    "ttlExpiresAtISO": "2026-09-05T20:54:37.613Z"
+  },
+  "https://jobseeker.jobbnorge.no/apply/307413": {
+    "status": 405,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:54:37.360Z",
+    "ttlExpiresAtISO": "2026-09-05T20:54:37.880Z",
+    "error": "HTTP 405"
+  },
+  "https://jobseeker.jobbnorge.no/apply/307199": {
+    "status": 405,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:54:37.045Z",
+    "ttlExpiresAtISO": "2026-09-05T20:54:37.882Z",
+    "error": "HTTP 405"
+  },
+  "https://www.ks.no/om-ks/om-ks/sok-pa-ledige-stillinger-her/?rmpage=apply&rmjob=421&ref=nav.no&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:54:36.448Z",
+    "ttlExpiresAtISO": "2026-09-05T20:54:38.233Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5176053839&language=nn&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:54:36.030Z",
+    "ttlExpiresAtISO": "2026-09-05T20:54:38.809Z"
+  },
+  "https://jobseeker.jobbnorge.no/apply/307607": {
+    "status": 405,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:54:38.233Z",
+    "ttlExpiresAtISO": "2026-09-05T20:54:39.085Z",
+    "error": "HTTP 405"
+  },
+  "https://go.talentech.io/B5hsA": {
+    "status": 405,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:54:37.880Z",
+    "ttlExpiresAtISO": "2026-09-05T20:54:39.165Z",
+    "error": "HTTP 405"
+  },
+  "https://apply.recman.page/job_post.php?id=486254&path=nav&sub_id=505": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:54:37.614Z",
+    "ttlExpiresAtISO": "2026-09-05T20:54:39.280Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5175506741&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:54:37.883Z",
+    "ttlExpiresAtISO": "2026-09-05T20:54:39.381Z"
+  },
+  "https://norgesgruppen.wd3.myworkdayjobs.com/karriere/job/Spar-Jlstraholmen/SPAR-Jlstraholmen-skjer-1-2-framtidige-nkkelpersonar---er-du-klar-for-meir-ansvar-_JR10031872/apply?lang=nb-NO": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:54:38.809Z",
+    "ttlExpiresAtISO": "2026-09-05T20:54:39.622Z"
+  },
+  "https://forms.office.com/e/VUiMghqwtG": {
+    "status": 405,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:54:39.166Z",
+    "ttlExpiresAtISO": "2026-09-05T20:54:39.626Z",
+    "error": "HTTP 405"
+  },
+  "https://norgesgruppen.wd3.myworkdayjobs.com/karriere/job/Spar-Jlstraholmen/SPAR-Jlstraholmen-skjer-3-nye-medarbeidarar-over-18-r---vil-du-bli-ein-del-av-laget-_JR10031877/apply?lang=nb-NO": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:54:39.281Z",
+    "ttlExpiresAtISO": "2026-09-05T20:54:40.122Z"
+  },
+  "https://jobseeker.jobbnorge.no/apply/307718": {
+    "status": 405,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:54:39.626Z",
+    "ttlExpiresAtISO": "2026-09-05T20:54:40.136Z",
+    "error": "HTTP 405"
+  },
+  "https://rakkestad.easycruit.com/vacancy/application/3658275/242135?channel=NavRest&iso=no": {
+    "status": null,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:54:28.031Z",
+    "ttlExpiresAtISO": "2026-09-05T20:54:40.856Z",
+    "error": "fetch failed"
+  },
+  "https://arbeidsplassen.nav.no/stillinger/stilling/b338c2b3-394d-44f5-ba43-5c8ea338bac1": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:54:40.124Z",
+    "ttlExpiresAtISO": "2026-09-05T20:54:40.904Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5161917792&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:54:39.085Z",
+    "ttlExpiresAtISO": "2026-09-05T20:54:41.388Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5174278267&language=nn&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:54:39.381Z",
+    "ttlExpiresAtISO": "2026-09-05T20:54:41.626Z"
+  },
+  "https://arbeidsplassen.nav.no/stillinger/stilling/2b91f666-c10b-4a46-b6cf-cc1d1d7c1d51": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:54:40.856Z",
+    "ttlExpiresAtISO": "2026-09-05T20:54:41.676Z"
+  },
+  "https://fus.no/ledige-stillinger/sok-her?rmpage=apply&rmjob=3733&ref=nav.no&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:54:40.904Z",
+    "ttlExpiresAtISO": "2026-09-05T20:54:41.794Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5124374172&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:54:40.136Z",
+    "ttlExpiresAtISO": "2026-09-05T20:54:41.995Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5167295348&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:54:41.676Z",
+    "ttlExpiresAtISO": "2026-09-05T20:54:43.753Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5176073212&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:54:41.627Z",
+    "ttlExpiresAtISO": "2026-09-05T20:54:43.903Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5162532114&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:54:41.996Z",
+    "ttlExpiresAtISO": "2026-09-05T20:54:44.248Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5162531730&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:54:44.248Z",
+    "ttlExpiresAtISO": "2026-09-05T20:54:45.458Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5143321389&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:54:43.904Z",
+    "ttlExpiresAtISO": "2026-09-05T20:54:45.993Z"
+  },
+  "https://direktoratet-for-forvaltn.contactrh.com/jobs/14035/44419362/nb_NO": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:54:43.753Z",
+    "ttlExpiresAtISO": "2026-09-05T20:54:46.204Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5162141396&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:54:45.458Z",
+    "ttlExpiresAtISO": "2026-09-05T20:54:47.276Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5175466530&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:54:45.994Z",
+    "ttlExpiresAtISO": "2026-09-05T20:54:47.614Z"
+  },
+  "https://hire.vismatalent.com/spa/public/apply?guidAssignment=6fbd48da-9977-4c32-b54a-1ae32a4c224b&publishCode=NAV&TK=bb388b81-934b-4cbf-ade6-723b56a615cb": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:54:47.276Z",
+    "ttlExpiresAtISO": "2026-09-05T20:54:47.843Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5171943922&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:54:46.204Z",
+    "ttlExpiresAtISO": "2026-09-05T20:54:48.044Z"
+  },
+  "https://jobseeker.jobbnorge.no/apply/307731": {
+    "status": 405,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:54:47.843Z",
+    "ttlExpiresAtISO": "2026-09-05T20:54:48.384Z",
+    "error": "HTTP 405"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5060528269&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:54:48.045Z",
+    "ttlExpiresAtISO": "2026-09-05T20:54:48.977Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5060535350&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:54:47.615Z",
+    "ttlExpiresAtISO": "2026-09-05T20:54:49.844Z"
+  },
+  "https://vefsn.easycruit.com/vacancy/application/3659139/223021?channel=NavRest&iso=no": {
+    "status": null,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:54:39.622Z",
+    "ttlExpiresAtISO": "2026-09-05T20:54:50.066Z",
+    "error": "fetch failed"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=4978218492&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:54:48.978Z",
+    "ttlExpiresAtISO": "2026-09-05T20:54:50.802Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5168555277&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:54:50.067Z",
+    "ttlExpiresAtISO": "2026-09-05T20:54:51.125Z"
+  },
+  "https://apply.recman.page/job_post.php?id=483654&path=nav&sub_id=761": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:54:49.845Z",
+    "ttlExpiresAtISO": "2026-09-05T20:54:51.538Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5171823248&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:54:48.384Z",
+    "ttlExpiresAtISO": "2026-09-05T20:54:51.609Z"
+  },
+  "https://andoy.easycruit.com/vacancy/application/3659171/213285?channel=NavRest&iso=no": {
+    "status": null,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:54:41.388Z",
+    "ttlExpiresAtISO": "2026-09-05T20:54:52.749Z",
+    "error": "fetch failed"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5157011561&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:54:50.803Z",
+    "ttlExpiresAtISO": "2026-09-05T20:54:52.767Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5174327962&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:54:51.610Z",
+    "ttlExpiresAtISO": "2026-09-05T20:54:53.024Z"
+  },
+  "https://jobseeker.jobbnorge.no/apply/297429": {
+    "status": 405,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:54:52.750Z",
+    "ttlExpiresAtISO": "2026-09-05T20:54:53.247Z",
+    "error": "HTTP 405"
+  },
+  "https://arbeidsplassen.nav.no/stillinger/stilling/c9e763d0-b4af-47e8-98ad-7503a4247aec": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:54:52.767Z",
+    "ttlExpiresAtISO": "2026-09-05T20:54:53.549Z"
+  },
+  "https://arbeidsplassen.nav.no/stillinger/stilling/49f8417a-d689-46ff-8763-a0e4875b40a7": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:54:53.247Z",
+    "ttlExpiresAtISO": "2026-09-05T20:54:54.024Z"
+  },
+  "https://fus.no/ledige-stillinger/sok-her?rmpage=apply&rmjob=3734&ref=nav.no&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:54:53.550Z",
+    "ttlExpiresAtISO": "2026-09-05T20:54:54.400Z"
+  },
+  "https://tonsberg.easycruit.com/vacancy/application/3658741/165457?channel=NavRest&iso=no": {
+    "status": null,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:54:41.795Z",
+    "ttlExpiresAtISO": "2026-09-05T20:54:54.557Z",
+    "error": "fetch failed"
+  },
+  "https://arbeidsplassen.nav.no/stillinger/stilling/f0e2c256-8499-410e-ae72-e61cf383b5d2": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:54:54.025Z",
+    "ttlExpiresAtISO": "2026-09-05T20:54:54.849Z"
+  },
+  "https://arbeidsplassen.nav.no/stillinger/stilling/3ffacc9e-cf40-451c-b504-ca0aa31a164f": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:54:54.401Z",
+    "ttlExpiresAtISO": "2026-09-05T20:54:55.196Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5171946637&language=nn&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:54:53.025Z",
+    "ttlExpiresAtISO": "2026-09-05T20:54:55.268Z"
+  },
+  "https://jobb.synsam.no/jobs/8320711-vi-soker-na-salgs-og-kunderadgiver-20-til-synsam-narvik/applications/new?promotion=2179124-nav-no": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:54:54.558Z",
+    "ttlExpiresAtISO": "2026-09-05T20:54:55.442Z"
+  },
+  "https://arbeidsplassen.nav.no/stillinger/stilling/62e09ce4-d9e0-49f4-b909-f6d5df3f78db": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:54:55.197Z",
+    "ttlExpiresAtISO": "2026-09-05T20:54:55.478Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5167566120&language=nn&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:54:55.269Z",
+    "ttlExpiresAtISO": "2026-09-05T20:54:56.705Z"
+  },
+  "https://kollegia.no/jobs/qd731gvzcxx0e4eykm4xxjkqpd8dsxh9": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:54:55.443Z",
+    "ttlExpiresAtISO": "2026-09-05T20:54:56.890Z"
+  },
+  "https://kollegia.no/jobs/qd7egy6zn2y5p26pgp9ct8z1jx8ds44d": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:54:55.479Z",
+    "ttlExpiresAtISO": "2026-09-05T20:54:56.908Z"
+  },
+  "https://direktoratet-for-forvaltn.contactrh.com/jobs/14035/44419457/nb_NO": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:54:54.850Z",
+    "ttlExpiresAtISO": "2026-09-05T20:54:57.557Z"
+  },
+  "https://jobseeker.jobbnorge.no/apply/307470": {
+    "status": 405,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:54:56.891Z",
+    "ttlExpiresAtISO": "2026-09-05T20:54:57.670Z",
+    "error": "HTTP 405"
+  },
+  "https://arbeidsplassen.nav.no/stillinger/stilling/47366cc8-6e01-4dcc-9d63-193d5ae9ba95": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:54:57.670Z",
+    "ttlExpiresAtISO": "2026-09-05T20:54:58.573Z"
+  },
+  "https://apply.recman.page/job_post.php?id=486269&path=nav&sub_id=603": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:54:57.672Z",
+    "ttlExpiresAtISO": "2026-09-05T20:54:59.108Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5174818753&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:54:56.706Z",
+    "ttlExpiresAtISO": "2026-09-05T20:54:59.113Z"
+  },
+  "https://arbeidsplassen.nav.no/stillinger/stilling/dd212b04-27c2-45f2-b4b8-c2f32167f81c": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:54:59.109Z",
+    "ttlExpiresAtISO": "2026-09-05T20:54:59.899Z"
+  },
+  "https://go.talentech.io/MXJvh": {
+    "status": 405,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:54:59.113Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:00.244Z",
+    "error": "HTTP 405"
+  },
+  "https://jobseeker.jobbnorge.no/apply/307783": {
+    "status": 405,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:55:00.245Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:01.088Z",
+    "error": "HTTP 405"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5174669475&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:54:57.558Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:01.293Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5172395999&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:54:59.900Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:01.823Z"
+  },
+  "https://tydal.easycruit.com/vacancy/application/3654089/239533?channel=NavRest&iso=no": {
+    "status": null,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:54:51.125Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:02.312Z",
+    "error": "fetch failed"
+  },
+  "https://jobb.humananorge.no/jobs/8252325-vil-du-vaere-min-forlengede-arm-i-en-aktiv-hverdag-bpa-til-kvinne-47-ar/applications/new?promotion=2156241-nav-no": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:02.313Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:02.904Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5172374312&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:01.089Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:03.411Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5175368753&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:01.824Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:04.223Z"
+  },
+  "https://arbeidsplassen.nav.no/stillinger/stilling/18dbb201-a55c-4063-82a1-e663ee314c21": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:03.412Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:04.242Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5164033296&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:02.904Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:04.276Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5170279950&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:01.294Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:04.448Z"
+  },
+  "https://arbeidsplassen.nav.no/stillinger/stilling/8535511d-cf36-4c9e-bd7f-36b6f44da649": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:04.242Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:05.122Z"
+  },
+  "https://ahk.easycruit.com/vacancy/application/3659185/203367?channel=NavRest&iso=no": {
+    "status": null,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:54:53.025Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:05.175Z",
+    "error": "fetch failed"
+  },
+  "https://jobseeker.jobbnorge.no/apply/307714": {
+    "status": 405,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:55:05.176Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:05.664Z",
+    "error": "HTTP 405"
+  },
+  "https://arbeidsplassen.nav.no/stillinger/stilling/acb7ebc6-34ec-4734-a663-c30862a1c200": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:05.123Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:06.026Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5173303780&language=nn&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:04.224Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:06.044Z"
+  },
+  "https://arbeidsplassen.nav.no/stillinger/stilling/97c64557-add2-4fca-aac1-541c4bdd5c00": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:05.665Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:06.056Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5172367459&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:04.276Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:06.147Z"
+  },
+  "https://arbeidsplassen.nav.no/stillinger/stilling/eae5d8e9-ff06-4a96-9f7d-272c815ca624": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:06.027Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:06.384Z"
+  },
+  "https://jobseeker.jobbnorge.no/apply/307743": {
+    "status": 405,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:55:06.148Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:06.781Z",
+    "error": "HTTP 405"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5176107027&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:04.448Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:06.844Z"
+  },
+  "https://arbeidsplassen.nav.no/stillinger/stilling/24794a59-a428-4923-b0da-4df0639b35d0": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:06.057Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:06.888Z"
+  },
+  "https://arbeidsplassen.nav.no/stillinger/stilling/508faba0-2984-4c6e-b206-e69c5ba3da7a": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:06.384Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:07.239Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5176097015&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:06.045Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:07.398Z"
+  },
+  "https://jobb.humananorge.no/jobs/8267376-miljoterapeut-miljoarbeider-i-helse-og-omsorg/applications/new?promotion=2161532-nav-no": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:06.781Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:07.533Z"
+  },
+  "https://karriere.norceresearch.no/jobs/8320144-senterleder-nasjonalt-kompetansesenter-for-legevaktsmedisin-nklm/applications/new?promotion=2179211-nav-no": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:06.844Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:07.856Z"
+  },
+  "https://jobb.humananorge.no/jobs/8314102-glad-gutt-pa-10-ar-soker-bpa-assistent/applications/new?promotion=2176859-nav-no": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:07.398Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:08.156Z"
+  },
+  "https://iframe.coop.no/coop-ost-stillinger/?rmpage=apply&rmjob=3439&ref=nav.no&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:07.856Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:08.412Z"
+  },
+  "https://jobb.humananorge.no/jobs/8285461-bpa-sokes-til-kvinne-i-50-arene-i-lillestrom-kommune-blaker/applications/new?promotion=2168042-nav-no": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:08.156Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:08.756Z"
+  },
+  "https://apply.recman.page/job_post.php?id=486275&path=nav&sub_id=338": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:07.534Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:08.919Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5170361839&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:06.888Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:09.133Z"
+  },
+  "https://norgesgruppen.wd3.myworkdayjobs.com/karriere/job/EUROSPAR-lesund-Storsenter/EUROSPAR-lesund-Storsenter-sker-Vare-plasserer-deltidsstilling_JR10031917/apply?lang=nb-NO": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:08.412Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:09.212Z"
+  },
+  "https://jobseeker.jobbnorge.no/apply/307785": {
+    "status": 405,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:55:09.213Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:09.705Z",
+    "error": "HTTP 405"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5174212601&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:07.239Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:09.939Z"
+  },
+  "https://apply.recman.page/job_post.php?id=486279&path=nav&sub_id=388": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:08.756Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:10.189Z"
+  },
+  "https://arbeidsplassen.nav.no/stillinger/stilling/67493fbb-8564-43b9-ac71-0de6c1576700": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:09.706Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:10.507Z"
+  },
+  "https://arbeidsplassen.nav.no/stillinger/stilling/8e1b27b6-509b-4935-846d-f7f688b14b23": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:09.940Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:10.741Z"
+  },
+  "https://ranakommune.easycruit.com/vacancy/application/3657681/248889?channel=NavRest&iso=no": {
+    "status": null,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:54:58.574Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:11.144Z",
+    "error": "fetch failed"
+  },
+  "https://jobseeker.jobbnorge.no/apply/307793": {
+    "status": 405,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:55:10.741Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:11.236Z",
+    "error": "HTTP 405"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5168680299&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:09.134Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:11.425Z"
+  },
+  "https://web103.reachmee.com/ext/I006/1241/main?site=6&validator=6c8b83689cad84c3b49c013f74688e6a&lang=NO&rmpage=apply&rmjob=3714&ref=nav.no&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:10.508Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:11.621Z"
+  },
+  "https://jobseeker.jobbnorge.no/apply/307795": {
+    "status": 405,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:55:11.237Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:11.745Z",
+    "error": "HTTP 405"
+  },
+  "https://jobseeker.jobbnorge.no/apply/307758": {
+    "status": 405,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:55:11.746Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:12.245Z",
+    "error": "HTTP 405"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5150874491&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:11.425Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:12.353Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5140989094&language=nn&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:11.622Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:12.995Z"
+  },
+  "https://dibber-as.contactrh.com/jobs/14035/44419578/nb_NO": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:11.145Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:13.578Z"
+  },
+  "https://apply.recman.page/job_post.php?id=486284&path=nav&sub_id=1266": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:12.246Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:13.656Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5163573704&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:12.354Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:13.752Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5176118585&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:12.995Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:14.480Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5174676666&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:13.753Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:15.330Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5171668958&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:13.581Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:15.460Z"
+  },
+  "https://arbeidsplassen.nav.no/stillinger/stilling/2e21aa44-8cd4-463d-95ab-cf06474b5e31": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:15.460Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:16.320Z"
+  },
+  "https://apply.recman.page/job_post.php?id=484741&path=nav&sub_id=251": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:15.330Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:16.751Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5155111579&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:14.481Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:16.952Z"
+  },
+  "https://apply.recman.page/job_post.php?id=486287&path=nav&sub_id=345": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:16.751Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:18.162Z"
+  },
+  "https://apply.recman.page/job_post.php?id=486288&path=nav&sub_id=1266": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:16.953Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:18.348Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5175441163&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:16.321Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:18.401Z"
+  },
+  "https://iframe.coop.no/coop-ost-stillinger/?rmpage=apply&rmjob=3450&ref=nav.no&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:18.348Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:18.893Z"
+  },
+  "https://jobb.handverksgruppen.com/jobs/7909878-gulvlegger-i-bergen-klar-for-nye-muligheter/applications/new?promotion=2179328-nav-no": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:18.163Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:19.192Z"
+  },
+  "https://jobseeker.jobbnorge.no/apply/305384": {
+    "status": 405,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:55:18.893Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:19.392Z",
+    "error": "HTTP 405"
+  },
+  "https://apply.recman.page/job_post.php?id=485986&path=nav&sub_id=251": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:18.402Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:19.602Z"
+  },
+  "https://apply.recman.page/job_post.php?id=480491&path=nav&sub_id=345": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:19.393Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:20.408Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5167837595&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:19.602Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:21.041Z"
+  },
+  "https://dibber-as.contactrh.com/jobs/14035/44419635/nb_NO": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:19.193Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:21.390Z"
+  },
+  "https://apply.recman.page/job_post.php?id=480499&path=nav&sub_id=345": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:20.412Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:21.773Z"
+  },
+  "https://villaskaar.easycruit.com/vacancy/application/3651427/226889?channel=NavRest&iso=no": {
+    "status": null,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:55:08.920Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:22.329Z",
+    "error": "fetch failed"
+  },
+  "https://apply.recman.page/job_post.php?id=480502&path=nav&sub_id=345": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:21.041Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:22.444Z"
+  },
+  "https://lds.easycruit.com/vacancy/application/3659229/224993?channel=NavRest&iso=no": {
+    "status": null,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:55:10.189Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:22.771Z",
+    "error": "fetch failed"
+  },
+  "https://apply.recman.page/job_post.php?id=480501&path=nav&sub_id=345": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:21.390Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:22.802Z"
+  },
+  "https://fmc-technologies-inc.contactrh.com/jobs/14035/44419705/en_US": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:21.774Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:23.443Z"
+  },
+  "https://apply.recman.page/job_post.php?id=480766&path=nav&sub_id=345": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:22.329Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:23.542Z"
+  },
+  "https://apply.recman.page/job_post.php?id=480618&path=nav&sub_id=345": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:22.445Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:23.885Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5152012895&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:22.772Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:24.161Z"
+  },
+  "https://apply.recman.page/job_post.php?id=483305&path=nav&sub_id=345": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:22.802Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:24.258Z"
+  },
+  "https://apply.recman.page/job_post.php?id=481253&path=nav&sub_id=345": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:23.542Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:24.809Z"
+  },
+  "https://apply.recman.page/job_post.php?id=481255&path=nav&sub_id=345": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:23.444Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:24.895Z"
+  },
+  "https://apply.recman.page/job_post.php?id=483307&path=nav&sub_id=345": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:23.886Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:25.123Z"
+  },
+  "https://bjornafjorden.easycruit.com/vacancy/application/3659119/195951?channel=NavRest&iso=nn": {
+    "status": null,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:55:13.656Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:25.165Z",
+    "error": "fetch failed"
+  },
+  "https://apply.recman.page/job_post.php?id=483309&path=nav&sub_id=345": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:24.258Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:25.310Z"
+  },
+  "https://jobseeker.jobbnorge.no/apply/307796": {
+    "status": 405,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:55:24.895Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:25.417Z",
+    "error": "HTTP 405"
+  },
+  "https://apply.recman.page/job_post.php?id=483410&path=nav&sub_id=345": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:24.162Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:25.550Z"
+  },
+  "https://jobseeker.jobbnorge.no/apply/307609": {
+    "status": 405,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:55:25.165Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:25.665Z",
+    "error": "HTTP 405"
+  },
+  "https://iframe.coop.no/coop-ost-stillinger/?rmpage=apply&rmjob=3448&ref=nav.no&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:25.417Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:25.973Z"
+  },
+  "https://karriere.kid.no/jobs/318299-2-sesongvikarer-til-kid-interior-amfi-knarvik?ref=arbeidsplassen": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:25.310Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:26.319Z"
+  },
+  "https://arbeidsplassen.nav.no/stillinger/stilling/cdc2c490-da8c-4dcb-b6e5-cfad4d4b1cbe": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:25.666Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:26.466Z"
+  },
+  "https://apply.recman.page/job_post.php?id=484259&path=nav&sub_id=251": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:25.123Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:26.508Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5174735811&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:24.809Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:27.023Z"
+  },
+  "https://hire.vismatalent.com/spa/public/apply?guidAssignment=a5296b2b-a256-4d54-af4e-98f2e404ad54&publishCode=NAV&TK=0ed78090-9293-4d01-842c-05f8c13a0f45": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:26.509Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:27.091Z"
+  },
+  "https://go.talentech.io/g0yqb": {
+    "status": 405,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:55:25.974Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:27.118Z",
+    "error": "HTTP 405"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5165143600&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:25.551Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:27.191Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5168934288&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:26.467Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:27.469Z"
+  },
+  "https://karriere.kid.no/jobs/318301-2-sesongvikarer-til-kid-interior-kilden-i-bergen?ref=arbeidsplassen": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:26.320Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:27.500Z"
+  },
+  "https://jobseeker.jobbnorge.no/apply/307311": {
+    "status": 405,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:55:27.024Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:27.513Z",
+    "error": "HTTP 405"
+  },
+  "https://iframe.coop.no/coop-ost-stillinger/?rmpage=apply&rmjob=3449&ref=nav.no&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:27.469Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:27.990Z"
+  },
+  "https://jobseeker.jobbnorge.no/apply/306086": {
+    "status": 405,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:55:27.500Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:27.998Z",
+    "error": "HTTP 405"
+  },
+  "https://jobs.mojob.io/47670/?utm_id=34146&utm_campaign=34146&utm_medium=job_share&utm_source=nav&utm_term=Sykepleier&utm_content=47670": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:27.191Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:28.046Z"
+  },
+  "https://jobs.mojob.io/47788/?utm_id=34155&utm_campaign=34155&utm_medium=job_share&utm_source=nav&utm_term=Fysioterapeut&utm_content=47788": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:27.092Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:28.072Z"
+  },
+  "https://nuu.no/traineearenanordtroms/sok-stilling/21576": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:27.514Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:28.134Z"
+  },
+  "https://hire.vismatalent.com/spa/public/apply?guidAssignment=31a5feea-2644-4d07-a010-0e4849a125cb&publishCode=NAV&TK=446c4ac3-9857-45d2-a635-ef07ad6d553d": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:28.047Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:28.661Z"
+  },
+  "https://karriere.kid.no/jobs/318303-sesongvikar-til-kid-interior-lagunen?ref=arbeidsplassen": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:27.999Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:29.223Z"
+  },
+  "https://norgesgruppen.wd3.myworkdayjobs.com/karriere/job/Joker-Hany/Joker-Hany-sker-nye-medarbeidere---deltid_JR10031969/apply?lang=nb-NO": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:28.662Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:29.444Z"
+  },
+  "https://arbeidsplassen.nav.no/stillinger/stilling/d9687145-9a9d-42ec-8e62-bd1580822768": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:29.224Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:29.522Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5175608716&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:27.991Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:29.870Z"
+  },
+  "https://treng.no/ledig-stilling/oppdragsleder-elektro-og-automasjon-trondheim/": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:28.134Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:30.095Z"
+  },
+  "https://jobseeker.jobbnorge.no/apply/307158": {
+    "status": 405,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:55:30.096Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:30.740Z",
+    "error": "HTTP 405"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5165098031&language=nn&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:29.870Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:31.406Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5167947354&language=nn&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:30.740Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:32.281Z"
+  },
+  "https://dibber-as.contactrh.com/jobs/14035/44419771/nb_NO": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:31.407Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:33.440Z"
+  },
+  "https://secure.webtemp.no/WebtempCVPortal/startsession.aspx?page=stillingsingle&k=88&id_rekruttering=3000638": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:33.441Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:34.270Z"
+  },
+  "https://dibber-as.contactrh.com/jobs/14035/44419752/nb_NO": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:32.281Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:34.397Z"
+  },
+  "https://jobseeker.jobbnorge.no/apply/302865": {
+    "status": 405,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:55:34.398Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:34.897Z",
+    "error": "HTTP 405"
+  },
+  "https://karriere.kid.no/jobs/318308-sesongvikar-i-20-pa-kid-interior-laksevag-senter?ref=arbeidsplassen": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:34.271Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:35.118Z"
+  },
+  "https://arbeidsplassen.nav.no/stillinger/stilling/ec8fec61-af95-4b20-8285-3f4c9d3ce064": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:34.897Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:35.698Z"
+  },
+  "https://amedia.recman.io/job/485784": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:35.699Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:36.535Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5176136968&language=nn&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:35.119Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:37.757Z"
+  },
+  "https://apply.recman.page/job_post.php?id=486295&path=nav&sub_id=561": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:36.536Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:37.769Z"
+  },
+  "https://arbeidsplassen.nav.no/stillinger/stilling/c78afdcd-a462-4bb7-976f-20ca7a550815": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:37.758Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:38.584Z"
+  },
+  "https://bjornafjorden.easycruit.com/vacancy/application/3658407/195951?channel=NavRest&iso=nn": {
+    "status": null,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:55:27.119Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:38.807Z",
+    "error": "fetch failed"
+  },
+  "https://karriere.kid.no/jobs/318309-sesongvikarer-til-kid-interior-pa-sartor?ref=arbeidsplassen": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:37.770Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:38.852Z"
+  },
+  "https://arbeidsplassen.nav.no/stillinger/stilling/0b04d1fb-b048-40bd-a984-22e31632f075": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:38.853Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:39.128Z"
+  },
+  "https://tonsberg.easycruit.com/vacancy/application/3657531/203071?channel=NavRest&iso=no": {
+    "status": null,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:55:29.444Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:40.273Z",
+    "error": "fetch failed"
+  },
+  "https://tonsberg.easycruit.com/vacancy/application/3657517/203071?channel=NavRest&iso=no": {
+    "status": null,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:55:28.073Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:40.284Z",
+    "error": "fetch failed"
+  },
+  "https://karriere.teneo.no/jobs/8304417-kundekonsulent": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:39.128Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:40.519Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5176112036&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:38.808Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:40.635Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5167993807&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:38.584Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:40.847Z"
+  },
+  "https://arbeidsplassen.nav.no/stillinger/stilling/07c49669-9af7-435a-845b-059704bbc486": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:40.635Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:40.910Z"
+  },
+  "https://secure.webtemp.no/WebtempCVPortal/startsession.aspx?page=stillingsingle&k=68&id_utleie=3000988": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:40.285Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:41.020Z"
+  },
+  "https://arbeidsplassen.nav.no/stillinger/stilling/15261dfc-ca24-4a4c-8a50-16b99ca74925": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:40.848Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:41.126Z"
+  },
+  "https://tomagruppen.applytojob.com/apply/FIY1wM90T1/Vil-Du-Skape-Gode-Arbeidsplasser-Gjennom-Mat-Service-Og-Trivsel-I-Molde": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:41.127Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:41.573Z"
+  },
+  "https://www.sweco.no/karrieresider/ledige-stillinger/apply-for-job/?rmpage=apply&rmjob=25534&ref=nav.no&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:40.910Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:41.578Z"
+  },
+  "https://gjerdrum.easycruit.com/vacancy/application/3621535/246535?channel=NavRest&iso=no": {
+    "status": null,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:55:29.523Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:42.095Z",
+    "error": "fetch failed"
+  },
+  "https://arbeidsplassen.nav.no/stillinger/stilling/ae193ce9-82ac-4386-8e97-0de6af2e6c68": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:41.579Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:42.423Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5167303030&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:40.276Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:42.756Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5173603350&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:41.574Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:42.906Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5159492050&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:42.096Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:43.061Z"
+  },
+  "https://apply.recman.page/job_post.php?id=486087&path=nav&sub_id=617": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:42.424Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:43.819Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5175402375&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:43.062Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:44.438Z"
+  },
+  "https://jobseeker.jobbnorge.no/apply/306473": {
+    "status": 405,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:55:44.438Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:44.934Z",
+    "error": "HTTP 405"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5170662786&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:42.907Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:44.936Z"
+  },
+  "https://apply.recman.page/job_post.php?id=486307&path=nav&sub_id=902": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:43.819Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:45.258Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5176133418&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:44.938Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:45.925Z"
+  },
+  "https://jobseeker.jobbnorge.no/apply/307531": {
+    "status": 405,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:55:45.258Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:46.159Z",
+    "error": "HTTP 405"
+  },
+  "https://jobseeker.jobbnorge.no/apply/307499": {
+    "status": 405,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:55:45.925Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:46.417Z",
+    "error": "HTTP 405"
+  },
+  "https://nuu.no/traineearenanordtroms/stilling/24464": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:46.160Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:46.773Z"
+  },
+  "https://jobseeker.jobbnorge.no/apply/307809": {
+    "status": 405,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:55:46.774Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:47.260Z",
+    "error": "HTTP 405"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5174808349&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:46.418Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:48.013Z"
+  },
+  "https://arbeidsplassen.nav.no/stillinger/stilling/e34568ac-5b54-4f8c-81e5-d2404de93ba5": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:47.260Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:48.044Z"
+  },
+  "https://jobseeker.jobbnorge.no/apply/307501": {
+    "status": 405,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:55:48.014Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:48.508Z",
+    "error": "HTTP 405"
+  },
+  "https://jobb.humananorge.no/jobs/8320920-kvinne-soker-bpa-assistent-som-kan-bista-i-hverdagslivet/applications/new?promotion=2179630-nav-no": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:48.045Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:49.308Z"
+  },
+  "https://apply.recman.page/job_post.php?id=486272&path=nav&sub_id=561": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:48.508Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:49.924Z"
+  },
+  "https://secure.webtemp.no/WebtempCVPortal/startsession.aspx?page=stillingsingle&k=189&id_utleie=30003300": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:49.308Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:50.295Z"
+  },
+  "https://arbeidsplassen.nav.no/stillinger/stilling/7ea57a44-6541-4eb6-801f-755a530e381c": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:50.296Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:51.082Z"
+  },
+  "https://senja.easycruit.com/vacancy/application/3658489/193487?channel=NavRest&iso=no": {
+    "status": null,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:55:40.520Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:51.881Z",
+    "error": "fetch failed"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5172043358&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:51.082Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:52.084Z"
+  },
+  "https://hadsel.easycruit.com/vacancy/application/3659241/220833?channel=NavRest&iso=no": {
+    "status": null,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:55:41.021Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:53.009Z",
+    "error": "fetch failed"
+  },
+  "https://vefsn.easycruit.com/vacancy/application/3659245/222979?channel=NavRest&iso=no": {
+    "status": null,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:55:42.757Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:53.657Z",
+    "error": "fetch failed"
+  },
+  "https://arbeidsplassen.nav.no/stillinger/stilling/42d46a56-c3ba-4a6b-8762-0fc4b3e29a0f": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:53.010Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:53.795Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5174966685&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:52.084Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:54.008Z"
+  },
+  "https://arbeidsplassen.nav.no/stillinger/stilling/cc5bc6b7-a0d9-47e1-8bb1-fde7c812c96f": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:53.796Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:54.595Z"
+  },
+  "https://senja.easycruit.com/vacancy/application/3658523/192453?channel=NavRest&iso=no": {
+    "status": null,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:55:44.935Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:54.755Z",
+    "error": "fetch failed"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5172018155&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:53.659Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:55.107Z"
+  },
+  "https://jobseeker.jobbnorge.no/apply/307577": {
+    "status": 405,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:55:54.756Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:55.276Z",
+    "error": "HTTP 405"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5169014751&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:54.011Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:55.443Z"
+  },
+  "https://norgesgruppen.wd3.myworkdayjobs.com/karriere/job/Joker-Rosenkrantz-gate/Joker-Rosenkrantz-gate-sker-butikkmedarbeider---deltidltid_JR10031985/apply?lang=nb-NO": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:54.596Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:55.478Z"
+  },
+  "https://jobseeker.jobbnorge.no/apply/306192": {
+    "status": 405,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:55:55.108Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:55.599Z",
+    "error": "HTTP 405"
+  },
+  "https://jobseeker.jobbnorge.no/apply/305480": {
+    "status": 405,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:55:55.276Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:55.779Z",
+    "error": "HTTP 405"
+  },
+  "https://apply.recman.page/job_post.php?id=486224&path=nav&sub_id=1266": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:55.600Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:56.936Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5174637166&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:55.780Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:57.094Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5155154263&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:55.444Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:57.852Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5176198754&language=nn&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:56.937Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:58.514Z"
+  },
+  "https://arbeidsplassen.nav.no/stillinger/stilling/fdf24945-feed-40ee-974e-92182ca84368": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:57.853Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:58.637Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5171480465&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:58.514Z",
+    "ttlExpiresAtISO": "2026-09-05T20:55:59.951Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5173815530&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:55:57.095Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:00.024Z"
+  },
+  "https://jobseeker.jobbnorge.no/apply/307690": {
+    "status": 405,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:55:59.952Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:00.790Z",
+    "error": "HTTP 405"
+  },
+  "https://andoy.easycruit.com/vacancy/application/3659181/213285?channel=NavRest&iso=no": {
+    "status": null,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:55:49.925Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:01.312Z",
+    "error": "fetch failed"
+  },
+  "https://jobseeker.jobbnorge.no/apply/307813": {
+    "status": 405,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:56:01.313Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:01.807Z",
+    "error": "HTTP 405"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5176195301&language=nn&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:00.791Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:02.594Z"
+  },
+  "https://senja.easycruit.com/vacancy/application/3658439/193487?channel=NavRest&iso=no": {
+    "status": null,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:55:51.884Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:02.903Z",
+    "error": "fetch failed"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5169028302&language=nn&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:01.808Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:03.618Z"
+  },
+  "https://apply.recman.page/job_post.php?id=486316&path=nav&sub_id=890": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:02.904Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:04.258Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5174633606&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:02.594Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:04.635Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5173807818&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:03.619Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:05.089Z"
+  },
+  "https://gjemnes.easycruit.com/vacancy/application/3653097/181821?channel=NavRest&iso=no": {
+    "status": null,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:55:55.479Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:05.220Z",
+    "error": "fetch failed"
+  },
+  "https://arbeidsplassen.nav.no/stillinger/stilling/162eb15b-bd48-4d45-976c-f7cc7503475c": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:05.090Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:05.903Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5156365844&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:04.259Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:06.089Z"
+  },
+  "https://apply.recman.page/job_post.php?id=485276&path=nav&sub_id=1222": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:04.636Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:06.365Z"
+  },
+  "https://web103.reachmee.com/ext/I010/2667/main?site=6&validator=146b64ae33807ec22c9f9c99d68ad621&lang=NO&rmpage=apply&rmjob=22&ref=nav.no&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:05.904Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:07.119Z"
+  },
+  "https://arbeidsplassen.nav.no/stillinger/stilling/2b7bdfd0-7cc5-4ece-b667-00043b479b78": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:06.366Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:07.166Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5156495571&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:05.221Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:07.504Z"
+  },
+  "https://jobseeker.jobbnorge.no/apply/307300": {
+    "status": 405,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:56:07.120Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:07.608Z",
+    "error": "HTTP 405"
+  },
+  "https://medvindassistanse.attract.reachmee.com/jobs/rm?rmpage=apply&rmjob=1230&ref=nav.no&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:07.167Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:07.910Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5170761345&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:06.089Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:08.336Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5170307358&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:07.609Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:09.028Z"
+  },
+  "https://apply.recman.page/job_post.php?id=486318&path=nav&sub_id=606": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:07.911Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:09.134Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5114492468&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:08.337Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:09.723Z"
+  },
+  "https://karriere.hafslund.no/jobs/8203553-losningsarkitekt-digitale-verdikjeder/applications/new?promotion=2179778-nav-no": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:09.029Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:09.799Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5165167240&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:09.135Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:10.990Z"
+  },
+  "https://nes-bu.easycruit.com/vacancy/application/3656753/177515?channel=NavRest&iso=no": {
+    "status": null,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:55:58.637Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:11.113Z",
+    "error": "fetch failed"
+  },
+  "https://gjemnes.easycruit.com/vacancy/application/3659297/181821?channel=NavRest&iso=no": {
+    "status": null,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:56:00.026Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:11.246Z",
+    "error": "fetch failed"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5175424216&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:09.724Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:11.598Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5176097304&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:09.800Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:12.099Z"
+  },
+  "https://jobseeker.jobbnorge.no/apply/307712": {
+    "status": 405,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:56:12.100Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:12.593Z",
+    "error": "HTTP 405"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5174329524&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:11.599Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:12.991Z"
+  },
+  "https://jobb.synsam.no/jobs/8322963-vi-soker-na-optikerassistent-i-100-vikariat-til-synsam-brumunddal-molla/applications/new?promotion=2179795-nav-no": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:12.594Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:13.227Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5169307309&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:10.992Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:13.248Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5173971280&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:11.247Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:13.474Z"
+  },
+  "https://medvindassistanse.attract.reachmee.com/jobs/rm?rmpage=apply&rmjob=1983&ref=nav.no&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:12.992Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:13.741Z"
+  },
+  "https://jobseeker.jobbnorge.no/apply/307655": {
+    "status": 405,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:56:13.474Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:13.993Z",
+    "error": "HTTP 405"
+  },
+  "https://arbeidsplassen.nav.no/stillinger/stilling/1c20b9e6-1199-4ce5-811f-e0443288f356": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:13.228Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:14.406Z"
+  },
+  "https://hire.vismatalent.com/spa/public/apply?guidAssignment=e070e129-0045-4149-86b2-5b68471bcde8&publishCode=NAV&TK=41428b90-dea2-44a5-a9c7-dd242acd25f9": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:13.994Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:14.652Z"
+  },
+  "https://jobseeker.jobbnorge.no/apply/307818": {
+    "status": 405,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:56:14.652Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:15.159Z",
+    "error": "HTTP 405"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5176147348&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:13.742Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:16.423Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5174012886&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:15.169Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:16.629Z"
+  },
+  "https://adecco.com/nb-no/app/2374308": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:16.423Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:19.705Z"
+  },
+  "https://jobb.uloba.no/ledige-stillinger/UX8DPm00y9BPuKmpUwOJ": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:19.705Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:19.882Z"
+  },
+  "https://jobseeker.jobbnorge.no/apply/307443": {
+    "status": 405,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:56:19.883Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:20.405Z",
+    "error": "HTTP 405"
+  },
+  "https://ringsaker.easycruit.com/vacancy/application/3658971/211837?channel=NavRest&iso=no": {
+    "status": null,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:56:07.505Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:21.163Z",
+    "error": "fetch failed"
+  },
+  "https://jobs.mojob.io/47868/?utm_id=34218&utm_campaign=34218&utm_medium=job_share&utm_source=nav&utm_term=Salgsagent&utm_content=47868": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:20.406Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:21.243Z"
+  },
+  "https://apply.recman.page/job_post.php?id=486322&path=nav&sub_id=96": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:21.164Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:22.563Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5175428675&language=nn&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:21.243Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:22.650Z"
+  },
+  "https://tonsberg.easycruit.com/vacancy/application/3659309/165225?channel=NavRest&iso=no": {
+    "status": null,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:56:11.113Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:22.698Z",
+    "error": "fetch failed"
+  },
+  "https://fus.no/ledige-stillinger/sok-her?rmpage=apply&rmjob=3728&ref=nav.no&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:22.564Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:23.512Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5175560623&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:22.698Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:23.751Z"
+  },
+  "https://arbeidsplassen.nav.no/stillinger/stilling/429e80e5-1766-4bca-a307-9b8f06b93f49": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:23.513Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:23.815Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5118382062&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:22.650Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:23.984Z"
+  },
+  "https://jobseeker.jobbnorge.no/apply/306188": {
+    "status": 405,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:56:23.752Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:24.245Z",
+    "error": "HTTP 405"
+  },
+  "https://ha.easycruit.com/vacancy/application/3659323/188297?channel=NavRest&iso=no": {
+    "status": null,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:56:13.248Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:24.965Z",
+    "error": "fetch failed"
+  },
+  "https://norgesgruppen.wd3.myworkdayjobs.com/karriere/job/Joker-Lysaker-Stasjon/Joker-Lysaker-Stasjon-sker-butikkmedarbeider---deltid_JR10031998/apply?lang=nb-NO": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:24.246Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:25.041Z"
+  },
+  "https://sor-varanger.easycruit.com/vacancy/application/3658975/188865?channel=NavRest&iso=no": {
+    "status": null,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:56:14.406Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:25.675Z",
+    "error": "fetch failed"
+  },
+  "https://arbeidsplassen.nav.no/stillinger/stilling/efcd8e3c-d4a0-48a3-aaaf-9711bdd3e5e4": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:25.676Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:25.959Z"
+  },
+  "https://adecco.com/nb-no/app/2374307": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:23.815Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:26.134Z"
+  },
+  "https://adecco.com/nb-no/app/2374248": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:23.985Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:26.511Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5174726312&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:24.966Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:26.791Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5176102874&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:25.042Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:26.929Z"
+  },
+  "https://jobseeker.jobbnorge.no/apply/306680": {
+    "status": 405,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:56:26.512Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:27.285Z",
+    "error": "HTTP 405"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5176031887&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:25.959Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:27.697Z"
+  },
+  "https://secure.webtemp.no/WebtempCVPortal/startsession.aspx?k=131&page=default&id_utleie=3000725": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:26.792Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:27.760Z"
+  },
+  "https://folldal.easycruit.com/vacancy/application/3658005/191339?channel=NavRest&iso=no": {
+    "status": null,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:56:16.630Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:28.581Z",
+    "error": "fetch failed"
+  },
+  "https://apply.recman.page/job_post.php?id=484583&path=nav&sub_id=138": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:27.761Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:29.192Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5169277200&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:26.134Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:29.228Z"
+  },
+  "https://apply.recman.page/job_post.php?id=484584&path=nav&sub_id=138": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:28.582Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:29.825Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5172483107&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:26.930Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:29.876Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5172578497&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:27.698Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:30.018Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5176256941&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:27.286Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:30.107Z"
+  },
+  "https://apply.recman.page/job_post.php?id=475618&path=nav&sub_id=138": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:29.229Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:30.471Z"
+  },
+  "https://apply.recman.page/job_post.php?id=475621&path=nav&sub_id=138": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:29.193Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:30.818Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5153138918&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:29.877Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:32.138Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5174039305&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:32.139Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:33.969Z"
+  },
+  "https://arbeidsplassen.nav.no/stillinger/stilling/5663dbc4-98eb-46f1-b089-5f2ad03e5524": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:33.970Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:34.315Z"
+  },
+  "https://arbeidsplassen.nav.no/stillinger/stilling/ad12117b-f8db-4c50-b49d-26627ffbb86c": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:34.316Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:35.135Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5169035915&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:35.136Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:36.975Z"
+  },
+  "https://adecco.com/nb-no/app/2374310": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:36.976Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:39.065Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5176250405&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:39.065Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:40.037Z"
+  },
+  "https://werkstanorge.teamtailor.com/jobs/8268852-kundemottaker-for-werksta-fana/applications/new?promotion=2179917-nav-no": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:40.038Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:40.652Z"
+  },
+  "https://surnadal.easycruit.com/vacancy/application/3657485/183175?channel=NavRest&iso=nn": {
+    "status": null,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:56:30.819Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:40.881Z",
+    "error": "fetch failed"
+  },
+  "https://surnadal.easycruit.com/vacancy/application/3657485/195789?channel=NavRest&iso=nn": {
+    "status": null,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:56:30.019Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:41.243Z",
+    "error": "fetch failed"
+  },
+  "https://surnadal.easycruit.com/vacancy/application/3657485/183101?channel=NavRest&iso=nn": {
+    "status": null,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:56:30.108Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:41.330Z",
+    "error": "fetch failed"
+  },
+  "https://hadsel.easycruit.com/vacancy/application/3659337/205471?channel=NavRest&iso=no": {
+    "status": null,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:56:29.825Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:41.380Z",
+    "error": "fetch failed"
+  },
+  "https://surnadal.easycruit.com/vacancy/application/3657485/183151?channel=NavRest&iso=nn": {
+    "status": null,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:56:30.472Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:41.405Z",
+    "error": "fetch failed"
+  },
+  "https://jobseeker.jobbnorge.no/apply/303067": {
+    "status": 405,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:56:41.405Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:41.966Z",
+    "error": "HTTP 405"
+  },
+  "https://jobseeker.jobbnorge.no/apply/307320": {
+    "status": 405,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:56:41.331Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:41.973Z",
+    "error": "HTTP 405"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5176254621&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:41.244Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:42.324Z"
+  },
+  "https://jobseeker.jobbnorge.no/apply/307651": {
+    "status": 405,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:56:41.974Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:42.473Z",
+    "error": "HTTP 405"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5159424404&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:40.887Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:42.751Z"
+  },
+  "https://arbeidsplassen.nav.no/stillinger/stilling/aff9a0c7-7d7b-4373-8342-343bd6991105": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:42.473Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:43.271Z"
+  },
+  "https://arbeidsplassen.nav.no/stillinger/stilling/db769e71-7666-42c2-be47-b56cb3132073": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:42.751Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:43.549Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5176088200&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:41.967Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:44.672Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5119027762&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:43.550Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:44.942Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5163619353&language=nn&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:43.272Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:45.180Z"
+  },
+  "https://jobseeker.jobbnorge.no/apply/307822": {
+    "status": 405,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:56:44.943Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:45.442Z",
+    "error": "HTTP 405"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5174195655&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:45.181Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:46.842Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5173320616&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:45.443Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:46.899Z"
+  },
+  "https://dibber-as.contactrh.com/jobs/14035/44420073/nb_NO": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:44.672Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:47.021Z"
+  },
+  "https://jobseeker.jobbnorge.no/apply/303062": {
+    "status": 405,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:56:46.842Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:47.335Z",
+    "error": "HTTP 405"
+  },
+  "https://jobseeker.jobbnorge.no/apply/307768": {
+    "status": 405,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:56:47.022Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:47.522Z",
+    "error": "HTTP 405"
+  },
+  "https://karriere.htbpa.ecura.no/jobs/8323375-ung-kvinne-pa-faberg-ser-etter-flere-assistenter/applications/new?promotion=2180007-nav-no": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:47.523Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:48.329Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5154830864&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:46.900Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:49.125Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5174175247&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:47.336Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:49.642Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5174326944&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:48.330Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:50.309Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5117666779&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:49.126Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:50.586Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5176088749&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:50.587Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:51.975Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5176098940&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:50.310Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:52.226Z"
+  },
+  "https://nes-bu.easycruit.com/vacancy/application/3655427/177613?channel=NavRest&iso=no": {
+    "status": null,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:56:40.652Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:52.428Z",
+    "error": "fetch failed"
+  },
+  "https://faerder.easycruit.com/vacancy/application/3659063/161577?channel=NavRest&iso=no": {
+    "status": null,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:56:41.380Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:53.009Z",
+    "error": "fetch failed"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5175295230&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:52.428Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:53.855Z"
+  },
+  "https://lyngdal.easycruit.com/vacancy/application/3659341/212865?channel=NavRest&iso=no": {
+    "status": null,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:56:42.324Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:54.097Z",
+    "error": "fetch failed"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5167459144&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:52.227Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:54.646Z"
+  },
+  "https://dibber-as.contactrh.com/jobs/14035/44420123/nb_NO": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:53.856Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:56.051Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5175346585&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:54.646Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:56.911Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5164574508&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:56.052Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:57.901Z"
+  },
+  "https://jobseeker.jobbnorge.no/apply/307368": {
+    "status": 405,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:56:57.902Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:58.403Z",
+    "error": "HTTP 405"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5170137521&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:56.912Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:58.869Z"
+  },
+  "https://medvindassistanse.attract.reachmee.com/jobs/rm?rmpage=apply&rmjob=1984&ref=nav.no&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:58.404Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:59.145Z"
+  },
+  "https://arbeidsplassen.nav.no/stillinger/stilling/9afd3840-7cd0-4c4b-8c4a-834935f0689f": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:58.870Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:59.662Z"
+  },
+  "https://medvindassistanse.attract.reachmee.com/jobs/rm?rmpage=apply&rmjob=1985&ref=nav.no&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:59.146Z",
+    "ttlExpiresAtISO": "2026-09-05T20:56:59.726Z"
+  },
+  "https://arbeidsplassen.nav.no/stillinger/stilling/f900bbaf-efa4-4556-93fb-93d98ea5c4fd": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:59.727Z",
+    "ttlExpiresAtISO": "2026-09-05T20:57:00.006Z"
+  },
+  "https://nord-fron.easycruit.com/vacancy/application/3654827/224821?channel=NavRest&iso=no": {
+    "status": null,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:56:49.643Z",
+    "ttlExpiresAtISO": "2026-09-05T20:57:01.195Z",
+    "error": "fetch failed"
+  },
+  "https://modum.easycruit.com/vacancy/application/3656941/193377?channel=NavRest&iso=no": {
+    "status": null,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:56:51.976Z",
+    "ttlExpiresAtISO": "2026-09-05T20:57:01.762Z",
+    "error": "fetch failed"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5175495075&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:56:59.663Z",
+    "ttlExpiresAtISO": "2026-09-05T20:57:01.953Z"
+  },
+  "https://miogruppen.teamtailor.com/jobs/8323493-onsker-du-en-deltidsstilling-trygge-og-omsorgsfulle-assistenter-sokes-til-positiv-gutt/applications/new?promotion=2180067-nav-no": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:57:01.763Z",
+    "ttlExpiresAtISO": "2026-09-05T20:57:02.532Z"
+  },
+  "https://emp.jobylon.com/applications/jobs/379158/create/?utm_source=nav&utm_medium=promotionserializer": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:57:01.954Z",
+    "ttlExpiresAtISO": "2026-09-05T20:57:02.937Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5144016099&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:57:01.196Z",
+    "ttlExpiresAtISO": "2026-09-05T20:57:03.056Z"
+  },
+  "https://emp.jobylon.com/applications/jobs/378989/create/?utm_source=nav&utm_medium=promotionserializer": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:57:02.533Z",
+    "ttlExpiresAtISO": "2026-09-05T20:57:03.461Z"
+  },
+  "https://karriere.tirna.no/jobs/8323337-faglaerer-timelaerer-observasjon-og-stell-av-sar-sogndal-nordfjordeid/applications/new?promotion=2180053-nav-no": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:57:03.462Z",
+    "ttlExpiresAtISO": "2026-09-05T20:57:04.268Z"
+  },
+  "https://modum.easycruit.com/vacancy/application/3656923/193377?channel=NavRest&iso=no": {
+    "status": null,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:56:54.097Z",
+    "ttlExpiresAtISO": "2026-09-05T20:57:04.968Z",
+    "error": "fetch failed"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=4973181945&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:57:02.938Z",
+    "ttlExpiresAtISO": "2026-09-05T20:57:05.217Z"
+  },
+  "https://candidate.hr-manager.net/ApplicationInit.aspx?cid=157&ProjectId=196690&DepartmentId=6126&MediaId=5665&SkipAdvertisement=true&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:57:03.057Z",
+    "ttlExpiresAtISO": "2026-09-05T20:57:05.235Z"
+  },
+  "https://apply.recman.page/job_post.php?id=486347&path=nav&sub_id=561": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:57:04.269Z",
+    "ttlExpiresAtISO": "2026-09-05T20:57:05.652Z"
+  },
+  "https://norgesgruppen.wd3.myworkdayjobs.com/karriere/job/NG-KA-12-14/Vil-du-gjre-tall-til-bedre-beslutninger-_JR10031991-3/apply?lang=nb-NO": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-09-05T08:57:04.969Z",
+    "ttlExpiresAtISO": "2026-09-05T20:57:05.743Z"
+  },
+  "https://vadso.easycruit.com/vacancy/application/3659127/232789?channel=NavRest&iso=no": {
+    "status": null,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:56:53.010Z",
+    "ttlExpiresAtISO": "2026-09-05T20:57:06.220Z",
+    "error": "fetch failed"
+  },
+  "https://eidsvoll.easycruit.com/vacancy/application/3659347/246439?channel=NavRest&iso=no": {
+    "status": null,
+    "ok": false,
+    "checkedAtISO": "2026-09-05T08:57:00.007Z",
+    "ttlExpiresAtISO": "2026-09-05T20:57:10.471Z",
+    "error": "fetch failed"
   }
 }
