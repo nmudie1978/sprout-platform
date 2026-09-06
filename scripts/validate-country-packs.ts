@@ -25,6 +25,7 @@
  */
 import { getPack, PACK_COUNTRIES } from "../src/lib/country-packs";
 import type { PackCareer, Provenanced } from "../src/lib/country-packs/types";
+import { looksLikeSoftNotFound } from "../src/lib/validation/soft-404";
 
 const args = process.argv.slice(2);
 const verbose = args.includes("--verbose");
@@ -49,15 +50,22 @@ async function head(
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
   try {
-    // Some university sites reject HEAD; fall back to a ranged GET.
+    // HEAD alone cannot see a soft 404 — a page that returns 200 while
+    // saying it does not exist. antagning.se does exactly that, so any
+    // 2xx has to be confirmed by reading the start of the body.
     let res = await fetch(url, { method: "HEAD", signal: controller.signal, redirect: "follow" });
-    if (res.status === 405 || res.status === 501) {
+    if (res.status === 405 || res.status === 501 || res.status < 300) {
       res = await fetch(url, {
         method: "GET",
-        headers: { Range: "bytes=0-2048" },
         signal: controller.signal,
         redirect: "follow",
       });
+      if (res.status < 300) {
+        const body = await res.text();
+        if (looksLikeSoftNotFound(body)) {
+          return { ok: false, status: "soft-404" };
+        }
+      }
     }
     // Only 404/410 prove a source is gone. Everything else that produced an
     // HTTP response means the server answered: 403 is usually bot-blocking,
