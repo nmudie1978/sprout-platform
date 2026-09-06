@@ -50,6 +50,8 @@ import {
   shouldExcludeByRoute,
   gradeMatchScoreAdjustment,
 } from "@/lib/career-pathways/grade-match";
+import { getGradeBandForScale } from "@/lib/country-packs";
+import { NORWAY_VGS, SWEDEN_MERITVARDE } from "@/lib/country-packs/scales";
 
 /** Look up a career's category by id (catalog-derived; supplied by the caller). */
 export type FindCategory = (careerId: string) => CareerCategory | null;
@@ -748,7 +750,21 @@ export function rankCareers(
     if (prefs.gradeRange) {
       const careerForBand = candidates.find((c) => c.id === career.id);
       if (careerForBand) {
-        const match = matchCareerToGradeRange(careerForBand, prefs.gradeRange);
+        // The scale id travels on the stored gradeRange, so the user's own
+        // grading system is known here without plumbing a country through
+        // the engine. A Swedish meritvärde must never be compared against a
+        // Norwegian 1-6 band: 17.5 would read as far above a top grade.
+        const scaleId = (prefs.gradeRange as { scale?: string }).scale;
+        const scale = scaleId === "se-meritvarde" ? SWEDEN_MERITVARDE : NORWAY_VGS;
+        const localBand = getGradeBandForScale(scaleId, career.id);
+        // Only fall back to the career's native (Norwegian) band when the
+        // user is actually on the Norwegian scale.
+        const bandCareer = localBand
+          ? { gradeBand: localBand }
+          : scale === NORWAY_VGS
+            ? careerForBand
+            : { gradeBand: undefined };
+        const match = matchCareerToGradeRange(bandCareer, prefs.gradeRange, scale);
         if (match.status !== "unknown") {
           result.gradeStatus = match.status;
           result.gradeHint = match.coachingHint;

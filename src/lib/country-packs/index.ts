@@ -12,7 +12,8 @@
 import esPack from "./es/pack.generated.json";
 import svPack from "./sv/pack.generated.json";
 import daPack from "./da/pack.generated.json";
-import type { CountryPack, PackCareer } from "./types";
+import type { CountryPack, PackCareer, PackGradeBand } from "./types";
+import { SV_GRADE_BANDS } from "./sv/grade-bands";
 
 export type { CountryPack, PackCareer, Provenanced, ProvenanceTier } from "./types";
 
@@ -61,4 +62,25 @@ export function getRouteLabel(
   route: string,
 ): string {
   return getPack(country)?.routeLabels?.[route] ?? route;
+}
+
+/**
+ * The grade band for a career, on a given grade scale.
+ *
+ * Keyed by SCALE rather than country on purpose: the scale id is persisted on
+ * the user's stored gradeRange, so matching can resolve the right band from
+ * the preferences alone, without threading a country through the engine.
+ *
+ * Returns null when the scale has no band data for that career, which is the
+ * common case and the honest one — matching then reports "unknown" rather
+ * than ranking against a number nobody verified.
+ */
+export function getGradeBandForScale(
+  scaleId: string | undefined,
+  careerId: string,
+): PackGradeBand | null {
+  if (scaleId === "se-meritvarde") {
+    return SV_GRADE_BANDS[careerId]?.value ?? null;
+  }
+  return null;
 }
