@@ -25,6 +25,7 @@ import type {
 } from "../career-pathways";
 // From the pure lookups module so this file stays out of the radar bundle.
 import { UNIVERSITY_ROUTES } from "../matching/lookups";
+import { gradeScaleFor, type GradeScale } from "../country-packs/scales";
 
 export type GradeMatchStatus =
   | "aligned"  // User's range overlaps the career's typical band
@@ -65,6 +66,13 @@ export interface GradeMatchResult {
 export function matchCareerToGradeRange(
   career: Pick<Career, "gradeBand">,
   range: DiscoveryPreferences["gradeRange"],
+  /**
+   * The scale the band and range are expressed in. Defaults to Norway's 1–6,
+   * which is what every stored gradeRange predating country scales holds.
+   * Gaps are measured in the scale's own `step` so "one grade short is a
+   * stretch" means the same thing on Sweden's 0–22.5 meritvärde.
+   */
+  scale: GradeScale = gradeScaleFor(null),
 ): GradeMatchResult {
   if (!range || !career.gradeBand) {
     return { status: "unknown", gap: 0, coachingHint: "" };
@@ -86,19 +94,21 @@ export function matchCareerToGradeRange(
     return { status: "aligned", gap: 0, coachingHint: "" };
   }
 
-  // Below the career's band — this is where stretch/reach copy kicks in
-  const gap = floor - high;
-  if (gap === 1) {
+  // Below the career's band — this is where stretch/reach copy kicks in.
+  // Measured in the scale's own steps: on Norway's 1–6 a step is one grade,
+  // so this is arithmetically identical to the previous `floor - high`.
+  const gap = (floor - high) / scale.step;
+  if (gap <= 1) {
     return {
       status: "stretch",
       gap,
-      coachingHint: `Pull your top grade up to ${floor} to move this into range.`,
+      coachingHint: `Pull your top grade up to ${scale.format(floor)} to move this into range.`,
     };
   }
   return {
     status: "reach",
     gap,
-    coachingHint: `Typical applicants land around ${floor}–${ceiling}. Worth talking to an advisor about a realistic plan.`,
+    coachingHint: `Typical applicants land around ${scale.format(floor)}–${scale.format(ceiling)}. Worth talking to an advisor about a realistic plan.`,
   };
 }
 

@@ -177,33 +177,56 @@ C=15, D=12.5, E=10, F=0) averaged into a *meritvärde* of 0–20, plus up to 2.5
 parallel admission route via Högskoleprovet, scaled 0.00–2.00, and programmes
 publish *antagningspoäng* per quota group (BI, BII, HP).
 
-> **STILL UNVERIFIED — 2026-09-06.** The betygspoäng values, the 22.5 ceiling
-> and the quota group names must be checked against UHR/antagning.se rather
-> than taken from this document. Unlike the salary figures, these have NOT been
-> confirmed. An attempt to verify them by fetching antagning.se, studera.nu and
-> uhr.se failed: the obvious paths 404, and antagning.se serves a soft 404
-> (HTTP 200 with a "page not found" body). Someone needs to read the current
-> UHR guidance directly.
+### VERIFIED 2026-09-06 against UHR / antagning.se / studera.nu
 
-### Status: abstraction deliberately NOT built yet
+| Fact | Value | Source |
+|---|---|---|
+| Betygspoäng | A=20, B=17.5, C=15, D=12.5, E=10, F=0 | antagning.se |
+| Jämförelsetal ceiling | 20.00 | antagning.se |
+| Meritpoäng ceiling | 2.5 (advanced maths, English, modern languages) | antagning.se |
+| **Meritvärde ceiling** | **22.5** | antagning.se |
+| Högskoleprovet | normed 0.00–2.00 in steps of 0.05, valid 8 years | studera.nu |
+| Selection groups | BI (direkt), BII (komplettering), **BF (folkhögskola)**, HP | studera.nu |
+| Allocation | ≥1/3 of places from grades, ≥1/3 from Högskoleprovet | studera.nu |
 
-The refactor is deferred, and that is a decision rather than a gap.
+The spec previously listed the grade groups as "BI, BII, HP" — **BF
+(folkhögskolegruppen) was missing**, and HP is a separate route rather than a
+third grade group.
 
-`grade-match.ts` feeds `matching/engine.ts` through
-`gradeMatchScoreAdjustment`, so changing it silently re-ranks careers for
-every existing Norwegian user. With no verified Swedish scale to justify it,
-building a country-agnostic scale abstraction now would be speculative
-generality carrying a real regression risk for the one country actually live.
+### Gy25 — Sweden is mid-reform, and it matters here
 
-What HAS been done is the prerequisite: `career-pathways/__tests__/grade-match.test.ts`
-pins the current Norwegian behaviour — overlap is aligned, a user above the
-band is aligned and never flagged overqualified, a gap of one is a stretch, two
-or more is a reach, and the score adjustments are +8 / 0 / −6 / −15. There were
-no tests on this module before.
+Gy25 replaces course grades (kursbetyg) with subject grades (ämnesbetyg). The
+first Gy25 diplomas are awarded in **spring 2028**, so a 15-year-old starting
+gymnasium now graduates under Gy25, not Gy11 — which is precisely this
+platform's audience.
 
-**To proceed:** verify the Swedish scale against UHR, then do the refactor with
-those tests required to pass unchanged. If any Norwegian assertion has to
-change, the refactor is wrong.
+The reform changes how grades **aggregate**, not the numeric scale: A is still
+20 and the ceiling is still 22.5. So `SWEDEN_MERITVARDE` is correct for both
+cohorts and no dual-scale handling is needed. Education-path copy that
+describes *how* grades are earned will eventually need to be Gy25-aware.
+
+### Status: built
+
+`country-packs/scales.ts` defines `GradeScale` with Norway (1–6),
+Sweden meritvärde (0–22.5) and Högskoleprovet (0.00–2.00).
+
+The key design point is `step` — the distance counting as one grade's worth of
+movement: 1 in Norway, **2.5 in Sweden** (one letter grade on the betygspoäng
+scale). `matchCareerToGradeRange` measures gaps in steps rather than raw
+points, so "one grade short is a stretch, two is a reach" holds in both
+countries without re-tuning thresholds. On Norway's 1–6 the arithmetic is
+identical to the previous `floor - high`, and the 12 characterisation tests
+pass unchanged.
+
+Without this, a Swedish gap of 5 meritvärde points would read as five
+"grades" and be branded an impossible reach. There is a test asserting exactly
+that failure mode.
+
+**Remaining:** no Swedish `gradeBand` data exists yet, so Swedish careers have
+no band to match against. The machinery is ready; the data is a separate task.
+`api/profile/route.ts` also still clamps `gradeRange` to 1–6 and the quiz input
+is Norwegian-only — both need the scale before Swedish users can report a
+meritvärde.
 
 ### Design: scale adapters over a normalised axis
 
