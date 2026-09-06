@@ -58,22 +58,6 @@ export interface PackCareer {
   salary?: Provenanced<string>;
   /** The typical local route into this career. */
   educationPath?: Provenanced<string>;
-  /**
-   * Typical grade band of successful applicants, in the country's OWN scale
-   * units — Swedish bands are meritvärde (0–22.5), not the Norwegian 1–6.
-   *
-   * For Sweden these come from published antagningspoäng: the score of the
-   * last person admitted, per institution. The floor is the least
-   * competitive institution offering the route and the ceiling the most,
-   * which is exactly what GradeBand means by floor and ceiling.
-   */
-  gradeBand?: Provenanced<PackGradeBand>;
-}
-
-/** Floor/ceiling in the country's own grade scale. */
-export interface PackGradeBand {
-  floor: number;
-  ceiling: number;
 }
 
 export interface PackMeta {

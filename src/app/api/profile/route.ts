@@ -8,8 +8,6 @@ import { slugify } from "@/lib/utils";
 import { AccountStatus } from "@prisma/client";
 import { validateSignupAge, PLATFORM_MIN_AGE, PLATFORM_MAX_AGE } from "@/lib/safety/age";
 import { apiError } from "@/lib/api-error";
-import { sanitizeGradeRange } from "@/lib/validation/grade-range";
-import { gradeScaleFor } from "@/lib/country-packs/scales";
 
 export async function GET(req: NextRequest) {
   try {
@@ -236,26 +234,12 @@ export async function PATCH(req: NextRequest) {
 
       // Light validation — strip unknown fields, cap array sizes.
       //
-      // gradeRange is validated against the user's OWN grade scale. It used
-      // to require 1 <= low, high <= 6 and Math.round both ends, which is
-      // correct for Norway and wrong for everyone else: a Swedish meritvärde
-      // (0–22.5) failed the bound and was discarded entirely, and 17.5 would
-      // have been rounded to 18. See lib/validation/grade-range.ts.
-      let gradeScale = gradeScaleFor(null);
-      if (dp?.gradeRange) {
-        // Only pay for the lookup when there is a range to validate.
-        try {
-          const p = await prisma.youthProfile.findUnique({
-            where: { userId: session.user.id },
-            select: { country: true },
-          });
-          gradeScale = gradeScaleFor(p?.country);
-        } catch {
-          // Fall back to the Norwegian scale rather than dropping the
-          // answer — a failed lookup should not cost the user their input.
-        }
-      }
-      const gradeRange = sanitizeGradeRange(dp?.gradeRange, gradeScale);
+      // gradeRange is deliberately NOT accepted. Asking a 15-year-old to
+      // predict their own grades invites them to rule careers out before
+      // anything has happened, and it is sensitive data about a minor that
+      // the platform has no need to hold. Any client still sending the field
+      // is ignored rather than errored, so an older cached bundle degrades
+      // quietly.
       const sanitized = dp
         ? {
             subjects: Array.isArray(dp.subjects) ? dp.subjects.slice(0, 20).map(String) : [],
@@ -263,7 +247,6 @@ export async function PATCH(req: NextRequest) {
             workStyles: Array.isArray(dp.workStyles) ? dp.workStyles.slice(0, 10).map(String) : [],
             peoplePref: typeof dp.peoplePref === "string" ? dp.peoplePref.slice(0, 50) : undefined,
             interests: Array.isArray(dp.interests) ? dp.interests.slice(0, 30).map(String) : [],
-            gradeRange,
             excludeUniversity: dp.excludeUniversity === true,
           }
         : null;

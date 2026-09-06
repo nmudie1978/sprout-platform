@@ -45,18 +45,7 @@ import {
 } from "@/lib/matching/lookups";
 import { getFitDimensions } from "@/lib/compare/fit-dimensions";
 import { getAcademicProfile } from "@/lib/education/academic-readiness";
-import {
-  matchCareerToGradeRange,
-  shouldExcludeByRoute,
-  gradeMatchScoreAdjustment,
-} from "@/lib/career-pathways/grade-match";
-// Imported from the leaf module, NOT the country-packs barrel: the barrel
-// eagerly pulls in every pack.generated.json, and the Swedish one alone is
-// 842KB. The engine runs client-side, so going through the barrel would ship
-// the whole Swedish catalog to every user — the very thing useCareerCatalog
-// exists to avoid.
-import { getGradeBandForScale } from "@/lib/country-packs/grade-band-lookup";
-import { NORWAY_VGS, SWEDEN_MERITVARDE } from "@/lib/country-packs/scales";
+import { shouldExcludeByRoute } from "@/lib/matching/route-filter";
 
 /** Look up a career's category by id (catalog-derived; supplied by the caller). */
 export type FindCategory = (careerId: string) => CareerCategory | null;
@@ -752,34 +741,6 @@ export function rankCareers(
     // filter below still respects how well the career matched on
     // subjects/interests/style — a reach career with a strong
     // base match stays visible, it just sinks below aligned peers.
-    if (prefs.gradeRange) {
-      const careerForBand = candidates.find((c) => c.id === career.id);
-      if (careerForBand) {
-        // The scale id travels on the stored gradeRange, so the user's own
-        // grading system is known here without plumbing a country through
-        // the engine. A Swedish meritvärde must never be compared against a
-        // Norwegian 1-6 band: 17.5 would read as far above a top grade.
-        const scaleId = (prefs.gradeRange as { scale?: string }).scale;
-        const scale = scaleId === "se-meritvarde" ? SWEDEN_MERITVARDE : NORWAY_VGS;
-        const localBand = getGradeBandForScale(scaleId, career.id);
-        // Only fall back to the career's native (Norwegian) band when the
-        // user is actually on the Norwegian scale.
-        const bandCareer = localBand
-          ? { gradeBand: localBand }
-          : scale === NORWAY_VGS
-            ? careerForBand
-            : { gradeBand: undefined };
-        const match = matchCareerToGradeRange(bandCareer, prefs.gradeRange, scale);
-        if (match.status !== "unknown") {
-          result.gradeStatus = match.status;
-          result.gradeHint = match.coachingHint;
-          const adj = gradeMatchScoreAdjustment(match.status);
-          // Clamp to [0, 100] on the displayed percentage.
-          result.matchPercent = Math.max(0, Math.min(100, result.matchPercent + adj));
-        }
-      }
-    }
-
     results.push(result);
   }
 

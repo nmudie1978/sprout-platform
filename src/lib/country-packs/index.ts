@@ -106,4 +106,3 @@ export function getRouteLabel(
   return getPack(country)?.routeLabels?.[route] ?? route;
 }
 
-export { getGradeBandForScale } from "./grade-band-lookup";

@@ -109,9 +109,18 @@ export interface Career {
    */
   entryRoute?: EntryRoute;
   /**
-   * Typical grade band of successful applicants. Drives the "aligned
-   * vs stretch" label in Career Radar once the user sets a gradeRange
-   * preference. Never used to hide careers — see grade-match.ts.
+   * Typical grade band of successful applicants, on the VGS 1–6 scale.
+   *
+   * CURRENTLY UNREAD. It existed to power an "aligned / stretch / reach"
+   * label against a grade range the user supplied. That question is no
+   * longer asked: inviting a 15-year-old to predict their own results
+   * encourages them to rule things out before anything has happened, and it
+   * is sensitive data about a minor that the platform does not need.
+   *
+   * The ~201 populated entries are kept rather than deleted because they
+   * describe the CAREER, not the user, and could legitimately return as
+   * "typical applicants land around 4–5" shown as career information. Adding
+   * a consumer that asks the user for their grades would not be legitimate.
    */
   gradeBand?: GradeBand;
   /**
@@ -15468,7 +15477,6 @@ export interface DiscoveryPreferences {
    * to an exact number. See src/lib/career-pathways/grade-match.ts for
    * the overlap semantics used during ranking.
    */
-  gradeRange?: { low: number; high: number };
   /**
    * Explicit opt-out of university routes. When true, bachelor / master
    * / profesjonsstudium careers are filtered OUT (not just re-ranked) —
