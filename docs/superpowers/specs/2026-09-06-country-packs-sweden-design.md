@@ -177,10 +177,33 @@ C=15, D=12.5, E=10, F=0) averaged into a *meritvärde* of 0–20, plus up to 2.5
 parallel admission route via Högskoleprovet, scaled 0.00–2.00, and programmes
 publish *antagningspoäng* per quota group (BI, BII, HP).
 
-> **Verify before implementation.** The betygspoäng values, the 22.5 ceiling and
-> the quota group names must be checked against UHR/antagning.se rather than
-> taken from this document. Unlike the salary figures, these have NOT been
-> spiked — treat them as unconfirmed.
+> **STILL UNVERIFIED — 2026-09-06.** The betygspoäng values, the 22.5 ceiling
+> and the quota group names must be checked against UHR/antagning.se rather
+> than taken from this document. Unlike the salary figures, these have NOT been
+> confirmed. An attempt to verify them by fetching antagning.se, studera.nu and
+> uhr.se failed: the obvious paths 404, and antagning.se serves a soft 404
+> (HTTP 200 with a "page not found" body). Someone needs to read the current
+> UHR guidance directly.
+
+### Status: abstraction deliberately NOT built yet
+
+The refactor is deferred, and that is a decision rather than a gap.
+
+`grade-match.ts` feeds `matching/engine.ts` through
+`gradeMatchScoreAdjustment`, so changing it silently re-ranks careers for
+every existing Norwegian user. With no verified Swedish scale to justify it,
+building a country-agnostic scale abstraction now would be speculative
+generality carrying a real regression risk for the one country actually live.
+
+What HAS been done is the prerequisite: `career-pathways/__tests__/grade-match.test.ts`
+pins the current Norwegian behaviour — overlap is aligned, a user above the
+band is aligned and never flagged overqualified, a gap of one is a stretch, two
+or more is a reach, and the score adjustments are +8 / 0 / −6 / −15. There were
+no tests on this module before.
+
+**To proceed:** verify the Swedish scale against UHR, then do the refactor with
+those tests required to pass unchanged. If any Norwegian assertion has to
+change, the refactor is wrong.
 
 ### Design: scale adapters over a normalised axis
 
