@@ -209,4 +209,37 @@ export const MANUAL_SSYK_OVERRIDES: Record<string, ManualSsykOverride> = {
     ssykCode: null,
     note: "STYRK 3115 mechanical engineering technicians. SSYK 3115 is 'Chemical engineering technicians' — a different field. Reviewed: no clean SSYK equivalent, so no Swedish salary rather than a chemical technician's pay.",
   },
+
+  // ── Fourth pass: long tail, resolved against the full SSYK label list ────
+  "3114": { ssykCode: "3113", note: "Electronics engineering technicians → SSYK 3113, same occupation, renumbered." },
+  "3257": { ssykCode: "2182", note: "Environmental and occupational health inspectors → SSYK 2182, exact match." },
+  "2133": { ssykCode: "2183", note: "Environmental protection professionals → SSYK 2183, exact match." },
+  "9333": { ssykCode: "9332", note: "Freight handlers → SSYK 9332 'Ground personnel, movers and stockers'." },
+  "6113": {
+    ssykCode: "6112",
+    note: "STYRK 6113 gardeners/horticultural/nursery growers. SSYK 6113 is 'Gardeners, parks and grounds' — grounds maintenance, not cultivation. SSYK 6112 'Gardeners, cultivation' is the match.",
+  },
+  "3132": { ssykCode: "8191", note: "Incinerator and water treatment plant operators → SSYK 8191 'Power production and water treatment plant operators'." },
+  "3134": { ssykCode: "8192", note: "Petroleum and natural gas refining plant operators → SSYK 8192 'Chemical processing plant controllers', the nearest process-industry occupation." },
+  "2266": { ssykCode: "2283", note: "Audiologists and speech therapists → SSYK 2283, exact match." },
+  "2265": { ssykCode: "2282", note: "Dieticians and nutritionists → SSYK 2282 'Dieticians'." },
+  "3315": { ssykCode: "3314", note: "Valuers and loss assessors → SSYK 3314 'Claims assessor and valuers'." },
+  "4321": {
+    ssykCode: "4322",
+    note: "STYRK 4321 stock clerks. SSYK 4321 is 'Warehouse and terminal supervisors' — a supervisory grade. SSYK 4322 'Warehouse and terminal staff' is the match.",
+  },
+  "9312": { ssykCode: "9310", note: "Civil engineering labourers → SSYK 9310 'Construction labourers'." },
+  "3123": { ssykCode: "3121", note: "Construction supervisors → SSYK 3121 'Construction and mining supervisors'." },
+  "2352": { ssykCode: "2351", note: "Special needs teachers → SSYK 2351 'Special teachers and special needs teachers'." },
+  "2433": { ssykCode: "3322", note: "Technical and medical sales professionals → SSYK 3322 'Commercial sales representatives', consistent with the ICT-sales mapping." },
+  "3259": { ssykCode: "2289", note: "Health associate professionals n.e.c. → SSYK 2289 'Health professionals not elsewhere classified'." },
+
+  // Reviewed and rejected — SSYK has no comparable occupation. These show no
+  // Swedish salary, which is correct.
+  "2353": { ssykCode: null, note: "Other language teachers — teaching outside the school system. SSYK's teacher codes are all school-stage specific; no residual fits." },
+  "2354": { ssykCode: null, note: "Other music teachers — as 2353. Kulturskola teaching has no SSYK code of its own." },
+  "2355": { ssykCode: null, note: "Other arts teachers — as 2353." },
+  "9621": { ssykCode: null, note: "Messengers and package deliverers. SSYK 9621 is 'Leaflet and newspaper distributors', a different job, and no residual delivery code fits." },
+  "2149": { ssykCode: null, note: "Engineering professionals n.e.c. — too broad to map without picking an arbitrary engineering discipline." },
+  "3139": { ssykCode: null, note: "Process control technicians n.e.c. — no SSYK residual for process control." },
 };
