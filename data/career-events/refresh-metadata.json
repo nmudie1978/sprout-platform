@@ -1,79 +1,77 @@
 {
-  "lastRefreshISO": "2026-02-11T00:00:00.000Z",
-  "totalFetched": 12,
-  "totalNormalized": 12,
-  "totalVerified": 12,
+  "lastRefreshISO": "2026-09-06T06:38:59.397Z",
+  "totalFetched": 13,
+  "totalNormalized": 13,
+  "totalVerified": 13,
   "totalFailed": 0,
   "duplicatesRemoved": 0,
-  "youthRelevantKept": 12,
-  "removedPastEvents": 0,
-  "removedNonYouthEvents": 0,
   "providerStats": [
     {
       "provider": "tautdanning",
-      "fetched": 3,
-      "normalized": 3,
-      "verified": 3,
+      "fetched": 13,
+      "normalized": 13,
+      "verified": 13,
       "failed": 0,
       "errors": []
     },
     {
       "provider": "oslomet",
-      "fetched": 4,
-      "normalized": 4,
-      "verified": 4,
+      "fetched": 0,
+      "normalized": 0,
+      "verified": 0,
       "failed": 0,
       "errors": []
     },
     {
       "provider": "bi-karrieredagene",
-      "fetched": 1,
-      "normalized": 1,
-      "verified": 1,
+      "fetched": 0,
+      "normalized": 0,
+      "verified": 0,
       "failed": 0,
       "errors": []
     },
     {
       "provider": "eures",
-      "fetched": 4,
-      "normalized": 4,
-      "verified": 4,
+      "fetched": 0,
+      "normalized": 0,
+      "verified": 0,
       "failed": 0,
-      "errors": []
+      "errors": [
+        "This operation was aborted"
+      ]
     }
   ],
   "providerHealth": [
     {
       "provider": "tautdanning",
       "status": "healthy",
-      "lastRun": "2026-02-11T00:00:00.000Z",
+      "lastRun": "2026-09-06T06:38:07.546Z",
       "consecutiveFailures": 0,
-      "lastSuccess": "2026-02-11T00:00:00.000Z",
-      "eventsFound": 3
+      "lastSuccess": "2026-09-06T06:38:29.262Z",
+      "eventsFound": 13
     },
     {
       "provider": "oslomet",
-      "status": "healthy",
-      "lastRun": "2026-02-11T00:00:00.000Z",
+      "status": "degraded",
+      "lastRun": "2026-09-06T06:38:29.765Z",
       "consecutiveFailures": 0,
-      "lastSuccess": "2026-02-11T00:00:00.000Z",
-      "eventsFound": 4
+      "lastSuccess": "2026-09-06T06:38:45.291Z",
+      "eventsFound": 0
     },
     {
       "provider": "bi-karrieredagene",
-      "status": "healthy",
-      "lastRun": "2026-02-11T00:00:00.000Z",
+      "status": "degraded",
+      "lastRun": "2026-09-06T06:38:46.049Z",
       "consecutiveFailures": 0,
-      "lastSuccess": "2026-02-11T00:00:00.000Z",
-      "eventsFound": 1
+      "lastSuccess": "2026-09-06T06:38:48.888Z",
+      "eventsFound": 0
     },
     {
       "provider": "eures",
-      "status": "healthy",
-      "lastRun": "2026-02-11T00:00:00.000Z",
-      "consecutiveFailures": 0,
-      "lastSuccess": "2026-02-11T00:00:00.000Z",
-      "eventsFound": 4
+      "status": "failed",
+      "lastRun": "2026-09-06T06:38:49.436Z",
+      "consecutiveFailures": 1,
+      "lastError": "This operation was aborted"
     }
   ]
 }
