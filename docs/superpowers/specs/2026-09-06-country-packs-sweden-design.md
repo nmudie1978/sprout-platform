@@ -43,7 +43,7 @@ claim them. Finland and the UK are out of scope for this cycle.
 
 ### Provenance bar
 
-Two tiers, enforced by the type system and a build gate:
+Two tiers, enforced by the type system and by CI (see §2 Validation):
 
 - **verified** — anchored to an official source with a resolving URL. Salary
   from SCB via the SSYK crosswalk.
@@ -62,16 +62,15 @@ Unverified guidance is never presented as fact. This reuses the existing
 
 ```
 src/lib/country-packs/
-  types.ts       CountryPack, PackCareer, Provenanced<T>, GradeScale
-  index.ts       registry: getPack(country) → CountryPack | null
-  scales.ts      per-country grade scale adapters
-  se/
-    careers.generated.json      SCB salary pipeline + education-path generation
-    programmes.generated.json   antagning.se / UHR sync
-    institutions.json           ~40 Swedish universities, hand-listed once
-    funding.json                CSN
-    meta.json                   sources, generatedAt, coverage counts
-  es/, da/                      migrated from existing override tables
+  types.ts       CountryPack, PackCareer, Provenanced<T>          [built]
+  index.ts       registry: getPack / getPackCareer / getRouteLabel [built]
+  scales.ts      per-country grade scale adapters                  [§3, to build]
+  sv/
+    pack.generated.json         careers + meta                     [built, 52 careers]
+    programmes.generated.json   antagning.se / UHR sync            [to build]
+    institutions.json           ~40 Swedish universities           [to build]
+    funding.json                CSN                                [to build]
+  es/, da/       pack.generated.json                               [built, 30 + 51]
 ```
 
 Norway stays native in `career-pathways.ts`.
@@ -92,28 +91,25 @@ interface Provenanced<T> {
 
 interface PackCareer {
   careerId: string;
-  salary?: Provenanced<SalaryFigure>;
+  description?: string;
+  dailyTasks?: string[];
+  keySkills?: string[];
+  salary?: Provenanced<string>;
   educationPath?: Provenanced<string>;
-  entryRoute?: EntryRoute;
-  gradeBand?: PackGradeBand;
-  programmeIds?: string[];
-}
-
-interface SalaryFigure {
-  min: number;
-  max: number;
-  currency: "NOK" | "SEK" | "DKK" | "EUR" | "GBP";
-  period: "month" | "year";   // Sweden quotes månadslön; Norway quotes annual
 }
 ```
 
-`Provenanced<T>` generalises the existing `Cited<T>`, which required a source
-and had no tier concept. A one-line migration makes every current `Cited` field
-`tier: "verified"` — nothing regresses.
+**Salary stays display text, not `{min,max}`** — decided during implementation.
+The curated Swedish strings carry median and regional context
+("38 800–72 500 kr/mån (median ca 52 500 kr/mån)") that a numeric range
+discards, and nothing in September scope computes on salary numerically:
+`showsSalaryProgression()` keeps the NOK ladder Norway-only. The SCB
+pipeline formats to text at generation time. Structured figures arrive with
+the database follow-on, when a consumer actually needs them.
 
-`SalaryFigure` replaces the current freeform `avgSalary` string
-(`"550,000 - 850,000 kr/year"`) for pack countries. Norway keeps its strings
-until the follow-on migration; the display helper handles both.
+`Provenanced<T>` generalises the existing `Cited<T>`, which required a source
+and had no tier concept. Migration made every existing field `tier: "verified"`
+— nothing regressed.
 
 ### The contract that must not change
 
@@ -129,19 +125,34 @@ Consumers need no edits:
 `es.ts`, `sv.ts` and `da.ts` are converted to packs by a one-time script so the
 ~130 records already curated carry over.
 
-### Validation
+### Validation — split, corrected during implementation
 
-`scripts/validate-country-packs.ts`, wired into `npm run build` beside the
-existing `validate-programmes.ts`:
+The original plan wired URL checking into `npm run build`. That was wrong:
+`validate-programmes.ts` is deliberately **not** in the build, because
+build-time network calls make builds flaky and fail closed on transient
+outages. The check splits in two:
 
-1. Every `verified` record has a resolving `https` source.
-2. Every `careerId` exists in the catalog.
-3. No duplicate ids within a pack.
-4. `meta.json` coverage counts match reality.
-5. Every `institutionId` referenced by a programme exists in `institutions.json`.
+**Offline, every commit** — `country-packs/__tests__/pack-integrity.test.ts`:
+every `careerId` resolves against the catalog, record keys match their
+`careerId` field, no placeholder sources, every source is `https`, every tier
+is valid, `meta.coverage` matches the actual record count. Fast, deterministic,
+no network. This is the real gate.
 
-A pack that fails does not ship. This is what makes the accuracy bar a build
-gate rather than an intention.
+**Networked, scheduled** — `scripts/validate-country-packs.ts`: does every
+`verified` source still resolve? Aborts without a verdict if more than half a
+pack's sources fail, since that indicates a network problem rather than data
+rot. Deduplicates by URL before fetching.
+
+A verified figure whose citation has rotted is an unattributed claim about a
+teenager's future earnings — so the script exits non-zero and the fix is to
+re-source it or demote it to `estimated`.
+
+**First run found two:** `flight-attendant` and `midwife` education paths both
+cite `se.indeed.com` career-advice pages returning 403. Note 403 is
+bot-blocking rather than proof the page is gone — but Indeed is a weak source
+for a Swedish education path regardless, and both should be re-sourced to a
+university or Socialstyrelsen. **Left for review — re-sourcing is an editorial
+call.**
 
 ---
 
