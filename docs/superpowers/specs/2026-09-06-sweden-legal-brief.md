@@ -43,10 +43,12 @@ assumption, not advice, and the point of this brief.
 2. **Governing law and jurisdiction.** Can the terms keep Norwegian law and
    Oslo jurisdiction for Swedish consumers, given consumer-protection rules
    that preserve local forum rights? Should the clause be per-country?
-3. **Age of consent.** Our floor is a flat **15**, above the digital-consent
-   age in both countries (we understand 13 in each). Is the flat floor
-   defensible, and does the guardian-consent write-gate need to differ for
-   Sweden?
+3. **Age of consent.** Our floor is a flat **15**. Sweden set its Article 8
+   age at **13** in Dataskyddslagen (2018:218) Ch. 2 §4 — confirmed, not
+   assumed — so our floor sits above it. Is the flat floor defensible, and
+   does the guardian-consent write-gate need to differ for Sweden? Note the
+   floor also excludes 13- and 14-year-olds who could lawfully consent, which
+   is a product choice we would like sanity-checked rather than inherited.
 4. **AI assistant.** The product includes an AI career assistant used by
    minors, with a crisis-detection path that surfaces country-specific
    helplines. Any Swedish-specific duties — and does the AI Act's
@@ -64,6 +66,17 @@ Extract a `src/lib/legal/jurisdictions.ts` carrying governing law, courts,
 supervisory authority, consumer body, controller entity and emergency numbers
 per country, and parameterise the four legal pages. The engineering is small;
 the content is what we need from you.
+
+## One document we think you should see
+
+IMY has published **"The rights of children and young people on digital
+platforms — a stakeholder guide"**
+(https://www.imy.se/globalassets/dokument/rapporter/the-rights-of-children-and-young-people-on-digital-platforms_accessible.pdf).
+
+It is IMY's own expectations for platforms aimed at minors and therefore the
+closest thing to a checklist we will be measured against in Sweden. We have
+not yet assessed the product against it. If that assessment is something you
+would run, please say so; otherwise we will do it and send you the result.
 
 ## Also worth flagging
 
