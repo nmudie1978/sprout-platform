@@ -178,7 +178,8 @@ publish *antagningspoäng* per quota group (BI, BII, HP).
 
 > **Verify before implementation.** The betygspoäng values, the 22.5 ceiling and
 > the quota group names must be checked against UHR/antagning.se rather than
-> taken from this document.
+> taken from this document. Unlike the salary figures, these have NOT been
+> spiked — treat them as unconfirmed.
 
 ### Design: scale adapters over a normalised axis
 
@@ -235,28 +236,60 @@ without forking the matching logic.
 
 ---
 
-## 4. Salary pipeline
+## 4. Salary pipeline — SPIKED 2026-09-06, viable
 
 Replicate the existing SSB pattern (`scripts/refresh-career-salaries.ts`,
 `lib/career-data/ssb-salary-mapping.ts`, `ssb-verified-salaries.ts`) against
 Statistics Sweden.
 
-- **Source:** SCB lönestrukturstatistik by SSYK 2012, via SCB's PxWeb API.
-- **Crosswalk:** `careerId → SSYK 2012`. STYRK-08 (Norway) and SSYK 2012
-  (Sweden) are both ISCO-08 derived, so the existing 900-entry
-  `ssb-salary-mapping.ts` transfers via a STYRK→ISCO→SSYK crosswalk rather than
-  being rebuilt by hand. Divergences at the 4-digit level need manual review.
-- **Output:** `se/careers.generated.json` salary fields, `tier: "verified"`,
+### Spike result
+
+The unknown flagged as the plan's biggest risk is resolved. SCB's PxWeb API is
+open, unauthenticated and current.
+
+- **Endpoint:**
+  `https://api.scb.se/OV0104/v1/doris/en/ssd/AM/AM0110/AM0110A/LoneSpridSektYrk4AN`
+- **Table:** "Average salary and salary dispersion by sector, occupation
+  (SSYK 2012), sex, observations and year" — last updated 2026-06-16.
+- **Dimensions:** 432 four-digit SSYK 2012 occupations; sector (all / public /
+  central government / municipal / county / private); sex; years 2023–2025.
+- **Measures:** mean, **median, 10th, 25th, 75th and 90th percentile**.
+
+The percentiles matter more than the mean: a P10–P90 range with a median is
+exactly the shape of the curated Swedish strings, so generated figures read
+identically to hand-written ones rather than as a different kind of claim.
+
+Query with a POST of `{query: [...], response: {format: "json"}}`. A single
+request returns many occupations at once, so the whole catalog is a handful of
+calls, not 1,615.
+
+### Validation against existing curated data
+
+| Career | SSYK | SCB 2025 (P10–P90, median) | Curated string (allaloner.se) |
+|---|---|---|---|
+| software-developer | 2512 | 39 600–72 600, median 53 500 | 38 800–72 500, median ca 52 500 |
+
+The independently hand-curated figure and the official register agree closely.
+That validates the pipeline and the existing data at the same time, and is the
+strongest evidence available that generated Swedish salaries can be labelled
+`verified` in good conscience.
+
+### Implementation
+
+- **Crosswalk:** `careerId → SSYK 2012`. STYRK-08 (Norway) and SSYK 2012 are
+  both ISCO-08 derived, so the existing 900-entry `ssb-salary-mapping.ts`
+  transfers via STYRK→ISCO→SSYK rather than being rebuilt by hand. Divergences
+  at the 4-digit level need manual review — this is the real cost of the
+  pipeline, not the API work.
+- **Coverage ceiling:** 432 SSYK occupations against 1,615 careers, so many
+  careers map to a shared occupation code. That is honest — SCB genuinely does
+  not distinguish a paleobiologist from a palaeontologist — but the generated
+  text must not imply a precision the source lacks.
+- **Output:** `sv/pack.generated.json` salary fields, `tier: "verified"`,
   source set to the SCB table URL, `verifiedAt` stamped.
-- **Period:** SEK **monthly** — Swedish salaries are quoted as månadslön, as
-  `country-context/sweden.ts` already documents. The `SalaryFigure.period`
-  field carries this; display must not silently annualise.
-
-**Spike this on day 1.** The SCB API shape and access terms are the largest
-unknown in the plan, and every downstream estimate depends on it. Thirty
-minutes of verification on day 1 is worth more than a week of assumption.
-
----
+- **Period:** SEK **monthly**. Swedish salaries are quoted as månadslön, as
+  `country-context/sweden.ts` already documents, and the generated text must
+  say `kr/mån`. Never silently annualise to match the Norwegian convention.
 
 ## 5. Education paths and programmes
 
