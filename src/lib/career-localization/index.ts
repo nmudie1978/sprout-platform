@@ -35,6 +35,9 @@ export function localizeCareer(
     // suppress NOK if no verified local figure was supplied
     avgSalary: entry.salary?.value ?? "",
     educationPath: entry.educationPath?.value ?? "",
+    // Carried through so the UI can mark an estimate as an estimate.
+    salaryTier: entry.salary?.tier,
+    educationPathTier: entry.educationPath?.tier,
     isLocalized: true,
   };
 }
