@@ -32,8 +32,8 @@ export const MANUAL_SSYK_OVERRIDES: Record<string, ManualSsykOverride> = {
     note: "STYRK 2212 specialist medical practitioners. SSYK 2212 is 'Resident physicians' (doctors in training) — SSYK 2211 'Specialist physicians' is the match. Affects ~50 careers.",
   },
   "2211": {
-    ssykCode: "2213",
-    note: "STYRK 2211 generalist medical practitioners → SSYK 2213 'General medical practitioners'. SSYK 2211 is specialists; the two systems swap 2211/2212.",
+    ssykCode: "2211",
+    note: "STYRK 2211 generalist medical practitioners. NOT SSYK 2213: its English label reads 'General medical practitioners' but the Swedish code is AT-läkare, the pre-registration internship grade — SCB puts it at a 39 700 median, BELOW residents (2212, 56 300) and far below specialists (2211, 96 800). In Sweden general practice is itself a specialty (specialist i allmänmedicin), so SSYK 2211 is the qualified doctor. Lesson: SSYK English labels are translations and can mislead; check the figures' ordering.",
   },
   "3412": {
     ssykCode: "3411",

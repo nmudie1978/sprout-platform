@@ -92,3 +92,40 @@ describe("lookup helpers", () => {
     expect(entry?.salary?.value).toBeTruthy();
   });
 });
+
+// A launch-blocking assertion: Sweden is marketed as covered, so a regression
+// that silently empties the pack must fail CI rather than ship.
+describe("Sweden launch coverage", () => {
+  const sweden = getPack("Sweden")!;
+
+  it("carries salary for a substantial share of the catalog", () => {
+    const withSalary = Object.values(sweden.careers).filter((c) => c.salary).length;
+    expect(withSalary).toBeGreaterThanOrEqual(800);
+  });
+
+  it("keeps every hand-curated salary that predated the SCB import", () => {
+    // Curated entries cite a source other than the SCB table.
+    const curated = Object.values(sweden.careers).filter(
+      (c) => c.salary && !c.salary.source.includes("api.scb.se"),
+    );
+    expect(curated.length).toBeGreaterThanOrEqual(38);
+  });
+
+  // Two SSYK codes whose English labels invite exactly the wrong mapping:
+  // 2212 reads "Resident physicians" and 2213 reads "General medical
+  // practitioners", but both are training grades on materially lower pay.
+  // A doctor's salary landing near either is the regression to catch.
+  it("shows qualified-doctor pay, not a training grade", () => {
+    const doctor = sweden.careers["doctor"]?.salary?.value ?? "";
+    expect(doctor, "doctor has no Swedish salary").toBeTruthy();
+    const median = Number(/median ca ([\d\s]+)/.exec(doctor)?.[1].replace(/\s/g, ""));
+    expect(median, `doctor median ${median} looks like a training grade`).toBeGreaterThan(70000);
+  });
+
+  it("quotes Swedish pay monthly, never annualised", () => {
+    for (const [id, c] of Object.entries(sweden.careers)) {
+      if (!c.salary) continue;
+      expect(c.salary.value, `${id} is not quoted in kr/mån`).toContain("kr/mån");
+    }
+  });
+});

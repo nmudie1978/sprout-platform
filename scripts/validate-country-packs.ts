@@ -43,7 +43,9 @@ interface Check {
   status: number | string;
 }
 
-async function head(url: string): Promise<{ ok: boolean; status: number | string }> {
+async function head(
+  url: string,
+): Promise<{ ok: boolean; status: number | string; blocked?: boolean }> {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
   try {
@@ -57,8 +59,15 @@ async function head(url: string): Promise<{ ok: boolean; status: number | string
         redirect: "follow",
       });
     }
-    return { ok: res.status < 400, status: res.status };
+    // Only 404/410 prove a source is gone. Everything else that produced an
+    // HTTP response means the server answered: 403 is usually bot-blocking,
+    // and 400 is what a POST-only API endpoint returns to a bare GET — the
+    // SCB salary table does exactly that. Treating those as dead would have
+    // condemned 854 perfectly good citations.
+    const gone = res.status === 404 || res.status === 410;
+    return { ok: !gone, status: res.status, blocked: res.status >= 400 };
   } catch (err) {
+    // A timeout or DNS failure is inconclusive, not proof of death.
     return { ok: false, status: err instanceof Error ? err.name : "error" };
   } finally {
     clearTimeout(timer);
@@ -110,7 +119,7 @@ async function main() {
       `\n${country} (${pack.code}): ${targets.length} verified fields across ${uniqueUrls.length} unique sources`,
     );
 
-    const results = new Map<string, { ok: boolean; status: number | string }>();
+    const results = new Map<string, { ok: boolean; status: number | string; blocked?: boolean }>();
     const checked = await pool(uniqueUrls, CONCURRENCY, async (url) => {
       const r = await head(url);
       results.set(url, r);
@@ -139,8 +148,16 @@ async function main() {
         status: results.get(t.url)?.status ?? "unknown",
       }));
 
+    const blockedUrls = checked.filter((r) => r.ok && r.blocked).length;
+    if (blockedUrls) {
+      console.log(
+        `  ${blockedUrls} source(s) answered with a 4xx that is not 404/410 — ` +
+          `bot-blocking or a POST-only API. Reachable, not dead.`,
+      );
+    }
+
     if (broken.length === 0) {
-      console.log(`  all sources resolve`);
+      console.log(`  no dead sources`);
     } else {
       totalBroken += broken.length;
       console.log(`  ${broken.length} field(s) cite a dead source:`);
