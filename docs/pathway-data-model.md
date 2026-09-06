@@ -16,6 +16,25 @@ Contact nui
 
 
 
+Create a whole section re: wervicenow
+
+Understanding of CMDB and ServiceNow data model.
+Exposure to Service Portal and Flow Designer.
+Knowledge of ITIL processes.
+Experience with Agile/Scrum delivery methodology.
+Preferred Skills
+
+Exposure to ITOM, FSM, CSM, or ITAM modules.
+Integration Hub Spokes development.
+
+
+
+
+
+
+
+
+
 
 
 ┌─────────────────────────────────────────────────────────────────┐
