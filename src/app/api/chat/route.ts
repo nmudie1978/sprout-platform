@@ -176,36 +176,6 @@ export async function POST(req: NextRequest) {
       console.error("Failed to fetch chat history (continuing without):", historyError);
     }
 
-    // Check for unsafe content immediately
-    if (intent === "unsafe") {
-      const fallbackResponse = getFallbackResponse(intent);
-
-      // Log intent (non-blocking)
-      logIntent(session.user.id, intent, { triggered: "unsafe_content" })
-        .catch(logAndSwallow("chat:logIntent:unsafe"));
-
-      return NextResponse.json({
-        message: fallbackResponse,
-        intent,
-        sources: [],
-      });
-    }
-
-    // Check for off-topic
-    if (intent === "off_topic") {
-      const fallbackResponse = getFallbackResponse(intent);
-
-      // Log intent (non-blocking)
-      logIntent(session.user.id, intent, { triggered: "off_topic" })
-        .catch(logAndSwallow("chat:logIntent:offTopic"));
-
-      return NextResponse.json({
-        message: fallbackResponse,
-        intent,
-        sources: [],
-      });
-    }
-
     // Fetch user's profile + exploration state for coach personalisation.
     // The richer the context, the more Socratic and relevant the coach
     // can be — referencing careers the user has explored, their radar
@@ -233,6 +203,36 @@ export async function POST(req: NextRequest) {
       // need to include them in the chat request body — future enhancement.
     } catch (profileError) {
       console.error("Profile fetch error (continuing without personalization):", profileError);
+    }
+
+    // Check for unsafe content immediately
+    if (intent === "unsafe") {
+      const fallbackResponse = getFallbackResponse(intent, userProfile?.country);
+
+      // Log intent (non-blocking)
+      logIntent(session.user.id, intent, { triggered: "unsafe_content" })
+        .catch(logAndSwallow("chat:logIntent:unsafe"));
+
+      return NextResponse.json({
+        message: fallbackResponse,
+        intent,
+        sources: [],
+      });
+    }
+
+    // Check for off-topic
+    if (intent === "off_topic") {
+      const fallbackResponse = getFallbackResponse(intent, userProfile?.country);
+
+      // Log intent (non-blocking)
+      logIntent(session.user.id, intent, { triggered: "off_topic" })
+        .catch(logAndSwallow("chat:logIntent:offTopic"));
+
+      return NextResponse.json({
+        message: fallbackResponse,
+        intent,
+        sources: [],
+      });
     }
 
     // Retrieve relevant context using semantic search (with fallback to keyword search)
@@ -421,7 +421,7 @@ Keep it natural — don't list their profile back to them.`;
     const safetyCheck = isResponseSafe(assistantMessage);
     if (!safetyCheck.safe) {
       console.warn("Unsafe response detected:", safetyCheck.reason);
-      const fallbackResponse = getFallbackResponse(intent);
+      const fallbackResponse = getFallbackResponse(intent, userProfile?.country);
 
       // Log intent (non-blocking)
       logIntent(session.user.id, intent, {

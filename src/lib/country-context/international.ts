@@ -14,8 +14,9 @@ export const internationalContext: CountryContext = {
   name: "International",
   currency: "",
   language: "English",
+  // Must read grammatically after "call " — see CountryContext.crisisLine.
   crisisLine:
-    "If you are in danger or need urgent help, call your local emergency number (112 across the EU) or a local helpline.",
+    "your local emergency number (112 across the EU) or a local crisis helpline",
   condensedAiContext: () =>
     "The user's country is not yet localised. Do NOT assume a specific country's education system, salaries, or services. Keep guidance general and, where a specific number or service matters, tell them to check their own country's official sources.",
 };
