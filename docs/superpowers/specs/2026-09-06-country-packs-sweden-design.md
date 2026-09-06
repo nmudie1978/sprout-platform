@@ -17,22 +17,23 @@ claim them. Finland and the UK are out of scope for this cycle.
 
 | Surface | Norway today | Sweden today | Target |
 |---|---|---|---|
-| Career records (salary + education path) | 1,615 native | 52 | 1,615 |
-| Verified salary provenance | 900 (SSB) | 0 | ≥900 (SCB) |
+| Career records (salary + education path) | 1,615 native | 52 | **1,603 — done** |
+| Verified salary provenance | 900 (SSB) | 0 | **892 (SCB) — done** |
 | Programmes | 162 | 19 | ~160 |
 | Local universities (discipline buckets) | 89 | 0 | ~89 |
 | Grade scale in matching | 1–6, integrated | none | meritvärde + Högskoleprovet |
 | Funding | Lånekassen | 0 | CSN |
 | Legal jurisdiction | complete | none | Swedish terms/privacy |
-| Employers | ~520 | 0 | **out of scope — see below** |
+| Employers | ~520 | 0 | **cut — confirmed 2026-09-06** |
 
 ### Explicit non-goals
 
 - **Swedish employers.** ~520 hand-curated company records with no official
   source to generate from — the most expensive item on the list and the least
   automatable. `journey-companies-tray.tsx` already suppresses the tab for
-  non-Norway users, so Sweden degrades cleanly without it. **Needs
-  confirmation.**
+  non-Norway users, so Sweden degrades cleanly without it. **Confirmed cut
+  2026-09-06.** Revisit after launch; the tray staying Norway-only is a
+  reasonable permanent answer.
 - **Insights and events for Sweden.** Per-country scraping infrastructure.
 - **Live job feed for Sweden** (Platsbanken/Arbetsförmedlingen). NAV stays
   Norway-only.
