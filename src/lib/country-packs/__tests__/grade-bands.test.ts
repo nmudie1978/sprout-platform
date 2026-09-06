@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { getGradeBandForScale } from "@/lib/country-packs";
+import { getGradeBandForScale } from "@/lib/country-packs/grade-band-lookup";
 import { SV_GRADE_BANDS } from "../sv/grade-bands";
 import { SWEDEN_MERITVARDE, NORWAY_VGS } from "../scales";
 import { matchCareerToGradeRange } from "@/lib/career-pathways/grade-match";

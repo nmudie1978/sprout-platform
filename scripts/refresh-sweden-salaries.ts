@@ -126,6 +126,12 @@ async function main() {
 
   if (dryRun) { console.log("\ndry run — nothing written"); return; }
   writeFileSync(packPath, JSON.stringify(pack, null, 2) + "\n", "utf8");
+console.log(
+  "\nNOTE: the pack is now written in its plain, un-interned form. Run\n" +
+  "  npx tsx scripts/intern-pack-strings.ts\n" +
+  "before committing, or the file re-inflates from ~279KB to ~830KB and\n" +
+  "ships that to every browser.",
+);
 }
 
 main().catch((e) => { console.error(e); process.exitCode = 1; });

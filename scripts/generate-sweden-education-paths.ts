@@ -75,3 +75,9 @@ console.log(`pack now ${pack.meta.coverage.careers} careers`, pack.meta.coverage
 
 if (dryRun) { console.log("\ndry run — nothing written"); process.exit(0); }
 writeFileSync(packPath, JSON.stringify(pack, null, 2) + "\n", "utf8");
+console.log(
+  "\nNOTE: the pack is now written in its plain, un-interned form. Run\n" +
+  "  npx tsx scripts/intern-pack-strings.ts\n" +
+  "before committing, or the file re-inflates from ~279KB to ~830KB and\n" +
+  "ships that to every browser.",
+);

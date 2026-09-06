@@ -50,7 +50,12 @@ import {
   shouldExcludeByRoute,
   gradeMatchScoreAdjustment,
 } from "@/lib/career-pathways/grade-match";
-import { getGradeBandForScale } from "@/lib/country-packs";
+// Imported from the leaf module, NOT the country-packs barrel: the barrel
+// eagerly pulls in every pack.generated.json, and the Swedish one alone is
+// 842KB. The engine runs client-side, so going through the barrel would ship
+// the whole Swedish catalog to every user — the very thing useCareerCatalog
+// exists to avoid.
+import { getGradeBandForScale } from "@/lib/country-packs/grade-band-lookup";
 import { NORWAY_VGS, SWEDEN_MERITVARDE } from "@/lib/country-packs/scales";
 
 /** Look up a career's category by id (catalog-derived; supplied by the caller). */

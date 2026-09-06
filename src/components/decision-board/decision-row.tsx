@@ -12,6 +12,9 @@ import {
 import { parseSalaryRangeK } from "@/lib/salary-progression";
 import type { DecisionRow } from "@/lib/decision-board/types";
 import type { Career } from "@/lib/career-pathways";
+import type { LocalizedCareerView } from "@/lib/career-localization/types";
+import { showsSalaryProgression } from "@/lib/career-localization/display";
+import { EstimatedBadge, estimateNoteFor } from "@/components/estimated-badge";
 
 /** The board-wide pay span, in thousands of NOK, used to place each card's
  *  range bar on a shared scale so two careers compare at a glance. */
@@ -59,7 +62,7 @@ function JourneyDots({ progress }: { progress: number }) {
 
 export function DecisionRowView(props: {
   row: DecisionRow;
-  career: Career | undefined;
+  career: Career | LocalizedCareerView | undefined;
   stageLabel: string;
   reflections: string[];
   salaryDomain?: SalaryDomain;
@@ -69,10 +72,19 @@ export function DecisionRowView(props: {
   onDown?: () => void;
   onRelegate?: () => void;
   onRestore?: () => void;
+  /** Drives whether the NOK-shaped salary bar is meaningful. */
+  country?: string | null;
 }) {
   const { row, career, stageLabel, reflections, salaryDomain } = props;
   const reflectionsCount = reflections.length;
-  const band = parseSalaryRangeK(career?.avgSalary);
+  // parseSalaryRangeK reads the Norwegian "550,000 - 850,000 kr/year" shape
+  // and returns thousands. A Swedish figure is monthly SEK, so parsing it
+  // would plot a bar an order of magnitude off and compare it against
+  // Norwegian peers. Suppress the bar rather than draw a wrong one.
+  const isLocalizedCountry =
+    career && "isLocalized" in career && !showsSalaryProgression(props.country);
+  const band = isLocalizedCountry ? null : parseSalaryRangeK(career?.avgSalary);
+  const estNote = career ? estimateNoteFor(career) : null;
   const isLeader = !row.ruledOut && row.rank === 1;
 
   return (
@@ -220,7 +232,8 @@ export function DecisionRowView(props: {
           {career?.educationPath && (
             <p>
               <span className="font-medium text-foreground/70">Getting in: </span>
-              {career.educationPath}
+              {career.educationPath}{" "}
+              <EstimatedBadge note={estNote} compact />
             </p>
           )}
           {reflectionsCount > 0 && (

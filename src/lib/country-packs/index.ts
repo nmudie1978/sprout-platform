@@ -12,15 +12,57 @@
 import esPack from "./es/pack.generated.json";
 import svPack from "./sv/pack.generated.json";
 import daPack from "./da/pack.generated.json";
-import type { CountryPack, PackCareer, PackGradeBand } from "./types";
-import { SV_GRADE_BANDS } from "./sv/grade-bands";
+import type { CountryPack, PackCareer, ProvenanceTier } from "./types";
 
 export type { CountryPack, PackCareer, Provenanced, ProvenanceTier } from "./types";
 
+/**
+ * Packs are stored with their repeated strings interned — see
+ * scripts/intern-pack-strings.ts. 1,603 Swedish careers share just 64
+ * education-path sentences and one SCB source URL appears 900+ times, so
+ * storing values inline cost 688KB, all of which reached the browser because
+ * localizeCareer runs in client components.
+ *
+ * Rehydration happens ONCE per pack at module load and restores the public
+ * CountryPack shape exactly, so no consumer knows the file is compressed.
+ */
+interface InternedField {
+  v: number;
+  t: ProvenanceTier;
+  s: number;
+  at?: string;
+  n?: string;
+}
+
+function rehydrate(raw: unknown): CountryPack {
+  const pack = raw as CountryPack & {
+    strings?: string[];
+    careers: Record<string, Record<string, unknown>>;
+  };
+  const strings = pack.strings;
+  if (!strings) return pack as CountryPack;
+
+  for (const career of Object.values(pack.careers)) {
+    for (const field of ["salary", "educationPath"] as const) {
+      const f = career[field] as InternedField | undefined;
+      if (!f || typeof f.v !== "number") continue;
+      career[field] = {
+        value: strings[f.v],
+        tier: f.t,
+        source: strings[f.s],
+        ...(f.at ? { verifiedAt: f.at } : {}),
+        ...(f.n ? { note: f.n } : {}),
+      };
+    }
+  }
+  delete pack.strings;
+  return pack as CountryPack;
+}
+
 const REGISTRY: Record<string, CountryPack> = {
-  Spain: esPack as CountryPack,
-  Sweden: svPack as CountryPack,
-  Denmark: daPack as CountryPack,
+  Spain: rehydrate(esPack),
+  Sweden: rehydrate(svPack),
+  Denmark: rehydrate(daPack),
 };
 
 /** Every country that has a pack. Norway is deliberately absent — its data is
@@ -64,23 +106,4 @@ export function getRouteLabel(
   return getPack(country)?.routeLabels?.[route] ?? route;
 }
 
-/**
- * The grade band for a career, on a given grade scale.
- *
- * Keyed by SCALE rather than country on purpose: the scale id is persisted on
- * the user's stored gradeRange, so matching can resolve the right band from
- * the preferences alone, without threading a country through the engine.
- *
- * Returns null when the scale has no band data for that career, which is the
- * common case and the honest one — matching then reports "unknown" rather
- * than ranking against a number nobody verified.
- */
-export function getGradeBandForScale(
-  scaleId: string | undefined,
-  careerId: string,
-): PackGradeBand | null {
-  if (scaleId === "se-meritvarde") {
-    return SV_GRADE_BANDS[careerId]?.value ?? null;
-  }
-  return null;
-}
+export { getGradeBandForScale } from "./grade-band-lookup";

@@ -33,6 +33,8 @@ import { toast } from "@/hooks/use-toast";
 import type { Career } from "@/lib/career-pathways";
 import { useCareerCatalog } from "@/hooks/use-career-catalog";
 import type { LocalizedCareerView } from "@/lib/career-localization/types";
+import { EstimatedBadge, estimateNoteFor } from "@/components/estimated-badge";
+import { salaryPeriodLabel } from "@/lib/career-localization/display";
 import type { CareerGoal } from "@/lib/goals/types";
 import { createEmptyGoal } from "@/lib/goals/types";
 import { syncGuidanceGoal } from "@/lib/guidance/rules";
@@ -282,7 +284,12 @@ export function CareerDetailSheet({
                   <div className="p-2 rounded-lg border bg-muted/30 min-w-0">
                     <div className="flex items-center gap-1.5 mb-0.5">
                       <Banknote className="h-3.5 w-3.5 text-green-600 shrink-0" />
-                      <span className="text-[10px] font-medium">Salary</span>
+                      {/* Swedish pay is manadslon; calling it annual overstates
+                          it twelvefold. */}
+                      <span className="text-[10px] font-medium">
+                        {salaryPeriodLabel(countryData?.country).replace(" Salary", "")} salary
+                      </span>
+                      <EstimatedBadge note={estimateNoteFor(career)} compact />
                     </div>
                     <p className="text-xs font-semibold leading-snug break-words">{career.avgSalary || "—"}</p>
                   </div>

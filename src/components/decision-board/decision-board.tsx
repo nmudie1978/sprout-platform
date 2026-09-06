@@ -7,6 +7,8 @@ import { useDecisionInputs } from "@/hooks/use-decision-inputs";
 import { useDecisionBoard } from "@/hooks/use-decision-board";
 import { parseSalaryRangeK } from "@/lib/salary-progression";
 import { DecisionRowView, type SalaryDomain } from "./decision-row";
+import { localizeCareer } from "@/lib/career-localization";
+import { useQuery } from "@tanstack/react-query";
 
 const STAGE_LABEL = ["Not started", "Discover", "Understand", "Complete"];
 
@@ -23,6 +25,21 @@ export function DecisionBoardTab() {
   const { inputs, reflections, userId, isLoading } = useDecisionInputs();
   const { board, save } = useDecisionBoard();
   const { getCareerById } = useCareerCatalog();
+  // The board read the raw catalog, so a Swedish user saw the Norwegian
+  // education route under "Getting in". Rides the shared ['profile-country']
+  // cache, so no extra round-trip.
+  const { data: countryData } = useQuery<{ country?: string | null }>({
+    queryKey: ["profile-country"],
+    queryFn: async () => {
+      const res = await fetch("/api/profile");
+      if (!res.ok) return {};
+      return res.json();
+    },
+    staleTime: 60 * 1000,
+  });
+  const userCountry = countryData?.country ?? null;
+  const localizeCareerFor = (c: ReturnType<typeof getCareerById>) =>
+    c ? localizeCareer(c, userCountry) : c;
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
   const [dragId, setDragId] = useState<string | null>(null);
 
@@ -117,7 +134,8 @@ export function DecisionBoardTab() {
             >
               <DecisionRowView
                 row={row}
-                career={getCareerById(row.careerId)}
+                career={localizeCareerFor(getCareerById(row.careerId))}
+              country={userCountry}
                 stageLabel={STAGE_LABEL[row.progress] ?? ""}
                 reflections={reflections[row.careerId] ?? []}
                 salaryDomain={salaryDomain}
@@ -142,7 +160,8 @@ export function DecisionBoardTab() {
             <DecisionRowView
               key={row.careerId}
               row={row}
-              career={getCareerById(row.careerId)}
+              career={localizeCareerFor(getCareerById(row.careerId))}
+              country={userCountry}
               stageLabel={STAGE_LABEL[row.progress] ?? ""}
               reflections={reflections[row.careerId] ?? []}
               salaryDomain={salaryDomain}
