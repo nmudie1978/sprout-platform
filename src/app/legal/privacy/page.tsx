@@ -1,5 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Shield } from "lucide-react";
+import { jurisdictionFor } from "@/lib/legal/jurisdictions";
 
 export const metadata = {
   title: "Privacy Policy | Endeavrly",
@@ -7,6 +8,12 @@ export const metadata = {
 };
 
 export default function PrivacyPolicyPage() {
+  // /legal is a public route with no session, so this resolves to the default
+  // jurisdiction. That is correct today because every country falls back to
+  // Norway until counsel signs one off. The moment a second jurisdiction is
+  // marked reviewed, this page must become async and read the viewer's
+  // country — see lib/legal/jurisdictions.ts.
+  const j = jurisdictionFor(null);
   return (
     <div>
       {/* Header */}
@@ -31,7 +38,7 @@ export default function PrivacyPolicyPage() {
               This Privacy Policy explains how Endeavrly AS (&quot;Endeavrly&quot;, &quot;we&quot;, &quot;us&quot;) collects, uses, stores, and shares your personal data when you use our platform. We are committed to protecting your privacy, particularly because many of our users are young people.
             </p>
             <p>
-              This policy is written in accordance with the EU General Data Protection Regulation (GDPR) and the Norwegian Personal Data Act (<em>Personopplysningsloven</em>).
+              This policy is written in accordance with the EU General Data Protection Regulation (GDPR) and {j.dataProtectionAct}.
             </p>
           </section>
 
@@ -40,7 +47,7 @@ export default function PrivacyPolicyPage() {
             <p>The data controller responsible for your personal data is:</p>
             <ul>
               <li>Endeavrly AS</li>
-              <li>Oslo, Norway</li>
+              <li>{j.controllerAddress}</li>
               <li>Email: <a href="mailto:privacy@endeavrly.no" className="text-primary hover:underline">privacy@endeavrly.no</a></li>
             </ul>
           </section>
@@ -202,7 +209,7 @@ export default function PrivacyPolicyPage() {
               <li>Row-level security policies in our database</li>
             </ul>
             <p>
-              No system can guarantee absolute security. If we become aware of a data breach that is likely to result in a risk to your rights, we will notify you and the Norwegian Data Protection Authority (Datatilsynet) within 72 hours.
+              No system can guarantee absolute security. If we become aware of a data breach that is likely to result in a risk to your rights, we will notify you and {j.supervisoryAuthority.name} within 72 hours.
             </p>
           </section>
 
@@ -220,7 +227,7 @@ export default function PrivacyPolicyPage() {
             </p>
             <ul>
               <li>Us first, at <a href="mailto:privacy@endeavrly.no" className="text-primary hover:underline">privacy@endeavrly.no</a></li>
-              <li>The Norwegian Data Protection Authority (Datatilsynet): <a href="https://www.datatilsynet.no" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">datatilsynet.no</a></li>
+              <li>{j.supervisoryAuthority.name}: <a href={j.supervisoryAuthority.url} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">{j.supervisoryAuthority.url.replace("https://www.", "")}</a></li>
             </ul>
           </section>
 
@@ -229,7 +236,7 @@ export default function PrivacyPolicyPage() {
             <p>For any questions about this Privacy Policy or our data practices, contact us at:</p>
             <ul>
               <li>Email: <a href="mailto:privacy@endeavrly.no" className="text-primary hover:underline">privacy@endeavrly.no</a></li>
-              <li>Post: Endeavrly AS, Oslo, Norway</li>
+              <li>Post: {j.controllerAddress}</li>
             </ul>
           </section>
 
