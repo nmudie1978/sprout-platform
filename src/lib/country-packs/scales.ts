@@ -26,6 +26,13 @@ export interface GradeScale {
    * the "what would change this?" coaching hint.
    */
   step: number;
+  /**
+   * Decimal places a value is reported to. Norway records whole grades;
+   * Sweden reports meritvärde to two decimals, so rounding a Swedish value
+   * to an integer would turn 17.5 into 18 and silently move the user a
+   * fifth of a grade.
+   */
+  precision: number;
   /** Label for the self-report control. */
   inputLabel: string;
   /** Render a value for display, in the country's own convention. */
@@ -41,6 +48,7 @@ export const NORWAY_VGS: GradeScale = {
   min: 1,
   max: 6,
   step: 1,
+  precision: 0,
   inputLabel: "Your typical grade (1–6)",
   format: (v) => String(Math.round(v)),
 };
@@ -67,6 +75,7 @@ export const SWEDEN_MERITVARDE: GradeScale = {
   min: 0,
   max: 22.5,
   step: 2.5,
+  precision: 2,
   inputLabel: "Ditt meritvärde (0–22,5)",
   // Swedish uses a comma as the decimal separator.
   format: (v) => v.toFixed(2).replace(".", ","),
@@ -86,6 +95,7 @@ export const SWEDEN_HOGSKOLEPROVET: GradeScale = {
   // One "grade's worth" here is coarser than the 0.05 reporting increment;
   // 0.2 is roughly the gap between adjacent admission thresholds.
   step: 0.2,
+  precision: 2,
   inputLabel: "Ditt högskoleprovsresultat (0,00–2,00)",
   format: (v) => v.toFixed(2).replace(".", ","),
 };
@@ -109,4 +119,16 @@ export function gradeScaleFor(country?: string | null): GradeScale {
 export function clampToScale(value: number, scale: GradeScale): number {
   if (!Number.isFinite(value)) return scale.min;
   return Math.min(scale.max, Math.max(scale.min, value));
+}
+
+/**
+ * Round a value to the precision the scale is actually reported to.
+ *
+ * The profile API used to `Math.round` every grade, which is right on
+ * Norway's whole-number scale and destructive on Sweden's: a meritvärde of
+ * 17.5 became 18.
+ */
+export function quantizeToScale(value: number, scale: GradeScale): number {
+  const f = 10 ** scale.precision;
+  return Math.round(value * f) / f;
 }

@@ -1,9 +1,6 @@
 
 
-Fix the attachments section
-Get haircut
-Collect suit
-Contact nui
+
 
 
  so to see PONR process working what steps must i perform and using what personas?   keep it short                                                                                                            

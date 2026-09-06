@@ -8,6 +8,8 @@ import { slugify } from "@/lib/utils";
 import { AccountStatus } from "@prisma/client";
 import { validateSignupAge, PLATFORM_MIN_AGE, PLATFORM_MAX_AGE } from "@/lib/safety/age";
 import { apiError } from "@/lib/api-error";
+import { sanitizeGradeRange } from "@/lib/validation/grade-range";
+import { gradeScaleFor } from "@/lib/country-packs/scales";
 
 export async function GET(req: NextRequest) {
   try {
@@ -233,22 +235,27 @@ export async function PATCH(req: NextRequest) {
       }
 
       // Light validation — strip unknown fields, cap array sizes.
-      // gradeRange is quantised + clamped; anything out of 1-6 or low>high
-      // is silently dropped rather than erroring (the quiz UI only sends
-      // valid values, but defence-in-depth for direct API callers).
-      const gradeRangeRaw = dp?.gradeRange as { low?: unknown; high?: unknown } | undefined;
-      let gradeRange: { low: number; high: number } | undefined;
-      if (gradeRangeRaw && typeof gradeRangeRaw === "object") {
-        const low = Number(gradeRangeRaw.low);
-        const high = Number(gradeRangeRaw.high);
-        if (
-          Number.isFinite(low) &&
-          Number.isFinite(high) &&
-          low >= 1 && high <= 6 && low <= high
-        ) {
-          gradeRange = { low: Math.round(low), high: Math.round(high) };
+      //
+      // gradeRange is validated against the user's OWN grade scale. It used
+      // to require 1 <= low, high <= 6 and Math.round both ends, which is
+      // correct for Norway and wrong for everyone else: a Swedish meritvärde
+      // (0–22.5) failed the bound and was discarded entirely, and 17.5 would
+      // have been rounded to 18. See lib/validation/grade-range.ts.
+      let gradeScale = gradeScaleFor(null);
+      if (dp?.gradeRange) {
+        // Only pay for the lookup when there is a range to validate.
+        try {
+          const p = await prisma.youthProfile.findUnique({
+            where: { userId: session.user.id },
+            select: { country: true },
+          });
+          gradeScale = gradeScaleFor(p?.country);
+        } catch {
+          // Fall back to the Norwegian scale rather than dropping the
+          // answer — a failed lookup should not cost the user their input.
         }
       }
+      const gradeRange = sanitizeGradeRange(dp?.gradeRange, gradeScale);
       const sanitized = dp
         ? {
             subjects: Array.isArray(dp.subjects) ? dp.subjects.slice(0, 20).map(String) : [],
