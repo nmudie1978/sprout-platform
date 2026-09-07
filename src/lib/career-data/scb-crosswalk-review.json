@@ -1,0 +1,1325 @@
+{
+  "generatedAt": "2026-09-06",
+  "review": [
+    {
+      "styrkCode": "7421",
+      "styrkLabel": "Electronics mechanics and servicers",
+      "careers": [
+        "avionics-technician",
+        "instrumentation-contractor"
+      ],
+      "reason": "no such SSYK code",
+      "candidates": [
+        {
+          "code": "1791",
+          "label": "Other services managers not elsewhere classified, level 1"
+        },
+        {
+          "code": "1792",
+          "label": "Other services managers not elsewhere classified, level 2"
+        },
+        {
+          "code": "4430",
+          "label": "Elected representatives"
+        },
+        {
+          "code": "5169",
+          "label": "Personal services workers not elsewhere classified"
+        }
+      ],
+      "careerCount": 2
+    },
+    {
+      "styrkCode": "3354",
+      "styrkLabel": "Government licensing officials",
+      "careers": [
+        "bailiff",
+        "immigration-officer"
+      ],
+      "reason": "code collision — labels disagree",
+      "collidesWith": "Safety and quality inspectors",
+      "candidates": [
+        {
+          "code": "1112",
+          "label": "Senior government officials"
+        },
+        {
+          "code": "3333",
+          "label": "Employment officers"
+        },
+        {
+          "code": "3341",
+          "label": "Office supervisors"
+        },
+        {
+          "code": "3352",
+          "label": "Tax officials"
+        }
+      ],
+      "careerCount": 2
+    },
+    {
+      "styrkCode": "7512",
+      "styrkLabel": "Bakers, pastry-cooks and confectionery makers",
+      "careers": [
+        "baker",
+        "pastry-chef"
+      ],
+      "reason": "no such SSYK code",
+      "candidates": [
+        {
+          "code": "7522",
+          "label": "Cabinet-makers and related workers"
+        },
+        {
+          "code": "7612",
+          "label": "Bakers, pastry-cooks and confectionery makers"
+        },
+        {
+          "code": "9413",
+          "label": "Café and confectionery assistants"
+        }
+      ],
+      "careerCount": 2
+    },
+    {
+      "styrkCode": "2269",
+      "styrkLabel": "Chiropractors and other related professionals",
+      "careers": [
+        "chiropractor",
+        "podiatrist"
+      ],
+      "reason": "no such SSYK code",
+      "candidates": [
+        {
+          "code": "2271",
+          "label": "Chiropractors and naprapaths"
+        }
+      ],
+      "careerCount": 2
+    },
+    {
+      "styrkCode": "9313",
+      "styrkLabel": "Building construction labourers",
+      "careers": [
+        "construction-worker",
+        "demolition-worker"
+      ],
+      "reason": "no such SSYK code",
+      "candidates": [
+        {
+          "code": "2142",
+          "label": "Engineering professionals in building construction"
+        },
+        {
+          "code": "5152",
+          "label": "Building caretakers"
+        },
+        {
+          "code": "7115",
+          "label": "Construction diver"
+        },
+        {
+          "code": "7116",
+          "label": "Scaffold builders"
+        }
+      ],
+      "careerCount": 2
+    },
+    {
+      "styrkCode": "7542",
+      "styrkLabel": "Shotfirers and blasters",
+      "careers": [
+        "controlled-demolition-specialist",
+        "explosives-technician"
+      ],
+      "reason": "no such SSYK code",
+      "candidates": [
+        {
+          "code": "8115",
+          "label": "Shot firers and blasters"
+        }
+      ],
+      "careerCount": 2
+    },
+    {
+      "styrkCode": "2424",
+      "styrkLabel": "Training and staff development professionals",
+      "careers": [
+        "corporate-trainer",
+        "educational-trainer"
+      ],
+      "reason": "no such SSYK code",
+      "candidates": [
+        {
+          "code": "8311",
+          "label": "Train operator"
+        }
+      ],
+      "careerCount": 2
+    },
+    {
+      "styrkCode": "7215",
+      "styrkLabel": "Riggers and cable splicers",
+      "careers": [
+        "crane-rigger",
+        "offshore-rigger"
+      ],
+      "reason": "code collision — labels disagree",
+      "collidesWith": "Steel structure erectors and heavy plate workers",
+      "candidates": [],
+      "careerCount": 2
+    },
+    {
+      "styrkCode": "8322",
+      "styrkLabel": "Car, taxi, van and motorcycle drivers",
+      "careers": [
+        "delivery-driver",
+        "taxi-driver"
+      ],
+      "reason": "no such SSYK code",
+      "candidates": [
+        {
+          "code": "8321",
+          "label": "Taxi, car, and van drivers"
+        },
+        {
+          "code": "8329",
+          "label": "Motorcycle, bicycle drivers and other automobile drivers not elsewhere classified"
+        },
+        {
+          "code": "8331",
+          "label": "Bus and tram drivers"
+        }
+      ],
+      "careerCount": 2
+    },
+    {
+      "styrkCode": "3251",
+      "styrkLabel": "Dental assistants and therapists",
+      "careers": [
+        "dental-assistant",
+        "dental-hygienist"
+      ],
+      "reason": "no such SSYK code",
+      "candidates": [
+        {
+          "code": "2273",
+          "label": "Occupational therapist"
+        },
+        {
+          "code": "3250",
+          "label": "Dental hygienists"
+        },
+        {
+          "code": "5144",
+          "label": "Foot therapists"
+        },
+        {
+          "code": "5350",
+          "label": "Dental nurses"
+        }
+      ],
+      "careerCount": 2
+    },
+    {
+      "styrkCode": "3355",
+      "styrkLabel": "Police inspectors and detectives",
+      "careers": [
+        "detective",
+        "police-officer"
+      ],
+      "reason": "code collision — labels disagree",
+      "collidesWith": "Fire and building inspectors",
+      "candidates": [
+        {
+          "code": "2422",
+          "label": "Policy administration professionals"
+        },
+        {
+          "code": "3360",
+          "label": "Police Officers"
+        }
+      ],
+      "careerCount": 2
+    },
+    {
+      "styrkCode": "3258",
+      "styrkLabel": "Ambulance workers",
+      "careers": [
+        "emt",
+        "paramedic"
+      ],
+      "reason": "no such SSYK code",
+      "candidates": [
+        {
+          "code": "2226",
+          "label": "Nurses - Ambulance"
+        },
+        {
+          "code": "5326",
+          "label": "Ambulance attendants"
+        }
+      ],
+      "careerCount": 2
+    },
+    {
+      "styrkCode": "3131",
+      "styrkLabel": "Power production plant operators",
+      "careers": [
+        "gas-turbine-technician",
+        "power-plant-technician"
+      ],
+      "reason": "no such SSYK code",
+      "candidates": [
+        {
+          "code": "7523",
+          "label": "Machine operator, Wood-products"
+        },
+        {
+          "code": "8112",
+          "label": "Mineral and stone processing plant operators"
+        },
+        {
+          "code": "8114",
+          "label": "Machine operator, cement, stone and other mineral products"
+        },
+        {
+          "code": "8129",
+          "label": "Metal processing plant operators not elsewhere classified"
+        }
+      ],
+      "careerCount": 2
+    },
+    {
+      "styrkCode": "3155",
+      "styrkLabel": "Air traffic safety electronics technicians",
+      "careers": [
+        "ground-control-operator",
+        "mission-control-specialist"
+      ],
+      "reason": "code collision — labels disagree",
+      "collidesWith": "Aircraft maintenance technician",
+      "candidates": [
+        {
+          "code": "3113",
+          "label": "Electronics engineering technicians"
+        },
+        {
+          "code": "3154",
+          "label": "Air traffic controllers"
+        },
+        {
+          "code": "4430",
+          "label": "Elected representatives"
+        }
+      ],
+      "careerCount": 2
+    },
+    {
+      "styrkCode": "2263",
+      "styrkLabel": "Environmental and occupational health and hygiene professionals",
+      "careers": [
+        "health-educator",
+        "public-health-specialist"
+      ],
+      "reason": "no such SSYK code",
+      "candidates": [
+        {
+          "code": "2181",
+          "label": "Environmental and occupational health and hygiene professionals"
+        },
+        {
+          "code": "2182",
+          "label": "Environmental and occupational health inspectors"
+        },
+        {
+          "code": "2183",
+          "label": "Environmental protection professionals"
+        },
+        {
+          "code": "2273",
+          "label": "Occupational therapist"
+        }
+      ],
+      "careerCount": 2
+    },
+    {
+      "styrkCode": "9112",
+      "styrkLabel": "Cleaners and helpers in offices, hotels and other local kinds of activity units",
+      "careers": [
+        "hotel-housekeeper",
+        "industrial-cleaner"
+      ],
+      "reason": "no such SSYK code",
+      "candidates": [
+        {
+          "code": "3333",
+          "label": "Employment officers"
+        },
+        {
+          "code": "3341",
+          "label": "Office supervisors"
+        },
+        {
+          "code": "3352",
+          "label": "Tax officials"
+        },
+        {
+          "code": "3360",
+          "label": "Police Officers"
+        }
+      ],
+      "careerCount": 2
+    },
+    {
+      "styrkCode": "7549",
+      "styrkLabel": "Craft and related workers not elsewhere classified",
+      "careers": [
+        "industrial-abseiler",
+        "rope-access-technician"
+      ],
+      "reason": "no such SSYK code",
+      "candidates": [
+        {
+          "code": "7534",
+          "label": "Leather craft workers, shoemakers and related workers"
+        }
+      ],
+      "careerCount": 2
+    },
+    {
+      "styrkCode": "3411",
+      "styrkLabel": "Legal and related associate professionals",
+      "careers": [
+        "music-licensing-specialist",
+        "title-officer"
+      ],
+      "reason": "code collision — labels disagree",
+      "collidesWith": "Social work associate professionals",
+      "candidates": [
+        {
+          "code": "2619",
+          "label": "Legal professionals not elsewhere classified"
+        },
+        {
+          "code": "3342",
+          "label": "Legal secretaries"
+        }
+      ],
+      "careerCount": 2
+    },
+    {
+      "styrkCode": "3254",
+      "styrkLabel": "Dispensing opticians",
+      "careers": [
+        "optician",
+        "optometrist"
+      ],
+      "reason": "no such SSYK code",
+      "candidates": [
+        {
+          "code": "2284",
+          "label": "Opticians"
+        },
+        {
+          "code": "5224",
+          "label": "Opticians assistants"
+        }
+      ],
+      "careerCount": 2
+    },
+    {
+      "styrkCode": "2656",
+      "styrkLabel": "Announcers on radio, television and other media",
+      "careers": [
+        "sports-broadcaster",
+        "sports-commentator"
+      ],
+      "reason": "no such SSYK code",
+      "candidates": [
+        {
+          "code": "2235",
+          "label": "Nurses - radiology"
+        }
+      ],
+      "careerCount": 2
+    },
+    {
+      "styrkCode": "3522",
+      "styrkLabel": "Telecommunications engineering technicians",
+      "careers": [
+        "telco-billing-specialist",
+        "telco-field-engineer"
+      ],
+      "reason": "code collision — labels disagree",
+      "collidesWith": "Light, sound and stage technicians",
+      "candidates": [
+        {
+          "code": "2143",
+          "label": "Engineering professionals in electrical, electronics and telecommunications"
+        }
+      ],
+      "careerCount": 2
+    },
+    {
+      "styrkCode": "8160",
+      "styrkLabel": "Food and related products machine operators",
+      "careers": [
+        "brewer"
+      ],
+      "reason": "no such SSYK code",
+      "candidates": [
+        {
+          "code": "7223",
+          "label": "Machine-tool operators"
+        },
+        {
+          "code": "7523",
+          "label": "Machine operator, Wood-products"
+        },
+        {
+          "code": "7619",
+          "label": "Other food processors"
+        },
+        {
+          "code": "8114",
+          "label": "Machine operator, cement, stone and other mineral products"
+        }
+      ],
+      "careerCount": 1
+    },
+    {
+      "styrkCode": "7511",
+      "styrkLabel": "Butchers, fishmongers and related food preparers",
+      "careers": [
+        "butcher"
+      ],
+      "reason": "no such SSYK code",
+      "candidates": [
+        {
+          "code": "6221",
+          "label": "Fish farmers"
+        },
+        {
+          "code": "7611",
+          "label": "Butchers, fishmongers and related food preparers"
+        },
+        {
+          "code": "7619",
+          "label": "Other food processors"
+        },
+        {
+          "code": "9411",
+          "label": "Pizza makers and fast food preparers"
+        }
+      ],
+      "careerCount": 1
+    },
+    {
+      "styrkCode": "5322",
+      "styrkLabel": "Home-based personal care workers",
+      "careers": [
+        "caregiver"
+      ],
+      "reason": "code collision — labels disagree",
+      "collidesWith": "Assistant nurses, rehabilitation",
+      "candidates": [
+        {
+          "code": "5152",
+          "label": "Building caretakers"
+        },
+        {
+          "code": "5169",
+          "label": "Personal services workers not elsewhere classified"
+        },
+        {
+          "code": "5311",
+          "label": "Child care workers"
+        },
+        {
+          "code": "5321",
+          "label": "Assistant nurses, home care and homes for the elderly"
+        }
+      ],
+      "careerCount": 1
+    },
+    {
+      "styrkCode": "7115",
+      "styrkLabel": "Carpenters and joiners",
+      "careers": [
+        "carpenter"
+      ],
+      "reason": "code collision — labels disagree",
+      "collidesWith": "Construction diver",
+      "candidates": [
+        {
+          "code": "7111",
+          "label": "Woodworkers, carpenters"
+        }
+      ],
+      "careerCount": 1
+    },
+    {
+      "styrkCode": "3434",
+      "styrkLabel": "Chefs",
+      "careers": [
+        "chef"
+      ],
+      "reason": "no such SSYK code",
+      "candidates": [
+        {
+          "code": "3451",
+          "label": "Chefs and sous-chefs"
+        }
+      ],
+      "careerCount": 1
+    },
+    {
+      "styrkCode": "7114",
+      "styrkLabel": "Concrete placers, concrete finishers and related workers",
+      "careers": [
+        "concrete-finisher"
+      ],
+      "reason": "code collision — labels disagree",
+      "collidesWith": "Rail and road construction workers",
+      "candidates": [
+        {
+          "code": "7113",
+          "label": "Concrete placers, concrete finishers and related workers"
+        }
+      ],
+      "careerCount": 1
+    },
+    {
+      "styrkCode": "3351",
+      "styrkLabel": "Customs and border inspectors",
+      "careers": [
+        "customs-officer"
+      ],
+      "reason": "code collision — labels disagree",
+      "collidesWith": "Customs and coast guard officers",
+      "candidates": [],
+      "careerCount": 1
+    },
+    {
+      "styrkCode": "5164",
+      "styrkLabel": "Pet groomers and animal care workers",
+      "careers": [
+        "dog-groomer"
+      ],
+      "reason": "no such SSYK code",
+      "candidates": [
+        {
+          "code": "5152",
+          "label": "Building caretakers"
+        },
+        {
+          "code": "5311",
+          "label": "Child care workers"
+        },
+        {
+          "code": "6129",
+          "label": "Animal breeders and related workers not elsewhere classified"
+        }
+      ],
+      "careerCount": 1
+    },
+    {
+      "styrkCode": "5165",
+      "styrkLabel": "Driving instructors",
+      "careers": [
+        "driving-instructor"
+      ],
+      "reason": "no such SSYK code",
+      "candidates": [
+        {
+          "code": "3422",
+          "label": "Sports coachers and instructors"
+        },
+        {
+          "code": "3441",
+          "label": "Driving instructors"
+        },
+        {
+          "code": "7311",
+          "label": "Precision-instrument makers and repairers"
+        },
+        {
+          "code": "7319",
+          "label": "Musical instrument makers and other handicraft workers"
+        }
+      ],
+      "careerCount": 1
+    },
+    {
+      "styrkCode": "7123",
+      "styrkLabel": "Plasterers",
+      "careers": [
+        "drywall-installer"
+      ],
+      "reason": "code collision — labels disagree",
+      "collidesWith": "Insulation workers",
+      "candidates": [
+        {
+          "code": "8142",
+          "label": "Machine operators, plastic products"
+        },
+        {
+          "code": "8213",
+          "label": "Metal-, rubber- and plastic-products assemblers"
+        }
+      ],
+      "careerCount": 1
+    },
+    {
+      "styrkCode": "4229",
+      "styrkLabel": "Client information workers not elsewhere classified",
+      "careers": [
+        "emergency-dispatcher"
+      ],
+      "reason": "no such SSYK code",
+      "candidates": [
+        {
+          "code": "1241",
+          "label": "Information, communication and public relations managers, level 1"
+        },
+        {
+          "code": "1242",
+          "label": "Information, communication and public relations managers, level 2"
+        },
+        {
+          "code": "1311",
+          "label": "Information and communications technology service managers, level 1"
+        },
+        {
+          "code": "1312",
+          "label": "Information and communications technology service managers, level 2"
+        }
+      ],
+      "careerCount": 1
+    },
+    {
+      "styrkCode": "2143",
+      "styrkLabel": "Environmental engineers",
+      "careers": [
+        "environmental-engineer"
+      ],
+      "reason": "code collision — labels disagree",
+      "collidesWith": "Engineering professionals in electrical, electronics and telecommunications",
+      "candidates": [
+        {
+          "code": "2181",
+          "label": "Environmental and occupational health and hygiene professionals"
+        },
+        {
+          "code": "2182",
+          "label": "Environmental and occupational health inspectors"
+        },
+        {
+          "code": "2183",
+          "label": "Environmental protection professionals"
+        }
+      ],
+      "careerCount": 1
+    },
+    {
+      "styrkCode": "6114",
+      "styrkLabel": "Mixed crop growers",
+      "careers": [
+        "farmer"
+      ],
+      "reason": "no such SSYK code",
+      "candidates": [
+        {
+          "code": "6111",
+          "label": "Field crop and vegetable growers"
+        },
+        {
+          "code": "6130",
+          "label": "Mixed crop and animal breeders"
+        }
+      ],
+      "careerCount": 1
+    },
+    {
+      "styrkCode": "2163",
+      "styrkLabel": "Product and garment designers",
+      "careers": [
+        "fashion-designer"
+      ],
+      "reason": "code collision — labels disagree",
+      "collidesWith": "Architects, town and traffic planners",
+      "candidates": [
+        {
+          "code": "2171",
+          "label": "Product designers, industrial"
+        },
+        {
+          "code": "2172",
+          "label": "Graphic designers"
+        },
+        {
+          "code": "2179",
+          "label": "Fashion designers and related professionals"
+        }
+      ],
+      "careerCount": 1
+    },
+    {
+      "styrkCode": "5246",
+      "styrkLabel": "Food service counter attendants",
+      "careers": [
+        "fast-food-crew"
+      ],
+      "reason": "no such SSYK code",
+      "candidates": [
+        {
+          "code": "1791",
+          "label": "Other services managers not elsewhere classified, level 1"
+        },
+        {
+          "code": "1792",
+          "label": "Other services managers not elsewhere classified, level 2"
+        },
+        {
+          "code": "5169",
+          "label": "Personal services workers not elsewhere classified"
+        },
+        {
+          "code": "5326",
+          "label": "Ambulance attendants"
+        }
+      ],
+      "careerCount": 1
+    },
+    {
+      "styrkCode": "7422",
+      "styrkLabel": "Information and communications technology installers and servicers",
+      "careers": [
+        "fiber-optic-technician"
+      ],
+      "reason": "no such SSYK code",
+      "candidates": [
+        {
+          "code": "1311",
+          "label": "Information and communications technology service managers, level 1"
+        },
+        {
+          "code": "1312",
+          "label": "Information and communications technology service managers, level 2"
+        },
+        {
+          "code": "1791",
+          "label": "Other services managers not elsewhere classified, level 1"
+        },
+        {
+          "code": "1792",
+          "label": "Other services managers not elsewhere classified, level 2"
+        }
+      ],
+      "careerCount": 1
+    },
+    {
+      "styrkCode": "5111",
+      "styrkLabel": "Travel attendants and travel stewards",
+      "careers": [
+        "flight-attendant"
+      ],
+      "reason": "code collision — labels disagree",
+      "collidesWith": "Cabin crew",
+      "candidates": [
+        {
+          "code": "5113",
+          "label": "Travel guides"
+        },
+        {
+          "code": "5326",
+          "label": "Ambulance attendants"
+        },
+        {
+          "code": "5341",
+          "label": "Attendants"
+        }
+      ],
+      "careerCount": 1
+    },
+    {
+      "styrkCode": "2636",
+      "styrkLabel": "Religious professionals",
+      "careers": [
+        "forsvaret-chaplain"
+      ],
+      "reason": "no such SSYK code",
+      "candidates": [
+        {
+          "code": "1540",
+          "label": "Managers and leaders within religious bodies"
+        },
+        {
+          "code": "2671",
+          "label": "Religious professionals"
+        },
+        {
+          "code": "3412",
+          "label": "Religious associate professionals"
+        }
+      ],
+      "careerCount": 1
+    },
+    {
+      "styrkCode": "7125",
+      "styrkLabel": "Glaziers",
+      "careers": [
+        "glazier"
+      ],
+      "reason": "code collision — labels disagree",
+      "collidesWith": "Plumbing and central heating fitters",
+      "candidates": [
+        {
+          "code": "7124",
+          "label": "Glaziers"
+        }
+      ],
+      "careerCount": 1
+    },
+    {
+      "styrkCode": "2631",
+      "styrkLabel": "Economics",
+      "careers": [
+        "health-economist"
+      ],
+      "reason": "no such SSYK code",
+      "candidates": [
+        {
+          "code": "2415",
+          "label": "Economists and macro analyst"
+        },
+        {
+          "code": "2419",
+          "label": "Economists not elsewhere classified"
+        },
+        {
+          "code": "4111",
+          "label": "Economic assistants"
+        }
+      ],
+      "careerCount": 1
+    },
+    {
+      "styrkCode": "8342",
+      "styrkLabel": "Earthmoving and related plant operators",
+      "careers": [
+        "heavy-equipment-operator"
+      ],
+      "reason": "code collision — labels disagree",
+      "collidesWith": "Heavy Equipment Operators",
+      "candidates": [
+        {
+          "code": "8112",
+          "label": "Mineral and stone processing plant operators"
+        },
+        {
+          "code": "8129",
+          "label": "Metal processing plant operators not elsewhere classified"
+        },
+        {
+          "code": "8171",
+          "label": "Paper pulp plant operators"
+        },
+        {
+          "code": "8172",
+          "label": "Papermaking plant operators"
+        }
+      ],
+      "careerCount": 1
+    },
+    {
+      "styrkCode": "7127",
+      "styrkLabel": "Air conditioning and refrigeration mechanics",
+      "careers": [
+        "hvac-technician"
+      ],
+      "reason": "no such SSYK code",
+      "candidates": [
+        {
+          "code": "7126",
+          "label": "Heating and air conditioning mechanics"
+        }
+      ],
+      "careerCount": 1
+    },
+    {
+      "styrkCode": "3142",
+      "styrkLabel": "Agricultural technicians",
+      "careers": [
+        "irrigation-technician"
+      ],
+      "reason": "no such SSYK code",
+      "candidates": [
+        {
+          "code": "1380",
+          "label": "Forestry and agricultural production managers"
+        },
+        {
+          "code": "2134",
+          "label": "Agricultural professionals"
+        },
+        {
+          "code": "7233",
+          "label": "Agricultural and industrial machinery mechanics and repairers"
+        },
+        {
+          "code": "8341",
+          "label": "Forestry and agricultural machinery operators"
+        }
+      ],
+      "careerCount": 1
+    },
+    {
+      "styrkCode": "4132",
+      "styrkLabel": "Data entry clerks",
+      "careers": [
+        "language-data-annotator"
+      ],
+      "reason": "no such SSYK code",
+      "candidates": [],
+      "careerCount": 1
+    },
+    {
+      "styrkCode": "3256",
+      "styrkLabel": "Medical assistants",
+      "careers": [
+        "medical-assistant"
+      ],
+      "reason": "no such SSYK code",
+      "candidates": [
+        {
+          "code": "2213",
+          "label": "General medical practitioners"
+        },
+        {
+          "code": "3211",
+          "label": "Medical imaging and therapeutic equipment technicians"
+        },
+        {
+          "code": "3212",
+          "label": "Medical and pathology laboratory technicians"
+        },
+        {
+          "code": "3230",
+          "label": "Complementary medicine therapists and associate professionals"
+        }
+      ],
+      "careerCount": 1
+    },
+    {
+      "styrkCode": "7543",
+      "styrkLabel": "Product graders and testers (excluding food and beverages)",
+      "careers": [
+        "non-destructive-testing-technician"
+      ],
+      "reason": "no such SSYK code",
+      "candidates": [
+        {
+          "code": "7613",
+          "label": "Food and beverage tasters and graders"
+        },
+        {
+          "code": "7619",
+          "label": "Other food processors"
+        },
+        {
+          "code": "8169",
+          "label": "Machine operators not elsewhere classified, food and related products"
+        }
+      ],
+      "careerCount": 1
+    },
+    {
+      "styrkCode": "2267",
+      "styrkLabel": "Ergotherapists",
+      "careers": [
+        "occupational-therapist"
+      ],
+      "reason": "no such SSYK code",
+      "candidates": [],
+      "careerCount": 1
+    },
+    {
+      "styrkCode": "2262",
+      "styrkLabel": "Pharmacists",
+      "careers": [
+        "pharmacist"
+      ],
+      "reason": "no such SSYK code",
+      "candidates": [
+        {
+          "code": "2133",
+          "label": "Pharmacologists and related professionals"
+        },
+        {
+          "code": "2281",
+          "label": "Pharmacists"
+        },
+        {
+          "code": "5227",
+          "label": "Pharmacy technicians"
+        },
+        {
+          "code": "8131",
+          "label": "Machine operators, pharmaceutical products"
+        }
+      ],
+      "careerCount": 1
+    },
+    {
+      "styrkCode": "3213",
+      "styrkLabel": "Pharmaceutical technicians and assistants",
+      "careers": [
+        "pharmacy-technician"
+      ],
+      "reason": "code collision — labels disagree",
+      "collidesWith": "Prescriptionists",
+      "candidates": [
+        {
+          "code": "2133",
+          "label": "Pharmacologists and related professionals"
+        },
+        {
+          "code": "2281",
+          "label": "Pharmacists"
+        },
+        {
+          "code": "5227",
+          "label": "Pharmacy technicians"
+        }
+      ],
+      "careerCount": 1
+    },
+    {
+      "styrkCode": "4413",
+      "styrkLabel": "Coding, proof-reading and related clerks",
+      "careers": [
+        "proofreader"
+      ],
+      "reason": "no such SSYK code",
+      "candidates": [],
+      "careerCount": 1
+    },
+    {
+      "styrkCode": "9212",
+      "styrkLabel": "Livestock farm labourers",
+      "careers": [
+        "ranch-worker"
+      ],
+      "reason": "no such SSYK code",
+      "candidates": [
+        {
+          "code": "6221",
+          "label": "Fish farmers"
+        },
+        {
+          "code": "9310",
+          "label": "Construction labourers"
+        },
+        {
+          "code": "9320",
+          "label": "Manufacturing labourers"
+        },
+        {
+          "code": "9331",
+          "label": "Dock labourers"
+        }
+      ],
+      "careerCount": 1
+    },
+    {
+      "styrkCode": "1420",
+      "styrkLabel": "Retail and wholesale trade managers",
+      "careers": [
+        "retail-manager"
+      ],
+      "reason": "no such SSYK code",
+      "candidates": [
+        {
+          "code": "1731",
+          "label": "Retail and wholesale trade managers, level 1"
+        },
+        {
+          "code": "1732",
+          "label": "Retail and wholesale trade managers, level 2"
+        }
+      ],
+      "careerCount": 1
+    },
+    {
+      "styrkCode": "5414",
+      "styrkLabel": "Security guards",
+      "careers": [
+        "security-guard"
+      ],
+      "reason": "code collision — labels disagree",
+      "collidesWith": "Emergency call operators",
+      "candidates": [
+        {
+          "code": "2516",
+          "label": "Security specialists (ICT)"
+        },
+        {
+          "code": "3351",
+          "label": "Customs and coast guard officers"
+        },
+        {
+          "code": "5412",
+          "label": "Prison guards"
+        },
+        {
+          "code": "5413",
+          "label": "Security guards"
+        }
+      ],
+      "careerCount": 1
+    },
+    {
+      "styrkCode": "1344",
+      "styrkLabel": "Social welfare managers",
+      "careers": [
+        "social-services-manager"
+      ],
+      "reason": "no such SSYK code",
+      "candidates": [
+        {
+          "code": "1521",
+          "label": "Department managers in social and curative care, level 1"
+        },
+        {
+          "code": "1522",
+          "label": "Unit managers in social and curative care, level 2"
+        },
+        {
+          "code": "2661",
+          "label": "Social work professionals"
+        },
+        {
+          "code": "3411",
+          "label": "Social work associate professionals"
+        }
+      ],
+      "careerCount": 1
+    },
+    {
+      "styrkCode": "8182",
+      "styrkLabel": "Steam engine and boiler operators",
+      "careers": [
+        "steam-turbine-technician"
+      ],
+      "reason": "no such SSYK code",
+      "candidates": [
+        {
+          "code": "2149",
+          "label": "Engineering professionals not elsewhere classified"
+        },
+        {
+          "code": "3117",
+          "label": "GIS and cartographic engineers"
+        },
+        {
+          "code": "3151",
+          "label": "Ships engineers"
+        }
+      ],
+      "careerCount": 1
+    },
+    {
+      "styrkCode": "7113",
+      "styrkLabel": "Stonemasons, stone cutters, splitters and carvers",
+      "careers": [
+        "stonemason"
+      ],
+      "reason": "code collision — labels disagree",
+      "collidesWith": "Concrete placers, concrete finishers and related workers",
+      "candidates": [
+        {
+          "code": "8116",
+          "label": "Stonemasons, stone cutters, splitters and carvers"
+        }
+      ],
+      "careerCount": 1
+    },
+    {
+      "styrkCode": "1439",
+      "styrkLabel": "Services managers not elsewhere classified",
+      "careers": [
+        "ticketing-manager"
+      ],
+      "reason": "no such SSYK code",
+      "candidates": [
+        {
+          "code": "1291",
+          "label": "Administration and service managers not elsewhere classified, level 1"
+        },
+        {
+          "code": "1292",
+          "label": "Administration and service managers not elsewhere classified, level 2"
+        },
+        {
+          "code": "1311",
+          "label": "Information and communications technology service managers, level 1"
+        },
+        {
+          "code": "1312",
+          "label": "Information and communications technology service managers, level 2"
+        }
+      ],
+      "careerCount": 1
+    },
+    {
+      "styrkCode": "4131",
+      "styrkLabel": "Typists and word processing operators",
+      "careers": [
+        "transcriptionist"
+      ],
+      "reason": "no such SSYK code",
+      "candidates": [
+        {
+          "code": "7619",
+          "label": "Other food processors"
+        },
+        {
+          "code": "8112",
+          "label": "Mineral and stone processing plant operators"
+        },
+        {
+          "code": "8129",
+          "label": "Metal processing plant operators not elsewhere classified"
+        },
+        {
+          "code": "8161",
+          "label": "Machine operators, meat- and fish-processing"
+        }
+      ],
+      "careerCount": 1
+    },
+    {
+      "styrkCode": "2164",
+      "styrkLabel": "Town and traffic planners",
+      "careers": [
+        "urban-planner"
+      ],
+      "reason": "code collision — labels disagree",
+      "collidesWith": "Cartographers and surveyors",
+      "candidates": [
+        {
+          "code": "2163",
+          "label": "Architects, town and traffic planners"
+        },
+        {
+          "code": "3154",
+          "label": "Air traffic controllers"
+        }
+      ],
+      "careerCount": 1
+    }
+  ]
+}

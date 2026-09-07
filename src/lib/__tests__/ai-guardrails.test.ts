@@ -147,9 +147,50 @@ describe('AI Guardrails', () => {
 
   describe('getFallbackResponse', () => {
     it('should return mental health resources for unsafe intent', () => {
-      const response = getFallbackResponse('unsafe')
+      const response = getFallbackResponse('unsafe', 'Norway')
       expect(response).toContain('116 111')
       expect(response).toContain('Mental Helse')
+    })
+
+    // The fallback fires exactly when the AI is unavailable or a guardrail
+    // trips — i.e. the crisis path. Serving a Norwegian helpline to a Swedish
+    // or Danish teenager is the one failure mode this platform cannot ship.
+    it('uses the country crisis line, not Norway, for other countries', () => {
+      const sweden = getFallbackResponse('unsafe', 'Sweden')
+      expect(sweden).toContain('90101')
+      expect(sweden).not.toContain('116 111')
+      expect(sweden).not.toContain('Mental Helse')
+
+      const denmark = getFallbackResponse('unsafe', 'Denmark')
+      expect(denmark).not.toContain('Mental Helse')
+    })
+
+    it('falls back to a neutral international line for unknown countries', () => {
+      const response = getFallbackResponse('unsafe', 'Brazil')
+      expect(response).not.toContain('Mental Helse')
+      expect(response).not.toContain('116 111')
+    })
+
+    // A missing country must NOT silently mean Norway — that is the whole
+    // point of internationalContext (see country-context/index.ts).
+    it('defaults to the neutral international line, never Norway', () => {
+      const response = getFallbackResponse('unsafe')
+      expect(response).not.toContain('116 111')
+      expect(response).not.toContain('Mental Helse')
+      expect(response).toContain('112')
+    })
+
+    // crisisLine is interpolated after "call", so a sentence-shaped value
+    // produces "call If you are in danger, call your local...".
+    it('reads grammatically for every country context', () => {
+      for (const country of [
+        'Norway', 'Sweden', 'Denmark', 'Spain', undefined, 'Brazil',
+      ]) {
+        const response = getFallbackResponse('unsafe', country)
+        expect(response, `${country}`).toContain('or call **')
+        expect(response, `${country}`).not.toMatch(/call \*\*[A-Z][a-z]+ [a-z]+ [a-z]+/)
+        expect(response, `${country}`).not.toContain('.**')
+      }
     })
 
     it('should redirect to career topics for off_topic intent', () => {

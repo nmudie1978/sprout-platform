@@ -44,7 +44,7 @@ import type { Career } from '@/lib/career-pathways';
 import { useCareerCatalog } from '@/hooks/use-career-catalog';
 import { localizeCareer } from '@/lib/career-localization';
 import { buildDiscoverOpener } from '@/lib/discover-opener';
-import { displaySalary, displayEducation, showsSalaryProgression } from '@/lib/career-localization/display';
+import { displaySalary, displayEducation, showsSalaryProgression, salaryPeriodLabel, estimateNote } from '@/lib/career-localization/display';
 import type { CareerDetails } from '@/lib/career-typical-days';
 import type { CareerProgression } from '@/lib/career-progressions';
 import { CareerProgressionFlow, type CareerProgressionData } from '@/components/careers/CareerProgressionFlow';
@@ -603,6 +603,8 @@ function DiscoverTab({
   const lcCareer = career ? localizeCareer(career, country) : null;
   const lcSalary = lcCareer ? displaySalary(lcCareer) : null;
   const lcEducation = lcCareer ? displayEducation(lcCareer) : null;
+  const lcSalaryNote = estimateNote(lcCareer?.salaryTier);
+  const lcEducationNote = estimateNote(lcCareer?.educationPathTier);
   const notTailored = "Not tailored for your country yet";
 
   return (
@@ -775,7 +777,7 @@ function DiscoverTab({
                             aria-label={showsSalaryProgression(country) ? 'See full salary progression' : undefined}
                             className="relative w-full text-left"
                           >
-                            <StatCard label="Annual Salary" value={showsSalaryProgression(country) ? formatSalaryShort(lcSalary) : lcSalary} icon={DollarSign} accent="text-success" tooltip={showsSalaryProgression(country) ? `Typical annual gross salary in Norway: ${lcSalary.replace('/year', '')}. Tap to see how pay grows.` : `Typical annual gross salary: ${lcSalary.replace('/year', '')}.`} />
+                            <StatCard label={salaryPeriodLabel(country)} value={showsSalaryProgression(country) ? formatSalaryShort(lcSalary) : lcSalary} icon={DollarSign} accent="text-success" tooltip={[showsSalaryProgression(country) ? `Typical gross salary in Norway: ${lcSalary.replace('/year', '')}. Tap to see how pay grows.` : `Typical gross ${salaryPeriodLabel(country).toLowerCase()}: ${lcSalary.replace('/year', '')}.`, lcSalaryNote].filter(Boolean).join(' ')} />
                             {/* Glowing affordance — tapping the box opens the
                                 salary-progression popup (replaces the old
                                 "See full progression →" link). */}

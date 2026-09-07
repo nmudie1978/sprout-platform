@@ -141,7 +141,6 @@ export function DiscoveryQuizDialog({
    * applied). Both values default to 3-4 when the user clicks "Set a
    * range" — a sane midpoint that matches the most common VGS bell curve.
    */
-  const [gradeRange, setGradeRange] = useState<{ low: number; high: number } | null>(null);
   const [excludeUniversity, setExcludeUniversity] = useState(false);
 
   // Sync from initialValue whenever the dialog re-opens
@@ -152,7 +151,6 @@ export function DiscoveryQuizDialog({
       setWorkStyles(initialValue?.workStyles || []);
       setPeoplePref(initialValue?.peoplePref);
       setInterests(initialValue?.interests || []);
-      setGradeRange(initialValue?.gradeRange ?? null);
       setExcludeUniversity(!!initialValue?.excludeUniversity);
     }
   }, [open, initialValue]);
@@ -200,7 +198,6 @@ export function DiscoveryQuizDialog({
         interests,
         // Send null/false explicitly so the server can clear them —
         // otherwise a user who turns the range off won't be able to.
-        gradeRange: gradeRange ?? undefined,
         excludeUniversity: excludeUniversity || undefined,
       };
       const response = await fetch("/api/profile", {

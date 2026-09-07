@@ -2,6 +2,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { FileText } from "lucide-react";
 import Link from "next/link";
 import { PAYMENT_COPY } from "@/lib/copy/payments";
+import { jurisdictionFor } from "@/lib/legal/jurisdictions";
 
 export const metadata = {
   title: "Terms of Service | Endeavrly",
@@ -9,6 +10,9 @@ export const metadata = {
 };
 
 export default function TermsOfServicePage() {
+  // See the note in privacy/page.tsx: public route, so the default
+  // jurisdiction, which is correct while every country falls back to Norway.
+  const j = jurisdictionFor(null);
   return (
     <div>
       {/* Header */}
@@ -111,13 +115,13 @@ export default function TermsOfServicePage() {
           <section className="mb-8">
             <h2>8. Limitation of Liability</h2>
             <p>
-              To the fullest extent permitted by Norwegian law, Endeavrly shall not be liable for any indirect, incidental, special, consequential, or punitive damages arising out of or in connection with your use of the Platform.
+              To the fullest extent permitted by {j.governingLaw}, Endeavrly shall not be liable for any indirect, incidental, special, consequential, or punitive damages arising out of or in connection with your use of the Platform.
             </p>
             <p>
               The career information and AI-generated content on the Platform are general guidance and may be approximate or out of date; Endeavrly is not liable for decisions made in reliance on it. Because the Platform is free to use, our total liability for any claim shall not exceed NOK 1,000.
             </p>
             <p>
-              Nothing in these Terms limits liability for death or personal injury caused by negligence, fraud, or any other liability that cannot be excluded under Norwegian law.
+              Nothing in these Terms limits liability for death or personal injury caused by negligence, fraud, or any other liability that cannot be excluded under {j.governingLaw}.
             </p>
           </section>
 
@@ -137,10 +141,10 @@ export default function TermsOfServicePage() {
               If a dispute arises between you and another user, we encourage you to first attempt to resolve it directly. You may use the in-app reporting tools to notify us of issues.
             </p>
             <p>
-              Any dispute arising out of or in connection with these Terms shall be governed by Norwegian law and subject to the exclusive jurisdiction of the courts of Oslo, Norway. If you are a consumer, you retain any rights to bring proceedings in your local jurisdiction as provided by applicable law.
+              Any dispute arising out of or in connection with these Terms shall be governed by {j.governingLaw} and subject to the exclusive jurisdiction of {j.courts}. If you are a consumer, you retain any rights to bring proceedings in your local jurisdiction as provided by applicable law.
             </p>
             <p>
-              You may also submit complaints to the Norwegian Consumer Council (<em>Forbrukerrådet</em>) or through the European Commission&apos;s Online Dispute Resolution platform.
+              You may also submit complaints to {j.consumerBody.name} (<em>{j.consumerBody.native}</em>) or through the European Commission&apos;s Online Dispute Resolution platform.
             </p>
           </section>
 
@@ -171,7 +175,7 @@ export default function TermsOfServicePage() {
             </p>
             <ul>
               <li>Email: <a href="mailto:legal@endeavrly.no" className="text-primary hover:underline">legal@endeavrly.no</a></li>
-              <li>Post: Endeavrly AS, Oslo, Norway</li>
+              <li>Post: {j.controllerAddress}</li>
             </ul>
           </section>
 

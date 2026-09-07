@@ -45,11 +45,7 @@ import {
 } from "@/lib/matching/lookups";
 import { getFitDimensions } from "@/lib/compare/fit-dimensions";
 import { getAcademicProfile } from "@/lib/education/academic-readiness";
-import {
-  matchCareerToGradeRange,
-  shouldExcludeByRoute,
-  gradeMatchScoreAdjustment,
-} from "@/lib/career-pathways/grade-match";
+import { shouldExcludeByRoute } from "@/lib/matching/route-filter";
 
 /** Look up a career's category by id (catalog-derived; supplied by the caller). */
 export type FindCategory = (careerId: string) => CareerCategory | null;
@@ -745,20 +741,6 @@ export function rankCareers(
     // filter below still respects how well the career matched on
     // subjects/interests/style — a reach career with a strong
     // base match stays visible, it just sinks below aligned peers.
-    if (prefs.gradeRange) {
-      const careerForBand = candidates.find((c) => c.id === career.id);
-      if (careerForBand) {
-        const match = matchCareerToGradeRange(careerForBand, prefs.gradeRange);
-        if (match.status !== "unknown") {
-          result.gradeStatus = match.status;
-          result.gradeHint = match.coachingHint;
-          const adj = gradeMatchScoreAdjustment(match.status);
-          // Clamp to [0, 100] on the displayed percentage.
-          result.matchPercent = Math.max(0, Math.min(100, result.matchPercent + adj));
-        }
-      }
-    }
-
     results.push(result);
   }
 

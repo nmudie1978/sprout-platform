@@ -100,16 +100,6 @@ export interface MatchResult {
   interestHits: number;
   /** True if this career was inserted as a diversity/stretch pick */
   isStretchMatch: boolean;
-  /**
-   * Grade-range alignment status — set when the user has configured
-   * a `gradeRange` preference and the career carries a `gradeBand`.
-   * Used by the Radar to show an "aligned / stretch / reach" badge
-   * and, for reach careers, a coaching hint. Absent means no grade
-   * preference or no career-side data → no opinion displayed.
-   */
-  gradeStatus?: "aligned" | "stretch" | "reach" | "unknown";
-  /** Coaching hint for stretch/reach careers (empty otherwise). */
-  gradeHint?: string;
 }
 
 // ── Configuration ─────────────────────────────────────────────────

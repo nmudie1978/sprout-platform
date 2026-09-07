@@ -10,8 +10,8 @@ and build clarity about their future.
 It is safety-by-design, privacy-first, calm in tone, and built to reduce
 confusion — not increase it.
 
-It is NOT a jobs marketplace, does NOT support job posters, and does NOT
-include in-app payments.
+It is NOT a jobs marketplace, does NOT support job posters, and never pays
+users. It does sell its own subscription — see principle 2.
 </project_context>
 
 
@@ -23,9 +23,20 @@ include in-app payments.
    - Structured interactions only where necessary.
    - Report & moderation systems remain available.
 
-2. No In-App Payments
-   - Platform does not process payments.
-   - Do not introduce Stripe or payment logic.
+2. Money Only Flows One Way
+   (Renamed 2026-09-07 from "No In-App Payments", which read as a blanket
+   ban and would have forbidden charging for Pro. It never meant that.)
+
+   - Endeavrly charges for its own subscription (Free and Pro). That is a
+     normal transaction between the platform and its user.
+   - The platform never moves money between users, and never pays a young
+     person. It is not a marketplace and will not become one.
+   - Subscription payments go through an established provider. Do not
+     implement card handling and do not store card details — the provider
+     is the source of truth for payment status.
+   - Users are 15-23. A minor cannot necessarily enter a payment contract
+     unaided in Norway or Sweden, so the purchase journey needs a legal
+     answer before checkout ships.
 
 3. Privacy by Design (GDPR MVP)
    - Minimal data collection.
@@ -287,7 +298,7 @@ STRICTLY DO NOT REINTRODUCE:
 - Worker matching systems
 - Bidding systems
 - Earnings dashboards
-- Payment workflows
+- Paying users for work
 - Recruiter features
 - Job chat systems
 - Job responsibility signals tied to gigs

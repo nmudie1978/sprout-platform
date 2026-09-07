@@ -59,6 +59,7 @@ import {
   TIER_MODULES,
 } from "./modules";
 import { EntitlementSourceType } from "./types";
+import { FREE_LIMITS, UNLIMITED, limitsForTier, mergeLimits } from "./limits";
 import type {
   ActiveOrganisationContext,
   EffectiveEntitlements,
@@ -175,10 +176,16 @@ export function resolveEntitlements(
     label: "Endeavrly baseline",
   });
 
+  // Limits start at the free allowance and only ever improve — see
+  // mergeLimits. A user gaining a second entitlement source must never end up
+  // with less than they had.
+  let limits = FREE_LIMITS;
+
   // ── 2. Personal subscription ────────────────────────────────────────────
   const { subscription } = input;
   const subscriptionUsable = isSubscriptionUsable(subscription, now);
   if (subscription && subscriptionUsable) {
+    limits = mergeLimits(limits, limitsForTier(subscription.tier));
     grant([...TIER_MODULES[subscription.tier], ...subscription.moduleOverrides], {
       type: EntitlementSourceType.PERSONAL_SUBSCRIPTION,
       sourceId: subscription.tier,
@@ -231,6 +238,11 @@ export function resolveEntitlements(
       }
     }
 
+    // An organisation licence lifts the metered limits for its members. A
+    // school has already paid; capping its pupils at ten careers would make
+    // the licence worth less than a personal subscription.
+    limits = mergeLimits(limits, UNLIMITED);
+
     organisations.push({
       membershipId: membership.membershipId,
       organisationId: membership.organisationId,
@@ -252,6 +264,7 @@ export function resolveEntitlements(
     organisations,
     inactiveOrganisations,
     subscriptionTier: subscription && subscriptionUsable ? subscription.tier : null,
+    limits,
     resolvedAt: now,
   };
 }

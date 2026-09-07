@@ -28,6 +28,12 @@ export interface CountryContext {
   /**
    * Crisis-helpline phrase inserted into the AI's canned safety response.
    * MUST be country-correct — a wrong emergency number is a safety failure.
+   *
+   * SHAPE CONTRACT: this is interpolated directly after the word "call" in
+   * both the system prompt and `getFallbackResponse()`, so it must be a
+   * number or noun phrase ("116 111 (Mental Helse helpline in Norway)"),
+   * never a full sentence. A sentence here produces "call If you are in
+   * danger, call your local...". Asserted by country-context tests.
    */
   crisisLine: string;
   /** Condensed education + job-market + salary knowledge block for the system prompt. */

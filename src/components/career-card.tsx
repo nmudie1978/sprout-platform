@@ -12,6 +12,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import type { Career } from "@/lib/career-pathways";
+import { formatSalaryCompact } from "@/lib/career-localization/display";
 
 interface CareerCardProps {
   career: Career;
@@ -73,7 +74,7 @@ export const CareerCard = memo(function CareerCard({
                 <div className="flex items-center gap-2 mt-2">
                   <Badge variant="secondary" className="text-xs px-1.5 py-0">
                     <Banknote className="h-3 w-3 mr-1" />
-                    {career.avgSalary.split(" ")[0]}
+                    {formatSalaryCompact(career.avgSalary)}
                   </Badge>
                   <Badge variant="outline" className={`text-xs px-1.5 py-0 ${growth.bg}`}>
                     <GrowthIcon className={`h-3 w-3 mr-1 ${growth.color}`} />

@@ -18,6 +18,9 @@ import {
 } from "@/lib/matching";
 import { measureSignalStrength } from "@/lib/matching/lookups";
 import { useCareerCatalog } from "@/hooks/use-career-catalog";
+import { localizeCareer } from "@/lib/career-localization";
+import { formatSalaryCompact } from "@/lib/career-localization/display";
+import { EstimatedBadge, estimateNoteFor } from "@/components/estimated-badge";
 import { buildMorePool } from "@/lib/discover/more-pool";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -2134,6 +2137,20 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
     isLoading: catalogLoading,
   } = useCareerCatalog();
 
+  // The user's country, for localising salary and education routes in the
+  // match table. Rides the shared ['profile-country'] React Query cache the
+  // rest of the app already populates, so this costs no extra round-trip.
+  const { data: countryData } = useQuery<{ country?: string | null }>({
+    queryKey: ["profile-country"],
+    queryFn: async () => {
+      const res = await fetch("/api/profile");
+      if (!res.ok) return {};
+      return res.json();
+    },
+    staleTime: 60 * 1000,
+  });
+  const userCountry = countryData?.country ?? null;
+
   const compareShortlist = useCompareShortlist();
   const [compareModalOpen, setCompareModalOpen] = useState(false);
 
@@ -2426,7 +2443,12 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
   // Shared Matches Report row — used by both the band carousel and the
   // "More matches" list. Closes over compareShortlist + the career-detail
   // dispatch so a revealed extra behaves exactly like a band row.
-  const renderMatchRow = (career: Career, topMatch: boolean) => {
+  const renderMatchRow = (rawCareer: Career, topMatch: boolean) => {
+    // The radar reads the catalog directly, which is raw (English, NOK,
+    // Norwegian routes). Without this a Swedish user was shown Norwegian pay
+    // and "Master's ... (UiO / NTNU)" in every row.
+    const career = localizeCareer(rawCareer, userCountry);
+    const estNote = estimateNoteFor(career);
     const growth = career.growthOutlook;
     const inList = compareShortlist.isInShortlist(career.id);
     return (
@@ -2451,11 +2473,17 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
                 Top
               </span>
             )}
-            <GradeStatusBadge careerId={career.id} />
           </div>
         </td>
         <td className="hidden sm:table-cell px-3 py-1 align-middle text-foreground/70 whitespace-nowrap">
-          {formatSalaryShort(career.avgSalary)}
+          {/* formatSalaryShort abbreviates the Norwegian annual format; a
+              pack country's figure is already short and monthly, and its
+              space thousands-separator must not be chopped. */}
+          {career.isLocalized === false
+            ? "—"
+            : userCountry
+              ? formatSalaryCompact(career.avgSalary)
+              : formatSalaryShort(career.avgSalary)}
         </td>
         <td className="px-3 py-1 align-middle text-center">
           <span
@@ -2473,10 +2501,13 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
           />
         </td>
         <td
-          className="hidden md:table-cell px-3 py-1 align-middle text-foreground/65 max-w-[280px] truncate"
+          className="hidden md:table-cell px-3 py-1 align-middle text-foreground/65 max-w-[280px]"
           title={career.educationPath}
         >
-          {career.educationPath}
+          <span className="inline-flex items-center gap-1.5 min-w-0 max-w-full">
+            <span className="truncate">{career.educationPath}</span>
+            <EstimatedBadge note={estNote} compact />
+          </span>
         </td>
         <td className="px-2 py-1 align-middle text-center bg-teal-500/[0.04] border-l border-teal-500/15">
           <button
@@ -3358,34 +3389,3 @@ function CompareVault({
   );
 }
 
-/**
- * GradeStatusBadge — compact inline badge shown next to a career
- * title when the user has set a gradeRange preference and the
- * career carries a gradeBand. Teal for "aligned" (positive signal),
- * amber for "stretch" (gap of 1 with a coaching hint), muted-red
- * for "reach" (gap of 2+ — still visible, honest framing).
- * Renders nothing when the status is "aligned" (default positive
- * signal doesn't need a badge — the Match % already encodes it)
- * or "unknown" (no grade data).
- */
-function GradeStatusBadge({ careerId }: { careerId: string }) {
-  const result = getMatchResultForCareer(careerId);
-  if (!result || !result.gradeStatus) return null;
-  if (result.gradeStatus === "aligned" || result.gradeStatus === "unknown") {
-    return null;
-  }
-  const isStretch = result.gradeStatus === "stretch";
-  return (
-    <span
-      className={cn(
-        "text-[9px] font-semibold uppercase tracking-wide shrink-0 px-1.5 py-0.5 rounded",
-        isStretch
-          ? "bg-amber-500/15 text-amber-600 dark:text-amber-400"
-          : "bg-rose-500/15 text-rose-600 dark:text-rose-400",
-      )}
-      title={result.gradeHint || (isStretch ? "A stretch vs your current grade range." : "A reach career — typical applicants have higher grades.")}
-    >
-      {isStretch ? "Stretch" : "Reach"}
-    </span>
-  );
-}

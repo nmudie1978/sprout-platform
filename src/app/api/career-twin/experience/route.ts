@@ -191,7 +191,10 @@ export async function POST(req: NextRequest) {
       // supportive crisis-line response without ever calling the model.
       // Intentionally not persisted (the mode is ephemeral anyway).
       if (classifyIntent(userReply) === "unsafe") {
-        return NextResponse.json({ support: getFallbackResponse("unsafe") }, { status: 200 });
+        return NextResponse.json(
+          { support: getFallbackResponse("unsafe", profile?.country) },
+          { status: 200 },
+        );
       }
 
       const parsed = await jsonCompletion(

@@ -18,6 +18,8 @@ import {
 } from "lucide-react";
 import type { Career } from "@/lib/career-pathways";
 import type { LocalizedCareerView } from "@/lib/career-localization/types";
+import { formatSalaryCompact } from "@/lib/career-localization/display";
+import { EstimatedBadge, estimateNoteFor } from "@/components/estimated-badge";
 import { useCareerCatalog } from "@/hooks/use-career-catalog";
 
 /** True when a localized view explicitly marks this career as not-yet-tailored. */
@@ -95,12 +97,22 @@ const growthConfig = {
 /**
  * List View Row - Entire row is clickable
  */
+/**
+ * Marks a figure the platform has NOT individually verified.
+ *
+ * A country pack can supply an education route derived from the shape of that
+ * country's system rather than from a sourced, per-career programme. That is
+ * useful and honest, but only while it is visibly an estimate — an unlabelled
+ * estimate reads as a verified fact, and this platform is read by 15-year-olds
+ * deciding what to study.
+ */
 function ListRow({ career, matchScore, onLearnMore, notTailoredLabel }: Omit<CareerCardV2Props, "viewMode">) {
   const { getSectorForCareer } = useCareerCatalog();
   const growth = growthConfig[career.growthOutlook];
   const GrowthIcon = growth.icon;
   const notTailored = isNotTailored(career);
-  const salaryShort = career.avgSalary ? career.avgSalary.split(" ")[0] : "";
+  const salaryShort = career.avgSalary ? formatSalaryCompact(career.avgSalary) : "";
+  const estNote = estimateNoteFor(career);
 
   const sector = shortSector(career.id, getSectorForCareer);
   const path = career.educationPath ? shortPath(career.educationPath) : "";
@@ -130,6 +142,7 @@ function ListRow({ career, matchScore, onLearnMore, notTailoredLabel }: Omit<Car
             {notTailoredLabel}
           </Badge>
         )}
+        {!notTailored && <EstimatedBadge note={estNote} />}
       </span>
 
       {/* Salary */}
@@ -198,7 +211,8 @@ function SmallCard({ career, matchScore, onLearnMore, notTailoredLabel }: Omit<C
   const growth = growthConfig[career.growthOutlook];
   const GrowthIcon = growth.icon;
   const notTailored = isNotTailored(career);
-  const salaryShort = career.avgSalary ? career.avgSalary.split(" ")[0] : "";
+  const salaryShort = career.avgSalary ? formatSalaryCompact(career.avgSalary) : "";
+  const estNote = estimateNoteFor(career);
   const visibleSkills = career.keySkills.slice(0, 2);
   const extraSkills = career.keySkills.length - 2;
   const dailyPreview = career.dailyTasks.slice(0, 2).join(" · ");
@@ -229,6 +243,7 @@ function SmallCard({ career, matchScore, onLearnMore, notTailoredLabel }: Omit<C
                     {notTailoredLabel}
                   </Badge>
                 )}
+                {!notTailored && <EstimatedBadge note={estNote} compact />}
               </div>
               {dailyPreview && (
                 <p className="text-[11px] text-muted-foreground line-clamp-1 mt-0.5">

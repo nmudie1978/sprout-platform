@@ -1,9 +1,6 @@
 
 
-Fix the attachments section
-Get haircut
-Collect suit
-Contact nui
+
 
 
  so to see PONR process working what steps must i perform and using what personas?   keep it short                                                                                                            
@@ -13,6 +10,25 @@ Contact nui
   3. Switch to Vinith Rajan (BA) — open the PCR detail page → click "Begin Assessment" → "Send for Approval"
   4. Switch to Patrick Decool (Product Lead) — open the PCR → click "Approve"
   5. Back as Nick Mudie — request's Change Requests tab now shows "Baseline + 1 approved change". Edit button is gone (read-only).
+
+
+
+Create a whole section re: wervicenow
+
+Understanding of CMDB and ServiceNow data model.
+Exposure to Service Portal and Flow Designer.
+Knowledge of ITIL processes.
+Experience with Agile/Scrum delivery methodology.
+Preferred Skills
+
+Exposure to ITOM, FSM, CSM, or ITAM modules.
+Integration Hub Spokes development.
+
+
+
+
+
+
 
 
 

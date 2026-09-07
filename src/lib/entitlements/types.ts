@@ -7,6 +7,7 @@
  * only realistic way to keep a rulebook this consequential honest.
  */
 
+import type { EntitlementLimits } from "./limits";
 import type {
   EntitlementModule,
   LicenceStatus,
@@ -131,6 +132,16 @@ export interface EffectiveEntitlements {
   organisations: ActiveOrganisationContext[];
   inactiveOrganisations: InactiveOrganisationContext[];
   subscriptionTier: SubscriptionTier | null;
+  /**
+   * How MANY of the metered things this user may have. Modules answer
+   * "may they reach the feature"; limits answer "how much of it". Free and
+   * Pro both reach Career Twin, so only a limit can express the difference
+   * between five questions and unlimited.
+   *
+   * `null` on a field means unlimited — see limits.ts for why that is not
+   * Infinity or a large sentinel.
+   */
+  limits: EntitlementLimits;
   /** Timestamp resolution was computed at, so callers can reason about staleness. */
   resolvedAt: Date;
 }

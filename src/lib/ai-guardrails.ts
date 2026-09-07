@@ -451,11 +451,21 @@ Respond in clear, simple English suitable for ages 15-23.`;
 }
 
 /**
- * Get fallback response when guardrails triggered
+ * Get fallback response when guardrails triggered.
+ *
+ * `country` MUST be threaded through by callers on the unsafe path. This
+ * function fires precisely when the AI is unavailable or a guardrail trips —
+ * i.e. the crisis path — so a hardcoded helpline here reaches a user in
+ * distress in the wrong country. An unknown/missing country resolves to the
+ * neutral international line via getCountryContext, never to Norway.
  */
-export function getFallbackResponse(intent: IntentType): string {
+export function getFallbackResponse(
+  intent: IntentType,
+  country?: string | null,
+): string {
   if (intent === "unsafe") {
-    return "I'm sorry you're going through this. Please reach out to a trusted adult, school counselor, or call **116 111** (Mental Helse helpline in Norway). I'm here for career questions when you're ready. 💙";
+    const { crisisLine } = getCountryContext(country);
+    return `I'm sorry you're going through this. Please reach out to a trusted adult, school counselor, or call **${crisisLine}**. I'm here for career questions when you're ready. 💙`;
   }
 
   if (intent === "off_topic") {
