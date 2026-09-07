@@ -11,7 +11,10 @@ It is safety-by-design, privacy-first, calm in tone, and built to reduce
 confusion — not increase it.
 
 It is NOT a jobs marketplace, does NOT support job posters, and does NOT
-include in-app payments.
+move money between users — no gig payments, no earnings, no payouts.
+
+It DOES sell a subscription. See "No Marketplace Payments" below for the
+line between the two.
 </project_context>
 
 
@@ -23,9 +26,26 @@ include in-app payments.
    - Structured interactions only where necessary.
    - Report & moderation systems remain available.
 
-2. No In-App Payments
-   - Platform does not process payments.
-   - Do not introduce Stripe or payment logic.
+2. No Marketplace Payments
+   (Renamed 2026-09-07. Previously "No In-App Payments", which read as a
+   blanket ban and was written when Endeavrly was leaving the jobs
+   marketplace behind — note the company it keeps in the deprecated list
+   below: bidding systems, earnings dashboards, payouts tied to gigs.)
+
+   - The platform never moves money BETWEEN USERS. No gig payments, no
+     earnings, no payouts, no escrow, no bidding. This is the part that
+     protects young people and it is not negotiable.
+   - Do not reintroduce marketplace payment workflows.
+
+   - Endeavrly DOES charge for its own subscription (Free and Pro). Taking
+     a card for an upgrade is a normal commercial transaction between the
+     platform and its user, not a marketplace flow, and is permitted.
+   - Subscription payments go through an established provider. Do not
+     implement card handling, and do not store card details — the provider
+     is the source of truth for payment status.
+   - Users are 15-23. A minor cannot necessarily enter a payment contract
+     unaided in Norway or Sweden, so the purchase journey needs a legal
+     answer before checkout ships.
 
 3. Privacy by Design (GDPR MVP)
    - Minimal data collection.
@@ -287,7 +307,9 @@ STRICTLY DO NOT REINTRODUCE:
 - Worker matching systems
 - Bidding systems
 - Earnings dashboards
-- Payment workflows
+- Payment workflows BETWEEN USERS (gig payouts, escrow, invoicing a job
+  poster). Endeavrly's own subscription checkout is not this — see
+  principle 2.
 - Recruiter features
 - Job chat systems
 - Job responsibility signals tied to gigs
