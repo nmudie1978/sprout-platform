@@ -40,6 +40,7 @@ import { Avatar } from "@/components/avatar";
 import Link from "next/link";
 import type { GoalSlot } from "@/lib/goals/types";
 import { PLATFORM_MIN_AGE } from "@/lib/safety/age";
+import { SubscriptionCard } from "@/components/pricing/subscription-card";
 
 const INTEREST_OPTIONS = [
   "Technology",
@@ -589,6 +590,10 @@ export default function ProfilePage() {
       <div className="grid gap-4 sm:gap-6 lg:grid-cols-3 relative z-10">
         {/* Main Profile Form */}
         <div className="lg:col-span-2 space-y-4 sm:space-y-6 relative z-10">
+          {/* Plan and allowances. Placed above the profile form so someone
+              who came here after hitting a limit finds the answer first. */}
+          <SubscriptionCard />
+
           {/* Profile */}
           <Card className="border shadow-sm relative z-10">
             <CardHeader className="pb-3">
