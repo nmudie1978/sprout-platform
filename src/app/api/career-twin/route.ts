@@ -34,6 +34,8 @@ import { getCareerTwinConfig } from "@/lib/ai-usage/config";
 import { estimateTokens } from "@/lib/ai-usage/pricing";
 import { evaluateRollingWindow, DAY_MS } from "@/lib/ai-usage/limits";
 import { AI_FEATURES } from "@/lib/ai-usage/types";
+import { prisma } from "@/lib/prisma";
+import { checkCareerTwinQuestion } from "@/lib/entitlements/usage";
 
 function isOpenAIConfigured(): boolean {
   const apiKey = process.env.OPENAI_API_KEY;
@@ -194,6 +196,27 @@ export async function POST(req: NextRequest) {
       });
     }
 
+    // ── Plan allowance ──────────────────────────────────────────────────
+    // Distinct from the guardrails above, which are about cost and abuse and
+    // reset. This is the Free plan's lifetime allowance, and it is checked
+    // server-side because the frontend is not the security boundary: hiding
+    // the input would stop nobody calling this endpoint directly.
+    //
+    // Checked BEFORE the provider is called and never recorded here — usage
+    // is written by recordAiUsage once an answer actually comes back, so a
+    // failed request costs the user nothing.
+    const allowance = await checkCareerTwinQuestion(session.user.id);
+    if (!allowance.allowed) {
+      return NextResponse.json({
+        message:
+          "You've used your 5 free Career Twin questions. Upgrade to Pro to continue your conversations with Future You.",
+        planLimitReached: true,
+        used: allowance.used,
+        limit: allowance.limit,
+        upgradeTo: "PRO",
+      });
+    }
+
     // Resolve the career the Twin is grounded in
     const career = await resolveCareerContext(session.user.id, careerIdParam);
     if (!career) {
@@ -204,8 +227,29 @@ export async function POST(req: NextRequest) {
     // Distress / unsafe content → supportive, non-diagnostic, route to a trusted adult.
     const intent = classifyIntent(message);
     if (intent === "unsafe") {
+      // The crisis line must be the user's OWN country's. This surface was
+      // missed when the other call sites were fixed, so it was falling back
+      // to the neutral international line while the country sat one query
+      // away — and this is the likeliest place a young person discloses
+      // distress. A failed lookup still yields the neutral line, never a
+      // wrong country's number.
+      let country: string | null = null;
+      try {
+        country =
+          (
+            await prisma.youthProfile.findUnique({
+              where: { userId: session.user.id },
+              select: { country: true },
+            })
+          )?.country ?? null;
+      } catch {
+        // Leave country null.
+      }
       // Intentionally NOT persisted — we don't replay distress signals into future model context.
-      return NextResponse.json({ message: getFallbackResponse("unsafe"), intent: "unsafe" });
+      return NextResponse.json({
+        message: getFallbackResponse("unsafe", country),
+        intent: "unsafe",
+      });
     }
 
     const replyLanguage = localeToLanguage(req.cookies.get("NEXT_LOCALE")?.value);

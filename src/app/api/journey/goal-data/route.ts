@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
+import { recordCareerExploration } from '@/lib/entitlements/usage';
 
 /**
  * GET /api/journey/goal-data?goalId=xxx
@@ -56,6 +57,31 @@ export async function POST(req: NextRequest) {
 
     if (!goalId || !goalTitle) {
       return NextResponse.json({ error: 'goalId and goalTitle are required' }, { status: 400 });
+    }
+
+    // ── Career exploration allowance ────────────────────────────────────
+    // This POST is the moment a young person commits a career to My Journey,
+    // which is what the Free plan meters — not browsing, not opening a card.
+    // Enforced here rather than in the UI because hiding a button stops
+    // nobody from calling this endpoint directly.
+    //
+    // recordCareerExploration is idempotent per career: returning to a goal
+    // already explored is always allowed, even at the limit, so nobody is
+    // locked out of work they have already started.
+    const exploration = await recordCareerExploration(session.user.id, goalId);
+    if (!exploration.allowed) {
+      return NextResponse.json(
+        {
+          error: 'CAREER_EXPLORATION_LIMIT',
+          message: `You've explored ${exploration.limit} careers. Upgrade to Pro to continue exploring careers.`,
+          used: exploration.used,
+          limit: exploration.limit,
+          upgradeTo: 'PRO',
+        },
+        // 402 Payment Required: the request is understood and the user is
+        // authenticated — what is missing is a plan, not a permission.
+        { status: 402 },
+      );
     }
 
     // Wrap deactivation + upsert in a transaction for atomicity. The
