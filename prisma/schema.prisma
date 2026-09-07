@@ -438,6 +438,7 @@ model YouthProfile {
   // Relations for new journey features
   savedItems          SavedItem[]
   savedCareers        SavedCareer[]
+  careerExplorations  CareerExploration[]
   journeyNotebooks    JourneyNotebook[]
   reflections         JourneyReflection[]
   journeyNotes        JourneyNote[]
@@ -2080,6 +2081,29 @@ model SavedItem {
 /// A career the youth bookmarked (the heart on a career card). One row per
 /// profile+career. Mirrors the former SavedCuriosity localStorage shape so the
 /// dashboard's "Saved Careers" survives a device/browser change.
+/// One row per career a young person has taken into My Journey.
+///
+/// Exists because there was no server-side record of "explored a career" —
+/// exploration signals were assembled from journeys, saved careers and
+/// ratings, none of which is countable or idempotent.
+///
+/// The unique constraint is the whole design. It makes revisiting a career
+/// free (brief §5) and makes concurrent requests and retries (§18) correct by
+/// construction rather than by careful application code: the second insert
+/// loses the race harmlessly instead of consuming a second allowance.
+model CareerExploration {
+  id        String   @id @default(cuid())
+  profileId String
+  careerId  String
+  /// When this career was FIRST explored. Never updated on revisit.
+  firstAt   DateTime @default(now())
+
+  profile YouthProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@unique([profileId, careerId])
+  @@index([profileId, firstAt])
+}
+
 model SavedCareer {
   id          String   @id @default(cuid())
   profileId   String
@@ -2653,6 +2677,16 @@ enum EntitlementModule {
   CAREER_TWIN
   AI_CAREER_GUIDANCE
   CAREER_PATHWAYS
+  /// The personal roadmap specifically. Split out from CLARITY because
+  /// CLARITY also covers reflections, which stay free — gating the whole
+  /// module would have paywalled reflections too.
+  PERSONAL_ROADMAP
+  /// Side-by-side career comparison. Part of CAREER_DISCOVERY's description
+  /// historically; separated so browsing can stay free while comparison does
+  /// not.
+  CAREER_COMPARISON
+  /// Progress tracking across the journey.
+  PROGRESS_TRACKING
   PARENT_PORTAL
   LABOUR_MARKET_INTELLIGENCE
   SKILLS_ANALYSIS
@@ -2705,6 +2739,12 @@ enum DomainEnrolmentPolicy {
 
 enum SubscriptionTier {
   FREE
+  /// The paid consumer plan. Free = Discover, Pro = Plan.
+  PRO
+
+  /// DEPRECATED consumer tiers, retained so existing rows keep their meaning.
+  /// They resolve to the same entitlements as PRO: a rename must never
+  /// downgrade someone who already paid. Do not offer these to new users.
   PREMIUM
   FAMILY
   FAMILY_PLUS
@@ -3184,9 +3224,32 @@ model PersonalSubscription {
   /// Bespoke grants on top of the tier — support gestures, beta access.
   moduleOverrides EntitlementModule[]
 
-  /// Who granted this, for audit. No payment reference by design.
+  /// Who granted this, for audit. Set for manual and grandfathered grants;
+  /// null for anything the payment provider created.
   grantedBy String? @db.VarChar(160)
   note      String? @db.Text
+
+  // ── Payment provider linkage ────────────────────────────────────────────
+  // Endeavrly charges for its own subscription (CLAUDE.md principle 2). The
+  // PROVIDER is the source of truth for payment status; these fields only
+  // point at it. Deliberately no card details, no last4, no expiry — nothing
+  // that would make this table worth stealing.
+  /// e.g. "vipps" | "swish" | "stripe". Null for manual/grandfathered grants.
+  provider              String? @db.VarChar(40)
+  /// The provider's customer handle.
+  externalCustomerId    String? @db.VarChar(200)
+  /// The provider's subscription handle. Unique so a webhook cannot be
+  /// applied to two rows.
+  externalSubscriptionId String? @unique @db.VarChar(200)
+  /// "month" | "year". Null when not a paid subscription.
+  billingInterval       String? @db.VarChar(10)
+  /// ISO 4217 the subscription is billed in. Fixed at purchase: changing
+  /// country later must not silently re-price an active subscription.
+  currency              String? @db.VarChar(3)
+  /// Country at time of purchase, for the same reason.
+  billingCountry        String? @db.VarChar(60)
+  /// End of the paid period. Access continues to here after cancellation.
+  currentPeriodEnd      DateTime?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

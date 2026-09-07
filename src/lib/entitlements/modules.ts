@@ -118,6 +118,24 @@ export const MODULE_CATALOGUE: readonly ModuleDefinition[] = [
     audience: "staff",
   },
   {
+    module: EntitlementModule.PERSONAL_ROADMAP,
+    label: "Personal Roadmap",
+    description: "The personal, AI-supported roadmap and next steps.",
+    audience: "participant",
+  },
+  {
+    module: EntitlementModule.CAREER_COMPARISON,
+    label: "Career Comparison",
+    description: "Compare careers side by side.",
+    audience: "participant",
+  },
+  {
+    module: EntitlementModule.PROGRESS_TRACKING,
+    label: "Progress Tracking",
+    description: "Progress across the journey over time.",
+    audience: "participant",
+  },
+  {
     module: EntitlementModule.CUSTOM_INTEGRATIONS,
     label: "Custom Integrations",
     description: "SSO, SIS/HR sync and bespoke data flows.",
@@ -153,15 +171,19 @@ export const STAFF_MODULES: readonly EntitlementModule[] = MODULE_CATALOGUE.filt
 export const PLATFORM_BASELINE_MODULES: readonly EntitlementModule[] = [
   EntitlementModule.CORE,
   EntitlementModule.CAREER_DISCOVERY,
+  // Never paywalled, by explicit product decision.
   EntitlementModule.CAREER_DNA,
   EntitlementModule.UNDERSTAND,
+  // Stays free because it also covers reflections. The roadmap inside it is
+  // gated separately via PERSONAL_ROADMAP.
   EntitlementModule.CLARITY,
+  // Free users get Career Twin, capped at 5 questions by limits.ts rather
+  // than by withholding the module. The difference matters: they can see and
+  // use the feature, which is what makes the limit meaningful.
   EntitlementModule.CAREER_TWIN,
-  EntitlementModule.AI_CAREER_GUIDANCE,
   EntitlementModule.CAREER_PATHWAYS,
   EntitlementModule.LABOUR_MARKET_INTELLIGENCE,
   EntitlementModule.SKILLS_ANALYSIS,
-  EntitlementModule.OPPORTUNITIES,
 ];
 
 /**
@@ -172,11 +194,30 @@ export const PLATFORM_BASELINE_MODULES: readonly EntitlementModule[] = [
  * plumbing is already in place and exercised, rather than being retrofitted
  * through feature code.
  */
+/**
+ * What each consumer tier adds ON TOP of the platform baseline.
+ *
+ * Pro's modules are the ones deliberately removed from the baseline when the
+ * paid plan landed. Note what is NOT here: Career DNA, Career Twin and the
+ * journey stages stay in the baseline. Pro removes limits and unlocks the
+ * planning surfaces; it does not hold the core experience hostage.
+ */
+const PRO_MODULES: readonly EntitlementModule[] = [
+  EntitlementModule.PERSONAL_ROADMAP,
+  EntitlementModule.OPPORTUNITIES,
+  EntitlementModule.AI_CAREER_GUIDANCE,
+  EntitlementModule.CAREER_COMPARISON,
+  EntitlementModule.PROGRESS_TRACKING,
+];
+
 export const TIER_MODULES: Record<SubscriptionTier, readonly EntitlementModule[]> = {
   [SubscriptionTier.FREE]: [],
-  [SubscriptionTier.PREMIUM]: [],
-  [SubscriptionTier.FAMILY]: [EntitlementModule.PARENT_PORTAL],
-  [SubscriptionTier.FAMILY_PLUS]: [EntitlementModule.PARENT_PORTAL],
+  [SubscriptionTier.PRO]: PRO_MODULES,
+  // Deprecated tiers resolve as Pro. Someone who paid under an older name
+  // must not lose access to a rename.
+  [SubscriptionTier.PREMIUM]: PRO_MODULES,
+  [SubscriptionTier.FAMILY]: [...PRO_MODULES, EntitlementModule.PARENT_PORTAL],
+  [SubscriptionTier.FAMILY_PLUS]: [...PRO_MODULES, EntitlementModule.PARENT_PORTAL],
 };
 
 /**
