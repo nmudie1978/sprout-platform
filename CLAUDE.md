@@ -10,11 +10,8 @@ and build clarity about their future.
 It is safety-by-design, privacy-first, calm in tone, and built to reduce
 confusion — not increase it.
 
-It is NOT a jobs marketplace, does NOT support job posters, and does NOT
-move money between users — no gig payments, no earnings, no payouts.
-
-It DOES sell a subscription. See "No Marketplace Payments" below for the
-line between the two.
+It is NOT a jobs marketplace, does NOT support job posters, and never pays
+users. It does sell its own subscription — see principle 2.
 </project_context>
 
 
@@ -26,22 +23,16 @@ line between the two.
    - Structured interactions only where necessary.
    - Report & moderation systems remain available.
 
-2. No Marketplace Payments
-   (Renamed 2026-09-07. Previously "No In-App Payments", which read as a
-   blanket ban and was written when Endeavrly was leaving the jobs
-   marketplace behind — note the company it keeps in the deprecated list
-   below: bidding systems, earnings dashboards, payouts tied to gigs.)
+2. Money Only Flows One Way
+   (Renamed 2026-09-07 from "No In-App Payments", which read as a blanket
+   ban and would have forbidden charging for Pro. It never meant that.)
 
-   - The platform never moves money BETWEEN USERS. No gig payments, no
-     earnings, no payouts, no escrow, no bidding. This is the part that
-     protects young people and it is not negotiable.
-   - Do not reintroduce marketplace payment workflows.
-
-   - Endeavrly DOES charge for its own subscription (Free and Pro). Taking
-     a card for an upgrade is a normal commercial transaction between the
-     platform and its user, not a marketplace flow, and is permitted.
+   - Endeavrly charges for its own subscription (Free and Pro). That is a
+     normal transaction between the platform and its user.
+   - The platform never moves money between users, and never pays a young
+     person. It is not a marketplace and will not become one.
    - Subscription payments go through an established provider. Do not
-     implement card handling, and do not store card details — the provider
+     implement card handling and do not store card details — the provider
      is the source of truth for payment status.
    - Users are 15-23. A minor cannot necessarily enter a payment contract
      unaided in Norway or Sweden, so the purchase journey needs a legal
@@ -307,9 +298,7 @@ STRICTLY DO NOT REINTRODUCE:
 - Worker matching systems
 - Bidding systems
 - Earnings dashboards
-- Payment workflows BETWEEN USERS (gig payouts, escrow, invoicing a job
-  poster). Endeavrly's own subscription checkout is not this — see
-  principle 2.
+- Paying users for work
 - Recruiter features
 - Job chat systems
 - Job responsibility signals tied to gigs
