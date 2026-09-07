@@ -1,81 +1,114 @@
 export const dynamic = "force-dynamic";
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import {
-  normaliseEmail,
-  PENDING_VERIFICATION_COOKIE,
-} from "@/lib/auth/email-verification";
-import { mintSessionToken, sessionCookieName, sessionCookieOptions } from "@/lib/auth";
 import { checkRateLimitAsync, RateLimits } from "@/lib/rate-limit";
 import { logAndSwallow } from "@/lib/observability";
-
-/** Never cached: the whole point is observing a change. */
-const NO_STORE = { headers: { "Cache-Control": "no-store" } } as const;
+import { PENDING_VERIFICATION_COOKIE } from "@/lib/auth/email-verification";
+import {
+  SIGNIN_GRANT_COOKIE,
+  createHandoffToken,
+  grantSecret,
+  readSigninGrant,
+  verificationSatisfiesGrant,
+} from "@/lib/auth/signin-grant";
 
 /**
- * "Has the person confirmed their email yet?" — polled by the check-your-email
- * screen so it can let them straight in the moment they click the link.
+ * "Has the link been clicked yet?" — polled by the Check your email screen.
  *
- * WHY THIS EXISTS. Clicking the emailed link signs you in *in the tab the link
- * opened*. That is very often not the tab you signed up in: mail clients open
- * the system browser, and people frequently sign up on a laptop and read mail
- * on a phone. Without this, the original tab sits on "check your email"
- * forever while the account is already confirmed — the user has done
- * everything right and the product looks broken.
+ * The user who has just signed up is sitting on a screen that cannot know
+ * anything has happened: they confirm in another tab or on their phone, and
+ * nothing here changes until they reload. This endpoint is what lets that
+ * screen notice, and — once it has — sign them in without asking for the
+ * password they set a minute ago.
  *
- * WHY IT CAN MINT A SESSION. The only caller that gets anything back is a
- * browser holding the httpOnly cookie signup set on this device, for an
- * address that has since been confirmed. That browser already chose the
- * account's password moments ago, so it could sign in by hand anyway — this
- * grants no access it did not already have, it just removes a pointless step.
- * The cookie is httpOnly and SameSite=Lax, so no script can lift it.
+ * IT TAKES NO INPUT. Not an address, not an id, nothing from the body or the
+ * query string. The only thing it reads is the httpOnly, sealed grant
+ * cookie that /api/auth/signup set on this browser. That is what keeps it from
+ * being an "is this person registered / have they confirmed?" oracle: a caller
+ * can only ever ask about the account this browser itself created, and only for
+ * the 30 minutes the grant lives.
  *
- * It is deliberately incapable of answering about an arbitrary address: there
- * is no request body and no query parameter. Without the cookie it says
- * "unknown" and stops, so it can never become a "is this person registered?"
- * oracle.
+ * `verified: true` is returned only when the account's confirmation POST-DATES
+ * the grant — signing up with a stranger's already-confirmed address must not
+ * hand you their account. See src/lib/auth/signin-grant.ts.
  */
 export async function GET(req: NextRequest) {
-  try {
-    // Polling endpoint, so the ceiling is generous — but it is public and
-    // touches the database, so it is not free.
-    const ip = (req.headers.get("x-forwarded-for") || "unknown").split(",")[0].trim();
-    const rl = await checkRateLimitAsync(`verification-status:${ip}`, RateLimits.GENEROUS);
-    if (!rl.success) {
-      // Tell the client to back off rather than leaving it hammering.
-      return NextResponse.json({ verified: false, backoff: true }, { status: 429, ...NO_STORE });
-    }
+  // The honest answer to every failure. Nothing here distinguishes "no grant",
+  // "expired grant", "decoy grant", "no such user" or "not confirmed yet" —
+  // the screen behaves identically for all of them (keep waiting), and the
+  // differences are exactly what an attacker would want to learn.
+  const waiting = NextResponse.json({ verified: false });
 
-    const email = normaliseEmail(req.cookies.get(PENDING_VERIFICATION_COOKIE)?.value);
-    // No cookie: answer exactly as an unverified account would, so the
-    // difference leaks nothing about whether an address exists.
-    if (!email) return NextResponse.json({ verified: false }, NO_STORE);
+  try {
+    const ip = (req.headers.get("x-forwarded-for") || "unknown").split(",")[0].trim();
+    // GENEROUS, because this is polled: a tab checking every few seconds is the
+    // normal case, and throttling it would break the feature it exists for.
+    // It's still a cap on how hard one host can hammer a DB-touching endpoint.
+    const limit = await checkRateLimitAsync(`verification-status:${ip}`, RateLimits.GENEROUS);
+    if (!limit.success) return waiting;
+
+    const secret = grantSecret();
+    if (!secret) return waiting;
+
+    const grant = readSigninGrant(req.cookies.get(SIGNIN_GRANT_COOKIE)?.value, { secret });
+    if (!grant) return waiting;
 
     const user = await prisma.user.findUnique({
-      where: { email },
-      select: { id: true, emailVerified: true, deletedAt: true },
+      where: { id: grant.userId },
+      select: {
+        emailVerified: true,
+        accountStatus: true,
+        isPaused: true,
+        deletedAt: true,
+      },
     });
+    if (!user) return waiting;
 
-    if (!user || user.deletedAt || !user.emailVerified) {
-      return NextResponse.json({ verified: false }, NO_STORE);
+    // A suspended, banned or deleted account must not be walked through a side
+    // door the sign-in path would have refused (see the same check in
+    // src/lib/auth.ts). Reported as "still waiting" rather than as a distinct
+    // state — this screen has nothing useful to say about moderation.
+    if (
+      user.deletedAt ||
+      user.isPaused ||
+      user.accountStatus === "SUSPENDED" ||
+      user.accountStatus === "BANNED"
+    ) {
+      return waiting;
     }
 
-    const token = await mintSessionToken(user.id);
-    if (!token) {
-      // Confirmed, but the account can't hold a session (suspended, paused).
-      // Report it as confirmed and let the normal sign-in path explain why.
-      return NextResponse.json({ verified: true, signedIn: false }, NO_STORE);
-    }
+    if (!verificationSatisfiesGrant(user.emailVerified, grant.issuedAt)) return waiting;
 
-    const res = NextResponse.json({ verified: true, signedIn: true }, NO_STORE);
-    res.cookies.set(sessionCookieName(), token, sessionCookieOptions());
-    // The pending cookie has done its job; leaving it would keep this endpoint
-    // answering about an address long after it stopped being relevant.
-    res.cookies.set(PENDING_VERIFICATION_COOKIE, "", { path: "/", maxAge: 0 });
-    return res;
+    // Confirmed. Mint the two-minute, single-use token the page exchanges for a
+    // session via the `verification-handoff` provider. It goes in the body
+    // rather than a cookie because `signIn()` has to be able to send it, and it
+    // is only reachable by a browser that already holds the grant — a
+    // cross-origin page can neither send the (SameSite=Lax) cookie on a fetch
+    // nor read this response.
+    return NextResponse.json({
+      verified: true,
+      handoff: createHandoffToken(
+        { userId: grant.userId, grantIssuedAt: grant.issuedAt },
+        { secret },
+      ),
+    });
   } catch (error) {
     logAndSwallow("auth:verification-status")(error);
-    // Fail closed — the page keeps waiting rather than advancing wrongly.
-    return NextResponse.json({ verified: false }, NO_STORE);
+    return waiting;
   }
+}
+
+/**
+ * Drop both signup cookies once the handoff has produced a session.
+ *
+ * Housekeeping rather than a control — the grant is bounded by its own 30
+ * minutes and the handoff token by two — but leaving a live grant sitting in
+ * the browser of someone who is already signed in serves no purpose.
+ */
+export async function DELETE() {
+  const res = NextResponse.json({ ok: true });
+  for (const name of [SIGNIN_GRANT_COOKIE, PENDING_VERIFICATION_COOKIE]) {
+    res.cookies.set(name, "", { httpOnly: true, path: "/", maxAge: 0 });
+  }
+  return res;
 }

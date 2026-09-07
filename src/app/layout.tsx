@@ -33,9 +33,50 @@ export const viewport: Viewport = {
   ],
 };
 
+const SITE_NAME = "Endeavrly";
+const SITE_TAGLINE = "Endeavrly — See your possible future";
+const SITE_DESCRIPTION =
+  "Endeavrly helps young people explore careers, understand realistic pathways, and build clarity about their future. See your possible future before you commit to it.";
+
+/**
+ * `metadataBase` is what makes every relative image and canonical URL in the
+ * app resolve to an absolute one. Without it Next cannot build the absolute
+ * og:image URL that link unfurlers require, so previews silently stay blank.
+ * Read from the environment so preview deployments advertise themselves rather
+ * than the production domain.
+ */
+const siteUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://endeavrly.com";
+
 export const metadata: Metadata = {
-  title: "Endeavrly — See your possible future",
-  description: "Endeavrly helps young people explore careers, understand realistic pathways, and build clarity about their future. See your possible future before you commit to it.",
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: SITE_TAGLINE,
+    // Pages that set their own title get "<page> — Endeavrly" rather than
+    // every tab in the browser reading identically.
+    template: `%s — ${SITE_NAME}`,
+  },
+  description: SITE_DESCRIPTION,
+  applicationName: SITE_NAME,
+  // The site is shared far more than it is searched — a young person sends the
+  // link to a friend. These tags are what turn that into a real preview card
+  // instead of a bare URL. The image itself is ./opengraph-image.tsx.
+  openGraph: {
+    type: "website",
+    siteName: SITE_NAME,
+    title: SITE_TAGLINE,
+    description: SITE_DESCRIPTION,
+    url: siteUrl,
+    locale: "en_GB",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: SITE_TAGLINE,
+    description: SITE_DESCRIPTION,
+  },
+  // No upper age limit and no adult content, but the audience starts at 15 —
+  // declare the site as suitable for general audiences rather than leaving
+  // classifiers to guess.
+  other: { rating: "general" },
 };
 
 export default async function RootLayout({

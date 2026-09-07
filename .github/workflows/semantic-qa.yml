@@ -18,15 +18,23 @@ on:
         required: false
         default: ''
 
+# Least-privilege token. Without an explicit block the workflow token inherits
+# the repository default, which on many repos is read+WRITE across contents,
+# packages and more. This job only ever reads the checkout, so anything a
+# compromised dependency or action could do with a write token is removed by
+# saying so here.
+permissions:
+  contents: read
+
 jobs:
   qa:
     runs-on: ubuntu-latest
     timeout-minutes: 30
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: 20
           cache: npm
@@ -49,7 +57,7 @@ jobs:
 
       - name: Upload review queues
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: qa-review-queues
           path: scripts/output/qa-review-queue-*.json

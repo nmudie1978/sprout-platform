@@ -105,6 +105,27 @@ export interface LaunchStats {
     highest: { key: string; label: string; average: number; count: number }[];
     lowest: { key: string; label: string; average: number; count: number }[];
   };
+  /**
+   * Per-feature adoption, derived ENTIRELY from records users chose to
+   * create — no page views, no beacons, no timers. See getFeatureUsage for
+   * why that limits what can be answered.
+   */
+  features: {
+    rows: {
+      key: string;
+      label: string;
+      /** Distinct users who have ever produced a record in this area. */
+      users: number;
+      /** Of those, how many came back on a later day. `null` = not derivable. */
+      returned: number | null;
+      /** Share of active users who have touched it at all. */
+      adoption: number;
+    }[];
+    /** Users with at least one qualifying record anywhere. */
+    activeUsers: number;
+    /** Honest statement of what this cannot measure. */
+    timeOnFeatureTracked: false;
+  };
   health: {
     signingUp: boolean;
     completingJourneys: boolean;
@@ -332,6 +353,7 @@ export async function getLaunchStats(): Promise<LaunchStats> {
       comparedTracked: false,
     },
     interest: { rated, average: avgInterest, distribution, highest, lowest },
+    features: await getFeatureUsage(totalUsers),
     health: {
       signingUp: newThisWeek > 0,
       completingJourneys: journeysCompleted > 0,
@@ -340,5 +362,111 @@ export async function getLaunchStats(): Promise<LaunchStats> {
       strongest: strongest ? { key: strongest.key, label: strongest.label } : null,
       weakest: weakest ? { key: weakest.key, label: weakest.label } : null,
     },
+  };
+}
+
+// ── Per-feature adoption ────────────────────────────────────────────
+//
+// WHAT THIS IS, AND WHAT IT DELIBERATELY IS NOT.
+//
+// Every number here is derived from rows a user CHOSE to create — a saved
+// career, a rating, a reflection, a Twin conversation. There are no page
+// views, no beacons, no timers, no session recording. That is the same
+// approach the rest of this dashboard already takes ("approximated from when
+// users last did something that saves data"), and it is deliberate: the
+// Cookie Policy promises no third-party analytics and consent before any
+// future analytics, and CLAUDE.md forbids behavioural profiling. Vercel
+// Analytics was removed from the root layout for exactly that reason.
+//
+// The consequence, stated plainly rather than papered over:
+//
+//  • "Opened" really means "produced a record". Someone who reads three
+//    career pages and leaves is invisible. Adoption is therefore a FLOOR,
+//    never an overcount.
+//  • "Returned" means active on two or more distinct days, which is the
+//    honest proxy for coming back. It is null where a feature stores one row
+//    per user (Career Radar preferences) — there is nothing to compare.
+//  • TIME SPENT IS NOT MEASURABLE THIS WAY and is not reported. Producing it
+//    needs per-view timing, which is new behavioural data: it would require a
+//    Cookie/Privacy Policy change and, for under-16s, a consent decision. See
+//    `timeOnFeatureTracked: false`.
+
+type FeatureRow = {
+  key: string;
+  label: string;
+  users: number;
+  returned: number | null;
+  adoption: number;
+};
+
+/** Distinct users, and distinct users seen on 2+ days, from (userId, createdAt) pairs. */
+function summarise(rows: { userId: string; createdAt: Date }[]) {
+  const days = new Map<string, Set<string>>();
+  for (const r of rows) {
+    const day = r.createdAt.toISOString().slice(0, 10);
+    const set = days.get(r.userId) ?? new Set<string>();
+    set.add(day);
+    days.set(r.userId, set);
+  }
+  let returned = 0;
+  for (const set of days.values()) if (set.size >= 2) returned += 1;
+  return { users: days.size, returned, userIds: new Set(days.keys()) };
+}
+
+export async function getFeatureUsage(
+  totalActiveUsers: number,
+): Promise<LaunchStats["features"]> {
+  const select = { userId: true, createdAt: true } as const;
+
+  const [timeline, lifeSkill, interests, saved, notebook, clarity, arrivals, ai] =
+    await Promise.all([
+      prisma.timelineEvent.findMany({ select }),
+      prisma.lifeSkillView.findMany({ select }),
+      prisma.careerInterest.findMany({ select }),
+      prisma.savedCareer.findMany({ select: { profileId: true, savedAt: true } }),
+      // JourneyNotebook keys on profileId, like SavedCareer — not userId.
+      prisma.journeyNotebook.findMany({ select: { profileId: true, createdAt: true } }),
+      prisma.clarityShift.findMany({ select }),
+      prisma.arrivalCheckIn.findMany({ select }),
+      prisma.aiUsageEvent.findMany({ select }),
+    ]);
+
+  // SavedCareer and JourneyNotebook hang off the profile, not the user.
+  // profileId is 1:1 with a user, so it serves as the identity for counting.
+  // NOTE: no `.catch(() => [])` on any of these. An earlier version had them,
+  // and a silently-swallowed "Unknown field `userId`" made Reflections read
+  // zero when it should not have. A schema drift here must fail loudly.
+  const savedRows = saved.map((r) => ({ userId: r.profileId, createdAt: r.savedAt }));
+  const notebookRows = notebook.map((r) => ({ userId: r.profileId, createdAt: r.createdAt }));
+
+  const defs: { key: string; label: string; rows: { userId: string; createdAt: Date }[] }[] = [
+    { key: "journey", label: "My Journey", rows: [...timeline, ...clarity, ...arrivals] },
+    { key: "careers", label: "Explore Careers", rows: interests },
+    { key: "library", label: "My Library", rows: savedRows },
+    { key: "twin", label: "Career Twin", rows: ai },
+    { key: "reflections", label: "Reflections", rows: notebookRows },
+    { key: "lifeskills", label: "Life skills", rows: lifeSkill },
+  ];
+
+  const everyone = new Set<string>();
+  const rows: FeatureRow[] = defs.map((d) => {
+    const { users, returned, userIds } = summarise(d.rows);
+    userIds.forEach((id) => everyone.add(id));
+    return {
+      key: d.key,
+      label: d.label,
+      users,
+      // One row per user by design → "came back" is unanswerable, not zero.
+      returned: d.key === "radar" ? null : returned,
+      adoption: totalActiveUsers > 0 ? Math.round((users / totalActiveUsers) * 100) : 0,
+    };
+  });
+
+  rows.sort((a, b) => b.users - a.users);
+
+  return {
+    rows,
+    activeUsers: everyone.size,
+    timeOnFeatureTracked: false,
   };
 }

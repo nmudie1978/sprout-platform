@@ -21,10 +21,23 @@
  *
  * An unconfigured Redis is NOT an error: dev and preview run without it by
  * design, and alerting there would be noise. Never cached.
+ *
+ * MAIL is checked for the same reason Redis is. Email verification is a hard
+ * gate, so a dead Resend key does not degrade signup — it stops it, and it does
+ * so invisibly, because sendMail() no-ops when unconfigured and the auth routes
+ * return a generic 200 either way (anti-enumeration). A revoked key already
+ * broke password-reset mail once, on 2026-06-19, and was found by a person
+ * rather than a monitor. The probe is cached and read-only; see mail-health.ts.
+ *
+ * COMMIT reports what is actually running. Nine production deploys failed over
+ * three days on 2026-08-31 while `main` moved ahead, and nothing surfaced the
+ * drift — a merged fix simply was not live. Comparing this against the head of
+ * `main` makes "merged but not deployed" detectable instead of assumed.
  */
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getRedisClient, isRedisConfigured } from "@/lib/rate-limit";
+import { checkMailHealth, mailStateIsFailing } from "@/lib/mail-health";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -73,13 +86,24 @@ export async function GET() {
   }
 
   const redis = await checkRedis();
-  const degraded = redis === "down";
+
+  // Production is the only place a missing mail config is an error; dev and
+  // preview run without it deliberately.
+  const isProduction = process.env.VERCEL_ENV === "production";
+  const mail = await checkMailHealth();
+
+  const degraded = redis === "down" || mailStateIsFailing(mail, isProduction);
 
   return NextResponse.json(
     {
       status: degraded ? "degraded" : "ok",
       db: "up",
       redis,
+      // Whether new users can actually be signed up. See mail-health.ts.
+      mail,
+      // What is actually running, so "merged but not deployed" is visible.
+      // Vercel injects the SHA for git-linked builds; a CLI deploy has none.
+      commit: process.env.VERCEL_GIT_COMMIT_SHA?.slice(0, 8) ?? "unknown",
       ...(degraded ? { degraded: true } : {}),
       // Surfaced deliberately. RATE_LIMIT_ALLOW_IN_MEMORY is the escape hatch
       // that lets a production deploy boot without Redis, and in-memory limits
