@@ -1,18 +1,55 @@
 {
-  "meta": { "source": "hand-curated + URL-verified", "lastUpdated": "2026-06-18" },
+  "meta": {
+    "source": "hand-curated + URL-verified",
+    "lastUpdated": "2026-06-18"
+  },
   "buckets": [
     {
       "id": "medicine",
       "label": "Medicine",
       "local": {
         "NO": [
-          { "name": "Universitetet i Oslo (UiO)", "country": "NO", "city": "Oslo", "url": "https://www.uio.no" },
-          { "name": "Universitetet i Bergen (UiB)", "country": "NO", "city": "Bergen", "url": "https://www.uib.no" }
+          {
+            "name": "Universitetet i Oslo (UiO)",
+            "country": "NO",
+            "city": "Oslo",
+            "url": "https://www.uio.no"
+          },
+          {
+            "name": "Universitetet i Bergen (UiB)",
+            "country": "NO",
+            "city": "Bergen",
+            "url": "https://www.uib.no"
+          }
+        ],
+        "SE": [
+          {
+            "name": "Karolinska Institutet",
+            "country": "SE",
+            "city": "Stockholm",
+            "url": "https://ki.se"
+          },
+          {
+            "name": "Uppsala universitet",
+            "country": "SE",
+            "city": "Uppsala",
+            "url": "https://www.uu.se"
+          }
         ]
       },
       "europe": [
-        { "name": "Charité – Universitätsmedizin Berlin", "country": "DE", "city": "Berlin", "url": "https://www.charite.de" },
-        { "name": "KU Leuven", "country": "BE", "city": "Leuven", "url": "https://www.kuleuven.be/english" }
+        {
+          "name": "Charité – Universitätsmedizin Berlin",
+          "country": "DE",
+          "city": "Berlin",
+          "url": "https://www.charite.de"
+        },
+        {
+          "name": "KU Leuven",
+          "country": "BE",
+          "city": "Leuven",
+          "url": "https://www.kuleuven.be/english"
+        }
       ]
     },
     {
@@ -20,13 +57,47 @@
       "label": "Nursing & Allied Health",
       "local": {
         "NO": [
-          { "name": "OsloMet – storbyuniversitetet", "country": "NO", "city": "Oslo", "url": "https://www.oslomet.no" },
-          { "name": "NTNU", "country": "NO", "city": "Trondheim", "url": "https://www.ntnu.no" }
+          {
+            "name": "OsloMet – storbyuniversitetet",
+            "country": "NO",
+            "city": "Oslo",
+            "url": "https://www.oslomet.no"
+          },
+          {
+            "name": "NTNU",
+            "country": "NO",
+            "city": "Trondheim",
+            "url": "https://www.ntnu.no"
+          }
+        ],
+        "SE": [
+          {
+            "name": "Karolinska Institutet",
+            "country": "SE",
+            "city": "Stockholm",
+            "url": "https://ki.se"
+          },
+          {
+            "name": "Göteborgs universitet",
+            "country": "SE",
+            "city": "Göteborg",
+            "url": "https://www.gu.se"
+          }
         ]
       },
       "europe": [
-        { "name": "KU Leuven", "country": "BE", "city": "Leuven", "url": "https://www.kuleuven.be/english" },
-        { "name": "Maastricht University", "country": "NL", "city": "Maastricht", "url": "https://www.maastrichtuniversity.nl" }
+        {
+          "name": "KU Leuven",
+          "country": "BE",
+          "city": "Leuven",
+          "url": "https://www.kuleuven.be/english"
+        },
+        {
+          "name": "Maastricht University",
+          "country": "NL",
+          "city": "Maastricht",
+          "url": "https://www.maastrichtuniversity.nl"
+        }
       ]
     },
     {
@@ -34,13 +105,47 @@
       "label": "Dentistry",
       "local": {
         "NO": [
-          { "name": "Universitetet i Oslo (UiO)", "country": "NO", "city": "Oslo", "url": "https://www.uio.no" },
-          { "name": "Universitetet i Bergen (UiB)", "country": "NO", "city": "Bergen", "url": "https://www.uib.no" }
+          {
+            "name": "Universitetet i Oslo (UiO)",
+            "country": "NO",
+            "city": "Oslo",
+            "url": "https://www.uio.no"
+          },
+          {
+            "name": "Universitetet i Bergen (UiB)",
+            "country": "NO",
+            "city": "Bergen",
+            "url": "https://www.uib.no"
+          }
+        ],
+        "SE": [
+          {
+            "name": "Karolinska Institutet",
+            "country": "SE",
+            "city": "Stockholm",
+            "url": "https://ki.se"
+          },
+          {
+            "name": "Malmö universitet",
+            "country": "SE",
+            "city": "Malmö",
+            "url": "https://mau.se"
+          }
         ]
       },
       "europe": [
-        { "name": "KU Leuven", "country": "BE", "city": "Leuven", "url": "https://www.kuleuven.be/english" },
-        { "name": "ACTA (UvA / VU Amsterdam)", "country": "NL", "city": "Amsterdam", "url": "https://www.acta.nl" }
+        {
+          "name": "KU Leuven",
+          "country": "BE",
+          "city": "Leuven",
+          "url": "https://www.kuleuven.be/english"
+        },
+        {
+          "name": "ACTA (UvA / VU Amsterdam)",
+          "country": "NL",
+          "city": "Amsterdam",
+          "url": "https://www.acta.nl"
+        }
       ]
     },
     {
@@ -48,13 +153,47 @@
       "label": "Pharmacy",
       "local": {
         "NO": [
-          { "name": "Universitetet i Oslo (UiO)", "country": "NO", "city": "Oslo", "url": "https://www.uio.no" },
-          { "name": "UiT Norges arktiske universitet", "country": "NO", "city": "Tromsø", "url": "https://uit.no" }
+          {
+            "name": "Universitetet i Oslo (UiO)",
+            "country": "NO",
+            "city": "Oslo",
+            "url": "https://www.uio.no"
+          },
+          {
+            "name": "UiT Norges arktiske universitet",
+            "country": "NO",
+            "city": "Tromsø",
+            "url": "https://uit.no"
+          }
+        ],
+        "SE": [
+          {
+            "name": "Uppsala universitet",
+            "country": "SE",
+            "city": "Uppsala",
+            "url": "https://www.uu.se"
+          },
+          {
+            "name": "Göteborgs universitet",
+            "country": "SE",
+            "city": "Göteborg",
+            "url": "https://www.gu.se"
+          }
         ]
       },
       "europe": [
-        { "name": "Utrecht University", "country": "NL", "city": "Utrecht", "url": "https://www.uu.nl/en" },
-        { "name": "KU Leuven", "country": "BE", "city": "Leuven", "url": "https://www.kuleuven.be/english" }
+        {
+          "name": "Utrecht University",
+          "country": "NL",
+          "city": "Utrecht",
+          "url": "https://www.uu.nl/en"
+        },
+        {
+          "name": "KU Leuven",
+          "country": "BE",
+          "city": "Leuven",
+          "url": "https://www.kuleuven.be/english"
+        }
       ]
     },
     {
@@ -62,12 +201,35 @@
       "label": "Veterinary Medicine",
       "local": {
         "NO": [
-          { "name": "NMBU – Norges miljø- og biovitenskapelige universitet", "country": "NO", "city": "Ås", "url": "https://www.nmbu.no" }
+          {
+            "name": "NMBU – Norges miljø- og biovitenskapelige universitet",
+            "country": "NO",
+            "city": "Ås",
+            "url": "https://www.nmbu.no"
+          }
+        ],
+        "SE": [
+          {
+            "name": "Sveriges lantbruksuniversitet (SLU)",
+            "country": "SE",
+            "city": "Uppsala",
+            "url": "https://www.slu.se"
+          }
         ]
       },
       "europe": [
-        { "name": "Utrecht University", "country": "NL", "city": "Utrecht", "url": "https://www.uu.nl/en" },
-        { "name": "Ghent University", "country": "BE", "city": "Ghent", "url": "https://www.ugent.be/en" }
+        {
+          "name": "Utrecht University",
+          "country": "NL",
+          "city": "Utrecht",
+          "url": "https://www.uu.nl/en"
+        },
+        {
+          "name": "Ghent University",
+          "country": "BE",
+          "city": "Ghent",
+          "url": "https://www.ugent.be/en"
+        }
       ]
     },
     {
@@ -75,13 +237,47 @@
       "label": "Psychology",
       "local": {
         "NO": [
-          { "name": "Universitetet i Oslo (UiO)", "country": "NO", "city": "Oslo", "url": "https://www.uio.no" },
-          { "name": "NTNU", "country": "NO", "city": "Trondheim", "url": "https://www.ntnu.no" }
+          {
+            "name": "Universitetet i Oslo (UiO)",
+            "country": "NO",
+            "city": "Oslo",
+            "url": "https://www.uio.no"
+          },
+          {
+            "name": "NTNU",
+            "country": "NO",
+            "city": "Trondheim",
+            "url": "https://www.ntnu.no"
+          }
+        ],
+        "SE": [
+          {
+            "name": "Stockholms universitet",
+            "country": "SE",
+            "city": "Stockholm",
+            "url": "https://www.su.se"
+          },
+          {
+            "name": "Lunds universitet",
+            "country": "SE",
+            "city": "Lund",
+            "url": "https://www.lu.se"
+          }
         ]
       },
       "europe": [
-        { "name": "University of Amsterdam (UvA)", "country": "NL", "city": "Amsterdam", "url": "https://www.uva.nl/en" },
-        { "name": "KU Leuven", "country": "BE", "city": "Leuven", "url": "https://www.kuleuven.be/english" }
+        {
+          "name": "University of Amsterdam (UvA)",
+          "country": "NL",
+          "city": "Amsterdam",
+          "url": "https://www.uva.nl/en"
+        },
+        {
+          "name": "KU Leuven",
+          "country": "BE",
+          "city": "Leuven",
+          "url": "https://www.kuleuven.be/english"
+        }
       ]
     },
     {
@@ -89,13 +285,47 @@
       "label": "Public Health",
       "local": {
         "NO": [
-          { "name": "Universitetet i Oslo (UiO)", "country": "NO", "city": "Oslo", "url": "https://www.uio.no" },
-          { "name": "Universitetet i Bergen (UiB)", "country": "NO", "city": "Bergen", "url": "https://www.uib.no" }
+          {
+            "name": "Universitetet i Oslo (UiO)",
+            "country": "NO",
+            "city": "Oslo",
+            "url": "https://www.uio.no"
+          },
+          {
+            "name": "Universitetet i Bergen (UiB)",
+            "country": "NO",
+            "city": "Bergen",
+            "url": "https://www.uib.no"
+          }
+        ],
+        "SE": [
+          {
+            "name": "Karolinska Institutet",
+            "country": "SE",
+            "city": "Stockholm",
+            "url": "https://ki.se"
+          },
+          {
+            "name": "Umeå universitet",
+            "country": "SE",
+            "city": "Umeå",
+            "url": "https://www.umu.se"
+          }
         ]
       },
       "europe": [
-        { "name": "Maastricht University", "country": "NL", "city": "Maastricht", "url": "https://www.maastrichtuniversity.nl" },
-        { "name": "KU Leuven", "country": "BE", "city": "Leuven", "url": "https://www.kuleuven.be/english" }
+        {
+          "name": "Maastricht University",
+          "country": "NL",
+          "city": "Maastricht",
+          "url": "https://www.maastrichtuniversity.nl"
+        },
+        {
+          "name": "KU Leuven",
+          "country": "BE",
+          "city": "Leuven",
+          "url": "https://www.kuleuven.be/english"
+        }
       ]
     },
     {
@@ -103,13 +333,47 @@
       "label": "Biology & Life Sciences",
       "local": {
         "NO": [
-          { "name": "Universitetet i Oslo (UiO)", "country": "NO", "city": "Oslo", "url": "https://www.uio.no" },
-          { "name": "NMBU – Norges miljø- og biovitenskapelige universitet", "country": "NO", "city": "Ås", "url": "https://www.nmbu.no" }
+          {
+            "name": "Universitetet i Oslo (UiO)",
+            "country": "NO",
+            "city": "Oslo",
+            "url": "https://www.uio.no"
+          },
+          {
+            "name": "NMBU – Norges miljø- og biovitenskapelige universitet",
+            "country": "NO",
+            "city": "Ås",
+            "url": "https://www.nmbu.no"
+          }
+        ],
+        "SE": [
+          {
+            "name": "Uppsala universitet",
+            "country": "SE",
+            "city": "Uppsala",
+            "url": "https://www.uu.se"
+          },
+          {
+            "name": "Lunds universitet",
+            "country": "SE",
+            "city": "Lund",
+            "url": "https://www.lu.se"
+          }
         ]
       },
       "europe": [
-        { "name": "Wageningen University & Research", "country": "NL", "city": "Wageningen", "url": "https://www.wur.nl/en.htm" },
-        { "name": "ETH Zürich", "country": "CH", "city": "Zürich", "url": "https://ethz.ch/en.html" }
+        {
+          "name": "Wageningen University & Research",
+          "country": "NL",
+          "city": "Wageningen",
+          "url": "https://www.wur.nl/en.htm"
+        },
+        {
+          "name": "ETH Zürich",
+          "country": "CH",
+          "city": "Zürich",
+          "url": "https://ethz.ch/en.html"
+        }
       ]
     },
     {
@@ -117,13 +381,47 @@
       "label": "Environmental & Earth Science",
       "local": {
         "NO": [
-          { "name": "Universitetet i Bergen (UiB)", "country": "NO", "city": "Bergen", "url": "https://www.uib.no" },
-          { "name": "NMBU – Norges miljø- og biovitenskapelige universitet", "country": "NO", "city": "Ås", "url": "https://www.nmbu.no" }
+          {
+            "name": "Universitetet i Bergen (UiB)",
+            "country": "NO",
+            "city": "Bergen",
+            "url": "https://www.uib.no"
+          },
+          {
+            "name": "NMBU – Norges miljø- og biovitenskapelige universitet",
+            "country": "NO",
+            "city": "Ås",
+            "url": "https://www.nmbu.no"
+          }
+        ],
+        "SE": [
+          {
+            "name": "Sveriges lantbruksuniversitet (SLU)",
+            "country": "SE",
+            "city": "Uppsala",
+            "url": "https://www.slu.se"
+          },
+          {
+            "name": "Stockholms universitet",
+            "country": "SE",
+            "city": "Stockholm",
+            "url": "https://www.su.se"
+          }
         ]
       },
       "europe": [
-        { "name": "Wageningen University & Research", "country": "NL", "city": "Wageningen", "url": "https://www.wur.nl/en.htm" },
-        { "name": "ETH Zürich", "country": "CH", "city": "Zürich", "url": "https://ethz.ch/en.html" }
+        {
+          "name": "Wageningen University & Research",
+          "country": "NL",
+          "city": "Wageningen",
+          "url": "https://www.wur.nl/en.htm"
+        },
+        {
+          "name": "ETH Zürich",
+          "country": "CH",
+          "city": "Zürich",
+          "url": "https://ethz.ch/en.html"
+        }
       ]
     },
     {
@@ -131,13 +429,47 @@
       "label": "Mathematics & Physics",
       "local": {
         "NO": [
-          { "name": "Universitetet i Oslo (UiO)", "country": "NO", "city": "Oslo", "url": "https://www.uio.no" },
-          { "name": "NTNU", "country": "NO", "city": "Trondheim", "url": "https://www.ntnu.no" }
+          {
+            "name": "Universitetet i Oslo (UiO)",
+            "country": "NO",
+            "city": "Oslo",
+            "url": "https://www.uio.no"
+          },
+          {
+            "name": "NTNU",
+            "country": "NO",
+            "city": "Trondheim",
+            "url": "https://www.ntnu.no"
+          }
+        ],
+        "SE": [
+          {
+            "name": "Kungliga Tekniska högskolan (KTH)",
+            "country": "SE",
+            "city": "Stockholm",
+            "url": "https://www.kth.se"
+          },
+          {
+            "name": "Lunds universitet",
+            "country": "SE",
+            "city": "Lund",
+            "url": "https://www.lu.se"
+          }
         ]
       },
       "europe": [
-        { "name": "ETH Zürich", "country": "CH", "city": "Zürich", "url": "https://ethz.ch/en.html" },
-        { "name": "École Polytechnique", "country": "FR", "city": "Palaiseau", "url": "https://www.polytechnique.edu/en" }
+        {
+          "name": "ETH Zürich",
+          "country": "CH",
+          "city": "Zürich",
+          "url": "https://ethz.ch/en.html"
+        },
+        {
+          "name": "École Polytechnique",
+          "country": "FR",
+          "city": "Palaiseau",
+          "url": "https://www.polytechnique.edu/en"
+        }
       ]
     },
     {
@@ -145,13 +477,47 @@
       "label": "Chemistry",
       "local": {
         "NO": [
-          { "name": "Universitetet i Oslo (UiO)", "country": "NO", "city": "Oslo", "url": "https://www.uio.no" },
-          { "name": "NTNU", "country": "NO", "city": "Trondheim", "url": "https://www.ntnu.no" }
+          {
+            "name": "Universitetet i Oslo (UiO)",
+            "country": "NO",
+            "city": "Oslo",
+            "url": "https://www.uio.no"
+          },
+          {
+            "name": "NTNU",
+            "country": "NO",
+            "city": "Trondheim",
+            "url": "https://www.ntnu.no"
+          }
+        ],
+        "SE": [
+          {
+            "name": "Chalmers tekniska högskola",
+            "country": "SE",
+            "city": "Göteborg",
+            "url": "https://www.chalmers.se"
+          },
+          {
+            "name": "Uppsala universitet",
+            "country": "SE",
+            "city": "Uppsala",
+            "url": "https://www.uu.se"
+          }
         ]
       },
       "europe": [
-        { "name": "ETH Zürich", "country": "CH", "city": "Zürich", "url": "https://ethz.ch/en.html" },
-        { "name": "RWTH Aachen University", "country": "DE", "city": "Aachen", "url": "https://www.rwth-aachen.de" }
+        {
+          "name": "ETH Zürich",
+          "country": "CH",
+          "city": "Zürich",
+          "url": "https://ethz.ch/en.html"
+        },
+        {
+          "name": "RWTH Aachen University",
+          "country": "DE",
+          "city": "Aachen",
+          "url": "https://www.rwth-aachen.de"
+        }
       ]
     },
     {
@@ -159,12 +525,41 @@
       "label": "Mechanical Engineering",
       "local": {
         "NO": [
-          { "name": "NTNU", "country": "NO", "city": "Trondheim", "url": "https://www.ntnu.no" }
+          {
+            "name": "NTNU",
+            "country": "NO",
+            "city": "Trondheim",
+            "url": "https://www.ntnu.no"
+          }
+        ],
+        "SE": [
+          {
+            "name": "Chalmers tekniska högskola",
+            "country": "SE",
+            "city": "Göteborg",
+            "url": "https://www.chalmers.se"
+          },
+          {
+            "name": "Kungliga Tekniska högskolan (KTH)",
+            "country": "SE",
+            "city": "Stockholm",
+            "url": "https://www.kth.se"
+          }
         ]
       },
       "europe": [
-        { "name": "Delft University of Technology (TU Delft)", "country": "NL", "city": "Delft", "url": "https://www.tudelft.nl/en" },
-        { "name": "Technical University of Munich (TUM)", "country": "DE", "city": "Munich", "url": "https://www.tum.de/en" }
+        {
+          "name": "Delft University of Technology (TU Delft)",
+          "country": "NL",
+          "city": "Delft",
+          "url": "https://www.tudelft.nl/en"
+        },
+        {
+          "name": "Technical University of Munich (TUM)",
+          "country": "DE",
+          "city": "Munich",
+          "url": "https://www.tum.de/en"
+        }
       ]
     },
     {
@@ -172,12 +567,41 @@
       "label": "Electrical Engineering",
       "local": {
         "NO": [
-          { "name": "NTNU", "country": "NO", "city": "Trondheim", "url": "https://www.ntnu.no" }
+          {
+            "name": "NTNU",
+            "country": "NO",
+            "city": "Trondheim",
+            "url": "https://www.ntnu.no"
+          }
+        ],
+        "SE": [
+          {
+            "name": "Kungliga Tekniska högskolan (KTH)",
+            "country": "SE",
+            "city": "Stockholm",
+            "url": "https://www.kth.se"
+          },
+          {
+            "name": "Chalmers tekniska högskola",
+            "country": "SE",
+            "city": "Göteborg",
+            "url": "https://www.chalmers.se"
+          }
         ]
       },
       "europe": [
-        { "name": "ETH Zürich", "country": "CH", "city": "Zürich", "url": "https://ethz.ch/en.html" },
-        { "name": "Technical University of Munich (TUM)", "country": "DE", "city": "Munich", "url": "https://www.tum.de/en" }
+        {
+          "name": "ETH Zürich",
+          "country": "CH",
+          "city": "Zürich",
+          "url": "https://ethz.ch/en.html"
+        },
+        {
+          "name": "Technical University of Munich (TUM)",
+          "country": "DE",
+          "city": "Munich",
+          "url": "https://www.tum.de/en"
+        }
       ]
     },
     {
@@ -185,12 +609,41 @@
       "label": "Civil Engineering",
       "local": {
         "NO": [
-          { "name": "NTNU", "country": "NO", "city": "Trondheim", "url": "https://www.ntnu.no" }
+          {
+            "name": "NTNU",
+            "country": "NO",
+            "city": "Trondheim",
+            "url": "https://www.ntnu.no"
+          }
+        ],
+        "SE": [
+          {
+            "name": "Kungliga Tekniska högskolan (KTH)",
+            "country": "SE",
+            "city": "Stockholm",
+            "url": "https://www.kth.se"
+          },
+          {
+            "name": "Lunds universitet",
+            "country": "SE",
+            "city": "Lund",
+            "url": "https://www.lu.se"
+          }
         ]
       },
       "europe": [
-        { "name": "Delft University of Technology (TU Delft)", "country": "NL", "city": "Delft", "url": "https://www.tudelft.nl/en" },
-        { "name": "ETH Zürich", "country": "CH", "city": "Zürich", "url": "https://ethz.ch/en.html" }
+        {
+          "name": "Delft University of Technology (TU Delft)",
+          "country": "NL",
+          "city": "Delft",
+          "url": "https://www.tudelft.nl/en"
+        },
+        {
+          "name": "ETH Zürich",
+          "country": "CH",
+          "city": "Zürich",
+          "url": "https://ethz.ch/en.html"
+        }
       ]
     },
     {
@@ -198,12 +651,41 @@
       "label": "Chemical & Process Engineering",
       "local": {
         "NO": [
-          { "name": "NTNU", "country": "NO", "city": "Trondheim", "url": "https://www.ntnu.no" }
+          {
+            "name": "NTNU",
+            "country": "NO",
+            "city": "Trondheim",
+            "url": "https://www.ntnu.no"
+          }
+        ],
+        "SE": [
+          {
+            "name": "Chalmers tekniska högskola",
+            "country": "SE",
+            "city": "Göteborg",
+            "url": "https://www.chalmers.se"
+          },
+          {
+            "name": "Kungliga Tekniska högskolan (KTH)",
+            "country": "SE",
+            "city": "Stockholm",
+            "url": "https://www.kth.se"
+          }
         ]
       },
       "europe": [
-        { "name": "Delft University of Technology (TU Delft)", "country": "NL", "city": "Delft", "url": "https://www.tudelft.nl/en" },
-        { "name": "RWTH Aachen University", "country": "DE", "city": "Aachen", "url": "https://www.rwth-aachen.de" }
+        {
+          "name": "Delft University of Technology (TU Delft)",
+          "country": "NL",
+          "city": "Delft",
+          "url": "https://www.tudelft.nl/en"
+        },
+        {
+          "name": "RWTH Aachen University",
+          "country": "DE",
+          "city": "Aachen",
+          "url": "https://www.rwth-aachen.de"
+        }
       ]
     },
     {
@@ -211,13 +693,47 @@
       "label": "Computer Science & Software",
       "local": {
         "NO": [
-          { "name": "NTNU", "country": "NO", "city": "Trondheim", "url": "https://www.ntnu.no" },
-          { "name": "Universitetet i Oslo (UiO)", "country": "NO", "city": "Oslo", "url": "https://www.uio.no" }
+          {
+            "name": "NTNU",
+            "country": "NO",
+            "city": "Trondheim",
+            "url": "https://www.ntnu.no"
+          },
+          {
+            "name": "Universitetet i Oslo (UiO)",
+            "country": "NO",
+            "city": "Oslo",
+            "url": "https://www.uio.no"
+          }
+        ],
+        "SE": [
+          {
+            "name": "Kungliga Tekniska högskolan (KTH)",
+            "country": "SE",
+            "city": "Stockholm",
+            "url": "https://www.kth.se"
+          },
+          {
+            "name": "Chalmers tekniska högskola",
+            "country": "SE",
+            "city": "Göteborg",
+            "url": "https://www.chalmers.se"
+          }
         ]
       },
       "europe": [
-        { "name": "ETH Zürich", "country": "CH", "city": "Zürich", "url": "https://ethz.ch/en.html" },
-        { "name": "EPFL", "country": "CH", "city": "Lausanne", "url": "https://www.epfl.ch/en" }
+        {
+          "name": "ETH Zürich",
+          "country": "CH",
+          "city": "Zürich",
+          "url": "https://ethz.ch/en.html"
+        },
+        {
+          "name": "EPFL",
+          "country": "CH",
+          "city": "Lausanne",
+          "url": "https://www.epfl.ch/en"
+        }
       ]
     },
     {
@@ -225,13 +741,47 @@
       "label": "Data Science & AI",
       "local": {
         "NO": [
-          { "name": "NTNU", "country": "NO", "city": "Trondheim", "url": "https://www.ntnu.no" },
-          { "name": "Universitetet i Oslo (UiO)", "country": "NO", "city": "Oslo", "url": "https://www.uio.no" }
+          {
+            "name": "NTNU",
+            "country": "NO",
+            "city": "Trondheim",
+            "url": "https://www.ntnu.no"
+          },
+          {
+            "name": "Universitetet i Oslo (UiO)",
+            "country": "NO",
+            "city": "Oslo",
+            "url": "https://www.uio.no"
+          }
+        ],
+        "SE": [
+          {
+            "name": "Kungliga Tekniska högskolan (KTH)",
+            "country": "SE",
+            "city": "Stockholm",
+            "url": "https://www.kth.se"
+          },
+          {
+            "name": "Linköpings universitet",
+            "country": "SE",
+            "city": "Linköping",
+            "url": "https://liu.se"
+          }
         ]
       },
       "europe": [
-        { "name": "ETH Zürich", "country": "CH", "city": "Zürich", "url": "https://ethz.ch/en.html" },
-        { "name": "Technical University of Munich (TUM)", "country": "DE", "city": "Munich", "url": "https://www.tum.de/en" }
+        {
+          "name": "ETH Zürich",
+          "country": "CH",
+          "city": "Zürich",
+          "url": "https://ethz.ch/en.html"
+        },
+        {
+          "name": "Technical University of Munich (TUM)",
+          "country": "DE",
+          "city": "Munich",
+          "url": "https://www.tum.de/en"
+        }
       ]
     },
     {
@@ -239,12 +789,41 @@
       "label": "Cybersecurity",
       "local": {
         "NO": [
-          { "name": "NTNU", "country": "NO", "city": "Gjøvik", "url": "https://www.ntnu.no" }
+          {
+            "name": "NTNU",
+            "country": "NO",
+            "city": "Gjøvik",
+            "url": "https://www.ntnu.no"
+          }
+        ],
+        "SE": [
+          {
+            "name": "Kungliga Tekniska högskolan (KTH)",
+            "country": "SE",
+            "city": "Stockholm",
+            "url": "https://www.kth.se"
+          },
+          {
+            "name": "Blekinge Tekniska Högskola",
+            "country": "SE",
+            "city": "Karlskrona",
+            "url": "https://www.bth.se"
+          }
         ]
       },
       "europe": [
-        { "name": "Eindhoven University of Technology (TU/e)", "country": "NL", "city": "Eindhoven", "url": "https://www.tue.nl/en" },
-        { "name": "EPFL", "country": "CH", "city": "Lausanne", "url": "https://www.epfl.ch/en" }
+        {
+          "name": "Eindhoven University of Technology (TU/e)",
+          "country": "NL",
+          "city": "Eindhoven",
+          "url": "https://www.tue.nl/en"
+        },
+        {
+          "name": "EPFL",
+          "country": "CH",
+          "city": "Lausanne",
+          "url": "https://www.epfl.ch/en"
+        }
       ]
     },
     {
@@ -252,12 +831,41 @@
       "label": "Telecommunications & Networks",
       "local": {
         "NO": [
-          { "name": "NTNU", "country": "NO", "city": "Trondheim", "url": "https://www.ntnu.no" }
+          {
+            "name": "NTNU",
+            "country": "NO",
+            "city": "Trondheim",
+            "url": "https://www.ntnu.no"
+          }
+        ],
+        "SE": [
+          {
+            "name": "Kungliga Tekniska högskolan (KTH)",
+            "country": "SE",
+            "city": "Stockholm",
+            "url": "https://www.kth.se"
+          },
+          {
+            "name": "Blekinge Tekniska Högskola",
+            "country": "SE",
+            "city": "Karlskrona",
+            "url": "https://www.bth.se"
+          }
         ]
       },
       "europe": [
-        { "name": "Delft University of Technology (TU Delft)", "country": "NL", "city": "Delft", "url": "https://www.tudelft.nl/en" },
-        { "name": "Technical University of Munich (TUM)", "country": "DE", "city": "Munich", "url": "https://www.tum.de/en" }
+        {
+          "name": "Delft University of Technology (TU Delft)",
+          "country": "NL",
+          "city": "Delft",
+          "url": "https://www.tudelft.nl/en"
+        },
+        {
+          "name": "Technical University of Munich (TUM)",
+          "country": "DE",
+          "city": "Munich",
+          "url": "https://www.tum.de/en"
+        }
       ]
     },
     {
@@ -265,13 +873,47 @@
       "label": "Architecture",
       "local": {
         "NO": [
-          { "name": "Arkitektur- og designhøgskolen i Oslo (AHO)", "country": "NO", "city": "Oslo", "url": "https://aho.no" },
-          { "name": "NTNU", "country": "NO", "city": "Trondheim", "url": "https://www.ntnu.no" }
+          {
+            "name": "Arkitektur- og designhøgskolen i Oslo (AHO)",
+            "country": "NO",
+            "city": "Oslo",
+            "url": "https://aho.no"
+          },
+          {
+            "name": "NTNU",
+            "country": "NO",
+            "city": "Trondheim",
+            "url": "https://www.ntnu.no"
+          }
+        ],
+        "SE": [
+          {
+            "name": "Kungliga Tekniska högskolan (KTH)",
+            "country": "SE",
+            "city": "Stockholm",
+            "url": "https://www.kth.se"
+          },
+          {
+            "name": "Chalmers tekniska högskola",
+            "country": "SE",
+            "city": "Göteborg",
+            "url": "https://www.chalmers.se"
+          }
         ]
       },
       "europe": [
-        { "name": "ETH Zürich", "country": "CH", "city": "Zürich", "url": "https://ethz.ch/en.html" },
-        { "name": "Delft University of Technology (TU Delft)", "country": "NL", "city": "Delft", "url": "https://www.tudelft.nl/en" }
+        {
+          "name": "ETH Zürich",
+          "country": "CH",
+          "city": "Zürich",
+          "url": "https://ethz.ch/en.html"
+        },
+        {
+          "name": "Delft University of Technology (TU Delft)",
+          "country": "NL",
+          "city": "Delft",
+          "url": "https://www.tudelft.nl/en"
+        }
       ]
     },
     {
@@ -279,13 +921,47 @@
       "label": "Urban Planning",
       "local": {
         "NO": [
-          { "name": "NMBU – Norges miljø- og biovitenskapelige universitet", "country": "NO", "city": "Ås", "url": "https://www.nmbu.no" },
-          { "name": "NTNU", "country": "NO", "city": "Trondheim", "url": "https://www.ntnu.no" }
+          {
+            "name": "NMBU – Norges miljø- og biovitenskapelige universitet",
+            "country": "NO",
+            "city": "Ås",
+            "url": "https://www.nmbu.no"
+          },
+          {
+            "name": "NTNU",
+            "country": "NO",
+            "city": "Trondheim",
+            "url": "https://www.ntnu.no"
+          }
+        ],
+        "SE": [
+          {
+            "name": "Kungliga Tekniska högskolan (KTH)",
+            "country": "SE",
+            "city": "Stockholm",
+            "url": "https://www.kth.se"
+          },
+          {
+            "name": "Blekinge Tekniska Högskola",
+            "country": "SE",
+            "city": "Karlskrona",
+            "url": "https://www.bth.se"
+          }
         ]
       },
       "europe": [
-        { "name": "Delft University of Technology (TU Delft)", "country": "NL", "city": "Delft", "url": "https://www.tudelft.nl/en" },
-        { "name": "University College London (UCL)", "country": "GB", "city": "London", "url": "https://www.ucl.ac.uk" }
+        {
+          "name": "Delft University of Technology (TU Delft)",
+          "country": "NL",
+          "city": "Delft",
+          "url": "https://www.tudelft.nl/en"
+        },
+        {
+          "name": "University College London (UCL)",
+          "country": "GB",
+          "city": "London",
+          "url": "https://www.ucl.ac.uk"
+        }
       ]
     },
     {
@@ -293,13 +969,47 @@
       "label": "Law",
       "local": {
         "NO": [
-          { "name": "Universitetet i Oslo (UiO)", "country": "NO", "city": "Oslo", "url": "https://www.uio.no" },
-          { "name": "Universitetet i Bergen (UiB)", "country": "NO", "city": "Bergen", "url": "https://www.uib.no" }
+          {
+            "name": "Universitetet i Oslo (UiO)",
+            "country": "NO",
+            "city": "Oslo",
+            "url": "https://www.uio.no"
+          },
+          {
+            "name": "Universitetet i Bergen (UiB)",
+            "country": "NO",
+            "city": "Bergen",
+            "url": "https://www.uib.no"
+          }
+        ],
+        "SE": [
+          {
+            "name": "Uppsala universitet",
+            "country": "SE",
+            "city": "Uppsala",
+            "url": "https://www.uu.se"
+          },
+          {
+            "name": "Lunds universitet",
+            "country": "SE",
+            "city": "Lund",
+            "url": "https://www.lu.se"
+          }
         ]
       },
       "europe": [
-        { "name": "Leiden University", "country": "NL", "city": "Leiden", "url": "https://www.universiteitleiden.nl/en" },
-        { "name": "KU Leuven", "country": "BE", "city": "Leuven", "url": "https://www.kuleuven.be/english" }
+        {
+          "name": "Leiden University",
+          "country": "NL",
+          "city": "Leiden",
+          "url": "https://www.universiteitleiden.nl/en"
+        },
+        {
+          "name": "KU Leuven",
+          "country": "BE",
+          "city": "Leuven",
+          "url": "https://www.kuleuven.be/english"
+        }
       ]
     },
     {
@@ -307,13 +1017,47 @@
       "label": "Criminology & Policing",
       "local": {
         "NO": [
-          { "name": "Politihøgskolen", "country": "NO", "city": "Oslo", "url": "https://www.politihogskolen.no" },
-          { "name": "Universitetet i Oslo (UiO)", "country": "NO", "city": "Oslo", "url": "https://www.uio.no" }
+          {
+            "name": "Politihøgskolen",
+            "country": "NO",
+            "city": "Oslo",
+            "url": "https://www.politihogskolen.no"
+          },
+          {
+            "name": "Universitetet i Oslo (UiO)",
+            "country": "NO",
+            "city": "Oslo",
+            "url": "https://www.uio.no"
+          }
+        ],
+        "SE": [
+          {
+            "name": "Stockholms universitet",
+            "country": "SE",
+            "city": "Stockholm",
+            "url": "https://www.su.se"
+          },
+          {
+            "name": "Södertörns högskola",
+            "country": "SE",
+            "city": "Stockholm",
+            "url": "https://www.sh.se"
+          }
         ]
       },
       "europe": [
-        { "name": "Leiden University", "country": "NL", "city": "The Hague", "url": "https://www.universiteitleiden.nl/en" },
-        { "name": "KU Leuven", "country": "BE", "city": "Leuven", "url": "https://www.kuleuven.be/english" }
+        {
+          "name": "Leiden University",
+          "country": "NL",
+          "city": "The Hague",
+          "url": "https://www.universiteitleiden.nl/en"
+        },
+        {
+          "name": "KU Leuven",
+          "country": "BE",
+          "city": "Leuven",
+          "url": "https://www.kuleuven.be/english"
+        }
       ]
     },
     {
@@ -321,13 +1065,47 @@
       "label": "Business & Management",
       "local": {
         "NO": [
-          { "name": "Norges Handelshøyskole (NHH)", "country": "NO", "city": "Bergen", "url": "https://www.nhh.no" },
-          { "name": "BI Norwegian Business School", "country": "NO", "city": "Oslo", "url": "https://www.bi.edu" }
+          {
+            "name": "Norges Handelshøyskole (NHH)",
+            "country": "NO",
+            "city": "Bergen",
+            "url": "https://www.nhh.no"
+          },
+          {
+            "name": "BI Norwegian Business School",
+            "country": "NO",
+            "city": "Oslo",
+            "url": "https://www.bi.edu"
+          }
+        ],
+        "SE": [
+          {
+            "name": "Handelshögskolan i Stockholm",
+            "country": "SE",
+            "city": "Stockholm",
+            "url": "https://www.hhs.se"
+          },
+          {
+            "name": "Lunds universitet",
+            "country": "SE",
+            "city": "Lund",
+            "url": "https://www.lu.se"
+          }
         ]
       },
       "europe": [
-        { "name": "Bocconi University", "country": "IT", "city": "Milan", "url": "https://www.unibocconi.eu" },
-        { "name": "Rotterdam School of Management (Erasmus)", "country": "NL", "city": "Rotterdam", "url": "https://www.rsm.nl" }
+        {
+          "name": "Bocconi University",
+          "country": "IT",
+          "city": "Milan",
+          "url": "https://www.unibocconi.eu"
+        },
+        {
+          "name": "Rotterdam School of Management (Erasmus)",
+          "country": "NL",
+          "city": "Rotterdam",
+          "url": "https://www.rsm.nl"
+        }
       ]
     },
     {
@@ -335,13 +1113,47 @@
       "label": "Economics & Finance",
       "local": {
         "NO": [
-          { "name": "Norges Handelshøyskole (NHH)", "country": "NO", "city": "Bergen", "url": "https://www.nhh.no" },
-          { "name": "Universitetet i Oslo (UiO)", "country": "NO", "city": "Oslo", "url": "https://www.uio.no" }
+          {
+            "name": "Norges Handelshøyskole (NHH)",
+            "country": "NO",
+            "city": "Bergen",
+            "url": "https://www.nhh.no"
+          },
+          {
+            "name": "Universitetet i Oslo (UiO)",
+            "country": "NO",
+            "city": "Oslo",
+            "url": "https://www.uio.no"
+          }
+        ],
+        "SE": [
+          {
+            "name": "Handelshögskolan i Stockholm",
+            "country": "SE",
+            "city": "Stockholm",
+            "url": "https://www.hhs.se"
+          },
+          {
+            "name": "Stockholms universitet",
+            "country": "SE",
+            "city": "Stockholm",
+            "url": "https://www.su.se"
+          }
         ]
       },
       "europe": [
-        { "name": "Bocconi University", "country": "IT", "city": "Milan", "url": "https://www.unibocconi.eu" },
-        { "name": "HEC Paris", "country": "FR", "city": "Jouy-en-Josas", "url": "https://www.hec.edu/en" }
+        {
+          "name": "Bocconi University",
+          "country": "IT",
+          "city": "Milan",
+          "url": "https://www.unibocconi.eu"
+        },
+        {
+          "name": "HEC Paris",
+          "country": "FR",
+          "city": "Jouy-en-Josas",
+          "url": "https://www.hec.edu/en"
+        }
       ]
     },
     {
@@ -349,13 +1161,47 @@
       "label": "Accounting & Audit",
       "local": {
         "NO": [
-          { "name": "Norges Handelshøyskole (NHH)", "country": "NO", "city": "Bergen", "url": "https://www.nhh.no" },
-          { "name": "BI Norwegian Business School", "country": "NO", "city": "Oslo", "url": "https://www.bi.edu" }
+          {
+            "name": "Norges Handelshøyskole (NHH)",
+            "country": "NO",
+            "city": "Bergen",
+            "url": "https://www.nhh.no"
+          },
+          {
+            "name": "BI Norwegian Business School",
+            "country": "NO",
+            "city": "Oslo",
+            "url": "https://www.bi.edu"
+          }
+        ],
+        "SE": [
+          {
+            "name": "Handelshögskolan i Stockholm",
+            "country": "SE",
+            "city": "Stockholm",
+            "url": "https://www.hhs.se"
+          },
+          {
+            "name": "Göteborgs universitet",
+            "country": "SE",
+            "city": "Göteborg",
+            "url": "https://www.gu.se"
+          }
         ]
       },
       "europe": [
-        { "name": "Bocconi University", "country": "IT", "city": "Milan", "url": "https://www.unibocconi.eu" },
-        { "name": "University of Mannheim", "country": "DE", "city": "Mannheim", "url": "https://www.uni-mannheim.de/en" }
+        {
+          "name": "Bocconi University",
+          "country": "IT",
+          "city": "Milan",
+          "url": "https://www.unibocconi.eu"
+        },
+        {
+          "name": "University of Mannheim",
+          "country": "DE",
+          "city": "Mannheim",
+          "url": "https://www.uni-mannheim.de/en"
+        }
       ]
     },
     {
@@ -363,13 +1209,47 @@
       "label": "Marketing & Communications",
       "local": {
         "NO": [
-          { "name": "BI Norwegian Business School", "country": "NO", "city": "Oslo", "url": "https://www.bi.edu" },
-          { "name": "Høyskolen Kristiania", "country": "NO", "city": "Oslo", "url": "https://www.kristiania.no" }
+          {
+            "name": "BI Norwegian Business School",
+            "country": "NO",
+            "city": "Oslo",
+            "url": "https://www.bi.edu"
+          },
+          {
+            "name": "Høyskolen Kristiania",
+            "country": "NO",
+            "city": "Oslo",
+            "url": "https://www.kristiania.no"
+          }
+        ],
+        "SE": [
+          {
+            "name": "Stockholms universitet",
+            "country": "SE",
+            "city": "Stockholm",
+            "url": "https://www.su.se"
+          },
+          {
+            "name": "Lunds universitet",
+            "country": "SE",
+            "city": "Lund",
+            "url": "https://www.lu.se"
+          }
         ]
       },
       "europe": [
-        { "name": "Rotterdam School of Management (Erasmus)", "country": "NL", "city": "Rotterdam", "url": "https://www.rsm.nl" },
-        { "name": "Bocconi University", "country": "IT", "city": "Milan", "url": "https://www.unibocconi.eu" }
+        {
+          "name": "Rotterdam School of Management (Erasmus)",
+          "country": "NL",
+          "city": "Rotterdam",
+          "url": "https://www.rsm.nl"
+        },
+        {
+          "name": "Bocconi University",
+          "country": "IT",
+          "city": "Milan",
+          "url": "https://www.unibocconi.eu"
+        }
       ]
     },
     {
@@ -377,13 +1257,47 @@
       "label": "Human Resources",
       "local": {
         "NO": [
-          { "name": "BI Norwegian Business School", "country": "NO", "city": "Oslo", "url": "https://www.bi.edu" },
-          { "name": "Universitetet i Oslo (UiO)", "country": "NO", "city": "Oslo", "url": "https://www.uio.no" }
+          {
+            "name": "BI Norwegian Business School",
+            "country": "NO",
+            "city": "Oslo",
+            "url": "https://www.bi.edu"
+          },
+          {
+            "name": "Universitetet i Oslo (UiO)",
+            "country": "NO",
+            "city": "Oslo",
+            "url": "https://www.uio.no"
+          }
+        ],
+        "SE": [
+          {
+            "name": "Uppsala universitet",
+            "country": "SE",
+            "city": "Uppsala",
+            "url": "https://www.uu.se"
+          },
+          {
+            "name": "Göteborgs universitet",
+            "country": "SE",
+            "city": "Göteborg",
+            "url": "https://www.gu.se"
+          }
         ]
       },
       "europe": [
-        { "name": "Erasmus University Rotterdam", "country": "NL", "city": "Rotterdam", "url": "https://www.eur.nl/en" },
-        { "name": "KU Leuven", "country": "BE", "city": "Leuven", "url": "https://www.kuleuven.be/english" }
+        {
+          "name": "Erasmus University Rotterdam",
+          "country": "NL",
+          "city": "Rotterdam",
+          "url": "https://www.eur.nl/en"
+        },
+        {
+          "name": "KU Leuven",
+          "country": "BE",
+          "city": "Leuven",
+          "url": "https://www.kuleuven.be/english"
+        }
       ]
     },
     {
@@ -391,13 +1305,47 @@
       "label": "Education & Teaching",
       "local": {
         "NO": [
-          { "name": "OsloMet – storbyuniversitetet", "country": "NO", "city": "Oslo", "url": "https://www.oslomet.no" },
-          { "name": "NTNU", "country": "NO", "city": "Trondheim", "url": "https://www.ntnu.no" }
+          {
+            "name": "OsloMet – storbyuniversitetet",
+            "country": "NO",
+            "city": "Oslo",
+            "url": "https://www.oslomet.no"
+          },
+          {
+            "name": "NTNU",
+            "country": "NO",
+            "city": "Trondheim",
+            "url": "https://www.ntnu.no"
+          }
+        ],
+        "SE": [
+          {
+            "name": "Göteborgs universitet",
+            "country": "SE",
+            "city": "Göteborg",
+            "url": "https://www.gu.se"
+          },
+          {
+            "name": "Umeå universitet",
+            "country": "SE",
+            "city": "Umeå",
+            "url": "https://www.umu.se"
+          }
         ]
       },
       "europe": [
-        { "name": "University of Amsterdam (UvA)", "country": "NL", "city": "Amsterdam", "url": "https://www.uva.nl/en" },
-        { "name": "KU Leuven", "country": "BE", "city": "Leuven", "url": "https://www.kuleuven.be/english" }
+        {
+          "name": "University of Amsterdam (UvA)",
+          "country": "NL",
+          "city": "Amsterdam",
+          "url": "https://www.uva.nl/en"
+        },
+        {
+          "name": "KU Leuven",
+          "country": "BE",
+          "city": "Leuven",
+          "url": "https://www.kuleuven.be/english"
+        }
       ]
     },
     {
@@ -405,13 +1353,47 @@
       "label": "Social Work",
       "local": {
         "NO": [
-          { "name": "OsloMet – storbyuniversitetet", "country": "NO", "city": "Oslo", "url": "https://www.oslomet.no" },
-          { "name": "Universitetet i Bergen (UiB)", "country": "NO", "city": "Bergen", "url": "https://www.uib.no" }
+          {
+            "name": "OsloMet – storbyuniversitetet",
+            "country": "NO",
+            "city": "Oslo",
+            "url": "https://www.oslomet.no"
+          },
+          {
+            "name": "Universitetet i Bergen (UiB)",
+            "country": "NO",
+            "city": "Bergen",
+            "url": "https://www.uib.no"
+          }
+        ],
+        "SE": [
+          {
+            "name": "Göteborgs universitet",
+            "country": "SE",
+            "city": "Göteborg",
+            "url": "https://www.gu.se"
+          },
+          {
+            "name": "Lunds universitet",
+            "country": "SE",
+            "city": "Lund",
+            "url": "https://www.lu.se"
+          }
         ]
       },
       "europe": [
-        { "name": "KU Leuven", "country": "BE", "city": "Leuven", "url": "https://www.kuleuven.be/english" },
-        { "name": "Utrecht University", "country": "NL", "city": "Utrecht", "url": "https://www.uu.nl/en" }
+        {
+          "name": "KU Leuven",
+          "country": "BE",
+          "city": "Leuven",
+          "url": "https://www.kuleuven.be/english"
+        },
+        {
+          "name": "Utrecht University",
+          "country": "NL",
+          "city": "Utrecht",
+          "url": "https://www.uu.nl/en"
+        }
       ]
     },
     {
@@ -419,13 +1401,47 @@
       "label": "Humanities & Languages",
       "local": {
         "NO": [
-          { "name": "Universitetet i Oslo (UiO)", "country": "NO", "city": "Oslo", "url": "https://www.uio.no" },
-          { "name": "Universitetet i Bergen (UiB)", "country": "NO", "city": "Bergen", "url": "https://www.uib.no" }
+          {
+            "name": "Universitetet i Oslo (UiO)",
+            "country": "NO",
+            "city": "Oslo",
+            "url": "https://www.uio.no"
+          },
+          {
+            "name": "Universitetet i Bergen (UiB)",
+            "country": "NO",
+            "city": "Bergen",
+            "url": "https://www.uib.no"
+          }
+        ],
+        "SE": [
+          {
+            "name": "Uppsala universitet",
+            "country": "SE",
+            "city": "Uppsala",
+            "url": "https://www.uu.se"
+          },
+          {
+            "name": "Lunds universitet",
+            "country": "SE",
+            "city": "Lund",
+            "url": "https://www.lu.se"
+          }
         ]
       },
       "europe": [
-        { "name": "Leiden University", "country": "NL", "city": "Leiden", "url": "https://www.universiteitleiden.nl/en" },
-        { "name": "KU Leuven", "country": "BE", "city": "Leuven", "url": "https://www.kuleuven.be/english" }
+        {
+          "name": "Leiden University",
+          "country": "NL",
+          "city": "Leiden",
+          "url": "https://www.universiteitleiden.nl/en"
+        },
+        {
+          "name": "KU Leuven",
+          "country": "BE",
+          "city": "Leuven",
+          "url": "https://www.kuleuven.be/english"
+        }
       ]
     },
     {
@@ -444,6 +1460,20 @@
             "country": "NO",
             "city": "Bergen",
             "url": "https://www.uib.no"
+          }
+        ],
+        "SE": [
+          {
+            "name": "Uppsala universitet",
+            "country": "SE",
+            "city": "Uppsala",
+            "url": "https://www.uu.se"
+          },
+          {
+            "name": "Stockholms universitet",
+            "country": "SE",
+            "city": "Stockholm",
+            "url": "https://www.su.se"
           }
         ]
       },
@@ -467,13 +1497,47 @@
       "label": "Political Science & International Relations",
       "local": {
         "NO": [
-          { "name": "Universitetet i Oslo (UiO)", "country": "NO", "city": "Oslo", "url": "https://www.uio.no" },
-          { "name": "NTNU", "country": "NO", "city": "Trondheim", "url": "https://www.ntnu.no" }
+          {
+            "name": "Universitetet i Oslo (UiO)",
+            "country": "NO",
+            "city": "Oslo",
+            "url": "https://www.uio.no"
+          },
+          {
+            "name": "NTNU",
+            "country": "NO",
+            "city": "Trondheim",
+            "url": "https://www.ntnu.no"
+          }
+        ],
+        "SE": [
+          {
+            "name": "Uppsala universitet",
+            "country": "SE",
+            "city": "Uppsala",
+            "url": "https://www.uu.se"
+          },
+          {
+            "name": "Lunds universitet",
+            "country": "SE",
+            "city": "Lund",
+            "url": "https://www.lu.se"
+          }
         ]
       },
       "europe": [
-        { "name": "Leiden University", "country": "NL", "city": "The Hague", "url": "https://www.universiteitleiden.nl/en" },
-        { "name": "Sciences Po", "country": "FR", "city": "Paris", "url": "https://www.sciencespo.fr/en" }
+        {
+          "name": "Leiden University",
+          "country": "NL",
+          "city": "The Hague",
+          "url": "https://www.universiteitleiden.nl/en"
+        },
+        {
+          "name": "Sciences Po",
+          "country": "FR",
+          "city": "Paris",
+          "url": "https://www.sciencespo.fr/en"
+        }
       ]
     },
     {
@@ -481,13 +1545,47 @@
       "label": "Journalism & Media",
       "local": {
         "NO": [
-          { "name": "OsloMet – storbyuniversitetet", "country": "NO", "city": "Oslo", "url": "https://www.oslomet.no" },
-          { "name": "Universitetet i Bergen (UiB)", "country": "NO", "city": "Bergen", "url": "https://www.uib.no" }
+          {
+            "name": "OsloMet – storbyuniversitetet",
+            "country": "NO",
+            "city": "Oslo",
+            "url": "https://www.oslomet.no"
+          },
+          {
+            "name": "Universitetet i Bergen (UiB)",
+            "country": "NO",
+            "city": "Bergen",
+            "url": "https://www.uib.no"
+          }
+        ],
+        "SE": [
+          {
+            "name": "Göteborgs universitet",
+            "country": "SE",
+            "city": "Göteborg",
+            "url": "https://www.gu.se"
+          },
+          {
+            "name": "Mittuniversitetet",
+            "country": "SE",
+            "city": "Östersund/Sundsvall",
+            "url": "https://www.miun.se"
+          }
         ]
       },
       "europe": [
-        { "name": "University of Amsterdam (UvA)", "country": "NL", "city": "Amsterdam", "url": "https://www.uva.nl/en" },
-        { "name": "Ludwig Maximilian University of Munich (LMU)", "country": "DE", "city": "Munich", "url": "https://www.lmu.de/en" }
+        {
+          "name": "University of Amsterdam (UvA)",
+          "country": "NL",
+          "city": "Amsterdam",
+          "url": "https://www.uva.nl/en"
+        },
+        {
+          "name": "Ludwig Maximilian University of Munich (LMU)",
+          "country": "DE",
+          "city": "Munich",
+          "url": "https://www.lmu.de/en"
+        }
       ]
     },
     {
@@ -495,13 +1593,47 @@
       "label": "Creative Arts & Design",
       "local": {
         "NO": [
-          { "name": "Kunsthøgskolen i Oslo (KHiO)", "country": "NO", "city": "Oslo", "url": "https://khio.no" },
-          { "name": "Arkitektur- og designhøgskolen i Oslo (AHO)", "country": "NO", "city": "Oslo", "url": "https://aho.no" }
+          {
+            "name": "Kunsthøgskolen i Oslo (KHiO)",
+            "country": "NO",
+            "city": "Oslo",
+            "url": "https://khio.no"
+          },
+          {
+            "name": "Arkitektur- og designhøgskolen i Oslo (AHO)",
+            "country": "NO",
+            "city": "Oslo",
+            "url": "https://aho.no"
+          }
+        ],
+        "SE": [
+          {
+            "name": "Konstfack",
+            "country": "SE",
+            "city": "Stockholm",
+            "url": "https://www.konstfack.se"
+          },
+          {
+            "name": "Högskolan i Borås",
+            "country": "SE",
+            "city": "Borås",
+            "url": "https://www.hb.se"
+          }
         ]
       },
       "europe": [
-        { "name": "Design Academy Eindhoven", "country": "NL", "city": "Eindhoven", "url": "https://www.designacademy.nl" },
-        { "name": "Royal Academy of Art, The Hague (KABK)", "country": "NL", "city": "The Hague", "url": "https://www.kabk.nl/en" }
+        {
+          "name": "Design Academy Eindhoven",
+          "country": "NL",
+          "city": "Eindhoven",
+          "url": "https://www.designacademy.nl"
+        },
+        {
+          "name": "Royal Academy of Art, The Hague (KABK)",
+          "country": "NL",
+          "city": "The Hague",
+          "url": "https://www.kabk.nl/en"
+        }
       ]
     },
     {
@@ -509,13 +1641,47 @@
       "label": "Music & Performing Arts",
       "local": {
         "NO": [
-          { "name": "Norges musikkhøgskole", "country": "NO", "city": "Oslo", "url": "https://nmh.no" },
-          { "name": "Kunsthøgskolen i Oslo (KHiO)", "country": "NO", "city": "Oslo", "url": "https://khio.no" }
+          {
+            "name": "Norges musikkhøgskole",
+            "country": "NO",
+            "city": "Oslo",
+            "url": "https://nmh.no"
+          },
+          {
+            "name": "Kunsthøgskolen i Oslo (KHiO)",
+            "country": "NO",
+            "city": "Oslo",
+            "url": "https://khio.no"
+          }
+        ],
+        "SE": [
+          {
+            "name": "Kungliga Musikhögskolan",
+            "country": "SE",
+            "city": "Stockholm",
+            "url": "https://www.kmh.se"
+          },
+          {
+            "name": "Stockholms konstnärliga högskola",
+            "country": "SE",
+            "city": "Stockholm",
+            "url": "https://www.uniarts.se"
+          }
         ]
       },
       "europe": [
-        { "name": "Royal Academy of Music", "country": "GB", "city": "London", "url": "https://www.ram.ac.uk" },
-        { "name": "Conservatorium van Amsterdam", "country": "NL", "city": "Amsterdam", "url": "https://www.conservatoriumvanamsterdam.nl/en" }
+        {
+          "name": "Royal Academy of Music",
+          "country": "GB",
+          "city": "London",
+          "url": "https://www.ram.ac.uk"
+        },
+        {
+          "name": "Conservatorium van Amsterdam",
+          "country": "NL",
+          "city": "Amsterdam",
+          "url": "https://www.conservatoriumvanamsterdam.nl/en"
+        }
       ]
     },
     {
@@ -523,13 +1689,47 @@
       "label": "Film & Animation",
       "local": {
         "NO": [
-          { "name": "Den norske filmskolen (Høgskolen i Innlandet)", "country": "NO", "city": "Lillehammer", "url": "https://www.inn.no" },
-          { "name": "Høyskolen Kristiania", "country": "NO", "city": "Oslo", "url": "https://www.kristiania.no" }
+          {
+            "name": "Den norske filmskolen (Høgskolen i Innlandet)",
+            "country": "NO",
+            "city": "Lillehammer",
+            "url": "https://www.inn.no"
+          },
+          {
+            "name": "Høyskolen Kristiania",
+            "country": "NO",
+            "city": "Oslo",
+            "url": "https://www.kristiania.no"
+          }
+        ],
+        "SE": [
+          {
+            "name": "Stockholms konstnärliga högskola",
+            "country": "SE",
+            "city": "Stockholm",
+            "url": "https://www.uniarts.se"
+          },
+          {
+            "name": "Luleå tekniska universitet",
+            "country": "SE",
+            "city": "Luleå",
+            "url": "https://www.ltu.se"
+          }
         ]
       },
       "europe": [
-        { "name": "Netherlands Film Academy (AHK)", "country": "NL", "city": "Amsterdam", "url": "https://www.ahk.nl/en" },
-        { "name": "La Fémis", "country": "FR", "city": "Paris", "url": "https://www.femis.fr" }
+        {
+          "name": "Netherlands Film Academy (AHK)",
+          "country": "NL",
+          "city": "Amsterdam",
+          "url": "https://www.ahk.nl/en"
+        },
+        {
+          "name": "La Fémis",
+          "country": "FR",
+          "city": "Paris",
+          "url": "https://www.femis.fr"
+        }
       ]
     },
     {
@@ -537,13 +1737,47 @@
       "label": "Sport Science",
       "local": {
         "NO": [
-          { "name": "Norges idrettshøgskole (NIH)", "country": "NO", "city": "Oslo", "url": "https://www.nih.no" },
-          { "name": "NTNU", "country": "NO", "city": "Trondheim", "url": "https://www.ntnu.no" }
+          {
+            "name": "Norges idrettshøgskole (NIH)",
+            "country": "NO",
+            "city": "Oslo",
+            "url": "https://www.nih.no"
+          },
+          {
+            "name": "NTNU",
+            "country": "NO",
+            "city": "Trondheim",
+            "url": "https://www.ntnu.no"
+          }
+        ],
+        "SE": [
+          {
+            "name": "Gymnastik- och idrottshögskolan (GIH)",
+            "country": "SE",
+            "city": "Stockholm",
+            "url": "https://www.gih.se"
+          },
+          {
+            "name": "Mittuniversitetet",
+            "country": "SE",
+            "city": "Östersund/Sundsvall",
+            "url": "https://www.miun.se"
+          }
         ]
       },
       "europe": [
-        { "name": "KU Leuven", "country": "BE", "city": "Leuven", "url": "https://www.kuleuven.be/english" },
-        { "name": "Vrije Universiteit Amsterdam", "country": "NL", "city": "Amsterdam", "url": "https://vu.nl/en" }
+        {
+          "name": "KU Leuven",
+          "country": "BE",
+          "city": "Leuven",
+          "url": "https://www.kuleuven.be/english"
+        },
+        {
+          "name": "Vrije Universiteit Amsterdam",
+          "country": "NL",
+          "city": "Amsterdam",
+          "url": "https://vu.nl/en"
+        }
       ]
     },
     {
@@ -551,13 +1785,47 @@
       "label": "Tourism & Hospitality",
       "local": {
         "NO": [
-          { "name": "Universitetet i Sørøst-Norge (USN)", "country": "NO", "city": "Bø", "url": "https://www.usn.no" },
-          { "name": "Høyskolen Kristiania", "country": "NO", "city": "Oslo", "url": "https://www.kristiania.no" }
+          {
+            "name": "Universitetet i Sørøst-Norge (USN)",
+            "country": "NO",
+            "city": "Bø",
+            "url": "https://www.usn.no"
+          },
+          {
+            "name": "Høyskolen Kristiania",
+            "country": "NO",
+            "city": "Oslo",
+            "url": "https://www.kristiania.no"
+          }
+        ],
+        "SE": [
+          {
+            "name": "Mittuniversitetet",
+            "country": "SE",
+            "city": "Östersund/Sundsvall",
+            "url": "https://www.miun.se"
+          },
+          {
+            "name": "Göteborgs universitet",
+            "country": "SE",
+            "city": "Göteborg",
+            "url": "https://www.gu.se"
+          }
         ]
       },
       "europe": [
-        { "name": "Hotelschool The Hague", "country": "NL", "city": "The Hague", "url": "https://www.hotelschool.nl" },
-        { "name": "EHL Hospitality Business School", "country": "CH", "city": "Lausanne", "url": "https://www.ehl.edu" }
+        {
+          "name": "Hotelschool The Hague",
+          "country": "NL",
+          "city": "The Hague",
+          "url": "https://www.hotelschool.nl"
+        },
+        {
+          "name": "EHL Hospitality Business School",
+          "country": "CH",
+          "city": "Lausanne",
+          "url": "https://www.ehl.edu"
+        }
       ]
     },
     {
@@ -565,12 +1833,43 @@
       "label": "Culinary Arts",
       "local": {
         "NO": [
-          { "name": "Kulinarisk Akademi", "country": "NO", "city": "Oslo", "url": "https://kulinariskakademi.no", "note": "Vocational culinary school / fagskole route rather than a university." }
+          {
+            "name": "Kulinarisk Akademi",
+            "country": "NO",
+            "city": "Oslo",
+            "url": "https://kulinariskakademi.no",
+            "note": "Vocational culinary school / fagskole route rather than a university."
+          }
+        ],
+        "SE": [
+          {
+            "name": "Örebro universitet",
+            "country": "SE",
+            "city": "Örebro",
+            "url": "https://www.oru.se"
+          },
+          {
+            "name": "Yrkeshögskolan (YH-utbildningar i hela Sverige)",
+            "country": "SE",
+            "city": "Hela Sverige",
+            "url": "https://www.yrkeshogskolan.se"
+          }
         ]
       },
       "europe": [
-        { "name": "Le Cordon Bleu Paris", "country": "FR", "city": "Paris", "url": "https://www.cordonbleu.edu", "note": "Recognised culinary institute, vocational route." },
-        { "name": "Hotelschool The Hague", "country": "NL", "city": "The Hague", "url": "https://www.hotelschool.nl" }
+        {
+          "name": "Le Cordon Bleu Paris",
+          "country": "FR",
+          "city": "Paris",
+          "url": "https://www.cordonbleu.edu",
+          "note": "Recognised culinary institute, vocational route."
+        },
+        {
+          "name": "Hotelschool The Hague",
+          "country": "NL",
+          "city": "The Hague",
+          "url": "https://www.hotelschool.nl"
+        }
       ]
     },
     {
@@ -578,12 +1877,41 @@
       "label": "Agriculture & Food Science",
       "local": {
         "NO": [
-          { "name": "NMBU – Norges miljø- og biovitenskapelige universitet", "country": "NO", "city": "Ås", "url": "https://www.nmbu.no" }
+          {
+            "name": "NMBU – Norges miljø- og biovitenskapelige universitet",
+            "country": "NO",
+            "city": "Ås",
+            "url": "https://www.nmbu.no"
+          }
+        ],
+        "SE": [
+          {
+            "name": "Sveriges lantbruksuniversitet (SLU)",
+            "country": "SE",
+            "city": "Uppsala",
+            "url": "https://www.slu.se"
+          },
+          {
+            "name": "Lunds universitet",
+            "country": "SE",
+            "city": "Lund",
+            "url": "https://www.lu.se"
+          }
         ]
       },
       "europe": [
-        { "name": "Wageningen University & Research", "country": "NL", "city": "Wageningen", "url": "https://www.wur.nl/en.htm" },
-        { "name": "ETH Zürich", "country": "CH", "city": "Zürich", "url": "https://ethz.ch/en.html" }
+        {
+          "name": "Wageningen University & Research",
+          "country": "NL",
+          "city": "Wageningen",
+          "url": "https://www.wur.nl/en.htm"
+        },
+        {
+          "name": "ETH Zürich",
+          "country": "CH",
+          "city": "Zürich",
+          "url": "https://ethz.ch/en.html"
+        }
       ]
     },
     {
@@ -591,13 +1919,47 @@
       "label": "Maritime Studies",
       "local": {
         "NO": [
-          { "name": "NTNU Ålesund", "country": "NO", "city": "Ålesund", "url": "https://www.ntnu.no" },
-          { "name": "Høgskulen på Vestlandet (HVL)", "country": "NO", "city": "Bergen", "url": "https://www.hvl.no" }
+          {
+            "name": "NTNU Ålesund",
+            "country": "NO",
+            "city": "Ålesund",
+            "url": "https://www.ntnu.no"
+          },
+          {
+            "name": "Høgskulen på Vestlandet (HVL)",
+            "country": "NO",
+            "city": "Bergen",
+            "url": "https://www.hvl.no"
+          }
+        ],
+        "SE": [
+          {
+            "name": "Chalmers tekniska högskola",
+            "country": "SE",
+            "city": "Göteborg",
+            "url": "https://www.chalmers.se"
+          },
+          {
+            "name": "Linnéuniversitetet",
+            "country": "SE",
+            "city": "Kalmar/Växjö",
+            "url": "https://lnu.se"
+          }
         ]
       },
       "europe": [
-        { "name": "Delft University of Technology (TU Delft)", "country": "NL", "city": "Delft", "url": "https://www.tudelft.nl/en" },
-        { "name": "Hamburg University of Technology (TUHH)", "country": "DE", "city": "Hamburg", "url": "https://www.tuhh.de" }
+        {
+          "name": "Delft University of Technology (TU Delft)",
+          "country": "NL",
+          "city": "Delft",
+          "url": "https://www.tudelft.nl/en"
+        },
+        {
+          "name": "Hamburg University of Technology (TUHH)",
+          "country": "DE",
+          "city": "Hamburg",
+          "url": "https://www.tuhh.de"
+        }
       ]
     },
     {
@@ -605,13 +1967,51 @@
       "label": "Aviation & Flight",
       "local": {
         "NO": [
-          { "name": "OSM Aviation Academy", "country": "NO", "city": "Oslo", "url": "https://www.osmaviationacademy.com", "note": "Pilot training academy / vocational route." },
-          { "name": "UiT Norges arktiske universitet", "country": "NO", "city": "Tromsø", "url": "https://uit.no", "note": "Bachelor in aviation (pilot)." }
+          {
+            "name": "OSM Aviation Academy",
+            "country": "NO",
+            "city": "Oslo",
+            "url": "https://www.osmaviationacademy.com",
+            "note": "Pilot training academy / vocational route."
+          },
+          {
+            "name": "UiT Norges arktiske universitet",
+            "country": "NO",
+            "city": "Tromsø",
+            "url": "https://uit.no",
+            "note": "Bachelor in aviation (pilot)."
+          }
+        ],
+        "SE": [
+          {
+            "name": "Lunds universitet",
+            "country": "SE",
+            "city": "Lund",
+            "url": "https://www.lu.se"
+          },
+          {
+            "name": "Mälardalens universitet",
+            "country": "SE",
+            "city": "Västerås/Eskilstuna",
+            "url": "https://www.mdu.se"
+          }
         ]
       },
       "europe": [
-        { "name": "Delft University of Technology (TU Delft)", "country": "NL", "city": "Delft", "url": "https://www.tudelft.nl/en", "note": "Aerospace engineering." },
-        { "name": "Lufthansa Aviation Training", "country": "DE", "city": "Bremen", "url": "https://www.lufthansa-aviation-training.com", "note": "Pilot training, vocational route." }
+        {
+          "name": "Delft University of Technology (TU Delft)",
+          "country": "NL",
+          "city": "Delft",
+          "url": "https://www.tudelft.nl/en",
+          "note": "Aerospace engineering."
+        },
+        {
+          "name": "Lufthansa Aviation Training",
+          "country": "DE",
+          "city": "Bremen",
+          "url": "https://www.lufthansa-aviation-training.com",
+          "note": "Pilot training, vocational route."
+        }
       ]
     },
     {
@@ -619,13 +2019,47 @@
       "label": "Logistics & Supply Chain",
       "local": {
         "NO": [
-          { "name": "Norges Handelshøyskole (NHH)", "country": "NO", "city": "Bergen", "url": "https://www.nhh.no" },
-          { "name": "Høgskolen i Molde", "country": "NO", "city": "Molde", "url": "https://www.himolde.no" }
+          {
+            "name": "Norges Handelshøyskole (NHH)",
+            "country": "NO",
+            "city": "Bergen",
+            "url": "https://www.nhh.no"
+          },
+          {
+            "name": "Høgskolen i Molde",
+            "country": "NO",
+            "city": "Molde",
+            "url": "https://www.himolde.no"
+          }
+        ],
+        "SE": [
+          {
+            "name": "Chalmers tekniska högskola",
+            "country": "SE",
+            "city": "Göteborg",
+            "url": "https://www.chalmers.se"
+          },
+          {
+            "name": "Jönköping University",
+            "country": "SE",
+            "city": "Jönköping",
+            "url": "https://ju.se"
+          }
         ]
       },
       "europe": [
-        { "name": "Rotterdam School of Management (Erasmus)", "country": "NL", "city": "Rotterdam", "url": "https://www.rsm.nl" },
-        { "name": "Technical University of Munich (TUM)", "country": "DE", "city": "Munich", "url": "https://www.tum.de/en" }
+        {
+          "name": "Rotterdam School of Management (Erasmus)",
+          "country": "NL",
+          "city": "Rotterdam",
+          "url": "https://www.rsm.nl"
+        },
+        {
+          "name": "Technical University of Munich (TUM)",
+          "country": "DE",
+          "city": "Munich",
+          "url": "https://www.tum.de/en"
+        }
       ]
     },
     {
@@ -633,13 +2067,47 @@
       "label": "Geosciences & Energy",
       "local": {
         "NO": [
-          { "name": "Universitetet i Bergen (UiB)", "country": "NO", "city": "Bergen", "url": "https://www.uib.no" },
-          { "name": "NTNU", "country": "NO", "city": "Trondheim", "url": "https://www.ntnu.no" }
+          {
+            "name": "Universitetet i Bergen (UiB)",
+            "country": "NO",
+            "city": "Bergen",
+            "url": "https://www.uib.no"
+          },
+          {
+            "name": "NTNU",
+            "country": "NO",
+            "city": "Trondheim",
+            "url": "https://www.ntnu.no"
+          }
+        ],
+        "SE": [
+          {
+            "name": "Luleå tekniska universitet",
+            "country": "SE",
+            "city": "Luleå",
+            "url": "https://www.ltu.se"
+          },
+          {
+            "name": "Uppsala universitet",
+            "country": "SE",
+            "city": "Uppsala",
+            "url": "https://www.uu.se"
+          }
         ]
       },
       "europe": [
-        { "name": "Delft University of Technology (TU Delft)", "country": "NL", "city": "Delft", "url": "https://www.tudelft.nl/en" },
-        { "name": "ETH Zürich", "country": "CH", "city": "Zürich", "url": "https://ethz.ch/en.html" }
+        {
+          "name": "Delft University of Technology (TU Delft)",
+          "country": "NL",
+          "city": "Delft",
+          "url": "https://www.tudelft.nl/en"
+        },
+        {
+          "name": "ETH Zürich",
+          "country": "CH",
+          "city": "Zürich",
+          "url": "https://ethz.ch/en.html"
+        }
       ]
     },
     {
@@ -647,13 +2115,47 @@
       "label": "Public Administration",
       "local": {
         "NO": [
-          { "name": "Universitetet i Oslo (UiO)", "country": "NO", "city": "Oslo", "url": "https://www.uio.no" },
-          { "name": "OsloMet – storbyuniversitetet", "country": "NO", "city": "Oslo", "url": "https://www.oslomet.no" }
+          {
+            "name": "Universitetet i Oslo (UiO)",
+            "country": "NO",
+            "city": "Oslo",
+            "url": "https://www.uio.no"
+          },
+          {
+            "name": "OsloMet – storbyuniversitetet",
+            "country": "NO",
+            "city": "Oslo",
+            "url": "https://www.oslomet.no"
+          }
+        ],
+        "SE": [
+          {
+            "name": "Göteborgs universitet",
+            "country": "SE",
+            "city": "Göteborg",
+            "url": "https://www.gu.se"
+          },
+          {
+            "name": "Uppsala universitet",
+            "country": "SE",
+            "city": "Uppsala",
+            "url": "https://www.uu.se"
+          }
         ]
       },
       "europe": [
-        { "name": "Leiden University", "country": "NL", "city": "The Hague", "url": "https://www.universiteitleiden.nl/en" },
-        { "name": "KU Leuven", "country": "BE", "city": "Leuven", "url": "https://www.kuleuven.be/english" }
+        {
+          "name": "Leiden University",
+          "country": "NL",
+          "city": "The Hague",
+          "url": "https://www.universiteitleiden.nl/en"
+        },
+        {
+          "name": "KU Leuven",
+          "country": "BE",
+          "city": "Leuven",
+          "url": "https://www.kuleuven.be/english"
+        }
       ]
     },
     {
@@ -661,12 +2163,35 @@
       "label": "Military & Defence",
       "local": {
         "NO": [
-          { "name": "Forsvarets høgskole (Norwegian Defence University College)", "country": "NO", "city": "Oslo", "url": "https://www.forsvaret.no" }
+          {
+            "name": "Forsvarets høgskole (Norwegian Defence University College)",
+            "country": "NO",
+            "city": "Oslo",
+            "url": "https://www.forsvaret.no"
+          }
+        ],
+        "SE": [
+          {
+            "name": "Försvarshögskolan",
+            "country": "SE",
+            "city": "Stockholm",
+            "url": "https://www.fhs.se"
+          }
         ]
       },
       "europe": [
-        { "name": "Netherlands Defence Academy", "country": "NL", "city": "Breda", "url": "https://english.defensie.nl" },
-        { "name": "Universität der Bundeswehr München", "country": "DE", "city": "Munich", "url": "https://www.unibw.de" }
+        {
+          "name": "Netherlands Defence Academy",
+          "country": "NL",
+          "city": "Breda",
+          "url": "https://english.defensie.nl"
+        },
+        {
+          "name": "Universität der Bundeswehr München",
+          "country": "DE",
+          "city": "Munich",
+          "url": "https://www.unibw.de"
+        }
       ]
     },
     {
@@ -674,13 +2199,47 @@
       "label": "Real Estate",
       "local": {
         "NO": [
-          { "name": "BI Norwegian Business School", "country": "NO", "city": "Oslo", "url": "https://www.bi.edu" },
-          { "name": "NMBU – Norges miljø- og biovitenskapelige universitet", "country": "NO", "city": "Ås", "url": "https://www.nmbu.no" }
+          {
+            "name": "BI Norwegian Business School",
+            "country": "NO",
+            "city": "Oslo",
+            "url": "https://www.bi.edu"
+          },
+          {
+            "name": "NMBU – Norges miljø- og biovitenskapelige universitet",
+            "country": "NO",
+            "city": "Ås",
+            "url": "https://www.nmbu.no"
+          }
+        ],
+        "SE": [
+          {
+            "name": "Kungliga Tekniska högskolan (KTH)",
+            "country": "SE",
+            "city": "Stockholm",
+            "url": "https://www.kth.se"
+          },
+          {
+            "name": "Malmö universitet",
+            "country": "SE",
+            "city": "Malmö",
+            "url": "https://mau.se"
+          }
         ]
       },
       "europe": [
-        { "name": "University of Reading (Henley Business School)", "country": "GB", "city": "Reading", "url": "https://www.reading.ac.uk" },
-        { "name": "Delft University of Technology (TU Delft)", "country": "NL", "city": "Delft", "url": "https://www.tudelft.nl/en" }
+        {
+          "name": "University of Reading (Henley Business School)",
+          "country": "GB",
+          "city": "Reading",
+          "url": "https://www.reading.ac.uk"
+        },
+        {
+          "name": "Delft University of Technology (TU Delft)",
+          "country": "NL",
+          "city": "Delft",
+          "url": "https://www.tudelft.nl/en"
+        }
       ]
     },
     {
@@ -688,12 +2247,44 @@
       "label": "Vocational Trades",
       "local": {
         "NO": [
-          { "name": "Fagskolen Viken", "country": "NO", "city": "Various", "url": "https://www.fagskolen-viken.no", "note": "Vocational fagskole route (trades & technical)." },
-          { "name": "Videregående skoler (yrkesfag) across Norway", "country": "NO", "city": "Nationwide", "url": "https://www.vilbli.no", "note": "Upper-secondary vocational programmes + apprenticeship." }
+          {
+            "name": "Fagskolen Viken",
+            "country": "NO",
+            "city": "Various",
+            "url": "https://www.fagskolen-viken.no",
+            "note": "Vocational fagskole route (trades & technical)."
+          },
+          {
+            "name": "Videregående skoler (yrkesfag) across Norway",
+            "country": "NO",
+            "city": "Nationwide",
+            "url": "https://www.vilbli.no",
+            "note": "Upper-secondary vocational programmes + apprenticeship."
+          }
+        ],
+        "SE": [
+          {
+            "name": "Yrkeshögskolan (YH-utbildningar i hela Sverige)",
+            "country": "SE",
+            "city": "Hela Sverige",
+            "url": "https://www.yrkeshogskolan.se"
+          },
+          {
+            "name": "Gymnasiets yrkesprogram (hela Sverige)",
+            "country": "SE",
+            "city": "Hela Sverige",
+            "url": "https://utbildningsguiden.skolverket.se"
+          }
         ]
       },
       "europe": [
-        { "name": "Bundesagentur für Arbeit (German dual apprenticeship)", "country": "DE", "city": "Nationwide", "url": "https://www.arbeitsagentur.de", "note": "Dual vocational apprenticeship system." }
+        {
+          "name": "Bundesagentur für Arbeit (German dual apprenticeship)",
+          "country": "DE",
+          "city": "Nationwide",
+          "url": "https://www.arbeitsagentur.de",
+          "note": "Dual vocational apprenticeship system."
+        }
       ]
     },
     {
@@ -701,11 +2292,37 @@
       "label": "Beauty & Wellness",
       "local": {
         "NO": [
-          { "name": "Videregående skoler (frisør / hudpleie) across Norway", "country": "NO", "city": "Nationwide", "url": "https://www.vilbli.no", "note": "Upper-secondary vocational (hairdressing/skincare) + apprenticeship." }
+          {
+            "name": "Videregående skoler (frisør / hudpleie) across Norway",
+            "country": "NO",
+            "city": "Nationwide",
+            "url": "https://www.vilbli.no",
+            "note": "Upper-secondary vocational (hairdressing/skincare) + apprenticeship."
+          }
+        ],
+        "SE": [
+          {
+            "name": "Yrkeshögskolan (YH-utbildningar i hela Sverige)",
+            "country": "SE",
+            "city": "Hela Sverige",
+            "url": "https://www.yrkeshogskolan.se"
+          },
+          {
+            "name": "Gymnasiets yrkesprogram (hela Sverige)",
+            "country": "SE",
+            "city": "Hela Sverige",
+            "url": "https://utbildningsguiden.skolverket.se"
+          }
         ]
       },
       "europe": [
-        { "name": "Bundesagentur für Arbeit (German dual apprenticeship)", "country": "DE", "city": "Nationwide", "url": "https://www.arbeitsagentur.de", "note": "Dual vocational apprenticeship (cosmetics/wellness)." }
+        {
+          "name": "Bundesagentur für Arbeit (German dual apprenticeship)",
+          "country": "DE",
+          "city": "Nationwide",
+          "url": "https://www.arbeitsagentur.de",
+          "note": "Dual vocational apprenticeship (cosmetics/wellness)."
+        }
       ]
     }
   ]
