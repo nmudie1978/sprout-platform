@@ -46,7 +46,12 @@ interface Check {
 
 async function head(
   url: string,
-): Promise<{ ok: boolean; status: number | string; blocked?: boolean }> {
+): Promise<{
+  ok: boolean;
+  status: number | string;
+  blocked?: boolean;
+  unreachable?: boolean;
+}> {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
   try {
@@ -75,8 +80,16 @@ async function head(
     const gone = res.status === 404 || res.status === 410;
     return { ok: !gone, status: res.status, blocked: res.status >= 400 };
   } catch (err) {
-    // A timeout or DNS failure is inconclusive, not proof of death.
-    return { ok: false, status: err instanceof Error ? err.name : "error" };
+    // A timeout, DNS failure or refused connection is INCONCLUSIVE, not proof
+    // of death. Reporting it as dead would push someone to demote a perfectly
+    // good citation because a university server was slow, which is exactly
+    // the wrong direction: it converts a verified figure into an estimated
+    // one on no evidence.
+    return {
+      ok: true,
+      unreachable: true,
+      status: err instanceof Error ? err.name : "error",
+    };
   } finally {
     clearTimeout(timer);
   }
@@ -127,7 +140,10 @@ async function main() {
       `\n${country} (${pack.code}): ${targets.length} verified fields across ${uniqueUrls.length} unique sources`,
     );
 
-    const results = new Map<string, { ok: boolean; status: number | string; blocked?: boolean }>();
+    const results = new Map<
+      string,
+      { ok: boolean; status: number | string; blocked?: boolean; unreachable?: boolean }
+    >();
     const checked = await pool(uniqueUrls, CONCURRENCY, async (url) => {
       const r = await head(url);
       results.set(url, r);
@@ -156,7 +172,15 @@ async function main() {
         status: results.get(t.url)?.status ?? "unknown",
       }));
 
-    const blockedUrls = checked.filter((r) => r.ok && r.blocked).length;
+    const unreachableUrls = checked.filter((r) => r.unreachable).length;
+    if (unreachableUrls) {
+      console.log(
+        `  ${unreachableUrls} source(s) could not be reached (timeout or refused ` +
+          `connection). Inconclusive, not counted as dead — re-run before acting.`,
+      );
+    }
+
+    const blockedUrls = checked.filter((r) => r.ok && r.blocked && !r.unreachable).length;
     if (blockedUrls) {
       console.log(
         `  ${blockedUrls} source(s) answered with a 4xx that is not 404/410 — ` +

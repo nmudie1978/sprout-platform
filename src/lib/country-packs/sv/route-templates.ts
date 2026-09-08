@@ -27,6 +27,7 @@
  * verified for that career.
  */
 import type { EducationRoute, EntryRoute } from "@/lib/career-pathways";
+import { svDisciplineName } from "./disciplines";
 
 /** Where these route descriptions come from. */
 export const SWEDISH_ROUTE_SOURCE = "https://www.studera.nu/";
@@ -94,12 +95,48 @@ const BY_EDUCATION_ROUTE: Record<EducationRoute, string> = {
 };
 
 /**
+ * Routes where naming a field of study makes sense.
+ *
+ * A degree is in something; an apprenticeship or a direct-entry job is not.
+ * Saying "ingen formell utbildning krävs, inom logistik" would be nonsense,
+ * so those routes are left alone.
+ */
+const FIELD_BEARING: ReadonlySet<EntryRoute | EducationRoute> = new Set([
+  "bachelor",
+  "master",
+  "profesjonsstudium",
+  "fagskole",
+  "university",
+  "mixed",
+]);
+
+/**
  * The Swedish route description for a career, preferring the finer-grained
  * `entryRoute` when the catalog has one. Total — always returns a string.
+ *
+ * `discipline` names the FIELD the qualification is in. Without it the text
+ * described the shape of the route and nothing about the subject — every
+ * university career read identically, which is what made Swedish content feel
+ * thinner than Norwegian even though the route itself was correct.
+ *
+ * Omitted when unknown, and omitted for routes where a field makes no sense
+ * (an apprenticeship is not "in" a discipline). The sentence has to read
+ * naturally without it, so the field is appended rather than interpolated.
  */
 export function swedishRouteText(
   entryRoute: EntryRoute | undefined,
   educationRoute: EducationRoute,
+  discipline?: string | null,
 ): string {
-  return (entryRoute && BY_ENTRY_ROUTE[entryRoute]) ?? BY_EDUCATION_ROUTE[educationRoute];
+  const base =
+    (entryRoute && BY_ENTRY_ROUTE[entryRoute]) ?? BY_EDUCATION_ROUTE[educationRoute];
+
+  const field = svDisciplineName(discipline ?? null);
+  const routeKey = entryRoute ?? educationRoute;
+  if (!field || !FIELD_BEARING.has(routeKey)) return base;
+
+  // Appended as its own clause: the templates are already full sentences, and
+  // splicing a field into the middle of each would need five more templates
+  // and give five more chances to produce broken Swedish.
+  return `${base.replace(/\.$/, "")} — vanligtvis inom ${field}.`;
 }

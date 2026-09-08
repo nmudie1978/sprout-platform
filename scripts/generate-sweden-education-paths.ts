@@ -13,19 +13,17 @@
  * Never overwrites a hand-curated path — those name real programmes and are
  * strictly better than a template.
  */
-import { readFileSync, writeFileSync } from "node:fs";
-import { join } from "node:path";
 import { CAREER_PATHWAYS, inferEducationRoute } from "../src/lib/career-pathways";
+import { getDisciplineForCareer } from "../src/lib/education/alternatives";
 import {
   swedishRouteText,
   SV_ROUTE_LABELS,
   SWEDISH_ROUTE_SOURCE,
 } from "../src/lib/country-packs/sv/route-templates";
-import type { CountryPack } from "../src/lib/country-packs/types";
+import { readPack, writePack } from "./lib/pack-io";
 
 const dryRun = process.argv.includes("--dry-run");
-const packPath = join(__dirname, "..", "src", "lib", "country-packs", "sv", "pack.generated.json");
-const pack = JSON.parse(readFileSync(packPath, "utf8")) as CountryPack;
+const pack = readPack("sv");
 const today = new Date().toISOString().slice(0, 10);
 
 let added = 0;
@@ -38,7 +36,12 @@ for (const career of Object.values(CAREER_PATHWAYS).flat()) {
     continue;
   }
 
-  const text = swedishRouteText(career.entryRoute, inferEducationRoute(career));
+  // The discipline map already knows what field each career sits in; the
+  // Swedish text simply never used it, so every university career read the
+  // same. Resolving it here is what turns "followed by a bachelor's degree"
+  // into "...typically in nursing and care".
+  const discipline = getDisciplineForCareer(career.id);
+  const text = swedishRouteText(career.entryRoute, inferEducationRoute(career), discipline);
   pack.careers[career.id] = {
     ...(existing ?? { careerId: career.id }),
     careerId: career.id,
@@ -74,10 +77,5 @@ console.log(`added ${added} route descriptions, kept ${keptCurated} curated path
 console.log(`pack now ${pack.meta.coverage.careers} careers`, pack.meta.coverage);
 
 if (dryRun) { console.log("\ndry run — nothing written"); process.exit(0); }
-writeFileSync(packPath, JSON.stringify(pack, null, 2) + "\n", "utf8");
-console.log(
-  "\nNOTE: the pack is now written in its plain, un-interned form. Run\n" +
-  "  npx tsx scripts/intern-pack-strings.ts\n" +
-  "before committing, or the file re-inflates from ~279KB to ~830KB and\n" +
-  "ships that to every browser.",
-);
+const written = writePack("sv", pack);
+console.log(`wrote ${(written.bytes / 1024).toFixed(0)}KB (${written.strings} interned strings)`);
