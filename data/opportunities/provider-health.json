@@ -3,11 +3,11 @@
     "nav-jobs": {
       "provider": "nav-jobs",
       "status": "healthy",
-      "lastRun": "2026-04-23T11:47:25.674Z",
+      "lastRun": "2026-09-09T09:16:41.596Z",
       "consecutiveFailures": 0,
-      "lastSuccess": "2026-04-23T11:47:30.223Z",
-      "itemsFound": 3
+      "lastSuccess": "2026-09-09T09:25:07.828Z",
+      "itemsFound": 913
     }
   },
-  "lastUpdated": "2026-04-23T11:47:30.703Z"
+  "lastUpdated": "2026-09-09T09:29:06.822Z"
 }
