@@ -10,12 +10,10 @@
  * overwritten by a generated one, because a human checked it against a
  * specific source and this script has not.
  */
-import { readFileSync, writeFileSync } from "node:fs";
-import { join } from "node:path";
 import { SCB_SALARY_MAPPING } from "../src/lib/career-data/scb-salary-mapping";
 import { formatSekMonthlyRange } from "../src/lib/career-data/format-sek-salary";
 import occupations from "../src/lib/career-data/scb-occupations.generated.json";
-import type { CountryPack } from "../src/lib/country-packs/types";
+import { readPack, writePack } from "./lib/pack-io";
 
 const TABLE =
   "https://api.scb.se/OV0104/v1/doris/en/ssd/AM/AM0110/AM0110A/LoneSpridSektYrk4AN";
@@ -26,7 +24,6 @@ const BATCH = 60;
 
 const dryRun = process.argv.includes("--dry-run");
 const year = occupations.latestYear!;
-const packPath = join(__dirname, "..", "src", "lib", "country-packs", "sv", "pack.generated.json");
 
 interface Row { key: string[]; values: string[] }
 
@@ -68,7 +65,7 @@ async function main() {
   }
   console.log(`SCB returned figures for ${figures.size}/${codes.length} occupations\n`);
 
-  const pack = JSON.parse(readFileSync(packPath, "utf8")) as CountryPack;
+  const pack = readPack("sv");
   const today = new Date().toISOString().slice(0, 10);
   let added = 0;
   let keptCurated = 0;
@@ -125,13 +122,8 @@ async function main() {
   );
 
   if (dryRun) { console.log("\ndry run — nothing written"); return; }
-  writeFileSync(packPath, JSON.stringify(pack, null, 2) + "\n", "utf8");
-console.log(
-  "\nNOTE: the pack is now written in its plain, un-interned form. Run\n" +
-  "  npx tsx scripts/intern-pack-strings.ts\n" +
-  "before committing, or the file re-inflates from ~279KB to ~830KB and\n" +
-  "ships that to every browser.",
-);
+  const written = writePack("sv", pack);
+console.log(`wrote ${(written.bytes / 1024).toFixed(0)}KB (${written.strings} interned strings)`);
 }
 
 main().catch((e) => { console.error(e); process.exitCode = 1; });

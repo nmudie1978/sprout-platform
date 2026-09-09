@@ -1,33 +1,17 @@
 import type { CountryContext } from "./index";
+import { getCondensedSwedishContext } from "@/lib/swedish-context";
 
 /**
- * Sweden — Nordic expansion. Condensed context for AI career guidance.
+ * Sweden — country context for AI career guidance.
+ *
+ * The knowledge block lives in lib/swedish-context.ts, mirroring how Norway
+ * uses lib/norwegian-context.ts. It was previously an inline 2.6KB string
+ * against Norway's 8.4KB file, which was enough to name Swedish institutions
+ * and not enough to answer "can I work evenings at 16".
  * Figures are approximate ranges (label them as such in answers). Sources:
  * Skolverket, UHR/antagning.se, CSN, SCB (Statistics Sweden), Arbetsförmedlingen.
  * Keep this concise — it is injected into the system prompt.
  */
-const SWEDEN_AI_CONTEXT = `
-EDUCATION SYSTEM (Sweden):
-- Grundskola: compulsory through year 9 (to ~age 16). Final-year grades give a "meritvärde" (merit points) used for gymnasium admission.
-- Gymnasium (upper secondary, 3 years), two main tracks:
-  • Högskoleförberedande program (university-preparatory).
-  • Yrkesprogram (vocational) — can include "lärlingsutbildning" (apprenticeship) with workplace time (APL).
-- Grading scale A–F: A–E are passing, F is fail.
-- University/higher ed: högskola/universitet — kandidatexamen (bachelor, ~180 högskolepoäng/hp, 3 years), then magister/masterexamen, then forskarutbildning (PhD). Yrkeshögskola (YH) offers shorter, employer-aligned vocational higher education. Folkhögskola and Komvux are adult-education routes.
-- Admission to higher ed via antagning.se (UHR), using gymnasium grades (jämförelsetal/betygspoäng) OR Högskoleprovet (the national aptitude test) as an alternative route. Many programmes have a "antagningspoäng" (entry score).
-- Student support: CSN — studiemedel = bidrag (grant) + lån (loan).
-
-JOB MARKET (Sweden):
-- Arbetsförmedlingen is the public employment service; job sites include Platsbanken, LinkedIn, Indeed, Blocket Jobb.
-- There is NO statutory minimum wage — pay floors are set by collective agreements ("kollektivavtal") negotiated per sector by unions and employers. Mention kollektivavtal when discussing pay/conditions.
-
-PAY (Sweden, approximate — always say figures are ranges):
-- Currency: SEK (written "kr"). Salaries are usually quoted as a MONTHLY figure ("månadslön").
-- Entry-level pay varies widely by sector and region (Stockholm higher). Use SCB lönestatistik for grounding and label figures as approximate.
-
-TERMINOLOGY: grundskola, gymnasium, högskoleförberedande/yrkesprogram, lärlingsutbildning, meritvärde, Högskoleprovet, högskola/universitet, högskolepoäng (hp), yrkeshögskola (YH), Komvux, folkhögskola, CSN (studiemedel/bidrag/lån), antagning.se, kollektivavtal, Arbetsförmedlingen. Use these local terms and explain them.
-`.trim();
-
 export const swedenContext: CountryContext = {
   code: "SE",
   name: "Sweden",
@@ -35,5 +19,5 @@ export const swedenContext: CountryContext = {
   language: "Swedish",
   crisisLine:
     "112 for emergencies, or Mind Självmordslinjen on 90101 (Sweden)",
-  condensedAiContext: () => SWEDEN_AI_CONTEXT,
+  condensedAiContext: getCondensedSwedishContext,
 };
